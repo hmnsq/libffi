@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -32,7 +32,7 @@
 
 #ifndef POWERPC64
 FFI_HIDDEN(ffi_call_SYSV)
-ENTRY(ffi_call_SYSV)
+प्रथम(ffi_call_SYSV)
 	.cfi_startproc
 	/* Save the old stack pointer as AP.  */
 	mr	%r10,%r1
@@ -165,7 +165,7 @@ L(small_struct_return_value):
 	b L(done_return_value)
 	.cfi_endproc
 
-END(ffi_call_SYSV)
+पूर्ण(ffi_call_SYSV)
 
 #if defined __ELF__ && defined __linux__
 	.section	.note.GNU-stack,"",@progbits

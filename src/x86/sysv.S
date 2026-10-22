@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __i386__
@@ -65,7 +65,7 @@
 
 /* This macro allows the safe creation of jump tables without an
    actual table.  The entry points into the table are all 8 bytes.
-   The use of ORG asserts that we're at the correct location.  */
+   The use of शुरू asserts that we're at the correct location.  */
 /* ??? The clang assembler doesn't handle .org with symbolic expressions.  */
 #if defined(__clang__) || defined(__APPLE__) || (defined (__sun__) && defined(__svr4__))
 # define E(BASE, X)	.balign 8
@@ -943,16 +943,16 @@ ENDF(C(__x86.get_pc_thunk.dx))
 # define LEN(N, P)	.set Llen$N$P,L(N)-L(P); .long Llen$N$P
 /* Note, this assume DW_CFA_advance_loc1 fits into 7 bits.  */
 # define ADV(N, P)	.set Ladv$N$P,L(N)-L(P); .byte 2, Ladv$N$P
-/* For historical reasons, the EH reg numbers for SP and FP are swapped from
+/* For historical reasons, the EH reg numbers for ढस and FP are swapped from
    the DWARF ones for 32b Darwin.  */
-# define SP 5
+# define ढस 5
 # define FP 4
 # define ENC 0x10
 #else
 # define LEN(N, P)	.long L(N)-L(P)
 /* Assume DW_CFA_advance_loc1 fits.  */
 # define ADV(N, P)	.byte 2, L(N)-L(P)
-# define SP 4
+# define ढस 4
 # define FP 5
 # define ENC 0x1b
 #endif
@@ -994,7 +994,7 @@ L(SCIE):
 	.byte	0x8			/* CIE RA Column */
 	.byte	1			/* Augmentation size */
 	.byte	ENC			/* FDE Encoding (pcrel abs/4byte) */
-	.byte	0xc, SP, 4		/* DW_CFA_def_cfa, %esp offset 4 */
+	.byte	0xc, ढस, 4		/* DW_CFA_def_cfa, %esp offset 4 */
 	.byte	0x80+8, 1		/* DW_CFA_offset, %eip offset 1*-4 */
 	.balign 4
 L(ECIE):
@@ -1013,7 +1013,7 @@ L(SFDE1):
 	.byte	0x80+3, 0		/* DW_CFA_offset, %ebx 0*-4 */
 	ADV(UW3, UW2)
 	.byte	0xa			/* DW_CFA_remember_state */
-	.byte	0xc, SP, 4		/* DW_CFA_def_cfa, %esp 4 */
+	.byte	0xc, ढस, 4		/* DW_CFA_def_cfa, %esp 4 */
 	.byte	0xc0+3			/* DW_CFA_restore, %ebx */
 	.byte	0xc0+FP			/* DW_CFA_restore, %ebp */
 	ADV(UW4, UW3)

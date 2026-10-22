@@ -18,13 +18,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __x86_64__
@@ -38,7 +38,7 @@
 
 /* This macro allows the safe creation of jump tables without an
    actual table.  The entry points into the table are all 8 bytes.
-   The use of ORG asserts that we're at the correct location.  */
+   The use of शुरू asserts that we're at the correct location.  */
 /* ??? The clang assembler doesn't handle .org with symbolic expressions.  */
 #ifdef __CET__
 /* Double slot size to 16 byte to add 4 bytes of ENDBR64.  */
@@ -122,7 +122,7 @@ L(UW2):
 	ja	L(sa)
 #ifdef __CET__
 	/* NB: Originally, each slot is 8 byte.  4 bytes of ENDBR64 +
-	   4 bytes NOP padding double slot size to 16 bytes.  */
+	   4 bytes वक्रि padding double slot size to 16 bytes.  */
 	addl	%r10d, %r10d
 #endif
 	leaq	(%r11, %r10, 8), %r10
@@ -470,7 +470,7 @@ L(UW10):
 	ja	L(la)
 #ifdef __CET__
 	/* NB: Originally, each slot is 8 byte.  4 bytes of ENDBR64 +
-	   4 bytes NOP padding double slot size to 16 bytes.  */
+	   4 bytes वक्रि padding double slot size to 16 bytes.  */
 	addl	%r10d, %r10d
 #endif
 	leaq	(%r11, %r10, 8), %r10
@@ -784,7 +784,7 @@ L(SFDE2):
 	.byte	0			/* Augmentation size */
 	ADV(UW6, UW5)
 	.byte	0xe			/* DW_CFA_def_cfa_offset */
-	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= FS < 255 */
+	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= दख < 255 */
 	.balign	8
 L(EFDE2):
 
@@ -797,7 +797,7 @@ L(SFDE3):
 	.byte	0			/* Augmentation size */
 	ADV(UW9, UW8)
 	.byte	0xe			/* DW_CFA_def_cfa_offset */
-	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= FS < 255 */
+	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= दख < 255 */
 	ADV(UW10, UW9)
 	.byte	0xe, 8			/* DW_CFA_def_cfa_offset 8 */
 L(EFDE3):
@@ -811,7 +811,7 @@ L(SFDE4):
 	.byte	0			/* Augmentation size */
 	ADV(UW13, UW12)
 	.byte	0xe			/* DW_CFA_def_cfa_offset */
-	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= FS < 255 */
+	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= दख < 255 */
 	.balign	8
 L(EFDE4):
 
@@ -824,7 +824,7 @@ L(SFDE5):
 	.byte	0			/* Augmentation size */
 	ADV(UW16, UW15)
 	.byte	0xe			/* DW_CFA_def_cfa_offset */
-	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= FS < 255 */
+	.byte	ffi_closure_FS + 8, 1	/* uleb128, assuming 128 <= दख < 255 */
 	.balign	8
 L(EFDE5):
 #ifdef __APPLE__

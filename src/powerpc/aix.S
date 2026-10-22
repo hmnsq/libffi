@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और NONINFRINGEMENT.
+   अंदर NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES या
+   OTHER LIABILITY, WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE,
+   ARISING FROM, बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या
+   OTHER DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 	.set r0,0
@@ -100,7 +100,7 @@
 	.align 2
 	.globl ffi_call_AIX
 	.globl .ffi_call_AIX
-.csect ffi_call_AIX[DS]
+.csect ffi_call_AIX[तख]
 ffi_call_AIX:
 #ifdef __64BIT__
 	.llong .ffi_call_AIX, TOC[tc0], 0
@@ -321,7 +321,7 @@ LFE..0:
 	.ef __LINE__
 	.long 0
 	.byte 0,0,0,1,128,4,0,0
-/* END(ffi_call_AIX) */
+/* पूर्ण(ffi_call_AIX) */
 
 	/* void ffi_call_go_AIX(extended_cif *ecif, unsigned long bytes,
 	 *		        unsigned int flags, unsigned int *rvalue,
@@ -335,7 +335,7 @@ LFE..0:
 	.align 2
 	.globl ffi_call_go_AIX
 	.globl .ffi_call_go_AIX
-.csect ffi_call_go_AIX[DS]
+.csect ffi_call_go_AIX[तख]
 ffi_call_go_AIX:
 #ifdef __64BIT__
 	.llong .ffi_call_go_AIX, TOC[tc0], 0
@@ -452,13 +452,13 @@ LFE..1:
 	.ef __LINE__
 	.long 0
 	.byte 0,0,0,1,128,4,0,0
-/* END(ffi_call_go_AIX) */
+/* पूर्ण(ffi_call_go_AIX) */
 
 .csect .text[PR]
 	.align 2
 	.globl ffi_call_DARWIN
 	.globl .ffi_call_DARWIN
-.csect ffi_call_DARWIN[DS]
+.csect ffi_call_DARWIN[तख]
 ffi_call_DARWIN:
 #ifdef __64BIT__
 	.llong .ffi_call_DARWIN, TOC[tc0], 0
@@ -470,7 +470,7 @@ ffi_call_DARWIN:
 	blr
 	.long 0
 	.byte 0,0,0,0,0,0,0,0
-/* END(ffi_call_DARWIN) */
+/* पूर्ण(ffi_call_DARWIN) */
 
 /* EH frame stuff.  */
 

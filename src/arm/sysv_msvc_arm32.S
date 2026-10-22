@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -35,26 +35,26 @@
 
 
         ; 8 byte aligned AREA to support 8 byte aligned jump tables
-        MACRO
+        सक्रिया
         NESTED_ENTRY_FFI $FuncName, $AreaName, $ExceptHandler
 
         ; compute the function's labels
         __DeriveFunctionLabels $FuncName
 
         ; determine the area we will put the function into
-__FuncArea   SETS    "|.text|"
-        IF "$AreaName" != ""
-__FuncArea   SETS    "$AreaName"
-        ENDIF
+__FuncArea   रच    "|.text|"
+        अगर "$AreaName" != ""
+__FuncArea   रच    "$AreaName"
+        पूर्ण_अगर
 
         ; set up the exception handler itself
-__FuncExceptionHandler SETS ""
-        IF "$ExceptHandler" != ""
-__FuncExceptionHandler SETS    "|$ExceptHandler|"
-        ENDIF
+__FuncExceptionHandler रच ""
+        अगर "$ExceptHandler" != ""
+__FuncExceptionHandler रच    "|$ExceptHandler|"
+        पूर्ण_अगर
 
         ; switch to the specified area, jump tables require 8 byte alignment
-        AREA    $__FuncArea,CODE,CODEALIGN,ALIGN=3,READONLY
+        AREA    $__FuncArea,CODE,CODEALIGN,मिलाओ=3,READONLY
 
         ; export the function name
         __ExportProc $FuncName
@@ -116,7 +116,7 @@ __FuncExceptionHandler SETS    "|$ExceptHandler|"
     mov    sp, fp
 
     ; Store values stored in registers.
-    ALIGN 8
+    मिलाओ 8
     lsl     r3, #3
     add     r3, r3, pc
     add     r3, #8
@@ -124,31 +124,31 @@ __FuncExceptionHandler SETS    "|$ExceptHandler|"
 
 
 E(ARM_TYPE_VFP_S, ffi_call)
-    ALIGN 8
+    मिलाओ 8
     vstr s0, [r2]
     pop    {fp,pc}
 E(ARM_TYPE_VFP_D, ffi_call)
-    ALIGN 8
+    मिलाओ 8
     vstr d0, [r2]
     pop    {fp,pc}
 E(ARM_TYPE_VFP_N, ffi_call)
-    ALIGN 8
+    मिलाओ 8
     vstm r2, {d0-d3}
     pop    {fp,pc}
 E(ARM_TYPE_INT64, ffi_call)
-    ALIGN 8
+    मिलाओ 8
     str    r1, [r2, #4]
     nop
 E(ARM_TYPE_INT, ffi_call)
-    ALIGN 8
+    मिलाओ 8
     str    r0, [r2]
     pop    {fp,pc}
 E(ARM_TYPE_VOID, ffi_call)
-    ALIGN 8
+    मिलाओ 8
     pop    {fp,pc}
     nop
 E(ARM_TYPE_STRUCT, ffi_call)
-    ALIGN 8
+    मिलाओ 8
     cmp r3, #ARM_TYPE_STRUCT
     pop    {fp,pc}
     NESTED_END ffi_call_SYSV_fake
@@ -256,44 +256,44 @@ E(ARM_TYPE_STRUCT, ffi_call)
     NESTED_END ffi_closure_VFP_fake
 
 /* Load values returned in registers for both closure entry points.
-   Note that we use LDM with SP in the register set.  This is deprecated
+   Note that we use LDM with ढस in the register set.  This is deprecated
    by ARM, but not yet unpredictable.  */
 
     NESTED_ENTRY_FFI ffi_closure_ret
     stmdb sp!, {fp,lr}
 
-    ALIGN 8
+    मिलाओ 8
     lsl     r0, #3
     add     r0, r0, pc
     add     r0, #8
     mov     pc, r0
 
 E(ARM_TYPE_VFP_S, ffi_closure)
-    ALIGN 8
+    मिलाओ 8
     vldr s0, [r2]
     b call_epilogue
 E(ARM_TYPE_VFP_D, ffi_closure)
-    ALIGN 8
+    मिलाओ 8
     vldr d0, [r2]
     b call_epilogue
 E(ARM_TYPE_VFP_N, ffi_closure)
-    ALIGN 8
+    मिलाओ 8
     vldm r2, {d0-d3}
     b call_epilogue
 E(ARM_TYPE_INT64, ffi_closure)
-    ALIGN 8
+    मिलाओ 8
     ldr    r1, [r2, #4]
     nop
 E(ARM_TYPE_INT, ffi_closure)
-    ALIGN 8
+    मिलाओ 8
     ldr    r0, [r2]
     b call_epilogue
 E(ARM_TYPE_VOID, ffi_closure)
-    ALIGN 8
+    मिलाओ 8
     b call_epilogue
     nop
 E(ARM_TYPE_STRUCT, ffi_closure)
-    ALIGN 8
+    मिलाओ 8
     b call_epilogue
 call_epilogue
     ldmfd sp!, {fp,pc}
@@ -308,4 +308,4 @@ thisproc    adr    ip, thisproc
             DCD    0
             ;ENDP
 
-    END
+    पूर्ण

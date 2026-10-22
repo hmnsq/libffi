@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 #define LIBFFI_ASM
 #include <fficonfig.h>
@@ -35,7 +35,7 @@
 #ifndef POWERPC64
 
 FFI_HIDDEN(ffi_closure_SYSV)
-ENTRY(ffi_closure_SYSV)
+प्रथम(ffi_closure_SYSV)
 	.cfi_startproc
 	stwu %r1,-144(%r1)
 	.cfi_def_cfa_offset 144
@@ -240,11 +240,11 @@ E PPC32_SYSV_LD_STRUCT_7
 #endif
 
 	.cfi_endproc
-END(ffi_closure_SYSV)
+पूर्ण(ffi_closure_SYSV)
 
 
 FFI_HIDDEN(ffi_go_closure_sysv)
-ENTRY(ffi_go_closure_sysv)
+प्रथम(ffi_go_closure_sysv)
 	.cfi_startproc
 	stwu %r1,-144(%r1)
 	.cfi_def_cfa_offset 144
@@ -264,7 +264,7 @@ ENTRY(ffi_go_closure_sysv)
 	mr %r5,%r11
 	b .Ldoclosure
 	.cfi_endproc
-END(ffi_go_closure_sysv)
+पूर्ण(ffi_go_closure_sysv)
 
 #ifdef FFI_EXEC_STATIC_TRAMP
 	.text

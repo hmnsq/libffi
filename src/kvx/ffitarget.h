@@ -24,20 +24,20 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
-#endif
+#अगर_अघोषित LIBFFI_H
+#त्रुटि "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
+#पूर्ण_अगर
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#अगर_अघोषित LIBFFI_ASM
+प्रकार अचिन्हित दीर्घ          ffi_arg;
+प्रकार चिन्हित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकार क्रमागत ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -47,7 +47,7 @@ typedef enum ffi_abi {
 /* Those values are set depending on return type
  * they are used in the assembly code in sysv.S
  */
-typedef enum kvx_intext_method {
+प्रकार क्रमागत kvx_intext_method {
   KVX_RET_NONE = 0,
   KVX_RET_SXBD = 1,
   KVX_RET_SXHD = 2,
@@ -57,19 +57,19 @@ typedef enum kvx_intext_method {
   KVX_RET_ZXWD = 6
 } kvx_intext_method;
 
-#endif
+#पूर्ण_अगर
 
 /* ---- Definitions for closures ----------------------------------------- */
 
 /* This is only to allow Python to compile
  * but closures are not supported yet
  */
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 0
+#घोषणा FFI_CLOSURES 1
+#घोषणा FFI_TRAMPOLINE_आकार 0
 
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE
+#घोषणा FFI_NATIVE_RAW_API 0
+#घोषणा FFI_TARGET_SPECIFIC_VARIADIC 1
+#घोषणा FFI_TARGET_HAS_COMPLEX_TYPE
 
-#endif
+#पूर्ण_अगर
 

@@ -25,62 +25,62 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#अगर_अघोषित LIBFFI_H
+#त्रुटि "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#पूर्ण_अगर
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#अगर_अघोषित LIBFFI_ASM
+प्रकार अचिन्हित दीर्घ          ffi_arg;
+प्रकार चिन्हित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकार क्रमागत ffi_abi {
   FFI_FIRST_ABI = 0,
 
-#ifdef PA_LINUX
+#अगर_घोषित PA_LINUX
   FFI_PA32,
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_PA32
-#endif
+#पूर्ण_अगर
 
-#ifdef PA_HPUX
+#अगर_घोषित PA_HPUX
   FFI_PA32,
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_PA32
-#endif
+#पूर्ण_अगर
 
-#ifdef PA64_HPUX
+#अगर_घोषित PA64_HPUX
   FFI_PA64,
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_PA64
-#endif
+#पूर्ण_अगर
 } ffi_abi;
-#endif
+#पूर्ण_अगर
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#घोषणा FFI_TARGET_SPECIFIC_ढेर_SPACE_ALLOCATION
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#if defined(PA64_HPUX)
-#define FFI_TRAMPOLINE_SIZE 32
-#else
-#define FFI_TRAMPOLINE_SIZE 12
-#endif
+#घोषणा FFI_CLOSURES 1
+#घोषणा FFI_NATIVE_RAW_API 0
+#अगर defined(PA64_HPUX)
+#घोषणा FFI_TRAMPOLINE_आकार 32
+#अन्यथा
+#घोषणा FFI_TRAMPOLINE_आकार 12
+#पूर्ण_अगर
 
-#define FFI_TYPE_SMALL_STRUCT1 -1
-#define FFI_TYPE_SMALL_STRUCT2 -2
-#define FFI_TYPE_SMALL_STRUCT3 -3
-#define FFI_TYPE_SMALL_STRUCT4 -4
-#define FFI_TYPE_SMALL_STRUCT5 -5
-#define FFI_TYPE_SMALL_STRUCT6 -6
-#define FFI_TYPE_SMALL_STRUCT7 -7
-#define FFI_TYPE_SMALL_STRUCT8 -8
+#घोषणा FFI_TYPE_SMALL_STRUCT1 -1
+#घोषणा FFI_TYPE_SMALL_STRUCT2 -2
+#घोषणा FFI_TYPE_SMALL_STRUCT3 -3
+#घोषणा FFI_TYPE_SMALL_STRUCT4 -4
+#घोषणा FFI_TYPE_SMALL_STRUCT5 -5
+#घोषणा FFI_TYPE_SMALL_STRUCT6 -6
+#घोषणा FFI_TYPE_SMALL_STRUCT7 -7
+#घोषणा FFI_TYPE_SMALL_STRUCT8 -8
 
 /* The return-value jump tables in linux.S and hpux32.S are indexed by
    cif->flags, which ffi_prep_cif_machdep derives from the return type.  Any
@@ -95,13 +95,13 @@ typedef enum ffi_abi {
    FFI_TARGET_HAS_VECTOR_TYPE, so ffi_prep_cif_core rejects any vector
    signature with FFI_BAD_TYPEDEF before machdep runs.  Bumping the tripwire
    past it is therefore safe.  */
-#define FFI_PA_TYPE_LAST FFI_TYPE_VECTOR
+#घोषणा FFI_PA_TYPE_LAST FFI_TYPE_VECTOR
 
 /* Tripwire: when a new generic type is added FFI_TYPE_LAST changes and this
    fires, forcing a review of ffi_prep_cif_machdep and the linux.S / hpux32.S
    jump tables before FFI_PA_TYPE_LAST above is bumped.  */
-#if FFI_TYPE_LAST != FFI_PA_TYPE_LAST
+#अगर FFI_TYPE_LAST != FFI_PA_TYPE_LAST
 # error "You likely have broken jump tables"
-#endif
+#पूर्ण_अगर
 
-#endif
+#पूर्ण_अगर

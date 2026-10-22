@@ -28,11 +28,11 @@
 /*                          --------                                  */
 /*====================================================================*/
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdint.h>
-#include "internal.h"
-#include <tramp.h>
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
+#समावेश <stdint.h>
+#समावेश "internal.h"
+#समावेश <tramp.h>
 
 /*====================== End of Includes =============================*/
 
@@ -42,17 +42,17 @@
 /*====================================================================*/
 
 /* Maximum number of GPRs available for argument passing.  */
-#define MAX_GPRARGS 5
+#घोषणा MAX_GPRARGS 5
 
 /* Maximum number of FPRs available for argument passing.  */
-#ifdef __s390x__
-#define MAX_FPRARGS 4
-#else
-#define MAX_FPRARGS 2
-#endif
+#अगर_घोषित __s390x__
+#घोषणा MAX_FPRARGS 4
+#अन्यथा
+#घोषणा MAX_FPRARGS 2
+#पूर्ण_अगर
 
 /* Round to multiple of 16.  */
-#define ROUND_SIZE(size) (((size) + 15) & ~15)
+#घोषणा ROUND_आकार(आकार) (((आकार) + 15) & ~15)
 
 /*===================== End of Defines ===============================*/
 
@@ -61,20 +61,20 @@
 /*                          ---------                                 */
 /*====================================================================*/
 
-struct call_frame
+काष्ठा call_frame
 {
-  void *back_chain;
-  void *eos;
-  unsigned long gpr_args[5];
-  unsigned long gpr_save[9];
-  unsigned long long fpr_args[4];
+  व्योम *back_chain;
+  व्योम *eos;
+  अचिन्हित दीर्घ gpr_args[5];
+  अचिन्हित दीर्घ gpr_save[9];
+  अचिन्हित दीर्घ दीर्घ fpr_args[4];
 };
 
-extern void FFI_HIDDEN ffi_call_SYSV(struct call_frame *, unsigned, void *,
-			             void (*fn)(void), void *);
+बाह्य व्योम FFI_HIDDEN ffi_call_SYSV(काष्ठा call_frame *, अचिन्हित, व्योम *,
+			             व्योम (*fn)(व्योम), व्योम *);
 
-extern void ffi_closure_SYSV(void);
-extern void ffi_go_closure_SYSV(void);
+बाह्य व्योम ffi_closure_SYSV(व्योम);
+बाह्य व्योम ffi_go_closure_SYSV(व्योम);
 
 /*====================== End of Externals ============================*/
 
@@ -87,45 +87,45 @@ extern void ffi_go_closure_SYSV(void);
 /*                                                                    */
 /*====================================================================*/
 
-static int
+अटल पूर्णांक
 ffi_check_struct_type (ffi_type *arg)
 {
-  size_t size = arg->size;
+  माप_प्रकार आकार = arg->आकार;
 
   /* If the struct has just one element, look at that element
      to find out whether to consider the struct as floating point.  */
-  while (arg->type == FFI_TYPE_STRUCT
+  जबतक (arg->type == FFI_TYPE_STRUCT
          && arg->elements[0] && !arg->elements[1])
     arg = arg->elements[0];
 
   /* Structs of size 1, 2, 4, and 8 are passed in registers,
      just like the corresponding int/float types.  */
-  switch (size)
+  चयन (आकार)
     {
-      case 1:
-        return FFI_TYPE_UINT8;
+      हाल 1:
+        वापस FFI_TYPE_UINT8;
 
-      case 2:
-        return FFI_TYPE_UINT16;
+      हाल 2:
+        वापस FFI_TYPE_UINT16;
 
-      case 4:
-	if (arg->type == FFI_TYPE_FLOAT)
-          return FFI_TYPE_FLOAT;
-	else
-	  return FFI_TYPE_UINT32;
+      हाल 4:
+	अगर (arg->type == FFI_TYPE_FLOAT)
+          वापस FFI_TYPE_FLOAT;
+	अन्यथा
+	  वापस FFI_TYPE_UINT32;
 
-      case 8:
-	if (arg->type == FFI_TYPE_DOUBLE)
-          return FFI_TYPE_DOUBLE;
-	else
-	  return FFI_TYPE_UINT64;
+      हाल 8:
+	अगर (arg->type == FFI_TYPE_DOUBLE)
+          वापस FFI_TYPE_DOUBLE;
+	अन्यथा
+	  वापस FFI_TYPE_UINT64;
 
-      default:
-	break;
+      शेष:
+	अवरोध;
     }
 
   /* Other structs are passed via a pointer to the data.  */
-  return FFI_TYPE_POINTER;
+  वापस FFI_TYPE_POINTER;
 }
 
 /*======================== End of Routine ============================*/
@@ -141,157 +141,157 @@ ffi_check_struct_type (ffi_type *arg)
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  size_t struct_size = 0;
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  माप_प्रकार struct_आकार = 0;
+  पूर्णांक n_gpr = 0;
+  पूर्णांक n_fpr = 0;
+  पूर्णांक n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  पूर्णांक i;
 
   /* Determine return value handling.  */
 
-  switch (cif->rtype->type)
+  चयन (cif->rtype->type)
     {
       /* Void is easy.  */
-      case FFI_TYPE_VOID:
+      हाल FFI_TYPE_VOID:
 	cif->flags = FFI390_RET_VOID;
-	break;
+	अवरोध;
 
       /* Structures, complex, int128, and long double are
          returned via a hidden pointer.  */
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_COMPLEX:
-      case FFI_TYPE_SINT128:
-      case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      case FFI_TYPE_LONGDOUBLE:
-#endif
+      हाल FFI_TYPE_STRUCT:
+      हाल FFI_TYPE_COMPLEX:
+      हाल FFI_TYPE_SINT128:
+      हाल FFI_TYPE_UINT128:
+#अगर FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      हाल FFI_TYPE_LONGDOUBLE:
+#पूर्ण_अगर
 	cif->flags = FFI390_RET_STRUCT;
 	n_gpr++;  /* We need one GPR to pass the pointer.  */
-	break;
+	अवरोध;
 
       /* Floating point values are returned in fpr 0.  */
-      case FFI_TYPE_FLOAT:
+      हाल FFI_TYPE_FLOAT:
 	cif->flags = FFI390_RET_FLOAT;
-	break;
+	अवरोध;
 
-      case FFI_TYPE_DOUBLE:
+      हाल FFI_TYPE_DOUBLE:
 	cif->flags = FFI390_RET_DOUBLE;
-	break;
+	अवरोध;
 
       /* Integer values are returned in gpr 2 (and gpr 3
 	 for 64-bit values on 31-bit machines).  */
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
+      हाल FFI_TYPE_UINT64:
+      हाल FFI_TYPE_SINT64:
 	cif->flags = FFI390_RET_INT64;
-	break;
+	अवरोध;
 
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
+      हाल FFI_TYPE_POINTER:
+      हाल FFI_TYPE_INT:
+      हाल FFI_TYPE_UINT32:
+      हाल FFI_TYPE_SINT32:
+      हाल FFI_TYPE_UINT16:
+      हाल FFI_TYPE_SINT16:
+      हाल FFI_TYPE_UINT8:
+      हाल FFI_TYPE_SINT8:
 	/* These are to be extended to word size.  */
-#ifdef __s390x__
+#अगर_घोषित __s390x__
 	cif->flags = FFI390_RET_INT64;
-#else
+#अन्यथा
 	cif->flags = FFI390_RET_INT32;
-#endif
-	break;
+#पूर्ण_अगर
+	अवरोध;
 
-      default:
+      शेष:
         FFI_ASSERT (0);
-        break;
+        अवरोध;
     }
 
   /* Now for the arguments.  */
 
-  for (ptr = cif->arg_types, i = cif->nargs;
+  क्रम (ptr = cif->arg_types, i = cif->nargs;
        i > 0;
        i--, ptr++)
     {
-      int type = (*ptr)->type;
+      पूर्णांक type = (*ptr)->type;
 
-      switch (type)
+      चयन (type)
 	{
-	case FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_STRUCT:
 	  type = ffi_check_struct_type (*ptr);
-	  if (type != FFI_TYPE_POINTER)
-	    break;
+	  अगर (type != FFI_TYPE_POINTER)
+	    अवरोध;
 	  /* fall through */
 
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-#endif
+	हाल FFI_TYPE_COMPLEX:
+	हाल FFI_TYPE_SINT128:
+	हाल FFI_TYPE_UINT128:
+#अगर FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	हाल FFI_TYPE_LONGDOUBLE:
+#पूर्ण_अगर
 	  type = FFI_TYPE_POINTER;
 	  /* If we pass via pointer, we must reserve space to copy
 	     its data for proper call-by-value semantics.  */
-	  struct_size += ROUND_SIZE ((*ptr)->size);
-	  break;
+	  struct_आकार += ROUND_आकार ((*ptr)->आकार);
+	  अवरोध;
 	}
 
       /* Now handle all primitive int/float data types.  */
-      switch (type)
+      चयन (type)
 	{
 	  /* The first MAX_FPRARGS floating point arguments
 	     go in FPRs, the rest overflow to the stack.  */
 
-	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	  हाल FFI_TYPE_DOUBLE:
+	    अगर (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
-	      n_ov += sizeof (double) / sizeof (long);
-	    break;
+	    अन्यथा
+	      n_ov += माप (द्विगुन) / माप (दीर्घ);
+	    अवरोध;
 
-	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	  हाल FFI_TYPE_FLOAT:
+	    अगर (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
+	    अन्यथा
 	      n_ov++;
-	    break;
+	    अवरोध;
 
 	  /* On 31-bit machines, 64-bit integers are passed in GPR pairs,
 	     if one is still available, or else on the stack.  If only one
 	     register is free, skip the register (it won't be used for any
 	     subsequent argument either).  */
 
-#ifndef __s390x__
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
-	    if (n_gpr == MAX_GPRARGS-1)
+#अगर_अघोषित __s390x__
+	  हाल FFI_TYPE_UINT64:
+	  हाल FFI_TYPE_SINT64:
+	    अगर (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    अगर (n_gpr < MAX_GPRARGS)
 	      n_gpr += 2;
-	    else
+	    अन्यथा
 	      n_ov += 2;
-	    break;
-#endif
+	    अवरोध;
+#पूर्ण_अगर
 
 	  /* Everything else is passed in GPRs (until MAX_GPRARGS
 	     have been used) or overflows to the stack.  */
 
-	  default:
-	    if (n_gpr < MAX_GPRARGS)
+	  शेष:
+	    अगर (n_gpr < MAX_GPRARGS)
 	      n_gpr++;
-	    else
+	    अन्यथा
 	      n_ov++;
-	    break;
+	    अवरोध;
         }
     }
 
   /* Total stack space as required for overflow arguments
      and temporary structure copies.  */
 
-  cif->bytes = ROUND_SIZE (n_ov * sizeof (long)) + struct_size;
+  cif->bytes = ROUND_आकार (n_ov * माप (दीर्घ)) + struct_आकार;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
@@ -304,30 +304,30 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 /*                                                                    */
 /*====================================================================*/
 
-static void
+अटल व्योम
 ffi_call_int(ffi_cif *cif,
-	     void (*fn)(void),
-	     void *rvalue,
-	     void **avalue,
-	     void *closure)
+	     व्योम (*fn)(व्योम),
+	     व्योम *rvalue,
+	     व्योम **avalue,
+	     व्योम *closure)
 {
-  int ret_type = cif->flags;
-  size_t rsize = 0, bytes = cif->bytes;
-  unsigned char *stack, *p_struct;
-  struct call_frame *frame;
-  unsigned long *p_ov, *p_gpr;
-  unsigned long long *p_fpr;
-  int n_fpr, n_gpr, n_ov, i, n;
+  पूर्णांक ret_type = cif->flags;
+  माप_प्रकार rsize = 0, bytes = cif->bytes;
+  अचिन्हित अक्षर *ढेर, *p_struct;
+  काष्ठा call_frame *frame;
+  अचिन्हित दीर्घ *p_ov, *p_gpr;
+  अचिन्हित दीर्घ दीर्घ *p_fpr;
+  पूर्णांक n_fpr, n_gpr, n_ov, i, n;
   ffi_type **arg_types;
 
   FFI_ASSERT (cif->abi == FFI_SYSV);
 
   /* If we don't have a return value, we need to fake one.  */
-  if (rvalue == NULL)
+  अगर (rvalue == शून्य)
     {
-      if (ret_type & FFI390_RET_IN_MEM)
-	rsize = cif->rtype->size;
-      else
+      अगर (ret_type & FFI390_RET_IN_MEM)
+	rsize = cif->rtype->आकार;
+      अन्यथा
 	ret_type = FFI390_RET_VOID;
     }
 
@@ -355,140 +355,140 @@ ffi_call_int(ffi_cif *cif,
      than 5 arguments (indeed only memcpy and ffi_call_SYSV),
      and thus we don't have any stacked outgoing parameters.  */
 
-  stack = alloca (bytes + sizeof(struct call_frame) + rsize);
-  frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
+  ढेर = alloca (bytes + माप(काष्ठा call_frame) + rsize);
+  frame = (काष्ठा call_frame *)(ढेर + bytes);
+  अगर (rsize)
     rvalue = frame + 1;
 
   /* Link the new frame back to the one from this function.  */
   frame->back_chain = __builtin_frame_address (0);
 
   /* Fill in all of the argument stuff.  */
-  p_ov = (unsigned long *)stack;
-  p_struct = (unsigned char *)frame;
+  p_ov = (अचिन्हित दीर्घ *)ढेर;
+  p_struct = (अचिन्हित अक्षर *)frame;
   p_gpr = frame->gpr_args;
   p_fpr = frame->fpr_args;
   n_fpr = n_gpr = n_ov = 0;
 
   /* If we returning a structure then we set the first parameter register
      to the address of where we are returning this structure.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
+  अगर (cif->flags & FFI390_RET_IN_MEM)
     p_gpr[n_gpr++] = (uintptr_t) rvalue;
 
   /* Now for the arguments.  */
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  क्रम (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = arg_types[i];
-      void *arg = avalue[i];
-      int type = ty->type;
+      व्योम *arg = avalue[i];
+      पूर्णांक type = ty->type;
       ffi_arg val;
 
     restart:
-      switch (type)
+      चयन (type)
 	{
-	case FFI_TYPE_SINT8:
+	हाल FFI_TYPE_SINT8:
 	  val = *(SINT8 *)arg;
-	  goto do_int;
-	case FFI_TYPE_UINT8:
+	  जाओ do_int;
+	हाल FFI_TYPE_UINT8:
 	  val = *(UINT8 *)arg;
-	  goto do_int;
-	case FFI_TYPE_SINT16:
+	  जाओ do_int;
+	हाल FFI_TYPE_SINT16:
 	  val = *(SINT16 *)arg;
-	  goto do_int;
-	case FFI_TYPE_UINT16:
+	  जाओ do_int;
+	हाल FFI_TYPE_UINT16:
 	  val = *(UINT16 *)arg;
-	  goto do_int;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	  जाओ do_int;
+	हाल FFI_TYPE_INT:
+	हाल FFI_TYPE_SINT32:
 	  val = *(SINT32 *)arg;
-	  goto do_int;
-	case FFI_TYPE_UINT32:
+	  जाओ do_int;
+	हाल FFI_TYPE_UINT32:
 	  val = *(UINT32 *)arg;
-	  goto do_int;
-	case FFI_TYPE_POINTER:
+	  जाओ do_int;
+	हाल FFI_TYPE_POINTER:
 	  val = *(uintptr_t *)arg;
 	do_int:
 	  *(n_gpr < MAX_GPRARGS ? p_gpr + n_gpr++ : p_ov + n_ov++) = val;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-#ifdef __s390x__
+	हाल FFI_TYPE_UINT64:
+	हाल FFI_TYPE_SINT64:
+#अगर_घोषित __s390x__
 	  val = *(UINT64 *)arg;
-	  goto do_int;
-#else
-	  if (n_gpr == MAX_GPRARGS-1)
+	  जाओ do_int;
+#अन्यथा
+	  अगर (n_gpr == MAX_GPRARGS-1)
 	    n_gpr = MAX_GPRARGS;
-	  if (n_gpr < MAX_GPRARGS)
+	  अगर (n_gpr < MAX_GPRARGS)
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[0],
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[1];
-	  else
+	  अन्यथा
 	    p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	    p_ov[n_ov++] = ((UINT32 *) arg)[1];
-#endif
-	  break;
+#पूर्ण_अगर
+	  अवरोध;
 
-	case FFI_TYPE_DOUBLE:
-	  if (n_fpr < MAX_FPRARGS)
+	हाल FFI_TYPE_DOUBLE:
+	  अगर (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = *(UINT64 *) arg;
-	  else
+	  अन्यथा
 	    {
-#ifdef __s390x__
+#अगर_घोषित __s390x__
 	      p_ov[n_ov++] = *(UINT64 *) arg;
-#else
+#अन्यथा
 	      p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	      p_ov[n_ov++] = ((UINT32 *) arg)[1];
-#endif
+#पूर्ण_अगर
 	    }
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_FLOAT:
+	हाल FFI_TYPE_FLOAT:
 	  val = *(UINT32 *)arg;
-	  if (n_fpr < MAX_FPRARGS)
+	  अगर (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = (UINT64)val << 32;
-	  else
+	  अन्यथा
 	    p_ov[n_ov++] = val;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_STRUCT:
           /* Check how a structure type is passed.  */
 	  type = ffi_check_struct_type (ty);
 	  /* Some structures are passed via a type they contain.  */
-	  if (type != FFI_TYPE_POINTER)
-	    goto restart;
+	  अगर (type != FFI_TYPE_POINTER)
+	    जाओ restart;
 	  /* ... otherwise, passed by reference.  fallthru.  */
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-#endif
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
+#अगर FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	हाल FFI_TYPE_LONGDOUBLE:
+#पूर्ण_अगर
+	हाल FFI_TYPE_COMPLEX:
+	हाल FFI_TYPE_SINT128:
+	हाल FFI_TYPE_UINT128:
 	  /* Complex, int128 and long double types are passed via reference. */
-	  p_struct -= ROUND_SIZE (ty->size);
-	  memcpy (p_struct, arg, ty->size);
+	  p_struct -= ROUND_आकार (ty->आकार);
+	  स_नकल (p_struct, arg, ty->आकार);
 	  val = (uintptr_t)p_struct;
-	  goto do_int;
+	  जाओ do_int;
 
-	default:
+	शेष:
 	  FFI_ASSERT (0);
-	  break;
+	  अवरोध;
         }
     }
 
   ffi_call_SYSV (frame, ret_type & FFI360_RET_MASK, rvalue, fn, closure);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+व्योम
+ffi_call (ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue, व्योम **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, शून्य);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+व्योम
+ffi_call_go (ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue,
+	     व्योम **avalue, व्योम *closure)
 {
   ffi_call_int(cif, fn, rvalue, avalue, closure);
 }
@@ -503,197 +503,197 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 /*                                                                    */
 /*====================================================================*/
 
-void FFI_HIDDEN
+व्योम FFI_HIDDEN
 ffi_closure_helper_SYSV (ffi_cif *cif,
-			 void (*fun)(ffi_cif*,void*,void**,void*),
-			 void *user_data,
-			 unsigned long *p_gpr,
-			 unsigned long long *p_fpr,
-			 unsigned long *p_ov)
+			 व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*),
+			 व्योम *user_तथ्य,
+			 अचिन्हित दीर्घ *p_gpr,
+			 अचिन्हित दीर्घ दीर्घ *p_fpr,
+			 अचिन्हित दीर्घ *p_ov)
 {
-  unsigned long long ret_buffer;
+  अचिन्हित दीर्घ दीर्घ ret_बफर;
 
-  void *rvalue = &ret_buffer;
-  void **avalue;
-  void **p_arg;
+  व्योम *rvalue = &ret_बफर;
+  व्योम **avalue;
+  व्योम **p_arg;
 
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  पूर्णांक n_gpr = 0;
+  पूर्णांक n_fpr = 0;
+  पूर्णांक n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  पूर्णांक i;
 
   /* Allocate buffer for argument list pointers.  */
-  p_arg = avalue = alloca (cif->nargs * sizeof (void *));
+  p_arg = avalue = alloca (cif->nargs * माप (व्योम *));
 
   /* If we returning a structure, pass the structure address
      directly to the target function.  Otherwise, have the target
      function store the return value to the GPR save area.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
-    rvalue = (void *) p_gpr[n_gpr++];
+  अगर (cif->flags & FFI390_RET_IN_MEM)
+    rvalue = (व्योम *) p_gpr[n_gpr++];
 
   /* Now for the arguments.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
+  क्रम (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
     {
-      int deref_struct_pointer = 0;
-      int type = (*ptr)->type;
+      पूर्णांक deref_struct_pointer = 0;
+      पूर्णांक type = (*ptr)->type;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#अगर FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       /* 16-byte long double is passed like a struct.  */
-      if (type == FFI_TYPE_LONGDOUBLE)
+      अगर (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_STRUCT;
-#endif
+#पूर्ण_अगर
 
       /* Check how a structure type is passed.  */
-      if (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
+      अगर (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
 	{
-	  if (type == FFI_TYPE_COMPLEX)
+	  अगर (type == FFI_TYPE_COMPLEX)
 	    type = FFI_TYPE_POINTER;
-	  else
+	  अन्यथा
 	    type = ffi_check_struct_type (*ptr);
 
 	  /* If we pass the struct via pointer, remember to
 	     retrieve the pointer later.  */
-	  if (type == FFI_TYPE_POINTER)
+	  अगर (type == FFI_TYPE_POINTER)
 	    deref_struct_pointer = 1;
 	}
 
       /* Pointers are passed like UINTs of the same size.  */
-      if (type == FFI_TYPE_POINTER)
+      अगर (type == FFI_TYPE_POINTER)
 	{
-#ifdef __s390x__
+#अगर_घोषित __s390x__
 	  type = FFI_TYPE_UINT64;
-#else
+#अन्यथा
 	  type = FFI_TYPE_UINT32;
-#endif
+#पूर्ण_अगर
 	}
 
       /* Now handle all primitive int/float data types.  */
-      switch (type)
+      चयन (type)
 	{
-	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	  हाल FFI_TYPE_DOUBLE:
+	    अगर (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
+	    अन्यथा
 	      *p_arg = &p_ov[n_ov],
-	      n_ov += sizeof (double) / sizeof (long);
-	    break;
+	      n_ov += माप (द्विगुन) / माप (दीर्घ);
+	    अवरोध;
 
-	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	  हाल FFI_TYPE_FLOAT:
+	    अगर (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
-	    break;
+	    अन्यथा
+	      *p_arg = (अक्षर *)&p_ov[n_ov++] + माप (दीर्घ) - 4;
+	    अवरोध;
 
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
-#ifdef __s390x__
-	    if (n_gpr < MAX_GPRARGS)
+	  हाल FFI_TYPE_UINT64:
+	  हाल FFI_TYPE_SINT64:
+#अगर_घोषित __s390x__
+	    अगर (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr++];
-	    else
+	    अन्यथा
 	      *p_arg = &p_ov[n_ov++];
-#else
-	    if (n_gpr == MAX_GPRARGS-1)
+#अन्यथा
+	    अगर (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    अगर (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr], n_gpr += 2;
-	    else
+	    अन्यथा
 	      *p_arg = &p_ov[n_ov], n_ov += 2;
-#endif
-	    break;
+#पूर्ण_अगर
+	    अवरोध;
 
-	  case FFI_TYPE_INT:
-	  case FFI_TYPE_UINT32:
-	  case FFI_TYPE_SINT32:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 4;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
-	    break;
+	  हाल FFI_TYPE_INT:
+	  हाल FFI_TYPE_UINT32:
+	  हाल FFI_TYPE_SINT32:
+	    अगर (n_gpr < MAX_GPRARGS)
+	      *p_arg = (अक्षर *)&p_gpr[n_gpr++] + माप (दीर्घ) - 4;
+	    अन्यथा
+	      *p_arg = (अक्षर *)&p_ov[n_ov++] + माप (दीर्घ) - 4;
+	    अवरोध;
 
-	  case FFI_TYPE_UINT16:
-	  case FFI_TYPE_SINT16:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 2;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 2;
-	    break;
+	  हाल FFI_TYPE_UINT16:
+	  हाल FFI_TYPE_SINT16:
+	    अगर (n_gpr < MAX_GPRARGS)
+	      *p_arg = (अक्षर *)&p_gpr[n_gpr++] + माप (दीर्घ) - 2;
+	    अन्यथा
+	      *p_arg = (अक्षर *)&p_ov[n_ov++] + माप (दीर्घ) - 2;
+	    अवरोध;
 
-	  case FFI_TYPE_UINT8:
-	  case FFI_TYPE_SINT8:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 1;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 1;
-	    break;
+	  हाल FFI_TYPE_UINT8:
+	  हाल FFI_TYPE_SINT8:
+	    अगर (n_gpr < MAX_GPRARGS)
+	      *p_arg = (अक्षर *)&p_gpr[n_gpr++] + माप (दीर्घ) - 1;
+	    अन्यथा
+	      *p_arg = (अक्षर *)&p_ov[n_ov++] + माप (दीर्घ) - 1;
+	    अवरोध;
 
-	  default:
+	  शेष:
 	    FFI_ASSERT (0);
-	    break;
+	    अवरोध;
         }
 
       /* If this is a struct passed via pointer, we need to
 	 actually retrieve that pointer.  */
-      if (deref_struct_pointer)
-	*p_arg = *(void **)*p_arg;
+      अगर (deref_struct_pointer)
+	*p_arg = *(व्योम **)*p_arg;
     }
 
 
   /* Call the target function.  */
-  (fun) (cif, rvalue, avalue, user_data);
+  (fun) (cif, rvalue, avalue, user_तथ्य);
 
   /* Convert the return value.  */
-  switch (cif->rtype->type)
+  चयन (cif->rtype->type)
     {
       /* Void is easy, and so is struct.  */
-      case FFI_TYPE_VOID:
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_COMPLEX:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      case FFI_TYPE_LONGDOUBLE:
-#endif
-	break;
+      हाल FFI_TYPE_VOID:
+      हाल FFI_TYPE_STRUCT:
+      हाल FFI_TYPE_COMPLEX:
+#अगर FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      हाल FFI_TYPE_LONGDOUBLE:
+#पूर्ण_अगर
+	अवरोध;
 
       /* Floating point values are returned in fpr 0.  */
-      case FFI_TYPE_FLOAT:
-	p_fpr[0] = (long long) *(unsigned int *) rvalue << 32;
-	break;
+      हाल FFI_TYPE_FLOAT:
+	p_fpr[0] = (दीर्घ दीर्घ) *(अचिन्हित पूर्णांक *) rvalue << 32;
+	अवरोध;
 
-      case FFI_TYPE_DOUBLE:
-	p_fpr[0] = *(unsigned long long *) rvalue;
-	break;
+      हाल FFI_TYPE_DOUBLE:
+	p_fpr[0] = *(अचिन्हित दीर्घ दीर्घ *) rvalue;
+	अवरोध;
 
       /* Integer values are returned in gpr 2 (and gpr 3
 	 for 64-bit values on 31-bit machines).  */
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-#ifdef __s390x__
-	p_gpr[0] = *(unsigned long *) rvalue;
-#else
-	p_gpr[0] = ((unsigned long *) rvalue)[0],
-	p_gpr[1] = ((unsigned long *) rvalue)[1];
-#endif
-	break;
+      हाल FFI_TYPE_UINT64:
+      हाल FFI_TYPE_SINT64:
+#अगर_घोषित __s390x__
+	p_gpr[0] = *(अचिन्हित दीर्घ *) rvalue;
+#अन्यथा
+	p_gpr[0] = ((अचिन्हित दीर्घ *) rvalue)[0],
+	p_gpr[1] = ((अचिन्हित दीर्घ *) rvalue)[1];
+#पूर्ण_अगर
+	अवरोध;
 
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_UINT8:
-	p_gpr[0] = *(unsigned long *) rvalue;
-	break;
+      हाल FFI_TYPE_POINTER:
+      हाल FFI_TYPE_UINT32:
+      हाल FFI_TYPE_UINT16:
+      हाल FFI_TYPE_UINT8:
+	p_gpr[0] = *(अचिन्हित दीर्घ *) rvalue;
+	अवरोध;
 
-      case FFI_TYPE_INT:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_SINT8:
-	p_gpr[0] = *(signed long *) rvalue;
-	break;
+      हाल FFI_TYPE_INT:
+      हाल FFI_TYPE_SINT32:
+      हाल FFI_TYPE_SINT16:
+      हाल FFI_TYPE_SINT8:
+	p_gpr[0] = *(चिन्हित दीर्घ *) rvalue;
+	अवरोध;
 
-      default:
+      शेष:
         FFI_ASSERT (0);
-        break;
+        अवरोध;
     }
 }
 
@@ -710,48 +710,48 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      व्योम (*fun) (ffi_cif *, व्योम *, व्योम **, व्योम *),
+		      व्योम *user_तथ्य,
+		      व्योम *codeloc)
 {
-  static unsigned short const template[] = {
+  अटल अचिन्हित लघु स्थिर ढाँचा[] = {
     0x0d10,			/* basr %r1,0 */
-#ifndef __s390x__
+#अगर_अघोषित __s390x__
     0x9801, 0x1006,		/* lm %r0,%r1,6(%r1) */
-#else
+#अन्यथा
     0xeb01, 0x100e, 0x0004,	/* lmg %r0,%r1,14(%r1) */
-#endif
+#पूर्ण_अगर
     0x07f1			/* br %r1 */
   };
-  void (*dest)(void);
-  unsigned long *tramp = (unsigned long *)&closure->tramp;
+  व्योम (*dest)(व्योम);
+  अचिन्हित दीर्घ *tramp = (अचिन्हित दीर्घ *)&closure->tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_SYSV)
+    वापस FFI_BAD_ABI;
 
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#अगर defined(FFI_EXEC_STATIC_TRAMP)
+  अगर (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
       dest = ffi_closure_SYSV;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
-      goto out;
+      जाओ out;
     }
-#endif
+#पूर्ण_अगर
 
-  memcpy (tramp, template, sizeof(template));
-  tramp[2] = (unsigned long)codeloc;
-  tramp[3] = (unsigned long)&ffi_closure_SYSV;
+  स_नकल (tramp, ढाँचा, माप(ढाँचा));
+  tramp[2] = (अचिन्हित दीर्घ)codeloc;
+  tramp[3] = (अचिन्हित दीर्घ)&ffi_closure_SYSV;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#अगर defined(FFI_EXEC_STATIC_TRAMP)
 out:
-#endif
+#पूर्ण_अगर
   closure->cif = cif;
   closure->fun = fun;
-  closure->user_data = user_data;
+  closure->user_तथ्य = user_तथ्य;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
@@ -760,26 +760,26 @@ out:
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun)(ffi_cif*,void*,void**,void*))
+		     व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*))
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_SYSV)
+    वापस FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_SYSV;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#अगर defined(FFI_EXEC_STATIC_TRAMP)
+व्योम *
+ffi_tramp_arch (माप_प्रकार *tramp_आकार, माप_प्रकार *map_आकार)
 {
-  extern void *trampoline_code_table;
+  बाह्य व्योम *trampoline_code_table;
 
-  *tramp_size = FFI390_TRAMP_SIZE;
-  *map_size = FFI390_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  *tramp_आकार = FFI390_TRAMP_आकार;
+  *map_आकार = FFI390_TRAMP_MAP_आकार;
+  वापस &trampoline_code_table;
 }
-#endif
+#पूर्ण_अगर

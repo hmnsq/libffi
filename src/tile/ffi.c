@@ -24,30 +24,30 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <arch/abi.h>
-#include <arch/icache.h>
-#include <arch/opcode.h>
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
+#समावेश <stdlib.h>
+#समावेश <stdint.h>
+#समावेश <unistd.h>
+#समावेश <arch/abi.h>
+#समावेश <arch/icache.h>
+#समावेश <arch/opcode.h>
 
 
 /* The first 10 registers are used to pass arguments and return values. */
-#define NUM_ARG_REGS 10
+#घोषणा अंक_ARG_REGS 10
 
 /* Performs a raw function call with the given NUM_ARG_REGS register arguments
    and the specified additional stack arguments (if any). */
-extern void ffi_call_tile(ffi_sarg reg_args[NUM_ARG_REGS],
-                          const ffi_sarg *stack_args,
-                          size_t stack_args_bytes,
-                          void (*fnaddr)(void))
+बाह्य व्योम ffi_call_tile(ffi_sarg reg_args[अंक_ARG_REGS],
+                          स्थिर ffi_sarg *ढेर_args,
+                          माप_प्रकार ढेर_args_bytes,
+                          व्योम (*fnaddr)(व्योम))
   FFI_HIDDEN;
 
 /* This handles the raw call from the closure stub, cleaning up the
    parameters and delegating to ffi_closure_tile_inner. */
-extern void ffi_closure_tile(void) FFI_HIDDEN;
+बाह्य व्योम ffi_closure_tile(व्योम) FFI_HIDDEN;
 
 
 ffi_status
@@ -56,177 +56,177 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   /* We always allocate room for all registers. Even if we don't
      use them as parameters, they get returned in the same array
      as struct return values so we need to make room. */
-  if (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
-    cif->bytes = NUM_ARG_REGS * FFI_SIZEOF_ARG;
+  अगर (cif->bytes < अंक_ARG_REGS * FFI_SIZEOF_ARG)
+    cif->bytes = अंक_ARG_REGS * FFI_SIZEOF_ARG;
 
-  if (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  अगर (cif->rtype->आकार > अंक_ARG_REGS * FFI_SIZEOF_ARG)
     cif->flags = FFI_TYPE_STRUCT;
-  else
+  अन्यथा
     cif->flags = FFI_TYPE_INT;
 
   /* Nothing to do. */
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 
-static long
-assign_to_ffi_arg(ffi_sarg *out, void *in, const ffi_type *type,
-                  int write_to_reg)
+अटल दीर्घ
+assign_to_ffi_arg(ffi_sarg *out, व्योम *in, स्थिर ffi_type *type,
+                  पूर्णांक write_to_reg)
 {
-  switch (type->type)
+  चयन (type->type)
     {
-    case FFI_TYPE_SINT8:
+    हाल FFI_TYPE_SINT8:
       *out = *(SINT8 *)in;
-      return 1;
+      वापस 1;
 
-    case FFI_TYPE_UINT8:
+    हाल FFI_TYPE_UINT8:
       *out = *(UINT8 *)in;
-      return 1;
+      वापस 1;
 
-    case FFI_TYPE_SINT16:
+    हाल FFI_TYPE_SINT16:
       *out = *(SINT16 *)in;
-      return 1;
+      वापस 1;
 
-    case FFI_TYPE_UINT16:
+    हाल FFI_TYPE_UINT16:
       *out = *(UINT16 *)in;
-      return 1;
+      वापस 1;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-#ifndef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
+    हाल FFI_TYPE_SINT32:
+    हाल FFI_TYPE_UINT32:
+#अगर_अघोषित __LP64__
+    हाल FFI_TYPE_POINTER:
+#पूर्ण_अगर
       /* Note that even unsigned 32-bit quantities are sign extended
          on tilegx when stored in a register.  */
       *out = *(SINT32 *)in;
-      return 1;
+      वापस 1;
 
-    case FFI_TYPE_FLOAT:
-#ifdef __tilegx__
-      if (write_to_reg)
+    हाल FFI_TYPE_FLOAT:
+#अगर_घोषित __tilegx__
+      अगर (write_to_reg)
         {
           /* Properly sign extend the value.  */
-          union { float f; SINT32 s32; } val;
-          val.f = *(float *)in;
+          जोड़ { भग्न f; SINT32 s32; } val;
+          val.f = *(भग्न *)in;
           *out = val.s32;
         }
-      else
-#endif
+      अन्यथा
+#पूर्ण_अगर
         {
-          *(float *)out = *(float *)in;
+          *(भग्न *)out = *(भग्न *)in;
         }
-      return 1;
+      वापस 1;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
-#ifdef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
+    हाल FFI_TYPE_SINT64:
+    हाल FFI_TYPE_UINT64:
+    हाल FFI_TYPE_DOUBLE:
+#अगर_घोषित __LP64__
+    हाल FFI_TYPE_POINTER:
+#पूर्ण_अगर
       *(UINT64 *)out = *(UINT64 *)in;
-      return sizeof(UINT64) / FFI_SIZEOF_ARG;
+      वापस माप(UINT64) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_STRUCT:
-      memcpy(out, in, type->size);
-      return (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+    हाल FFI_TYPE_STRUCT:
+      स_नकल(out, in, type->आकार);
+      वापस (type->आकार + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_VOID:
+    हाल FFI_TYPE_VOID:
       /* Must be a return type. Nothing to do. */
-      return 0;
+      वापस 0;
 
-    default:
+    शेष:
       FFI_ASSERT(0);
-      return -1;
+      वापस -1;
     }
 }
 
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+व्योम
+ffi_call(ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue, व्योम **avalue)
 {
-  ffi_sarg * const arg_mem = alloca(cif->bytes);
-  ffi_sarg * const reg_args = arg_mem;
-  ffi_sarg * const stack_args = &reg_args[NUM_ARG_REGS];
+  ffi_sarg * स्थिर arg_mem = alloca(cif->bytes);
+  ffi_sarg * स्थिर reg_args = arg_mem;
+  ffi_sarg * स्थिर ढेर_args = &reg_args[अंक_ARG_REGS];
   ffi_sarg *argp = arg_mem;
-  ffi_type ** const arg_types = cif->arg_types;
-  const long num_args = cif->nargs;
-  long i;
+  ffi_type ** स्थिर arg_types = cif->arg_types;
+  स्थिर दीर्घ अंक_args = cif->nargs;
+  दीर्घ i;
 
-  if (cif->flags == FFI_TYPE_STRUCT)
+  अगर (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Pass a hidden pointer to the return value. We make sure there
          is scratch space for the callee to store the return value even if
          our caller doesn't care about it. */
-      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->size));
+      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->आकार));
 
       /* No more work needed to return anything. */
-      rvalue = NULL;
+      rvalue = शून्य;
     }
 
-  for (i = 0; i < num_args; i++)
+  क्रम (i = 0; i < अंक_args; i++)
     {
       ffi_type *type = arg_types[i];
-      void * const arg_in = avalue[i];
-      ptrdiff_t arg_word = argp - arg_mem;
+      व्योम * स्थिर arg_in = avalue[i];
+      सूचक_भेद_प्रकार arg_word = argp - arg_mem;
 
-#ifndef __tilegx__
+#अगर_अघोषित __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      दीर्घ align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
       arg_word += align;
-#endif
+#पूर्ण_अगर
 
-      if (type->type == FFI_TYPE_STRUCT)
+      अगर (type->type == FFI_TYPE_STRUCT)
         {
-          const size_t arg_size_in_words =
-            (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+          स्थिर माप_प्रकार arg_आकार_in_शब्दगण =
+            (type->आकार + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-          if (arg_word < NUM_ARG_REGS &&
-              arg_word + arg_size_in_words > NUM_ARG_REGS)
+          अगर (arg_word < अंक_ARG_REGS &&
+              arg_word + arg_आकार_in_शब्दगण > अंक_ARG_REGS)
             {
               /* Args are not allowed to span registers and the stack. */
-              argp = stack_args;
+              argp = ढेर_args;
             }
 
-          memcpy(argp, arg_in, type->size);
-          argp += arg_size_in_words;
+          स_नकल(argp, arg_in, type->आकार);
+          argp += arg_आकार_in_शब्दगण;
         }
-      else
+      अन्यथा
         {
           argp += assign_to_ffi_arg(argp, arg_in, arg_types[i], 1);
         }
     }
 
   /* Actually do the call. */
-  ffi_call_tile(reg_args, stack_args,
-                cif->bytes - (NUM_ARG_REGS * FFI_SIZEOF_ARG), fn);
+  ffi_call_tile(reg_args, ढेर_args,
+                cif->bytes - (अंक_ARG_REGS * FFI_SIZEOF_ARG), fn);
 
-  if (rvalue != NULL)
+  अगर (rvalue != शून्य)
     assign_to_ffi_arg(rvalue, reg_args, cif->rtype, 0);
 }
 
 
 /* Template code for closure. */
-extern const UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
+बाह्य स्थिर UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
 
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
                       ffi_cif *cif,
-                      void (*fun)(ffi_cif*, void*, void**, void*),
-                      void *user_data,
-                      void *codeloc)
+                      व्योम (*fun)(ffi_cif*, व्योम*, व्योम**, व्योम*),
+                      व्योम *user_तथ्य,
+                      व्योम *codeloc)
 {
-#ifdef __tilegx__
+#अगर_घोषित __tilegx__
   /* TILE-Gx */
   SINT64 c;
   SINT64 h;
-  int s;
+  पूर्णांक s;
   UINT64 *out;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_UNIX)
+    वापस FFI_BAD_ABI;
 
   out = (UINT64 *)closure->tramp;
 
@@ -237,43 +237,43 @@ ffi_prep_closure_loc (ffi_closure *closure,
   /* Find the smallest shift count that doesn't lose information
      (i.e. no need to explicitly insert high bits of the address that
      are just the sign extension of the low bits). */
-  while ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
+  जबतक ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
     s += 16;
 
-#define OPS(a, b, shift) \
+#घोषणा OPS(a, b, shift) \
   (create_Imm16_X0((a) >> (shift)) | create_Imm16_X1((b) >> (shift)))
 
   /* Emit the moveli. */
   *out++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
-  for (s -= 16; s >= 0; s -= 16)
+  क्रम (s -= 16; s >= 0; s -= 16)
     *out++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
 
-#undef OPS
+#अघोषित OPS
 
   *out++ = ffi_template_tramp_tile[2];
 
-#else
+#अन्यथा
   /* TILEPro */
   UINT64 *out;
   intptr_t delta;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_UNIX)
+    वापस FFI_BAD_ABI;
 
   out = (UINT64 *)closure->tramp;
   delta = (intptr_t)ffi_closure_tile - (intptr_t)codeloc;
 
   *out++ = ffi_template_tramp_tile[0] | create_JOffLong_X1(delta >> 3);
-#endif
+#पूर्ण_अगर
 
   closure->cif = cif;
   closure->fun = fun;
-  closure->user_data = user_data;
+  closure->user_तथ्य = user_तथ्य;
 
-  invalidate_icache(closure->tramp, (char *)out - closure->tramp,
+  invalidate_icache(closure->tramp, (अक्षर *)out - closure->tramp,
                     getpagesize());
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 
@@ -281,34 +281,34 @@ ffi_prep_closure_loc (ffi_closure *closure,
    all of the work. On entry reg_args[0] holds the values the registers
    had when the closure was invoked. On return reg_args[1] holds the register
    values to be returned to the caller (many of which may be garbage). */
-void FFI_HIDDEN
+व्योम FFI_HIDDEN
 ffi_closure_tile_inner(ffi_closure *closure,
-                       ffi_sarg reg_args[2][NUM_ARG_REGS],
-                       ffi_sarg *stack_args)
+                       ffi_sarg reg_args[2][अंक_ARG_REGS],
+                       ffi_sarg *ढेर_args)
 {
-  ffi_cif * const cif = closure->cif;
-  void ** const avalue = alloca(cif->nargs * sizeof(void *));
-  void *rvalue;
-  ffi_type ** const arg_types = cif->arg_types;
-  ffi_sarg * const reg_args_in = reg_args[0];
-  ffi_sarg * const reg_args_out = reg_args[1];
+  ffi_cif * स्थिर cif = closure->cif;
+  व्योम ** स्थिर avalue = alloca(cif->nargs * माप(व्योम *));
+  व्योम *rvalue;
+  ffi_type ** स्थिर arg_types = cif->arg_types;
+  ffi_sarg * स्थिर reg_args_in = reg_args[0];
+  ffi_sarg * स्थिर reg_args_out = reg_args[1];
   ffi_sarg * argp;
-  long i, arg_word, nargs = cif->nargs;
+  दीर्घ i, arg_word, nargs = cif->nargs;
   /* Use a union to guarantee proper alignment for double. */
-  union { ffi_sarg arg[NUM_ARG_REGS]; double d; UINT64 u64; } closure_ret;
+  जोड़ { ffi_sarg arg[अंक_ARG_REGS]; द्विगुन d; UINT64 u64; } closure_ret;
 
   /* Start out reading register arguments. */
   argp = reg_args_in;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  अगर (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Return by reference via hidden pointer. */
-      rvalue = (void *)(intptr_t)*argp++;
+      rvalue = (व्योम *)(intptr_t)*argp++;
       arg_word = 1;
     }
-  else
+  अन्यथा
     {
       /* Return the value in registers. */
       rvalue = &closure_ret;
@@ -316,38 +316,38 @@ ffi_closure_tile_inner(ffi_closure *closure,
     }
 
   /* Grab the addresses of the arguments. */
-  for (i = 0; i < nargs; i++)
+  क्रम (i = 0; i < nargs; i++)
     {
-      ffi_type * const type = arg_types[i];
-      const size_t arg_size_in_words =
-        (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+      ffi_type * स्थिर type = arg_types[i];
+      स्थिर माप_प्रकार arg_आकार_in_शब्दगण =
+        (type->आकार + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-#ifndef __tilegx__
+#अगर_अघोषित __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      दीर्घ align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
       arg_word += align;
-#endif
+#पूर्ण_अगर
 
-      if (arg_word == NUM_ARG_REGS ||
-          (arg_word < NUM_ARG_REGS &&
-           arg_word + arg_size_in_words > NUM_ARG_REGS))
+      अगर (arg_word == अंक_ARG_REGS ||
+          (arg_word < अंक_ARG_REGS &&
+           arg_word + arg_आकार_in_शब्दगण > अंक_ARG_REGS))
         {
           /* Switch to reading arguments from the stack. */
-          argp = stack_args;
-          arg_word = NUM_ARG_REGS;
+          argp = ढेर_args;
+          arg_word = अंक_ARG_REGS;
         }
 
       avalue[i] = argp;
-      argp += arg_size_in_words;
-      arg_word += arg_size_in_words;
+      argp += arg_आकार_in_शब्दगण;
+      arg_word += arg_आकार_in_शब्दगण;
     }
 
   /* Invoke the closure.  */
-  closure->fun(cif, rvalue, avalue, closure->user_data);
+  closure->fun(cif, rvalue, avalue, closure->user_तथ्य);
 
-  if (cif->flags != FFI_TYPE_STRUCT)
+  अगर (cif->flags != FFI_TYPE_STRUCT)
     {
       /* Canonicalize for register representation. */
       assign_to_ffi_arg(reg_args_out, &closure_ret, cif->rtype, 1);

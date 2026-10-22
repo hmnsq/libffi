@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -57,8 +57,8 @@
         R4 => ret->type
 
         FP-20 = P3
-        FP-16 = SP (parameters area)
-        FP-12 = SP (temp)
+        FP-16 = ढस (parameters area)
+        FP-12 = ढस (temp)
         FP-08 = function return part 1 [R0]
         FP-04 = function return part 2 [R1]
 	*/
@@ -74,13 +74,13 @@ _ffi_call_SYSV:
 .allocate_stack:
 	//alocate cif->bytes into the stack
 	R1 = [FP+8];
-	R0 = SP;
+	R0 = ढस;
 	R0 = R0 - R1;
 	R1 = 4;
 	R0 = R0 - R1;
-	[FP-12] = SP;
-	SP = R0;
-	[FP-16] = SP;
+	[FP-12] = ढस;
+	ढस = R0;
+	[FP-16] = ढस;
 
 .call_prep_args:
 	//get the addr of prep_args
@@ -92,11 +92,11 @@ _ffi_call_SYSV:
 	call (P1);
 
 .call_user_function:
-	//ajust SP so as to allow the user function access the parameters on the stack
-	SP = [FP-16]; //point to function parameters
-	R0 = [SP];
-	R1 = [SP+4];
-	R2 = [SP+8];
+	//ajust ढस so as to allow the user function access the parameters on the stack
+	ढस = [FP-16]; //point to function parameters
+	R0 = [ढस];
+	R1 = [ढस+4];
+	R2 = [ढस+8];
 	//load user function address
 	P0 = FP;
 	P0 +=28;
@@ -111,7 +111,7 @@ _ffi_call_SYSV:
 	P0 = [FP+24];
 
 	call (P1);
-	SP = [FP-12];
+	ढस = [FP-12];
 .compute_return:
 	P2 = [FP-20];
 	[FP-8] = R0;

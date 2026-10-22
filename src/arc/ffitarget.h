@@ -24,44 +24,44 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#अगर_अघोषित LIBFFI_H
+#त्रुटि "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#पूर्ण_अगर
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#अगर_अघोषित LIBFFI_ASM
+प्रकार अचिन्हित दीर्घ ffi_arg;
+प्रकार चिन्हित दीर्घ ffi_sarg;
 
-typedef enum ffi_abi
+प्रकार क्रमागत ffi_abi
 {
   FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 8
+#अगर __SIZEOF_POINTER__ == 8
   FFI_ARC64,
-#else
+#अन्यथा
   FFI_ARCOMPACT,
-#endif
+#पूर्ण_अगर
   FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 8
+#अगर __SIZEOF_POINTER__ == 8
   FFI_DEFAULT_ABI = FFI_ARC64
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_ARCOMPACT
-#endif
+#पूर्ण_अगर
 } ffi_abi;
-#endif
+#पूर्ण_अगर
 
-#define FFI_CLOSURES 		1
-#define FFI_GO_CLOSURES 1
-#if __SIZEOF_POINTER__ == 8
-#define FFI_TRAMPOLINE_SIZE	24
-#else
-#define FFI_TRAMPOLINE_SIZE	12
-#endif
+#घोषणा FFI_CLOSURES 		1
+#घोषणा FFI_GO_CLOSURES 1
+#अगर __SIZEOF_POINTER__ == 8
+#घोषणा FFI_TRAMPOLINE_आकार	24
+#अन्यथा
+#घोषणा FFI_TRAMPOLINE_आकार	12
+#पूर्ण_अगर
 
-#define FFI_NATIVE_RAW_API 	0
+#घोषणा FFI_NATIVE_RAW_API 	0
 
-#endif
+#पूर्ण_अगर

@@ -23,34 +23,34 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#define ASM_GLOBAL_DIRECTIVE .globl
+#घोषणा ASM_GLOBAL_DIRECTIVE .globl
 
 
-#define C_SYMBOL_NAME(name) name
+#घोषणा C_प्रतीक_NAME(name) name
 /* Macro for a label.  */
-#ifdef	__STDC__
-#define C_LABEL(name)		name##:
-#else
-#define C_LABEL(name)		name/**/:
-#endif
+#अगर_घोषित	__STDC__
+#घोषणा C_LABEL(name)		name##:
+#अन्यथा
+#घोषणा C_LABEL(name)		name/**/:
+#पूर्ण_अगर
 
 /* This seems to always be the case on PPC.  */
-#define ALIGNARG(log2) log2
+#घोषणा ALIGNARG(log2) log2
 /* For ELF we need the `.type' directive to make shared libs work right.  */
-#define ASM_TYPE_DIRECTIVE(name,typearg) .type name,typearg;
-#define ASM_SIZE_DIRECTIVE(name) .size name,.-name
+#घोषणा ASM_TYPE_DIRECTIVE(name,typearg) .type name,typearg;
+#घोषणा ASM_आकार_DIRECTIVE(name) .आकार name,.-name
 
 /* If compiled for profiling, call `_mcount' at the start of each function.  */
-#ifdef	PROF
+#अगर_घोषित	PROF
 /* The mcount code relies on the return address being on the stack
    to locate our caller and so it can restore it; so store one just
    for its benefit.  */
-#ifdef PIC
-#define CALL_MCOUNT							      \
+#अगर_घोषित PIC
+#घोषणा CALL_MCOUNT							      \
   .pushsection;								      \
   .section ".data";							      \
   .align ALIGNARG(2);							      \
-0:.long 0;								      \
+0:.दीर्घ 0;								      \
   .previous;								      \
   mflr  %r0;								      \
   stw   %r0,4(%r1);							      \
@@ -58,44 +58,44 @@
   mflr  %r11;								      \
   lwz   %r0,0b@got(%r11);						      \
   bl    JUMPTARGET(_mcount);
-#else  /* PIC */
-#define CALL_MCOUNT							      \
+#अन्यथा  /* PIC */
+#घोषणा CALL_MCOUNT							      \
   .section ".data";							      \
   .align ALIGNARG(2);							      \
-0:.long 0;								      \
+0:.दीर्घ 0;								      \
   .previous;								      \
   mflr  %r0;								      \
   lis   %r11,0b@ha;							      \
   stw   %r0,4(%r1);							      \
   addi  %r0,%r11,0b@l;							      \
   bl    JUMPTARGET(_mcount);
-#endif /* PIC */
-#else  /* PROF */
-#define CALL_MCOUNT		/* Do nothing.  */
-#endif /* PROF */
+#पूर्ण_अगर /* PIC */
+#अन्यथा  /* PROF */
+#घोषणा CALL_MCOUNT		/* Do nothing.  */
+#पूर्ण_अगर /* PROF */
 
-#define	ENTRY(name)							      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#घोषणा	ENTRY(name)							      \
+  ASM_GLOBAL_DIRECTIVE C_प्रतीक_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_प्रतीक_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT
 
-#define EALIGN_W_0  /* No words to insert.  */
-#define EALIGN_W_1  nop
-#define EALIGN_W_2  nop;nop
-#define EALIGN_W_3  nop;nop;nop
-#define EALIGN_W_4  EALIGN_W_3;nop
-#define EALIGN_W_5  EALIGN_W_4;nop
-#define EALIGN_W_6  EALIGN_W_5;nop
-#define EALIGN_W_7  EALIGN_W_6;nop
+#घोषणा EALIGN_W_0  /* No words to insert.  */
+#घोषणा EALIGN_W_1  nop
+#घोषणा EALIGN_W_2  nop;nop
+#घोषणा EALIGN_W_3  nop;nop;nop
+#घोषणा EALIGN_W_4  EALIGN_W_3;nop
+#घोषणा EALIGN_W_5  EALIGN_W_4;nop
+#घोषणा EALIGN_W_6  EALIGN_W_5;nop
+#घोषणा EALIGN_W_7  EALIGN_W_6;nop
 
 /* EALIGN is like ENTRY, but does alignment to 'words'*4 bytes
    past a 2^align boundary.  */
-#ifdef PROF
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#अगर_घोषित PROF
+#घोषणा EFFI_ALIGN(name, alignt, शब्दगण)					      \
+  ASM_GLOBAL_DIRECTIVE C_प्रतीक_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_प्रतीक_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT								      \
@@ -103,23 +103,23 @@
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   0:
-#else /* PROF */
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#अन्यथा /* PROF */
+#घोषणा EFFI_ALIGN(name, alignt, शब्दगण)					      \
+  ASM_GLOBAL_DIRECTIVE C_प्रतीक_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_प्रतीक_NAME(name),@function)			      \
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   C_LABEL(name)
-#endif
+#पूर्ण_अगर
 
-#define END(name)							      \
-  ASM_SIZE_DIRECTIVE(name)
+#घोषणा END(name)							      \
+  ASM_आकार_DIRECTIVE(name)
 
-#ifdef PIC
-#define JUMPTARGET(name) name##@plt
-#else
-#define JUMPTARGET(name) name
-#endif
+#अगर_घोषित PIC
+#घोषणा JUMPTARGET(name) name##@plt
+#अन्यथा
+#घोषणा JUMPTARGET(name) name
+#पूर्ण_अगर
 
 /* Local labels stripped out by the linker.  */
-#define L(x) .L##x
+#घोषणा L(x) .L##x

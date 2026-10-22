@@ -22,14 +22,14 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdio.h>
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
+#समावेश <stdlib.h>
+#समावेश <stdio.h>
 
 /* General debugging routines */
 
-void ffi_stop_here(void)
+व्योम ffi_stop_here(व्योम)
 {
   /* This function is only useful for debugging purposes.
      Place a breakpoint on ffi_stop_here to be notified of
@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN व्योम ffi_assert(स्थिर अक्षर *व्यंजक, स्थिर अक्षर *file, पूर्णांक पंक्ति_2)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
+  ख_लिखो(मानक_त्रुटि, "ASSERTION FAILURE: %s at %s:%d\n", व्यंजक, file, पंक्ति_2);
   ffi_stop_here();
-  abort();
+  पात();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+व्योम ffi_type_test(ffi_type *a, स्थिर अक्षर *file, पूर्णांक पंक्ति_2)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != शून्य, file, पंक्ति_2);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, पंक्ति_2);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->आकार > 0, file, पंक्ति_2);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, पंक्ति_2);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
 		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		|| a->elements != शून्य, file, पंक्ति_2);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
-		|| (a->elements != NULL
-		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		|| (a->elements != शून्य
+		    && a->elements[0] != शून्य && a->elements[1] == शून्य),
+		file, पंक्ति_2);
 
 }

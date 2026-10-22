@@ -15,21 +15,21 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
 #include <fficonfig.h>
 #include <ffi.h>
 
-#define ENTRY(name) .text; .globl name; .type  name,@function; .align 4; name:
-#define END(name) .size name , . - name
+#define प्रथम(name) .text; .globl name; .type  name,@function; .align 4; name:
+#define पूर्ण(name) .size name , . - name
 
 /* Assert that the table below is in sync with ffi.h.  */
 
@@ -56,7 +56,7 @@
       extended_cif* ecif)      a7
 */
 
-ENTRY(ffi_call_SYSV)
+प्रथम(ffi_call_SYSV)
 
 	entry	a1, 32              # 32 byte frame for using call8 below
 
@@ -159,7 +159,7 @@ store_calls:
 	s32i	a11, a2, 4
 	retw
 
-END(ffi_call_SYSV)
+पूर्ण(ffi_call_SYSV)
 
 
 /*
@@ -168,7 +168,7 @@ END(ffi_call_SYSV)
 
 #define EXTRA_ARGS_SIZE	24
 
-ENTRY(ffi_cacheflush)
+प्रथम(ffi_cacheflush)
 
 	entry	a1, 32
 
@@ -184,11 +184,11 @@ ENTRY(ffi_cacheflush)
 
 	retw
 
-END(ffi_cacheflush)
+पूर्ण(ffi_cacheflush)
 
 /* ffi_trampoline is copied to the stack */
 
-ENTRY(ffi_trampoline)
+प्रथम(ffi_trampoline)
 
 	/* 32 bytes for spill + spill overflow area of a frame that uses
 	   call8,
@@ -205,7 +205,7 @@ ENTRY(ffi_trampoline)
 	_mov 	a14, a0                           # [15]
 	callx0	a15                               # [18]
                                                   # [21]
-END(ffi_trampoline)
+पूर्ण(ffi_trampoline)
 
 /*
  * ffi_closure()
@@ -214,7 +214,7 @@ END(ffi_trampoline)
  * a14: return address (a0)
  */
 
-ENTRY(ffi_closure_SYSV)
+प्रथम(ffi_closure_SYSV)
 
 	/* intentionally omitting entry here */
 
@@ -265,4 +265,4 @@ ENTRY(ffi_closure_SYSV)
 
 1:	retw
 
-END(ffi_closure_SYSV)
+पूर्ण(ffi_closure_SYSV)

@@ -24,29 +24,29 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#अगर_अघोषित LIBFFI_ASM
+प्रकार अचिन्हित दीर्घ          ffi_arg;
+प्रकार चिन्हित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकार क्रमागत ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_EABI,
   FFI_DEFAULT_ABI = FFI_EABI,
   FFI_LAST_ABI = FFI_DEFAULT_ABI + 1
 } ffi_abi;
-#endif
+#पूर्ण_अगर
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#घोषणा FFI_CLOSURES 1
+#घोषणा FFI_NATIVE_RAW_API 0
 
 /* Trampolines are 12-bytes long.  See ffi_prep_closure_loc.  */
-#define FFI_TRAMPOLINE_SIZE (12)
+#घोषणा FFI_TRAMPOLINE_आकार (12)
 
-#endif
+#पूर्ण_अगर

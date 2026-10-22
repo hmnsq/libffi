@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -34,7 +34,7 @@
 #define C2(X, Y)	X ## Y
 #define C1(X, Y)	C2(X, Y)
 #define CNAME(x) C1(__USER_LABEL_PREFIX__, x)
-#define ENTRY(x) .globl CNAME(x); .type CNAME(x),%function; CNAME(x):
+#define प्रथम(x) .globl CNAME(x); .type CNAME(x),%function; CNAME(x):
 #endif
 
 #if defined(__HITACHI__)
@@ -53,7 +53,7 @@
 	# sp+4: fn
 
 	# This assumes we are using gas.
-ENTRY(ffi_call_SYSV)
+प्रथम(ffi_call_SYSV)
 	# Save registers
 .LFB1:
 	mov.l	r8,@-r15
@@ -496,7 +496,7 @@ L_epilogue:
 
 .globl	ffi_closure_helper_SYSV
 
-ENTRY(ffi_closure_SYSV)
+प्रथम(ffi_closure_SYSV)
 .LFB2:
 	mov.l	r7,@-r15
 .LCFI7:

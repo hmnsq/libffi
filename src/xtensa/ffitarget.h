@@ -23,35 +23,35 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#अगर_अघोषित LIBFFI_H
+#त्रुटि "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#पूर्ण_अगर
 
-#ifndef LIBFFI_ASM
-typedef unsigned long	ffi_arg;
-typedef signed long	ffi_sarg;
+#अगर_अघोषित LIBFFI_ASM
+प्रकार अचिन्हित दीर्घ	ffi_arg;
+प्रकार चिन्हित दीर्घ	ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकार क्रमागत ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#पूर्ण_अगर
 
-#define FFI_REGISTER_NARGS	6
-#define XTENSA_STACK_ALIGNMENT	16
-#define FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
-				  XTENSA_STACK_ALIGNMENT - 1) & \
-				  -XTENSA_STACK_ALIGNMENT)
+#घोषणा FFI_REGISTER_NARGS	6
+#घोषणा XTENSA_ढेर_ALIGNMENT	16
+#घोषणा FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
+				  XTENSA_ढेर_ALIGNMENT - 1) & \
+				  -XTENSA_ढेर_ALIGNMENT)
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TRAMPOLINE_SIZE 24
+#घोषणा FFI_CLOSURES 1
+#घोषणा FFI_NATIVE_RAW_API 0
+#घोषणा FFI_TRAMPOLINE_आकार 24
 
-#endif
+#पूर्ण_अगर

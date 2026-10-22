@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और NONINFRINGEMENT.
+   अंदर NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES या
+   OTHER LIABILITY, WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE,
+   ARISING FROM, बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या
+   OTHER DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -30,7 +30,7 @@
 #include <machine/asm.h>
 #else
 #define CNAME(x) x
-#define ENTRY(x) .globl CNAME(x)` .type CNAME(x),%function` CNAME(x):
+#define प्रथम(x) .globl CNAME(x)` .type CNAME(x),%function` CNAME(x):
 #endif
 
 #if __SIZEOF_POINTER__ == 8
@@ -53,7 +53,7 @@
 
 .text
 
-ENTRY(ffi_call_asm)
+प्रथम(ffi_call_asm)
         .cfi_startproc
 
         /* Save registers.  */
@@ -106,7 +106,7 @@ ENTRY(ffi_call_asm)
 		          size_t *stackargs, struct call_context *regargs)
 */
 
-ENTRY(ffi_closure_asm)
+प्रथम(ffi_closure_asm)
         .cfi_startproc
 
         ADDPTR  sp, sp, -FRAME_LEN
@@ -162,7 +162,7 @@ ENTRY(ffi_closure_asm)
 		          size_t *stackargs, struct call_context *regargs)
 */
 
-ENTRY(ffi_go_closure_asm)
+प्रथम(ffi_go_closure_asm)
         .cfi_startproc
 
         ADDPTR  sp, sp, -FRAME_LEN

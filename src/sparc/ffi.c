@@ -25,134 +25,134 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
+#समावेश <stdlib.h>
+#समावेश "internal.h"
 
-#ifndef SPARC64
+#अगर_अघोषित SPARC64
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#अगर FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# अगर FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#अन्यथा
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#पूर्ण_अगर
 
 /* Perform machine dependent cif processing */
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
-  size_t bytes;
-  int i, n, flags;
+  पूर्णांक rtt = rtype->type;
+  माप_प्रकार bytes;
+  पूर्णांक i, n, flags;
 
   /* Set the return type flag */
-  switch (rtt)
+  चयन (rtt)
     {
-    case FFI_TYPE_VOID:
+    हाल FFI_TYPE_VOID:
       flags = SPARC_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      अवरोध;
+    हाल FFI_TYPE_FLOAT:
       flags = SPARC_RET_F_1;
-      break;
-    case FFI_TYPE_DOUBLE:
+      अवरोध;
+    हाल FFI_TYPE_DOUBLE:
       flags = SPARC_RET_F_2;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
-      flags = (rtype->size & 0xfff) << SPARC_SIZEMASK_SHIFT;
+      अवरोध;
+    हाल FFI_TYPE_LONGDOUBLE:
+    हाल FFI_TYPE_STRUCT:
+      flags = (rtype->आकार & 0xfff) << SPARC_SIZEMASK_SHIFT;
       flags |= SPARC_RET_STRUCT;
-      break;
-    case FFI_TYPE_SINT8:
+      अवरोध;
+    हाल FFI_TYPE_SINT8:
       flags = SPARC_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT8:
+      अवरोध;
+    हाल FFI_TYPE_UINT8:
       flags = SPARC_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      अवरोध;
+    हाल FFI_TYPE_SINT16:
       flags = SPARC_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT16:
+      अवरोध;
+    हाल FFI_TYPE_UINT16:
       flags = SPARC_RET_UINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      अवरोध;
+    हाल FFI_TYPE_INT:
+    हाल FFI_TYPE_SINT32:
+    हाल FFI_TYPE_UINT32:
+    हाल FFI_TYPE_POINTER:
       flags = SPARC_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      अवरोध;
+    हाल FFI_TYPE_SINT64:
+    हाल FFI_TYPE_UINT64:
       flags = SPARC_RET_INT64;
-      break;
-    case FFI_TYPE_COMPLEX:
+      अवरोध;
+    हाल FFI_TYPE_COMPLEX:
       rtt = rtype->elements[0]->type;
-      switch (rtt)
+      चयन (rtt)
 	{
-	case FFI_TYPE_FLOAT:
+	हाल FFI_TYPE_FLOAT:
 	  flags = SPARC_RET_F_2;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  अवरोध;
+	हाल FFI_TYPE_DOUBLE:
 	  flags = SPARC_RET_F_4;
-	  break;
-	case FFI_TYPE_LONGDOUBLE:
+	  अवरोध;
+	हाल FFI_TYPE_LONGDOUBLE:
 	  flags = SPARC_RET_F_8;
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	  अवरोध;
+	हाल FFI_TYPE_SINT64:
+	हाल FFI_TYPE_UINT64:
 	  flags = SPARC_RET_INT128;
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	  अवरोध;
+	हाल FFI_TYPE_INT:
+	हाल FFI_TYPE_SINT32:
+	हाल FFI_TYPE_UINT32:
 	  flags = SPARC_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  अवरोध;
+	हाल FFI_TYPE_SINT16:
+	हाल FFI_TYPE_UINT16:
 	  flags = SP_V8_RET_CPLX16;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  अवरोध;
+	हाल FFI_TYPE_SINT8:
+	हाल FFI_TYPE_UINT8:
 	  flags = SP_V8_RET_CPLX8;
-	  break;
-	default:
-	  abort();
+	  अवरोध;
+	शेष:
+	  पात();
 	}
-      break;
-    default:
-      abort();
+      अवरोध;
+    शेष:
+      पात();
     }
   cif->flags = flags;
 
   bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  क्रम (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
-      size_t z = ty->size;
-      int tt = ty->type;
+      माप_प्रकार z = ty->आकार;
+      पूर्णांक tt = ty->type;
 
-      switch (tt)
+      चयन (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	हाल FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Passed by reference.  */
 	  z = 4;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_COMPLEX:
+	हाल FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
+	  अगर (tt == FFI_TYPE_FLOAT || z > 8)
+	    जाओ by_reference;
 	  /* FALLTHRU */
 
-	default:
+	शेष:
 	  z = FFI_ALIGN(z, 4);
 	}
       bytes += z;
@@ -160,7 +160,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary.  */
-  if (bytes < 6 * 4)
+  अगर (bytes < 6 * 4)
     bytes = 6 * 4;
 
   /* The ABI always requires space for the struct return pointer.  */
@@ -173,29 +173,29 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   bytes += 4*16 + 4*8;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
-extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
-			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
+बाह्य व्योम ffi_call_v8(ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue,
+			व्योम **avalue, माप_प्रकार bytes, व्योम *closure) FFI_HIDDEN;
 
-int FFI_HIDDEN
-ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
+पूर्णांक FFI_HIDDEN
+ffi_prep_args_v8(ffi_cif *cif, अचिन्हित दीर्घ *argp, व्योम *rvalue, व्योम **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  पूर्णांक flags = cif->flags;
+  पूर्णांक i, nargs;
 
-  if (rvalue == NULL)
+  अगर (rvalue == शून्य)
     {
-      if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+      अगर ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
-	  rvalue = (char *)argp + cif->bytes;
+	  rvalue = (अक्षर *)argp + cif->bytes;
 	}
-      else
+      अन्यथा
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -204,117 +204,117 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 
   /* This could only really be done when we are returning a structure.
      However, the space is reserved so we can do it unconditionally.  */
-  *argp++ = (unsigned long)rvalue;
+  *argp++ = (अचिन्हित दीर्घ)rvalue;
 
-#ifdef USING_PURIFY
+#अगर_घोषित USING_PURIFY
   /* Purify will probably complain in our assembly routine,
      unless we zero out this memory. */
-  memset(argp, 0, 6*4);
-#endif
+  स_रखो(argp, 0, 6*4);
+#पूर्ण_अगर
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  क्रम (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
-      void *a = avalue[i];
-      int tt = ty->type;
-      size_t z;
+      व्योम *a = avalue[i];
+      पूर्णांक tt = ty->type;
+      माप_प्रकार z;
 
-      switch (tt)
+      चयन (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	हाल FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_LONGDOUBLE:
 	by_reference:
-	  *argp++ = (unsigned long)a;
-	  break;
+	  *argp++ = (अचिन्हित दीर्घ)a;
+	  अवरोध;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	  memcpy(argp, a, 8);
+	हाल FFI_TYPE_DOUBLE:
+	हाल FFI_TYPE_UINT64:
+	हाल FFI_TYPE_SINT64:
+	  स_नकल(argp, a, 8);
 	  argp += 2;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  *argp++ = *(unsigned *)a;
-	  break;
+	हाल FFI_TYPE_INT:
+	हाल FFI_TYPE_FLOAT:
+	हाल FFI_TYPE_UINT32:
+	हाल FFI_TYPE_SINT32:
+	हाल FFI_TYPE_POINTER:
+	  *argp++ = *(अचिन्हित *)a;
+	  अवरोध;
 
-	case FFI_TYPE_UINT8:
+	हाल FFI_TYPE_UINT8:
 	  *argp++ = *(UINT8 *)a;
-	  break;
-	case FFI_TYPE_SINT8:
+	  अवरोध;
+	हाल FFI_TYPE_SINT8:
 	  *argp++ = *(SINT8 *)a;
-	  break;
-	case FFI_TYPE_UINT16:
+	  अवरोध;
+	हाल FFI_TYPE_UINT16:
 	  *argp++ = *(UINT16 *)a;
-	  break;
-	case FFI_TYPE_SINT16:
+	  अवरोध;
+	हाल FFI_TYPE_SINT16:
 	  *argp++ = *(SINT16 *)a;
-	  break;
+	  अवरोध;
 
-        case FFI_TYPE_COMPLEX:
+        हाल FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->आकार;
+	  अगर (tt == FFI_TYPE_FLOAT || z > 8)
+	    जाओ by_reference;
+	  अगर (z < 4)
 	    {
-	      memcpy((char *)argp + 4 - z, a, z);
+	      स_नकल((अक्षर *)argp + 4 - z, a, z);
 	      argp++;
 	    }
-	  else
+	  अन्यथा
 	    {
-	      memcpy(argp, a, z);
+	      स_नकल(argp, a, z);
 	      argp += z / 4;
 	    }
-	  break;
+	  अवरोध;
 
-	default:
-	  abort();
+	शेष:
+	  पात();
 	}
     }
 
-  return flags;
+  वापस flags;
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+अटल व्योम
+ffi_call_int (ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue,
+	      व्योम **avalue, व्योम *closure)
 {
-  size_t bytes = cif->bytes;
-  size_t i, nargs = cif->nargs;
+  माप_प्रकार bytes = cif->bytes;
+  माप_प्रकार i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  व्योम **avalue_copy = शून्य;
 
   FFI_ASSERT (cif->abi == FFI_V8);
 
   /* If we've not got a return value, we need to create one if we've
      got to pass the return value to the callee.  Otherwise ignore it.  */
-  if (rvalue == NULL
+  अगर (rvalue == शून्य
       && (cif->flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
-    bytes += FFI_ALIGN (cif->rtype->size, 8);
+    bytes += FFI_ALIGN (cif->rtype->आकार, 8);
 
   /* If we have any structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  क्रम (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT)
+      पूर्णांक आकार = at->आकार;
+      अगर (at->type == FFI_TYPE_STRUCT)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          अक्षर *argcopy = alloca (आकार);
+          अगर (avalue_copy == शून्य)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * माप (व्योम *));
+              स_नकल (avalue_copy, avalue, nargs * माप (व्योम *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          स_नकल (argcopy, avalue[i], आकार);
           avalue[i] = argcopy;
         }
     }
@@ -322,47 +322,47 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   ffi_call_v8(cif, fn, rvalue, avalue, -bytes, closure);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+व्योम
+ffi_call (ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue, व्योम **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, शून्य);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+व्योम
+ffi_call_go (ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue,
+	     व्योम **avalue, व्योम *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
 
-#ifdef __GNUC__
-static inline void
-ffi_flush_icache (void *p)
+#अगर_घोषित __GNUC__
+अटल अंतरभूत व्योम
+ffi_flush_icache (व्योम *p)
 {
   /* SPARC v8 requires 5 instructions for flush to be visible */
-  __asm__ volatile ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
+  __asm__ अस्थिर ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
 		: : "r" (p) : "memory");
 }
-#else
-extern void ffi_flush_icache (void *) FFI_HIDDEN;
-#endif
+#अन्यथा
+बाह्य व्योम ffi_flush_icache (व्योम *) FFI_HIDDEN;
+#पूर्ण_अगर
 
-extern void ffi_closure_v8(void) FFI_HIDDEN;
-extern void ffi_go_closure_v8(void) FFI_HIDDEN;
+बाह्य व्योम ffi_closure_v8(व्योम) FFI_HIDDEN;
+बाह्य व्योम ffi_go_closure_v8(व्योम) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      व्योम (*fun)(ffi_cif*, व्योम*, व्योम**, व्योम*),
+		      व्योम *user_तथ्य,
+		      व्योम *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
-  unsigned long ctx = (unsigned long) closure;
-  unsigned long fn = (unsigned long) ffi_closure_v8;
+  अचिन्हित पूर्णांक *tramp = (अचिन्हित पूर्णांक *) &closure->tramp[0];
+  अचिन्हित दीर्घ ctx = (अचिन्हित दीर्घ) closure;
+  अचिन्हित दीर्घ fn = (अचिन्हित दीर्घ) ffi_closure_v8;
 
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_V8)
+    वापस FFI_BAD_ABI;
 
   tramp[0] = 0x03000000 | fn >> 10;	/* sethi %hi(fn), %g1	*/
   tramp[1] = 0x05000000 | ctx >> 10;	/* sethi %hi(ctx), %g2	*/
@@ -371,49 +371,49 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
   closure->cif = cif;
   closure->fun = fun;
-  closure->user_data = user_data;
+  closure->user_तथ्य = user_तथ्य;
 
   ffi_flush_icache (closure);
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     व्योम (*fun)(ffi_cif*, व्योम*, व्योम**, व्योम*))
 {
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_V8)
+    वापस FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_v8;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
-int FFI_HIDDEN
+पूर्णांक FFI_HIDDEN
 ffi_closure_sparc_inner_v8(ffi_cif *cif, 
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data, void *rvalue,
-			   unsigned long *argp)
+			   व्योम (*fun)(ffi_cif*, व्योम*, व्योम**, व्योम*),
+			   व्योम *user_तथ्य, व्योम *rvalue,
+			   अचिन्हित दीर्घ *argp)
 {
   ffi_type **arg_types;
-  void **avalue;
-  int i, nargs, flags;
+  व्योम **avalue;
+  पूर्णांक i, nargs, flags;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
   flags = cif->flags;
-  avalue = alloca(nargs * sizeof(void *));
+  avalue = alloca(nargs * माप(व्योम *));
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  Also install it so we
      can return the address in %o0.  */
-  if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+  अगर ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
     {
-      void *new_rvalue = (void *)*argp;
-      *(void **)rvalue = new_rvalue;
+      व्योम *new_rvalue = (व्योम *)*argp;
+      *(व्योम **)rvalue = new_rvalue;
       rvalue = new_rvalue;
     }
 
@@ -421,26 +421,26 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   argp++;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++)
+  क्रम (i = 0; i < nargs; i++)
     {
       ffi_type *ty = arg_types[i];
-      int tt = ty->type;
-      void *a = argp;
-      size_t z;
+      पूर्णांक tt = ty->type;
+      व्योम *a = argp;
+      माप_प्रकार z;
 
-      switch (tt)
+      चयन (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	हाल FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Straight copy of invisible reference.  */
-	  a = (void *)*argp;
-	  break;
+	  a = (व्योम *)*argp;
+	  अवरोध;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  if ((unsigned long)a & 7)
+	हाल FFI_TYPE_DOUBLE:
+	हाल FFI_TYPE_SINT64:
+	हाल FFI_TYPE_UINT64:
+	  अगर ((अचिन्हित दीर्घ)a & 7)
 	    {
 	      /* Align on a 8-byte boundary.  */
 	      UINT64 *tmp = alloca(8);
@@ -448,45 +448,45 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 	      a = tmp;
 	    }
 	  argp++;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  break;
-        case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT16:
+	हाल FFI_TYPE_INT:
+	हाल FFI_TYPE_FLOAT:
+	हाल FFI_TYPE_UINT32:
+	हाल FFI_TYPE_SINT32:
+	हाल FFI_TYPE_POINTER:
+	  अवरोध;
+        हाल FFI_TYPE_UINT16:
+        हाल FFI_TYPE_SINT16:
 	  a += 2;
-	  break;
-        case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT8:
+	  अवरोध;
+        हाल FFI_TYPE_UINT8:
+        हाल FFI_TYPE_SINT8:
 	  a += 3;
-	  break;
+	  अवरोध;
 
-        case FFI_TYPE_COMPLEX:
+        हाल FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->आकार;
+	  अगर (tt == FFI_TYPE_FLOAT || z > 8)
+	    जाओ by_reference;
+	  अगर (z < 4)
 	    a += 4 - z;
-	  else if (z > 4)
+	  अन्यथा अगर (z > 4)
 	    argp++;
-	  break;
+	  अवरोध;
 
-	default:
-	  abort();
+	शेष:
+	  पात();
 	}
       argp++;
       avalue[i] = a;
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_तथ्य);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  वापस flags;
 }
-#endif /* !SPARC64 */
+#पूर्ण_अगर /* !SPARC64 */

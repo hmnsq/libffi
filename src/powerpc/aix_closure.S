@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और NONINFRINGEMENT.
+   अंदर NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES या
+   OTHER LIABILITY, WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE,
+   ARISING FROM, बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या
+   OTHER DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 	.set r0,0
@@ -96,7 +96,7 @@ LC..60:
 	.align 2
 	.globl ffi_closure_ASM
 	.globl .ffi_closure_ASM
-.csect ffi_closure_ASM[DS]
+.csect ffi_closure_ASM[तख]
 ffi_closure_ASM:
 #ifdef __64BIT__
 	.llong .ffi_closure_ASM, TOC[tc0], 0
@@ -413,14 +413,14 @@ L..60:
 LFE..0:
 #endif
 	.ef __LINE__
-/* END(ffi_closure_ASM) */
+/* पूर्ण(ffi_closure_ASM) */
 
 
 .csect .text[PR]
 	.align 2
 	.globl ffi_go_closure_ASM
 	.globl .ffi_go_closure_ASM
-.csect ffi_go_closure_ASM[DS]
+.csect ffi_go_closure_ASM[तख]
 ffi_go_closure_ASM:
 #ifdef __64BIT__
 	.llong .ffi_go_closure_ASM, TOC[tc0], 0
@@ -563,7 +563,7 @@ LCFI..3:
 LFE..1:
 #endif
 	.ef __LINE__
-/* END(ffi_go_closure_ASM) */
+/* पूर्ण(ffi_go_closure_ASM) */
 
 /* EH frame stuff.  */
 

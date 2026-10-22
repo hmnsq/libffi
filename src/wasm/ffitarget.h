@@ -25,55 +25,55 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#अगर_अघोषित LIBFFI_H
+#त्रुटि "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#पूर्ण_अगर
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+प्रकार अचिन्हित दीर्घ ffi_arg;
+प्रकार चिन्हित दीर्घ ffi_sarg;
 
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
-typedef void (*ffi_fp)(void);
+प्रकार व्योम (*ffi_fp)(व्योम);
 
-typedef enum ffi_abi {
+प्रकार क्रमागत ffi_abi {
   FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+#अगर __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
-#elif __SIZEOF_POINTER__ == 8
+#या_अगर __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
-#error "Unknown pointer size"
-#endif
+#अन्यथा
+#त्रुटि "Unknown pointer size"
+#पूर्ण_अगर
   FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
-#ifdef __EMSCRIPTEN__
+#अगर __SIZEOF_POINTER__ == 4
+#अगर_घोषित __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_WASM32
-#endif
-#elif __SIZEOF_POINTER__ == 8
-#ifdef __EMSCRIPTEN__
+#पूर्ण_अगर
+#या_अगर __SIZEOF_POINTER__ == 8
+#अगर_घोषित __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_WASM64
-#endif
-#else
-#error "Unknown pointer size"
-#endif
+#पूर्ण_अगर
+#अन्यथा
+#त्रुटि "Unknown pointer size"
+#पूर्ण_अगर
 } ffi_abi;
 
-#define FFI_CLOSURES 1
+#घोषणा FFI_CLOSURES 1
 // #define FFI_GO_CLOSURES 0
-#define FFI_TRAMPOLINE_SIZE 4
+#घोषणा FFI_TRAMPOLINE_आकार 4
 // #define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#घोषणा FFI_TARGET_SPECIFIC_VARIADIC 1
+#घोषणा FFI_EXTRA_CIF_FIELDS  अचिन्हित पूर्णांक nfixedargs
 
-#endif
+#पूर्ण_अगर

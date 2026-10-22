@@ -16,13 +16,13 @@
 
  
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -33,7 +33,7 @@
 #else
 /* XXX these lose for some platforms, I'm sure. */
 #define CNAME(x) x
-#define ENTRY(x) .globl CNAME(x); .type CNAME(x),%function; CNAME(x):
+#define प्रथम(x) .globl CNAME(x); .type CNAME(x),%function; CNAME(x):
 #endif
 
 #ifdef __LITTLE_ENDIAN__
@@ -54,7 +54,7 @@
 
 	# This assumes we are using gas.
 	.align	5
-ENTRY(ffi_call_SYSV)
+प्रथम(ffi_call_SYSV)
 	# Save registers
 .LFB1:
 	addi.l	r15, -48, r15
@@ -320,7 +320,7 @@ ENTRY(ffi_call_SYSV)
 	.size	 CNAME(ffi_call_SYSV),.ffi_call_SYSV_end-CNAME(ffi_call_SYSV)
 
 	.align	5
-ENTRY(ffi_closure_SYSV)
+प्रथम(ffi_closure_SYSV)
 .LFB2:
 	addi.l	r15, -136, r15
 .LCFI3:

@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL SIMON POSNJAK BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और NONINFRINGEMENT.
+   अंदर NO EVENT SHALL SIMON POSNJAK BE LIABLE FOR ANY CLAIM, DAMAGES या
+   OTHER LIABILITY, WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE,
+   ARISING FROM, बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या
+   OTHER DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -165,7 +165,7 @@ epilogue:
 
 /* Save R10..R13 into an array, somewhat like varargs.  Copy the next
    argument too, to simplify handling of any straddling parameter.
-   Save R9 and SP after those.  Jump to function handling the rest.
+   Save R9 and ढस after those.  Jump to function handling the rest.
    Since this is a template, copied and the main function filled in by
    the user.  */
 

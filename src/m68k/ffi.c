@@ -4,222 +4,222 @@
    m68k Foreign Function Interface
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
-#ifdef __rtems__
-void rtems_cache_flush_multiple_data_lines( const void *, size_t );
-#else
-#include <sys/syscall.h>
-#ifdef __MINT__
-#include <mint/mintbind.h>
-#include <mint/ssystem.h>
-#else
-#include <asm/cachectl.h>
-#endif
-#endif
+#समावेश <stdlib.h>
+#समावेश <unistd.h>
+#अगर_घोषित __rtems__
+व्योम rtems_cache_flush_multiple_तथ्य_पंक्तियाँ( स्थिर व्योम *, माप_प्रकार );
+#अन्यथा
+#समावेश <sys/syscall.h>
+#अगर_घोषित __MINT__
+#समावेश <mint/mintbind.h>
+#समावेश <mint/ssystem.h>
+#अन्यथा
+#समावेश <asm/cachectl.h>
+#पूर्ण_अगर
+#पूर्ण_अगर
 
-void ffi_call_SYSV (extended_cif *,
-		    unsigned, unsigned,
-		    void *, void (*fn) ());
-void *ffi_prep_args (void *stack, extended_cif *ecif);
-void ffi_closure_SYSV (ffi_closure *);
-void ffi_closure_struct_SYSV (ffi_closure *);
-unsigned int ffi_closure_SYSV_inner (ffi_closure *closure,
-				     void *resp, void *args);
+व्योम ffi_call_SYSV (extended_cif *,
+		    अचिन्हित, अचिन्हित,
+		    व्योम *, व्योम (*fn) ());
+व्योम *ffi_prep_args (व्योम *ढेर, extended_cif *ecif);
+व्योम ffi_closure_SYSV (ffi_closure *);
+व्योम ffi_closure_struct_SYSV (ffi_closure *);
+अचिन्हित पूर्णांक ffi_closure_SYSV_inner (ffi_closure *closure,
+				     व्योम *resp, व्योम *args);
 
 /* ffi_prep_args is called by the assembly routine once stack space has
    been allocated for the function's arguments.  */
 
-void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+व्योम *
+ffi_prep_args (व्योम *ढेर, extended_cif *ecif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  अचिन्हित पूर्णांक i;
+  व्योम **p_argv;
+  अक्षर *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  व्योम *struct_मूल्य_ptr;
 
-  argp = stack;
+  argp = ढेर;
 
-  if (
-#ifdef __MINT__
+  अगर (
+#अगर_घोषित __MINT__
       (ecif->cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
-#endif
+#पूर्ण_अगर
       (((ecif->cif->rtype->type == FFI_TYPE_STRUCT)
         && !ecif->cif->flags)))
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_मूल्य_ptr = ecif->rvalue;
+  अन्यथा
+    struct_मूल्य_ptr = शून्य;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  क्रम (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
-      size_t z = (*p_arg)->size;
-      int type = (*p_arg)->type;
+      माप_प्रकार z = (*p_arg)->आकार;
+      पूर्णांक type = (*p_arg)->type;
 
-      if (z < sizeof (int))
+      अगर (z < माप (पूर्णांक))
 	{
-	  switch (type)
+	  चयन (type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    हाल FFI_TYPE_SINT8:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक) *(SINT8 *) *p_argv;
+	      अवरोध;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    हाल FFI_TYPE_UINT8:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक) *(UINT8 *) *p_argv;
+	      अवरोध;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    हाल FFI_TYPE_SINT16:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक) *(SINT16 *) *p_argv;
+	      अवरोध;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    हाल FFI_TYPE_UINT16:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक) *(UINT16 *) *p_argv;
+	      अवरोध;
 
-	    case FFI_TYPE_STRUCT:
-#ifdef __MINT__
-	      if (z == 1 || z == 2)
-		memcpy (argp + 2, *p_argv, z);
-              else
-		memcpy (argp, *p_argv, z);
-#else
-	      memcpy (argp + sizeof (int) - z, *p_argv, z);
-#endif
-	      break;
+	    हाल FFI_TYPE_STRUCT:
+#अगर_घोषित __MINT__
+	      अगर (z == 1 || z == 2)
+		स_नकल (argp + 2, *p_argv, z);
+              अन्यथा
+		स_नकल (argp, *p_argv, z);
+#अन्यथा
+	      स_नकल (argp + माप (पूर्णांक) - z, *p_argv, z);
+#पूर्ण_अगर
+	      अवरोध;
 
-	    default:
+	    शेष:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = माप (पूर्णांक);
 	}
-      else
+      अन्यथा
 	{
-	  memcpy (argp, *p_argv, z);
+	  स_नकल (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  अगर ((माप(पूर्णांक) - 1) & z)
+	    z = FFI_ALIGN(z, माप(पूर्णांक));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  वापस struct_मूल्य_ptr;
 }
 
-#define CIF_FLAGS_INT		1
-#define CIF_FLAGS_DINT		2
-#define CIF_FLAGS_FLOAT		4
-#define CIF_FLAGS_DOUBLE	8
-#define CIF_FLAGS_LDOUBLE	16
-#define CIF_FLAGS_POINTER	32
-#define CIF_FLAGS_STRUCT1	64
-#define CIF_FLAGS_STRUCT2	128
-#define CIF_FLAGS_SINT8		256
-#define CIF_FLAGS_SINT16	512
+#घोषणा CIF_FLAGS_INT		1
+#घोषणा CIF_FLAGS_DINT		2
+#घोषणा CIF_FLAGS_FLOAT		4
+#घोषणा CIF_FLAGS_DOUBLE	8
+#घोषणा CIF_FLAGS_LDOUBLE	16
+#घोषणा CIF_FLAGS_POINTER	32
+#घोषणा CIF_FLAGS_STRUCT1	64
+#घोषणा CIF_FLAGS_STRUCT2	128
+#घोषणा CIF_FLAGS_SINT8		256
+#घोषणा CIF_FLAGS_SINT16	512
 
 /* Perform machine dependent cif processing */
 ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  चयन (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    हाल FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    हाल FFI_TYPE_STRUCT:
+      अगर (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
           cif->rtype->elements[1])
         {
           cif->flags = 0;
-          break;
+          अवरोध;
         }
 
-      switch (cif->rtype->size)
+      चयन (cif->rtype->आकार)
 	{
-	case 1:
-#ifdef __MINT__
+	हाल 1:
+#अगर_घोषित __MINT__
 	  cif->flags = CIF_FLAGS_STRUCT2;
-#else
+#अन्यथा
 	  cif->flags = CIF_FLAGS_STRUCT1;
-#endif
-	  break;
-	case 2:
+#पूर्ण_अगर
+	  अवरोध;
+	हाल 2:
 	  cif->flags = CIF_FLAGS_STRUCT2;
-	  break;
-#ifdef __MINT__
-	case 3:
-#endif
-	case 4:
+	  अवरोध;
+#अगर_घोषित __MINT__
+	हाल 3:
+#पूर्ण_अगर
+	हाल 4:
 	  cif->flags = CIF_FLAGS_INT;
-	  break;
-#ifdef __MINT__
-	case 7:
-#endif
-	case 8:
+	  अवरोध;
+#अगर_घोषित __MINT__
+	हाल 7:
+#पूर्ण_अगर
+	हाल 8:
 	  cif->flags = CIF_FLAGS_DINT;
-	  break;
-	default:
+	  अवरोध;
+	शेष:
 	  cif->flags = 0;
-	  break;
+	  अवरोध;
 	}
-      break;
+      अवरोध;
 
-    case FFI_TYPE_FLOAT:
+    हाल FFI_TYPE_FLOAT:
       cif->flags = CIF_FLAGS_FLOAT;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_DOUBLE:
+    हाल FFI_TYPE_DOUBLE:
       cif->flags = CIF_FLAGS_DOUBLE;
-      break;
+      अवरोध;
 
-#if (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
-    case FFI_TYPE_LONGDOUBLE:
-#ifdef __MINT__
+#अगर (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
+    हाल FFI_TYPE_LONGDOUBLE:
+#अगर_घोषित __MINT__
       cif->flags = 0;
-#else
+#अन्यथा
       cif->flags = CIF_FLAGS_LDOUBLE;
-#endif
-      break;
-#endif
+#पूर्ण_अगर
+      अवरोध;
+#पूर्ण_अगर
 
-    case FFI_TYPE_POINTER:
+    हाल FFI_TYPE_POINTER:
       cif->flags = CIF_FLAGS_POINTER;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    हाल FFI_TYPE_SINT64:
+    हाल FFI_TYPE_UINT64:
       cif->flags = CIF_FLAGS_DINT;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_SINT16:
+    हाल FFI_TYPE_SINT16:
       cif->flags = CIF_FLAGS_SINT16;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_SINT8:
+    हाल FFI_TYPE_SINT8:
       cif->flags = CIF_FLAGS_SINT8;
-      break;
+      अवरोध;
 
-    default:
+    शेष:
       cif->flags = CIF_FLAGS_INT;
-      break;
+      अवरोध;
     }
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+व्योम
+ffi_call (ffi_cif *cif, व्योम (*fn) (), व्योम *rvalue, व्योम **avalue)
 {
   extended_cif ecif;
 
@@ -229,75 +229,75 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  अगर (rvalue == शून्य
       && cif->rtype->type == FFI_TYPE_STRUCT
-      && cif->rtype->size > 8)
-    ecif.rvalue = alloca (cif->rtype->size);
-  else
+      && cif->rtype->आकार > 8)
+    ecif.rvalue = alloca (cif->rtype->आकार);
+  अन्यथा
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  चयन (cif->abi)
     {
-    case FFI_SYSV:
+    हाल FFI_SYSV:
       ffi_call_SYSV (&ecif, cif->bytes, cif->flags,
 		     ecif.rvalue, fn);
-      break;
+      अवरोध;
 
-    default:
+    शेष:
       FFI_ASSERT (0);
-      break;
+      अवरोध;
     }
 }
 
-static void
-ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
+अटल व्योम
+ffi_prep_incoming_args_SYSV (अक्षर *ढेर, व्योम **avalue, ffi_cif *cif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  अचिन्हित पूर्णांक i;
+  व्योम **p_argv;
+  अक्षर *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = ढेर;
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
+  क्रम (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
     {
-      size_t z;
+      माप_प्रकार z;
 
-      z = (*p_arg)->size;
-#ifdef __MINT__
-      if (cif->flags &&
+      z = (*p_arg)->आकार;
+#अगर_घोषित __MINT__
+      अगर (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 1 || z == 2))
  	{
-	  *p_argv = (void *) (argp + 2);
+	  *p_argv = (व्योम *) (argp + 2);
 
 	  z = 4;
 	}
-      else
-      if (cif->flags &&
+      अन्यथा
+      अगर (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 3 || z == 4))
  	{
-	  *p_argv = (void *) (argp);
+	  *p_argv = (व्योम *) (argp);
 
 	  z = 4;
 	}
-      else
-#endif
-      if (z <= 4)
+      अन्यथा
+#पूर्ण_अगर
+      अगर (z <= 4)
 	{
-	  *p_argv = (void *) (argp + 4 - z);
+	  *p_argv = (व्योम *) (argp + 4 - z);
 
 	  z = 4;
 	}
-      else
+      अन्यथा
 	{
-	  *p_argv = (void *) argp;
+	  *p_argv = (व्योम *) argp;
 
 	  /* Align if necessary */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  अगर ((माप(पूर्णांक) - 1) & z)
+	    z = FFI_ALIGN(z, माप(पूर्णांक));
 	}
 
       p_argv++;
@@ -305,58 +305,58 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
     }
 }
 
-unsigned int
-ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
+अचिन्हित पूर्णांक
+ffi_closure_SYSV_inner (ffi_closure *closure, व्योम *resp, व्योम *args)
 {
   ffi_cif *cif;
-  void **arg_area;
+  व्योम **arg_area;
 
   cif = closure->cif;
-  arg_area = (void**) alloca (cif->nargs * sizeof (void *));
+  arg_area = (व्योम**) alloca (cif->nargs * माप (व्योम *));
 
   ffi_prep_incoming_args_SYSV(args, arg_area, cif);
 
-  (closure->fun) (cif, resp, arg_area, closure->user_data);
+  (closure->fun) (cif, resp, arg_area, closure->user_तथ्य);
 
-  return cif->flags;
+  वापस cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*),
+		      व्योम *user_तथ्य,
+		      व्योम *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_SYSV)
+    वापस FFI_BAD_ABI;
 
-  *(unsigned short *)closure->tramp = 0x207c;
-  *(void **)(closure->tramp + 2) = codeloc;
-  *(unsigned short *)(closure->tramp + 6) = 0x4ef9;
+  *(अचिन्हित लघु *)closure->tramp = 0x207c;
+  *(व्योम **)(closure->tramp + 2) = codeloc;
+  *(अचिन्हित लघु *)(closure->tramp + 6) = 0x4ef9;
 
-  if (
-#ifdef __MINT__
+  अगर (
+#अगर_घोषित __MINT__
       (cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
-#endif
+#पूर्ण_अगर
       (((cif->rtype->type == FFI_TYPE_STRUCT)
          && !cif->flags)))
-    *(void **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
-  else
-    *(void **)(closure->tramp + 8) = ffi_closure_SYSV;
+    *(व्योम **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
+  अन्यथा
+    *(व्योम **)(closure->tramp + 8) = ffi_closure_SYSV;
 
-#ifdef __rtems__
-  rtems_cache_flush_multiple_data_lines( codeloc, FFI_TRAMPOLINE_SIZE );
-#elif defined(__MINT__)
-  Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_SIZE);
-#else
-  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_LINE,
-	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_SIZE);
-#endif
+#अगर_घोषित __rtems__
+  rtems_cache_flush_multiple_तथ्य_पंक्तियाँ( codeloc, FFI_TRAMPOLINE_आकार );
+#या_अगर defined(__MINT__)
+  Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_आकार);
+#अन्यथा
+  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_पंक्ति,
+	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_आकार);
+#पूर्ण_अगर
 
   closure->cif  = cif;
-  closure->user_data = user_data;
+  closure->user_तथ्य = user_तथ्य;
   closure->fun  = fun;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }

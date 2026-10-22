@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifndef __x86_64__
@@ -38,23 +38,23 @@
 #define C2(X, Y)  X ## Y
 #define C1(X, Y)  C2(X, Y)
 #define L(X)     C1(L, X)
-# define ENDF(X) X ENDP
+# define ENDF(X) X पूर्ण_क्रिया
 
 /* This macro allows the safe creation of jump tables without an
    actual table.  The entry points into the table are all 8 bytes.
-   The use of ORG asserts that we're at the correct location.  */
+   The use of शुरू asserts that we're at the correct location.  */
 /* ??? The clang assembler doesn't handle .org with symbolic expressions.  */
 #if defined(__clang__) || defined(__APPLE__) || (defined (__sun__) && defined(__svr4__))
-# define E(BASE, X)	ALIGN 8
+# define E(BASE, X)	मिलाओ 8
 #else
-# define E(BASE, X)	ALIGN 8; ORG BASE + X * 8
+# define E(BASE, X)	मिलाओ 8; ORG BASE + X * 8
 #endif
 
     .686P
     .MODEL FLAT
 
-EXTRN	@ffi_closure_inner@8:PROC
-_TEXT SEGMENT
+बाह्य	@ffi_closure_inner@8:क्रिया
+_TEXT अखंड
 
 /* This is declared as
 
@@ -67,9 +67,9 @@ _TEXT SEGMENT
         edx: argp
 */
 
-ALIGN 16
-PUBLIC @ffi_call_i386@8
-@ffi_call_i386@8 PROC
+मिलाओ 16
+सार्व @ffi_call_i386@8
+@ffi_call_i386@8 क्रिया
 L(UW0):
 	cfi_startproc
  #if !HAVE_FASTCALL
@@ -109,16 +109,16 @@ L(UW2):
 	mov 	ecx, [ebp+16]		/* load result address */
 	jmp	    ebx
 
-	ALIGN	8
+	मिलाओ	8
 L(store_table):
 E(L(store_table), X86_RET_FLOAT)
-	fstp	DWORD PTR [ecx]
+	fstp	तथ्य_द्विगुन सूचक [ecx]
 	jmp	L(e1)
 E(L(store_table), X86_RET_DOUBLE)
-	fstp	QWORD PTR [ecx]
+	fstp	तथ्य_चौथ सूचक [ecx]
 	jmp	L(e1)
 E(L(store_table), X86_RET_LDOUBLE)
-	fstp	QWORD PTR [ecx]
+	fstp	तथ्य_चौथ सूचक [ecx]
 	jmp	L(e1)
 E(L(store_table), X86_RET_SINT8)
 	movsx	eax, al
@@ -198,49 +198,49 @@ ENDF(@ffi_call_i386@8)
 # define closure_CF	8
 #endif
 
-FFI_CLOSURE_SAVE_REGS MACRO
+FFI_CLOSURE_SAVE_REGS सक्रिया
 	mov 	[esp + closure_CF+16+R_EAX*4], eax
 	mov 	[esp + closure_CF+16+R_EDX*4], edx
 	mov 	[esp + closure_CF+16+R_ECX*4], ecx
-ENDM
+पूर्ण_सक्रिया
 
-FFI_CLOSURE_COPY_TRAMP_DATA MACRO
+FFI_CLOSURE_COPY_TRAMP_DATA सक्रिया
 	mov 	edx, [eax+FFI_TRAMPOLINE_SIZE]      /* copy cif */
 	mov 	ecx, [eax+FFI_TRAMPOLINE_SIZE+4]    /* copy fun */
 	mov 	eax, [eax+FFI_TRAMPOLINE_SIZE+8];   /* copy user_data */
 	mov 	[esp+closure_CF+28], edx
 	mov 	[esp+closure_CF+32], ecx
 	mov 	[esp+closure_CF+36], eax
-ENDM
+पूर्ण_सक्रिया
 
 #if HAVE_FASTCALL
-FFI_CLOSURE_PREP_CALL MACRO
+FFI_CLOSURE_PREP_CALL सक्रिया
 	mov	    ecx, esp                    /* load closure_data */
 	lea 	edx, [esp+closure_FS+4]     /* load incoming stack */
-ENDM
+पूर्ण_सक्रिया
 #else
-FFI_CLOSURE_PREP_CALL MACRO
+FFI_CLOSURE_PREP_CALL सक्रिया
 	lea 	ecx, [esp+closure_CF]       /* load closure_data */
 	lea 	edx, [esp+closure_FS+4]     /* load incoming stack */
 	mov 	[esp], ecx
 	mov 	[esp+4], edx
-ENDM
+पूर्ण_सक्रिया
 #endif
 
-FFI_CLOSURE_CALL_INNER MACRO UWN
+FFI_CLOSURE_CALL_INNER सक्रिया UWN
 	call	@ffi_closure_inner@8
-ENDM
+पूर्ण_सक्रिया
 
-FFI_CLOSURE_MASK_AND_JUMP MACRO LABEL
+FFI_CLOSURE_MASK_AND_JUMP सक्रिया मोहर
 	and	    eax, X86_RET_TYPE_MASK
-	lea 	edx, [LABEL+eax*8]
+	lea 	edx, [मोहर+eax*8]
 	mov 	eax, [esp+closure_CF]       /* optimiztic load */
 	jmp	    edx
-ENDM
+पूर्ण_सक्रिया
 
-ALIGN 16
-PUBLIC ffi_go_closure_EAX
-ffi_go_closure_EAX PROC C
+मिलाओ 16
+सार्व ffi_go_closure_EAX
+ffi_go_closure_EAX क्रिया C
 L(UW6):
 	/* cfi_startproc */
 	sub	esp, closure_FS
@@ -257,9 +257,9 @@ L(UW8):
 	/* cfi_endproc */
 ENDF(ffi_go_closure_EAX)
 
-ALIGN 16
-PUBLIC ffi_go_closure_ECX
-ffi_go_closure_ECX PROC C
+मिलाओ 16
+सार्व ffi_go_closure_ECX
+ffi_go_closure_ECX क्रिया C
 L(UW9):
 	/* cfi_startproc */
 	sub 	esp, closure_FS
@@ -279,9 +279,9 @@ ENDF(ffi_go_closure_ECX)
 /* The closure entry points are reached from the ffi_closure trampoline.
    On entry, %eax contains the address of the ffi_closure.  */
 
-ALIGN 16
-PUBLIC ffi_closure_i386
-ffi_closure_i386 PROC C
+मिलाओ 16
+सार्व ffi_closure_i386
+ffi_closure_i386 क्रिया C
 L(UW12):
 	/* cfi_startproc */
 	sub	    esp, closure_FS
@@ -298,7 +298,7 @@ L(do_closure_i386)::
 	FFI_CLOSURE_CALL_INNER(14)
 	FFI_CLOSURE_MASK_AND_JUMP L(C1(load_table,2))
 
-    ALIGN 8
+    मिलाओ 8
 L(load_table2):
 E(L(load_table2), X86_RET_FLOAT)
 	fld 	dword ptr [esp+closure_CF]
@@ -361,9 +361,9 @@ L(UW20):
 	/* cfi_endproc */
 ENDF(ffi_closure_i386)
 
-ALIGN 16
-PUBLIC	ffi_go_closure_STDCALL
-ffi_go_closure_STDCALL PROC C
+मिलाओ 16
+सार्व	ffi_go_closure_STDCALL
+ffi_go_closure_STDCALL क्रिया C
 L(UW21):
 	/* cfi_startproc */
 	sub 	esp, closure_FS
@@ -383,9 +383,9 @@ ENDF(ffi_go_closure_STDCALL)
 /* For REGISTER, we have no available parameter registers, and so we
    enter here having pushed the closure onto the stack.  */
 
-ALIGN 16
-PUBLIC ffi_closure_REGISTER
-ffi_closure_REGISTER PROC C
+मिलाओ 16
+सार्व ffi_closure_REGISTER
+ffi_closure_REGISTER क्रिया C
 L(UW24):
 	/* cfi_startproc */
 	/* cfi_def_cfa(%esp, 8) */
@@ -404,9 +404,9 @@ ENDF(ffi_closure_REGISTER)
    the stack following the closure.  The amount needing to be popped
    is returned to us from ffi_closure_inner.  */
 
-ALIGN 16
-PUBLIC ffi_closure_STDCALL
-ffi_closure_STDCALL PROC C
+मिलाओ 16
+सार्व ffi_closure_STDCALL
+ffi_closure_STDCALL क्रिया C
 L(UW27):
 	/* cfi_startproc */
 	sub 	esp, closure_FS
@@ -440,18 +440,18 @@ L(do_closure_STDCALL)::
 
 	FFI_CLOSURE_MASK_AND_JUMP  L(C1(load_table,3))
 
-    ALIGN 8
+    मिलाओ 8
 L(load_table3):
 E(L(load_table3), X86_RET_FLOAT)
-	fld    DWORD PTR [esp+closure_CF]
+	fld    तथ्य_द्विगुन सूचक [esp+closure_CF]
 	mov     esp, ecx
 	ret
 E(L(load_table3), X86_RET_DOUBLE)
-	fld    QWORD PTR [esp+closure_CF]
+	fld    तथ्य_चौथ सूचक [esp+closure_CF]
 	mov     esp, ecx
 	ret
 E(L(load_table3), X86_RET_LDOUBLE)
-	fld    QWORD PTR [esp+closure_CF]
+	fld    तथ्य_चौथ सूचक [esp+closure_CF]
 	mov     esp, ecx
 	ret
 E(L(load_table3), X86_RET_SINT8)
@@ -509,9 +509,9 @@ ENDF(ffi_closure_STDCALL)
 
 #define raw_closure_S_FS	(16+16+12)
 
-ALIGN 16
-PUBLIC ffi_closure_raw_SYSV
-ffi_closure_raw_SYSV PROC C
+मिलाओ 16
+सार्व ffi_closure_raw_SYSV
+ffi_closure_raw_SYSV क्रिया C
 L(UW32):
 	/* cfi_startproc */
 	sub 	esp, raw_closure_S_FS
@@ -529,7 +529,7 @@ L(UW34):
 	mov 	[esp+4], edx
 	mov 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
 	mov 	[esp], ebx
-	call	DWORD PTR [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
+	call	तथ्य_द्विगुन सूचक [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
 
 	mov 	eax, [ebx+20]			/* load cif->flags */
 	and 	eax, X86_RET_TYPE_MASK
@@ -546,16 +546,16 @@ L(UW35):
 	mov 	eax, [esp+16]				/* Optimistic load */
 	jmp	    dword ptr [ecx]
 
-	ALIGN 8
+	मिलाओ 8
 L(load_table4):
 E(L(load_table4), X86_RET_FLOAT)
-	fld 	DWORD PTR [esp +16]
+	fld 	तथ्य_द्विगुन सूचक [esp +16]
 	jmp	L(e4)
 E(L(load_table4), X86_RET_DOUBLE)
-	fld 	QWORD PTR [esp +16]
+	fld 	तथ्य_चौथ सूचक [esp +16]
 	jmp	L(e4)
 E(L(load_table4), X86_RET_LDOUBLE)
-	fld 	QWORD PTR [esp +16]
+	fld 	तथ्य_चौथ सूचक [esp +16]
 	jmp	L(e4)
 E(L(load_table4), X86_RET_SINT8)
 	movsx	eax, al
@@ -611,9 +611,9 @@ ENDF(ffi_closure_raw_SYSV)
 
 #define raw_closure_T_FS	(16+16+8)
 
-ALIGN 16
-PUBLIC ffi_closure_raw_THISCALL
-ffi_closure_raw_THISCALL PROC C
+मिलाओ 16
+सार्व ffi_closure_raw_THISCALL
+ffi_closure_raw_THISCALL क्रिया C
 L(UW41):
 	/* cfi_startproc */
 	/* Rearrange the stack such that %ecx is the first argument.
@@ -644,7 +644,7 @@ L(UW46):
 	mov 	[esp+4], edx
 	mov 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
 	mov 	[esp], ebx
-	call	DWORD PTR [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
+	call	तथ्य_द्विगुन सूचक [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
 
 	mov 	eax, [ebx+20]				/* load cif->flags */
 	and 	eax, X86_RET_TYPE_MASK
@@ -659,18 +659,18 @@ L(UW46):
 L(UW47):
 	/* cfi_restore(%ebx) */
 	mov 	eax, [esp+16]				/* Optimistic load */
-	jmp	    DWORD PTR [ecx]
+	jmp	    तथ्य_द्विगुन सूचक [ecx]
 
 	AlIGN 4
 L(load_table5):
 E(L(load_table5), X86_RET_FLOAT)
-	fld	DWORD PTR [esp +16]
+	fld	तथ्य_द्विगुन सूचक [esp +16]
 	jmp	L(e5)
 E(L(load_table5), X86_RET_DOUBLE)
-	fld	QWORD PTR [esp +16]
+	fld	तथ्य_चौथ सूचक [esp +16]
 	jmp	L(e5)
 E(L(load_table5), X86_RET_LDOUBLE)
-	fld	QWORD PTR [esp+16]
+	fld	तथ्य_चौथ सूचक [esp+16]
 	jmp	L(e5)
 E(L(load_table5), X86_RET_SINT8)
 	movsx	eax, al
@@ -735,7 +735,7 @@ ENDF(ffi_closure_raw_THISCALL)
 #elif defined __ELF__ && !(defined(__sun__) && defined(__svr4__))
 # define COMDAT(X)							\
 	.section .text.X,"axG",@progbits,X,comdat;			\
-	PUBLIC	X;							\
+	सार्व	X;							\
 	FFI_HIDDEN(X)
 #else
 # define COMDAT(X)
@@ -985,7 +985,7 @@ L(EFDE9):
 	.scl	3;
 	.type	0;
 	.endef
-	PUBLIC	@feat.00
+	सार्व	@feat.00
 @feat.00 = 1
 #endif
 
@@ -997,4 +997,4 @@ L(EFDE9):
 #endif
 #endif
 
-END
+पूर्ण

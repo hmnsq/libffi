@@ -9,12 +9,12 @@ the following conditions:
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
+EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और NONINFRINGEMENT.
+अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES या OTHER LIABILITY, WHETHER अंदर AN ACTION OF CONTRACT,
+TORT या OTHERWISE, ARISING FROM, बाहर OF या अंदर CONNECTION WITH THE
+SOFTWARE या THE USE या OTHER DEALINGS अंदर THE SOFTWARE.  */
 
 #define LIBFFI_ASM
 #include <fficonfig.h>
@@ -42,7 +42,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 	EXPORT	ffi_go_closure_SYSV
 #endif
 
-	TEXTAREA, ALIGN=8
+	TEXTAREA, मिलाओ=8
 
 /* ffi_call_SYSV
    extern void ffi_call_SYSV (void *stack, void *frame,
@@ -111,7 +111,7 @@ ffi_call_SYSV_L1
 	   For integer data, note that we're storing into ffi_arg
 	   and therefore we want to extend to 64 bits; these types
 	   have two consecutive entries allocated for them.  */
-	ALIGN 4
+	मिलाओ 4
 ffi_call_SYSV_return
 	ret				/* VOID */
 	nop
@@ -237,7 +237,7 @@ do_closure
 	br	x1
 
 	/* Note that each table entry is 2 insns, and thus 8 bytes.  */
-	ALIGN	8
+	मिलाओ	8
 ffi_closure_SYSV_return_base
 	b	ffi_closure_SYSV_epilog			/* VOID */
 	nop
@@ -350,7 +350,7 @@ ffi_go_closure_SYSV_save_argument
 	add	x3, x3, x2, lsl #4
 	br	x3
 
-	ALIGN	4
+	मिलाओ	4
 extend_hfa_type_jump_base
 	ldp	s16, s17, [x1]		/* S4 */
 	ldp	s18, s19, [x1, #8]
@@ -433,7 +433,7 @@ extend_hfa_type_store_1
 	add	x3, x3, x2, lsl #4
 	br	x3
 
-	ALIGN	4
+	मिलाओ	4
 compress_hfa_type_jump_base
 	ldp	q16, q17, [x1]		/* S4 */
 	ldp	q18, q19, [x1, #32]
@@ -503,4 +503,4 @@ compress_hfa_type_store_q3
 
 	LEAF_END	compress_hfa_type
 
-	END
+	पूर्ण

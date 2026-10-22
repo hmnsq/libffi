@@ -24,13 +24,13 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
+#समावेश <stdlib.h>
 
 /* Round up to FFI_SIZEOF_ARG. */
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#घोषणा ढेर_ARG_आकार(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
 /* Compute the machine-independent layout of a vector (SIMD) type.
 
@@ -49,89 +49,89 @@
    valid lane types.  Anything else -- a heterogeneous element list, an
    aggregate lane, long double, or a zero-length vector -- is FFI_BAD_TYPEDEF. */
 
-static ffi_status
+अटल ffi_status
 initialize_vector (ffi_type *arg)
 {
   ffi_type **ptr = arg->elements;
   ffi_type *elem;
-  size_t count = 0;
-  size_t total, p2;
+  माप_प्रकार गिनती = 0;
+  माप_प्रकार योग_2, p2;
 
-  if (UNLIKELY (ptr == NULL || *ptr == NULL))
-    return FFI_BAD_TYPEDEF;
+  अगर (UNLIKELY (ptr == शून्य || *ptr == शून्य))
+    वापस FFI_BAD_TYPEDEF;
 
   elem = *ptr;
-  switch (elem->type)
+  चयन (elem->type)
     {
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+    हाल FFI_TYPE_FLOAT:
+    हाल FFI_TYPE_DOUBLE:
+    हाल FFI_TYPE_UINT8:
+    हाल FFI_TYPE_SINT8:
+    हाल FFI_TYPE_UINT16:
+    हाल FFI_TYPE_SINT16:
+    हाल FFI_TYPE_UINT32:
+    हाल FFI_TYPE_SINT32:
+    हाल FFI_TYPE_UINT64:
+    हाल FFI_TYPE_SINT64:
+      अवरोध;
+    शेष:
+      वापस FFI_BAD_TYPEDEF;
     }
 
   /* Every lane must be the identical scalar type.  */
-  for (; *ptr != NULL; ptr++)
+  क्रम (; *ptr != शून्य; ptr++)
     {
-      if ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
-	return FFI_BAD_TYPEDEF;
-      count++;
+      अगर ((*ptr)->type != elem->type || (*ptr)->आकार != elem->आकार)
+	वापस FFI_BAD_TYPEDEF;
+      गिनती++;
     }
 
-  if (UNLIKELY (count < 1 || elem->size == 0))
-    return FFI_BAD_TYPEDEF;
+  अगर (UNLIKELY (गिनती < 1 || elem->आकार == 0))
+    वापस FFI_BAD_TYPEDEF;
 
-  total = elem->size * count;
-  for (p2 = 1; p2 < total; p2 <<= 1)
+  योग_2 = elem->आकार * गिनती;
+  क्रम (p2 = 1; p2 < योग_2; p2 <<= 1)
     ;
 
-  arg->size = p2;
+  arg->आकार = p2;
   arg->alignment = p2 < 16 ? p2 : 16;
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 /* Perform machine independent initialization of aggregate type
    specifications. */
 
-static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
+अटल ffi_status initialize_aggregate(ffi_type *arg, माप_प्रकार *offsets)
 {
   ffi_type **ptr;
 
-  if (UNLIKELY(arg == NULL || arg->elements == NULL))
-    return FFI_BAD_TYPEDEF;
+  अगर (UNLIKELY(arg == शून्य || arg->elements == शून्य))
+    वापस FFI_BAD_TYPEDEF;
 
-  if (arg->type == FFI_TYPE_VECTOR)
-    return initialize_vector (arg);
+  अगर (arg->type == FFI_TYPE_VECTOR)
+    वापस initialize_vector (arg);
 
-  arg->size = 0;
+  arg->आकार = 0;
   arg->alignment = 0;
 
   ptr = &(arg->elements[0]);
 
-  if (UNLIKELY(ptr == 0))
-    return FFI_BAD_TYPEDEF;
+  अगर (UNLIKELY(ptr == 0))
+    वापस FFI_BAD_TYPEDEF;
 
-  while ((*ptr) != NULL)
+  जबतक ((*ptr) != शून्य)
     {
-      if (UNLIKELY(((*ptr)->size == 0)
-		    && (initialize_aggregate((*ptr), NULL) != FFI_OK)))
-	return FFI_BAD_TYPEDEF;
+      अगर (UNLIKELY(((*ptr)->आकार == 0)
+		    && (initialize_aggregate((*ptr), शून्य) != FFI_OK)))
+	वापस FFI_BAD_TYPEDEF;
 
       /* Perform a sanity check on the argument type */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-      arg->size = FFI_ALIGN(arg->size, (*ptr)->alignment);
-      if (offsets)
-	*offsets++ = arg->size;
-      arg->size += (*ptr)->size;
+      arg->आकार = FFI_ALIGN(arg->आकार, (*ptr)->alignment);
+      अगर (offsets)
+	*offsets++ = arg->आकार;
+      arg->आकार += (*ptr)->आकार;
 
       arg->alignment = (arg->alignment > (*ptr)->alignment) ?
 	arg->alignment : (*ptr)->alignment;
@@ -146,44 +146,44 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
      struct A { long a; char b; }; struct B { struct A x; char y; };
      should find y at an offset of 2*sizeof(long) and result in a
      total size of 3*sizeof(long).  */
-  arg->size = FFI_ALIGN (arg->size, arg->alignment);
+  arg->आकार = FFI_ALIGN (arg->आकार, arg->alignment);
 
   /* On some targets, the ABI defines that structures have an additional
      alignment beyond the "natural" one based on their elements.  */
-#ifdef FFI_AGGREGATE_ALIGNMENT
-  if (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
+#अगर_घोषित FFI_AGGREGATE_ALIGNMENT
+  अगर (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
     arg->alignment = FFI_AGGREGATE_ALIGNMENT;
-#endif
+#पूर्ण_अगर
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  अगर (arg->आकार == 0)
+    वापस FFI_BAD_TYPEDEF;
+  अन्यथा
+    वापस FFI_OK;
 }
 
-#ifndef FFI_TARGET_HAS_VECTOR_TYPE
+#अगर_अघोषित FFI_TARGET_HAS_VECTOR_TYPE
 /* Recursively test whether TY is, or contains, a vector (SIMD) type.  Ports
    that do not define FFI_TARGET_HAS_VECTOR_TYPE cannot marshal vectors, so
    ffi_prep_cif_core rejects any signature that mentions one (directly or
    nested inside a struct) with FFI_BAD_TYPEDEF rather than aborting.  */
-static int
+अटल पूर्णांक
 ffi_type_contains_vector (ffi_type *ty)
 {
   ffi_type **p;
 
-  if (ty == NULL)
-    return 0;
-  if (ty->type == FFI_TYPE_VECTOR)
-    return 1;
-  if (ty->type == FFI_TYPE_STRUCT && ty->elements != NULL)
-    for (p = ty->elements; *p != NULL; p++)
-      if (ffi_type_contains_vector (*p))
-	return 1;
-  return 0;
+  अगर (ty == शून्य)
+    वापस 0;
+  अगर (ty->type == FFI_TYPE_VECTOR)
+    वापस 1;
+  अगर (ty->type == FFI_TYPE_STRUCT && ty->elements != शून्य)
+    क्रम (p = ty->elements; *p != शून्य; p++)
+      अगर (ffi_type_contains_vector (*p))
+	वापस 1;
+  वापस 0;
 }
-#endif /* !FFI_TARGET_HAS_VECTOR_TYPE */
+#पूर्ण_अगर /* !FFI_TARGET_HAS_VECTOR_TYPE */
 
-#ifndef __CRIS__
+#अगर_अघोषित __CRIS__
 /* The CRIS ABI specifies structure elements to have byte
    alignment only, so it completely overrides this functions,
    which assumes "natural" alignment and padding.  */
@@ -199,185 +199,185 @@ ffi_type_contains_vector (ffi_type *ty)
 
 
 ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
-			     unsigned int isvariadic,
-                             unsigned int nfixedargs,
-                             unsigned int ntotalargs,
+			     अचिन्हित पूर्णांक isvariadic,
+                             अचिन्हित पूर्णांक nfixedargs,
+                             अचिन्हित पूर्णांक ntotalargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  unsigned bytes = 0;
-  unsigned int i;
+  अचिन्हित bytes = 0;
+  अचिन्हित पूर्णांक i;
   ffi_type **ptr;
 
-  FFI_ASSERT(cif != NULL);
+  FFI_ASSERT(cif != शून्य);
   FFI_ASSERT((!isvariadic) || (nfixedargs >= 1));
   FFI_ASSERT(nfixedargs <= ntotalargs);
 
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
+  अगर (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
+    वापस FFI_BAD_ABI;
 
   cif->abi = abi;
   cif->arg_types = atypes;
   cif->nargs = ntotalargs;
   cif->rtype = rtype;
 
-#ifndef FFI_TARGET_HAS_VECTOR_TYPE
+#अगर_अघोषित FFI_TARGET_HAS_VECTOR_TYPE
   /* Vector (SIMD) types are only marshalled on ports that opt in.  */
-  if (ffi_type_contains_vector (rtype))
-    return FFI_BAD_TYPEDEF;
-  for (i = 0; i < ntotalargs; i++)
-    if (ffi_type_contains_vector (atypes[i]))
-      return FFI_BAD_TYPEDEF;
-#endif
+  अगर (ffi_type_contains_vector (rtype))
+    वापस FFI_BAD_TYPEDEF;
+  क्रम (i = 0; i < ntotalargs; i++)
+    अगर (ffi_type_contains_vector (atypes[i]))
+      वापस FFI_BAD_TYPEDEF;
+#पूर्ण_अगर
 
   cif->flags = 0;
-#if (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
+#अगर (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
   cif->is_variadic = isvariadic;
-#endif
-#if HAVE_LONG_DOUBLE_VARIANT
+#पूर्ण_अगर
+#अगर HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
-#endif
+#पूर्ण_अगर
 
   /* Initialize the return type if necessary */
-  if ((cif->rtype->size == 0)
-      && (initialize_aggregate(cif->rtype, NULL) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+  अगर ((cif->rtype->आकार == 0)
+      && (initialize_aggregate(cif->rtype, शून्य) != FFI_OK))
+    वापस FFI_BAD_TYPEDEF;
 
-#ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-  if (rtype->type == FFI_TYPE_COMPLEX)
-    abort();
-#endif
+#अगर_अघोषित FFI_TARGET_HAS_COMPLEX_TYPE
+  अगर (rtype->type == FFI_TYPE_COMPLEX)
+    पात();
+#पूर्ण_अगर
   /* Perform a sanity check on the return type */
   FFI_ASSERT_VALID_TYPE(cif->rtype);
 
   /* x86, x86-64 and s390 stack space allocation is handled in prep_machdep. */
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#अगर !defined FFI_TARGET_SPECIFIC_ढेर_SPACE_ALLOCATION
   /* Make space for the return structure pointer */
-  if ((cif->rtype->type == FFI_TYPE_STRUCT
+  अगर ((cif->rtype->type == FFI_TYPE_STRUCT
        || cif->rtype->type == FFI_TYPE_VECTOR)
-#ifdef TILE
-      && (cif->rtype->size > 10 * FFI_SIZEOF_ARG)
-#endif
-#ifdef XTENSA
-      && (cif->rtype->size > 16)
-#endif
+#अगर_घोषित TILE
+      && (cif->rtype->आकार > 10 * FFI_SIZEOF_ARG)
+#पूर्ण_अगर
+#अगर_घोषित XTENSA
+      && (cif->rtype->आकार > 16)
+#पूर्ण_अगर
      )
-    bytes = STACK_ARG_SIZE(sizeof(void*));
-#endif
+    bytes = ढेर_ARG_आकार(माप(व्योम*));
+#पूर्ण_अगर
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  क्रम (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
 
       /* Initialize any uninitialized aggregate type definitions */
-      if (((*ptr)->size == 0)
-	  && (initialize_aggregate((*ptr), NULL) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+      अगर (((*ptr)->आकार == 0)
+	  && (initialize_aggregate((*ptr), शून्य) != FFI_OK))
+	वापस FFI_BAD_TYPEDEF;
 
-#ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-      if ((*ptr)->type == FFI_TYPE_COMPLEX)
-	abort();
-#endif
+#अगर_अघोषित FFI_TARGET_HAS_COMPLEX_TYPE
+      अगर ((*ptr)->type == FFI_TYPE_COMPLEX)
+	पात();
+#पूर्ण_अगर
       /* Perform a sanity check on the argument type, do this
 	 check after the initialization.  */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#अगर !defined FFI_TARGET_SPECIFIC_ढेर_SPACE_ALLOCATION
 	{
 	  /* Add any padding if necessary */
-	  if (((*ptr)->alignment - 1) & bytes)
-	    bytes = (unsigned)FFI_ALIGN(bytes, (*ptr)->alignment);
+	  अगर (((*ptr)->alignment - 1) & bytes)
+	    bytes = (अचिन्हित)FFI_ALIGN(bytes, (*ptr)->alignment);
 
-#ifdef TILE
-	  if (bytes < 10 * FFI_SIZEOF_ARG &&
-	      bytes + STACK_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
+#अगर_घोषित TILE
+	  अगर (bytes < 10 * FFI_SIZEOF_ARG &&
+	      bytes + ढेर_ARG_आकार((*ptr)->आकार) > 10 * FFI_SIZEOF_ARG)
 	    {
 	      /* An argument is never split between the 10 parameter
 		 registers and the stack.  */
 	      bytes = 10 * FFI_SIZEOF_ARG;
 	    }
-#endif
-#ifdef XTENSA
-	  if (bytes <= 6*4 && bytes + STACK_ARG_SIZE((*ptr)->size) > 6*4)
+#पूर्ण_अगर
+#अगर_घोषित XTENSA
+	  अगर (bytes <= 6*4 && bytes + ढेर_ARG_आकार((*ptr)->आकार) > 6*4)
 	    bytes = 6*4;
-#endif
+#पूर्ण_अगर
 
-	  bytes += (unsigned int)STACK_ARG_SIZE((*ptr)->size);
+	  bytes += (अचिन्हित पूर्णांक)ढेर_ARG_आकार((*ptr)->आकार);
 	}
-#endif
+#पूर्ण_अगर
     }
 
   cif->bytes = bytes;
 
   /* Perform machine dependent cif processing */
-#ifdef FFI_TARGET_SPECIFIC_VARIADIC
-  if (isvariadic)
-	return ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
-#endif
+#अगर_घोषित FFI_TARGET_SPECIFIC_VARIADIC
+  अगर (isvariadic)
+	वापस ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
+#पूर्ण_अगर
 
-  return ffi_prep_cif_machdep(cif);
+  वापस ffi_prep_cif_machdep(cif);
 }
-#endif /* not __CRIS__ */
+#पूर्ण_अगर /* not __CRIS__ */
 
-ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, unsigned int nargs,
+ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, अचिन्हित पूर्णांक nargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  return ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
+  वापस ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
 }
 
 ffi_status ffi_prep_cif_var(ffi_cif *cif,
                             ffi_abi abi,
-                            unsigned int nfixedargs,
-                            unsigned int ntotalargs,
+                            अचिन्हित पूर्णांक nfixedargs,
+                            अचिन्हित पूर्णांक ntotalargs,
                             ffi_type *rtype,
                             ffi_type **atypes)
 {
   ffi_status rc;
-  size_t int_size = ffi_type_sint.size;
-  unsigned int i;
+  माप_प्रकार int_आकार = ffi_type_sint.आकार;
+  अचिन्हित पूर्णांक i;
 
   rc = ffi_prep_cif_core(cif, abi, 1, nfixedargs, ntotalargs, rtype, atypes);
 
-  if (rc != FFI_OK)
-    return rc;
+  अगर (rc != FFI_OK)
+    वापस rc;
 
-  for (i = nfixedargs; i < ntotalargs; i++)
+  क्रम (i = nfixedargs; i < ntotalargs; i++)
     {
       ffi_type *arg_type = atypes[i];
-      if (arg_type == &ffi_type_float
+      अगर (arg_type == &ffi_type_float
           || ((arg_type->type != FFI_TYPE_STRUCT
                && arg_type->type != FFI_TYPE_COMPLEX)
-              && arg_type->size < int_size))
-        return FFI_BAD_ARGTYPE;
+              && arg_type->आकार < int_आकार))
+        वापस FFI_BAD_ARGTYPE;
     }
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
-#if FFI_CLOSURES
+#अगर FFI_CLOSURES
 
 ffi_status
 ffi_prep_closure (ffi_closure* closure,
 		  ffi_cif* cif,
-		  void (*fun)(ffi_cif*,void*,void**,void*),
-		  void *user_data)
+		  व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*),
+		  व्योम *user_तथ्य)
 {
-  return ffi_prep_closure_loc (closure, cif, fun, user_data, closure);
+  वापस ffi_prep_closure_loc (closure, cif, fun, user_तथ्य, closure);
 }
 
-#endif
+#पूर्ण_अगर
 
 ffi_status
-ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
+ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, माप_प्रकार *offsets)
 {
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
-  if (struct_type->type != FFI_TYPE_STRUCT)
-    return FFI_BAD_TYPEDEF;
+  अगर (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
+    वापस FFI_BAD_ABI;
+  अगर (struct_type->type != FFI_TYPE_STRUCT)
+    वापस FFI_BAD_TYPEDEF;
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#अगर HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
-#endif
+#पूर्ण_अगर
 
-  return initialize_aggregate(struct_type, offsets);
+  वापस initialize_aggregate(struct_type, offsets);
 }
 
 /* Generic ffi_call_plan: a portable fallback compiled on every target that does
@@ -388,9 +388,9 @@ ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
    exclude the fallback only when ffi64.c actually provides it; everywhere else
    this plan just records the cif and invoke calls ffi_call, so the API is
    always present and links on all targets.  The cif must outlive the plan. */
-#if !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
+#अगर !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
 
-struct ffi_call_plan
+काष्ठा ffi_call_plan
 {
   ffi_cif *cif;
 };
@@ -398,30 +398,30 @@ struct ffi_call_plan
 ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
-  ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan != NULL)
+  ffi_call_plan *plan = दो_स्मृति (माप (काष्ठा ffi_call_plan));
+  अगर (plan != शून्य)
     plan->cif = cif;
-  return plan;
+  वापस plan;
 }
 
-void
-ffi_call_plan_invoke (ffi_call_plan *plan, void (*fn) (void),
-		      void *rvalue, void **avalue)
+व्योम
+ffi_call_plan_invoke (ffi_call_plan *plan, व्योम (*fn) (व्योम),
+		      व्योम *rvalue, व्योम **avalue)
 {
   ffi_call (plan->cif, fn, rvalue, avalue);
 }
 
-void
+व्योम
 ffi_call_plan_free (ffi_call_plan *plan)
 {
-  free (plan);
+  मुक्त (plan);
 }
 
-size_t
-ffi_call_plan_size (ffi_call_plan *plan)
+माप_प्रकार
+ffi_call_plan_आकार (ffi_call_plan *plan)
 {
   /* The generic plan is a bare handle; there is no separate move-list.  */
-  return plan != NULL ? sizeof (struct ffi_call_plan) : 0;
+  वापस plan != शून्य ? माप (काष्ठा ffi_call_plan) : 0;
 }
 
-#endif /* generic ffi_call_plan fallback */
+#पूर्ण_अगर /* generic ffi_call_plan fallback */

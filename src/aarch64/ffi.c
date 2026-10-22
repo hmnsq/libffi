@@ -19,117 +19,117 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include "internal.h"
-#ifdef _WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h> /* FlushInstructionCache */
-#endif
-#include <tramp.h>
+#अगर defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
+#समावेश <stdio.h>
+#समावेश <stdlib.h>
+#समावेश <stdint.h>
+#समावेश <fficonfig.h>
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
+#समावेश "internal.h"
+#अगर_घोषित _WIN32
+#घोषणा WIN32_LEAN_AND_MEAN
+#समावेश <windows.h> /* FlushInstructionCache */
+#पूर्ण_अगर
+#समावेश <tramp.h>
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#अगर FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+# अगर FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#अन्यथा
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#पूर्ण_अगर
 
-union _d
+जोड़ _d
 {
   UINT64 d;
   UINT32 s[2];
 };
 
-struct _v
+काष्ठा _v
 {
-  union _d d[2] __attribute__((aligned(16)));
+  जोड़ _d d[2] __attribute__((aligned(16)));
 };
 
-struct call_context
+काष्ठा call_context
 {
-  struct _v v[N_V_ARG_REG];
+  काष्ठा _v v[N_V_ARG_REG];
   UINT64 x[N_X_ARG_REG];
 };
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#अगर FFI_EXEC_TRAMPOLINE_TABLE
 
-#ifdef __MACH__
-#ifdef HAVE_ARM64E_PTRAUTH
-#include <ptrauth.h>
-#endif
-#include <mach/vm_param.h>
-#endif
+#अगर_घोषित __MACH__
+#अगर_घोषित HAVE_ARM64E_PTRAUTH
+#समावेश <ptrauth.h>
+#पूर्ण_अगर
+#समावेश <mach/vm_param.h>
+#पूर्ण_अगर
 
-#else
+#अन्यथा
 
-#if defined (__clang__) && defined (__APPLE__)
-extern void sys_icache_invalidate (void *start, size_t len);
-#endif
+#अगर defined (__clang__) && defined (__APPLE__)
+बाह्य व्योम sys_icache_invalidate (व्योम *start, माप_प्रकार len);
+#पूर्ण_अगर
 
-static inline void
-ffi_clear_cache (void *start, void *end)
+अटल अंतरभूत व्योम
+ffi_clear_cache (व्योम *start, व्योम *end)
 {
-#if defined (__clang__) && defined (__APPLE__)
-  sys_icache_invalidate (start, (char *)end - (char *)start);
-#elif defined (__GNUC__)
+#अगर defined (__clang__) && defined (__APPLE__)
+  sys_icache_invalidate (start, (अक्षर *)end - (अक्षर *)start);
+#या_अगर defined (__GNUC__)
   __builtin___clear_cache (start, end);
-#elif defined (_WIN32)
-  FlushInstructionCache(GetCurrentProcess(), start, (char*)end - (char*)start);
-#else
-#error "Missing builtin to flush instruction cache"
-#endif
+#या_अगर defined (_WIN32)
+  FlushInstructionCache(GetCurrentProcess(), start, (अक्षर*)end - (अक्षर*)start);
+#अन्यथा
+#त्रुटि "Missing builtin to flush instruction cache"
+#पूर्ण_अगर
 }
 
-#endif
+#पूर्ण_अगर
 
 /* Return the base-2 logarithm of N (N assumed to be a power of two).  Used
    to map a vector register width (8 or 16 bytes) onto the D-/Q-register
    AARCH64_RET_* encoding.  */
 
-static int
-intlog2 (int n)
+अटल पूर्णांक
+intlog2 (पूर्णांक n)
 {
-  int level = 0;
-  while (n >>= 1)
+  पूर्णांक level = 0;
+  जबतक (n >>= 1)
     ++level;
-  return level;
+  वापस level;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return the type code
    of the first non-structure element.  Recurse for structure elements.
    Return -1 if the structure is in fact empty, i.e. no nested elements.  */
 
-static int
-is_hfa0 (const ffi_type *ty)
+अटल पूर्णांक
+is_hfa0 (स्थिर ffi_type *ty)
 {
   ffi_type **elements = ty->elements;
-  int i, ret = -1;
+  पूर्णांक i, ret = -1;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  अगर (elements != शून्य)
+    क्रम (i = 0; elements[i]; ++i)
       {
         ret = elements[i]->type;
-        if (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
+        अगर (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
 	    || ret == FFI_TYPE_COMPLEX)
           {
             ret = is_hfa0 (elements[i]);
-            if (ret < 0)
-              continue;
+            अगर (ret < 0)
+              जारी;
           }
-        break;
+        अवरोध;
       }
 
-  return ret;
+  वापस ret;
 }
 
 /* A subroutine of is_vfp_type.  Return the size in bytes of the vector (SIMD)
@@ -137,52 +137,52 @@ is_hfa0 (const ffi_type *ty)
    neither is nor contains a vector.  For a bare vector this is its whole size;
    for a homogeneous vector aggregate it is the size of one lane vector.  */
 
-static size_t
-is_simd (const ffi_type *ty)
+अटल माप_प्रकार
+is_simd (स्थिर ffi_type *ty)
 {
   ffi_type **elements;
-  int i;
+  पूर्णांक i;
 
-  if (ty->type == FFI_TYPE_VECTOR)
-    return ty->size;
+  अगर (ty->type == FFI_TYPE_VECTOR)
+    वापस ty->आकार;
 
   elements = ty->elements;
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  अगर (elements != शून्य)
+    क्रम (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
+        पूर्णांक t = elements[i]->type;
+        अगर (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
 	    || t == FFI_TYPE_VECTOR)
-          return is_simd (elements[i]);
+          वापस is_simd (elements[i]);
       }
 
-  return 0;
+  वापस 0;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return true if all
    of the non-structure elements are the same as CANDIDATE.  */
 
-static int
-is_hfa1 (const ffi_type *ty, int candidate)
+अटल पूर्णांक
+is_hfa1 (स्थिर ffi_type *ty, पूर्णांक candidate)
 {
   ffi_type **elements = ty->elements;
-  int i;
+  पूर्णांक i;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  अगर (elements != शून्य)
+    क्रम (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+        पूर्णांक t = elements[i]->type;
+        अगर (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	    || t == FFI_TYPE_COMPLEX)
           {
-            if (!is_hfa1 (elements[i], candidate))
-              return 0;
+            अगर (!is_hfa1 (elements[i], candidate))
+              वापस 0;
           }
-        else if (t != candidate)
-          return 0;
+        अन्यथा अगर (t != candidate)
+          वापस 0;
       }
 
-  return 1;
+  वापस 1;
 }
 
 /* Determine if TY may be allocated to the FP registers.  This is both an
@@ -193,64 +193,64 @@ is_hfa1 (const ffi_type *ty, int candidate)
    Returns non-zero iff TY is an HFA.  The result is the AARCH64_RET_*
    constant for the type.  */
 
-static int
-is_vfp_type (const ffi_type *ty)
+अटल पूर्णांक
+is_vfp_type (स्थिर ffi_type *ty)
 {
   ffi_type **elements;
-  int candidate, i;
-  size_t size, ele_count, simd_size;
+  पूर्णांक candidate, i;
+  माप_प्रकार आकार, ele_गिनती, simd_आकार;
 
   /* Quickest tests first.  */
   candidate = ty->type;
-  switch (candidate)
+  चयन (candidate)
     {
-    default:
-      return 0;
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
-      ele_count = 1;
-      goto done;
-    case FFI_TYPE_COMPLEX:
+    शेष:
+      वापस 0;
+    हाल FFI_TYPE_FLOAT:
+    हाल FFI_TYPE_DOUBLE:
+    हाल FFI_TYPE_LONGDOUBLE:
+      ele_गिनती = 1;
+      जाओ done;
+    हाल FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
-      switch (candidate)
+      चयन (candidate)
 	{
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	  ele_count = 2;
-	  goto done;
+	हाल FFI_TYPE_FLOAT:
+	हाल FFI_TYPE_DOUBLE:
+	हाल FFI_TYPE_LONGDOUBLE:
+	  ele_गिनती = 2;
+	  जाओ done;
 	}
-      return 0;
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_VECTOR:
-      break;
+      वापस 0;
+    हाल FFI_TYPE_STRUCT:
+    हाल FFI_TYPE_VECTOR:
+      अवरोध;
     }
 
   /* No HFA/HVA types are smaller than 4 bytes, or larger than 64 bytes.  */
-  size = ty->size;
-  if (size < 4 || size > 64)
-    return 0;
+  आकार = ty->आकार;
+  अगर (आकार < 4 || आकार > 64)
+    वापस 0;
 
   /* Determine the width of the vector (SIMD) member, if any: 0 for a plain
      floating-point HFA, else the size in bytes of one Neon register slot.  */
-  simd_size = is_simd (ty);
+  simd_आकार = is_simd (ty);
 
   /* Find the type of the first non-aggregate member.  */
   elements = ty->elements;
   candidate = elements[0]->type;
-  if (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
+  अगर (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
       || candidate == FFI_TYPE_COMPLEX)
     {
-      for (i = 0; ; ++i)
+      क्रम (i = 0; ; ++i)
         {
           candidate = is_hfa0 (elements[i]);
-          if (candidate >= 0)
-            break;
+          अगर (candidate >= 0)
+            अवरोध;
         }
     }
 
-  if (simd_size)
+  अगर (simd_आकार)
     {
       /* Vector or homogeneous vector aggregate (HVA).  A single Neon slot is
 	 at most 16 bytes (a Q register).  A bare vector wider than 16 bytes
@@ -261,93 +261,93 @@ is_vfp_type (const ffi_type *ty)
 	 and a floating-point 16-byte vector both occupy one Q register), so,
 	 unlike the floating-point HFA path below, CANDIDATE is used only to
 	 confirm the lanes are homogeneous.  */
-      size_t reg_size = simd_size;
-      int num_registers;
-      int first_level_element_type;
+      माप_प्रकार reg_आकार = simd_आकार;
+      पूर्णांक अंक_registers;
+      पूर्णांक first_level_element_type;
 
       /* A Neon register slot is an S (4B), D (8B) or Q (16B).  A lane narrower
 	 than 4 bytes has no short-vector register class under AAPCS64 and would
 	 map below AARCH64_RET_S4, making extend_hfa_type() branch before its
 	 jump table; reject it and let the generic aggregate path handle it.  */
-      if (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
-	return 0;
-      num_registers = (int) (size / reg_size);
-      if (num_registers > 4)
-	return 0;
+      अगर (reg_आकार < 4 || reg_आकार > 16 || आकार % reg_आकार != 0)
+	वापस 0;
+      अंक_registers = (पूर्णांक) (आकार / reg_आकार);
+      अगर (अंक_registers > 4)
+	वापस 0;
 
       /* For an aggregate, every member must itself be a vector (or nested
 	 vector aggregate) of the same register width: this rejects a struct
 	 that mixes a bare scalar with a vector even when the scalar's type
 	 matches the vector's lane type.  A bare vector needs no such check --
 	 its lanes were validated when its layout was computed.  */
-      if (ty->type != FFI_TYPE_VECTOR)
-	for (i = 0; elements[i]; ++i)
-	  if (is_simd (elements[i]) != reg_size)
-	    return 0;
+      अगर (ty->type != FFI_TYPE_VECTOR)
+	क्रम (i = 0; elements[i]; ++i)
+	  अगर (is_simd (elements[i]) != reg_आकार)
+	    वापस 0;
 
       /* Every lane must be the identical scalar type across the whole HVA
 	 (this rejects, e.g., an aggregate mixing float and integer vectors).  */
-      for (i = 0; elements[i]; ++i)
+      क्रम (i = 0; elements[i]; ++i)
 	{
-	  int t = elements[i]->type;
-	  if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+	  पूर्णांक t = elements[i]->type;
+	  अगर (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	      || t == FFI_TYPE_COMPLEX)
 	    {
-	      if (!is_hfa1 (elements[i], candidate))
-		return 0;
+	      अगर (!is_hfa1 (elements[i], candidate))
+		वापस 0;
 	    }
-	  else if (t != candidate)
-	    return 0;
+	  अन्यथा अगर (t != candidate)
+	    वापस 0;
 	}
 
       /* Reuse the AARCH64_RET_{S,D,Q}* codes, which are laid out as
 	 (type * 4) + (4 - count) with FLOAT->S(4B), DOUBLE->D(8B),
 	 LONGDOUBLE->Q(16B).  Map the register width onto that type axis.  */
-      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((int) reg_size) - 2;
-      return first_level_element_type * 4 + (4 - num_registers);
+      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((पूर्णांक) reg_आकार) - 2;
+      वापस first_level_element_type * 4 + (4 - अंक_registers);
     }
 
   /* If the first member is not a floating point type, it's not an HFA.
      Also quickly re-check the size of the structure.  */
-  switch (candidate)
+  चयन (candidate)
     {
-    case FFI_TYPE_FLOAT:
-      ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
-        return 0;
-      break;
-    case FFI_TYPE_DOUBLE:
-      ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
-        return 0;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-      ele_count = size / sizeof(long double);
-      if (size != ele_count * sizeof(long double))
-        return 0;
-      break;
-    default:
-      return 0;
+    हाल FFI_TYPE_FLOAT:
+      ele_गिनती = आकार / माप(भग्न);
+      अगर (आकार != ele_गिनती * माप(भग्न))
+        वापस 0;
+      अवरोध;
+    हाल FFI_TYPE_DOUBLE:
+      ele_गिनती = आकार / माप(द्विगुन);
+      अगर (आकार != ele_गिनती * माप(द्विगुन))
+        वापस 0;
+      अवरोध;
+    हाल FFI_TYPE_LONGDOUBLE:
+      ele_गिनती = आकार / माप(दीर्घ द्विगुन);
+      अगर (आकार != ele_गिनती * माप(दीर्घ द्विगुन))
+        वापस 0;
+      अवरोध;
+    शेष:
+      वापस 0;
     }
-  if (ele_count > 4)
-    return 0;
+  अगर (ele_गिनती > 4)
+    वापस 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
-  for (i = 0; elements[i]; ++i)
+  क्रम (i = 0; elements[i]; ++i)
     {
-      int t = elements[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+      पूर्णांक t = elements[i]->type;
+      अगर (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
         {
-          if (!is_hfa1 (elements[i], candidate))
-            return 0;
+          अगर (!is_hfa1 (elements[i], candidate))
+            वापस 0;
         }
-      else if (t != candidate)
-        return 0;
+      अन्यथा अगर (t != candidate)
+        वापस 0;
     }
 
   /* All tests succeeded.  Encode the result.  */
  done:
-  return candidate * 4 + (4 - (int)ele_count);
+  वापस candidate * 4 + (4 - (पूर्णांक)ele_गिनती);
 }
 
 /* Representation of the procedure call argument marshalling
@@ -360,140 +360,140 @@ is_vfp_type (const ffi_type *ty)
    area.  It is used to hold copies of structures passed by value that are
    bigger than 16 bytes.  */
 
-struct arg_state
+काष्ठा arg_state
 {
-  unsigned ngrn;                /* Next general-purpose register number. */
-  unsigned nsrn;                /* Next vector register number. */
-  size_t nsaa;                  /* Next stack offset. */
-  size_t next_struct_area;	/* Place to allocate big structs. */
+  अचिन्हित ngrn;                /* Next general-purpose register number. */
+  अचिन्हित nsrn;                /* Next vector register number. */
+  माप_प्रकार nsaa;                  /* Next stack offset. */
+  माप_प्रकार अग्र_struct_area;	/* Place to allocate big structs. */
 
-#if defined (__APPLE__)
-  unsigned allocating_variadic;
-#endif
+#अगर defined (__APPLE__)
+  अचिन्हित allocating_variadic;
+#पूर्ण_अगर
 };
 
 /* Initialize a procedure call argument marshalling state.  */
-static void
-arg_init (struct arg_state *state, size_t size)
+अटल व्योम
+arg_init (काष्ठा arg_state *state, माप_प्रकार आकार)
 {
   state->ngrn = 0;
   state->nsrn = 0;
   state->nsaa = 0;
-  state->next_struct_area = size;
-#if defined (__APPLE__)
+  state->अग्र_struct_area = आकार;
+#अगर defined (__APPLE__)
   state->allocating_variadic = 0;
-#endif
+#पूर्ण_अगर
 }
 
 /* Allocate an aligned slot on the stack and return a pointer to it.  */
-static void *
-allocate_to_stack (struct arg_state *state, void *stack,
-		   size_t alignment, size_t size)
+अटल व्योम *
+allocate_to_ढेर (काष्ठा arg_state *state, व्योम *ढेर,
+		   माप_प्रकार alignment, माप_प्रकार आकार)
 {
-  size_t nsaa = state->nsaa;
+  माप_प्रकार nsaa = state->nsaa;
 
   /* Round up the NSAA to the larger of 8 or the natural
      alignment of the argument's type.  */
-#if defined (__APPLE__)
-  if (state->allocating_variadic && alignment < 8)
+#अगर defined (__APPLE__)
+  अगर (state->allocating_variadic && alignment < 8)
     alignment = 8;
-#else
-  if (alignment < 8)
+#अन्यथा
+  अगर (alignment < 8)
     alignment = 8;
-#endif
+#पूर्ण_अगर
 
   nsaa = FFI_ALIGN (nsaa, alignment);
-  state->nsaa = nsaa + size;
+  state->nsaa = nsaa + आकार;
 
-  return (char *)stack + nsaa;
+  वापस (अक्षर *)ढेर + nsaa;
 }
 
 /* Allocate and copy a structure that is passed by value on the stack and
    return a pointer to it.  */
-static void *
-allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
-				   size_t alignment, size_t size, void *value)
+अटल व्योम *
+allocate_and_copy_struct_to_ढेर (काष्ठा arg_state *state, व्योम *ढेर,
+				   माप_प्रकार alignment, माप_प्रकार आकार, व्योम *मूल्य)
 {
-  size_t dest = state->next_struct_area - size;
+  माप_प्रकार dest = state->अग्र_struct_area - आकार;
 
   /* Round down to the natural alignment of the value.  */
   dest = FFI_ALIGN_DOWN (dest, alignment);
-  state->next_struct_area = dest;
+  state->अग्र_struct_area = dest;
 
-  return memcpy ((char *) stack + dest, value, size);
+  वापस स_नकल ((अक्षर *) ढेर + dest, मूल्य, आकार);
 }
 
-static ffi_arg
-extend_integer_type (void *source, int type)
+अटल ffi_arg
+extend_integer_type (व्योम *source, पूर्णांक type)
 {
-  switch (type)
+  चयन (type)
     {
-    case FFI_TYPE_UINT8:
+    हाल FFI_TYPE_UINT8:
       {
         UINT8 u8;
-        memcpy (&u8, source, sizeof (u8));
-        return u8;
+        स_नकल (&u8, source, माप (u8));
+        वापस u8;
       }
-    case FFI_TYPE_SINT8:
+    हाल FFI_TYPE_SINT8:
       {
         SINT8 s8;
-        memcpy (&s8, source, sizeof (s8));
-        return s8;
+        स_नकल (&s8, source, माप (s8));
+        वापस s8;
       }
-    case FFI_TYPE_UINT16:
+    हाल FFI_TYPE_UINT16:
       {
         UINT16 u16;
-        memcpy (&u16, source, sizeof (u16));
-        return u16;
+        स_नकल (&u16, source, माप (u16));
+        वापस u16;
       }
-    case FFI_TYPE_SINT16:
+    हाल FFI_TYPE_SINT16:
       {
         SINT16 s16;
-        memcpy (&s16, source, sizeof (s16));
-        return s16;
+        स_नकल (&s16, source, माप (s16));
+        वापस s16;
       }
-    case FFI_TYPE_UINT32:
+    हाल FFI_TYPE_UINT32:
       {
         UINT32 u32;
-        memcpy (&u32, source, sizeof (u32));
-        return u32;
+        स_नकल (&u32, source, माप (u32));
+        वापस u32;
       }
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+    हाल FFI_TYPE_INT:
+    हाल FFI_TYPE_SINT32:
       {
         SINT32 s32;
-        memcpy (&s32, source, sizeof (s32));
-        return s32;
+        स_नकल (&s32, source, माप (s32));
+        वापस s32;
       }
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    हाल FFI_TYPE_UINT64:
+    हाल FFI_TYPE_SINT64:
       {
         UINT64 u64;
-        memcpy (&u64, source, sizeof (u64));
-        return u64;
+        स_नकल (&u64, source, माप (u64));
+        वापस u64;
       }
-    case FFI_TYPE_POINTER:
+    हाल FFI_TYPE_POINTER:
       {
         uintptr_t uptr;
-        memcpy (&uptr, source, sizeof (uptr));
-        return uptr;
+        स_नकल (&uptr, source, माप (uptr));
+        वापस uptr;
       }
-    default:
-      abort();
+    शेष:
+      पात();
     }
 }
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void extend_hfa_type (void *dest, void *src, int h);
-#else
-static void
-extend_hfa_type (void *dest, void *src, int h)
+#अगर defined(_MSC_VER) && !defined(__clang__)
+व्योम extend_hfa_type (व्योम *dest, व्योम *src, पूर्णांक h);
+#अन्यथा
+अटल व्योम
+extend_hfa_type (व्योम *dest, व्योम *src, पूर्णांक h)
 {
-  ptrdiff_t f = h - AARCH64_RET_S4;
-  void *x0;
+  सूचक_भेद_प्रकार f = h - AARCH64_RET_S4;
+  व्योम *x0;
 
-#define BTI_J "hint #36"
-  __asm__ volatile (
+#घोषणा BTI_J "hint #36"
+  __asm__ अस्थिर (
 	"adr	%0, 0f\n"
 "	add	%0, %0, %1\n"
 "	br	%0\n"
@@ -552,195 +552,195 @@ extend_hfa_type (void *dest, void *src, int h)
     : "r"(f * 16), "r"(dest), "r"(src)
     : "memory", "v16", "v17", "v18", "v19");
 }
-#endif
+#पूर्ण_अगर
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void* compress_hfa_type (void *dest, void *src, int h);
-#else
-static void *
-compress_hfa_type (void *dest, void *reg, int h)
+#अगर defined(_MSC_VER) && !defined(__clang__)
+व्योम* compress_hfa_type (व्योम *dest, व्योम *src, पूर्णांक h);
+#अन्यथा
+अटल व्योम *
+compress_hfa_type (व्योम *dest, व्योम *reg, पूर्णांक h)
 {
-  switch (h)
+  चयन (h)
     {
-    case AARCH64_RET_S1:
-      if (dest == reg)
-	return (char *)dest + BE (12);
-      else
-	*(float *)dest = *(float *)((char *)reg + BE (12));
-      break;
-    case AARCH64_RET_S2:
+    हाल AARCH64_RET_S1:
+      अगर (dest == reg)
+	वापस (अक्षर *)dest + BE (12);
+      अन्यथा
+	*(भग्न *)dest = *(भग्न *)((अक्षर *)reg + BE (12));
+      अवरोध;
+    हाल AARCH64_RET_S2:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "st2 { v16.s, v17.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17");
-      break;
-    case AARCH64_RET_S3:
+      अवरोध;
+    हाल AARCH64_RET_S3:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldr q18, [%1, #32]\n\t"
 	   "st3 { v16.s, v17.s, v18.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18");
-      break;
-    case AARCH64_RET_S4:
+      अवरोध;
+    हाल AARCH64_RET_S4:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldp q18, q19, [%1, #32]\n\t"
 	   "st4 { v16.s, v17.s, v18.s, v19.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18", "v19");
-      break;
+      अवरोध;
 
-    case AARCH64_RET_D1:
-      if (dest == reg)
-	return (char *)dest + BE (8);
-      else
-	*(double *)dest = *(double *)((char *)reg + BE (8));
-      break;
-    case AARCH64_RET_D2:
+    हाल AARCH64_RET_D1:
+      अगर (dest == reg)
+	वापस (अक्षर *)dest + BE (8);
+      अन्यथा
+	*(द्विगुन *)dest = *(द्विगुन *)((अक्षर *)reg + BE (8));
+      अवरोध;
+    हाल AARCH64_RET_D2:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "st2 { v16.d, v17.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17");
-      break;
-    case AARCH64_RET_D3:
+      अवरोध;
+    हाल AARCH64_RET_D3:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldr q18, [%1, #32]\n\t"
 	   "st3 { v16.d, v17.d, v18.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18");
-      break;
-    case AARCH64_RET_D4:
+      अवरोध;
+    हाल AARCH64_RET_D4:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldp q18, q19, [%1, #32]\n\t"
 	   "st4 { v16.d, v17.d, v18.d, v19.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18", "v19");
-      break;
+      अवरोध;
 
-    default:
-      if (dest != reg)
-	return memcpy (dest, reg, 16 * (4 - (h & 3)));
-      break;
+    शेष:
+      अगर (dest != reg)
+	वापस स_नकल (dest, reg, 16 * (4 - (h & 3)));
+      अवरोध;
     }
-  return dest;
+  वापस dest;
 }
-#endif
+#पूर्ण_अगर
 
 /* Either allocate an appropriate register for the argument type, or if
    none are available, allocate a stack slot and return a pointer
    to the allocated space.  */
 
-static void *
-allocate_int_to_reg_or_stack (struct call_context *context,
-			      struct arg_state *state,
-			      void *stack, size_t size)
+अटल व्योम *
+allocate_int_to_reg_or_ढेर (काष्ठा call_context *context,
+			      काष्ठा arg_state *state,
+			      व्योम *ढेर, माप_प्रकार आकार)
 {
-  if (state->ngrn < N_X_ARG_REG)
-    return (char *)&context->x[state->ngrn++] + BE (sizeof (UINT64) - size);
+  अगर (state->ngrn < N_X_ARG_REG)
+    वापस (अक्षर *)&context->x[state->ngrn++] + BE (माप (UINT64) - आकार);
 
   state->ngrn = N_X_ARG_REG;
-  return (char *)allocate_to_stack (state, stack, size, size)
-	 + BE (sizeof (UINT64) - size);
+  वापस (अक्षर *)allocate_to_ढेर (state, ढेर, आकार, आकार)
+	 + BE (माप (UINT64) - आकार);
 }
 
-static void *
-allocate_int128_to_reg_or_stack (struct call_context *context,
-			         struct arg_state *state, void *stack)
+अटल व्योम *
+allocate_int128_to_reg_or_ढेर (काष्ठा call_context *context,
+			         काष्ठा arg_state *state, व्योम *ढेर)
 {
-  unsigned ngrn = state->ngrn;
-  void *ret;
+  अचिन्हित ngrn = state->ngrn;
+  व्योम *ret;
 
   /* The normal AArch64 ABI requires even Xreg; Darwin does not. */
-#ifndef __APPLE__
+#अगर_अघोषित __APPLE__
   ngrn += ngrn & 1;
-#endif
+#पूर्ण_अगर
 
   /* The value must fit entirely in registers, i.e. the low half may
      not be allocated to x7 with the high half spilled to the stack.  */
-  if (ngrn + 2 <= N_X_ARG_REG)
+  अगर (ngrn + 2 <= N_X_ARG_REG)
     {
       ret = &context->x[ngrn];
       ngrn += 2;
     }
-  else
+  अन्यथा
     {
-      ret = allocate_to_stack (state, stack, 16, 16);
+      ret = allocate_to_ढेर (state, ढेर, 16, 16);
       ngrn = N_X_ARG_REG;
     }
   state->ngrn = ngrn;
-  return ret;
+  वापस ret;
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  size_t bytes = cif->bytes;
-  int flags, i, n;
+  माप_प्रकार bytes = cif->bytes;
+  पूर्णांक flags, i, n;
 
-  switch (rtype->type)
+  चयन (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    हाल FFI_TYPE_VOID:
       flags = AARCH64_RET_VOID;
-      break;
-    case FFI_TYPE_UINT8:
+      अवरोध;
+    हाल FFI_TYPE_UINT8:
       flags = AARCH64_RET_UINT8;
-      break;
-    case FFI_TYPE_UINT16:
+      अवरोध;
+    हाल FFI_TYPE_UINT16:
       flags = AARCH64_RET_UINT16;
-      break;
-    case FFI_TYPE_UINT32:
+      अवरोध;
+    हाल FFI_TYPE_UINT32:
       flags = AARCH64_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT8:
+      अवरोध;
+    हाल FFI_TYPE_SINT8:
       flags = AARCH64_RET_SINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      अवरोध;
+    हाल FFI_TYPE_SINT16:
       flags = AARCH64_RET_SINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+      अवरोध;
+    हाल FFI_TYPE_INT:
+    हाल FFI_TYPE_SINT32:
       flags = AARCH64_RET_SINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      अवरोध;
+    हाल FFI_TYPE_SINT64:
+    हाल FFI_TYPE_UINT64:
       flags = AARCH64_RET_INT64;
-      break;
-    case FFI_TYPE_POINTER:
-      flags = (sizeof(void *) == 4 ? AARCH64_RET_UINT32 : AARCH64_RET_INT64);
-      break;
+      अवरोध;
+    हाल FFI_TYPE_POINTER:
+      flags = (माप(व्योम *) == 4 ? AARCH64_RET_UINT32 : AARCH64_RET_INT64);
+      अवरोध;
 
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_SINT128:
+    हाल FFI_TYPE_UINT128:
+    हाल FFI_TYPE_SINT128:
       flags = AARCH64_RET_INT128;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_VECTOR:
-    case FFI_TYPE_COMPLEX:
+    हाल FFI_TYPE_FLOAT:
+    हाल FFI_TYPE_DOUBLE:
+    हाल FFI_TYPE_LONGDOUBLE:
+    हाल FFI_TYPE_STRUCT:
+    हाल FFI_TYPE_VECTOR:
+    हाल FFI_TYPE_COMPLEX:
       flags = is_vfp_type (rtype);
-      if (flags == 0)
+      अगर (flags == 0)
 	{
-	  size_t s = rtype->size;
-	  if (s > 16)
+	  माप_प्रकार s = rtype->आकार;
+	  अगर (s > 16)
 	    {
 	      flags = AARCH64_RET_VOID | AARCH64_RET_IN_MEM;
 	      bytes += 8;
 	    }
-	  else if (s == 16)
+	  अन्यथा अगर (s == 16)
 	    flags = AARCH64_RET_INT128;
-	  else if (s == 8)
+	  अन्यथा अगर (s == 8)
 	    flags = AARCH64_RET_INT64;
-	  else
+	  अन्यथा
 	    flags = AARCH64_RET_INT128 | AARCH64_RET_NEED_COPY;
 	}
-      break;
+      अवरोध;
 
-    default:
-      abort();
+    शेष:
+      पात();
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
-    if (is_vfp_type (cif->arg_types[i]))
+  क्रम (i = 0, n = cif->nargs; i < n; i++)
+    अगर (is_vfp_type (cif->arg_types[i]))
       {
 	flags |= AARCH64_FLAG_ARG_V;
-	break;
+	अवरोध;
       }
 
   /* Composites larger than 16 bytes (that are not HFAs) are passed by
@@ -753,69 +753,69 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      already-spilled pointer with the copied payload bytes.  Reserve an
      extra 8 bytes per such argument so the slab is always large enough
      for both.  */
-  for (i = 0, n = cif->nargs; i < n; i++)
+  क्रम (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      if (ty->size > 16 && !is_vfp_type (ty))
+      अगर (ty->आकार > 16 && !is_vfp_type (ty))
 	bytes += 8;
     }
 
   /* Round the stack up to a multiple of the stack alignment requirement. */
-  cif->bytes = (unsigned) FFI_ALIGN(bytes, 16);
+  cif->bytes = (अचिन्हित) FFI_ALIGN(bytes, 16);
   cif->flags = flags;
-#if defined (__APPLE__)
+#अगर defined (__APPLE__)
   cif->aarch64_nfixedargs = 0;
-#endif
+#पूर्ण_अगर
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
-#if defined (__APPLE__)
+#अगर defined (__APPLE__)
 /* Perform Apple-specific cif processing for variadic calls */
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-			 unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, अचिन्हित पूर्णांक nfixedargs,
+			 अचिन्हित पूर्णांक ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->aarch64_nfixedargs = nfixedargs;
-  return status;
+  वापस status;
 }
-#else
+#अन्यथा
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, अचिन्हित पूर्णांक nfixedargs, अचिन्हित पूर्णांक ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->flags |= AARCH64_FLAG_VARARG;
-  return status;
+  वापस status;
 }
-#endif /* __APPLE__ */
+#पूर्ण_अगर /* __APPLE__ */
 
-extern void ffi_call_SYSV (struct call_context *context, void *frame,
-			   void (*fn)(void), void *rvalue, int flags,
-			   void *closure) FFI_HIDDEN;
+बाह्य व्योम ffi_call_SYSV (काष्ठा call_context *context, व्योम *frame,
+			   व्योम (*fn)(व्योम), व्योम *rvalue, पूर्णांक flags,
+			   व्योम *closure) FFI_HIDDEN;
 
 /* Call a function with the provided arguments and capture the return
    value.
    n.b. ffi_call_SYSV will steal the alloca'd `stack` variable here for use
    _as its own stack_ - so we need to compile this function without ASAN */
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
-	      void **avalue, void *closure)
+अटल व्योम
+ffi_call_int (ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *orig_rvalue,
+	      व्योम **avalue, व्योम *closure)
 {
-  struct call_context *context;
-  void *stack, *frame, *rvalue;
-  struct arg_state state;
-  size_t stack_bytes, rtype_size, rsize;
-  int i, nargs, flags, isvariadic = 0;
+  काष्ठा call_context *context;
+  व्योम *ढेर, *frame, *rvalue;
+  काष्ठा arg_state state;
+  माप_प्रकार ढेर_bytes, rtype_आकार, rsize;
+  पूर्णांक i, nargs, flags, isvariadic = 0;
   ffi_type *rtype;
 
   flags = cif->flags;
   rtype = cif->rtype;
-  rtype_size = rtype->size;
-  stack_bytes = cif->bytes;
+  rtype_आकार = rtype->आकार;
+  ढेर_bytes = cif->bytes;
 
-  if (flags & AARCH64_FLAG_VARARG)
+  अगर (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
@@ -825,300 +825,300 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
      then we cannot allow a null rvalue.  Otherwise, mash a null
      rvalue to void return type.  */
   rsize = 0;
-  if (flags & AARCH64_RET_IN_MEM)
+  अगर (flags & AARCH64_RET_IN_MEM)
     {
-      if (orig_rvalue == NULL)
-	rsize = rtype_size;
+      अगर (orig_rvalue == शून्य)
+	rsize = rtype_आकार;
     }
-  else if (orig_rvalue == NULL)
+  अन्यथा अगर (orig_rvalue == शून्य)
     flags &= AARCH64_FLAG_ARG_V;
-  else if (flags & AARCH64_RET_NEED_COPY)
+  अन्यथा अगर (flags & AARCH64_RET_NEED_COPY)
     rsize = 16;
 
   /* Allocate consecutive stack for everything we'll need.
      The frame uses 40 bytes for: lr, fp, rvalue, flags, sp */
-  context = alloca (sizeof(struct call_context) + stack_bytes + 40 + rsize);
-  stack = context + 1;
-  frame = (void*)((uintptr_t)stack + (uintptr_t)stack_bytes);
-  rvalue = (rsize ? (void*)((uintptr_t)frame + 40) : orig_rvalue);
+  context = alloca (माप(काष्ठा call_context) + ढेर_bytes + 40 + rsize);
+  ढेर = context + 1;
+  frame = (व्योम*)((uintptr_t)ढेर + (uintptr_t)ढेर_bytes);
+  rvalue = (rsize ? (व्योम*)((uintptr_t)frame + 40) : orig_rvalue);
 
-  arg_init (&state, stack_bytes);
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  arg_init (&state, ढेर_bytes);
+  क्रम (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      size_t s = ty->size;
-      void *a = avalue[i];
-      int h, t;
-      void *dest;
+      माप_प्रकार s = ty->आकार;
+      व्योम *a = avalue[i];
+      पूर्णांक h, t;
+      व्योम *dest;
 
       t = ty->type;
-      switch (t)
+      चयन (t)
 	{
-	case FFI_TYPE_VOID:
+	हाल FFI_TYPE_VOID:
 	  FFI_ASSERT (0);
-	  break;
+	  अवरोध;
 
 	/* If the argument is a basic type the argument is allocated to an
 	   appropriate register, or if none are available, to the stack.  */
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	हाल FFI_TYPE_INT:
+	हाल FFI_TYPE_UINT8:
+	हाल FFI_TYPE_SINT8:
+	हाल FFI_TYPE_UINT16:
+	हाल FFI_TYPE_SINT16:
+	हाल FFI_TYPE_UINT32:
+	हाल FFI_TYPE_SINT32:
+	हाल FFI_TYPE_UINT64:
+	हाल FFI_TYPE_SINT64:
+	हाल FFI_TYPE_POINTER:
 	do_pointer:
 	  {
 	    ffi_arg ext = extend_integer_type (a, t);
-	    if (state.ngrn < N_X_ARG_REG)
+	    अगर (state.ngrn < N_X_ARG_REG)
 	      context->x[state.ngrn++] = ext;
-	    else
+	    अन्यथा
 	      {
-		void *d = allocate_to_stack (&state, stack, ty->alignment, s);
+		व्योम *d = allocate_to_ढेर (&state, ढेर, ty->alignment, s);
 		state.ngrn = N_X_ARG_REG;
 		/* Note that the default abi extends each argument
 		   to a full 64-bit slot, while the iOS abi allocates
 		   only enough space. */
-#ifdef __APPLE__
-		memcpy(d, a, s);
-#else
+#अगर_घोषित __APPLE__
+		स_नकल(d, a, s);
+#अन्यथा
 		*(ffi_arg *)d = ext;
-#endif
+#पूर्ण_अगर
 	      }
 	  }
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
-	  dest = allocate_int128_to_reg_or_stack (context, &state, stack);
-	  memcpy (dest, a, 16);
-	  break;
+	हाल FFI_TYPE_UINT128:
+	हाल FFI_TYPE_SINT128:
+	  dest = allocate_int128_to_reg_or_ढेर (context, &state, ढेर);
+	  स_नकल (dest, a, 16);
+	  अवरोध;
 
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	case FFI_TYPE_COMPLEX:
+	हाल FFI_TYPE_FLOAT:
+	हाल FFI_TYPE_DOUBLE:
+	हाल FFI_TYPE_LONGDOUBLE:
+	हाल FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_VECTOR:
+	हाल FFI_TYPE_COMPLEX:
 	  {
 	    h = is_vfp_type (ty);
-	    if (h)
+	    अगर (h)
 	      {
-              int elems = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              पूर्णांक elems = 4 - (h & 3);
+              अगर (cif->abi == FFI_WIN64 && isvariadic)
               {
-                if (state.ngrn + elems <= N_X_ARG_REG)
+                अगर (state.ngrn + elems <= N_X_ARG_REG)
                 {
                   dest = &context->x[state.ngrn];
                   state.ngrn += elems;
                   extend_hfa_type(dest, a, h);
-                  break;
+                  अवरोध;
                 }
                 state.nsrn = N_X_ARG_REG;
-                dest = allocate_to_stack(&state, stack, ty->alignment, s);
+                dest = allocate_to_ढेर(&state, ढेर, ty->alignment, s);
               }
-              else
+              अन्यथा
               {
-                if (state.nsrn + elems <= N_V_ARG_REG)
+                अगर (state.nsrn + elems <= N_V_ARG_REG)
                 {
                   dest = &context->v[state.nsrn];
                   state.nsrn += elems;
                   extend_hfa_type (dest, a, h);
-                  break;
+                  अवरोध;
                 }
                 state.nsrn = N_V_ARG_REG;
-                dest = (char *)allocate_to_stack (&state, stack, ty->alignment, s)
-                       + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                dest = (अक्षर *)allocate_to_ढेर (&state, ढेर, ty->alignment, s)
+                       + (t == FFI_TYPE_FLOAT ? BE (माप (UINT64) - s) : 0);
               }
 	      }
-	    else if (s > 16)
+	    अन्यथा अगर (s > 16)
 	      {
 		/* If the argument is a composite type that is larger than 16
 		   bytes, then the argument is copied to memory, and
 		   the argument is replaced by a pointer to the copy.  */
-		dest = allocate_and_copy_struct_to_stack (&state, stack,
+		dest = allocate_and_copy_struct_to_ढेर (&state, ढेर,
 							  ty->alignment, s,
 							  avalue[i]);
 		a = &dest;
 		t = FFI_TYPE_POINTER;
-		s = sizeof (void *);
-		goto do_pointer;
+		s = माप (व्योम *);
+		जाओ do_pointer;
 	      }
-	    else
+	    अन्यथा
 	      {
-		size_t n = (s + 7) / 8;
-		if (state.ngrn + n <= N_X_ARG_REG)
+		माप_प्रकार n = (s + 7) / 8;
+		अगर (state.ngrn + n <= N_X_ARG_REG)
 		  {
 		    /* If the argument is a composite type and the size in
 		       double-words is not more than the number of available
 		       X registers, then the argument is copied into
 		       consecutive X registers.  */
 		    dest = &context->x[state.ngrn];
-                    state.ngrn += (unsigned int)n;
+                    state.ngrn += (अचिन्हित पूर्णांक)n;
 		  }
-		else
+		अन्यथा
 		  {
 		    /* Otherwise, there are insufficient X registers. Further
 		       X register allocations are prevented, the NSAA is
 		       adjusted and the argument is copied to memory at the
 		       adjusted NSAA.  */
 		    state.ngrn = N_X_ARG_REG;
-		    dest = allocate_to_stack (&state, stack, ty->alignment, s);
+		    dest = allocate_to_ढेर (&state, ढेर, ty->alignment, s);
 		  }
 		}
-	      memcpy (dest, a, s);
+	      स_नकल (dest, a, s);
 	    }
-	  break;
+	  अवरोध;
 
-	default:
-	  abort();
+	शेष:
+	  पात();
 	}
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#अगर defined (__APPLE__)
+      अगर (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
 	  state.allocating_variadic = 1;
 	}
-#endif
+#पूर्ण_अगर
     }
 
   ffi_call_SYSV (context, frame, fn, rvalue, flags, closure);
 
-  if (flags & AARCH64_RET_NEED_COPY)
-    memcpy (orig_rvalue, rvalue, rtype_size);
+  अगर (flags & AARCH64_RET_NEED_COPY)
+    स_नकल (orig_rvalue, rvalue, rtype_आकार);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+व्योम
+ffi_call (ffi_cif *cif, व्योम (*fn) (व्योम), व्योम *rvalue, व्योम **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, शून्य);
 }
 
-#if FFI_CLOSURES
+#अगर FFI_CLOSURES
 
-#ifdef FFI_GO_CLOSURES
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+#अगर_घोषित FFI_GO_CLOSURES
+व्योम
+ffi_call_go (ffi_cif *cif, व्योम (*fn) (व्योम), व्योम *rvalue,
+	     व्योम **avalue, व्योम *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
-#endif /* FFI_GO_CLOSURES */
+#पूर्ण_अगर /* FFI_GO_CLOSURES */
 
 /* Build a trampoline.  */
 
-extern void ffi_closure_SYSV (void) FFI_HIDDEN;
-extern void ffi_closure_SYSV_V (void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-extern void ffi_closure_SYSV_alt (void) FFI_HIDDEN;
-extern void ffi_closure_SYSV_V_alt (void) FFI_HIDDEN;
-#endif
+बाह्य व्योम ffi_closure_SYSV (व्योम) FFI_HIDDEN;
+बाह्य व्योम ffi_closure_SYSV_V (व्योम) FFI_HIDDEN;
+#अगर defined(FFI_EXEC_STATIC_TRAMP)
+बाह्य व्योम ffi_closure_SYSV_alt (व्योम) FFI_HIDDEN;
+बाह्य व्योम ffi_closure_SYSV_V_alt (व्योम) FFI_HIDDEN;
+#पूर्ण_अगर
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*),
+                      व्योम *user_तथ्य,
+                      व्योम *codeloc)
 {
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    वापस FFI_BAD_ABI;
 
-  void (*start)(void);
+  व्योम (*start)(व्योम);
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  अगर (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_closure_SYSV_V;
-  else
+  अन्यथा
     start = ffi_closure_SYSV;
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#अगर FFI_EXEC_TRAMPOLINE_TABLE
 # ifdef __MACH__
 #  ifdef HAVE_ARM64E_PTRAUTH
-  codeloc = ptrauth_auth_data(codeloc, ptrauth_key_function_pointer, 0);
+  codeloc = ptrauth_auth_तथ्य(codeloc, ptrauth_कुंजी_function_pointer, 0);
 #  endif
-  void **config = (void **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
+  व्योम **config = (व्योम **)((uint8_t *)codeloc - PAGE_MAX_आकार);
   config[0] = closure;
   config[1] = start;
 # endif
-#else
-  static const unsigned char trampoline[16] = {
+#अन्यथा
+  अटल स्थिर अचिन्हित अक्षर trampoline[16] = {
     0x90, 0x00, 0x00, 0x58,	/* ldr	x16, tramp+16	*/
     0xf1, 0xff, 0xff, 0x10,	/* adr	x17, tramp+0	*/
     0x00, 0x02, 0x1f, 0xd6	/* br	x16		*/
   };
-  char *tramp = closure->tramp;
+  अक्षर *tramp = closure->tramp;
 
-# if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+# अगर defined(FFI_EXEC_STATIC_TRAMP)
+  अगर (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      if (start == ffi_closure_SYSV_V)
+      अगर (start == ffi_closure_SYSV_V)
           start = ffi_closure_SYSV_V_alt;
-      else
+      अन्यथा
           start = ffi_closure_SYSV_alt;
       ffi_tramp_set_parms (closure->ftramp, start, closure);
-      goto out;
+      जाओ out;
     }
 # endif
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
+  स_नकल (tramp, trampoline, माप(trampoline));
 
   *(UINT64 *)(tramp + 16) = (uintptr_t)start;
 
-  ffi_clear_cache(tramp, tramp + FFI_TRAMPOLINE_SIZE);
+  ffi_clear_cache(tramp, tramp + FFI_TRAMPOLINE_आकार);
 
   /* Also flush the cache for code mapping.  */
 # ifdef _WIN32
   // Not using dlmalloc.c for Windows ARM64 builds
   // so calling ffi_data_to_code_pointer() isn't necessary
-  unsigned char *tramp_code = tramp;
-# else
-  unsigned char *tramp_code = ffi_data_to_code_pointer (tramp);
+  अचिन्हित अक्षर *tramp_code = tramp;
+# अन्यथा
+  अचिन्हित अक्षर *tramp_code = ffi_तथ्य_to_code_pointer (tramp);
 # endif
-  ffi_clear_cache (tramp_code, tramp_code + FFI_TRAMPOLINE_SIZE);
-# if defined(FFI_EXEC_STATIC_TRAMP)
+  ffi_clear_cache (tramp_code, tramp_code + FFI_TRAMPOLINE_आकार);
+# अगर defined(FFI_EXEC_STATIC_TRAMP)
 out:
 # endif
-#endif
+#पूर्ण_अगर
 
   closure->cif = cif;
   closure->fun = fun;
-  closure->user_data = user_data;
+  closure->user_तथ्य = user_तथ्य;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
-#ifdef FFI_GO_CLOSURES
-extern void ffi_go_closure_SYSV (void) FFI_HIDDEN;
-extern void ffi_go_closure_SYSV_V (void) FFI_HIDDEN;
+#अगर_घोषित FFI_GO_CLOSURES
+बाह्य व्योम ffi_go_closure_SYSV (व्योम) FFI_HIDDEN;
+बाह्य व्योम ffi_go_closure_SYSV_V (व्योम) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
-                     void (*fun)(ffi_cif*,void*,void**,void*))
+                     व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*))
 {
-  void (*start)(void);
+  व्योम (*start)(व्योम);
 
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    वापस FFI_BAD_ABI;
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  अगर (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_go_closure_SYSV_V;
-  else
+  अन्यथा
     start = ffi_go_closure_SYSV;
 
   closure->tramp = start;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
-#endif /* FFI_GO_CLOSURES */
+#पूर्ण_अगर /* FFI_GO_CLOSURES */
 
 /* Primary handler to setup and invoke a function within a closure.
 
@@ -1136,72 +1136,72 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
    descriptors, invokes the wrapped function, then marshalls the return
    value back into the call context.  */
 
-int FFI_HIDDEN
+पूर्णांक FFI_HIDDEN
 ffi_closure_SYSV_inner (ffi_cif *cif,
-			void (*fun)(ffi_cif*,void*,void**,void*),
-			void *user_data,
-			struct call_context *context,
-			void *stack, void *rvalue, void *struct_rvalue)
+			व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*),
+			व्योम *user_तथ्य,
+			काष्ठा call_context *context,
+			व्योम *ढेर, व्योम *rvalue, व्योम *struct_rvalue)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  int i, h, nargs, flags, isvariadic = 0;
-  struct arg_state state;
+  व्योम **avalue = (व्योम**) alloca (cif->nargs * माप (व्योम*));
+  पूर्णांक i, h, nargs, flags, isvariadic = 0;
+  काष्ठा arg_state state;
 
   arg_init (&state, cif->bytes);
 
   flags = cif->flags;
-  if (flags & AARCH64_FLAG_VARARG)
+  अगर (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
   }
 
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  क्रम (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      int t = ty->type;
-      size_t n, s = ty->size;
+      पूर्णांक t = ty->type;
+      माप_प्रकार n, s = ty->आकार;
 
-      switch (t)
+      चयन (t)
 	{
-	case FFI_TYPE_VOID:
+	हाल FFI_TYPE_VOID:
 	  FFI_ASSERT (0);
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
-	  avalue[i] = allocate_int_to_reg_or_stack (context, &state, stack, s);
-	  break;
+	हाल FFI_TYPE_INT:
+	हाल FFI_TYPE_UINT8:
+	हाल FFI_TYPE_SINT8:
+	हाल FFI_TYPE_UINT16:
+	हाल FFI_TYPE_SINT16:
+	हाल FFI_TYPE_UINT32:
+	हाल FFI_TYPE_SINT32:
+	हाल FFI_TYPE_UINT64:
+	हाल FFI_TYPE_SINT64:
+	हाल FFI_TYPE_POINTER:
+	  avalue[i] = allocate_int_to_reg_or_ढेर (context, &state, ढेर, s);
+	  अवरोध;
 
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
-	  avalue[i] = allocate_int128_to_reg_or_stack (context, &state, stack);
-	  break;
+	हाल FFI_TYPE_UINT128:
+	हाल FFI_TYPE_SINT128:
+	  avalue[i] = allocate_int128_to_reg_or_ढेर (context, &state, ढेर);
+	  अवरोध;
 
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	case FFI_TYPE_COMPLEX:
+	हाल FFI_TYPE_FLOAT:
+	हाल FFI_TYPE_DOUBLE:
+	हाल FFI_TYPE_LONGDOUBLE:
+	हाल FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_VECTOR:
+	हाल FFI_TYPE_COMPLEX:
 	  h = is_vfp_type (ty);
-	  if (h)
+	  अगर (h)
 	    {
 	      n = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              अगर (cif->abi == FFI_WIN64 && isvariadic)
                 {
-                  if (state.ngrn + n <= N_X_ARG_REG)
+                  अगर (state.ngrn + n <= N_X_ARG_REG)
                     {
-                      void *reg = &context->x[state.ngrn];
-                      state.ngrn += (unsigned int)n;
+                      व्योम *reg = &context->x[state.ngrn];
+                      state.ngrn += (अचिन्हित पूर्णांक)n;
 
                       /* Eeek! We need a pointer to the structure, however the
                        homogeneous float elements are being passed in individual
@@ -1212,100 +1212,100 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                        structure into the same memory.  */
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  अन्यथा
                     {
                       state.ngrn = N_X_ARG_REG;
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (अक्षर *)allocate_to_ढेर (&state, ढेर,
                                                              ty->alignment, s)
-                                  + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                                  + (t == FFI_TYPE_FLOAT ? BE (माप (UINT64) - s) : 0);
                     }
                 }
-              else
+              अन्यथा
                 {
-                  if (state.nsrn + n <= N_V_ARG_REG)
+                  अगर (state.nsrn + n <= N_V_ARG_REG)
                     {
-                      void *reg = &context->v[state.nsrn];
-                      state.nsrn += (unsigned int)n;
+                      व्योम *reg = &context->v[state.nsrn];
+                      state.nsrn += (अचिन्हित पूर्णांक)n;
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  अन्यथा
                     {
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (अक्षर *)allocate_to_ढेर (&state, ढेर,
                                                              ty->alignment, s)
-                                  + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                                  + (t == FFI_TYPE_FLOAT ? BE (माप (UINT64) - s) : 0);
                     }
                 }
             }
-          else if (s > 16)
+          अन्यथा अगर (s > 16)
             {
               /* Replace Composite type of size greater than 16 with a
                   pointer.  */
-#ifdef __ILP32__
+#अगर_घोषित __ILP32__
              UINT64 avalue_tmp;
-             memcpy (&avalue_tmp,
-                  allocate_int_to_reg_or_stack (context, &state,
-                                               stack, sizeof (void *)),
-                  sizeof (UINT64));
-             avalue[i] = (void *)(UINT32)avalue_tmp;
-#else
-              avalue[i] = *(void **)
-              allocate_int_to_reg_or_stack (context, &state, stack,
-                                         sizeof (void *));
-#endif
+             स_नकल (&avalue_tmp,
+                  allocate_int_to_reg_or_ढेर (context, &state,
+                                               ढेर, माप (व्योम *)),
+                  माप (UINT64));
+             avalue[i] = (व्योम *)(UINT32)avalue_tmp;
+#अन्यथा
+              avalue[i] = *(व्योम **)
+              allocate_int_to_reg_or_ढेर (context, &state, ढेर,
+                                         माप (व्योम *));
+#पूर्ण_अगर
             }
-          else
+          अन्यथा
             {
               n = (s + 7) / 8;
-              if (state.ngrn + n <= N_X_ARG_REG)
+              अगर (state.ngrn + n <= N_X_ARG_REG)
                 {
                   avalue[i] = &context->x[state.ngrn];
-                  state.ngrn += (unsigned int)n;
+                  state.ngrn += (अचिन्हित पूर्णांक)n;
                 }
-              else
+              अन्यथा
                 {
                   state.ngrn = N_X_ARG_REG;
-                  avalue[i] = allocate_to_stack(&state, stack,
+                  avalue[i] = allocate_to_ढेर(&state, ढेर,
                                            ty->alignment, s);
                 }
             }
-          break;
+          अवरोध;
 
-        default:
-          abort();
+        शेष:
+          पात();
       }
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#अगर defined (__APPLE__)
+      अगर (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
 	  state.allocating_variadic = 1;
 	}
-#endif
+#पूर्ण_अगर
     }
 
-  if (flags & AARCH64_RET_IN_MEM)
+  अगर (flags & AARCH64_RET_IN_MEM)
     rvalue = struct_rvalue;
 
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_तथ्य);
 
-  return flags;
+  वापस flags;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#अगर defined(FFI_EXEC_STATIC_TRAMP)
+व्योम *
+ffi_tramp_arch (माप_प्रकार *tramp_आकार, माप_प्रकार *map_आकार)
 {
-  extern void *trampoline_code_table;
+  बाह्य व्योम *trampoline_code_table;
 
-  *tramp_size = AARCH64_TRAMP_SIZE;
-  *map_size = AARCH64_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  *tramp_आकार = AARCH64_TRAMP_आकार;
+  *map_आकार = AARCH64_TRAMP_MAP_आकार;
+  वापस &trampoline_code_table;
 }
-#endif
+#पूर्ण_अगर
 
-#endif /* FFI_CLOSURES */
+#पूर्ण_अगर /* FFI_CLOSURES */
 
-#endif /* (__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)*/
+#पूर्ण_अगर /* (__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)*/

@@ -26,28 +26,28 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#समावेश <ffi.h>
+#समावेश <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdbool.h>
-#include <float.h>
+#समावेश <stdlib.h>
+#समावेश <stdbool.h>
+#समावेश <float.h>
 
-#include "ia64_flags.h"
+#समावेश "ia64_flags.h"
 
 /* A 64-bit pointer value.  In LP64 mode, this is effectively a plain
    pointer.  In ILP32 mode, it's a pointer that's been extended to 
    64 bits by "addp4".  */
-#ifdef __hpux
-typedef void *PTR64;
-#else // some other unix
-typedef void *PTR64 __attribute__((mode(DI)));
-#endif
+#अगर_घोषित __hpux
+प्रकार व्योम *PTR64;
+#अन्यथा // some other unix
+प्रकार व्योम *PTR64 __attribute__((mode(DI)));
+#पूर्ण_अगर
 
 /* Memory image of fp register contents.  This is the implementation
    specific format used by ldf.fill/stf.spill.  All we care about is
    that it wants a 16 byte aligned slot.  */
-typedef struct
+प्रकार काष्ठा
 {
   UINT64 x[2] __attribute__((aligned(16)));
 } fpreg;
@@ -55,7 +55,7 @@ typedef struct
 
 /* The stack layout given to ffi_call_unix and ffi_closure_unix_inner.  */
 
-struct ia64_args
+काष्ठा ia64_args
 {
   fpreg fp_regs[8];	/* Contents of 8 fp arg registers.  */
   UINT64 gp_regs[8];	/* Contents of 8 gp arg registers.  */
@@ -65,14 +65,14 @@ struct ia64_args
 
 /* Adjust ADDR, a pointer to an 8 byte slot, to point to the low LEN bytes.  */
 
-static inline void *
-endian_adjust (void *addr, size_t len)
+अटल अंतरभूत व्योम *
+endian_adjust (व्योम *addr, माप_प्रकार len)
 {
-#ifdef __BIG_ENDIAN__
-  return addr + (8 - len);
-#else
-  return addr;
-#endif
+#अगर_घोषित __BIG_ENDIAN__
+  वापस addr + (8 - len);
+#अन्यथा
+  वापस addr;
+#पूर्ण_अगर
 }
 
 /* Store VALUE to ADDR in the current cpu implementation's fp spill format.
@@ -80,95 +80,95 @@ endian_adjust (void *addr, size_t len)
    point types without type conversions.  Type conversion to long double breaks
    the denorm support.  */
 
-#ifdef __hpux
-#define stf_spill(addr, value)
-#else
-#define stf_spill(addr, value)	\
-  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(value));
-#endif
+#अगर_घोषित __hpux
+#घोषणा stf_spill(addr, मूल्य)
+#अन्यथा
+#घोषणा stf_spill(addr, मूल्य)	\
+  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(मूल्य));
+#पूर्ण_अगर
 
 /* Load a value from ADDR, which is in the current cpu implementation's
    fp spill format.  As above, this must also be a macro.  */
 
-#ifdef __hpux
-#define ldf_fill(result, addr)
-#else
-#define ldf_fill(result, addr)	\
-  __asm__ ("ldf.fill %0 = %1%P1" : "=f"(result) : "m"(*addr));
-#endif
+#अगर_घोषित __hpux
+#घोषणा ldf_fill(परिणाम, addr)
+#अन्यथा
+#घोषणा ldf_fill(परिणाम, addr)	\
+  __asm__ ("ldf.fill %0 = %1%P1" : "=f"(परिणाम) : "m"(*addr));
+#पूर्ण_अगर
 
 /* Return the size of the C type associated with with TYPE.  Which will
    be one of the FFI_IA64_TYPE_HFA_* values.  */
 
-static size_t
-hfa_type_size (int type)
+अटल माप_प्रकार
+hfa_type_आकार (पूर्णांक type)
 {
-  switch (type)
+  चयन (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
-      return sizeof(float);
-    case FFI_IA64_TYPE_HFA_DOUBLE:
-      return sizeof(double);
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
-      return sizeof(__float80);
-    default:
-      abort ();
+    हाल FFI_IA64_TYPE_HFA_FLOAT:
+      वापस माप(भग्न);
+    हाल FFI_IA64_TYPE_HFA_DOUBLE:
+      वापस माप(द्विगुन);
+    हाल FFI_IA64_TYPE_HFA_LDOUBLE:
+      वापस माप(__float80);
+    शेष:
+      पात ();
     }
 }
 
 /* Load from ADDR a value indicated by TYPE.  Which will be one of
    the FFI_IA64_TYPE_HFA_* values.  */
 
-static void
-hfa_type_load (fpreg *fpaddr, int type, void *addr)
+अटल व्योम
+hfa_type_load (fpreg *fpaddr, पूर्णांक type, व्योम *addr)
 {
-  switch (type)
+  चयन (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
-      stf_spill (fpaddr, *(float *) addr);
-      return;
-    case FFI_IA64_TYPE_HFA_DOUBLE:
-      stf_spill (fpaddr, *(double *) addr);
-      return;
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
+    हाल FFI_IA64_TYPE_HFA_FLOAT:
+      stf_spill (fpaddr, *(भग्न *) addr);
+      वापस;
+    हाल FFI_IA64_TYPE_HFA_DOUBLE:
+      stf_spill (fpaddr, *(द्विगुन *) addr);
+      वापस;
+    हाल FFI_IA64_TYPE_HFA_LDOUBLE:
       stf_spill (fpaddr, *(__float80 *) addr);
-      return;
-    default:
-      abort ();
+      वापस;
+    शेष:
+      पात ();
     }
 }
 
 /* Load VALUE into ADDR as indicated by TYPE.  Which will be one of
    the FFI_IA64_TYPE_HFA_* values.  */
 
-static void
-hfa_type_store (int type, void *addr, fpreg *fpaddr)
+अटल व्योम
+hfa_type_store (पूर्णांक type, व्योम *addr, fpreg *fpaddr)
 {
-  switch (type)
+  चयन (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
+    हाल FFI_IA64_TYPE_HFA_FLOAT:
       {
-	float result;
-	ldf_fill (result, fpaddr);
-	*(float *) addr = result;
-	break;
+	भग्न परिणाम;
+	ldf_fill (परिणाम, fpaddr);
+	*(भग्न *) addr = परिणाम;
+	अवरोध;
       }
-    case FFI_IA64_TYPE_HFA_DOUBLE:
+    हाल FFI_IA64_TYPE_HFA_DOUBLE:
       {
-	double result;
-	ldf_fill (result, fpaddr);
-	*(double *) addr = result;
-	break;
+	द्विगुन परिणाम;
+	ldf_fill (परिणाम, fpaddr);
+	*(द्विगुन *) addr = परिणाम;
+	अवरोध;
       }
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
+    हाल FFI_IA64_TYPE_HFA_LDOUBLE:
       {
-	__float80 result;
-	ldf_fill (result, fpaddr);
-	*(__float80 *) addr = result;
-	break;
+	__float80 परिणाम;
+	ldf_fill (परिणाम, fpaddr);
+	*(__float80 *) addr = परिणाम;
+	अवरोध;
       }
-    default:
-      abort ();
+    शेष:
+      पात ();
     }
 }
 
@@ -176,244 +176,244 @@ hfa_type_store (int type, void *addr, fpreg *fpaddr)
    all of the same fp type?  If so, return the element type.  Return
    FFI_TYPE_VOID if not.  */
 
-static int
-hfa_element_type (ffi_type *type, int nested)
+अटल पूर्णांक
+hfa_element_type (ffi_type *type, पूर्णांक nested)
 {
-  int element = FFI_TYPE_VOID;
+  पूर्णांक element = FFI_TYPE_VOID;
 
-  switch (type->type)
+  चयन (type->type)
     {
-    case FFI_TYPE_FLOAT:
+    हाल FFI_TYPE_FLOAT:
       /* We want to return VOID for raw floating-point types, but the
 	 synthetic HFA type if we're nested within an aggregate.  */
-      if (nested)
+      अगर (nested)
 	element = FFI_IA64_TYPE_HFA_FLOAT;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_DOUBLE:
+    हाल FFI_TYPE_DOUBLE:
       /* Similarly.  */
-      if (nested)
+      अगर (nested)
 	element = FFI_IA64_TYPE_HFA_DOUBLE;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_LONGDOUBLE:
+    हाल FFI_TYPE_LONGDOUBLE:
       /* Similarly, except that that HFA is true for double extended,
 	 but not quad precision.  Both have sizeof == 16, so tell the
 	 difference based on the precision.  */
-      if (LDBL_MANT_DIG == 64 && nested)
+      अगर (द_द्वि_पूर्ण == 64 && nested)
 	element = FFI_IA64_TYPE_HFA_LDOUBLE;
-      break;
+      अवरोध;
 
-    case FFI_TYPE_STRUCT:
+    हाल FFI_TYPE_STRUCT:
       {
 	ffi_type **ptr = &type->elements[0];
 
-	for (ptr = &type->elements[0]; *ptr ; ptr++)
+	क्रम (ptr = &type->elements[0]; *ptr ; ptr++)
 	  {
-	    int sub_element = hfa_element_type (*ptr, 1);
-	    if (sub_element == FFI_TYPE_VOID)
-	      return FFI_TYPE_VOID;
+	    पूर्णांक sub_element = hfa_element_type (*ptr, 1);
+	    अगर (sub_element == FFI_TYPE_VOID)
+	      वापस FFI_TYPE_VOID;
 
-	    if (element == FFI_TYPE_VOID)
+	    अगर (element == FFI_TYPE_VOID)
 	      element = sub_element;
-	    else if (element != sub_element)
-	      return FFI_TYPE_VOID;
+	    अन्यथा अगर (element != sub_element)
+	      वापस FFI_TYPE_VOID;
 	  }
       }
-      break;
+      अवरोध;
 
-    default:
-      return FFI_TYPE_VOID;
+    शेष:
+      वापस FFI_TYPE_VOID;
     }
 
-  return element;
+  वापस element;
 }
 
 
 /* Perform machine dependent cif processing. */
 
-static ffi_status
+अटल ffi_status
 ffi_prep_cif_machdep_core(ffi_cif *cif)
 {
-  int flags;
+  पूर्णांक flags;
 
   /* Adjust cif->bytes to include space for the bits of the ia64_args frame
      that precedes the integer register portion.  The estimate that the
      generic bits did for the argument space required is good enough for the
      integer component.  */
-  cif->bytes += offsetof(struct ia64_args, gp_regs[0]);
-  if (cif->bytes < sizeof(struct ia64_args))
-    cif->bytes = sizeof(struct ia64_args);
+  cif->bytes += दुरत्व(काष्ठा ia64_args, gp_regs[0]);
+  अगर (cif->bytes < माप(काष्ठा ia64_args))
+    cif->bytes = माप(काष्ठा ia64_args);
 
   /* Set the return type flag. */
   flags = cif->rtype->type;
-  switch (cif->rtype->type)
+  चयन (cif->rtype->type)
     {
-    case FFI_TYPE_LONGDOUBLE:
+    हाल FFI_TYPE_LONGDOUBLE:
       /* Leave FFI_TYPE_LONGDOUBLE as meaning double extended precision,
 	 and encode quad precision as a two-word integer structure.  */
-      if (LDBL_MANT_DIG != 64)
+      अगर (द_द्वि_पूर्ण != 64)
 	flags = FFI_IA64_TYPE_SMALL_STRUCT | (16 << 8);
-      break;
+      अवरोध;
 
-    case FFI_TYPE_STRUCT:
+    हाल FFI_TYPE_STRUCT:
       {
-        size_t size = cif->rtype->size;
-  	int hfa_type = hfa_element_type (cif->rtype, 0);
+        माप_प्रकार आकार = cif->rtype->आकार;
+  	पूर्णांक hfa_type = hfa_element_type (cif->rtype, 0);
 
-	if (hfa_type != FFI_TYPE_VOID)
+	अगर (hfa_type != FFI_TYPE_VOID)
 	  {
-	    size_t nelts = size / hfa_type_size (hfa_type);
-	    if (nelts <= 8)
-	      flags = hfa_type | (size << 8);
+	    माप_प्रकार nelts = आकार / hfa_type_आकार (hfa_type);
+	    अगर (nelts <= 8)
+	      flags = hfa_type | (आकार << 8);
 	  }
-	else
+	अन्यथा
 	  {
-	    if (size <= 32)
-	      flags = FFI_IA64_TYPE_SMALL_STRUCT | (size << 8);
+	    अगर (आकार <= 32)
+	      flags = FFI_IA64_TYPE_SMALL_STRUCT | (आकार << 8);
 	  }
       }
-      break;
+      अवरोध;
 
-    default:
-      break;
+    शेष:
+      अवरोध;
     }
   cif->flags = flags;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   cif->nfixedargs = cif->nargs;
-  return ffi_prep_cif_machdep_core(cif);
+  वापस ffi_prep_cif_machdep_core(cif);
 }
 
 ffi_status
 ffi_prep_cif_machdep_var(ffi_cif *cif,
-			 unsigned int nfixedargs,
-			 unsigned int ntotalargs MAYBE_UNUSED)
+			 अचिन्हित पूर्णांक nfixedargs,
+			 अचिन्हित पूर्णांक ntotalargs MAYBE_UNUSED)
 {
   cif->nfixedargs = nfixedargs;
-  return ffi_prep_cif_machdep_core(cif);
+  वापस ffi_prep_cif_machdep_core(cif);
 }
 
-extern int ffi_call_unix (struct ia64_args *, PTR64, void (*)(void), UINT64);
+बाह्य पूर्णांक ffi_call_unix (काष्ठा ia64_args *, PTR64, व्योम (*)(व्योम), UINT64);
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+व्योम
+ffi_call(ffi_cif *cif, व्योम (*fn)(व्योम), व्योम *rvalue, व्योम **avalue)
 {
-  struct ia64_args *stack;
-  long i, avn, gpcount, fpcount;
+  काष्ठा ia64_args *ढेर;
+  दीर्घ i, avn, gpcount, fpcount;
   ffi_type **p_arg;
 
   FFI_ASSERT (cif->abi == FFI_UNIX);
 
   /* If we have no spot for a return value, make one.  */
-  if (rvalue == NULL && cif->rtype->type != FFI_TYPE_VOID)
-    rvalue = alloca (cif->rtype->size);
+  अगर (rvalue == शून्य && cif->rtype->type != FFI_TYPE_VOID)
+    rvalue = alloca (cif->rtype->आकार);
     
   /* Allocate the stack frame.  */
-  stack = alloca (cif->bytes);
+  ढेर = alloca (cif->bytes);
 
   gpcount = fpcount = 0;
   avn = cif->nargs;
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  क्रम (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      switch ((*p_arg)->type)
+      चयन ((*p_arg)->type)
 	{
-	case FFI_TYPE_SINT8:
-	  stack->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT8:
-	  stack->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT16:
-	  stack->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT16:
-	  stack->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT32:
-	  stack->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT32:
-	  stack->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  stack->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
-	  break;
+	हाल FFI_TYPE_SINT8:
+	  ढेर->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
+	  अवरोध;
+	हाल FFI_TYPE_UINT8:
+	  ढेर->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
+	  अवरोध;
+	हाल FFI_TYPE_SINT16:
+	  ढेर->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
+	  अवरोध;
+	हाल FFI_TYPE_UINT16:
+	  ढेर->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
+	  अवरोध;
+	हाल FFI_TYPE_SINT32:
+	  ढेर->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
+	  अवरोध;
+	हाल FFI_TYPE_UINT32:
+	  ढेर->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
+	  अवरोध;
+	हाल FFI_TYPE_SINT64:
+	हाल FFI_TYPE_UINT64:
+	  ढेर->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
+	  अवरोध;
 
-	case FFI_TYPE_POINTER:
-	  stack->gp_regs[gpcount++] = (UINT64)(PTR64) *(void **)avalue[i];
-	  break;
+	हाल FFI_TYPE_POINTER:
+	  ढेर->gp_regs[gpcount++] = (UINT64)(PTR64) *(व्योम **)avalue[i];
+	  अवरोध;
 
-	case FFI_TYPE_FLOAT:
-	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(float *)avalue[i]);
+	हाल FFI_TYPE_FLOAT:
+	  अगर (gpcount < 8 && fpcount < 8)
+	    stf_spill (&ढेर->fp_regs[fpcount++], *(भग्न *)avalue[i]);
 	  {
 	    UINT32 tmp;
-	    memcpy (&tmp, avalue[i], sizeof (UINT32));
-	    stack->gp_regs[gpcount++] = tmp;
+	    स_नकल (&tmp, avalue[i], माप (UINT32));
+	    ढेर->gp_regs[gpcount++] = tmp;
 	  }
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_DOUBLE:
-	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(double *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount++], avalue[i], sizeof (UINT64));
-	  break;
+	हाल FFI_TYPE_DOUBLE:
+	  अगर (gpcount < 8 && fpcount < 8)
+	    stf_spill (&ढेर->fp_regs[fpcount++], *(द्विगुन *)avalue[i]);
+	  स_नकल (&ढेर->gp_regs[gpcount++], avalue[i], माप (UINT64));
+	  अवरोध;
 
-	case FFI_TYPE_LONGDOUBLE:
-	  if (gpcount & 1)
+	हाल FFI_TYPE_LONGDOUBLE:
+	  अगर (gpcount & 1)
 	    gpcount++;
-	  if (LDBL_MANT_DIG == 64 && gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(__float80 *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount], avalue[i], 16);
+	  अगर (द_द्वि_पूर्ण == 64 && gpcount < 8 && fpcount < 8)
+	    stf_spill (&ढेर->fp_regs[fpcount++], *(__float80 *)avalue[i]);
+	  स_नकल (&ढेर->gp_regs[gpcount], avalue[i], 16);
 	  gpcount += 2;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_STRUCT:
 	  {
-	    size_t size = (*p_arg)->size;
-	    size_t align = (*p_arg)->alignment;
-	    int hfa_type = hfa_element_type (*p_arg, 0);
+	    माप_प्रकार आकार = (*p_arg)->आकार;
+	    माप_प्रकार align = (*p_arg)->alignment;
+	    पूर्णांक hfa_type = hfa_element_type (*p_arg, 0);
 
 	    FFI_ASSERT (align <= 16);
-	    if (align == 16 && (gpcount & 1))
+	    अगर (align == 16 && (gpcount & 1))
 	      gpcount++;
 
-	    if (hfa_type != FFI_TYPE_VOID)
+	    अगर (hfa_type != FFI_TYPE_VOID)
 	      {
-		size_t hfa_size = hfa_type_size (hfa_type);
-		size_t offset = 0;
-		size_t gp_offset = gpcount * 8;
+		माप_प्रकार hfa_आकार = hfa_type_आकार (hfa_type);
+		माप_प्रकार offset = 0;
+		माप_प्रकार gp_offset = gpcount * 8;
 
-		while (fpcount < 8
-		       && offset < size
+		जबतक (fpcount < 8
+		       && offset < आकार
 		       && gp_offset < 8 * 8)
 		  {
-		    hfa_type_load (&stack->fp_regs[fpcount], hfa_type,
+		    hfa_type_load (&ढेर->fp_regs[fpcount], hfa_type,
 				   avalue[i] + offset);
-		    offset += hfa_size;
-		    gp_offset += hfa_size;
+		    offset += hfa_आकार;
+		    gp_offset += hfa_आकार;
 		    fpcount += 1;
 		  }
 	      }
 
-	    memcpy (&stack->gp_regs[gpcount], avalue[i], size);
-	    gpcount += (size + 7) / 8;
+	    स_नकल (&ढेर->gp_regs[gpcount], avalue[i], आकार);
+	    gpcount += (आकार + 7) / 8;
 	  }
-	  break;
+	  अवरोध;
 
-	default:
-	  abort ();
+	शेष:
+	  पात ();
 	}
     }
 
-  ffi_call_unix (stack, rvalue, fn, cif->flags);
+  ffi_call_unix (ढेर, rvalue, fn, cif->flags);
 }
 
 /* Closures represent a pair consisting of a function pointer, and
@@ -431,186 +431,186 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
    gp pointer to the closure.  This allows the function entry code to
    both retrieve the user data, and to restore the correct gp pointer.  */
 
-extern void ffi_closure_unix ();
+बाह्य व्योम ffi_closure_unix ();
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      व्योम (*fun)(ffi_cif*,व्योम*,व्योम**,व्योम*),
+		      व्योम *user_तथ्य,
+		      व्योम *codeloc)
 {
   /* The layout of a function descriptor.  A C function pointer really 
      points to one of these.  */
-  struct ia64_fd
+  काष्ठा ia64_fd
   {
     UINT64 code_pointer;
     UINT64 gp;
   };
 
-  struct ffi_ia64_trampoline_struct
+  काष्ठा ffi_ia64_trampoline_struct
   {
     UINT64 code_pointer;	/* Pointer to ffi_closure_unix.  */
     UINT64 fake_gp;		/* Pointer to closure, installed as gp.  */
     UINT64 real_gp;		/* Real gp value.  */
   };
 
-  struct ffi_ia64_trampoline_struct *tramp;
-  struct ia64_fd *fd;
+  काष्ठा ffi_ia64_trampoline_struct *tramp;
+  काष्ठा ia64_fd *fd;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  अगर (cif->abi != FFI_UNIX)
+    वापस FFI_BAD_ABI;
 
-  tramp = (struct ffi_ia64_trampoline_struct *)closure->tramp;
-  fd = (struct ia64_fd *)(void *)ffi_closure_unix;
+  tramp = (काष्ठा ffi_ia64_trampoline_struct *)closure->tramp;
+  fd = (काष्ठा ia64_fd *)(व्योम *)ffi_closure_unix;
 
   tramp->code_pointer = fd->code_pointer;
   tramp->real_gp = fd->gp;
   tramp->fake_gp = (UINT64)(PTR64)codeloc;
   closure->cif = cif;
-  closure->user_data = user_data;
+  closure->user_तथ्य = user_तथ्य;
   closure->fun = fun;
 
-  return FFI_OK;
+  वापस FFI_OK;
 }
 
 
 UINT64
-ffi_closure_unix_inner (ffi_closure *closure, struct ia64_args *stack,
-			void *rvalue, void *r8)
+ffi_closure_unix_inner (ffi_closure *closure, काष्ठा ia64_args *ढेर,
+			व्योम *rvalue, व्योम *r8)
 {
   ffi_cif *cif;
-  void **avalue;
+  व्योम **avalue;
   ffi_type **p_arg;
-  long i, avn, gpcount, fpcount, nfixedargs;
+  दीर्घ i, avn, gpcount, fpcount, nfixedargs;
 
   cif = closure->cif;
   avn = cif->nargs;
   nfixedargs = cif->nfixedargs;
-  avalue = alloca (avn * sizeof (void *));
+  avalue = alloca (avn * माप (व्योम *));
 
   /* If the structure return value is passed in memory get that location
      from r8 so as to pass the value directly back to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  अगर (cif->flags == FFI_TYPE_STRUCT)
     rvalue = r8;
 
   gpcount = fpcount = 0;
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  क्रम (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      int named = i < nfixedargs;
-      switch ((*p_arg)->type)
+      पूर्णांक named = i < nfixedargs;
+      चयन ((*p_arg)->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 1);
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 2);
-	  break;
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 4);
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  avalue[i] = &stack->gp_regs[gpcount++];
-	  break;
-	case FFI_TYPE_POINTER:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], sizeof(void*));
-	  break;
+	हाल FFI_TYPE_SINT8:
+	हाल FFI_TYPE_UINT8:
+	  avalue[i] = endian_adjust(&ढेर->gp_regs[gpcount++], 1);
+	  अवरोध;
+	हाल FFI_TYPE_SINT16:
+	हाल FFI_TYPE_UINT16:
+	  avalue[i] = endian_adjust(&ढेर->gp_regs[gpcount++], 2);
+	  अवरोध;
+	हाल FFI_TYPE_SINT32:
+	हाल FFI_TYPE_UINT32:
+	  avalue[i] = endian_adjust(&ढेर->gp_regs[gpcount++], 4);
+	  अवरोध;
+	हाल FFI_TYPE_SINT64:
+	हाल FFI_TYPE_UINT64:
+	  avalue[i] = &ढेर->gp_regs[gpcount++];
+	  अवरोध;
+	हाल FFI_TYPE_POINTER:
+	  avalue[i] = endian_adjust(&ढेर->gp_regs[gpcount++], माप(व्योम*));
+	  अवरोध;
 
-	case FFI_TYPE_FLOAT:
-	  if (named && gpcount < 8 && fpcount < 8)
+	हाल FFI_TYPE_FLOAT:
+	  अगर (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      float result;
+	      fpreg *addr = &ढेर->fp_regs[fpcount++];
+	      भग्न परिणाम;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(float *)addr = result;
+	      ldf_fill (परिणाम, addr);
+	      *(भग्न *)addr = परिणाम;
 	    }
-	  else
-	    avalue[i] = endian_adjust(&stack->gp_regs[gpcount], 4);
+	  अन्यथा
+	    avalue[i] = endian_adjust(&ढेर->gp_regs[gpcount], 4);
 	  gpcount++;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_DOUBLE:
-	  if (named && gpcount < 8 && fpcount < 8)
+	हाल FFI_TYPE_DOUBLE:
+	  अगर (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      double result;
+	      fpreg *addr = &ढेर->fp_regs[fpcount++];
+	      द्विगुन परिणाम;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(double *)addr = result;
+	      ldf_fill (परिणाम, addr);
+	      *(द्विगुन *)addr = परिणाम;
 	    }
-	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	  अन्यथा
+	    avalue[i] = &ढेर->gp_regs[gpcount];
 	  gpcount++;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_LONGDOUBLE:
-	  if (gpcount & 1)
+	हाल FFI_TYPE_LONGDOUBLE:
+	  अगर (gpcount & 1)
 	    gpcount++;
-	  if (LDBL_MANT_DIG == 64 && named && gpcount < 8 && fpcount < 8)
+	  अगर (द_द्वि_पूर्ण == 64 && named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      __float80 result;
+	      fpreg *addr = &ढेर->fp_regs[fpcount++];
+	      __float80 परिणाम;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(__float80 *)addr = result;
+	      ldf_fill (परिणाम, addr);
+	      *(__float80 *)addr = परिणाम;
 	    }
-	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	  अन्यथा
+	    avalue[i] = &ढेर->gp_regs[gpcount];
 	  gpcount += 2;
-	  break;
+	  अवरोध;
 
-	case FFI_TYPE_STRUCT:
+	हाल FFI_TYPE_STRUCT:
 	  {
-	    size_t size = (*p_arg)->size;
-	    size_t align = (*p_arg)->alignment;
-	    int hfa_type = hfa_element_type (*p_arg, 0);
+	    माप_प्रकार आकार = (*p_arg)->आकार;
+	    माप_प्रकार align = (*p_arg)->alignment;
+	    पूर्णांक hfa_type = hfa_element_type (*p_arg, 0);
 
 	    FFI_ASSERT (align <= 16);
-	    if (align == 16 && (gpcount & 1))
+	    अगर (align == 16 && (gpcount & 1))
 	      gpcount++;
 
-	    if (hfa_type != FFI_TYPE_VOID)
+	    अगर (hfa_type != FFI_TYPE_VOID)
 	      {
-		size_t hfa_size = hfa_type_size (hfa_type);
-		size_t offset = 0;
-		size_t gp_offset = gpcount * 8;
-		void *addr = alloca (size);
+		माप_प्रकार hfa_आकार = hfa_type_आकार (hfa_type);
+		माप_प्रकार offset = 0;
+		माप_प्रकार gp_offset = gpcount * 8;
+		व्योम *addr = alloca (आकार);
 
 		avalue[i] = addr;
 
-		while (fpcount < 8
-		       && offset < size
+		जबतक (fpcount < 8
+		       && offset < आकार
 		       && gp_offset < 8 * 8)
 		  {
 		    hfa_type_store (hfa_type, addr + offset,
-				    &stack->fp_regs[fpcount]);
-		    offset += hfa_size;
-		    gp_offset += hfa_size;
+				    &ढेर->fp_regs[fpcount]);
+		    offset += hfa_आकार;
+		    gp_offset += hfa_आकार;
 		    fpcount += 1;
 		  }
 
-		if (offset < size)
-		  memcpy (addr + offset, (char *)stack->gp_regs + gp_offset,
-			  size - offset);
+		अगर (offset < आकार)
+		  स_नकल (addr + offset, (अक्षर *)ढेर->gp_regs + gp_offset,
+			  आकार - offset);
 	      }
-	    else
-	      avalue[i] = &stack->gp_regs[gpcount];
+	    अन्यथा
+	      avalue[i] = &ढेर->gp_regs[gpcount];
 
-	    gpcount += (size + 7) / 8;
+	    gpcount += (आकार + 7) / 8;
 	  }
-	  break;
+	  अवरोध;
 
-	default:
-	  abort ();
+	शेष:
+	  पात ();
 	}
     }
 
-  closure->fun (cif, rvalue, avalue, closure->user_data);
+  closure->fun (cif, rvalue, avalue, closure->user_तथ्य);
 
-  return cif->flags;
+  वापस cif->flags;
 }

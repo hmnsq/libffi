@@ -25,25 +25,25 @@
  * m88k Foreign Function Interface
  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#अगर_अघोषित LIBFFI_ASM
+प्रकार अचिन्हित दीर्घ ffi_arg;
+प्रकार चिन्हित दीर्घ ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकार क्रमागत ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_OBSD,
   FFI_DEFAULT_ABI = FFI_OBSD,
   FFI_LAST_ABI = FFI_DEFAULT_ABI + 1
 } ffi_abi;
-#endif
+#पूर्ण_अगर
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 0x14
-#define FFI_NATIVE_RAW_API 0
+#घोषणा FFI_CLOSURES 1
+#घोषणा FFI_TRAMPOLINE_आकार 0x14
+#घोषणा FFI_NATIVE_RAW_API 0
 
-#endif
+#पूर्ण_अगर

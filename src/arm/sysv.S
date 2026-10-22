@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS या IMPLIED, INCLUDING BUT नहीं LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE और
+   NONINFRINGEMENT.  अंदर NO EVENT SHALL THE AUTHORS या COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES या OTHER LIABILITY,
+   WHETHER अंदर AN ACTION OF CONTRACT, TORT या OTHERWISE, ARISING FROM,
+   बाहर OF या अंदर CONNECTION WITH THE SOFTWARE या THE USE या OTHER
+   DEALINGS अंदर THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __arm__
@@ -72,16 +72,16 @@
 # define CNAME(X)	X
 #endif
 #ifdef __ELF__
-# define SIZE(X)	.size CNAME(X), . - CNAME(X)
-# define TYPE(X, Y)	.type CNAME(X), Y
+# define माप(X)	.size CNAME(X), . - CNAME(X)
+# define प्रकार(X, Y)	.type CNAME(X), Y
 #else
-# define SIZE(X)
-# define TYPE(X, Y)
+# define माप(X)
+# define प्रकार(X, Y)
 #endif
 
 #define ARM_FUNC_START_LOCAL(name)	\
 	.align	3;			\
-	TYPE(CNAME(name), %function);	\
+	प्रकार(CNAME(name), %function);	\
 	CNAME(name):
 
 #define ARM_FUNC_START(name)		\
@@ -90,7 +90,7 @@
 	ARM_FUNC_START_LOCAL(name)
 
 #define ARM_FUNC_END(name) \
-	SIZE(name)
+	माप(name)
 
 	.text
 	.syntax unified
@@ -126,7 +126,7 @@
  	.arch	armv5t
 #endif
 
-	/* Note that we use STC and LDC to encode VFP instructions,
+	/* Note that we use रढझ and LDC to encode VFP instructions,
 	   so that we do not need ".fpu vfp", nor get that added to
 	   the object file attributes.  These will not be executed
 	   unless the FFI_VFP abi is used.  */
@@ -328,7 +328,7 @@ ARM_FUNC_START(ffi_closure_VFP)
 ARM_FUNC_END(ffi_closure_VFP)
 
 /* Load values returned in registers for both closure entry points.
-   Note that we use LDM with SP in the register set.  This is deprecated
+   Note that we use LDM with ढस in the register set.  This is deprecated
    by ARM, but not yet unpredictable.  */
 
 ARM_FUNC_START_LOCAL(ffi_closure_ret)

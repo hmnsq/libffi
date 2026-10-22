@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#अगर_अघोषित LIBFFI_TARGET_H
+#घोषणा LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#अगर_अघोषित LIBFFI_H
+#त्रुटि "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#पूर्ण_अगर
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#अगर defined(__arch64__) || defined(__sparcv9)
+#अगर_अघोषित SPARC64
+#घोषणा SPARC64
+#पूर्ण_अगर
+#पूर्ण_अगर
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#अगर_अघोषित LIBFFI_ASM
+प्रकार अचिन्हित दीर्घ          ffi_arg;
+प्रकार चिन्हित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकार क्रमागत ffi_abi {
   FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+#अगर_घोषित SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#अन्यथा
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
+#पूर्ण_अगर
   FFI_LAST_ABI
 } ffi_abi;
-#endif
+#पूर्ण_अगर
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#घोषणा FFI_TARGET_SPECIFIC_ढेर_SPACE_ALLOCATION 1
+#घोषणा FFI_TARGET_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
+#अगर_घोषित SPARC64
 # define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+# define FFI_EXTRA_CIF_FIELDS  अचिन्हित पूर्णांक nfixedargs
+#पूर्ण_अगर
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#घोषणा FFI_CLOSURES 1
+#घोषणा FFI_GO_CLOSURES 1
+#घोषणा FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#अगर_घोषित SPARC64
+#घोषणा FFI_TRAMPOLINE_आकार 24
+#अन्यथा
+#घोषणा FFI_TRAMPOLINE_आकार 16
+#पूर्ण_अगर
 
-#endif
+#पूर्ण_अगर
 
