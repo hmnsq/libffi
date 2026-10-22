@@ -35,271 +35,271 @@
 /* stack slots (longs, doubles) occupy 128 bits, but only the first	*/
 /* 64 bits are actually used.						*/
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
+#അന്തര്ഭാവ <stdlib.h>
 
-#if !defined(NO_JAVA_RAW_API)
+#എങ്കിൽ !defined(NO_JAVA_RAW_API)
 
 size_t
 ffi_java_raw_size (ffi_cif *cif)
 {
   size_t result = 0;
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  വേണ്ടി (i = cif->nargs-1; i >= 0; i--, at++)
     {
-      switch((*at) -> type) {
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
+      തിരഞ്ഞെടുപ്പ്((*at) -> type) {
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
 	  result += 2 * FFI_SIZEOF_JAVA_RAW;
-	  break;
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_VECTOR:
 	  /* No structure or vector parameters in Java.	*/
 	  abort();
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  /* Not supported yet.  */
 	  abort();
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  result += FFI_SIZEOF_JAVA_RAW;
       }
     }
 
-  return result;
+  തിരികെ result;
 }
 
 
-void
-ffi_java_raw_to_ptrarray (ffi_cif *cif, ffi_java_raw *raw, void **args)
+ശൂന്യം
+ffi_java_raw_to_ptrarray (ffi_cif *cif, ffi_java_raw *raw, ശൂന്യം **args)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  വേണ്ടി (i = 0; i < cif->nargs; i++, tp++, args++)
     {
-      switch ((*tp)->type)
+      തിരഞ്ഞെടുപ്പ് ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + 3);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
+	  *args = (ശൂന്യം*) ((അക്ഷരം*)(raw++) + 3);
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + 2);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT16:
+	അവസ്ഥ FFI_TYPE_SINT16:
+	  *args = (ശൂന്യം*) ((അക്ഷരം*)(raw++) + 2);
+	  നിർത്തുക;
 
-#if FFI_SIZEOF_JAVA_RAW == 8
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
-	  *args = (void *)raw;
+#എങ്കിൽ FFI_SIZEOF_JAVA_RAW == 8
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	  *args = (ശൂന്യം *)raw;
 	  raw += 2;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	അവസ്ഥ FFI_TYPE_POINTER:
+	  *args = (ശൂന്യം*) &(raw++)->ptr;
+	  നിർത്തുക;
 
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  /* Not supported yet.  */
 	  abort();
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  *args = raw;
 	  raw +=
-	    FFI_ALIGN ((*tp)->size, sizeof(ffi_java_raw)) / sizeof(ffi_java_raw);
+	    FFI_ALIGN ((*tp)->size, വലുപ്പം(ffi_java_raw)) / വലുപ്പം(ffi_java_raw);
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#അല്ലെങ്കിൽ /* WORDS_BIGENDIAN */
 
-#if !PDP
+#എങ്കിൽ !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  വേണ്ടി (i = 0; i < cif->nargs; i++, tp++, args++)
     {
-#if FFI_SIZEOF_JAVA_RAW == 8
-      switch((*tp)->type) {
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
-	  *args = (void*) raw;
+#എങ്കിൽ FFI_SIZEOF_JAVA_RAW == 8
+      തിരഞ്ഞെടുപ്പ്((*tp)->type) {
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	  *args = (ശൂന്യം*) raw;
 	  raw += 2;
-	  break;
-	case FFI_TYPE_COMPLEX:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  /* Not supported yet.  */
 	  abort();
-	default:
-	  *args = (void*) raw++;
+	സ്ഥിരസ്ഥിതി:
+	  *args = (ശൂന്യം*) raw++;
       }
-#else /* FFI_SIZEOF_JAVA_RAW != 8 */
-	*args = (void*) raw;
+#അല്ലെങ്കിൽ /* FFI_SIZEOF_JAVA_RAW != 8 */
+	*args = (ശൂന്യം*) raw;
 	raw +=
-	  FFI_ALIGN ((*tp)->size, sizeof(ffi_java_raw)) / sizeof(ffi_java_raw);
+	  FFI_ALIGN ((*tp)->size, വലുപ്പം(ffi_java_raw)) / വലുപ്പം(ffi_java_raw);
 #endif /* FFI_SIZEOF_JAVA_RAW == 8 */
     }
 
-#else
+#അല്ലെങ്കിൽ
 #error "pdp endian not supported"
 #endif /* ! PDP */
 
 #endif /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_java_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_java_raw *raw)
+ശൂന്യം
+ffi_java_ptrarray_to_raw (ffi_cif *cif, ശൂന്യം **args, ffi_java_raw *raw)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  വേണ്ടി (i = 0; i < cif->nargs; i++, tp++, args++)
     {
-      switch ((*tp)->type)
+      തിരഞ്ഞെടുപ്പ് ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-#if WORDS_BIGENDIAN
+	അവസ്ഥ FFI_TYPE_UINT8:
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 	  *(UINT32*)(raw++) = *(UINT8*) (*args);
-#else
+#അല്ലെങ്കിൽ
 	  (raw++)->uint = *(UINT8*) (*args);
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT8:
-#if WORDS_BIGENDIAN
+	അവസ്ഥ FFI_TYPE_SINT8:
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 	  *(SINT32*)(raw++) = *(SINT8*) (*args);
-#else
+#അല്ലെങ്കിൽ
 	  (raw++)->sint = *(SINT8*) (*args);
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT16:
-#if WORDS_BIGENDIAN
+	അവസ്ഥ FFI_TYPE_UINT16:
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 	  *(UINT32*)(raw++) = *(UINT16*) (*args);
-#else
+#അല്ലെങ്കിൽ
 	  (raw++)->uint = *(UINT16*) (*args);
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT16:
-#if WORDS_BIGENDIAN
+	അവസ്ഥ FFI_TYPE_SINT16:
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 	  *(SINT32*)(raw++) = *(SINT16*) (*args);
-#else
+#അല്ലെങ്കിൽ
 	  (raw++)->sint = *(SINT16*) (*args);
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT32:
-#if WORDS_BIGENDIAN
+	അവസ്ഥ FFI_TYPE_UINT32:
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 	  *(UINT32*)(raw++) = *(UINT32*) (*args);
-#else
+#അല്ലെങ്കിൽ
 	  (raw++)->uint = *(UINT32*) (*args);
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT32:
-#if WORDS_BIGENDIAN
+	അവസ്ഥ FFI_TYPE_SINT32:
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 	  *(SINT32*)(raw++) = *(SINT32*) (*args);
-#else
+#അല്ലെങ്കിൽ
 	  (raw++)->sint = *(SINT32*) (*args);
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
 	  (raw++)->flt = *(FLOAT32*) (*args);
-	  break;
+	  നിർത്തുക;
 
-#if FFI_SIZEOF_JAVA_RAW == 8
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
+#എങ്കിൽ FFI_SIZEOF_JAVA_RAW == 8
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
 	  raw->uint = *(UINT64*) (*args);
 	  raw += 2;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	അവസ്ഥ FFI_TYPE_POINTER:
+	  (raw++)->ptr = **(ശൂന്യം***) args;
+	  നിർത്തുക;
 
-	default:
-#if FFI_SIZEOF_JAVA_RAW == 8
+	സ്ഥിരസ്ഥിതി:
+#എങ്കിൽ FFI_SIZEOF_JAVA_RAW == 8
 	  FFI_ASSERT(0);	/* Should have covered all cases */
-#else
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
+#അല്ലെങ്കിൽ
+	  memcpy ((ശൂന്യം*) raw->data, (ശൂന്യം*)*args, (*tp)->size);
 	  raw +=
-	    FFI_ALIGN ((*tp)->size, sizeof(ffi_java_raw)) / sizeof(ffi_java_raw);
+	    FFI_ALIGN ((*tp)->size, വലുപ്പം(ffi_java_raw)) / വലുപ്പം(ffi_java_raw);
 #endif
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#എങ്കിൽ !FFI_NATIVE_RAW_API
 
-static void
-ffi_java_rvalue_to_raw (ffi_cif *cif, void *rvalue)
+സ്ഥിതം ശൂന്യം
+ffi_java_rvalue_to_raw (ffi_cif *cif, ശൂന്യം *rvalue)
 {
-#if WORDS_BIGENDIAN && FFI_SIZEOF_ARG == 8
-  switch (cif->rtype->type)
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN && FFI_SIZEOF_ARG == 8
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_UINT32:
+    അവസ്ഥ FFI_TYPE_UINT8:
+    അവസ്ഥ FFI_TYPE_UINT16:
+    അവസ്ഥ FFI_TYPE_UINT32:
       *(UINT64 *)rvalue <<= 32;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_INT:
-#if FFI_SIZEOF_JAVA_RAW == 4
-    case FFI_TYPE_POINTER:
+    അവസ്ഥ FFI_TYPE_SINT8:
+    അവസ്ഥ FFI_TYPE_SINT16:
+    അവസ്ഥ FFI_TYPE_SINT32:
+    അവസ്ഥ FFI_TYPE_INT:
+#എങ്കിൽ FFI_SIZEOF_JAVA_RAW == 4
+    അവസ്ഥ FFI_TYPE_POINTER:
 #endif
       *(SINT64 *)rvalue <<= 32;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_COMPLEX:
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       /* Not supported yet.  */
       abort();
 
-    default:
-      break;
+    സ്ഥിരസ്ഥിതി:
+      നിർത്തുക;
     }
 #endif
 }
 
-static void
-ffi_java_raw_to_rvalue (ffi_cif *cif, void *rvalue)
+സ്ഥിതം ശൂന്യം
+ffi_java_raw_to_rvalue (ffi_cif *cif, ശൂന്യം *rvalue)
 {
-#if WORDS_BIGENDIAN && FFI_SIZEOF_ARG == 8
-  switch (cif->rtype->type)
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN && FFI_SIZEOF_ARG == 8
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_UINT32:
+    അവസ്ഥ FFI_TYPE_UINT8:
+    അവസ്ഥ FFI_TYPE_UINT16:
+    അവസ്ഥ FFI_TYPE_UINT32:
       *(UINT64 *)rvalue >>= 32;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_INT:
+    അവസ്ഥ FFI_TYPE_SINT8:
+    അവസ്ഥ FFI_TYPE_SINT16:
+    അവസ്ഥ FFI_TYPE_SINT32:
+    അവസ്ഥ FFI_TYPE_INT:
       *(SINT64 *)rvalue >>= 32;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_COMPLEX:
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       /* Not supported yet.  */
       abort();
 
-    default:
-      break;
+    സ്ഥിരസ്ഥിതി:
+      നിർത്തുക;
     }
 #endif
 }
@@ -311,20 +311,20 @@ ffi_java_raw_to_rvalue (ffi_cif *cif, void *rvalue)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_java_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue,
+ശൂന്യം ffi_java_raw_call (ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue,
 			ffi_java_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
+  ശൂന്യം **avalue = (ശൂന്യം**) alloca (cif->nargs * വലുപ്പം (ശൂന്യം*));
   ffi_java_raw_to_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
   ffi_java_rvalue_to_raw (cif, rvalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#എങ്കിൽ FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_java_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+സ്ഥിതം ശൂന്യം
+ffi_java_translate_args (ffi_cif *cif, ശൂന്യം *rvalue,
+		    ശൂന്യം **avalue, ശൂന്യം *user_data)
 {
   ffi_java_raw *raw = (ffi_java_raw*)alloca (ffi_java_raw_size (cif));
   ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
@@ -337,9 +337,9 @@ ffi_java_translate_args (ffi_cif *cif, void *rvalue,
 ffi_status
 ffi_prep_java_raw_closure_loc (ffi_java_raw_closure* cl,
 			       ffi_cif *cif,
-			       void (*fun)(ffi_cif*,void*,ffi_java_raw*,void*),
-			       void *user_data,
-			       void *codeloc)
+			       ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ffi_java_raw*,ശൂന്യം*),
+			       ശൂന്യം *user_data,
+			       ശൂന്യം *codeloc)
 {
   ffi_status status;
 
@@ -348,13 +348,13 @@ ffi_prep_java_raw_closure_loc (ffi_java_raw_closure* cl,
 				 &ffi_java_translate_args,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  എങ്കിൽ (status == FFI_OK)
     {
       cl->fun       = fun;
       cl->user_data = user_data;
     }
 
-  return status;
+  തിരികെ status;
 }
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
@@ -364,10 +364,10 @@ ffi_prep_java_raw_closure_loc (ffi_java_raw_closure* cl,
 ffi_status
 ffi_prep_java_raw_closure (ffi_java_raw_closure* cl,
 			   ffi_cif *cif,
-			   void (*fun)(ffi_cif*,void*,ffi_java_raw*,void*),
-			   void *user_data)
+			   ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ffi_java_raw*,ശൂന്യം*),
+			   ശൂന്യം *user_data)
 {
-  return ffi_prep_java_raw_closure_loc (cl, cif, fun, user_data, cl);
+  തിരികെ ffi_prep_java_raw_closure_loc (cl, cif, fun, user_data, cl);
 }
 
 #endif /* FFI_CLOSURES */

@@ -43,20 +43,20 @@
  *   fixes.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <unistd.h>
 
-void ffi_call_OBSD (unsigned int, extended_cif *, unsigned int, void *,
-		    void (*fn) ());
-void *ffi_prep_args (void *, extended_cif *);
-void ffi_closure_OBSD (ffi_closure *);
-void ffi_closure_struct_OBSD (ffi_closure *);
-unsigned int ffi_closure_OBSD_inner (ffi_closure *, void *, unsigned int *,
-				     char *);
-void ffi_cacheflush_OBSD (unsigned int, unsigned int);
+ശൂന്യം ffi_call_OBSD (unsigned പൂർണ്ണസംഖ്യ, extended_cif *, unsigned പൂർണ്ണസംഖ്യ, ശൂന്യം *,
+		    ശൂന്യം (*fn) ());
+ശൂന്യം *ffi_prep_args (ശൂന്യം *, extended_cif *);
+ശൂന്യം ffi_closure_OBSD (ffi_closure *);
+ശൂന്യം ffi_closure_struct_OBSD (ffi_closure *);
+unsigned പൂർണ്ണസംഖ്യ ffi_closure_OBSD_inner (ffi_closure *, ശൂന്യം *, unsigned പൂർണ്ണസംഖ്യ *,
+				     അക്ഷരം *);
+ശൂന്യം ffi_cacheflush_OBSD (unsigned പൂർണ്ണസംഖ്യ, unsigned പൂർണ്ണസംഖ്യ);
 
 #define CIF_FLAGS_INT		(1 << 0)
 #define CIF_FLAGS_DINT		(1 << 1)
@@ -68,30 +68,30 @@ void ffi_cacheflush_OBSD (unsigned int, unsigned int);
 /* ffi_prep_args is called by the assembly routine once stack space has
    been allocated for the function's arguments.  */
 
-void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+ശൂന്യം *
+ffi_prep_args (ശൂന്യം *അട്ടി, extended_cif *ecif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp, *stackp;
-  unsigned int *regp;
-  unsigned int regused;
+  unsigned പൂർണ്ണസംഖ്യ i;
+  ശൂന്യം **p_argv;
+  അക്ഷരം *argp, *stackp;
+  unsigned പൂർണ്ണസംഖ്യ *regp;
+  unsigned പൂർണ്ണസംഖ്യ regused;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  ശൂന്യം *struct_മൂല്യം_ptr;
 
-  regp = (unsigned int *)stack;
-  stackp = (char *)(regp + 8);
+  regp = (unsigned പൂർണ്ണസംഖ്യ *)അട്ടി;
+  stackp = (അക്ഷരം *)(regp + 8);
   regused = 0;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  എങ്കിൽ (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_മൂല്യം_ptr = ecif->rvalue;
+  അല്ലെങ്കിൽ
+    struct_മൂല്യം_ptr = ശൂന്യ;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; i != 0; i--, p_arg++)
+  വേണ്ടി (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
       unsigned short t, a;
@@ -107,92 +107,92 @@ ffi_prep_args (void *stack, extended_cif *ecif)
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      എങ്കിൽ (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
-	    argp = (char *)regp;
-	  else
+	  എങ്കിൽ (z == വലുപ്പം (പൂർണ്ണസംഖ്യ) && a == വലുപ്പം (പൂർണ്ണസംഖ്യ) && regused < 8)
+	    argp = (അക്ഷരം *)regp;
+	  അല്ലെങ്കിൽ
 	    argp = stackp;
 	}
-      else
+      അല്ലെങ്കിൽ
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  എങ്കിൽ (z > വലുപ്പം (പൂർണ്ണസംഖ്യ) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      എങ്കിൽ (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
-	    argp = (char *)regp;
-	  else
+	  എങ്കിൽ (regused < 8)
+	    argp = (അക്ഷരം *)regp;
+	  അല്ലെങ്കിൽ
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      എങ്കിൽ (argp == stackp && a > വലുപ്പം (പൂർണ്ണസംഖ്യ))
 	{
-	  stackp = (char *) FFI_ALIGN(stackp, a);
+	  stackp = (അക്ഷരം *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
 	}
 
-      switch (t)
+      തിരഞ്ഞെടുപ്പ് (t)
 	{
-	case FFI_TYPE_SINT8:
-	  *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT8:
+	  *(signed പൂർണ്ണസംഖ്യ *) argp = (signed പൂർണ്ണസംഖ്യ) *(SINT8 *) *p_argv;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT8:
-	  *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT8:
+	  *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ) *(UINT8 *) *p_argv;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT16:
-	  *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT16:
+	  *(signed പൂർണ്ണസംഖ്യ *) argp = (signed പൂർണ്ണസംഖ്യ) *(SINT16 *) *p_argv;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT16:
-	  *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT16:
+	  *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ) *(UINT16 *) *p_argv;
+	  നിർത്തുക;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  *(unsigned int *) argp = *(unsigned int *) *p_argv;
-	  break;
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_POINTER:
+	  *(unsigned പൂർണ്ണസംഖ്യ *) argp = *(unsigned പൂർണ്ണസംഖ്യ *) *p_argv;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_STRUCT:
 	  memcpy (argp, *p_argv, z);
-	  break;
+	  നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  FFI_ASSERT (0);
 	}
 
       /* Align if necessary.  */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      എങ്കിൽ ((വലുപ്പം (പൂർണ്ണസംഖ്യ) - 1) & z)
+	z = FFI_ALIGN(z, വലുപ്പം (പൂർണ്ണസംഖ്യ));
 
       p_argv++;
 
       /* Be careful, once all registers are filled, and about to continue
          on stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      എങ്കിൽ (argp == (അക്ഷരം *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / വലുപ്പം (പൂർണ്ണസംഖ്യ);
+	  regused += z / വലുപ്പം (പൂർണ്ണസംഖ്യ);
 	}
-      else
+      അല്ലെങ്കിൽ
 	stackp += z;
     }
 
-  return struct_value_ptr;
+  തിരികെ struct_മൂല്യം_ptr;
 }
 
 /* Perform machine dependent cif processing */
@@ -200,36 +200,36 @@ ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    അവസ്ഥ FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size == sizeof (int) &&
-	  cif->rtype->alignment == sizeof (int))
+    അവസ്ഥ FFI_TYPE_STRUCT:
+      എങ്കിൽ (cif->rtype->size == വലുപ്പം (പൂർണ്ണസംഖ്യ) &&
+	  cif->rtype->alignment == വലുപ്പം (പൂർണ്ണസംഖ്യ))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      അല്ലെങ്കിൽ
 	cif->flags = 0;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
       cif->flags = CIF_FLAGS_DINT;
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       cif->flags = CIF_FLAGS_INT;
-      break;
+      നിർത്തുക;
     }
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+ശൂന്യം
+ffi_call (ffi_cif *cif, ശൂന്യം (*fn) (), ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
   extended_cif ecif;
 
@@ -239,23 +239,23 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  എങ്കിൽ (rvalue == ശൂന്യ
       && cif->rtype->type == FFI_TYPE_STRUCT
-      && (cif->rtype->size != sizeof (int)
-	  || cif->rtype->alignment != sizeof (int)))
+      && (cif->rtype->size != വലുപ്പം (പൂർണ്ണസംഖ്യ)
+	  || cif->rtype->alignment != വലുപ്പം (പൂർണ്ണസംഖ്യ)))
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  അല്ലെങ്കിൽ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-    case FFI_OBSD:
+    അവസ്ഥ FFI_OBSD:
       ffi_call_OBSD (cif->bytes, &ecif, cif->flags, ecif.rvalue, fn);
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT (0);
-      break;
+      നിർത്തുക;
     }
 }
 
@@ -263,21 +263,21 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-static void
-ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
-			    char *stackp)
+സ്ഥിതം ശൂന്യം
+ffi_prep_closure_args_OBSD (ffi_cif *cif, ശൂന്യം **avalue, unsigned പൂർണ്ണസംഖ്യ *regp,
+			    അക്ഷരം *stackp)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
-  unsigned int regused;
+  unsigned പൂർണ്ണസംഖ്യ i;
+  ശൂന്യം **p_argv;
+  അക്ഷരം *argp;
+  unsigned പൂർണ്ണസംഖ്യ regused;
   ffi_type **p_arg;
 
   regused = 0;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  വേണ്ടി (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
       unsigned short t, a;
@@ -293,108 +293,108 @@ ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      എങ്കിൽ (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
-	    argp = (char *)regp;
-	  else
+	  എങ്കിൽ (z == വലുപ്പം (പൂർണ്ണസംഖ്യ) && a == വലുപ്പം (പൂർണ്ണസംഖ്യ) && regused < 8)
+	    argp = (അക്ഷരം *)regp;
+	  അല്ലെങ്കിൽ
 	    argp = stackp;
 	}
-      else
+      അല്ലെങ്കിൽ
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  എങ്കിൽ (z > വലുപ്പം (പൂർണ്ണസംഖ്യ) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      എങ്കിൽ (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
-	    argp = (char *)regp;
-	  else
+	  എങ്കിൽ (regused < 8)
+	    argp = (അക്ഷരം *)regp;
+	  അല്ലെങ്കിൽ
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      എങ്കിൽ (argp == stackp && a > വലുപ്പം (പൂർണ്ണസംഖ്യ))
 	{
-	  stackp = (char *) FFI_ALIGN(stackp, a);
+	  stackp = (അക്ഷരം *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
 	}
 
-      if (z < sizeof (int) && t != FFI_TYPE_STRUCT)
-	*p_argv = (void *) (argp + sizeof (int) - z);
-      else
-	*p_argv = (void *) argp;
+      എങ്കിൽ (z < വലുപ്പം (പൂർണ്ണസംഖ്യ) && t != FFI_TYPE_STRUCT)
+	*p_argv = (ശൂന്യം *) (argp + വലുപ്പം (പൂർണ്ണസംഖ്യ) - z);
+      അല്ലെങ്കിൽ
+	*p_argv = (ശൂന്യം *) argp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      എങ്കിൽ ((വലുപ്പം (പൂർണ്ണസംഖ്യ) - 1) & z)
+	z = FFI_ALIGN(z, വലുപ്പം (പൂർണ്ണസംഖ്യ));
 
       p_argv++;
 
       /* Be careful, once all registers are exhausted, and about to fetch from
 	 stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      എങ്കിൽ (argp == (അക്ഷരം *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / വലുപ്പം (പൂർണ്ണസംഖ്യ);
+	  regused += z / വലുപ്പം (പൂർണ്ണസംഖ്യ);
 	}
-      else
+      അല്ലെങ്കിൽ
 	stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned int *regp,
-			char *stackp)
+unsigned പൂർണ്ണസംഖ്യ
+ffi_closure_OBSD_inner (ffi_closure *closure, ശൂന്യം *resp, unsigned പൂർണ്ണസംഖ്യ *regp,
+			അക്ഷരം *stackp)
 {
   ffi_cif *cif;
-  void **arg_area;
+  ശൂന്യം **arg_area;
 
   cif = closure->cif;
-  arg_area = (void**) alloca (cif->nargs * sizeof (void *));
+  arg_area = (ശൂന്യം**) alloca (cif->nargs * വലുപ്പം (ശൂന്യം *));
 
   ffi_prep_closure_args_OBSD(cif, arg_area, regp, stackp);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  തിരികെ cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure, ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data, void *codeloc)
+		      ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ശൂന്യം**,ശൂന്യം*),
+		      ശൂന്യം *user_data, ശൂന്യം *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) codeloc;
-  void *fn;
+  unsigned പൂർണ്ണസംഖ്യ *tramp = (unsigned പൂർണ്ണസംഖ്യ *) codeloc;
+  ശൂന്യം *fn;
 
   FFI_ASSERT (cif->abi == FFI_OBSD);
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
+  എങ്കിൽ (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
     fn = &ffi_closure_struct_OBSD;
-  else
+  അല്ലെങ്കിൽ
     fn = &ffi_closure_OBSD;
 
   /* or.u %r10, %r0, %hi16(fn) */
-  tramp[0] = 0x5d400000 | (((unsigned int)fn) >> 16);
+  tramp[0] = 0x5d400000 | (((unsigned പൂർണ്ണസംഖ്യ)fn) >> 16);
   /* or.u %r13, %r0, %hi16(closure) */
-  tramp[1] = 0x5da00000 | ((unsigned int)closure >> 16);
+  tramp[1] = 0x5da00000 | ((unsigned പൂർണ്ണസംഖ്യ)closure >> 16);
   /* or %r10, %r10, %lo16(fn) */
-  tramp[2] = 0x594a0000 | (((unsigned int)fn) & 0xffff);
+  tramp[2] = 0x594a0000 | (((unsigned പൂർണ്ണസംഖ്യ)fn) & 0xffff);
   /* jmp.n %r10 */
   tramp[3] = 0xf400c40a;
   /* or %r13, %r13, %lo16(closure) */
-  tramp[4] = 0x59ad0000 | ((unsigned int)closure & 0xffff);
+  tramp[4] = 0x59ad0000 | ((unsigned പൂർണ്ണസംഖ്യ)closure & 0xffff);
 
-  ffi_cacheflush_OBSD((unsigned int)codeloc, FFI_TRAMPOLINE_SIZE);
+  ffi_cacheflush_OBSD((unsigned പൂർണ്ണസംഖ്യ)codeloc, FFI_TRAMPOLINE_SIZE);
 
   closure->cif  = cif;
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }

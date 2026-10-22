@@ -25,104 +25,104 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-#include <stdlib.h>
+#അന്തര്ഭാവ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+ശൂന്യം ffi_prep_args(അക്ഷരം *അട്ടി, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  unsigned പൂർണ്ണസംഖ്യ i;
+  പൂർണ്ണസംഖ്യ tmp;
+  unsigned പൂർണ്ണസംഖ്യ avn;
+  ശൂന്യം **p_argv;
+  അക്ഷരം *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = അട്ടി;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  എങ്കിൽ (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(ശൂന്യം **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  വേണ്ടി (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      എങ്കിൽ (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (അക്ഷരം *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      എങ്കിൽ (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  എങ്കിൽ (z < വലുപ്പം (പൂർണ്ണസംഖ്യ))
 	    {
-	      z = sizeof (int);
+	      z = വലുപ്പം (പൂർണ്ണസംഖ്യ);
 
-	      switch ((*p_arg)->type)
+	      തിരഞ്ഞെടുപ്പ് ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		അവസ്ഥ FFI_TYPE_SINT8:
+		  *(signed പൂർണ്ണസംഖ്യ *) argp = (signed പൂർണ്ണസംഖ്യ)*(SINT8 *)(* p_argv);
+		  നിർത്തുക;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		അവസ്ഥ FFI_TYPE_UINT8:
+		  *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ)*(UINT8 *)(* p_argv);
+		  നിർത്തുക;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		അവസ്ഥ FFI_TYPE_SINT16:
+		  *(signed പൂർണ്ണസംഖ്യ *) argp = (signed പൂർണ്ണസംഖ്യ)*(SINT16 *)(* p_argv);
+		  നിർത്തുക;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		അവസ്ഥ FFI_TYPE_UINT16:
+		  *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ)*(UINT16 *)(* p_argv);
+		  നിർത്തുക;
 
-		case FFI_TYPE_STRUCT:
+		അവസ്ഥ FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  എങ്കിൽ ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  അല്ലെങ്കിൽ
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = വലുപ്പം (പൂർണ്ണസംഖ്യ);
+		  നിർത്തുക;
 
-		default:
+		സ്ഥിരസ്ഥിതി:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  അല്ലെങ്കിൽ എങ്കിൽ (z == വലുപ്പം (പൂർണ്ണസംഖ്യ))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      എങ്കിൽ ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  എങ്കിൽ (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ)(ശൂന്യം *)(* p_argv);
+		      z = വലുപ്പം(ശൂന്യം *);
 		    }
-		  else
+		  അല്ലെങ്കിൽ
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      അല്ലെങ്കിൽ
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  തിരികെ;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -141,74 +141,74 @@ ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    അവസ്ഥ FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    അവസ്ഥ FFI_TYPE_STRUCT:
+      എങ്കിൽ (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      അല്ലെങ്കിൽ എങ്കിൽ (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      അല്ലെങ്കിൽ
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    അവസ്ഥ FFI_TYPE_FLOAT:
+    സ്ഥിരസ്ഥിതി:
       cif->flags = FFI_TYPE_INT;
-      break;
+      നിർത്തുക;
     }
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+ബാഹ്യ ശൂന്യം ffi_call_SYSV(ശൂന്യം (*)(അക്ഷരം *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, ശൂന്യം (*fn)(ശൂന്യം));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ശൂന്യം ffi_call(ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  ശൂന്യം **avalue_copy = ശൂന്യ;
+  പൂർണ്ണസംഖ്യ i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  എങ്കിൽ ((rvalue == ശൂന്യ) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  അല്ലെങ്കിൽ
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  വേണ്ടി (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      പൂർണ്ണസംഖ്യ size = at->size;
+      എങ്കിൽ (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          അക്ഷരം *argcopy = alloca (size);
+          എങ്കിൽ (avalue_copy == ശൂന്യ)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * വലുപ്പം (ശൂന്യം *));
+              memcpy (avalue_copy, avalue, nargs * വലുപ്പം (ശൂന്യം *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -217,41 +217,41 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-    case FFI_SYSV:
+    അവസ്ഥ FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      എങ്കിൽ (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  പൂർണ്ണസംഖ്യ size = cif->rtype->size;
+	  പൂർണ്ണസംഖ്യ align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  എങ്കിൽ (size < 4)
 	    {
-	      if (align == 1)
+	      എങ്കിൽ (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  അല്ലെങ്കിൽ എങ്കിൽ (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      എങ്കിൽ (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      അല്ലെങ്കിൽ എങ്കിൽ (align == 2)
 		{
-		  if (size & 1)
+		  എങ്കിൽ (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  എങ്കിൽ (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
 }

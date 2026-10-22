@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS അഥവാ IMPLIED, INCLUDING BUT അല്ല LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ഒപ്പം
+   NONINFRINGEMENT.  ഇൽ NO EVENT SHALL THE AUTHORS അഥവാ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES അഥവാ OTHER LIABILITY,
+   WHETHER ഇൽ AN ACTION OF CONTRACT, TORT അഥവാ OTHERWISE, ARISING FROM,
+   OUT OF അഥവാ ഇൽ CONNECTION WITH THE SOFTWARE അഥവാ THE USE അഥവാ OTHER
+   DEALINGS ഇൽ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 #define LIBFFI_ASM
 #include <fficonfig.h>
@@ -92,7 +92,7 @@ ENTRY(ffi_closure_SYSV)
 	# i.e. the previous frame pointer + 8
 	addi %r9,%r1,152
 
-	# make the call
+	# make the വിളിക്കുക
 	bl ffi_closure_helper_SYSV@local
 .Lret:
 	# now r3 contains the return type
@@ -240,7 +240,7 @@ E PPC32_SYSV_LD_STRUCT_7
 #endif
 
 	.cfi_endproc
-END(ffi_closure_SYSV)
+അവസാനം(ffi_closure_SYSV)
 
 
 FFI_HIDDEN(ffi_go_closure_sysv)
@@ -264,7 +264,7 @@ ENTRY(ffi_go_closure_sysv)
 	mr %r5,%r11
 	b .Ldoclosure
 	.cfi_endproc
-END(ffi_go_closure_sysv)
+അവസാനം(ffi_go_closure_sysv)
 
 #ifdef FFI_EXEC_STATIC_TRAMP
 	.text

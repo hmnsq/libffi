@@ -24,77 +24,77 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-extern void ffi_call_SYSV(void (*)(void*, extended_cif*), extended_cif*,
-		unsigned int, unsigned int, unsigned int*, void (*fn)(void),
-		unsigned int, unsigned int);
+ബാഹ്യ ശൂന്യം ffi_call_SYSV(ശൂന്യം (*)(ശൂന്യം*, extended_cif*), extended_cif*,
+		unsigned പൂർണ്ണസംഖ്യ, unsigned പൂർണ്ണസംഖ്യ, unsigned പൂർണ്ണസംഖ്യ*, ശൂന്യം (*fn)(ശൂന്യം),
+		unsigned പൂർണ്ണസംഖ്യ, unsigned പൂർണ്ണസംഖ്യ);
 
-extern void ffi_closure_SYSV(void);
+ബാഹ്യ ശൂന്യം ffi_closure_SYSV(ശൂന്യം);
 
-#define WORD_SIZE			sizeof(unsigned int)
+#define WORD_SIZE			വലുപ്പം(unsigned പൂർണ്ണസംഖ്യ)
 #define ARGS_REGISTER_SIZE	(WORD_SIZE * 6)
 #define WORD_FFI_ALIGN(x)		FFI_ALIGN(x, WORD_SIZE)
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
-void ffi_prep_args(void* stack, extended_cif* ecif)
+ശൂന്യം ffi_prep_args(ശൂന്യം* അട്ടി, extended_cif* ecif)
 {
-	unsigned int i;
+	unsigned പൂർണ്ണസംഖ്യ i;
 	ffi_type** p_arg;
-	void** p_argv;
-	void* stack_args_p = stack;
+	ശൂന്യം** p_argv;
+	ശൂന്യം* അട്ടി_args_p = അട്ടി;
 
-	if (ecif == NULL || ecif->cif == NULL) {
-		return; /* no description to prepare */
+	എങ്കിൽ (ecif == ശൂന്യ || ecif->cif == ശൂന്യ) {
+		തിരികെ; /* no description to prepare */
 	}
 
 	p_argv = ecif->avalue;
 
-	if ((ecif->cif->rtype != NULL) &&
+	എങ്കിൽ ((ecif->cif->rtype != ശൂന്യ) &&
 			(ecif->cif->rtype->type == FFI_TYPE_STRUCT))
 	{
 		/* if return type is a struct which is referenced on the stack/reg5,
 		 * by a pointer. Stored the return value pointer in r5.
 		 */
-		char* addr = stack_args_p;
+		അക്ഷരം* addr = അട്ടി_args_p;
 		memcpy(addr, &(ecif->rvalue), WORD_SIZE);
-		stack_args_p += WORD_SIZE;
+		അട്ടി_args_p += WORD_SIZE;
 	}
 
-	if (ecif->avalue == NULL) {
-		return; /* no arguments to prepare */
+	എങ്കിൽ (ecif->avalue == ശൂന്യ) {
+		തിരികെ; /* no arguments to prepare */
 	}
 
-	for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+	വേണ്ടി (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
 			i++, p_arg++)
 	{
 		size_t size = (*p_arg)->size;
-		int type = (*p_arg)->type;
-		void* value = p_argv[i];
-		char* addr = stack_args_p;
-		int aligned_size = WORD_FFI_ALIGN(size);
+		പൂർണ്ണസംഖ്യ type = (*p_arg)->type;
+		ശൂന്യം* മൂല്യം = p_argv[i];
+		അക്ഷരം* addr = അട്ടി_args_p;
+		പൂർണ്ണസംഖ്യ aligned_size = WORD_FFI_ALIGN(size);
 
 		/* force word alignment on the stack */
-		stack_args_p += aligned_size;
+		അട്ടി_args_p += aligned_size;
 		
-		switch (type)
+		തിരഞ്ഞെടുപ്പ് (type)
 		{
-			case FFI_TYPE_UINT8:
-				*(unsigned int *)addr = (unsigned int)*(UINT8*)(value);
-				break;
-			case FFI_TYPE_SINT8:
-				*(signed int *)addr = (signed int)*(SINT8*)(value);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *)addr = (unsigned int)*(UINT16*)(value);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *)addr = (signed int)*(SINT16*)(value);
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+			അവസ്ഥ FFI_TYPE_UINT8:
+				*(unsigned പൂർണ്ണസംഖ്യ *)addr = (unsigned പൂർണ്ണസംഖ്യ)*(UINT8*)(മൂല്യം);
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_SINT8:
+				*(signed പൂർണ്ണസംഖ്യ *)addr = (signed പൂർണ്ണസംഖ്യ)*(SINT8*)(മൂല്യം);
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_UINT16:
+				*(unsigned പൂർണ്ണസംഖ്യ *)addr = (unsigned പൂർണ്ണസംഖ്യ)*(UINT16*)(മൂല്യം);
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_SINT16:
+				*(signed പൂർണ്ണസംഖ്യ *)addr = (signed പൂർണ്ണസംഖ്യ)*(SINT16*)(മൂല്യം);
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_STRUCT:
+#എങ്കിൽ __BIG_ENDIAN__
 				/*
 				 * MicroBlaze toolchain appears to emit:
 				 * bsrli r5, r5, 8 (caller)
@@ -117,20 +117,20 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 				 * above mentioned case, it will re-align the contents of a
 				 * <= 3-byte struct value.
 				 */
-				if (size < WORD_SIZE)
+				എങ്കിൽ (size < WORD_SIZE)
 				{
-				  memcpy (addr + (WORD_SIZE - size), value, size);
-				  break;
+				  memcpy (addr + (WORD_SIZE - size), മൂല്യം, size);
+				  നിർത്തുക;
 				}
 #endif
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_DOUBLE:
-			default:
-				memcpy(addr, value, aligned_size);
+			അവസ്ഥ FFI_TYPE_SINT32:
+			അവസ്ഥ FFI_TYPE_UINT32:
+			അവസ്ഥ FFI_TYPE_FLOAT:
+			അവസ്ഥ FFI_TYPE_SINT64:
+			അവസ്ഥ FFI_TYPE_UINT64:
+			അവസ്ഥ FFI_TYPE_DOUBLE:
+			സ്ഥിരസ്ഥിതി:
+				memcpy(addr, മൂല്യം, aligned_size);
 		}
 	}
 }
@@ -138,17 +138,17 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 ffi_status ffi_prep_cif_machdep(ffi_cif* cif)
 {
 	/* check ABI */
-	switch (cif->abi)
+	തിരഞ്ഞെടുപ്പ് (cif->abi)
 	{
-		case FFI_SYSV:
-			break;
-		default:
-			return FFI_BAD_ABI;
+		അവസ്ഥ FFI_SYSV:
+			നിർത്തുക;
+		സ്ഥിരസ്ഥിതി:
+			തിരികെ FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	തിരികെ FFI_OK;
 }
 
-void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
+ശൂന്യം ffi_call(ffi_cif* cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം* rvalue, ശൂന്യം** avalue)
 {
 	extended_cif ecif;
 	ecif.cif = cif;
@@ -156,27 +156,27 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 
 	/* If the return value is a struct and we don't have a return */
 	/* value address then we need to make one */
-	if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+	എങ്കിൽ ((rvalue == ശൂന്യ) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
 		ecif.rvalue = alloca(cif->rtype->size);
-	} else {
+	} അല്ലെങ്കിൽ {
 		ecif.rvalue = rvalue;
 	}
 
-	switch (cif->abi)
+	തിരഞ്ഞെടുപ്പ് (cif->abi)
 	{
-	case FFI_SYSV:
+	അവസ്ഥ FFI_SYSV:
 		ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags,
 				ecif.rvalue, fn, cif->rtype->type, cif->rtype->size);
-		break;
-	default:
+		നിർത്തുക;
+	സ്ഥിരസ്ഥിതി:
 		FFI_ASSERT(0);
-		break;
+		നിർത്തുക;
 	}
 }
 
-void ffi_closure_call_SYSV(void* register_args, void* stack_args,
-			ffi_closure* closure, void* rvalue,
-			unsigned int* rtype, unsigned int* rsize)
+ശൂന്യം ffi_closure_call_SYSV(ശൂന്യം* register_args, ശൂന്യം* അട്ടി_args,
+			ffi_closure* closure, ശൂന്യം* rvalue,
+			unsigned പൂർണ്ണസംഖ്യ* rtype, unsigned പൂർണ്ണസംഖ്യ* rsize)
 {
 	/* prepare arguments for closure call */
 	ffi_cif* cif = closure->cif;
@@ -187,77 +187,77 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	 * required to store the value of args in the lower 6 words in the stack
 	 * (although they are allocated in the stack).
 	 */
-	char* stackclone = alloca(cif->bytes);
-	void** avalue = alloca(cif->nargs * sizeof(void*));
-	void* struct_rvalue = NULL;
-	char* ptr = stackclone;
-	int i;
+	അക്ഷരം* stackclone = alloca(cif->bytes);
+	ശൂന്യം** avalue = alloca(cif->nargs * വലുപ്പം(ശൂന്യം*));
+	ശൂന്യം* struct_rvalue = ശൂന്യ;
+	അക്ഷരം* ptr = stackclone;
+	പൂർണ്ണസംഖ്യ i;
 
 	/* copy registers into stack clone */
-	int registers_used = cif->bytes;
-	if (registers_used > ARGS_REGISTER_SIZE) {
+	പൂർണ്ണസംഖ്യ registers_used = cif->bytes;
+	എങ്കിൽ (registers_used > ARGS_REGISTER_SIZE) {
 		registers_used = ARGS_REGISTER_SIZE;
 	}
 	memcpy(stackclone, register_args, registers_used);
 
 	/* copy stack allocated args into stack clone */
-	if (cif->bytes > ARGS_REGISTER_SIZE) {
-		int stack_used = cif->bytes - ARGS_REGISTER_SIZE;
-		memcpy(stackclone + ARGS_REGISTER_SIZE, stack_args, stack_used);
+	എങ്കിൽ (cif->bytes > ARGS_REGISTER_SIZE) {
+		പൂർണ്ണസംഖ്യ അട്ടി_used = cif->bytes - ARGS_REGISTER_SIZE;
+		memcpy(stackclone + ARGS_REGISTER_SIZE, അട്ടി_args, അട്ടി_used);
 	}
 
 	/* preserve struct type return pointer passing */
-	if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		struct_rvalue = *((void**)ptr);
+	എങ്കിൽ ((cif->rtype != ശൂന്യ) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		struct_rvalue = *((ശൂന്യം**)ptr);
 		ptr += WORD_SIZE;
 	}
 
 	/* populate arg pointer list */
-	for (i = 0; i < cif->nargs; i++)
+	വേണ്ടി (i = 0; i < cif->nargs; i++)
 	{
-		switch (arg_types[i]->type)
+		തിരഞ്ഞെടുപ്പ് (arg_types[i]->type)
 		{
-			case FFI_TYPE_SINT8:
-			case FFI_TYPE_UINT8:
+			അവസ്ഥ FFI_TYPE_SINT8:
+			അവസ്ഥ FFI_TYPE_UINT8:
 #ifdef __BIG_ENDIAN__
 				avalue[i] = ptr + 3;
-#else
+#അല്ലെങ്കിൽ
 				avalue[i] = ptr;
 #endif
-				break;
-			case FFI_TYPE_SINT16:
-			case FFI_TYPE_UINT16:
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_SINT16:
+			അവസ്ഥ FFI_TYPE_UINT16:
 #ifdef __BIG_ENDIAN__
 				avalue[i] = ptr + 2;
-#else
+#അല്ലെങ്കിൽ
 				avalue[i] = ptr;
 #endif
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_STRUCT:
+#എങ്കിൽ __BIG_ENDIAN__
 				/*
 				 * Work around strange ABI behaviour.
 				 * (see info in ffi_prep_args)
 				 */
-				if (arg_types[i]->size < WORD_SIZE)
+				എങ്കിൽ (arg_types[i]->size < WORD_SIZE)
 				{
 				  memcpy (ptr, ptr + (WORD_SIZE - arg_types[i]->size), arg_types[i]->size);
 				}
 #endif
-				avalue[i] = (void*)ptr;
-				break;
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_DOUBLE:
+				avalue[i] = (ശൂന്യം*)ptr;
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_UINT64:
+			അവസ്ഥ FFI_TYPE_SINT64:
+			അവസ്ഥ FFI_TYPE_DOUBLE:
 				avalue[i] = ptr;
-				break;
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			default:
+				നിർത്തുക;
+			അവസ്ഥ FFI_TYPE_SINT32:
+			അവസ്ഥ FFI_TYPE_UINT32:
+			അവസ്ഥ FFI_TYPE_FLOAT:
+			സ്ഥിരസ്ഥിതി:
 				/* default 4-byte argument */
 				avalue[i] = ptr;
-				break;
+				നിർത്തുക;
 		}
 		ptr += WORD_FFI_ALIGN(arg_types[i]->size);
 	}
@@ -265,19 +265,19 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	/* set the return type info passed back to the wrapper */
 	*rsize = cif->rtype->size;
 	*rtype = cif->rtype->type;
-	if (struct_rvalue != NULL) {
+	എങ്കിൽ (struct_rvalue != ശൂന്യ) {
 		closure->fun(cif, struct_rvalue, avalue, closure->user_data);
 		/* copy struct return pointer value into function return value */
-		*((void**)rvalue) = struct_rvalue;
-	} else {
+		*((ശൂന്യം**)rvalue) = struct_rvalue;
+	} അല്ലെങ്കിൽ {
 		closure->fun(cif, rvalue, avalue, closure->user_data);
 	}
 }
 
 ffi_status ffi_prep_closure_loc(
 		ffi_closure* closure, ffi_cif* cif,
-		void (*fun)(ffi_cif*, void*, void**, void*),
-		void* user_data, void* codeloc)
+		ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*),
+		ശൂന്യം* user_data, ശൂന്യം* codeloc)
 {
 	unsigned long* tramp = (unsigned long*)&(closure->tramp[0]);
 	unsigned long cls = (unsigned long)codeloc;
@@ -288,9 +288,9 @@ ffi_status ffi_prep_closure_loc(
 	closure->fun = fun;
 	closure->user_data = user_data;
 
-	switch (cif->abi)
+	തിരഞ്ഞെടുപ്പ് (cif->abi)
 	{
-	case FFI_SYSV:
+	അവസ്ഥ FFI_SYSV:
 		fn = (unsigned long)ffi_closure_SYSV;
 
 		/* load r11 (temp) with fn */
@@ -313,9 +313,9 @@ ffi_status ffi_prep_closure_loc(
 		/* branch/jump to address stored in r11 (fn) */
 		tramp[6] = 0x98085800; /* bra r11 */
 
-		break;
-	default:
-		return FFI_BAD_ABI;
+		നിർത്തുക;
+	സ്ഥിരസ്ഥിതി:
+		തിരികെ FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	തിരികെ FFI_OK;
 }

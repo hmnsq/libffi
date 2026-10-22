@@ -19,73 +19,73 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include "internal.h"
+#എങ്കിൽ defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
+#അന്തര്ഭാവ <stdio.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <stdint.h>
+#അന്തര്ഭാവ <fficonfig.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
+#അന്തര്ഭാവ "internal.h"
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h> /* FlushInstructionCache */
+#അന്തര്ഭാവ <windows.h> /* FlushInstructionCache */
 #endif
-#include <tramp.h>
+#അന്തര്ഭാവ <tramp.h>
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#എങ്കിൽ FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+# എങ്കിൽ FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#അല്ലെങ്കിൽ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
 
-union _d
+സംഘം _d
 {
   UINT64 d;
   UINT32 s[2];
 };
 
-struct _v
+ഘടന _v
 {
-  union _d d[2] __attribute__((aligned(16)));
+  സംഘം _d d[2] __attribute__((aligned(16)));
 };
 
-struct call_context
+ഘടന call_context
 {
-  struct _v v[N_V_ARG_REG];
+  ഘടന _v v[N_V_ARG_REG];
   UINT64 x[N_X_ARG_REG];
 };
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#എങ്കിൽ FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 #ifdef HAVE_ARM64E_PTRAUTH
-#include <ptrauth.h>
+#അന്തര്ഭാവ <ptrauth.h>
 #endif
-#include <mach/vm_param.h>
-#endif
-
-#else
-
-#if defined (__clang__) && defined (__APPLE__)
-extern void sys_icache_invalidate (void *start, size_t len);
+#അന്തര്ഭാവ <mach/vm_param.h>
 #endif
 
-static inline void
-ffi_clear_cache (void *start, void *end)
+#അല്ലെങ്കിൽ
+
+#എങ്കിൽ defined (__clang__) && defined (__APPLE__)
+ബാഹ്യ ശൂന്യം sys_icache_invalidate (ശൂന്യം *start, size_t len);
+#endif
+
+സ്ഥിതം വരിയിൽ ശൂന്യം
+ffi_clear_cache (ശൂന്യം *start, ശൂന്യം *end)
 {
-#if defined (__clang__) && defined (__APPLE__)
-  sys_icache_invalidate (start, (char *)end - (char *)start);
-#elif defined (__GNUC__)
+#എങ്കിൽ defined (__clang__) && defined (__APPLE__)
+  sys_icache_invalidate (start, (അക്ഷരം *)end - (അക്ഷരം *)start);
+#അല്ലെങ്കിലെങ്കിൽ defined (__GNUC__)
   __builtin___clear_cache (start, end);
-#elif defined (_WIN32)
-  FlushInstructionCache(GetCurrentProcess(), start, (char*)end - (char*)start);
-#else
+#അല്ലെങ്കിലെങ്കിൽ defined (_WIN32)
+  FlushInstructionCache(GetCurrentProcess(), start, (അക്ഷരം*)end - (അക്ഷരം*)start);
+#അല്ലെങ്കിൽ
 #error "Missing builtin to flush instruction cache"
 #endif
 }
@@ -96,40 +96,40 @@ ffi_clear_cache (void *start, void *end)
    to map a vector register width (8 or 16 bytes) onto the D-/Q-register
    AARCH64_RET_* encoding.  */
 
-static int
-intlog2 (int n)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+intlog2 (പൂർണ്ണസംഖ്യ n)
 {
-  int level = 0;
-  while (n >>= 1)
+  പൂർണ്ണസംഖ്യ level = 0;
+  ആകുമ്പോൾ (n >>= 1)
     ++level;
-  return level;
+  തിരികെ level;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return the type code
    of the first non-structure element.  Recurse for structure elements.
    Return -1 if the structure is in fact empty, i.e. no nested elements.  */
 
-static int
-is_hfa0 (const ffi_type *ty)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+is_hfa0 (സ്ഥിരം ffi_type *ty)
 {
   ffi_type **elements = ty->elements;
-  int i, ret = -1;
+  പൂർണ്ണസംഖ്യ i, ret = -1;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  എങ്കിൽ (elements != ശൂന്യ)
+    വേണ്ടി (i = 0; elements[i]; ++i)
       {
         ret = elements[i]->type;
-        if (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
+        എങ്കിൽ (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
 	    || ret == FFI_TYPE_COMPLEX)
           {
             ret = is_hfa0 (elements[i]);
-            if (ret < 0)
-              continue;
+            എങ്കിൽ (ret < 0)
+              തുടരുക;
           }
-        break;
+        നിർത്തുക;
       }
 
-  return ret;
+  തിരികെ ret;
 }
 
 /* A subroutine of is_vfp_type.  Return the size in bytes of the vector (SIMD)
@@ -137,52 +137,52 @@ is_hfa0 (const ffi_type *ty)
    neither is nor contains a vector.  For a bare vector this is its whole size;
    for a homogeneous vector aggregate it is the size of one lane vector.  */
 
-static size_t
-is_simd (const ffi_type *ty)
+സ്ഥിതം size_t
+is_simd (സ്ഥിരം ffi_type *ty)
 {
   ffi_type **elements;
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
-  if (ty->type == FFI_TYPE_VECTOR)
-    return ty->size;
+  എങ്കിൽ (ty->type == FFI_TYPE_VECTOR)
+    തിരികെ ty->size;
 
   elements = ty->elements;
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  എങ്കിൽ (elements != ശൂന്യ)
+    വേണ്ടി (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
+        പൂർണ്ണസംഖ്യ t = elements[i]->type;
+        എങ്കിൽ (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
 	    || t == FFI_TYPE_VECTOR)
-          return is_simd (elements[i]);
+          തിരികെ is_simd (elements[i]);
       }
 
-  return 0;
+  തിരികെ 0;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return true if all
    of the non-structure elements are the same as CANDIDATE.  */
 
-static int
-is_hfa1 (const ffi_type *ty, int candidate)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+is_hfa1 (സ്ഥിരം ffi_type *ty, പൂർണ്ണസംഖ്യ candidate)
 {
   ffi_type **elements = ty->elements;
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  എങ്കിൽ (elements != ശൂന്യ)
+    വേണ്ടി (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+        പൂർണ്ണസംഖ്യ t = elements[i]->type;
+        എങ്കിൽ (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	    || t == FFI_TYPE_COMPLEX)
           {
-            if (!is_hfa1 (elements[i], candidate))
-              return 0;
+            എങ്കിൽ (!is_hfa1 (elements[i], candidate))
+              തിരികെ 0;
           }
-        else if (t != candidate)
-          return 0;
+        അല്ലെങ്കിൽ എങ്കിൽ (t != candidate)
+          തിരികെ 0;
       }
 
-  return 1;
+  തിരികെ 1;
 }
 
 /* Determine if TY may be allocated to the FP registers.  This is both an
@@ -193,44 +193,44 @@ is_hfa1 (const ffi_type *ty, int candidate)
    Returns non-zero iff TY is an HFA.  The result is the AARCH64_RET_*
    constant for the type.  */
 
-static int
-is_vfp_type (const ffi_type *ty)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+is_vfp_type (സ്ഥിരം ffi_type *ty)
 {
   ffi_type **elements;
-  int candidate, i;
-  size_t size, ele_count, simd_size;
+  പൂർണ്ണസംഖ്യ candidate, i;
+  size_t size, ele_എണ്ണം, simd_size;
 
   /* Quickest tests first.  */
   candidate = ty->type;
-  switch (candidate)
+  തിരഞ്ഞെടുപ്പ് (candidate)
     {
-    default:
-      return 0;
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
-      ele_count = 1;
-      goto done;
-    case FFI_TYPE_COMPLEX:
+    സ്ഥിരസ്ഥിതി:
+      തിരികെ 0;
+    അവസ്ഥ FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+      ele_എണ്ണം = 1;
+      പോകുക done;
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
-      switch (candidate)
+      തിരഞ്ഞെടുപ്പ് (candidate)
 	{
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	  ele_count = 2;
-	  goto done;
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	  ele_എണ്ണം = 2;
+	  പോകുക done;
 	}
-      return 0;
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_VECTOR:
-      break;
+      തിരികെ 0;
+    അവസ്ഥ FFI_TYPE_STRUCT:
+    അവസ്ഥ FFI_TYPE_VECTOR:
+      നിർത്തുക;
     }
 
   /* No HFA/HVA types are smaller than 4 bytes, or larger than 64 bytes.  */
   size = ty->size;
-  if (size < 4 || size > 64)
-    return 0;
+  എങ്കിൽ (size < 4 || size > 64)
+    തിരികെ 0;
 
   /* Determine the width of the vector (SIMD) member, if any: 0 for a plain
      floating-point HFA, else the size in bytes of one Neon register slot.  */
@@ -239,18 +239,18 @@ is_vfp_type (const ffi_type *ty)
   /* Find the type of the first non-aggregate member.  */
   elements = ty->elements;
   candidate = elements[0]->type;
-  if (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
+  എങ്കിൽ (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
       || candidate == FFI_TYPE_COMPLEX)
     {
-      for (i = 0; ; ++i)
+      വേണ്ടി (i = 0; ; ++i)
         {
           candidate = is_hfa0 (elements[i]);
-          if (candidate >= 0)
-            break;
+          എങ്കിൽ (candidate >= 0)
+            നിർത്തുക;
         }
     }
 
-  if (simd_size)
+  എങ്കിൽ (simd_size)
     {
       /* Vector or homogeneous vector aggregate (HVA).  A single Neon slot is
 	 at most 16 bytes (a Q register).  A bare vector wider than 16 bytes
@@ -262,92 +262,92 @@ is_vfp_type (const ffi_type *ty)
 	 unlike the floating-point HFA path below, CANDIDATE is used only to
 	 confirm the lanes are homogeneous.  */
       size_t reg_size = simd_size;
-      int num_registers;
-      int first_level_element_type;
+      പൂർണ്ണസംഖ്യ അക്കം_registers;
+      പൂർണ്ണസംഖ്യ first_level_element_type;
 
       /* A Neon register slot is an S (4B), D (8B) or Q (16B).  A lane narrower
 	 than 4 bytes has no short-vector register class under AAPCS64 and would
 	 map below AARCH64_RET_S4, making extend_hfa_type() branch before its
 	 jump table; reject it and let the generic aggregate path handle it.  */
-      if (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
-	return 0;
-      num_registers = (int) (size / reg_size);
-      if (num_registers > 4)
-	return 0;
+      എങ്കിൽ (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
+	തിരികെ 0;
+      അക്കം_registers = (പൂർണ്ണസംഖ്യ) (size / reg_size);
+      എങ്കിൽ (അക്കം_registers > 4)
+	തിരികെ 0;
 
       /* For an aggregate, every member must itself be a vector (or nested
 	 vector aggregate) of the same register width: this rejects a struct
 	 that mixes a bare scalar with a vector even when the scalar's type
 	 matches the vector's lane type.  A bare vector needs no such check --
 	 its lanes were validated when its layout was computed.  */
-      if (ty->type != FFI_TYPE_VECTOR)
-	for (i = 0; elements[i]; ++i)
-	  if (is_simd (elements[i]) != reg_size)
-	    return 0;
+      എങ്കിൽ (ty->type != FFI_TYPE_VECTOR)
+	വേണ്ടി (i = 0; elements[i]; ++i)
+	  എങ്കിൽ (is_simd (elements[i]) != reg_size)
+	    തിരികെ 0;
 
       /* Every lane must be the identical scalar type across the whole HVA
 	 (this rejects, e.g., an aggregate mixing float and integer vectors).  */
-      for (i = 0; elements[i]; ++i)
+      വേണ്ടി (i = 0; elements[i]; ++i)
 	{
-	  int t = elements[i]->type;
-	  if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+	  പൂർണ്ണസംഖ്യ t = elements[i]->type;
+	  എങ്കിൽ (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	      || t == FFI_TYPE_COMPLEX)
 	    {
-	      if (!is_hfa1 (elements[i], candidate))
-		return 0;
+	      എങ്കിൽ (!is_hfa1 (elements[i], candidate))
+		തിരികെ 0;
 	    }
-	  else if (t != candidate)
-	    return 0;
+	  അല്ലെങ്കിൽ എങ്കിൽ (t != candidate)
+	    തിരികെ 0;
 	}
 
       /* Reuse the AARCH64_RET_{S,D,Q}* codes, which are laid out as
 	 (type * 4) + (4 - count) with FLOAT->S(4B), DOUBLE->D(8B),
 	 LONGDOUBLE->Q(16B).  Map the register width onto that type axis.  */
-      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((int) reg_size) - 2;
-      return first_level_element_type * 4 + (4 - num_registers);
+      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((പൂർണ്ണസംഖ്യ) reg_size) - 2;
+      തിരികെ first_level_element_type * 4 + (4 - അക്കം_registers);
     }
 
   /* If the first member is not a floating point type, it's not an HFA.
      Also quickly re-check the size of the structure.  */
-  switch (candidate)
+  തിരഞ്ഞെടുപ്പ് (candidate)
     {
-    case FFI_TYPE_FLOAT:
-      ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
-        return 0;
-      break;
-    case FFI_TYPE_DOUBLE:
-      ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
-        return 0;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-      ele_count = size / sizeof(long double);
-      if (size != ele_count * sizeof(long double))
-        return 0;
-      break;
-    default:
-      return 0;
+    അവസ്ഥ FFI_TYPE_FLOAT:
+      ele_എണ്ണം = size / വലുപ്പം(ദശാംശം);
+      എങ്കിൽ (size != ele_എണ്ണം * വലുപ്പം(ദശാംശം))
+        തിരികെ 0;
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+      ele_എണ്ണം = size / വലുപ്പം(ഇരട്ട);
+      എങ്കിൽ (size != ele_എണ്ണം * വലുപ്പം(ഇരട്ട))
+        തിരികെ 0;
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+      ele_എണ്ണം = size / വലുപ്പം(long ഇരട്ട);
+      എങ്കിൽ (size != ele_എണ്ണം * വലുപ്പം(long ഇരട്ട))
+        തിരികെ 0;
+      നിർത്തുക;
+    സ്ഥിരസ്ഥിതി:
+      തിരികെ 0;
     }
-  if (ele_count > 4)
-    return 0;
+  എങ്കിൽ (ele_എണ്ണം > 4)
+    തിരികെ 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
-  for (i = 0; elements[i]; ++i)
+  വേണ്ടി (i = 0; elements[i]; ++i)
     {
-      int t = elements[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+      പൂർണ്ണസംഖ്യ t = elements[i]->type;
+      എങ്കിൽ (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
         {
-          if (!is_hfa1 (elements[i], candidate))
-            return 0;
+          എങ്കിൽ (!is_hfa1 (elements[i], candidate))
+            തിരികെ 0;
         }
-      else if (t != candidate)
-        return 0;
+      അല്ലെങ്കിൽ എങ്കിൽ (t != candidate)
+        തിരികെ 0;
     }
 
   /* All tests succeeded.  Encode the result.  */
  done:
-  return candidate * 4 + (4 - (int)ele_count);
+  തിരികെ candidate * 4 + (4 - (പൂർണ്ണസംഖ്യ)ele_എണ്ണം);
 }
 
 /* Representation of the procedure call argument marshalling
@@ -360,59 +360,59 @@ is_vfp_type (const ffi_type *ty)
    area.  It is used to hold copies of structures passed by value that are
    bigger than 16 bytes.  */
 
-struct arg_state
+ഘടന arg_state
 {
   unsigned ngrn;                /* Next general-purpose register number. */
   unsigned nsrn;                /* Next vector register number. */
   size_t nsaa;                  /* Next stack offset. */
   size_t next_struct_area;	/* Place to allocate big structs. */
 
-#if defined (__APPLE__)
+#എങ്കിൽ defined (__APPLE__)
   unsigned allocating_variadic;
 #endif
 };
 
 /* Initialize a procedure call argument marshalling state.  */
-static void
-arg_init (struct arg_state *state, size_t size)
+സ്ഥിതം ശൂന്യം
+arg_init (ഘടന arg_state *state, size_t size)
 {
   state->ngrn = 0;
   state->nsrn = 0;
   state->nsaa = 0;
   state->next_struct_area = size;
-#if defined (__APPLE__)
+#എങ്കിൽ defined (__APPLE__)
   state->allocating_variadic = 0;
 #endif
 }
 
 /* Allocate an aligned slot on the stack and return a pointer to it.  */
-static void *
-allocate_to_stack (struct arg_state *state, void *stack,
+സ്ഥിതം ശൂന്യം *
+allocate_to_അട്ടി (ഘടന arg_state *state, ശൂന്യം *അട്ടി,
 		   size_t alignment, size_t size)
 {
   size_t nsaa = state->nsaa;
 
   /* Round up the NSAA to the larger of 8 or the natural
      alignment of the argument's type.  */
-#if defined (__APPLE__)
-  if (state->allocating_variadic && alignment < 8)
+#എങ്കിൽ defined (__APPLE__)
+  എങ്കിൽ (state->allocating_variadic && alignment < 8)
     alignment = 8;
-#else
-  if (alignment < 8)
+#അല്ലെങ്കിൽ
+  എങ്കിൽ (alignment < 8)
     alignment = 8;
 #endif
 
   nsaa = FFI_ALIGN (nsaa, alignment);
   state->nsaa = nsaa + size;
 
-  return (char *)stack + nsaa;
+  തിരികെ (അക്ഷരം *)അട്ടി + nsaa;
 }
 
 /* Allocate and copy a structure that is passed by value on the stack and
    return a pointer to it.  */
-static void *
-allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
-				   size_t alignment, size_t size, void *value)
+സ്ഥിതം ശൂന്യം *
+allocate_and_copy_struct_to_അട്ടി (ഘടന arg_state *state, ശൂന്യം *അട്ടി,
+				   size_t alignment, size_t size, ശൂന്യം *മൂല്യം)
 {
   size_t dest = state->next_struct_area - size;
 
@@ -420,80 +420,80 @@ allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
   dest = FFI_ALIGN_DOWN (dest, alignment);
   state->next_struct_area = dest;
 
-  return memcpy ((char *) stack + dest, value, size);
+  തിരികെ memcpy ((അക്ഷരം *) അട്ടി + dest, മൂല്യം, size);
 }
 
-static ffi_arg
-extend_integer_type (void *source, int type)
+സ്ഥിതം ffi_arg
+extend_integer_type (ശൂന്യം *source, പൂർണ്ണസംഖ്യ type)
 {
-  switch (type)
+  തിരഞ്ഞെടുപ്പ് (type)
     {
-    case FFI_TYPE_UINT8:
+    അവസ്ഥ FFI_TYPE_UINT8:
       {
         UINT8 u8;
-        memcpy (&u8, source, sizeof (u8));
-        return u8;
+        memcpy (&u8, source, വലുപ്പം (u8));
+        തിരികെ u8;
       }
-    case FFI_TYPE_SINT8:
+    അവസ്ഥ FFI_TYPE_SINT8:
       {
         SINT8 s8;
-        memcpy (&s8, source, sizeof (s8));
-        return s8;
+        memcpy (&s8, source, വലുപ്പം (s8));
+        തിരികെ s8;
       }
-    case FFI_TYPE_UINT16:
+    അവസ്ഥ FFI_TYPE_UINT16:
       {
         UINT16 u16;
-        memcpy (&u16, source, sizeof (u16));
-        return u16;
+        memcpy (&u16, source, വലുപ്പം (u16));
+        തിരികെ u16;
       }
-    case FFI_TYPE_SINT16:
+    അവസ്ഥ FFI_TYPE_SINT16:
       {
         SINT16 s16;
-        memcpy (&s16, source, sizeof (s16));
-        return s16;
+        memcpy (&s16, source, വലുപ്പം (s16));
+        തിരികെ s16;
       }
-    case FFI_TYPE_UINT32:
+    അവസ്ഥ FFI_TYPE_UINT32:
       {
         UINT32 u32;
-        memcpy (&u32, source, sizeof (u32));
-        return u32;
+        memcpy (&u32, source, വലുപ്പം (u32));
+        തിരികെ u32;
       }
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+    അവസ്ഥ FFI_TYPE_INT:
+    അവസ്ഥ FFI_TYPE_SINT32:
       {
         SINT32 s32;
-        memcpy (&s32, source, sizeof (s32));
-        return s32;
+        memcpy (&s32, source, വലുപ്പം (s32));
+        തിരികെ s32;
       }
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_SINT64:
       {
         UINT64 u64;
-        memcpy (&u64, source, sizeof (u64));
-        return u64;
+        memcpy (&u64, source, വലുപ്പം (u64));
+        തിരികെ u64;
       }
-    case FFI_TYPE_POINTER:
+    അവസ്ഥ FFI_TYPE_POINTER:
       {
         uintptr_t uptr;
-        memcpy (&uptr, source, sizeof (uptr));
-        return uptr;
+        memcpy (&uptr, source, വലുപ്പം (uptr));
+        തിരികെ uptr;
       }
-    default:
+    സ്ഥിരസ്ഥിതി:
       abort();
     }
 }
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void extend_hfa_type (void *dest, void *src, int h);
-#else
-static void
-extend_hfa_type (void *dest, void *src, int h)
+#എങ്കിൽ defined(_MSC_VER) && !defined(__clang__)
+ശൂന്യം extend_hfa_type (ശൂന്യം *dest, ശൂന്യം *src, പൂർണ്ണസംഖ്യ h);
+#അല്ലെങ്കിൽ
+സ്ഥിതം ശൂന്യം
+extend_hfa_type (ശൂന്യം *dest, ശൂന്യം *src, പൂർണ്ണസംഖ്യ h)
 {
   ptrdiff_t f = h - AARCH64_RET_S4;
-  void *x0;
+  ശൂന്യം *x0;
 
 #define BTI_J "hint #36"
-  __asm__ volatile (
+  __asm__ അസ്ഥിര (
 	"adr	%0, 0f\n"
 "	add	%0, %0, %1\n"
 "	br	%0\n"
@@ -554,68 +554,68 @@ extend_hfa_type (void *dest, void *src, int h)
 }
 #endif
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void* compress_hfa_type (void *dest, void *src, int h);
-#else
-static void *
-compress_hfa_type (void *dest, void *reg, int h)
+#എങ്കിൽ defined(_MSC_VER) && !defined(__clang__)
+ശൂന്യം* compress_hfa_type (ശൂന്യം *dest, ശൂന്യം *src, പൂർണ്ണസംഖ്യ h);
+#അല്ലെങ്കിൽ
+സ്ഥിതം ശൂന്യം *
+compress_hfa_type (ശൂന്യം *dest, ശൂന്യം *reg, പൂർണ്ണസംഖ്യ h)
 {
-  switch (h)
+  തിരഞ്ഞെടുപ്പ് (h)
     {
-    case AARCH64_RET_S1:
-      if (dest == reg)
-	return (char *)dest + BE (12);
-      else
-	*(float *)dest = *(float *)((char *)reg + BE (12));
-      break;
-    case AARCH64_RET_S2:
+    അവസ്ഥ AARCH64_RET_S1:
+      എങ്കിൽ (dest == reg)
+	തിരികെ (അക്ഷരം *)dest + BE (12);
+      അല്ലെങ്കിൽ
+	*(ദശാംശം *)dest = *(ദശാംശം *)((അക്ഷരം *)reg + BE (12));
+      നിർത്തുക;
+    അവസ്ഥ AARCH64_RET_S2:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "st2 { v16.s, v17.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17");
-      break;
-    case AARCH64_RET_S3:
+      നിർത്തുക;
+    അവസ്ഥ AARCH64_RET_S3:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldr q18, [%1, #32]\n\t"
 	   "st3 { v16.s, v17.s, v18.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18");
-      break;
-    case AARCH64_RET_S4:
+      നിർത്തുക;
+    അവസ്ഥ AARCH64_RET_S4:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldp q18, q19, [%1, #32]\n\t"
 	   "st4 { v16.s, v17.s, v18.s, v19.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18", "v19");
-      break;
+      നിർത്തുക;
 
-    case AARCH64_RET_D1:
-      if (dest == reg)
-	return (char *)dest + BE (8);
-      else
-	*(double *)dest = *(double *)((char *)reg + BE (8));
-      break;
-    case AARCH64_RET_D2:
+    അവസ്ഥ AARCH64_RET_D1:
+      എങ്കിൽ (dest == reg)
+	തിരികെ (അക്ഷരം *)dest + BE (8);
+      അല്ലെങ്കിൽ
+	*(ഇരട്ട *)dest = *(ഇരട്ട *)((അക്ഷരം *)reg + BE (8));
+      നിർത്തുക;
+    അവസ്ഥ AARCH64_RET_D2:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "st2 { v16.d, v17.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17");
-      break;
-    case AARCH64_RET_D3:
+      നിർത്തുക;
+    അവസ്ഥ AARCH64_RET_D3:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldr q18, [%1, #32]\n\t"
 	   "st3 { v16.d, v17.d, v18.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18");
-      break;
-    case AARCH64_RET_D4:
+      നിർത്തുക;
+    അവസ്ഥ AARCH64_RET_D4:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldp q18, q19, [%1, #32]\n\t"
 	   "st4 { v16.d, v17.d, v18.d, v19.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18", "v19");
-      break;
+      നിർത്തുക;
 
-    default:
-      if (dest != reg)
-	return memcpy (dest, reg, 16 * (4 - (h & 3)));
-      break;
+    സ്ഥിരസ്ഥിതി:
+      എങ്കിൽ (dest != reg)
+	തിരികെ memcpy (dest, reg, 16 * (4 - (h & 3)));
+      നിർത്തുക;
     }
-  return dest;
+  തിരികെ dest;
 }
 #endif
 
@@ -623,25 +623,25 @@ compress_hfa_type (void *dest, void *reg, int h)
    none are available, allocate a stack slot and return a pointer
    to the allocated space.  */
 
-static void *
-allocate_int_to_reg_or_stack (struct call_context *context,
-			      struct arg_state *state,
-			      void *stack, size_t size)
+സ്ഥിതം ശൂന്യം *
+allocate_int_to_reg_or_അട്ടി (ഘടന call_context *context,
+			      ഘടന arg_state *state,
+			      ശൂന്യം *അട്ടി, size_t size)
 {
-  if (state->ngrn < N_X_ARG_REG)
-    return (char *)&context->x[state->ngrn++] + BE (sizeof (UINT64) - size);
+  എങ്കിൽ (state->ngrn < N_X_ARG_REG)
+    തിരികെ (അക്ഷരം *)&context->x[state->ngrn++] + BE (വലുപ്പം (UINT64) - size);
 
   state->ngrn = N_X_ARG_REG;
-  return (char *)allocate_to_stack (state, stack, size, size)
-	 + BE (sizeof (UINT64) - size);
+  തിരികെ (അക്ഷരം *)allocate_to_അട്ടി (state, അട്ടി, size, size)
+	 + BE (വലുപ്പം (UINT64) - size);
 }
 
-static void *
-allocate_int128_to_reg_or_stack (struct call_context *context,
-			         struct arg_state *state, void *stack)
+സ്ഥിതം ശൂന്യം *
+allocate_int128_to_reg_or_അട്ടി (ഘടന call_context *context,
+			         ഘടന arg_state *state, ശൂന്യം *അട്ടി)
 {
   unsigned ngrn = state->ngrn;
-  void *ret;
+  ശൂന്യം *ret;
 
   /* The normal AArch64 ABI requires even Xreg; Darwin does not. */
 #ifndef __APPLE__
@@ -650,18 +650,18 @@ allocate_int128_to_reg_or_stack (struct call_context *context,
 
   /* The value must fit entirely in registers, i.e. the low half may
      not be allocated to x7 with the high half spilled to the stack.  */
-  if (ngrn + 2 <= N_X_ARG_REG)
+  എങ്കിൽ (ngrn + 2 <= N_X_ARG_REG)
     {
       ret = &context->x[ngrn];
       ngrn += 2;
     }
-  else
+  അല്ലെങ്കിൽ
     {
-      ret = allocate_to_stack (state, stack, 16, 16);
+      ret = allocate_to_അട്ടി (state, അട്ടി, 16, 16);
       ngrn = N_X_ARG_REG;
     }
   state->ngrn = ngrn;
-  return ret;
+  തിരികെ ret;
 }
 
 ffi_status FFI_HIDDEN
@@ -669,78 +669,78 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
   size_t bytes = cif->bytes;
-  int flags, i, n;
+  പൂർണ്ണസംഖ്യ flags, i, n;
 
-  switch (rtype->type)
+  തിരഞ്ഞെടുപ്പ് (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    അവസ്ഥ FFI_TYPE_VOID:
       flags = AARCH64_RET_VOID;
-      break;
-    case FFI_TYPE_UINT8:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_UINT8:
       flags = AARCH64_RET_UINT8;
-      break;
-    case FFI_TYPE_UINT16:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_UINT16:
       flags = AARCH64_RET_UINT16;
-      break;
-    case FFI_TYPE_UINT32:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_UINT32:
       flags = AARCH64_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT8:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT8:
       flags = AARCH64_RET_SINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT16:
       flags = AARCH64_RET_SINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_INT:
+    അവസ്ഥ FFI_TYPE_SINT32:
       flags = AARCH64_RET_SINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
       flags = AARCH64_RET_INT64;
-      break;
-    case FFI_TYPE_POINTER:
-      flags = (sizeof(void *) == 4 ? AARCH64_RET_UINT32 : AARCH64_RET_INT64);
-      break;
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_POINTER:
+      flags = (വലുപ്പം(ശൂന്യം *) == 4 ? AARCH64_RET_UINT32 : AARCH64_RET_INT64);
+      നിർത്തുക;
 
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_SINT128:
+    അവസ്ഥ FFI_TYPE_UINT128:
+    അവസ്ഥ FFI_TYPE_SINT128:
       flags = AARCH64_RET_INT128;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_VECTOR:
-    case FFI_TYPE_COMPLEX:
+    അവസ്ഥ FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+    അവസ്ഥ FFI_TYPE_STRUCT:
+    അവസ്ഥ FFI_TYPE_VECTOR:
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       flags = is_vfp_type (rtype);
-      if (flags == 0)
+      എങ്കിൽ (flags == 0)
 	{
 	  size_t s = rtype->size;
-	  if (s > 16)
+	  എങ്കിൽ (s > 16)
 	    {
 	      flags = AARCH64_RET_VOID | AARCH64_RET_IN_MEM;
 	      bytes += 8;
 	    }
-	  else if (s == 16)
+	  അല്ലെങ്കിൽ എങ്കിൽ (s == 16)
 	    flags = AARCH64_RET_INT128;
-	  else if (s == 8)
+	  അല്ലെങ്കിൽ എങ്കിൽ (s == 8)
 	    flags = AARCH64_RET_INT64;
-	  else
+	  അല്ലെങ്കിൽ
 	    flags = AARCH64_RET_INT128 | AARCH64_RET_NEED_COPY;
 	}
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       abort();
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
-    if (is_vfp_type (cif->arg_types[i]))
+  വേണ്ടി (i = 0, n = cif->nargs; i < n; i++)
+    എങ്കിൽ (is_vfp_type (cif->arg_types[i]))
       {
 	flags |= AARCH64_FLAG_ARG_V;
-	break;
+	നിർത്തുക;
       }
 
   /* Composites larger than 16 bytes (that are not HFAs) are passed by
@@ -753,69 +753,69 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      already-spilled pointer with the copied payload bytes.  Reserve an
      extra 8 bytes per such argument so the slab is always large enough
      for both.  */
-  for (i = 0, n = cif->nargs; i < n; i++)
+  വേണ്ടി (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      if (ty->size > 16 && !is_vfp_type (ty))
+      എങ്കിൽ (ty->size > 16 && !is_vfp_type (ty))
 	bytes += 8;
     }
 
   /* Round the stack up to a multiple of the stack alignment requirement. */
   cif->bytes = (unsigned) FFI_ALIGN(bytes, 16);
   cif->flags = flags;
-#if defined (__APPLE__)
+#എങ്കിൽ defined (__APPLE__)
   cif->aarch64_nfixedargs = 0;
 #endif
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-#if defined (__APPLE__)
+#എങ്കിൽ defined (__APPLE__)
 /* Perform Apple-specific cif processing for variadic calls */
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-			 unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned പൂർണ്ണസംഖ്യ nfixedargs,
+			 unsigned പൂർണ്ണസംഖ്യ ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->aarch64_nfixedargs = nfixedargs;
-  return status;
+  തിരികെ status;
 }
-#else
+#അല്ലെങ്കിൽ
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned പൂർണ്ണസംഖ്യ nfixedargs, unsigned പൂർണ്ണസംഖ്യ ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->flags |= AARCH64_FLAG_VARARG;
-  return status;
+  തിരികെ status;
 }
 #endif /* __APPLE__ */
 
-extern void ffi_call_SYSV (struct call_context *context, void *frame,
-			   void (*fn)(void), void *rvalue, int flags,
-			   void *closure) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_call_SYSV (ഘടന call_context *context, ശൂന്യം *frame,
+			   ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue, പൂർണ്ണസംഖ്യ flags,
+			   ശൂന്യം *closure) FFI_HIDDEN;
 
 /* Call a function with the provided arguments and capture the return
    value.
    n.b. ffi_call_SYSV will steal the alloca'd `stack` variable here for use
    _as its own stack_ - so we need to compile this function without ASAN */
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
-	      void **avalue, void *closure)
+സ്ഥിതം ശൂന്യം
+ffi_call_int (ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *orig_rvalue,
+	      ശൂന്യം **avalue, ശൂന്യം *closure)
 {
-  struct call_context *context;
-  void *stack, *frame, *rvalue;
-  struct arg_state state;
-  size_t stack_bytes, rtype_size, rsize;
-  int i, nargs, flags, isvariadic = 0;
+  ഘടന call_context *context;
+  ശൂന്യം *അട്ടി, *frame, *rvalue;
+  ഘടന arg_state state;
+  size_t അട്ടി_bytes, rtype_size, rsize;
+  പൂർണ്ണസംഖ്യ i, nargs, flags, isvariadic = 0;
   ffi_type *rtype;
 
   flags = cif->flags;
   rtype = cif->rtype;
   rtype_size = rtype->size;
-  stack_bytes = cif->bytes;
+  അട്ടി_bytes = cif->bytes;
 
-  if (flags & AARCH64_FLAG_VARARG)
+  എങ്കിൽ (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
@@ -825,160 +825,160 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
      then we cannot allow a null rvalue.  Otherwise, mash a null
      rvalue to void return type.  */
   rsize = 0;
-  if (flags & AARCH64_RET_IN_MEM)
+  എങ്കിൽ (flags & AARCH64_RET_IN_MEM)
     {
-      if (orig_rvalue == NULL)
+      എങ്കിൽ (orig_rvalue == ശൂന്യ)
 	rsize = rtype_size;
     }
-  else if (orig_rvalue == NULL)
+  അല്ലെങ്കിൽ എങ്കിൽ (orig_rvalue == ശൂന്യ)
     flags &= AARCH64_FLAG_ARG_V;
-  else if (flags & AARCH64_RET_NEED_COPY)
+  അല്ലെങ്കിൽ എങ്കിൽ (flags & AARCH64_RET_NEED_COPY)
     rsize = 16;
 
   /* Allocate consecutive stack for everything we'll need.
      The frame uses 40 bytes for: lr, fp, rvalue, flags, sp */
-  context = alloca (sizeof(struct call_context) + stack_bytes + 40 + rsize);
-  stack = context + 1;
-  frame = (void*)((uintptr_t)stack + (uintptr_t)stack_bytes);
-  rvalue = (rsize ? (void*)((uintptr_t)frame + 40) : orig_rvalue);
+  context = alloca (വലുപ്പം(ഘടന call_context) + അട്ടി_bytes + 40 + rsize);
+  അട്ടി = context + 1;
+  frame = (ശൂന്യം*)((uintptr_t)അട്ടി + (uintptr_t)അട്ടി_bytes);
+  rvalue = (rsize ? (ശൂന്യം*)((uintptr_t)frame + 40) : orig_rvalue);
 
-  arg_init (&state, stack_bytes);
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  arg_init (&state, അട്ടി_bytes);
+  വേണ്ടി (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t s = ty->size;
-      void *a = avalue[i];
-      int h, t;
-      void *dest;
+      ശൂന്യം *a = avalue[i];
+      പൂർണ്ണസംഖ്യ h, t;
+      ശൂന്യം *dest;
 
       t = ty->type;
-      switch (t)
+      തിരഞ്ഞെടുപ്പ് (t)
 	{
-	case FFI_TYPE_VOID:
+	അവസ്ഥ FFI_TYPE_VOID:
 	  FFI_ASSERT (0);
-	  break;
+	  നിർത്തുക;
 
 	/* If the argument is a basic type the argument is allocated to an
 	   appropriate register, or if none are available, to the stack.  */
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_UINT16:
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_POINTER:
 	do_pointer:
 	  {
 	    ffi_arg ext = extend_integer_type (a, t);
-	    if (state.ngrn < N_X_ARG_REG)
+	    എങ്കിൽ (state.ngrn < N_X_ARG_REG)
 	      context->x[state.ngrn++] = ext;
-	    else
+	    അല്ലെങ്കിൽ
 	      {
-		void *d = allocate_to_stack (&state, stack, ty->alignment, s);
+		ശൂന്യം *d = allocate_to_അട്ടി (&state, അട്ടി, ty->alignment, s);
 		state.ngrn = N_X_ARG_REG;
 		/* Note that the default abi extends each argument
 		   to a full 64-bit slot, while the iOS abi allocates
 		   only enough space. */
 #ifdef __APPLE__
 		memcpy(d, a, s);
-#else
+#അല്ലെങ്കിൽ
 		*(ffi_arg *)d = ext;
 #endif
 	      }
 	  }
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
-	  dest = allocate_int128_to_reg_or_stack (context, &state, stack);
+	അവസ്ഥ FFI_TYPE_UINT128:
+	അവസ്ഥ FFI_TYPE_SINT128:
+	  dest = allocate_int128_to_reg_or_അട്ടി (context, &state, അട്ടി);
 	  memcpy (dest, a, 16);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_VECTOR:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  {
 	    h = is_vfp_type (ty);
-	    if (h)
+	    എങ്കിൽ (h)
 	      {
-              int elems = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              പൂർണ്ണസംഖ്യ elems = 4 - (h & 3);
+              എങ്കിൽ (cif->abi == FFI_WIN64 && isvariadic)
               {
-                if (state.ngrn + elems <= N_X_ARG_REG)
+                എങ്കിൽ (state.ngrn + elems <= N_X_ARG_REG)
                 {
                   dest = &context->x[state.ngrn];
                   state.ngrn += elems;
                   extend_hfa_type(dest, a, h);
-                  break;
+                  നിർത്തുക;
                 }
                 state.nsrn = N_X_ARG_REG;
-                dest = allocate_to_stack(&state, stack, ty->alignment, s);
+                dest = allocate_to_അട്ടി(&state, അട്ടി, ty->alignment, s);
               }
-              else
+              അല്ലെങ്കിൽ
               {
-                if (state.nsrn + elems <= N_V_ARG_REG)
+                എങ്കിൽ (state.nsrn + elems <= N_V_ARG_REG)
                 {
                   dest = &context->v[state.nsrn];
                   state.nsrn += elems;
                   extend_hfa_type (dest, a, h);
-                  break;
+                  നിർത്തുക;
                 }
                 state.nsrn = N_V_ARG_REG;
-                dest = (char *)allocate_to_stack (&state, stack, ty->alignment, s)
-                       + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                dest = (അക്ഷരം *)allocate_to_അട്ടി (&state, അട്ടി, ty->alignment, s)
+                       + (t == FFI_TYPE_FLOAT ? BE (വലുപ്പം (UINT64) - s) : 0);
               }
 	      }
-	    else if (s > 16)
+	    അല്ലെങ്കിൽ എങ്കിൽ (s > 16)
 	      {
 		/* If the argument is a composite type that is larger than 16
 		   bytes, then the argument is copied to memory, and
 		   the argument is replaced by a pointer to the copy.  */
-		dest = allocate_and_copy_struct_to_stack (&state, stack,
+		dest = allocate_and_copy_struct_to_അട്ടി (&state, അട്ടി,
 							  ty->alignment, s,
 							  avalue[i]);
 		a = &dest;
 		t = FFI_TYPE_POINTER;
-		s = sizeof (void *);
-		goto do_pointer;
+		s = വലുപ്പം (ശൂന്യം *);
+		പോകുക do_pointer;
 	      }
-	    else
+	    അല്ലെങ്കിൽ
 	      {
 		size_t n = (s + 7) / 8;
-		if (state.ngrn + n <= N_X_ARG_REG)
+		എങ്കിൽ (state.ngrn + n <= N_X_ARG_REG)
 		  {
 		    /* If the argument is a composite type and the size in
 		       double-words is not more than the number of available
 		       X registers, then the argument is copied into
 		       consecutive X registers.  */
 		    dest = &context->x[state.ngrn];
-                    state.ngrn += (unsigned int)n;
+                    state.ngrn += (unsigned പൂർണ്ണസംഖ്യ)n;
 		  }
-		else
+		അല്ലെങ്കിൽ
 		  {
 		    /* Otherwise, there are insufficient X registers. Further
 		       X register allocations are prevented, the NSAA is
 		       adjusted and the argument is copied to memory at the
 		       adjusted NSAA.  */
 		    state.ngrn = N_X_ARG_REG;
-		    dest = allocate_to_stack (&state, stack, ty->alignment, s);
+		    dest = allocate_to_അട്ടി (&state, അട്ടി, ty->alignment, s);
 		  }
 		}
 	      memcpy (dest, a, s);
 	    }
-	  break;
+	  നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  abort();
 	}
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#എങ്കിൽ defined (__APPLE__)
+      എങ്കിൽ (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
@@ -989,22 +989,22 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 
   ffi_call_SYSV (context, frame, fn, rvalue, flags, closure);
 
-  if (flags & AARCH64_RET_NEED_COPY)
+  എങ്കിൽ (flags & AARCH64_RET_NEED_COPY)
     memcpy (orig_rvalue, rvalue, rtype_size);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+ശൂന്യം
+ffi_call (ffi_cif *cif, ശൂന്യം (*fn) (ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ശൂന്യ);
 }
 
-#if FFI_CLOSURES
+#എങ്കിൽ FFI_CLOSURES
 
 #ifdef FFI_GO_CLOSURES
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+ശൂന്യം
+ffi_call_go (ffi_cif *cif, ശൂന്യം (*fn) (ശൂന്യം), ശൂന്യം *rvalue,
+	     ശൂന്യം **avalue, ശൂന്യം *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
@@ -1012,62 +1012,62 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
 
 /* Build a trampoline.  */
 
-extern void ffi_closure_SYSV (void) FFI_HIDDEN;
-extern void ffi_closure_SYSV_V (void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-extern void ffi_closure_SYSV_alt (void) FFI_HIDDEN;
-extern void ffi_closure_SYSV_V_alt (void) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_closure_SYSV (ശൂന്യം) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_closure_SYSV_V (ശൂന്യം) FFI_HIDDEN;
+#എങ്കിൽ defined(FFI_EXEC_STATIC_TRAMP)
+ബാഹ്യ ശൂന്യം ffi_closure_SYSV_alt (ശൂന്യം) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_closure_SYSV_V_alt (ശൂന്യം) FFI_HIDDEN;
 #endif
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ശൂന്യം**,ശൂന്യം*),
+                      ശൂന്യം *user_data,
+                      ശൂന്യം *codeloc)
 {
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    തിരികെ FFI_BAD_ABI;
 
-  void (*start)(void);
+  ശൂന്യം (*start)(ശൂന്യം);
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  എങ്കിൽ (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_closure_SYSV_V;
-  else
+  അല്ലെങ്കിൽ
     start = ffi_closure_SYSV;
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#എങ്കിൽ FFI_EXEC_TRAMPOLINE_TABLE
 # ifdef __MACH__
 #  ifdef HAVE_ARM64E_PTRAUTH
-  codeloc = ptrauth_auth_data(codeloc, ptrauth_key_function_pointer, 0);
+  codeloc = ptrauth_auth_data(codeloc, ptrauth_താക്കോൽ_function_pointer, 0);
 #  endif
-  void **config = (void **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
+  ശൂന്യം **config = (ശൂന്യം **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
   config[0] = closure;
   config[1] = start;
 # endif
-#else
-  static const unsigned char trampoline[16] = {
+#അല്ലെങ്കിൽ
+  സ്ഥിതം സ്ഥിരം unsigned അക്ഷരം trampoline[16] = {
     0x90, 0x00, 0x00, 0x58,	/* ldr	x16, tramp+16	*/
     0xf1, 0xff, 0xff, 0x10,	/* adr	x17, tramp+0	*/
     0x00, 0x02, 0x1f, 0xd6	/* br	x16		*/
   };
-  char *tramp = closure->tramp;
+  അക്ഷരം *tramp = closure->tramp;
 
-# if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+# എങ്കിൽ defined(FFI_EXEC_STATIC_TRAMP)
+  എങ്കിൽ (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      if (start == ffi_closure_SYSV_V)
+      എങ്കിൽ (start == ffi_closure_SYSV_V)
           start = ffi_closure_SYSV_V_alt;
-      else
+      അല്ലെങ്കിൽ
           start = ffi_closure_SYSV_alt;
       ffi_tramp_set_parms (closure->ftramp, start, closure);
-      goto out;
+      പോകുക out;
     }
 # endif
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
+  memcpy (tramp, trampoline, വലുപ്പം(trampoline));
 
   *(UINT64 *)(tramp + 16) = (uintptr_t)start;
 
@@ -1077,12 +1077,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
 # ifdef _WIN32
   // Not using dlmalloc.c for Windows ARM64 builds
   // so calling ffi_data_to_code_pointer() isn't necessary
-  unsigned char *tramp_code = tramp;
-# else
-  unsigned char *tramp_code = ffi_data_to_code_pointer (tramp);
+  unsigned അക്ഷരം *tramp_code = tramp;
+# അല്ലെങ്കിൽ
+  unsigned അക്ഷരം *tramp_code = ffi_data_to_code_pointer (tramp);
 # endif
   ffi_clear_cache (tramp_code, tramp_code + FFI_TRAMPOLINE_SIZE);
-# if defined(FFI_EXEC_STATIC_TRAMP)
+# എങ്കിൽ defined(FFI_EXEC_STATIC_TRAMP)
 out:
 # endif
 #endif
@@ -1091,32 +1091,32 @@ out:
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 #ifdef FFI_GO_CLOSURES
-extern void ffi_go_closure_SYSV (void) FFI_HIDDEN;
-extern void ffi_go_closure_SYSV_V (void) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_go_closure_SYSV (ശൂന്യം) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_go_closure_SYSV_V (ശൂന്യം) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
-                     void (*fun)(ffi_cif*,void*,void**,void*))
+                     ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ശൂന്യം**,ശൂന്യം*))
 {
-  void (*start)(void);
+  ശൂന്യം (*start)(ശൂന്യം);
 
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    തിരികെ FFI_BAD_ABI;
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  എങ്കിൽ (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_go_closure_SYSV_V;
-  else
+  അല്ലെങ്കിൽ
     start = ffi_go_closure_SYSV;
 
   closure->tramp = start;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 #endif /* FFI_GO_CLOSURES */
 
@@ -1136,72 +1136,72 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
    descriptors, invokes the wrapped function, then marshalls the return
    value back into the call context.  */
 
-int FFI_HIDDEN
+പൂർണ്ണസംഖ്യ FFI_HIDDEN
 ffi_closure_SYSV_inner (ffi_cif *cif,
-			void (*fun)(ffi_cif*,void*,void**,void*),
-			void *user_data,
-			struct call_context *context,
-			void *stack, void *rvalue, void *struct_rvalue)
+			ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ശൂന്യം**,ശൂന്യം*),
+			ശൂന്യം *user_data,
+			ഘടന call_context *context,
+			ശൂന്യം *അട്ടി, ശൂന്യം *rvalue, ശൂന്യം *struct_rvalue)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  int i, h, nargs, flags, isvariadic = 0;
-  struct arg_state state;
+  ശൂന്യം **avalue = (ശൂന്യം**) alloca (cif->nargs * വലുപ്പം (ശൂന്യം*));
+  പൂർണ്ണസംഖ്യ i, h, nargs, flags, isvariadic = 0;
+  ഘടന arg_state state;
 
   arg_init (&state, cif->bytes);
 
   flags = cif->flags;
-  if (flags & AARCH64_FLAG_VARARG)
+  എങ്കിൽ (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
   }
 
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  വേണ്ടി (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      int t = ty->type;
+      പൂർണ്ണസംഖ്യ t = ty->type;
       size_t n, s = ty->size;
 
-      switch (t)
+      തിരഞ്ഞെടുപ്പ് (t)
 	{
-	case FFI_TYPE_VOID:
+	അവസ്ഥ FFI_TYPE_VOID:
 	  FFI_ASSERT (0);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
-	  avalue[i] = allocate_int_to_reg_or_stack (context, &state, stack, s);
-	  break;
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_UINT16:
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_POINTER:
+	  avalue[i] = allocate_int_to_reg_or_അട്ടി (context, &state, അട്ടി, s);
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
-	  avalue[i] = allocate_int128_to_reg_or_stack (context, &state, stack);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT128:
+	അവസ്ഥ FFI_TYPE_SINT128:
+	  avalue[i] = allocate_int128_to_reg_or_അട്ടി (context, &state, അട്ടി);
+	  നിർത്തുക;
 
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_VECTOR:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  h = is_vfp_type (ty);
-	  if (h)
+	  എങ്കിൽ (h)
 	    {
 	      n = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              എങ്കിൽ (cif->abi == FFI_WIN64 && isvariadic)
                 {
-                  if (state.ngrn + n <= N_X_ARG_REG)
+                  എങ്കിൽ (state.ngrn + n <= N_X_ARG_REG)
                     {
-                      void *reg = &context->x[state.ngrn];
-                      state.ngrn += (unsigned int)n;
+                      ശൂന്യം *reg = &context->x[state.ngrn];
+                      state.ngrn += (unsigned പൂർണ്ണസംഖ്യ)n;
 
                       /* Eeek! We need a pointer to the structure, however the
                        homogeneous float elements are being passed in individual
@@ -1212,72 +1212,72 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                        structure into the same memory.  */
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  അല്ലെങ്കിൽ
                     {
                       state.ngrn = N_X_ARG_REG;
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (അക്ഷരം *)allocate_to_അട്ടി (&state, അട്ടി,
                                                              ty->alignment, s)
-                                  + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                                  + (t == FFI_TYPE_FLOAT ? BE (വലുപ്പം (UINT64) - s) : 0);
                     }
                 }
-              else
+              അല്ലെങ്കിൽ
                 {
-                  if (state.nsrn + n <= N_V_ARG_REG)
+                  എങ്കിൽ (state.nsrn + n <= N_V_ARG_REG)
                     {
-                      void *reg = &context->v[state.nsrn];
-                      state.nsrn += (unsigned int)n;
+                      ശൂന്യം *reg = &context->v[state.nsrn];
+                      state.nsrn += (unsigned പൂർണ്ണസംഖ്യ)n;
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  അല്ലെങ്കിൽ
                     {
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (അക്ഷരം *)allocate_to_അട്ടി (&state, അട്ടി,
                                                              ty->alignment, s)
-                                  + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                                  + (t == FFI_TYPE_FLOAT ? BE (വലുപ്പം (UINT64) - s) : 0);
                     }
                 }
             }
-          else if (s > 16)
+          അല്ലെങ്കിൽ എങ്കിൽ (s > 16)
             {
               /* Replace Composite type of size greater than 16 with a
                   pointer.  */
 #ifdef __ILP32__
              UINT64 avalue_tmp;
              memcpy (&avalue_tmp,
-                  allocate_int_to_reg_or_stack (context, &state,
-                                               stack, sizeof (void *)),
-                  sizeof (UINT64));
-             avalue[i] = (void *)(UINT32)avalue_tmp;
-#else
-              avalue[i] = *(void **)
-              allocate_int_to_reg_or_stack (context, &state, stack,
-                                         sizeof (void *));
+                  allocate_int_to_reg_or_അട്ടി (context, &state,
+                                               അട്ടി, വലുപ്പം (ശൂന്യം *)),
+                  വലുപ്പം (UINT64));
+             avalue[i] = (ശൂന്യം *)(UINT32)avalue_tmp;
+#അല്ലെങ്കിൽ
+              avalue[i] = *(ശൂന്യം **)
+              allocate_int_to_reg_or_അട്ടി (context, &state, അട്ടി,
+                                         വലുപ്പം (ശൂന്യം *));
 #endif
             }
-          else
+          അല്ലെങ്കിൽ
             {
               n = (s + 7) / 8;
-              if (state.ngrn + n <= N_X_ARG_REG)
+              എങ്കിൽ (state.ngrn + n <= N_X_ARG_REG)
                 {
                   avalue[i] = &context->x[state.ngrn];
-                  state.ngrn += (unsigned int)n;
+                  state.ngrn += (unsigned പൂർണ്ണസംഖ്യ)n;
                 }
-              else
+              അല്ലെങ്കിൽ
                 {
                   state.ngrn = N_X_ARG_REG;
-                  avalue[i] = allocate_to_stack(&state, stack,
+                  avalue[i] = allocate_to_അട്ടി(&state, അട്ടി,
                                            ty->alignment, s);
                 }
             }
-          break;
+          നിർത്തുക;
 
-        default:
+        സ്ഥിരസ്ഥിതി:
           abort();
       }
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#എങ്കിൽ defined (__APPLE__)
+      എങ്കിൽ (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
@@ -1286,23 +1286,23 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 #endif
     }
 
-  if (flags & AARCH64_RET_IN_MEM)
+  എങ്കിൽ (flags & AARCH64_RET_IN_MEM)
     rvalue = struct_rvalue;
 
   fun (cif, rvalue, avalue, user_data);
 
-  return flags;
+  തിരികെ flags;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
+#എങ്കിൽ defined(FFI_EXEC_STATIC_TRAMP)
+ശൂന്യം *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  ബാഹ്യ ശൂന്യം *trampoline_code_table;
 
   *tramp_size = AARCH64_TRAMP_SIZE;
   *map_size = AARCH64_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  തിരികെ &trampoline_code_table;
 }
 #endif
 

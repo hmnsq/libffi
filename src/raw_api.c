@@ -26,174 +26,174 @@
 
 /* This file defines generic functions for use with the raw api. */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#എങ്കിൽ !FFI_NO_RAW_API
 
 size_t
 ffi_raw_size (ffi_cif *cif)
 {
   size_t result = 0;
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  വേണ്ടി (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
+#എങ്കിൽ !FFI_NO_STRUCTS
+      എങ്കിൽ ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
+	result += FFI_ALIGN (വലുപ്പം (ശൂന്യം*), FFI_SIZEOF_ARG);
+      അല്ലെങ്കിൽ
 #endif
 	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  തിരികെ result;
 }
 
 
-void
-ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
+ശൂന്യം
+ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, ശൂന്യം **args)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#എങ്കിൽ വാക്കുകൾ_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  വേണ്ടി (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-      switch ((*tp)->type)
+      തിരഞ്ഞെടുപ്പ് ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
+	  *args = (ശൂന്യം*) ((അക്ഷരം*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  നിർത്തുക;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT16:
+	അവസ്ഥ FFI_TYPE_SINT16:
+	  *args = (ശൂന്യം*) ((അക്ഷരം*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  നിർത്തുക;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
+#എങ്കിൽ FFI_SIZEOF_ARG >= 4	  
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	  *args = (ശൂന്യം*) ((അക്ഷരം*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  നിർത്തുക;
 #endif
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#എങ്കിൽ !FFI_NO_STRUCTS
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_VECTOR:
 	  *args = (raw++)->ptr;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  *args = (raw++)->ptr;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	അവസ്ഥ FFI_TYPE_POINTER:
+	  *args = (ശൂന്യം*) &(raw++)->ptr;
+	  നിർത്തുക;
 	  
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  *args = raw;
 	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#അല്ലെങ്കിൽ /* WORDS_BIGENDIAN */
 
-#if !PDP
+#എങ്കിൽ !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  വേണ്ടി (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#എങ്കിൽ !FFI_NO_STRUCTS
+      എങ്കിൽ ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      അല്ലെങ്കിൽ
 #endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      എങ്കിൽ ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      അല്ലെങ്കിൽ
 	{
-	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  *args = (ശൂന്യം*) raw;
+	  raw += FFI_ALIGN ((*tp)->size, വലുപ്പം (ശൂന്യം*)) / വലുപ്പം (ശൂന്യം*);
 	}
     }
 
-#else
+#അല്ലെങ്കിൽ
 #error "pdp endian not supported"
 #endif /* ! PDP */
 
 #endif /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
+ശൂന്യം
+ffi_ptrarray_to_raw (ffi_cif *cif, ശൂന്യം **args, ffi_raw *raw)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  വേണ്ടി (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-      switch ((*tp)->type)
+      തിരഞ്ഞെടുപ്പ് ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
 	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
 	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT16:
+	അവസ്ഥ FFI_TYPE_UINT16:
 	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_SINT16:
 	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	  നിർത്തുക;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
+#എങ്കിൽ FFI_SIZEOF_ARG >= 4
+	അവസ്ഥ FFI_TYPE_UINT32:
 	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
 	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
+	  നിർത്തുക;
 #endif
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#എങ്കിൽ !FFI_NO_STRUCTS
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_VECTOR:
 	  (raw++)->ptr = *args;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  (raw++)->ptr = *args;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	അവസ്ഥ FFI_TYPE_POINTER:
+	  (raw++)->ptr = **(ശൂന്യം***) args;
+	  നിർത്തുക;
 
-	default:
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
+	സ്ഥിരസ്ഥിതി:
+	  memcpy ((ശൂന്യം*) raw->data, (ശൂന്യം*)*args, (*tp)->size);
 	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#എങ്കിൽ !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -203,18 +203,18 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
+ശൂന്യം ffi_raw_call (ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
+  ശൂന്യം **avalue = (ശൂന്യം**) alloca (cif->nargs * വലുപ്പം (ശൂന്യം*));
   ffi_raw_to_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#എങ്കിൽ FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+സ്ഥിതം ശൂന്യം
+ffi_translate_args (ffi_cif *cif, ശൂന്യം *rvalue,
+		    ശൂന്യം **avalue, ശൂന്യം *user_data)
 {
   ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_size (cif));
   ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
@@ -226,9 +226,9 @@ ffi_translate_args (ffi_cif *cif, void *rvalue,
 ffi_status
 ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 			  ffi_cif *cif,
-			  void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-			  void *user_data,
-			  void *codeloc)
+			  ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ffi_raw*,ശൂന്യം*),
+			  ശൂന്യം *user_data,
+			  ശൂന്യം *codeloc)
 {
   ffi_status status;
 
@@ -237,19 +237,19 @@ ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 				 &ffi_translate_args,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  എങ്കിൽ (status == FFI_OK)
     {
       cl->fun       = fun;
       cl->user_data = user_data;
     }
 
-  return status;
+  തിരികെ status;
 }
 
 #endif /* FFI_CLOSURES */
 #endif /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#എങ്കിൽ FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
@@ -258,10 +258,10 @@ ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 ffi_status
 ffi_prep_raw_closure (ffi_raw_closure* cl,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-		      void *user_data)
+		      ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ffi_raw*,ശൂന്യം*),
+		      ശൂന്യം *user_data)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  തിരികെ ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
 }
 
 #endif /* FFI_CLOSURES */

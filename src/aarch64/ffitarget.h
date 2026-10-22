@@ -30,26 +30,26 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #ifdef __ILP32__
 #define FFI_SIZEOF_ARG 8
 #define FFI_SIZEOF_JAVA_RAW  4
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#elif defined(_WIN32)
+തരനിർവചനം unsigned long long ffi_arg;
+തരനിർവചനം signed long long ffi_sarg;
+#അല്ലെങ്കിലെങ്കിൽ defined(_WIN32)
 #define FFI_SIZEOF_ARG 8
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#else
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+തരനിർവചനം unsigned long long ffi_arg;
+തരനിർവചനം signed long long ffi_sarg;
+#അല്ലെങ്കിൽ
+തരനിർവചനം unsigned long ffi_arg;
+തരനിർവചനം signed long ffi_sarg;
 #endif
 
-typedef enum ffi_abi
+തരനിർവചനം എണ്ണൽ ffi_abi
   {
     FFI_FIRST_ABI = 0,
     FFI_SYSV,
     FFI_WIN64,
     FFI_LAST_ABI,
-#if defined(_WIN32)
+#എങ്കിൽ defined(_WIN32)
     FFI_DEFAULT_ABI = FFI_WIN64
-#else
+#അല്ലെങ്കിൽ
     FFI_DEFAULT_ABI = FFI_SYSV
 #endif
   } ffi_abi;
@@ -60,16 +60,16 @@ typedef enum ffi_abi
 #define FFI_CLOSURES 1
 #define FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#എങ്കിൽ defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 #define FFI_TRAMPOLINE_SIZE 16
 #define FFI_TRAMPOLINE_CLOSURE_OFFSET 16
-#else
+#അല്ലെങ്കിൽ
 #error "No trampoline table implementation"
 #endif
 
-#else
+#അല്ലെങ്കിൽ
 #define FFI_TRAMPOLINE_SIZE 24
 #define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
 #endif
@@ -81,9 +81,9 @@ typedef enum ffi_abi
 
 /* ---- Internal ---- */
 
-#if defined (__APPLE__)
+#എങ്കിൽ defined (__APPLE__)
 #define FFI_EXTRA_CIF_FIELDS unsigned aarch64_nfixedargs
-#elif !defined(_WIN32) && !defined(__ANDROID__)
+#അല്ലെങ്കിലെങ്കിൽ !defined(_WIN32) && !defined(__ANDROID__)
 /* iOS, Windows and Android reserve x18 for the system.  Disable Go closures until
    a new static chain is chosen.  */
 #define FFI_GO_CLOSURES 1

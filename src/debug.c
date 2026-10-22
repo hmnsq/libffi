@@ -22,14 +22,14 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdio.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <stdio.h>
 
 /* General debugging routines */
 
-void ffi_stop_here(void)
+ശൂന്യം ffi_stop_here(ശൂന്യം)
 {
   /* This function is only useful for debugging purposes.
      Place a breakpoint on ffi_stop_here to be notified of
@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN ശൂന്യം ffi_assert(സ്ഥിരം അക്ഷരം *വ്യഞ്ജകം, സ്ഥിരം അക്ഷരം *file, പൂർണ്ണസംഖ്യ വരി)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
+  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", വ്യഞ്ജകം, file, വരി);
   ffi_stop_here();
   abort();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+ശൂന്യം ffi_type_test(ffi_type *a, സ്ഥിരം അക്ഷരം *file, പൂർണ്ണസംഖ്യ വരി)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != ശൂന്യ, file, വരി);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, വരി);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, വരി);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, വരി);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
 		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		|| a->elements != ശൂന്യ, file, വരി);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
-		|| (a->elements != NULL
-		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		|| (a->elements != ശൂന്യ
+		    && a->elements[0] != ശൂന്യ && a->elements[1] == ശൂന്യ),
+		file, വരി);
 
 }

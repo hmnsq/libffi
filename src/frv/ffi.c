@@ -26,26 +26,26 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-#include <stdlib.h>
+#അന്തര്ഭാവ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, extended_cif *ecif)
+ശൂന്യം *ffi_prep_args(അക്ഷരം *അട്ടി, extended_cif *ecif)
 {
-  register unsigned int i;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
-  register int count = 0;
+  രജിസ്റ്റർ unsigned പൂർണ്ണസംഖ്യ i;
+  രജിസ്റ്റർ ശൂന്യം **p_argv;
+  രജിസ്റ്റർ അക്ഷരം *argp;
+  രജിസ്റ്റർ ffi_type **p_arg;
+  രജിസ്റ്റർ പൂർണ്ണസംഖ്യ എണ്ണം = 0;
 
   p_argv = ecif->avalue;
-  argp = stack;
+  argp = അട്ടി;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  വേണ്ടി (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0);
        i--, p_arg++)
     {
@@ -53,10 +53,10 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
       
       z = (*p_arg)->size;
 
-      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+      എങ്കിൽ ((*p_arg)->type == FFI_TYPE_STRUCT)
 	{
-	  z = sizeof(void*);
-	  *(void **) argp = *p_argv;
+	  z = വലുപ്പം(ശൂന്യം*);
+	  *(ശൂന്യം **) argp = *p_argv;
 	} 
       /*      if ((*p_arg)->type == FFI_TYPE_FLOAT)
 	{
@@ -69,70 +69,70 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
 	  else
 	    *(void **) argp = *(void **)(* p_argv);
 	}  */
-      else if (z < sizeof(int))
+      അല്ലെങ്കിൽ എങ്കിൽ (z < വലുപ്പം(പൂർണ്ണസംഖ്യ))
 	{
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = വലുപ്പം(പൂർണ്ണസംഖ്യ);
+	  തിരഞ്ഞെടുപ്പ് ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    അവസ്ഥ FFI_TYPE_SINT8:
+	      *(signed പൂർണ്ണസംഖ്യ *) argp = (signed പൂർണ്ണസംഖ്യ)*(SINT8 *)(* p_argv);
+	      നിർത്തുക;
 	      
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    അവസ്ഥ FFI_TYPE_UINT8:
+	      *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ)*(UINT8 *)(* p_argv);
+	      നിർത്തുക;
 	      
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    അവസ്ഥ FFI_TYPE_SINT16:
+	      *(signed പൂർണ്ണസംഖ്യ *) argp = (signed പൂർണ്ണസംഖ്യ)*(SINT16 *)(* p_argv);
+	      നിർത്തുക;
 		  
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    അവസ്ഥ FFI_TYPE_UINT16:
+	      *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ)*(UINT16 *)(* p_argv);
+	      നിർത്തുക;
 		  
-	    default:
+	    സ്ഥിരസ്ഥിതി:
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof(int))
+      അല്ലെങ്കിൽ എങ്കിൽ (z == വലുപ്പം(പൂർണ്ണസംഖ്യ))
 	{
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned പൂർണ്ണസംഖ്യ *) argp = (unsigned പൂർണ്ണസംഖ്യ)*(UINT32 *)(* p_argv);
 	}
-      else
+      അല്ലെങ്കിൽ
 	{
 	  memcpy(argp, *p_argv, z);
 	}
       p_argv++;
       argp += z;
-      count += z;
+      എണ്ണം += z;
     }
 
-  return (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
+  തിരികെ (അട്ടി + ((എണ്ണം > 24) ? 24 : FFI_ALIGN_DOWN(എണ്ണം, 8)));
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  എങ്കിൽ (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = -1;
-  else
+  അല്ലെങ്കിൽ
     cif->flags = cif->rtype->size;
 
   cif->bytes = FFI_ALIGN (cif->bytes, 8);
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-extern void ffi_call_EABI(void *(*)(char *, extended_cif *), 
+ബാഹ്യ ശൂന്യം ffi_call_EABI(ശൂന്യം *(*)(അക്ഷരം *, extended_cif *), 
 			  extended_cif *, 
 			  unsigned, unsigned, 
 			  unsigned *, 
-			  void (*fn)(void));
+			  ശൂന്യം (*fn)(ശൂന്യം));
 
-void ffi_call(ffi_cif *cif, 
-	      void (*fn)(void), 
-	      void *rvalue, 
-	      void **avalue)
+ശൂന്യം ffi_call(ffi_cif *cif, 
+	      ശൂന്യം (*fn)(ശൂന്യം), 
+	      ശൂന്യം *rvalue, 
+	      ശൂന്യം **avalue)
 {
   extended_cif ecif;
 
@@ -142,40 +142,40 @@ void ffi_call(ffi_cif *cif,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if ((rvalue == NULL) && 
+  എങ്കിൽ ((rvalue == ശൂന്യ) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  അല്ലെങ്കിൽ
     ecif.rvalue = rvalue;
     
   
-  switch (cif->abi) 
+  തിരഞ്ഞെടുപ്പ് (cif->abi) 
     {
-    case FFI_EABI:
+    അവസ്ഥ FFI_EABI:
       ffi_call_EABI(ffi_prep_args, &ecif, cif->bytes, 
 		    cif->flags, ecif.rvalue, fn);
-      break;
-    default:
+      നിർത്തുക;
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
 }
 
-void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
+ശൂന്യം ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 		       unsigned arg4, unsigned arg5, unsigned arg6)
 {
   /* This function is called by a trampoline.  The trampoline stows a
      pointer to the ffi_closure object in gr7.  We must save this
      pointer in a place that will persist while we do our work.  */
-  register ffi_closure *creg __asm__ ("gr7");
+  രജിസ്റ്റർ ffi_closure *creg __asm__ ("gr7");
   ffi_closure *closure = creg;
 
   /* Arguments that don't fit in registers are found on the stack
      at a fixed offset above the current frame pointer.  */
-  register char *frame_pointer __asm__ ("fp");
-  char *stack_args = frame_pointer + 16;
+  രജിസ്റ്റർ അക്ഷരം *frame_pointer __asm__ ("fp");
+  അക്ഷരം *അട്ടി_args = frame_pointer + 16;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
   unsigned register_args[6] =
@@ -183,55 +183,55 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 
   ffi_cif *cif = closure->cif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
-  int i;
+  ശൂന്യം **avalue = alloca (cif->nargs * വലുപ്പം(ശൂന്യം *));
+  അക്ഷരം *ptr = (അക്ഷരം *) register_args;
+  പൂർണ്ണസംഖ്യ i;
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  വേണ്ടി (i = 0; i < cif->nargs; i++)
     {
-      switch (arg_types[i]->type)
+      തിരഞ്ഞെടുപ്പ് (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
 	  avalue[i] = ptr + 3;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT16:
 	  avalue[i] = ptr + 2;
-	  break;
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_FLOAT:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_FLOAT:
 	  avalue[i] = ptr;
-	  break;
-	case FFI_TYPE_STRUCT:
-	  avalue[i] = *(void**)ptr;
-	  break;
-	default:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	  avalue[i] = *(ശൂന്യം**)ptr;
+	  നിർത്തുക;
+	സ്ഥിരസ്ഥിതി:
 	  /* This is an 8-byte value.  */
 	  avalue[i] = ptr;
 	  ptr += 4;
-	  break;
+	  നിർത്തുക;
 	}
       ptr += 4;
 
       /* If we've handled more arguments than fit in registers,
 	 start looking at the those passed on the stack.  */
-      if (ptr == ((char *)register_args + (6*4)))
-	ptr = stack_args;
+      എങ്കിൽ (ptr == ((അക്ഷരം *)register_args + (6*4)))
+	ptr = അട്ടി_args;
     }
 
   /* Invoke the closure.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  എങ്കിൽ (cif->rtype->type == FFI_TYPE_STRUCT)
     {
       /* The caller allocates space for the return structure, and
        passes a pointer to this space in gr3.  Use this value directly
        as the return value.  */
-      register void *return_struct_ptr __asm__("gr3");
+      രജിസ്റ്റർ ശൂന്യം *return_struct_ptr __asm__("gr3");
       (closure->fun) (cif, return_struct_ptr, avalue, closure->user_data);
     }
-  else
+  അല്ലെങ്കിൽ
     {
       /* Allocate space for the return value and call the function.  */
       long long rvalue;
@@ -241,29 +241,29 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 	 values also use gr9.  We fill the both, even for small return
 	 values, just to avoid a branch.  */ 
       __asm__ ("ldi  @(%0, #0), gr8" : : "r" (&rvalue));
-      __asm__ ("ldi  @(%0, #0), gr9" : : "r" (&((int *) &rvalue)[1]));
+      __asm__ ("ldi  @(%0, #0), gr9" : : "r" (&((പൂർണ്ണസംഖ്യ *) &rvalue)[1]));
     }
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*),
+		      ശൂന്യം *user_data,
+		      ശൂന്യം *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+  unsigned പൂർണ്ണസംഖ്യ *tramp = (unsigned പൂർണ്ണസംഖ്യ *) &closure->tramp[0];
   unsigned long fn = (long) ffi_closure_eabi;
   unsigned long cls = (long) codeloc;
 #ifdef __FRV_FDPIC__
-  register void *got __asm__("gr15");
+  രജിസ്റ്റർ ശൂന്യം *got __asm__("gr15");
 #endif
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
   fn = (unsigned long) ffi_closure_eabi;
 
 #ifdef __FRV_FDPIC__
-  tramp[0] = &((unsigned int *)codeloc)[2];
+  tramp[0] = &((unsigned പൂർണ്ണസംഖ്യ *)codeloc)[2];
   tramp[1] = got;
   tramp[2] = 0x8cfc0000 + (fn  & 0xffff); /* setlos lo(fn), gr6    */
   tramp[3] = 0x8efc0000 + (cls & 0xffff); /* setlos lo(cls), gr7   */
@@ -271,7 +271,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
   tramp[5] = 0x8ef80000 + (cls >> 16);    /* sethi hi(cls), gr7    */
   tramp[6] = 0x9cc86000;                  /* ldi @(gr6, #0), gr14  */
   tramp[7] = 0x8030e000;                  /* jmpl @(gr14, gr0)     */
-#else
+#അല്ലെങ്കിൽ
   tramp[0] = 0x8cfc0000 + (fn  & 0xffff); /* setlos lo(fn), gr6    */
   tramp[1] = 0x8efc0000 + (cls & 0xffff); /* setlos lo(cls), gr7   */
   tramp[2] = 0x8cf80000 + (fn  >> 16);	  /* sethi hi(fn), gr6     */
@@ -284,9 +284,9 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
 
   /* Cache flushing.  */
-  for (i = 0; i < FFI_TRAMPOLINE_SIZE; i++)
-    __asm__ volatile ("dcf @(%0,%1)\n\tici @(%2,%1)" :: "r" (tramp), "r" (i),
+  വേണ്ടി (i = 0; i < FFI_TRAMPOLINE_SIZE; i++)
+    __asm__ അസ്ഥിര ("dcf @(%0,%1)\n\tici @(%2,%1)" :: "r" (tramp), "r" (i),
 		      "r" (codeloc));
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }

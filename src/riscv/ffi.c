@@ -27,104 +27,104 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include "internal.h"
-#include <tramp.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
+#അന്തര്ഭാവ "internal.h"
+#അന്തര്ഭാവ <tramp.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <stdint.h>
 
-#if __riscv_float_abi_double
+#എങ്കിൽ __riscv_float_abi_double
 #define ABI_FLEN 64
-typedef union {
+തരനിർവചനം സംഘം {
     uint64_t i;
-    double d;
+    ഇരട്ട d;
 } float_reg;
-#elif __riscv_float_abi_single
+#അല്ലെങ്കിലെങ്കിൽ __riscv_float_abi_single
 #define ABI_FLEN 32
-typedef union {
-    float f;
+തരനിർവചനം സംഘം {
+    ദശാംശം f;
 } float_reg;
 #endif
 
 #define NARGREG 8
 #define STKALIGN 16
-#define MAXCOPYARG (2 * sizeof(double))
+#define MAXCOPYARG (2 * വലുപ്പം(ഇരട്ട))
 
-typedef struct call_context
+തരനിർവചനം ഘടന call_context
 {
-#if ABI_FLEN
+#എങ്കിൽ ABI_FLEN
     float_reg fa[8];
 #endif
     size_t a[8];
     /* used by the assembly code to in-place construct its own stack frame */
-    char frame[16];
+    അക്ഷരം frame[16];
 } call_context;
 
-typedef struct call_builder
+തരനിർവചനം ഘടന call_builder
 {
     call_context *aregs;
-    int used_integer;
-    int used_float;
-    size_t *used_stack;
-    void *struct_stack;
+    പൂർണ്ണസംഖ്യ used_integer;
+    പൂർണ്ണസംഖ്യ used_float;
+    size_t *used_അട്ടി;
+    ശൂന്യം *struct_അട്ടി;
 } call_builder;
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if __SIZEOF_POINTER__ == 8
+#എങ്കിൽ __SIZEOF_POINTER__ == 8
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#അല്ലെങ്കിൽ
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
 #endif
 
-#if ABI_FLEN
-typedef struct {
-    char as_elements, type1, offset2, type2;
+#എങ്കിൽ ABI_FLEN
+തരനിർവചനം ഘടന {
+    അക്ഷരം as_elements, type1, offset2, type2;
 } float_struct_info;
 
-#if ABI_FLEN >= 64
+#എങ്കിൽ ABI_FLEN >= 64
 #define IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
-#else
+#അല്ലെങ്കിൽ
 #define IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
 #endif
 
-static ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
-    int i;
-    if (out == out_end) return out;
-    if (in->type != FFI_TYPE_STRUCT) {
+സ്ഥിതം ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
+    പൂർണ്ണസംഖ്യ i;
+    എങ്കിൽ (out == out_end) തിരികെ out;
+    എങ്കിൽ (in->type != FFI_TYPE_STRUCT) {
         *(out++) = in;
-    } else {
-        for (i = 0; in->elements[i]; i++)
+    } അല്ലെങ്കിൽ {
+        വേണ്ടി (i = 0; in->elements[i]; i++)
             out = flatten_struct(in->elements[i], out, out_end);
     }
-    return out;
+    തിരികെ out;
 }
 
 /* Structs with at most two fields after flattening, one of which is of
    floating point type, are passed in multiple registers if sufficient
    registers are available. */
-static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *top) {
+സ്ഥിതം float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *മുകൾ) {
     float_struct_info ret = {0, 0, 0, 0};
     ffi_type *fields[3];
-    int num_floats, num_ints;
-    int num_fields = flatten_struct(top, fields, fields + 3) - fields;
+    പൂർണ്ണസംഖ്യ അക്കം_floats, അക്കം_ints;
+    പൂർണ്ണസംഖ്യ അക്കം_fields = flatten_struct(മുകൾ, fields, fields + 3) - fields;
 
-    if (num_fields == 1) {
-        if (IS_FLOAT(fields[0]->type)) {
+    എങ്കിൽ (അക്കം_fields == 1) {
+        എങ്കിൽ (IS_FLOAT(fields[0]->type)) {
             ret.as_elements = 1;
             ret.type1 = fields[0]->type;
         }
-    } else if (num_fields == 2) {
-        num_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
-        num_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
-        if (num_floats == 0 || num_floats + num_ints != 2)
-            return ret;
-        if (cb->used_float + num_floats > NARGREG || cb->used_integer + (2 - num_floats) > NARGREG)
-            return ret;
-        if (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
-            return ret;
+    } അല്ലെങ്കിൽ എങ്കിൽ (അക്കം_fields == 2) {
+        അക്കം_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
+        അക്കം_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
+        എങ്കിൽ (അക്കം_floats == 0 || അക്കം_floats + അക്കം_ints != 2)
+            തിരികെ ret;
+        എങ്കിൽ (cb->used_float + അക്കം_floats > NARGREG || cb->used_integer + (2 - അക്കം_floats) > NARGREG)
+            തിരികെ ret;
+        എങ്കിൽ (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
+            തിരികെ ret;
 
         ret.type1 = fields[0]->type;
         ret.type2 = fields[1]->type;
@@ -132,345 +132,345 @@ static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *t
         ret.as_elements = 1;
     }
 
-    return ret;
+    തിരികെ ret;
 }
 
-#if ABI_FLEN >= 64
+#എങ്കിൽ ABI_FLEN >= 64
 /* Float values in wider RISC-V FP registers are NaN-boxed */
-static void marshal_float(call_builder *cb, void *data) {
-    union {
+സ്ഥിതം ശൂന്യം marshal_float(call_builder *cb, ശൂന്യം *data) {
+    സംഘം {
         uint32_t i;
-        float f;
-    } value;
+        ദശാംശം f;
+    } മൂല്യം;
 
-    value.f = *(float *)data;
+    മൂല്യം.f = *(ദശാംശം *)data;
     cb->aregs->fa[cb->used_float++].i =
-        UINT64_C(0xffffffff00000000) | value.i;
+        UINT64_C(0xffffffff00000000) | മൂല്യം.i;
 }
 
-static void unmarshal_float(call_builder *cb, void *data) {
-    union {
+സ്ഥിതം ശൂന്യം unmarshal_float(call_builder *cb, ശൂന്യം *data) {
+    സംഘം {
         uint32_t i;
-        float f;
-    } value;
+        ദശാംശം f;
+    } മൂല്യം;
 
-    value.i = (uint32_t)cb->aregs->fa[cb->used_float++].i;
-    *(float *)data = value.f;
+    മൂല്യം.i = (uint32_t)cb->aregs->fa[cb->used_float++].i;
+    *(ദശാംശം *)data = മൂല്യം.f;
 }
 #endif
 #endif
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
-    size_t value = 0;
-    switch (type) {
-        case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
-        case FFI_TYPE_SINT8: value = *(int8_t *)data; break;
-        case FFI_TYPE_UINT16: value = *(uint16_t *)data; break;
-        case FFI_TYPE_SINT16: value = *(int16_t *)data; break;
+സ്ഥിതം ശൂന്യം marshal_atom(call_builder *cb, പൂർണ്ണസംഖ്യ type, ശൂന്യം *data) {
+    size_t മൂല്യം = 0;
+    തിരഞ്ഞെടുപ്പ് (type) {
+        അവസ്ഥ FFI_TYPE_UINT8: മൂല്യം = *(uint8_t *)data; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT8: മൂല്യം = *(int8_t *)data; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_UINT16: മൂല്യം = *(uint16_t *)data; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT16: മൂല്യം = *(int16_t *)data; നിർത്തുക;
         /* 32-bit quantities are always sign-extended in the ABI */
-        case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
-        case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
-        case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
+        അവസ്ഥ FFI_TYPE_UINT32: മൂല്യം = *(int32_t *)data; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT32: മൂല്യം = *(int32_t *)data; നിർത്തുക;
+#എങ്കിൽ __SIZEOF_POINTER__ == 8
+        അവസ്ഥ FFI_TYPE_UINT64: മൂല്യം = *(uint64_t *)data; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT64: മൂല്യം = *(int64_t *)data; നിർത്തുക;
 #endif
-        case FFI_TYPE_POINTER: value = *(size_t *)data; break;
+        അവസ്ഥ FFI_TYPE_POINTER: മൂല്യം = *(size_t *)data; നിർത്തുക;
 
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+#എങ്കിൽ ABI_FLEN >= 64
+        അവസ്ഥ FFI_TYPE_FLOAT:
             marshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(float *)data));
-            return;
+            തിരികെ;
+#അല്ലെങ്കിലെങ്കിൽ ABI_FLEN >= 32
+        അവസ്ഥ FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(ദശാംശം *)data));
+            തിരികെ;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(double *)data));
-            return;
+#എങ്കിൽ ABI_FLEN >= 64
+        അവസ്ഥ FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(ഇരട്ട *)data));
+            തിരികെ;
 #endif
-        default: FFI_ASSERT(0); break;
+        സ്ഥിരസ്ഥിതി: FFI_ASSERT(0); നിർത്തുക;
     }
 
-    if (cb->used_integer == NARGREG) {
-        *cb->used_stack++ = value;
-    } else {
-        cb->aregs->a[cb->used_integer++] = value;
+    എങ്കിൽ (cb->used_integer == NARGREG) {
+        *cb->used_അട്ടി++ = മൂല്യം;
+    } അല്ലെങ്കിൽ {
+        cb->aregs->a[cb->used_integer++] = മൂല്യം;
     }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
-    size_t value;
-    switch (type) {
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+സ്ഥിതം ശൂന്യം unmarshal_atom(call_builder *cb, പൂർണ്ണസംഖ്യ type, ശൂന്യം *data) {
+    size_t മൂല്യം;
+    തിരഞ്ഞെടുപ്പ് (type) {
+#എങ്കിൽ ABI_FLEN >= 64
+        അവസ്ഥ FFI_TYPE_FLOAT:
             unmarshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(*(float *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
-            return;
+            തിരികെ;
+#അല്ലെങ്കിലെങ്കിൽ ABI_FLEN >= 32
+        അവസ്ഥ FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(*(ദശാംശം *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
+            തിരികെ;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(*(double *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
-            return;
+#എങ്കിൽ ABI_FLEN >= 64
+        അവസ്ഥ FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(*(ഇരട്ട *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
+            തിരികെ;
 #endif
     }
 
-    if (cb->used_integer == NARGREG) {
-        value = *cb->used_stack++;
-    } else {
-        value = cb->aregs->a[cb->used_integer++];
+    എങ്കിൽ (cb->used_integer == NARGREG) {
+        മൂല്യം = *cb->used_അട്ടി++;
+    } അല്ലെങ്കിൽ {
+        മൂല്യം = cb->aregs->a[cb->used_integer++];
     }
 
-    switch (type) {
-        case FFI_TYPE_UINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_SINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_UINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
-        case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
-        case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
+    തിരഞ്ഞെടുപ്പ് (type) {
+        അവസ്ഥ FFI_TYPE_UINT8: *(uint8_t *)data = മൂല്യം; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT8: *(uint8_t *)data = മൂല്യം; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_UINT16: *(uint16_t *)data = മൂല്യം; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT16: *(uint16_t *)data = മൂല്യം; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_UINT32: *(uint32_t *)data = മൂല്യം; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT32: *(uint32_t *)data = മൂല്യം; നിർത്തുക;
+#എങ്കിൽ __SIZEOF_POINTER__ == 8
+        അവസ്ഥ FFI_TYPE_UINT64: *(uint64_t *)data = മൂല്യം; നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_SINT64: *(uint64_t *)data = മൂല്യം; നിർത്തുക;
 #endif
-        case FFI_TYPE_POINTER: *(size_t *)data = value; break;
-        default: FFI_ASSERT(0); break;
+        അവസ്ഥ FFI_TYPE_POINTER: *(size_t *)data = മൂല്യം; നിർത്തുക;
+        സ്ഥിരസ്ഥിതി: FFI_ASSERT(0); നിർത്തുക;
     }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
+സ്ഥിതം ശൂന്യം marshal(call_builder *cb, ffi_type *type, പൂർണ്ണസംഖ്യ var, ശൂന്യം *data) {
     size_t realign[2];
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#എങ്കിൽ ABI_FLEN
+    എങ്കിൽ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        എങ്കിൽ (fsi.as_elements) {
             marshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                marshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return;
+            എങ്കിൽ (fsi.offset2)
+                marshal_atom(cb, fsi.type2, ((അക്ഷരം*)data) + fsi.offset2);
+            തിരികെ;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    എങ്കിൽ (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         marshal_atom(cb, type->type, data);
-        return;
+        തിരികെ;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    എങ്കിൽ (type->size > 2 * __SIZEOF_POINTER__) {
         /* copy to stack and pass by reference */
-        data = memcpy (cb->struct_stack, data, type->size);
-        cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
+        data = memcpy (cb->struct_അട്ടി, data, type->size);
+        cb->struct_അട്ടി = (size_t *) FFI_ALIGN ((അക്ഷരം *) cb->struct_അട്ടി + type->size, __SIZEOF_POINTER__);
         marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+    } അല്ലെങ്കിൽ എങ്കിൽ (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         marshal_atom(cb, type->type, data);
-    } else {
+    } അല്ലെങ്കിൽ {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        എങ്കിൽ (type->alignment > __SIZEOF_POINTER__) {
+            എങ്കിൽ (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+            cb->used_അട്ടി = (size_t *)FFI_ALIGN(cb->used_അട്ടി, 2*__SIZEOF_POINTER__);
         }
 
         memcpy(realign, data, type->size);
-        if (type->size > 0)
+        എങ്കിൽ (type->size > 0)
             marshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        എങ്കിൽ (type->size > __SIZEOF_POINTER__)
             marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
     }
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
+സ്ഥിതം ശൂന്യം *unmarshal(call_builder *cb, ffi_type *type, പൂർണ്ണസംഖ്യ var, ശൂന്യം *data) {
     size_t realign[2];
-    void *pointer;
+    ശൂന്യം *pointer;
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#എങ്കിൽ ABI_FLEN
+    എങ്കിൽ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        എങ്കിൽ (fsi.as_elements) {
             unmarshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                unmarshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return data;
+            എങ്കിൽ (fsi.offset2)
+                unmarshal_atom(cb, fsi.type2, ((അക്ഷരം*)data) + fsi.offset2);
+            തിരികെ data;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    എങ്കിൽ (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         unmarshal_atom(cb, type->type, data);
-        return data;
+        തിരികെ data;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    എങ്കിൽ (type->size > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
-        unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+        unmarshal_atom(cb, FFI_TYPE_POINTER, (അക്ഷരം*)&pointer);
+        തിരികെ pointer;
+    } അല്ലെങ്കിൽ എങ്കിൽ (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         unmarshal_atom(cb, type->type, data);
-        return data;
-    } else {
+        തിരികെ data;
+    } അല്ലെങ്കിൽ {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        എങ്കിൽ (type->alignment > __SIZEOF_POINTER__) {
+            എങ്കിൽ (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+            cb->used_അട്ടി = (size_t *)FFI_ALIGN(cb->used_അട്ടി, 2*__SIZEOF_POINTER__);
         }
 
-        if (type->size > 0)
+        എങ്കിൽ (type->size > 0)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        എങ്കിൽ (type->size > __SIZEOF_POINTER__)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
         memcpy(data, realign, type->size);
-        return data;
+        തിരികെ data;
     }
 }
 
-static int passed_by_ref(call_builder *cb, ffi_type *type, int var) {
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+സ്ഥിതം പൂർണ്ണസംഖ്യ passed_by_ref(call_builder *cb, ffi_type *type, പൂർണ്ണസംഖ്യ var) {
+#എങ്കിൽ ABI_FLEN
+    എങ്കിൽ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) return 0;
+        എങ്കിൽ (fsi.as_elements) തിരികെ 0;
     }
 #endif
 
-    return type->size > 2 * __SIZEOF_POINTER__;
+    തിരികെ type->size > 2 * __SIZEOF_POINTER__;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif) {
     cif->riscv_nfixedargs = cif->nargs;
-    return FFI_OK;
+    തിരികെ FFI_OK;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs) {
+ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned പൂർണ്ണസംഖ്യ nfixedargs, unsigned പൂർണ്ണസംഖ്യ ntotalargs) {
     cif->riscv_nfixedargs = nfixedargs;
-    return FFI_OK;
+    തിരികെ FFI_OK;
 }
 
 /* Low level routine for calling functions */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_call_asm (ശൂന്യം *അട്ടി, ഘടന call_context *regs,
+			  ശൂന്യം (*fn) (ശൂന്യം), ശൂന്യം *closure) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+സ്ഥിതം ശൂന്യം
+ffi_call_int (ffi_cif *cif, ശൂന്യം (*fn) (ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue,
+	      ശൂന്യം *closure)
 {
     /* this is a conservative estimate, assuming a complex return value and
        that all remaining arguments are long long / __int128 */
     size_t arg_bytes = cif->nargs <= 3 ? 0 :
-        FFI_ALIGN(2 * sizeof(size_t) * (cif->nargs - 3), STKALIGN);
+        FFI_ALIGN(2 * വലുപ്പം(size_t) * (cif->nargs - 3), STKALIGN);
     /* Allocate space for copies of big structures.  */
     size_t struct_bytes = FFI_ALIGN (cif->bytes, STKALIGN);
     size_t rval_bytes = 0;
-    if (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
+    എങ്കിൽ (rvalue == ശൂന്യ && cif->rtype->size > 2*__SIZEOF_POINTER__)
         rval_bytes = FFI_ALIGN(cif->rtype->size, STKALIGN);
-    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + sizeof(call_context);
+    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + വലുപ്പം(call_context);
 
     /* the assembly code will deallocate all stack data at lower addresses
        than the argument region, so we need to allocate the frame and the
        return value after the arguments in a single allocation */
     size_t alloc_base;
     /* Argument region must be 16-byte aligned */
-    if (_Alignof(max_align_t) >= STKALIGN) {
+    എങ്കിൽ (_Alignof(max_align_t) >= STKALIGN) {
         /* since sizeof long double is normally 16, the compiler will
            guarantee alloca alignment to at least that much */
         alloc_base = (size_t)alloca(alloc_size);
-    } else {
+    } അല്ലെങ്കിൽ {
         alloc_base = FFI_ALIGN(alloca(alloc_size + STKALIGN - 1), STKALIGN);
     }
 
-    if (rval_bytes)
-        rvalue = (void*)(alloc_base + arg_bytes);
+    എങ്കിൽ (rval_bytes)
+        rvalue = (ശൂന്യം*)(alloc_base + arg_bytes);
 
     call_builder cb;
     cb.used_float = cb.used_integer = 0;
     cb.aregs = (call_context*)(alloc_base + arg_bytes + rval_bytes + struct_bytes);
-    cb.used_stack = (void*)alloc_base;
-    cb.struct_stack = (void *) (alloc_base + arg_bytes + rval_bytes);
+    cb.used_അട്ടി = (ശൂന്യം*)alloc_base;
+    cb.struct_അട്ടി = (ശൂന്യം *) (alloc_base + arg_bytes + rval_bytes);
 
-    int return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    പൂർണ്ണസംഖ്യ return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
+    എങ്കിൽ (return_by_ref)
         marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-    int i;
-    for (i = 0; i < cif->nargs; i++)
+    പൂർണ്ണസംഖ്യ i;
+    വേണ്ടി (i = 0; i < cif->nargs; i++)
         marshal(&cb, cif->arg_types[i], i >= cif->riscv_nfixedargs, avalue[i]);
 
-    ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+    ffi_call_asm ((ശൂന്യം *) alloc_base, cb.aregs, fn, closure);
 
     cb.used_float = cb.used_integer = 0;
-    if (!return_by_ref && rvalue)
+    എങ്കിൽ (!return_by_ref && rvalue)
       {
-	if (IS_INT(cif->rtype->type)
-	    && cif->rtype->size < sizeof (ffi_arg))
+	എങ്കിൽ (IS_INT(cif->rtype->type)
+	    && cif->rtype->size < വലുപ്പം (ffi_arg))
 	  {
 	    /* Integer types smaller than ffi_arg need to be extended.  */
-	    switch (cif->rtype->type)
+	    തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
 	      {
-	      case FFI_TYPE_SINT8:
-	      case FFI_TYPE_SINT16:
-	      case FFI_TYPE_SINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+	      അവസ്ഥ FFI_TYPE_SINT8:
+	      അവസ്ഥ FFI_TYPE_SINT16:
+	      അവസ്ഥ FFI_TYPE_SINT32:
+		unmarshal_atom (&cb, (വലുപ്പം (ffi_arg) > 4
 				      ? FFI_TYPE_SINT64 : FFI_TYPE_SINT32),
 				rvalue);
-		break;
-	      case FFI_TYPE_UINT8:
-	      case FFI_TYPE_UINT16:
-	      case FFI_TYPE_UINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+		നിർത്തുക;
+	      അവസ്ഥ FFI_TYPE_UINT8:
+	      അവസ്ഥ FFI_TYPE_UINT16:
+	      അവസ്ഥ FFI_TYPE_UINT32:
+		unmarshal_atom (&cb, (വലുപ്പം (ffi_arg) > 4
 				      ? FFI_TYPE_UINT64 : FFI_TYPE_UINT32),
 				rvalue);
-		break;
+		നിർത്തുക;
 	      }
 	  }
-	else
+	അല്ലെങ്കിൽ
 	  unmarshal(&cb, cif->rtype, 0, rvalue);
       }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+ശൂന്യം
+ffi_call (ffi_cif *cif, ശൂന്യം (*fn) (ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, ശൂന്യ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+ശൂന്യം
+ffi_call_go (ffi_cif *cif, ശൂന്യം (*fn) (ശൂന്യം), ശൂന്യം *rvalue,
+	     ശൂന്യം **avalue, ശൂന്യം *closure)
 {
   ffi_call_int(cif, fn, rvalue, avalue, closure);
 }
 
-extern void ffi_closure_asm(void) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_closure_asm(ശൂന്യം) FFI_HIDDEN;
 
-ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(ffi_cif*,void*,void**,void*), void *user_data, void *codeloc)
+ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ശൂന്യം**,ശൂന്യം*), ശൂന്യം *user_data, ശൂന്യം *codeloc)
 {
-    if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-        return FFI_BAD_ABI;
+    എങ്കിൽ (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+        തിരികെ FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present (closure))
+  എങ്കിൽ (ffi_tramp_is_present (closure))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_asm;
+      ശൂന്യം (*dest)(ശൂന്യം) = ffi_closure_asm;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  അല്ലെങ്കിൽ
 #endif
     {
       uint32_t *tramp = (uint32_t *) &closure->tramp[0];
@@ -480,16 +480,16 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
 	 as the memory is readable it should work */
 
       tramp[0] = 0x00000317; /* auipc t1, 0 (i.e. t0 <- codeloc) */
-#if __SIZEOF_POINTER__ == 8
+#എങ്കിൽ __SIZEOF_POINTER__ == 8
       tramp[1] = 0x01033383; /* ld t2, 16(t1) */
-#else
+#അല്ലെങ്കിൽ
       tramp[1] = 0x01032383; /* lw t2, 16(t1) */
 #endif
       tramp[2] = 0x00038067; /* jr t2 */
       tramp[3] = 0x00000013; /* nop */
       tramp[4] = fn;
       tramp[5] = fn >> 32;
-#if !defined(__FreeBSD__)
+#എങ്കിൽ !defined(__FreeBSD__)
     __builtin___clear_cache(codeloc, codeloc + FFI_TRAMPOLINE_SIZE);
 #endif
     }
@@ -498,74 +498,74 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
     closure->fun = fun;
     closure->user_data = user_data;
 
-    return FFI_OK;
+    തിരികെ FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_go_closure_asm (ശൂന്യം) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     ശൂന്യം (*fun) (ffi_cif *, ശൂന്യം *, ശൂന്യം **, ശൂന്യം *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    തിരികെ FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
+  closure->tramp = (ശൂന്യം *) ffi_go_closure_asm;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs. */
-void FFI_HIDDEN
+ശൂന്യം FFI_HIDDEN
 ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data,
-		   size_t *stack, call_context *aregs)
+		   ശൂന്യം (*fun) (ffi_cif *, ശൂന്യം *, ശൂന്യം **, ശൂന്യം *),
+		   ശൂന്യം *user_data,
+		   size_t *അട്ടി, call_context *aregs)
 {
-    void **avalue = alloca(cif->nargs * sizeof(void*));
+    ശൂന്യം **avalue = alloca(cif->nargs * വലുപ്പം(ശൂന്യം*));
     /* storage for arguments which will be copied by unmarshal().  We could
        theoretically avoid the copies in many cases and use at most 128 bytes
        of memory, but allocating disjoint storage for each argument is
        simpler. */
-    char *astorage = alloca(cif->nargs * MAXCOPYARG);
-    void *rvalue;
+    അക്ഷരം *astorage = alloca(cif->nargs * MAXCOPYARG);
+    ശൂന്യം *rvalue;
     call_builder cb;
-    int return_by_ref;
-    int i;
+    പൂർണ്ണസംഖ്യ return_by_ref;
+    പൂർണ്ണസംഖ്യ i;
 
     cb.aregs = aregs;
     cb.used_integer = cb.used_float = 0;
-    cb.used_stack = stack;
+    cb.used_അട്ടി = അട്ടി;
 
     return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    എങ്കിൽ (return_by_ref)
         unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
+    അല്ലെങ്കിൽ
         rvalue = alloca(cif->rtype->size);
 
-    for (i = 0; i < cif->nargs; i++)
+    വേണ്ടി (i = 0; i < cif->nargs; i++)
         avalue[i] = unmarshal(&cb, cif->arg_types[i],
             i >= cif->riscv_nfixedargs, astorage + i*MAXCOPYARG);
 
     fun (cif, rvalue, avalue, user_data);
 
-    if (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
+    എങ്കിൽ (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
         cb.used_integer = cb.used_float = 0;
         marshal(&cb, cif->rtype, 0, rvalue);
     }
 }
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-void *
+ശൂന്യം *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  ബാഹ്യ ശൂന്യം *trampoline_code_table;
   *tramp_size = RISCV_TRAMP_SIZE;
   *map_size = RISCV_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  തിരികെ &trampoline_code_table;
 }
 #endif

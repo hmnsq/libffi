@@ -25,11 +25,11 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ <stdio.h>
 
 #define ROUND_UP(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
 
@@ -37,19 +37,19 @@
 #define DEBUG_LEVEL   0
 
 #define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
+  __asm__ അസ്ഥിര ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
 #define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
+  __asm__ അസ്ഥിര ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
 #define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+  __asm__ അസ്ഥിര ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
 #define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ അസ്ഥിര ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) ചെയ്യുക { എങ്കിൽ (lvl <= DEBUG_LEVEL) { printf(x); } } ആകുമ്പോൾ (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+സ്ഥിതം വരിയിൽ പൂർണ്ണസംഖ്യ ffi_struct_type(ffi_type *t)
 {
-  int sz = t->size;
+  പൂർണ്ണസംഖ്യ sz = t->size;
 
   /* Small structure results are returned in registers 28 and 29,
      larger ones are in a buffer allocated by the callee.  The
@@ -57,10 +57,10 @@ static inline int ffi_struct_type(ffi_type *t)
      to be aligned on a 16-byte boundary.   Register return values are
      padded on the right.  The pad bits on the right are undefined.  */
 
-  if (sz <= 16)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT;
+  എങ്കിൽ (sz <= 16)
+    തിരികെ -sz;
+  അല്ലെങ്കിൽ
+    തിരികെ FFI_TYPE_STRUCT;
 }
 
 /* PA has a downward growing stack, which looks like this.  Stack
@@ -123,112 +123,112 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
+ശൂന്യം ffi_prep_args_pa64(UINT64 *അട്ടി, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
+  രജിസ്റ്റർ unsigned പൂർണ്ണസംഖ്യ i;
+  രജിസ്റ്റർ ffi_type **p_arg;
+  രജിസ്റ്റർ ശൂന്യം **p_argv;
+  unsigned പൂർണ്ണസംഖ്യ slot = FIRST_ARG_SLOT;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, അട്ടി,
 	ecif, bytes);
 
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  വേണ്ടി (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      പൂർണ്ണസംഖ്യ type = (*p_arg)->type;
 
       len = (*p_arg)->size;
 
-      switch (type)
+      തിരഞ്ഞെടുപ്പ് (type)
 	{
-	case FFI_TYPE_SINT8:
-	  *(SINT64 *)(stack + slot) = *(SINT8 *)(*p_argv);
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT8:
+	  *(SINT64 *)(അട്ടി + slot) = *(SINT8 *)(*p_argv);
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT8:
-	  *(UINT64 *)(stack + slot) = *(UINT8 *)(*p_argv);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT8:
+	  *(UINT64 *)(അട്ടി + slot) = *(UINT8 *)(*p_argv);
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT16:
-	  *(SINT64 *)(stack + slot) = *(SINT16 *)(*p_argv);
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT16:
+	  *(SINT64 *)(അട്ടി + slot) = *(SINT16 *)(*p_argv);
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT16:
-	  *(UINT64 *)(stack + slot) = *(UINT16 *)(*p_argv);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT16:
+	  *(UINT64 *)(അട്ടി + slot) = *(UINT16 *)(*p_argv);
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT32:
-	  *(SINT64 *)(stack + slot) = *(SINT32 *)(*p_argv);
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT32:
+	  *(SINT64 *)(അട്ടി + slot) = *(SINT32 *)(*p_argv);
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT32:
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  break;
+	അവസ്ഥ FFI_TYPE_UINT32:
+	  *(UINT64 *)(അട്ടി + slot) = *(UINT32 *)(*p_argv);
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT64 %lu in slot %u\n", *(UINT64 *)(*p_argv),
 		slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  *(UINT64 *)(അട്ടി + slot) = *(UINT64 *)(*p_argv);
+	  നിർത്തുക;
 
-	case FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
 	  /* First 8 args go in fr4L - fr11L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(അട്ടി + slot) = *(UINT32 *)(*p_argv);
+	  തിരഞ്ഞെടുപ്പ് (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack + slot, fr4); break;
-	    case 1: fldw(stack + slot, fr5); break;
-	    case 2: fldw(stack + slot, fr6); break;
-	    case 3: fldw(stack + slot, fr7); break;
-	    case 4: fldw(stack + slot, fr8); break;
-	    case 5: fldw(stack + slot, fr9); break;
-	    case 6: fldw(stack + slot, fr10); break;
-	    case 7: fldw(stack + slot, fr11); break;
+	    അവസ്ഥ 0: fldw(അട്ടി + slot, fr4); നിർത്തുക;
+	    അവസ്ഥ 1: fldw(അട്ടി + slot, fr5); നിർത്തുക;
+	    അവസ്ഥ 2: fldw(അട്ടി + slot, fr6); നിർത്തുക;
+	    അവസ്ഥ 3: fldw(അട്ടി + slot, fr7); നിർത്തുക;
+	    അവസ്ഥ 4: fldw(അട്ടി + slot, fr8); നിർത്തുക;
+	    അവസ്ഥ 5: fldw(അട്ടി + slot, fr9); നിർത്തുക;
+	    അവസ്ഥ 6: fldw(അട്ടി + slot, fr10); നിർത്തുക;
+	    അവസ്ഥ 7: fldw(അട്ടി + slot, fr11); നിർത്തുക;
 	    }
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(അട്ടി + slot) = *(UINT64 *)(*p_argv);
+	  തിരഞ്ഞെടുപ്പ് (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 8 args go in fr4 to fr11.  */
-	    case 0: fldd(stack + slot, fr4); break;
-	    case 1: fldd(stack + slot, fr5); break;
-	    case 2: fldd(stack + slot, fr6); break;
-	    case 3: fldd(stack + slot, fr7); break;
-	    case 4: fldd(stack + slot, fr8); break;
-	    case 5: fldd(stack + slot, fr9); break;
-	    case 6: fldd(stack + slot, fr10); break;
-	    case 7: fldd(stack + slot, fr11); break;
+	    അവസ്ഥ 0: fldd(അട്ടി + slot, fr4); നിർത്തുക;
+	    അവസ്ഥ 1: fldd(അട്ടി + slot, fr5); നിർത്തുക;
+	    അവസ്ഥ 2: fldd(അട്ടി + slot, fr6); നിർത്തുക;
+	    അവസ്ഥ 3: fldd(അട്ടി + slot, fr7); നിർത്തുക;
+	    അവസ്ഥ 4: fldd(അട്ടി + slot, fr8); നിർത്തുക;
+	    അവസ്ഥ 5: fldd(അട്ടി + slot, fr9); നിർത്തുക;
+	    അവസ്ഥ 6: fldd(അട്ടി + slot, fr10); നിർത്തുക;
+	    അവസ്ഥ 7: fldd(അട്ടി + slot, fr11); നിർത്തുക;
 	    }
-	  break;
+	  നിർത്തുക;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	  /* Align slot to a 16-byte boundary.  */
 	  slot += (slot & 1);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  *(UINT64 *)(stack + slot + 1) = *(UINT64 *)(*p_argv + 8);
-	  break;
+	  *(UINT64 *)(അട്ടി + slot) = *(UINT64 *)(*p_argv);
+	  *(UINT64 *)(അട്ടി + slot + 1) = *(UINT64 *)(*p_argv + 8);
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_STRUCT:
 	  /* Structs larger than 8 bytes are aligned on a 16-byte boundary. */
-	  if (len > 8)
+	  എങ്കിൽ (len > 8)
 	    slot += (slot & 1);
-	  memcpy((char *)(stack + slot), (char *)*p_argv, len);
-	  break;
+	  memcpy((അക്ഷരം *)(അട്ടി + slot), (അക്ഷരം *)*p_argv, len);
+	  നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  FFI_ASSERT(0);
 	}
 
@@ -239,44 +239,44 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 
   FFI_ASSERT(slot * 8 <= bytes);
 
-  return;
+  തിരികെ;
 }
 
-static void ffi_size_stack_pa64(ffi_cif *cif)
+സ്ഥിതം ശൂന്യം ffi_size_അട്ടി_pa64(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  പൂർണ്ണസംഖ്യ i;
+  പൂർണ്ണസംഖ്യ z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  വേണ്ടി (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
-      int size = (*ptr)->size;
+      പൂർണ്ണസംഖ്യ type = (*ptr)->type;
+      പൂർണ്ണസംഖ്യ size = (*ptr)->size;
 
-      switch (type)
+      തിരഞ്ഞെടുപ്പ് (type)
 	{
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	  z += 2 + (z & 1);
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_STRUCT:
-	  if (size > 8)
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	  എങ്കിൽ (size > 8)
 	    z += (z & 1);
 	  z += ROUND_UP (size, 8) >> 3;
-	  break;
+	  നിർത്തുക;
 
-	default: /* 64-bit values */
+	സ്ഥിരസ്ഥിതി: /* 64-bit values */
 	  z++;
 	}
     }
 
   /* We need a minimum of 8 argument slots.  Stack must be 16-byte
      aligned.  */
-  if (z <= 8)
+  എങ്കിൽ (z <= 8)
     z = 8;
-  else
+  അല്ലെങ്കിൽ
     z += (z & 1);
 
   /* Add 16 bytes for frame marker.  */
@@ -288,44 +288,44 @@ static void ffi_size_stack_pa64(ffi_cif *cif)
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag for jump table.  */
-  switch (cif->rtype->type)
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_COMPLEX:
-    case FFI_TYPE_STRUCT:
+    അവസ്ഥ FFI_TYPE_COMPLEX:
+    അവസ്ഥ FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 8 bytes, the result is given back
 	 in one register. If the size is smaller or equal 16 bytes than we
 	 return the result in two registers. If the size is bigger than
 	 16 bytes, the return is in a buffer allocated by the caller.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      നിർത്തുക;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-    case FFI_PA64:
-      ffi_size_stack_pa64(cif);
-      break;
+    അവസ്ഥ FFI_PA64:
+      ffi_size_അട്ടി_pa64(cif);
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-extern void ffi_call_pa64(void (*)(UINT64 *, extended_cif *, unsigned),
+ബാഹ്യ ശൂന്യം ffi_call_pa64(ശൂന്യം (*)(UINT64 *, extended_cif *, unsigned),
 			  extended_cif *, unsigned, unsigned, unsigned *,
-			  void (*fn)(void));
+			  ശൂന്യം (*fn)(ശൂന്യം));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ശൂന്യം ffi_call(ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
   extended_cif ecif;
 
@@ -335,141 +335,141 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  എങ്കിൽ (rvalue == ശൂന്യ
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_COMPLEX)
       && cif->rtype->size > 16)
     ecif.rvalue = alloca(ROUND_UP (cif->rtype->size, 16));
-  else
+  അല്ലെങ്കിൽ
     ecif.rvalue = rvalue;
 
 
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-    case FFI_PA64:
-      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
+    അവസ്ഥ FFI_PA64:
+      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (ശൂന്യം *)fn);
       ffi_call_pa64(ffi_prep_args_pa64, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
 }
 
-#if FFI_CLOSURES
+#എങ്കിൽ FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
+ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *അട്ടി)
 {
   ffi_cif *cif;
-  void **avalue;
-  void *rvalue;
+  ശൂന്യം **avalue;
+  ശൂന്യം *rvalue;
   /* Functions can return up to 128-bits in registers.  Return address
      must be double word aligned.  */
-  union { long double rld; UINT64 ret[2]; } u;
+  സംഘം { long ഇരട്ട rld; UINT64 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT64 r28 __asm__("r28");
+  അക്ഷരം *tmp;
+  പൂർണ്ണസംഖ്യ i, avn;
+  unsigned പൂർണ്ണസംഖ്യ slot = FIRST_ARG_SLOT;
+  രജിസ്റ്റർ UINT64 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
-    rvalue = (void *)r28;
-  else
+  എങ്കിൽ (cif->flags == FFI_TYPE_STRUCT)
+    rvalue = (ശൂന്യം *)r28;
+  അല്ലെങ്കിൽ
     rvalue = &u;
 
-  avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
+  avalue = (ശൂന്യം **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  വേണ്ടി (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      പൂർണ്ണസംഖ്യ type = (*p_arg)->type;
 
-      switch (type)
+      തിരഞ്ഞെടുപ്പ് (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	  avalue[i] = (void *)(stack + slot) + 7;
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
+	  avalue[i] = (ശൂന്യം *)(അട്ടി + slot) + 7;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	  avalue[i] = (void *)(stack + slot) + 6;
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT16:
+	  avalue[i] = (ശൂന്യം *)(അട്ടി + slot) + 6;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	  avalue[i] = (ശൂന്യം *)(അട്ടി + slot) + 4;
+	  നിർത്തുക;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	അവസ്ഥ FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	  avalue[i] = (ശൂന്യം *)(അട്ടി + slot);
+	  നിർത്തുക;
 
-	case FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
 	     in the floating point registers instead of the general
 	     registers.  So, we need to replace what was previously
 	     stored in the current slot with the value in the
 	     corresponding floating point register.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  തിരഞ്ഞെടുപ്പ് (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack + slot)); break;
-	    case 1: fstw(fr5, (void *)(stack + slot)); break;
-	    case 2: fstw(fr6, (void *)(stack + slot)); break;
-	    case 3: fstw(fr7, (void *)(stack + slot)); break;
-	    case 4: fstw(fr8, (void *)(stack + slot)); break;
-	    case 5: fstw(fr9, (void *)(stack + slot)); break;
-	    case 6: fstw(fr10, (void *)(stack + slot)); break;
-	    case 7: fstw(fr11, (void *)(stack + slot)); break;
+	    അവസ്ഥ 0: fstw(fr4, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 1: fstw(fr5, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 2: fstw(fr6, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 3: fstw(fr7, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 4: fstw(fr8, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 5: fstw(fr9, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 6: fstw(fr10, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 7: fstw(fr11, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
 	    }
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	  avalue[i] = (ശൂന്യം *)(അട്ടി + slot) + 4;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  തിരഞ്ഞെടുപ്പ് (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstd(fr4, (void *)(stack + slot)); break;
-	    case 1: fstd(fr5, (void *)(stack + slot)); break;
-	    case 2: fstd(fr6, (void *)(stack + slot)); break;
-	    case 3: fstd(fr7, (void *)(stack + slot)); break;
-	    case 4: fstd(fr8, (void *)(stack + slot)); break;
-	    case 5: fstd(fr9, (void *)(stack + slot)); break;
-	    case 6: fstd(fr10, (void *)(stack + slot)); break;
-	    case 7: fstd(fr11, (void *)(stack + slot)); break;
+	    അവസ്ഥ 0: fstd(fr4, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 1: fstd(fr5, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 2: fstd(fr6, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 3: fstd(fr7, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 4: fstd(fr8, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 5: fstd(fr9, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 6: fstd(fr10, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
+	    അവസ്ഥ 7: fstd(fr11, (ശൂന്യം *)(അട്ടി + slot)); നിർത്തുക;
 	    }
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  avalue[i] = (ശൂന്യം *)(അട്ടി + slot);
+	  നിർത്തുക;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
 	  slot += (slot & 1);
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  avalue[i] = (ശൂന്യം *)(അട്ടി + slot);
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_STRUCT:
 	  /* All structs are passed in registers.  Structs larger
 	     than 8 bytes are aligned on a 16-byte boundary.  */
-	  if((*p_arg)->size > 8)
+	  എങ്കിൽ((*p_arg)->size > 8)
 	    slot += (slot & 1);
-	  avalue[i] = (void *) (stack + slot);
-	  break;
+	  avalue[i] = (ശൂന്യം *) (അട്ടി + slot);
+	  നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  FFI_ASSERT(0);
 	}
 
@@ -484,97 +484,97 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 	u.ret[1]);
 
   /* Store the result using the lower 2 bytes of the flags.  */
-  switch (cif->flags)
+  തിരഞ്ഞെടുപ്പ് (cif->flags)
     {
-    case FFI_TYPE_UINT8:
-      *(stack + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
-      *(stack + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
-      *(stack + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
-      *(stack + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      *(stack + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
-      break;
-    case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
+    അവസ്ഥ FFI_TYPE_UINT8:
+      *(അട്ടി + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT8:
+      *(അട്ടി + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_UINT16:
+      *(അട്ടി + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT16:
+      *(അട്ടി + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_INT:
+    അവസ്ഥ FFI_TYPE_SINT32:
+      *(അട്ടി + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_UINT32:
+      *(അട്ടി - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_POINTER:
+      *(അട്ടി - FIRST_ARG_SLOT) = u.ret[0];
+      നിർത്തുക;
 
-    case FFI_TYPE_LONGDOUBLE:
-      *(stack + FIRST_ARG_SLOT) = u.ret[0];
-      *(stack + FIRST_ARG_SLOT + 1) = u.ret[1];
-      break;
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+      *(അട്ടി + FIRST_ARG_SLOT) = u.ret[0];
+      *(അട്ടി + FIRST_ARG_SLOT + 1) = u.ret[1];
+      നിർത്തുക;
 
-    case FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_FLOAT:
       /* Adjust for address adjustment in fldw macro.  */
       fldw(rvalue - 4, fr4);
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_STRUCT:
+    അവസ്ഥ FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      നിർത്തുക;
 
-    case -1:
-    case -2:
-    case -3:
-    case -4:
-    case -5:
-    case -6:
-    case -7:
-    case -8:
-    case -9:
-    case -10:
-    case -11:
-    case -12:
-    case -13:
-    case -14:
-    case -15:
-    case -16:
-      tmp = (void*)(stack + FIRST_ARG_SLOT);
-      memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+    അവസ്ഥ -1:
+    അവസ്ഥ -2:
+    അവസ്ഥ -3:
+    അവസ്ഥ -4:
+    അവസ്ഥ -5:
+    അവസ്ഥ -6:
+    അവസ്ഥ -7:
+    അവസ്ഥ -8:
+    അവസ്ഥ -9:
+    അവസ്ഥ -10:
+    അവസ്ഥ -11:
+    അവസ്ഥ -12:
+    അവസ്ഥ -13:
+    അവസ്ഥ -14:
+    അവസ്ഥ -15:
+    അവസ്ഥ -16:
+      tmp = (ശൂന്യം*)(അട്ടി + FIRST_ARG_SLOT);
+      memcpy((ശൂന്യം*)tmp, &u, cif->rtype->size);
+      നിർത്തുക;
 
-    case FFI_TYPE_VOID:
-      break;
+    അവസ്ഥ FFI_TYPE_VOID:
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
    cif specifies the argument and result types for fun.
    The cif must already be prep'ed.  */
 
-extern void ffi_closure_pa64(void);
+ബാഹ്യ ശൂന്യം ffi_closure_pa64(ശൂന്യം);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ശൂന്യം**,ശൂന്യം*),
+		      ശൂന്യം *user_data,
+		      ശൂന്യം *codeloc)
 {
   /* The layout of a function descriptor.  */
-  struct pa64_fd
+  ഘടന pa64_fd
   {
     UINT64 tmp1;
     UINT64 tmp2;
@@ -582,7 +582,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 gp;
   };
 
-  struct ffi_pa64_trampoline_struct
+  ഘടന ffi_pa64_trampoline_struct
   {
     UINT64 real_gp;             /* Real gp value.  */
     UINT64 tmp2;
@@ -590,17 +590,17 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 fake_gp;             /* Pointer to closure, installed as gp.  */
   };
 
-  struct ffi_pa64_trampoline_struct *tramp;
-  struct pa64_fd *fd;
+  ഘടന ffi_pa64_trampoline_struct *tramp;
+  ഘടന pa64_fd *fd;
 
-  if (cif->abi != FFI_PA64)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi != FFI_PA64)
+    തിരികെ FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa64.  */
-  fd = (struct pa64_fd *)((UINT64)ffi_closure_pa64);
+  fd = (ഘടന pa64_fd *)((UINT64)ffi_closure_pa64);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa64_trampoline_struct *)closure->tramp;
+  tramp = (ഘടന ffi_pa64_trampoline_struct *)closure->tramp;
   tramp->code_pointer = fd->code_pointer;
   tramp->fake_gp = (UINT64)codeloc;
   tramp->real_gp = fd->gp;
@@ -609,6 +609,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 #endif

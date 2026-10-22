@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS അഥവാ IMPLIED, INCLUDING BUT അല്ല LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ഒപ്പം
+   NONINFRINGEMENT.  ഇൽ NO EVENT SHALL THE AUTHORS അഥവാ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES അഥവാ OTHER LIABILITY,
+   WHETHER ഇൽ AN ACTION OF CONTRACT, TORT അഥവാ OTHERWISE, ARISING FROM,
+   OUT OF അഥവാ ഇൽ CONNECTION WITH THE SOFTWARE അഥവാ THE USE അഥവാ OTHER
+   DEALINGS ഇൽ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -67,7 +67,7 @@ ffi_call_SYSV:
 	/* prepare stack with allocation for n (bytes = r7) args */
 	rsub r1, r7, r1 /* subtract bytes from sp */
 
-	/* prep args for ffi_prep_args call */
+	/* prep args for ffi_prep_args വിളിക്കുക */
 	addik r5, r1, 0 /* store stack pointer into arg[0] */
 	/* r6 still holds ecif for arg[1] */
 
@@ -80,7 +80,7 @@ ffi_call_SYSV:
 	addik r1, r1, 4 /* restore the link register from the frame */
 	/* returns calling stack pointer location */
 
-	/* prepare args for fn call, prep_args populates them onto the stack */
+	/* prepare args for fn വിളിക്കുക, prep_args populates them onto the stack */
 	lwi r5, r1, 0 /* arg[0] */
 	lwi r6, r1, 4 /* arg[1] */
 	lwi r7, r1, 8 /* arg[2] */
@@ -88,7 +88,7 @@ ffi_call_SYSV:
 	lwi r9, r1, 16 /* arg[4] */
 	lwi r10, r1, 20 /* arg[5] */
 
-	/* call (fn) (...). */
+	/* വിളിക്കുക (fn) (...). */
 	addik r1, r1, -4
 	swi r15, r1, 0 /* store the link register in the frame */
 	brald r15, r23
@@ -214,7 +214,7 @@ ffi_closure_SYSV:
 	addik r9, r1, 0 /* void* rtype */
 	addik r10, r1, 4 /* void* rsize */
 
-	/* call the wrap_call function */
+	/* വിളിക്കുക the wrap_call function */
 	addik r1, r1, -28 /* allocate args + link reg */
 	swi r15, r1, 0 /* store the link register in the frame */
 	brald r15, r3

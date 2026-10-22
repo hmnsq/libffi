@@ -24,13 +24,13 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
+#അന്തര്ഭാവ <stdlib.h>
 
 /* Round up to FFI_SIZEOF_ARG. */
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#define അട്ടി_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
 /* Compute the machine-independent layout of a vector (SIMD) type.
 
@@ -49,87 +49,87 @@
    valid lane types.  Anything else -- a heterogeneous element list, an
    aggregate lane, long double, or a zero-length vector -- is FFI_BAD_TYPEDEF. */
 
-static ffi_status
+സ്ഥിതം ffi_status
 initialize_vector (ffi_type *arg)
 {
   ffi_type **ptr = arg->elements;
   ffi_type *elem;
-  size_t count = 0;
+  size_t എണ്ണം = 0;
   size_t total, p2;
 
-  if (UNLIKELY (ptr == NULL || *ptr == NULL))
-    return FFI_BAD_TYPEDEF;
+  എങ്കിൽ (UNLIKELY (ptr == ശൂന്യ || *ptr == ശൂന്യ))
+    തിരികെ FFI_BAD_TYPEDEF;
 
   elem = *ptr;
-  switch (elem->type)
+  തിരഞ്ഞെടുപ്പ് (elem->type)
     {
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+    അവസ്ഥ FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_UINT8:
+    അവസ്ഥ FFI_TYPE_SINT8:
+    അവസ്ഥ FFI_TYPE_UINT16:
+    അവസ്ഥ FFI_TYPE_SINT16:
+    അവസ്ഥ FFI_TYPE_UINT32:
+    അവസ്ഥ FFI_TYPE_SINT32:
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_SINT64:
+      നിർത്തുക;
+    സ്ഥിരസ്ഥിതി:
+      തിരികെ FFI_BAD_TYPEDEF;
     }
 
   /* Every lane must be the identical scalar type.  */
-  for (; *ptr != NULL; ptr++)
+  വേണ്ടി (; *ptr != ശൂന്യ; ptr++)
     {
-      if ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
-	return FFI_BAD_TYPEDEF;
-      count++;
+      എങ്കിൽ ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
+	തിരികെ FFI_BAD_TYPEDEF;
+      എണ്ണം++;
     }
 
-  if (UNLIKELY (count < 1 || elem->size == 0))
-    return FFI_BAD_TYPEDEF;
+  എങ്കിൽ (UNLIKELY (എണ്ണം < 1 || elem->size == 0))
+    തിരികെ FFI_BAD_TYPEDEF;
 
-  total = elem->size * count;
-  for (p2 = 1; p2 < total; p2 <<= 1)
+  total = elem->size * എണ്ണം;
+  വേണ്ടി (p2 = 1; p2 < total; p2 <<= 1)
     ;
 
   arg->size = p2;
   arg->alignment = p2 < 16 ? p2 : 16;
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 /* Perform machine independent initialization of aggregate type
    specifications. */
 
-static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
+സ്ഥിതം ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
 {
   ffi_type **ptr;
 
-  if (UNLIKELY(arg == NULL || arg->elements == NULL))
-    return FFI_BAD_TYPEDEF;
+  എങ്കിൽ (UNLIKELY(arg == ശൂന്യ || arg->elements == ശൂന്യ))
+    തിരികെ FFI_BAD_TYPEDEF;
 
-  if (arg->type == FFI_TYPE_VECTOR)
-    return initialize_vector (arg);
+  എങ്കിൽ (arg->type == FFI_TYPE_VECTOR)
+    തിരികെ initialize_vector (arg);
 
   arg->size = 0;
   arg->alignment = 0;
 
   ptr = &(arg->elements[0]);
 
-  if (UNLIKELY(ptr == 0))
-    return FFI_BAD_TYPEDEF;
+  എങ്കിൽ (UNLIKELY(ptr == 0))
+    തിരികെ FFI_BAD_TYPEDEF;
 
-  while ((*ptr) != NULL)
+  ആകുമ്പോൾ ((*ptr) != ശൂന്യ)
     {
-      if (UNLIKELY(((*ptr)->size == 0)
-		    && (initialize_aggregate((*ptr), NULL) != FFI_OK)))
-	return FFI_BAD_TYPEDEF;
+      എങ്കിൽ (UNLIKELY(((*ptr)->size == 0)
+		    && (initialize_aggregate((*ptr), ശൂന്യ) != FFI_OK)))
+	തിരികെ FFI_BAD_TYPEDEF;
 
       /* Perform a sanity check on the argument type */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
       arg->size = FFI_ALIGN(arg->size, (*ptr)->alignment);
-      if (offsets)
+      എങ്കിൽ (offsets)
 	*offsets++ = arg->size;
       arg->size += (*ptr)->size;
 
@@ -151,14 +151,14 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
   /* On some targets, the ABI defines that structures have an additional
      alignment beyond the "natural" one based on their elements.  */
 #ifdef FFI_AGGREGATE_ALIGNMENT
-  if (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
+  എങ്കിൽ (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
     arg->alignment = FFI_AGGREGATE_ALIGNMENT;
 #endif
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  എങ്കിൽ (arg->size == 0)
+    തിരികെ FFI_BAD_TYPEDEF;
+  അല്ലെങ്കിൽ
+    തിരികെ FFI_OK;
 }
 
 #ifndef FFI_TARGET_HAS_VECTOR_TYPE
@@ -166,20 +166,20 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
    that do not define FFI_TARGET_HAS_VECTOR_TYPE cannot marshal vectors, so
    ffi_prep_cif_core rejects any signature that mentions one (directly or
    nested inside a struct) with FFI_BAD_TYPEDEF rather than aborting.  */
-static int
+സ്ഥിതം പൂർണ്ണസംഖ്യ
 ffi_type_contains_vector (ffi_type *ty)
 {
   ffi_type **p;
 
-  if (ty == NULL)
-    return 0;
-  if (ty->type == FFI_TYPE_VECTOR)
-    return 1;
-  if (ty->type == FFI_TYPE_STRUCT && ty->elements != NULL)
-    for (p = ty->elements; *p != NULL; p++)
-      if (ffi_type_contains_vector (*p))
-	return 1;
-  return 0;
+  എങ്കിൽ (ty == ശൂന്യ)
+    തിരികെ 0;
+  എങ്കിൽ (ty->type == FFI_TYPE_VECTOR)
+    തിരികെ 1;
+  എങ്കിൽ (ty->type == FFI_TYPE_STRUCT && ty->elements != ശൂന്യ)
+    വേണ്ടി (p = ty->elements; *p != ശൂന്യ; p++)
+      എങ്കിൽ (ffi_type_contains_vector (*p))
+	തിരികെ 1;
+  തിരികെ 0;
 }
 #endif /* !FFI_TARGET_HAS_VECTOR_TYPE */
 
@@ -199,21 +199,21 @@ ffi_type_contains_vector (ffi_type *ty)
 
 
 ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
-			     unsigned int isvariadic,
-                             unsigned int nfixedargs,
-                             unsigned int ntotalargs,
+			     unsigned പൂർണ്ണസംഖ്യ isvariadic,
+                             unsigned പൂർണ്ണസംഖ്യ nfixedargs,
+                             unsigned പൂർണ്ണസംഖ്യ ntotalargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
   unsigned bytes = 0;
-  unsigned int i;
+  unsigned പൂർണ്ണസംഖ്യ i;
   ffi_type **ptr;
 
-  FFI_ASSERT(cif != NULL);
+  FFI_ASSERT(cif != ശൂന്യ);
   FFI_ASSERT((!isvariadic) || (nfixedargs >= 1));
   FFI_ASSERT(nfixedargs <= ntotalargs);
 
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
+  എങ്കിൽ (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
+    തിരികെ FFI_BAD_ABI;
 
   cif->abi = abi;
   cif->arg_types = atypes;
@@ -222,37 +222,37 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 
 #ifndef FFI_TARGET_HAS_VECTOR_TYPE
   /* Vector (SIMD) types are only marshalled on ports that opt in.  */
-  if (ffi_type_contains_vector (rtype))
-    return FFI_BAD_TYPEDEF;
-  for (i = 0; i < ntotalargs; i++)
-    if (ffi_type_contains_vector (atypes[i]))
-      return FFI_BAD_TYPEDEF;
+  എങ്കിൽ (ffi_type_contains_vector (rtype))
+    തിരികെ FFI_BAD_TYPEDEF;
+  വേണ്ടി (i = 0; i < ntotalargs; i++)
+    എങ്കിൽ (ffi_type_contains_vector (atypes[i]))
+      തിരികെ FFI_BAD_TYPEDEF;
 #endif
 
   cif->flags = 0;
-#if (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
+#എങ്കിൽ (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
   cif->is_variadic = isvariadic;
 #endif
-#if HAVE_LONG_DOUBLE_VARIANT
+#എങ്കിൽ HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
 #endif
 
   /* Initialize the return type if necessary */
-  if ((cif->rtype->size == 0)
-      && (initialize_aggregate(cif->rtype, NULL) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+  എങ്കിൽ ((cif->rtype->size == 0)
+      && (initialize_aggregate(cif->rtype, ശൂന്യ) != FFI_OK))
+    തിരികെ FFI_BAD_TYPEDEF;
 
 #ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-  if (rtype->type == FFI_TYPE_COMPLEX)
+  എങ്കിൽ (rtype->type == FFI_TYPE_COMPLEX)
     abort();
 #endif
   /* Perform a sanity check on the return type */
   FFI_ASSERT_VALID_TYPE(cif->rtype);
 
   /* x86, x86-64 and s390 stack space allocation is handled in prep_machdep. */
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#എങ്കിൽ !defined FFI_TARGET_SPECIFIC_അട്ടി_SPACE_ALLOCATION
   /* Make space for the return structure pointer */
-  if ((cif->rtype->type == FFI_TYPE_STRUCT
+  എങ്കിൽ ((cif->rtype->type == FFI_TYPE_STRUCT
        || cif->rtype->type == FFI_TYPE_VECTOR)
 #ifdef TILE
       && (cif->rtype->size > 10 * FFI_SIZEOF_ARG)
@@ -261,34 +261,34 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
       && (cif->rtype->size > 16)
 #endif
      )
-    bytes = STACK_ARG_SIZE(sizeof(void*));
+    bytes = അട്ടി_ARG_SIZE(വലുപ്പം(ശൂന്യം*));
 #endif
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  വേണ്ടി (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
 
       /* Initialize any uninitialized aggregate type definitions */
-      if (((*ptr)->size == 0)
-	  && (initialize_aggregate((*ptr), NULL) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+      എങ്കിൽ (((*ptr)->size == 0)
+	  && (initialize_aggregate((*ptr), ശൂന്യ) != FFI_OK))
+	തിരികെ FFI_BAD_TYPEDEF;
 
 #ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-      if ((*ptr)->type == FFI_TYPE_COMPLEX)
+      എങ്കിൽ ((*ptr)->type == FFI_TYPE_COMPLEX)
 	abort();
 #endif
       /* Perform a sanity check on the argument type, do this
 	 check after the initialization.  */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#എങ്കിൽ !defined FFI_TARGET_SPECIFIC_അട്ടി_SPACE_ALLOCATION
 	{
 	  /* Add any padding if necessary */
-	  if (((*ptr)->alignment - 1) & bytes)
+	  എങ്കിൽ (((*ptr)->alignment - 1) & bytes)
 	    bytes = (unsigned)FFI_ALIGN(bytes, (*ptr)->alignment);
 
 #ifdef TILE
-	  if (bytes < 10 * FFI_SIZEOF_ARG &&
-	      bytes + STACK_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
+	  എങ്കിൽ (bytes < 10 * FFI_SIZEOF_ARG &&
+	      bytes + അട്ടി_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
 	    {
 	      /* An argument is never split between the 10 parameter
 		 registers and the stack.  */
@@ -296,11 +296,11 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 	    }
 #endif
 #ifdef XTENSA
-	  if (bytes <= 6*4 && bytes + STACK_ARG_SIZE((*ptr)->size) > 6*4)
+	  എങ്കിൽ (bytes <= 6*4 && bytes + അട്ടി_ARG_SIZE((*ptr)->size) > 6*4)
 	    bytes = 6*4;
 #endif
 
-	  bytes += (unsigned int)STACK_ARG_SIZE((*ptr)->size);
+	  bytes += (unsigned പൂർണ്ണസംഖ്യ)അട്ടി_ARG_SIZE((*ptr)->size);
 	}
 #endif
     }
@@ -309,58 +309,58 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 
   /* Perform machine dependent cif processing */
 #ifdef FFI_TARGET_SPECIFIC_VARIADIC
-  if (isvariadic)
-	return ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
+  എങ്കിൽ (isvariadic)
+	തിരികെ ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
 #endif
 
-  return ffi_prep_cif_machdep(cif);
+  തിരികെ ffi_prep_cif_machdep(cif);
 }
 #endif /* not __CRIS__ */
 
-ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, unsigned int nargs,
+ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, unsigned പൂർണ്ണസംഖ്യ nargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  return ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
+  തിരികെ ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
 }
 
 ffi_status ffi_prep_cif_var(ffi_cif *cif,
                             ffi_abi abi,
-                            unsigned int nfixedargs,
-                            unsigned int ntotalargs,
+                            unsigned പൂർണ്ണസംഖ്യ nfixedargs,
+                            unsigned പൂർണ്ണസംഖ്യ ntotalargs,
                             ffi_type *rtype,
                             ffi_type **atypes)
 {
   ffi_status rc;
   size_t int_size = ffi_type_sint.size;
-  unsigned int i;
+  unsigned പൂർണ്ണസംഖ്യ i;
 
   rc = ffi_prep_cif_core(cif, abi, 1, nfixedargs, ntotalargs, rtype, atypes);
 
-  if (rc != FFI_OK)
-    return rc;
+  എങ്കിൽ (rc != FFI_OK)
+    തിരികെ rc;
 
-  for (i = nfixedargs; i < ntotalargs; i++)
+  വേണ്ടി (i = nfixedargs; i < ntotalargs; i++)
     {
       ffi_type *arg_type = atypes[i];
-      if (arg_type == &ffi_type_float
+      എങ്കിൽ (arg_type == &ffi_type_float
           || ((arg_type->type != FFI_TYPE_STRUCT
                && arg_type->type != FFI_TYPE_COMPLEX)
               && arg_type->size < int_size))
-        return FFI_BAD_ARGTYPE;
+        തിരികെ FFI_BAD_ARGTYPE;
     }
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-#if FFI_CLOSURES
+#എങ്കിൽ FFI_CLOSURES
 
 ffi_status
 ffi_prep_closure (ffi_closure* closure,
 		  ffi_cif* cif,
-		  void (*fun)(ffi_cif*,void*,void**,void*),
-		  void *user_data)
+		  ശൂന്യം (*fun)(ffi_cif*,ശൂന്യം*,ശൂന്യം**,ശൂന്യം*),
+		  ശൂന്യം *user_data)
 {
-  return ffi_prep_closure_loc (closure, cif, fun, user_data, closure);
+  തിരികെ ffi_prep_closure_loc (closure, cif, fun, user_data, closure);
 }
 
 #endif
@@ -368,16 +368,16 @@ ffi_prep_closure (ffi_closure* closure,
 ffi_status
 ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
 {
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
-  if (struct_type->type != FFI_TYPE_STRUCT)
-    return FFI_BAD_TYPEDEF;
+  എങ്കിൽ (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
+    തിരികെ FFI_BAD_ABI;
+  എങ്കിൽ (struct_type->type != FFI_TYPE_STRUCT)
+    തിരികെ FFI_BAD_TYPEDEF;
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#എങ്കിൽ HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
 #endif
 
-  return initialize_aggregate(struct_type, offsets);
+  തിരികെ initialize_aggregate(struct_type, offsets);
 }
 
 /* Generic ffi_call_plan: a portable fallback compiled on every target that does
@@ -388,9 +388,9 @@ ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
    exclude the fallback only when ffi64.c actually provides it; everywhere else
    this plan just records the cif and invoke calls ffi_call, so the API is
    always present and links on all targets.  The cif must outlive the plan. */
-#if !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
+#എങ്കിൽ !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
 
-struct ffi_call_plan
+ഘടന ffi_call_plan
 {
   ffi_cif *cif;
 };
@@ -398,30 +398,30 @@ struct ffi_call_plan
 ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
-  ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan != NULL)
+  ffi_call_plan *plan = malloc (വലുപ്പം (ഘടന ffi_call_plan));
+  എങ്കിൽ (plan != ശൂന്യ)
     plan->cif = cif;
-  return plan;
+  തിരികെ plan;
 }
 
-void
-ffi_call_plan_invoke (ffi_call_plan *plan, void (*fn) (void),
-		      void *rvalue, void **avalue)
+ശൂന്യം
+ffi_call_plan_invoke (ffi_call_plan *plan, ശൂന്യം (*fn) (ശൂന്യം),
+		      ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
   ffi_call (plan->cif, fn, rvalue, avalue);
 }
 
-void
+ശൂന്യം
 ffi_call_plan_free (ffi_call_plan *plan)
 {
-  free (plan);
+  സ്വതന്ത്രം (plan);
 }
 
 size_t
 ffi_call_plan_size (ffi_call_plan *plan)
 {
   /* The generic plan is a bare handle; there is no separate move-list.  */
-  return plan != NULL ? sizeof (struct ffi_call_plan) : 0;
+  തിരികെ plan != ശൂന്യ ? വലുപ്പം (ഘടന ffi_call_plan) : 0;
 }
 
 #endif /* generic ffi_call_plan fallback */

@@ -28,16 +28,16 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-#include <stdlib.h>
+#അന്തര്ഭാവ <stdlib.h>
 
 
-struct ffi_aix_trampoline_struct {
-    void * code_pointer;	/* Pointer to ffi_closure_ASM */
-    void * toc;			/* TOC */
-    void * static_chain;	/* Pointer to closure */
+ഘടന ffi_aix_trampoline_struct {
+    ശൂന്യം * code_pointer;	/* Pointer to ffi_closure_ASM */
+    ശൂന്യം * toc;			/* TOC */
+    ശൂന്യം * static_chain;	/* Pointer to closure */
 };
 
 /* Closure jump table indexes returned by ffi_closure_helper_common and
@@ -61,7 +61,7 @@ struct ffi_aix_trampoline_struct {
 # define PPC_LD_PTR		PPC_LD_R3
 # define PPC_LD_I64		PPC_LD_R3R4
 # define PPC_LD_STRUCT		10
-#else
+#അല്ലെങ്കിൽ
 # define PPC_LD_U32		10
 # define PPC_LD_S32		11
 # define PPC_LD_PTR		PPC_LD_R3
@@ -69,13 +69,13 @@ struct ffi_aix_trampoline_struct {
 # define PPC_LD_STRUCT		12
 #endif
 
-extern void ffi_closure_ASM (void);
+ബാഹ്യ ശൂന്യം ffi_closure_ASM (ശൂന്യം);
 
-#if defined (FFI_GO_CLOSURES)
-extern void ffi_go_closure_ASM (void);
+#എങ്കിൽ defined (FFI_GO_CLOSURES)
+ബാഹ്യ ശൂന്യം ffi_go_closure_ASM (ശൂന്യം);
 #endif
 
-enum {
+എണ്ണൽ {
   /* The assembly depends on these exact flags.  
      For Darwin64 (when FLAG_RETURNS_STRUCT is set):
        FLAG_RETURNS_FP indicates that the structure embeds FP data.
@@ -95,13 +95,13 @@ enum {
 };
 
 /* About the DARWIN ABI.  */
-enum {
-  NUM_GPR_ARG_REGISTERS = 8,
-  NUM_FPR_ARG_REGISTERS = 13,
+എണ്ണൽ {
+  അക്കം_GPR_ARG_REGISTERS = 8,
+  അക്കം_FPR_ARG_REGISTERS = 13,
   LINKAGE_AREA_GPRS = 6
 };
 
-enum { ASM_NEEDS_REGISTERS = 4 }; /* r28-r31 */
+എണ്ണൽ { ASM_NEEDS_REGISTERS = 4 }; /* r28-r31 */
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments.
@@ -135,210 +135,210 @@ enum { ASM_NEEDS_REGISTERS = 4 }; /* r28-r31 */
 
    */
 
-#if defined(POWERPC_DARWIN64)
-static void
-darwin64_pass_struct_by_value 
-  (ffi_type *, char *, unsigned, unsigned *, double **, unsigned long **);
+#എങ്കിൽ defined(POWERPC_DARWIN64)
+സ്ഥിതം ശൂന്യം
+darwin64_pass_struct_by_മൂല്യം 
+  (ffi_type *, അക്ഷരം *, unsigned, unsigned *, ഇരട്ട **, unsigned long **);
 #endif
 
 /* This depends on GPR_SIZE = sizeof (unsigned long) */
 
-void
-ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
+ശൂന്യം
+ffi_prep_args (extended_cif *ecif, unsigned long *സ്ഥിരം അട്ടി)
 {
-  const unsigned bytes = ecif->cif->bytes;
-  const unsigned flags = ecif->cif->flags;
-  const unsigned nargs = ecif->cif->nargs;
-#if !defined(POWERPC_DARWIN64) 
-  const ffi_abi abi = ecif->cif->abi;
+  സ്ഥിരം unsigned bytes = ecif->cif->bytes;
+  സ്ഥിരം unsigned flags = ecif->cif->flags;
+  സ്ഥിരം unsigned nargs = ecif->cif->nargs;
+#എങ്കിൽ !defined(POWERPC_DARWIN64) 
+  സ്ഥിരം ffi_abi abi = ecif->cif->abi;
 #endif
 
   /* 'stacktop' points at the previous backchain pointer.  */
-  unsigned long *const stacktop = stack + (bytes / sizeof(unsigned long));
+  unsigned long *സ്ഥിരം stacktop = അട്ടി + (bytes / വലുപ്പം(unsigned long));
 
   /* 'fpr_base' points at the space for fpr1, and grows upwards as
      we use FPR registers.  */
-  double *fpr_base = (double *) (stacktop - ASM_NEEDS_REGISTERS) - NUM_FPR_ARG_REGISTERS;
-  int gp_count = 0, fparg_count = 0;
+  ഇരട്ട *fpr_base = (ഇരട്ട *) (stacktop - ASM_NEEDS_REGISTERS) - അക്കം_FPR_ARG_REGISTERS;
+  പൂർണ്ണസംഖ്യ gp_എണ്ണം = 0, fparg_എണ്ണം = 0;
 
   /* 'next_arg' grows up as we put parameters in it.  */
-  unsigned long *next_arg = stack + LINKAGE_AREA_GPRS; /* 6 reserved positions.  */
+  unsigned long *next_arg = അട്ടി + LINKAGE_AREA_GPRS; /* 6 reserved positions.  */
 
-  int i;
-  double double_tmp;
-  void **p_argv = ecif->avalue;
+  പൂർണ്ണസംഖ്യ i;
+  ഇരട്ട double_tmp;
+  ശൂന്യം **p_argv = ecif->avalue;
   unsigned long gprvalue;
   ffi_type** ptr = ecif->cif->arg_types;
-#if !defined(POWERPC_DARWIN64) 
-  char *dest_cpy;
+#എങ്കിൽ !defined(POWERPC_DARWIN64) 
+  അക്ഷരം *dest_cpy;
 #endif
   unsigned size_al = 0;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT(((unsigned) (char *) stack & 0xF) == 0);
-  FFI_ASSERT(((unsigned) (char *) stacktop & 0xF) == 0);
+  FFI_ASSERT(((unsigned) (അക്ഷരം *) അട്ടി & 0xF) == 0);
+  FFI_ASSERT(((unsigned) (അക്ഷരം *) stacktop & 0xF) == 0);
   FFI_ASSERT((bytes & 0xF) == 0);
 
   /* Deal with return values that are actually pass-by-reference.
      Rule:
      Return values are referenced by r3, so r4 is the first parameter.  */
 
-  if (flags & FLAG_RETVAL_REFERENCE)
-    *next_arg++ = (unsigned long) (char *) ecif->rvalue;
+  എങ്കിൽ (flags & FLAG_RETVAL_REFERENCE)
+    *next_arg++ = (unsigned long) (അക്ഷരം *) ecif->rvalue;
 
   /* Now for the arguments.  */
-  for (i = nargs; i > 0; i--, ptr++, p_argv++)
+  വേണ്ടി (i = nargs; i > 0; i--, ptr++, p_argv++)
     {
-      switch ((*ptr)->type)
+      തിരഞ്ഞെടുപ്പ് ((*ptr)->type)
 	{
 	/* If a floating-point parameter appears before all of the general-
 	   purpose registers are filled, the corresponding GPRs that match
 	   the size of the floating-point parameter are skipped.  */
-	case FFI_TYPE_FLOAT:
-	  double_tmp = *(float *) *p_argv;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	  double_tmp = *(ദശാംശം *) *p_argv;
+	  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-#if defined(POWERPC_DARWIN)
-	  *(float *)next_arg = *(float *) *p_argv;
-#else
-	  *(double *)next_arg = double_tmp;
+#എങ്കിൽ defined(POWERPC_DARWIN)
+	  *(ദശാംശം *)next_arg = *(ദശാംശം *) *p_argv;
+#അല്ലെങ്കിൽ
+	  *(ഇരട്ട *)next_arg = double_tmp;
 #endif
 	  next_arg++;
-	  gp_count++;
-	  fparg_count++;
+	  gp_എണ്ണം++;
+	  fparg_എണ്ണം++;
 	  FFI_ASSERT(flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
-	  double_tmp = *(double *) *p_argv;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	  double_tmp = *(ഇരട്ട *) *p_argv;
+	  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-	  *(double *)next_arg = double_tmp;
+	  *(ഇരട്ട *)next_arg = double_tmp;
 #ifdef POWERPC64
 	  next_arg++;
-	  gp_count++;
-#else
+	  gp_എണ്ണം++;
+#അല്ലെങ്കിൽ
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_എണ്ണം += 2;
 #endif
-	  fparg_count++;
+	  fparg_എണ്ണം++;
 	  FFI_ASSERT(flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  നിർത്തുക;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 
-	case FFI_TYPE_LONGDOUBLE:
-#  if defined(POWERPC64) && !defined(POWERPC_DARWIN64)
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+#  എങ്കിൽ defined(POWERPC64) && !defined(POWERPC_DARWIN64)
 	  /* ??? This will exceed the regs count when the value starts at fp13
 	     and it will not put the extra bit on the stack.  */
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
-	    *(long double *) fpr_base++ = *(long double *) *p_argv;
-	  else
-	    *(long double *) next_arg = *(long double *) *p_argv;
+	  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS)
+	    *(long ഇരട്ട *) fpr_base++ = *(long ഇരട്ട *) *p_argv;
+	  അല്ലെങ്കിൽ
+	    *(long ഇരട്ട *) next_arg = *(long ഇരട്ട *) *p_argv;
 	  next_arg += 2;
-	  fparg_count += 2;
-#  else
-	  double_tmp = ((double *) *p_argv)[0];
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  fparg_എണ്ണം += 2;
+#  അല്ലെങ്കിൽ
+	  double_tmp = ((ഇരട്ട *) *p_argv)[0];
+	  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-	  *(double *) next_arg = double_tmp;
-#    if defined(POWERPC_DARWIN64)
+	  *(ഇരട്ട *) next_arg = double_tmp;
+#    എങ്കിൽ defined(POWERPC_DARWIN64)
 	  next_arg++;
-	  gp_count++;
-#    else
+	  gp_എണ്ണം++;
+#    അല്ലെങ്കിൽ
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_എണ്ണം += 2;
 #    endif
-	  fparg_count++;
-	  double_tmp = ((double *) *p_argv)[1];
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  fparg_എണ്ണം++;
+	  double_tmp = ((ഇരട്ട *) *p_argv)[1];
+	  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-	  *(double *) next_arg = double_tmp;
-#    if defined(POWERPC_DARWIN64)
+	  *(ഇരട്ട *) next_arg = double_tmp;
+#    എങ്കിൽ defined(POWERPC_DARWIN64)
 	  next_arg++;
-	  gp_count++;
-#    else
+	  gp_എണ്ണം++;
+#    അല്ലെങ്കിൽ
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_എണ്ണം += 2;
 #    endif
-	  fparg_count++;
+	  fparg_എണ്ണം++;
 #  endif
 	  FFI_ASSERT(flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  നിർത്തുക;
 #endif
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
 #ifdef POWERPC64
 	  gprvalue = *(long long *) *p_argv;
-	  goto putgpr;
-#else
+	  പോകുക putgpr;
+#അല്ലെങ്കിൽ
 	  *(long long *) next_arg = *(long long *) *p_argv;
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_എണ്ണം += 2;
 #endif
-	  break;
-	case FFI_TYPE_POINTER:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_POINTER:
 	  gprvalue = *(unsigned long *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_UINT8:
-	  gprvalue = *(unsigned char *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_SINT8:
-	  gprvalue = *(signed char *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_UINT16:
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_UINT8:
+	  gprvalue = *(unsigned അക്ഷരം *) *p_argv;
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_SINT8:
+	  gprvalue = *(signed അക്ഷരം *) *p_argv;
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_UINT16:
 	  gprvalue = *(unsigned short *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_SINT16:
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_SINT16:
 	  gprvalue = *(signed short *) *p_argv;
-	  goto putgpr;
+	  പോകുക putgpr;
 
-	case FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_STRUCT:
 	  size_al = (*ptr)->size;
-#if defined(POWERPC_DARWIN64)
-	  next_arg = (unsigned long *)FFI_ALIGN((char *)next_arg, (*ptr)->alignment);
-	  darwin64_pass_struct_by_value (*ptr, (char *) *p_argv, 
+#എങ്കിൽ defined(POWERPC_DARWIN64)
+	  next_arg = (unsigned long *)FFI_ALIGN((അക്ഷരം *)next_arg, (*ptr)->alignment);
+	  darwin64_pass_struct_by_മൂല്യം (*ptr, (അക്ഷരം *) *p_argv, 
 					 (unsigned) size_al,
-					 (unsigned int *) &fparg_count,
+					 (unsigned പൂർണ്ണസംഖ്യ *) &fparg_എണ്ണം,
 					 &fpr_base, &next_arg);
-#else
-	  dest_cpy = (char *) next_arg;
+#അല്ലെങ്കിൽ
+	  dest_cpy = (അക്ഷരം *) next_arg;
 
 	  /* If the first member of the struct is a double, then include enough
 	     padding in the struct size to align it to double-word.  */
-	  if ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
+	  എങ്കിൽ ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN((*ptr)->size, 8);
 
-#  if defined(POWERPC64) 
+#  എങ്കിൽ defined(POWERPC64) 
 	  FFI_ASSERT (abi != FFI_DARWIN);
-	  memcpy ((char *) dest_cpy, (char *) *p_argv, size_al);
+	  memcpy ((അക്ഷരം *) dest_cpy, (അക്ഷരം *) *p_argv, size_al);
 	  next_arg += (size_al + 7) / 8;
-#  else
+#  അല്ലെങ്കിൽ
 	  /* Structures that match the basic modes (QI 1 byte, HI 2 bytes,
 	     SI 4 bytes) are aligned as if they were those modes.
 	     Structures with 3 byte in size are padded upwards.  */
-	  if (size_al < 3 && abi == FFI_DARWIN)
+	  എങ്കിൽ (size_al < 3 && abi == FFI_DARWIN)
 	    dest_cpy += 4 - size_al;
 
-	  memcpy((char *) dest_cpy, (char *) *p_argv, size_al);
+	  memcpy((അക്ഷരം *) dest_cpy, (അക്ഷരം *) *p_argv, size_al);
 	  next_arg += (size_al + 3) / 4;
 #  endif
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	  gprvalue = *(signed int *) *p_argv;
-	  goto putgpr;
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	  gprvalue = *(signed പൂർണ്ണസംഖ്യ *) *p_argv;
+	  പോകുക putgpr;
 
-	case FFI_TYPE_UINT32:
-	  gprvalue = *(unsigned int *) *p_argv;
+	അവസ്ഥ FFI_TYPE_UINT32:
+	  gprvalue = *(unsigned പൂർണ്ണസംഖ്യ *) *p_argv;
 	putgpr:
 	  *next_arg++ = gprvalue;
-	  gp_count++;
-	  break;
-	default:
-	  break;
+	  gp_എണ്ണം++;
+	  നിർത്തുക;
+	സ്ഥിരസ്ഥിതി:
+	  നിർത്തുക;
 	}
     }
 
@@ -349,161 +349,161 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
      FFI_ASSERT(flags & FLAG_4_GPR_ARGUMENTS || intarg_count <= 4);  */
 }
 
-#if defined(POWERPC_DARWIN64)
+#എങ്കിൽ defined(POWERPC_DARWIN64)
 
 /* See if we can put some of the struct into fprs.
    This should not be called for structures of size 16 bytes, since these are not
    broken out this way.  */
-static void
+സ്ഥിതം ശൂന്യം
 darwin64_scan_struct_for_floats (ffi_type *s, unsigned *nfpr)
 {
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
   FFI_ASSERT (s->type == FFI_TYPE_STRUCT)
 
-  for (i = 0; s->elements[i] != NULL; i++)
+  വേണ്ടി (i = 0; s->elements[i] != ശൂന്യ; i++)
     {
       ffi_type *p = s->elements[i];
-      switch (p->type)
+      തിരഞ്ഞെടുപ്പ് (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
+	  അവസ്ഥ FFI_TYPE_STRUCT:
 	    darwin64_scan_struct_for_floats (p, nfpr);
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	    (*nfpr) += 2;
-	    break;
-	  case FFI_TYPE_DOUBLE:
-	  case FFI_TYPE_FLOAT:
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_DOUBLE:
+	  അവസ്ഥ FFI_TYPE_FLOAT:
 	    (*nfpr) += 1;
-	    break;
-	  default:
-	    break;    
+	    നിർത്തുക;
+	  സ്ഥിരസ്ഥിതി:
+	    നിർത്തുക;    
 	}
     }
 }
 
-static int
-darwin64_struct_size_exceeds_gprs_p (ffi_type *s, char *src, unsigned *nfpr)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+darwin64_struct_size_exceeds_gprs_p (ffi_type *s, അക്ഷരം *src, unsigned *nfpr)
 {
   unsigned struct_offset=0, i;
 
-  for (i = 0; s->elements[i] != NULL; i++)
+  വേണ്ടി (i = 0; s->elements[i] != ശൂന്യ; i++)
     {
-      char *item_base;
+      അക്ഷരം *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      എങ്കിൽ (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
 
       item_base = src + struct_offset;
 
-      switch (p->type)
+      തിരഞ്ഞെടുപ്പ് (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
-	    if (darwin64_struct_size_exceeds_gprs_p (p, item_base, nfpr))
-	      return 1;
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	  അവസ്ഥ FFI_TYPE_STRUCT:
+	    എങ്കിൽ (darwin64_struct_size_exceeds_gprs_p (p, item_base, nfpr))
+	      തിരികെ 1;
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	    എങ്കിൽ (*nfpr >= അക്കം_FPR_ARG_REGISTERS)
+	      തിരികെ 1;
 	    (*nfpr) += 1;
 	    item_base += 8;
 	  /* FALL THROUGH */
-	  case FFI_TYPE_DOUBLE:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	  അവസ്ഥ FFI_TYPE_DOUBLE:
+	    എങ്കിൽ (*nfpr >= അക്കം_FPR_ARG_REGISTERS)
+	      തിരികെ 1;
 	    (*nfpr) += 1;
-	    break;
-	  case FFI_TYPE_FLOAT:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_FLOAT:
+	    എങ്കിൽ (*nfpr >= അക്കം_FPR_ARG_REGISTERS)
+	      തിരികെ 1;
 	    (*nfpr) += 1;
-	    break;
-	  default:
+	    നിർത്തുക;
+	  സ്ഥിരസ്ഥിതി:
 	    /* If we try and place any item, that is non-float, once we've
 	       exceeded the 8 GPR mark, then we can't fit the struct.  */
-	    if ((unsigned long)item_base >= 8*8) 
-	      return 1;
-	    break;    
+	    എങ്കിൽ ((unsigned long)item_base >= 8*8) 
+	      തിരികെ 1;
+	    നിർത്തുക;    
 	}
       /* now count the size of what we just used.  */
       struct_offset += p->size;
     }
-  return 0;
+  തിരികെ 0;
 }
 
 /* Can this struct be returned by value?  */
-int 
-darwin64_struct_ret_by_value_p (ffi_type *s)
+പൂർണ്ണസംഖ്യ 
+darwin64_struct_ret_by_മൂല്യം_p (ffi_type *s)
 {
   unsigned nfp = 0;
 
   FFI_ASSERT (s && s->type == FFI_TYPE_STRUCT);
   
   /* The largest structure we can return is 8long + 13 doubles.  */
-  if (s->size > 168)
-    return 0;
+  എങ്കിൽ (s->size > 168)
+    തിരികെ 0;
   
   /* We can't pass more than 13 floats.  */
   darwin64_scan_struct_for_floats (s, &nfp);
-  if (nfp > 13)
-    return 0;
+  എങ്കിൽ (nfp > 13)
+    തിരികെ 0;
   
   /* If there are not too many floats, and the struct is
      small enough to accommodate in the GPRs, then it must be OK.  */
-  if (s->size <= 64)
-    return 1;
+  എങ്കിൽ (s->size <= 64)
+    തിരികെ 1;
   
   /* Well, we have to look harder.  */
   nfp = 0;
-  if (darwin64_struct_size_exceeds_gprs_p (s, NULL, &nfp))
-    return 0;
+  എങ്കിൽ (darwin64_struct_size_exceeds_gprs_p (s, ശൂന്യ, &nfp))
+    തിരികെ 0;
   
-  return 1;
+  തിരികെ 1;
 }
 
-void
-darwin64_pass_struct_floats (ffi_type *s, char *src, 
-			     unsigned *nfpr, double **fprs)
+ശൂന്യം
+darwin64_pass_struct_floats (ffi_type *s, അക്ഷരം *src, 
+			     unsigned *nfpr, ഇരട്ട **fprs)
 {
-  int i;
-  double *fpr_base = *fprs;
+  പൂർണ്ണസംഖ്യ i;
+  ഇരട്ട *fpr_base = *fprs;
   unsigned struct_offset = 0;
 
   /* We don't assume anything about the alignment of the source.  */
-  for (i = 0; s->elements[i] != NULL; i++)
+  വേണ്ടി (i = 0; s->elements[i] != ശൂന്യ; i++)
     {
-      char *item_base;
+      അക്ഷരം *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      എങ്കിൽ (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
       item_base = src + struct_offset;
 
-      switch (p->type)
+      തിരഞ്ഞെടുപ്പ് (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
+	  അവസ്ഥ FFI_TYPE_STRUCT:
 	    darwin64_pass_struct_floats (p, item_base, nfpr,
 					   &fpr_base);
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
-	      *fpr_base++ = *(double *)item_base;
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	    എങ്കിൽ (*nfpr < അക്കം_FPR_ARG_REGISTERS)
+	      *fpr_base++ = *(ഇരട്ട *)item_base;
 	    (*nfpr) += 1;
 	    item_base += 8;
 	  /* FALL THROUGH */
-	  case FFI_TYPE_DOUBLE:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
-	      *fpr_base++ = *(double *)item_base;
+	  അവസ്ഥ FFI_TYPE_DOUBLE:
+	    എങ്കിൽ (*nfpr < അക്കം_FPR_ARG_REGISTERS)
+	      *fpr_base++ = *(ഇരട്ട *)item_base;
 	    (*nfpr) += 1;
-	    break;
-	  case FFI_TYPE_FLOAT:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
-	      *fpr_base++ = (double) *(float *)item_base;
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_FLOAT:
+	    എങ്കിൽ (*nfpr < അക്കം_FPR_ARG_REGISTERS)
+	      *fpr_base++ = (ഇരട്ട) *(ദശാംശം *)item_base;
 	    (*nfpr) += 1;
-	    break;
-	  default:
-	    break;    
+	    നിർത്തുക;
+	  സ്ഥിരസ്ഥിതി:
+	    നിർത്തുക;    
 	}
       /* now count the size of what we just used.  */
       struct_offset += p->size;
@@ -514,20 +514,20 @@ darwin64_pass_struct_floats (ffi_type *s, char *src,
 
 /* Darwin64 special rules.
    Break out a struct into params and float registers.  */
-static void
-darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
-			       unsigned *nfpr, double **fprs, unsigned long **arg)
+സ്ഥിതം ശൂന്യം
+darwin64_pass_struct_by_മൂല്യം (ffi_type *s, അക്ഷരം *src, unsigned size,
+			       unsigned *nfpr, ഇരട്ട **fprs, unsigned long **arg)
 {
   unsigned long *next_arg = *arg;
-  char *dest_cpy = (char *)next_arg;
+  അക്ഷരം *dest_cpy = (അക്ഷരം *)next_arg;
 
   FFI_ASSERT (s->type == FFI_TYPE_STRUCT)
 
-  if (!size)
-    return;
+  എങ്കിൽ (!size)
+    തിരികെ;
 
   /* First... special cases.  */
-  if (size < 3
+  എങ്കിൽ (size < 3
       || (size == 4 
 	  && s->elements[0] 
 	  && s->elements[0]->type != FFI_TYPE_FLOAT))
@@ -536,18 +536,18 @@ darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
 	 let's make it zero.  */
       *next_arg = 0UL; 
       dest_cpy += 8 - size;
-      memcpy ((char *) dest_cpy, src, size);
+      memcpy ((അക്ഷരം *) dest_cpy, src, size);
       next_arg++;
     }
-  else if (size == 16)
+  അല്ലെങ്കിൽ എങ്കിൽ (size == 16)
     {
-      memcpy ((char *) dest_cpy, src, size);
+      memcpy ((അക്ഷരം *) dest_cpy, src, size);
       next_arg += 2;
     }
-  else
+  അല്ലെങ്കിൽ
     {
       /* now the general case, we consider embedded floats.  */
-      memcpy ((char *) dest_cpy, src, size);
+      memcpy ((അക്ഷരം *) dest_cpy, src, size);
       darwin64_pass_struct_floats (s, src, nfpr, fprs);
       next_arg += (size+7)/8;
     }
@@ -555,56 +555,56 @@ darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
   *arg = next_arg;
 }
 
-double *
-darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *nf)
+ഇരട്ട *
+darwin64_struct_floats_to_mem (ffi_type *s, അക്ഷരം *dest, ഇരട്ട *fprs, unsigned *nf)
 {
-  int i;
+  പൂർണ്ണസംഖ്യ i;
   unsigned struct_offset = 0;
 
   /* We don't assume anything about the alignment of the source.  */
-  for (i = 0; s->elements[i] != NULL; i++)
+  വേണ്ടി (i = 0; s->elements[i] != ശൂന്യ; i++)
     {
-      char *item_base;
+      അക്ഷരം *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      എങ്കിൽ (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
       item_base = dest + struct_offset;
 
-      switch (p->type)
+      തിരഞ്ഞെടുപ്പ് (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
+	  അവസ്ഥ FFI_TYPE_STRUCT:
 	    fprs = darwin64_struct_floats_to_mem (p, item_base, fprs, nf);
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	    എങ്കിൽ (*nf < അക്കം_FPR_ARG_REGISTERS)
 	      {
-		*(double *)item_base = *fprs++ ;
+		*(ഇരട്ട *)item_base = *fprs++ ;
 		(*nf) += 1;
 	      }
 	    item_base += 8;
 	  /* FALL THROUGH */
-	  case FFI_TYPE_DOUBLE:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	  അവസ്ഥ FFI_TYPE_DOUBLE:
+	    എങ്കിൽ (*nf < അക്കം_FPR_ARG_REGISTERS)
 	      {
-		*(double *)item_base = *fprs++ ;
+		*(ഇരട്ട *)item_base = *fprs++ ;
 		(*nf) += 1;
 	      }
-	    break;
-	  case FFI_TYPE_FLOAT:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	    നിർത്തുക;
+	  അവസ്ഥ FFI_TYPE_FLOAT:
+	    എങ്കിൽ (*nf < അക്കം_FPR_ARG_REGISTERS)
 	      {
-		*(float *)item_base = (float) *fprs++ ;
+		*(ദശാംശം *)item_base = (ദശാംശം) *fprs++ ;
 		(*nf) += 1;
 	      }
-	    break;
-	  default:
-	    break;    
+	    നിർത്തുക;
+	  സ്ഥിരസ്ഥിതി:
+	    നിർത്തുക;    
 	}
       /* now count the size of what we just used.  */
       struct_offset += p->size;
     }
-  return fprs;
+  തിരികെ fprs;
 }
 
 #endif
@@ -613,34 +613,34 @@ darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *
    On Darwin m32, the first field of a structure has natural alignment.  
    On Darwin m64, all fields have natural alignment.  */
 
-static void
+സ്ഥിതം ശൂന്യം
 darwin_adjust_aggregate_sizes (ffi_type *s)
 {
-  int i;
+  പൂർണ്ണസംഖ്യ i;
 
-  if (s->type != FFI_TYPE_STRUCT)
-    return;
+  എങ്കിൽ (s->type != FFI_TYPE_STRUCT)
+    തിരികെ;
 
   s->size = 0;
-  for (i = 0; s->elements[i] != NULL; i++)
+  വേണ്ടി (i = 0; s->elements[i] != ശൂന്യ; i++)
     {
       ffi_type *p;
-      int align;
+      പൂർണ്ണസംഖ്യ align;
       
       p = s->elements[i];
-      if (p->type == FFI_TYPE_STRUCT)
+      എങ്കിൽ (p->type == FFI_TYPE_STRUCT)
 	darwin_adjust_aggregate_sizes (p);
-#if defined(POWERPC_DARWIN64)
+#എങ്കിൽ defined(POWERPC_DARWIN64)
       /* Natural alignment for all items.  */
       align = p->alignment;
-#else
+#അല്ലെങ്കിൽ
       /* Natural alignment for the first item... */
-      if (i == 0)
+      എങ്കിൽ (i == 0)
 	align = p->alignment;
-      else if (p->alignment == 16 || p->alignment < 4)
+      അല്ലെങ്കിൽ എങ്കിൽ (p->alignment == 16 || p->alignment < 4)
 	/* .. subsequent items with vector or align < 4 have natural align.  */
 	align = p->alignment;
-      else
+      അല്ലെങ്കിൽ
 	/* .. or align is 4.  */
 	align = 4;
 #endif
@@ -651,7 +651,7 @@ darwin_adjust_aggregate_sizes (ffi_type *s)
   s->size = FFI_ALIGN(s->size, s->alignment);
   
   /* This should not be necessary on m64, but harmless.  */
-  if (s->elements[0]->type == FFI_TYPE_UINT64
+  എങ്കിൽ (s->elements[0]->type == FFI_TYPE_UINT64
       || s->elements[0]->type == FFI_TYPE_SINT64
       || s->elements[0]->type == FFI_TYPE_DOUBLE
       || s->elements[0]->alignment == 8)
@@ -663,34 +663,34 @@ darwin_adjust_aggregate_sizes (ffi_type *s)
    Word-align double unless it is the first member of a structure recursively.
    Return non-zero if we found a recursive first member aggregate of interest. */
 
-static int
-aix_adjust_aggregate_sizes (ffi_type *s, int outer_most_type_or_first_member)
+സ്ഥിതം പൂർണ്ണസംഖ്യ
+aix_adjust_aggregate_sizes (ffi_type *s, പൂർണ്ണസംഖ്യ outer_most_type_or_first_member)
 {
-  int i, nested_first_member=0, final_align, rc=0;
+  പൂർണ്ണസംഖ്യ i, nested_first_member=0, final_align, rc=0;
 
-  if (s->type != FFI_TYPE_STRUCT)
-    return 0;
+  എങ്കിൽ (s->type != FFI_TYPE_STRUCT)
+    തിരികെ 0;
 
   s->size = 0;
-  for (i = 0; s->elements[i] != NULL; i++)
+  വേണ്ടി (i = 0; s->elements[i] != ശൂന്യ; i++)
     {
       ffi_type p;
-      int align;
+      പൂർണ്ണസംഖ്യ align;
 
       /* nested aggregates layout differently on AIX, so take a copy of the type */
       p = *(s->elements[i]);
-      if (i == 0)
+      എങ്കിൽ (i == 0)
         nested_first_member = aix_adjust_aggregate_sizes(&p, outer_most_type_or_first_member);
-      else
+      അല്ലെങ്കിൽ
         aix_adjust_aggregate_sizes(&p, 0);
       align = p.alignment;
-      if (i != 0 && p.type == FFI_TYPE_DOUBLE)
+      എങ്കിൽ (i != 0 && p.type == FFI_TYPE_DOUBLE)
         align = 4;
       s->size = FFI_ALIGN(s->size, align) + p.size;
     }
 
   final_align=s->alignment;
-  if ((s->elements[0]->type == FFI_TYPE_UINT64
+  എങ്കിൽ ((s->elements[0]->type == FFI_TYPE_UINT64
           || s->elements[0]->type == FFI_TYPE_SINT64
           || s->elements[0]->type == FFI_TYPE_DOUBLE
           || s->elements[0]->alignment == 8 || nested_first_member)) {
@@ -698,12 +698,12 @@ aix_adjust_aggregate_sizes (ffi_type *s, int outer_most_type_or_first_member)
       rc=1;
       /* still use the adjusted alignment to calculate tail padding, but don't adjust the types alignment if
          we aren't in the recursive first position */
-      if (outer_most_type_or_first_member)
+      എങ്കിൽ (outer_most_type_or_first_member)
         s->alignment=final_align;
   }
 
   s->size = FFI_ALIGN(s->size, final_align);
-  return rc;
+  തിരികെ rc;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -714,7 +714,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   unsigned i;
   ffi_type **ptr;
   unsigned bytes;
-  unsigned fparg_count = 0, intarg_count = 0;
+  unsigned fparg_എണ്ണം = 0, intarg_എണ്ണം = 0;
   unsigned flags = 0;
   unsigned size_al = 0;
 
@@ -722,24 +722,24 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      All the calculation of structure sizes will also be wrong.
      Redo the calculation for DARWIN.  */
 
-  if (cif->abi == FFI_DARWIN)
+  എങ്കിൽ (cif->abi == FFI_DARWIN)
     {
       darwin_adjust_aggregate_sizes (cif->rtype);
-      for (i = 0; i < cif->nargs; i++)
+      വേണ്ടി (i = 0; i < cif->nargs; i++)
 	darwin_adjust_aggregate_sizes (cif->arg_types[i]);
     }
 
-  if (cif->abi == FFI_AIX)
+  എങ്കിൽ (cif->abi == FFI_AIX)
     {
       aix_adjust_aggregate_sizes (cif->rtype, 1);
-      for (i = 0; i < cif->nargs; i++)
+      വേണ്ടി (i = 0; i < cif->nargs; i++)
 	aix_adjust_aggregate_sizes (cif->arg_types[i], 1);
     }
 
   /* Space for the frame pointer, callee's LR, CR, etc, and for
      the asm's temp regs.  */
 
-  bytes = (LINKAGE_AREA_GPRS + ASM_NEEDS_REGISTERS) * sizeof(unsigned long);
+  bytes = (LINKAGE_AREA_GPRS + ASM_NEEDS_REGISTERS) * വലുപ്പം(unsigned long);
 
   /* Return value handling.  
     The rules m32 are as follows:
@@ -760,76 +760,76 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      m32/m64 structures otherwise:
      - Larger structures values are allocated space and a pointer is passed
        as the first argument.  */
-  switch (cif->rtype->type)
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
       flags |= FLAG_RETURNS_128BITS;
       flags |= FLAG_RETURNS_FP;
-      break;
+      നിർത്തുക;
 #endif
 
-    case FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
       flags |= FLAG_RETURNS_64BITS;
       /* Fall through.  */
-    case FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_SINT64:
 #ifdef POWERPC64
-    case FFI_TYPE_POINTER:
+    അവസ്ഥ FFI_TYPE_POINTER:
 #endif
       flags |= FLAG_RETURNS_64BITS;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_STRUCT:
-#if defined(POWERPC_DARWIN64)
+    അവസ്ഥ FFI_TYPE_STRUCT:
+#എങ്കിൽ defined(POWERPC_DARWIN64)
       {
 	/* Can we fit the struct into regs?  */
-	if (darwin64_struct_ret_by_value_p (cif->rtype))
+	എങ്കിൽ (darwin64_struct_ret_by_മൂല്യം_p (cif->rtype))
 	  {
 	    unsigned nfpr = 0;
 	    flags |= FLAG_RETURNS_STRUCT;
-	    if (cif->rtype->size != 16)
+	    എങ്കിൽ (cif->rtype->size != 16)
 	      darwin64_scan_struct_for_floats (cif->rtype, &nfpr) ;
-	    else
+	    അല്ലെങ്കിൽ
 	      flags |= FLAG_RETURNS_128BITS;
 	    /* Will be 0 for 16byte struct.  */
-	    if (nfpr)
+	    എങ്കിൽ (nfpr)
 	      flags |= FLAG_RETURNS_FP;
 	  }
-	else /* By ref. */
+	അല്ലെങ്കിൽ /* By ref. */
 	  {
 	    flags |= FLAG_RETVAL_REFERENCE;
 	    flags |= FLAG_RETURNS_NOTHING;
-	    intarg_count++;
+	    intarg_എണ്ണം++;
 	  }
       }
-#elif defined(DARWIN_PPC)
-      if (cif->rtype->size <= 4)
+#അല്ലെങ്കിലെങ്കിൽ defined(DARWIN_PPC)
+      എങ്കിൽ (cif->rtype->size <= 4)
 	flags |= FLAG_RETURNS_STRUCT;
-      else /* else by reference.  */
+      അല്ലെങ്കിൽ /* else by reference.  */
 	{
 	  flags |= FLAG_RETVAL_REFERENCE;
 	  flags |= FLAG_RETURNS_NOTHING;
-	  intarg_count++;
+	  intarg_എണ്ണം++;
 	}
-#else /* assume we pass by ref.  */
+#അല്ലെങ്കിൽ /* assume we pass by ref.  */
       flags |= FLAG_RETVAL_REFERENCE;
       flags |= FLAG_RETURNS_NOTHING;
-      intarg_count++;
+      intarg_എണ്ണം++;
 #endif
-      break;
-    case FFI_TYPE_VOID:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_VOID:
       flags |= FLAG_RETURNS_NOTHING;
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       /* Returns 32-bit integer, or similar.  Nothing to do here.  */
-      break;
+      നിർത്തുക;
     }
 
   /* The first NUM_GPR_ARG_REGISTERS words of integer arguments, and the
@@ -838,116 +838,116 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      ??? Structures are passed as a pointer to a copy of the structure. 
      Stuff on the stack needs to keep proper alignment.  
      For m64 the count is effectively of half-GPRs.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  വേണ്ടി (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      unsigned align_words;
-      switch ((*ptr)->type)
+      unsigned align_വാക്കുകൾ;
+      തിരഞ്ഞെടുപ്പ് ((*ptr)->type)
 	{
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	  fparg_count++;
-#if !defined(POWERPC_DARWIN64)
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	  fparg_എണ്ണം++;
+#എങ്കിൽ !defined(POWERPC_DARWIN64)
 	  /* If this FP arg is going on the stack, it must be
 	     8-byte-aligned.  */
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS
-	      && (intarg_count & 0x01) != 0)
-	    intarg_count++;
+	  എങ്കിൽ (fparg_എണ്ണം > അക്കം_FPR_ARG_REGISTERS
+	      && (intarg_എണ്ണം & 0x01) != 0)
+	    intarg_എണ്ണം++;
 #endif
-	  break;
+	  നിർത്തുക;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-	  fparg_count += 2;
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	  fparg_എണ്ണം += 2;
 	  /* If this FP arg is going on the stack, it must be
 	     16-byte-aligned.  */
-	  if (fparg_count >= NUM_FPR_ARG_REGISTERS)
-#if defined (POWERPC64)
-	    intarg_count = FFI_ALIGN(intarg_count, 2);
-#else
-	    intarg_count = FFI_ALIGN(intarg_count, 4);
+	  എങ്കിൽ (fparg_എണ്ണം >= അക്കം_FPR_ARG_REGISTERS)
+#എങ്കിൽ defined (POWERPC64)
+	    intarg_എണ്ണം = FFI_ALIGN(intarg_എണ്ണം, 2);
+#അല്ലെങ്കിൽ
+	    intarg_എണ്ണം = FFI_ALIGN(intarg_എണ്ണം, 4);
 #endif
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-#if defined(POWERPC64)
-	  intarg_count++;
-#else
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+#എങ്കിൽ defined(POWERPC64)
+	  intarg_എണ്ണം++;
+#അല്ലെങ്കിൽ
 	  /* 'long long' arguments are passed as two words, but
 	     either both words must fit in registers or both go
 	     on the stack.  If they go on the stack, they must
 	     be 8-byte-aligned.  */
-	  if (intarg_count == NUM_GPR_ARG_REGISTERS-1
-	      || (intarg_count >= NUM_GPR_ARG_REGISTERS 
-	          && (intarg_count & 0x01) != 0))
-	    intarg_count++;
-	  intarg_count += 2;
+	  എങ്കിൽ (intarg_എണ്ണം == അക്കം_GPR_ARG_REGISTERS-1
+	      || (intarg_എണ്ണം >= അക്കം_GPR_ARG_REGISTERS 
+	          && (intarg_എണ്ണം & 0x01) != 0))
+	    intarg_എണ്ണം++;
+	  intarg_എണ്ണം += 2;
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_STRUCT:
 	  size_al = (*ptr)->size;
-#if defined(POWERPC_DARWIN64)
-	  align_words = (*ptr)->alignment >> 3;
-	  if (align_words)
-	    intarg_count = FFI_ALIGN(intarg_count, align_words);
+#എങ്കിൽ defined(POWERPC_DARWIN64)
+	  align_വാക്കുകൾ = (*ptr)->alignment >> 3;
+	  എങ്കിൽ (align_വാക്കുകൾ)
+	    intarg_എണ്ണം = FFI_ALIGN(intarg_എണ്ണം, align_വാക്കുകൾ);
 	  /* Base size of the struct.  */
-	  intarg_count += (size_al + 7) / 8;
+	  intarg_എണ്ണം += (size_al + 7) / 8;
 	  /* If 16 bytes then don't worry about floats.  */
-	  if (size_al != 16)
+	  എങ്കിൽ (size_al != 16)
 	    /* Scan through for floats to be placed in regs.  */
-	    darwin64_scan_struct_for_floats (*ptr, &fparg_count) ;
-#else
-	  align_words = (*ptr)->alignment >> 2;
-	  if (align_words)
-	    intarg_count = FFI_ALIGN(intarg_count, align_words);
+	    darwin64_scan_struct_for_floats (*ptr, &fparg_എണ്ണം) ;
+#അല്ലെങ്കിൽ
+	  align_വാക്കുകൾ = (*ptr)->alignment >> 2;
+	  എങ്കിൽ (align_വാക്കുകൾ)
+	    intarg_എണ്ണം = FFI_ALIGN(intarg_എണ്ണം, align_വാക്കുകൾ);
 	  /* If the first member of the struct is a double, then align
 	     the struct to double-word. 
 	  if ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN((*ptr)->size, 8); */
 #  ifdef POWERPC64
-	  intarg_count += (size_al + 7) / 8;
-#  else
-	  intarg_count += (size_al + 3) / 4;
+	  intarg_എണ്ണം += (size_al + 7) / 8;
+#  അല്ലെങ്കിൽ
+	  intarg_എണ്ണം += (size_al + 3) / 4;
 #  endif
 #endif
-	  break;
+	  നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  /* Everything else is passed as a 4-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  intarg_count++;
-	  break;
+	  intarg_എണ്ണം++;
+	  നിർത്തുക;
 	}
     }
 
-  if (fparg_count != 0)
+  എങ്കിൽ (fparg_എണ്ണം != 0)
     flags |= FLAG_FP_ARGUMENTS;
 
-#if defined(POWERPC_DARWIN64)
+#എങ്കിൽ defined(POWERPC_DARWIN64)
   /* Space to image the FPR registers, if needed - which includes when they might be
      used in a struct return.  */
-  if (fparg_count != 0 
+  എങ്കിൽ (fparg_എണ്ണം != 0 
       || ((flags & FLAG_RETURNS_STRUCT)
 	   && (flags & FLAG_RETURNS_FP)))
-    bytes += NUM_FPR_ARG_REGISTERS * sizeof(double);
-#else
+    bytes += അക്കം_FPR_ARG_REGISTERS * വലുപ്പം(ഇരട്ട);
+#അല്ലെങ്കിൽ
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS * sizeof(double);
+  എങ്കിൽ (fparg_എണ്ണം != 0)
+    bytes += അക്കം_FPR_ARG_REGISTERS * വലുപ്പം(ഇരട്ട);
 #endif
 
   /* Stack space.  */
 #ifdef POWERPC64
-  if ((intarg_count + fparg_count) > NUM_GPR_ARG_REGISTERS)
-    bytes += (intarg_count + fparg_count) * sizeof(long);
-#else
-  if ((intarg_count + 2 * fparg_count) > NUM_GPR_ARG_REGISTERS)
-    bytes += (intarg_count + 2 * fparg_count) * sizeof(long);
+  എങ്കിൽ ((intarg_എണ്ണം + fparg_എണ്ണം) > അക്കം_GPR_ARG_REGISTERS)
+    bytes += (intarg_എണ്ണം + fparg_എണ്ണം) * വലുപ്പം(long);
+#അല്ലെങ്കിൽ
+  എങ്കിൽ ((intarg_എണ്ണം + 2 * fparg_എണ്ണം) > അക്കം_GPR_ARG_REGISTERS)
+    bytes += (intarg_എണ്ണം + 2 * fparg_എണ്ണം) * വലുപ്പം(long);
 #endif
-  else
-    bytes += NUM_GPR_ARG_REGISTERS * sizeof(long);
+  അല്ലെങ്കിൽ
+    bytes += അക്കം_GPR_ARG_REGISTERS * വലുപ്പം(long);
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
   bytes = FFI_ALIGN(bytes, 16) ;
@@ -955,22 +955,22 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   cif->flags = flags;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-extern void ffi_call_AIX(extended_cif *, long, unsigned, unsigned *,
-			 void (*fn)(void), void (*fn2)(void));
+ബാഹ്യ ശൂന്യം ffi_call_AIX(extended_cif *, long, unsigned, unsigned *,
+			 ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം (*fn2)(ശൂന്യം));
 
-#if defined (FFI_GO_CLOSURES)
-extern void ffi_call_go_AIX(extended_cif *, long, unsigned, unsigned *,
-			    void (*fn)(void), void (*fn2)(void), void *closure);
+#എങ്കിൽ defined (FFI_GO_CLOSURES)
+ബാഹ്യ ശൂന്യം ffi_call_go_AIX(extended_cif *, long, unsigned, unsigned *,
+			    ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം (*fn2)(ശൂന്യം), ശൂന്യം *closure);
 #endif
 
-extern void ffi_call_DARWIN(extended_cif *, long, unsigned, unsigned *,
-			    void (*fn)(void), void (*fn2)(void), ffi_type*);
+ബാഹ്യ ശൂന്യം ffi_call_DARWIN(extended_cif *, long, unsigned, unsigned *,
+			    ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം (*fn2)(ശൂന്യം), ffi_type*);
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ശൂന്യം
+ffi_call (ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
   extended_cif ecif;
 
@@ -980,34 +980,34 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if ((rvalue == NULL) &&
+  എങ്കിൽ ((rvalue == ശൂന്യ) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  അല്ലെങ്കിൽ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-    case FFI_AIX:
+    അവസ്ഥ FFI_AIX:
       ffi_call_AIX(&ecif, -(long)cif->bytes, cif->flags, ecif.rvalue, fn,
 		   FFI_FN(ffi_prep_args));
-      break;
-    case FFI_DARWIN:
+      നിർത്തുക;
+    അവസ്ഥ FFI_DARWIN:
       ffi_call_DARWIN(&ecif, -(long)cif->bytes, cif->flags, ecif.rvalue, fn,
 		      FFI_FN(ffi_prep_args), cif->rtype);
-      break;
-    default:
+      നിർത്തുക;
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
 }
 
-#if defined (FFI_GO_CLOSURES)
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+#എങ്കിൽ defined (FFI_GO_CLOSURES)
+ശൂന്യം
+ffi_call_go (ffi_cif *cif, ശൂന്യം (*fn) (ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue,
+	     ശൂന്യം *closure)
 {
   extended_cif ecif;
 
@@ -1017,36 +1017,36 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if ((rvalue == NULL) &&
+  എങ്കിൽ ((rvalue == ശൂന്യ) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  അല്ലെങ്കിൽ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-    case FFI_AIX:
+    അവസ്ഥ FFI_AIX:
       ffi_call_go_AIX(&ecif, -(long)cif->bytes, cif->flags, ecif.rvalue, fn,
 		      FFI_FN(ffi_prep_args), closure);
-      break;
-    default:
+      നിർത്തുക;
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
 }
 #endif
 
-static void flush_icache(char *);
-static void flush_range(char *, int);
+സ്ഥിതം ശൂന്യം flush_icache(അക്ഷരം *);
+സ്ഥിതം ശൂന്യം flush_range(അക്ഷരം *, പൂർണ്ണസംഖ്യ);
 
 /* The layout of a function descriptor.  A C function pointer really
    points to one of these.  */
 
-typedef struct aix_fd_struct {
-  void *code_pointer;
-  void *toc;
+തരനിർവചനം ഘടന aix_fd_struct {
+  ശൂന്യം *code_pointer;
+  ശൂന്യം *toc;
 } aix_fd;
 
 /* here I'd like to add the stack frame layout we use in darwin_closure.S
@@ -1095,22 +1095,22 @@ typedef struct aix_fd_struct {
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*),
+		      ശൂന്യം *user_data,
+		      ശൂന്യം *codeloc)
 {
-  unsigned int *tramp;
-  struct ffi_aix_trampoline_struct *tramp_aix;
+  unsigned പൂർണ്ണസംഖ്യ *tramp;
+  ഘടന ffi_aix_trampoline_struct *tramp_aix;
   aix_fd *fd;
 
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-      case FFI_DARWIN:
+      അവസ്ഥ FFI_DARWIN:
 
 	FFI_ASSERT (cif->abi == FFI_DARWIN);
 
-	tramp = (unsigned int *) &closure->tramp[0];
-#if defined(POWERPC_DARWIN64)
+	tramp = (unsigned പൂർണ്ണസംഖ്യ *) &closure->tramp[0];
+#എങ്കിൽ defined(POWERPC_DARWIN64)
 	tramp[0] = 0x7c0802a6;  /*   mflr    r0  */
 	tramp[1] = 0x429f0015;  /*   bcl-    20,4*cr7+so,  +0x18 (L1)  */
 	/* We put the addresses here.  */
@@ -1123,7 +1123,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
 	*((unsigned long *)&tramp[2]) = (unsigned long) ffi_closure_ASM; /* function  */
 	*((unsigned long *)&tramp[4]) = (unsigned long) codeloc; /* context  */
-#else
+#അല്ലെങ്കിൽ
 	tramp[0] = 0x7c0802a6;  /*   mflr    r0  */
 	tramp[1] = 0x429f000d;  /*   bcl-    20,4*cr7+so,0x10  */
 	tramp[4] = 0x7d6802a6;  /*   mflr    r11  */
@@ -1142,12 +1142,12 @@ ffi_prep_closure_loc (ffi_closure* closure,
 	/* Flush the icache. Only necessary on Darwin.  */
 	flush_range(codeloc, FFI_TRAMPOLINE_SIZE);
 
-	break;
+	നിർത്തുക;
 
-    case FFI_AIX:
+    അവസ്ഥ FFI_AIX:
 
-      tramp_aix = (struct ffi_aix_trampoline_struct *) (closure->tramp);
-      fd = (aix_fd *)(void *)ffi_closure_ASM;
+      tramp_aix = (ഘടന ffi_aix_trampoline_struct *) (closure->tramp);
+      fd = (aix_fd *)(ശൂന്യം *)ffi_closure_ASM;
 
       FFI_ASSERT (cif->abi == FFI_AIX);
 
@@ -1157,46 +1157,46 @@ ffi_prep_closure_loc (ffi_closure* closure,
       closure->cif = cif;
       closure->fun = fun;
       closure->user_data = user_data;
-      break;
+      നിർത്തുക;
 
-    default:
-      return FFI_BAD_ABI;
-      break;
+    സ്ഥിരസ്ഥിതി:
+      തിരികെ FFI_BAD_ABI;
+      നിർത്തുക;
     }
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-#if defined (FFI_GO_CLOSURES)
+#എങ്കിൽ defined (FFI_GO_CLOSURES)
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure,
 		     ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*))
 {
-  switch (cif->abi)
+  തിരഞ്ഞെടുപ്പ് (cif->abi)
     {
-      case FFI_AIX:
+      അവസ്ഥ FFI_AIX:
 
         FFI_ASSERT (cif->abi == FFI_AIX);
 
-        closure->tramp = (void *)ffi_go_closure_ASM;
+        closure->tramp = (ശൂന്യം *)ffi_go_closure_ASM;
         closure->cif = cif;
         closure->fun = fun;
-        return FFI_OK;
+        തിരികെ FFI_OK;
       
       // For now, ffi_prep_go_closure is only implemented for AIX, not for Darwin
-      default:
-        return FFI_BAD_ABI;
-        break;
+      സ്ഥിരസ്ഥിതി:
+        തിരികെ FFI_BAD_ABI;
+        നിർത്തുക;
     }
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 #endif
 
-static void
-flush_icache(char *addr)
+സ്ഥിതം ശൂന്യം
+flush_icache(അക്ഷരം *addr)
 {
 #ifndef _AIX
-  __asm__ volatile (
+  __asm__ അസ്ഥിര (
 		"dcbf 0,%0\n"
 		"\tsync\n"
 		"\ticbi 0,%0\n"
@@ -1206,29 +1206,29 @@ flush_icache(char *addr)
 #endif
 }
 
-static void
-flush_range(char * addr1, int size)
+സ്ഥിതം ശൂന്യം
+flush_range(അക്ഷരം * addr1, പൂർണ്ണസംഖ്യ size)
 {
-#define MIN_LINE_SIZE 32
-  int i;
-  for (i = 0; i < size; i += MIN_LINE_SIZE)
+#define MIN_വരി_SIZE 32
+  പൂർണ്ണസംഖ്യ i;
+  വേണ്ടി (i = 0; i < size; i += MIN_വരി_SIZE)
     flush_icache(addr1+i);
   flush_icache(addr1+size-1);
 }
 
-typedef union
+തരനിർവചനം സംഘം
 {
-  float f;
-  double d;
+  ദശാംശം f;
+  ഇരട്ട d;
 } ffi_dblfl;
 
-int
-ffi_closure_helper_DARWIN (ffi_closure *, void *,
+പൂർണ്ണസംഖ്യ
+ffi_closure_helper_DARWIN (ffi_closure *, ശൂന്യം *,
 			   unsigned long *, ffi_dblfl *);
 
-#if defined (FFI_GO_CLOSURES)
-int
-ffi_go_closure_helper_DARWIN (ffi_go_closure*, void *,
+#എങ്കിൽ defined (FFI_GO_CLOSURES)
+പൂർണ്ണസംഖ്യ
+ffi_go_closure_helper_DARWIN (ffi_go_closure*, ശൂന്യം *,
 			      unsigned long *, ffi_dblfl *);
 #endif
 
@@ -1239,63 +1239,63 @@ ffi_go_closure_helper_DARWIN (ffi_go_closure*, void *,
    up space for a return value, ffi_closure_ASM invokes the
    following helper function to do most of the work.  */
 
-static int
+സ്ഥിതം പൂർണ്ണസംഖ്യ
 ffi_closure_helper_common (ffi_cif* cif,
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data, void *rvalue,
+			   ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*),
+			   ശൂന്യം *user_data, ശൂന്യം *rvalue,
 			   unsigned long *pgr, ffi_dblfl *pfr)
 {
   /* rvalue is the pointer to space for return value in closure assembly
      pgr is the pointer to where r3-r10 are stored in ffi_closure_ASM
      pfr is the pointer to where f1-f13 are stored in ffi_closure_ASM.  */
 
-  typedef double ldbits[2];
+  തരനിർവചനം ഇരട്ട ldbits[2];
 
-  union ldu
+  സംഘം ldu
   {
     ldbits lb;
-    long double ld;
+    long ഇരട്ട ld;
   };
 
-  void **          avalue;
+  ശൂന്യം **          avalue;
   ffi_type **      arg_types;
   long             i, avn;
-  ffi_dblfl *      end_pfr = pfr + NUM_FPR_ARG_REGISTERS;
+  ffi_dblfl *      end_pfr = pfr + അക്കം_FPR_ARG_REGISTERS;
   unsigned         size_al;
-  int              struct_ret_by_value = 0;
+  പൂർണ്ണസംഖ്യ              struct_ret_by_മൂല്യം = 0;
   /* When a struct is returned by value, ffi_closure_ASM's jump-table
      dispatch carries only a small integer return code (see PPC_LD_* above),
      with no room for cif->rtype.  We hand cif->rtype back in the first
      parameter-save slot -- which is dead by the time we return -- for the
      PPC_LD_STRUCT fragment in darwin_closure.S to recover.  */
   unsigned long *  pgr0 = pgr;
-#if defined(POWERPC_DARWIN64)
+#എങ്കിൽ defined(POWERPC_DARWIN64)
   unsigned 	   fpsused = 0;
 #endif
 
-  avalue = alloca (cif->nargs * sizeof(void *));
+  avalue = alloca (cif->nargs * വലുപ്പം(ശൂന്യം *));
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  എങ്കിൽ (cif->rtype->type == FFI_TYPE_STRUCT)
     {
-#if defined(POWERPC_DARWIN64)
-      if (!darwin64_struct_ret_by_value_p (cif->rtype))
+#എങ്കിൽ defined(POWERPC_DARWIN64)
+      എങ്കിൽ (!darwin64_struct_ret_by_മൂല്യം_p (cif->rtype))
 	{
     	  /* Won't fit into the regs - return by ref.  */
-	  rvalue = (void *) *pgr;
+	  rvalue = (ശൂന്യം *) *pgr;
 	  pgr++;
 	}
-      else
-	struct_ret_by_value = 1;
-#elif defined(DARWIN_PPC)
-      if (cif->rtype->size > 4)
+      അല്ലെങ്കിൽ
+	struct_ret_by_മൂല്യം = 1;
+#അല്ലെങ്കിലെങ്കിൽ defined(DARWIN_PPC)
+      എങ്കിൽ (cif->rtype->size > 4)
 	{
-	  rvalue = (void *) *pgr;
+	  rvalue = (ശൂന്യം *) *pgr;
 	  pgr++;
 	}
-      else
-	struct_ret_by_value = 1;
-#else /* assume we return by ref.  */
-      rvalue = (void *) *pgr;
+      അല്ലെങ്കിൽ
+	struct_ret_by_മൂല്യം = 1;
+#അല്ലെങ്കിൽ /* assume we return by ref.  */
+      rvalue = (ശൂന്യം *) *pgr;
       pgr++;
 #endif
     }
@@ -1305,148 +1305,148 @@ ffi_closure_helper_common (ffi_cif* cif,
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn)
+  ആകുമ്പോൾ (i < avn)
     {
-      switch (arg_types[i]->type)
+      തിരഞ്ഞെടുപ്പ് (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-#if  defined(POWERPC64)
-	  avalue[i] = (char *) pgr + 7;
-#else
-	  avalue[i] = (char *) pgr + 3;
+	അവസ്ഥ FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
+#എങ്കിൽ  defined(POWERPC64)
+	  avalue[i] = (അക്ഷരം *) pgr + 7;
+#അല്ലെങ്കിൽ
+	  avalue[i] = (അക്ഷരം *) pgr + 3;
 #endif
 	  pgr++;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-#if  defined(POWERPC64)
-	  avalue[i] = (char *) pgr + 6;
-#else
-	  avalue[i] = (char *) pgr + 2;
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT16:
+#എങ്കിൽ  defined(POWERPC64)
+	  avalue[i] = (അക്ഷരം *) pgr + 6;
+#അല്ലെങ്കിൽ
+	  avalue[i] = (അക്ഷരം *) pgr + 2;
 #endif
 	  pgr++;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-#if  defined(POWERPC64)
-	  avalue[i] = (char *) pgr + 4;
-#else
-	case FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT32:
+#എങ്കിൽ  defined(POWERPC64)
+	  avalue[i] = (അക്ഷരം *) pgr + 4;
+#അല്ലെങ്കിൽ
+	അവസ്ഥ FFI_TYPE_POINTER:
 	  avalue[i] = pgr;
 #endif
 	  pgr++;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_STRUCT:
 	  size_al = arg_types[i]->size;
-#if defined(POWERPC_DARWIN64)
-	  pgr = (unsigned long *)FFI_ALIGN((char *)pgr, arg_types[i]->alignment);
-	  if (size_al < 3 || size_al == 4)
+#എങ്കിൽ defined(POWERPC_DARWIN64)
+	  pgr = (unsigned long *)FFI_ALIGN((അക്ഷരം *)pgr, arg_types[i]->alignment);
+	  എങ്കിൽ (size_al < 3 || size_al == 4)
 	    {
-	      avalue[i] = ((char *)pgr)+8-size_al;
-	      if (arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT
-		  && fpsused < NUM_FPR_ARG_REGISTERS)
+	      avalue[i] = ((അക്ഷരം *)pgr)+8-size_al;
+	      എങ്കിൽ (arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT
+		  && fpsused < അക്കം_FPR_ARG_REGISTERS)
 		{
-		  *(float *)pgr = (float) *(double *)pfr;
+		  *(ദശാംശം *)pgr = (ദശാംശം) *(ഇരട്ട *)pfr;
 		  pfr++;
 		  fpsused++;
 		}
 	    }
-	  else 
+	  അല്ലെങ്കിൽ 
 	    {
-	      if (size_al != 16)
+	      എങ്കിൽ (size_al != 16)
 		pfr = (ffi_dblfl *) 
-		    darwin64_struct_floats_to_mem (arg_types[i], (char *)pgr,
-						   (double *)pfr, &fpsused);
+		    darwin64_struct_floats_to_mem (arg_types[i], (അക്ഷരം *)pgr,
+						   (ഇരട്ട *)pfr, &fpsused);
 	      avalue[i] = pgr;
 	    }
 	  pgr += (size_al + 7) / 8;
-#else
+#അല്ലെങ്കിൽ
 	  /* If the first member of the struct is a double, then align
 	     the struct to double-word.  */
-	  if (arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
+	  എങ്കിൽ (arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN(arg_types[i]->size, 8);
-#  if defined(POWERPC64)
+#  എങ്കിൽ defined(POWERPC64)
 	  FFI_ASSERT (cif->abi != FFI_DARWIN);
 	  avalue[i] = pgr;
 	  pgr += (size_al + 7) / 8;
-#  else
+#  അല്ലെങ്കിൽ
 	  /* Structures that match the basic modes (QI 1 byte, HI 2 bytes,
 	     SI 4 bytes) are aligned as if they were those modes.  */
-	  if (size_al < 3 && cif->abi == FFI_DARWIN)
-	    avalue[i] = (char*) pgr + 4 - size_al;
-	  else
+	  എങ്കിൽ (size_al < 3 && cif->abi == FFI_DARWIN)
+	    avalue[i] = (അക്ഷരം*) pgr + 4 - size_al;
+	  അല്ലെങ്കിൽ
 	    avalue[i] = pgr;
 	  pgr += (size_al + 3) / 4;
 #  endif
 #endif
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-#if  defined(POWERPC64)
-	case FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_UINT64:
+#എങ്കിൽ  defined(POWERPC64)
+	അവസ്ഥ FFI_TYPE_POINTER:
 	  avalue[i] = pgr;
 	  pgr++;
-	  break;
-#else
+	  നിർത്തുക;
+#അല്ലെങ്കിൽ
 	  /* Long long ints are passed in two gpr's.  */
 	  avalue[i] = pgr;
 	  pgr += 2;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
 	  /* A float value consumes a GPR.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr < end_pfr)
+	  എങ്കിൽ (pfr < end_pfr)
 	    {
-	      double temp = pfr->d;
-	      pfr->f = (float) temp;
+	      ഇരട്ട temp = pfr->d;
+	      pfr->f = (ദശാംശം) temp;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 	      avalue[i] = pgr;
 	    }
 	  pgr++;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
 	  /* A double value consumes two GPRs.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr < end_pfr)
+	  എങ്കിൽ (pfr < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 	      avalue[i] = pgr;
 	    }
 #ifdef POWERPC64
 	  pgr++;
-#else
+#അല്ലെങ്കിൽ
 	  pgr += 2;
 #endif
-	  break;
+	  നിർത്തുക;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 
-	case FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 #ifdef POWERPC64
-	  if (pfr + 1 < end_pfr)
+	  എങ്കിൽ (pfr + 1 < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr += 2;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
-	      if (pfr < end_pfr)
+	      എങ്കിൽ (pfr < end_pfr)
 		{
 		  *pgr = *(unsigned long *) pfr;
 		  pfr++;
@@ -1454,10 +1454,10 @@ ffi_closure_helper_common (ffi_cif* cif,
 	      avalue[i] = pgr;
 	    }
 	  pgr += 2;
-#else  /* POWERPC64 */
+#അല്ലെങ്കിൽ  /* POWERPC64 */
 	  /* A long double value consumes four GPRs and two FPRs.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr + 1 < end_pfr)
+	  എങ്കിൽ (pfr + 1 < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr += 2;
@@ -1465,23 +1465,23 @@ ffi_closure_helper_common (ffi_cif* cif,
 	  /* Here we have the situation where one part of the long double
 	     is stored in fpr13 and the other part is already on the stack.
 	     We use a union to pass the long double to avalue[i].  */
-	  else if (pfr + 1 == end_pfr)
+	  അല്ലെങ്കിൽ എങ്കിൽ (pfr + 1 == end_pfr)
 	    {
-	      union ldu temp_ld;
-	      memcpy (&temp_ld.lb[0], pfr, sizeof(ldbits));
-	      memcpy (&temp_ld.lb[1], pgr + 2, sizeof(ldbits));
+	      സംഘം ldu temp_ld;
+	      memcpy (&temp_ld.lb[0], pfr, വലുപ്പം(ldbits));
+	      memcpy (&temp_ld.lb[1], pgr + 2, വലുപ്പം(ldbits));
 	      avalue[i] = &temp_ld.ld;
 	      pfr++;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 	      avalue[i] = pgr;
 	    }
 	  pgr += 4;
 #endif  /* POWERPC64 */
-	  break;
+	  നിർത്തുക;
 #endif
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  FFI_ASSERT(0);
 	}
       i++;
@@ -1490,66 +1490,66 @@ ffi_closure_helper_common (ffi_cif* cif,
   (fun) (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_ASM to perform return type promotions.  */
-  switch (cif->rtype->type)
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
-    case FFI_TYPE_STRUCT:
+    അവസ്ഥ FFI_TYPE_VOID:
+      തിരികെ PPC_LD_NONE;
+    അവസ്ഥ FFI_TYPE_STRUCT:
       /* A by-reference struct return needs nothing further here: the result
 	 was written straight to the caller's buffer.  A by-value struct
 	 return is loaded into registers by darwin_closure.S, which needs
 	 cif->rtype -- hand it back in the first parameter-save slot.  */
-      if (struct_ret_by_value)
+      എങ്കിൽ (struct_ret_by_മൂല്യം)
 	{
 	  *pgr0 = (unsigned long) cif->rtype;
-	  return PPC_LD_STRUCT;
+	  തിരികെ PPC_LD_STRUCT;
 	}
-      return PPC_LD_NONE;
-    case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
-    case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      return PPC_LD_F128;
+      തിരികെ PPC_LD_NONE;
+    അവസ്ഥ FFI_TYPE_FLOAT:
+      തിരികെ PPC_LD_F32;
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+      തിരികെ PPC_LD_F64;
+#എങ്കിൽ FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+      തിരികെ PPC_LD_F128;
 #endif
-    case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
-    case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
-    case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
-    case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
-    case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
-    case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
-    default:
+    അവസ്ഥ FFI_TYPE_UINT8:
+      തിരികെ PPC_LD_U8;
+    അവസ്ഥ FFI_TYPE_SINT8:
+      തിരികെ PPC_LD_S8;
+    അവസ്ഥ FFI_TYPE_UINT16:
+      തിരികെ PPC_LD_U16;
+    അവസ്ഥ FFI_TYPE_SINT16:
+      തിരികെ PPC_LD_S16;
+    അവസ്ഥ FFI_TYPE_UINT32:
+      തിരികെ PPC_LD_U32;
+    അവസ്ഥ FFI_TYPE_INT:
+    അവസ്ഥ FFI_TYPE_SINT32:
+      തിരികെ PPC_LD_S32;
+    അവസ്ഥ FFI_TYPE_POINTER:
+      തിരികെ PPC_LD_PTR;
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_SINT64:
+      തിരികെ PPC_LD_I64;
+    സ്ഥിരസ്ഥിതി:
       abort();
     }
 }
 
-int
-ffi_closure_helper_DARWIN (ffi_closure *closure, void *rvalue,
+പൂർണ്ണസംഖ്യ
+ffi_closure_helper_DARWIN (ffi_closure *closure, ശൂന്യം *rvalue,
 			   unsigned long *pgr, ffi_dblfl *pfr)
 {
-  return ffi_closure_helper_common (closure->cif, closure->fun,
+  തിരികെ ffi_closure_helper_common (closure->cif, closure->fun,
 				    closure->user_data, rvalue, pgr, pfr);
 }
 
-#if defined (FFI_GO_CLOSURES)
-int
-ffi_go_closure_helper_DARWIN (ffi_go_closure *closure, void *rvalue,
+#എങ്കിൽ defined (FFI_GO_CLOSURES)
+പൂർണ്ണസംഖ്യ
+ffi_go_closure_helper_DARWIN (ffi_go_closure *closure, ശൂന്യം *rvalue,
 			      unsigned long *pgr, ffi_dblfl *pfr)
 {
-  return ffi_closure_helper_common (closure->cif, closure->fun,
+  തിരികെ ffi_closure_helper_common (closure->cif, closure->fun,
 				    closure, rvalue, pgr, pfr);
 }
 #endif

@@ -28,35 +28,35 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include <tramp.h>
-#include <stdlib.h>
+#അന്തര്ഭാവ "ffi.h"
+#അന്തര്ഭാവ <tramp.h>
+#അന്തര്ഭാവ <stdlib.h>
 
 #ifdef POWERPC64
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
+#അന്തര്ഭാവ "ffi_common.h"
+#അന്തര്ഭാവ "ffi_powerpc.h"
 
 
 /* About the LINUX64 ABI.  */
-enum {
-  NUM_GPR_ARG_REGISTERS64 = 8,
-  NUM_FPR_ARG_REGISTERS64 = 13,
-  NUM_VEC_ARG_REGISTERS64 = 12,
+എണ്ണൽ {
+  അക്കം_GPR_ARG_REGISTERS64 = 8,
+  അക്കം_FPR_ARG_REGISTERS64 = 13,
+  അക്കം_VEC_ARG_REGISTERS64 = 12,
 };
-enum { ASM_NEEDS_REGISTERS64 = 4 };
+എണ്ണൽ { ASM_NEEDS_REGISTERS64 = 4 };
 
 
-#if HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#എങ്കിൽ HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 /* Adjust size of ffi_type_longdouble.  */
-void FFI_HIDDEN
+ശൂന്യം FFI_HIDDEN
 ffi_prep_types_linux64 (ffi_abi abi)
 {
-  if ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
+  എങ്കിൽ ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
     {
       ffi_type_longdouble.size = 8;
       ffi_type_longdouble.alignment = 8;
     }
-  else
+  അല്ലെങ്കിൽ
     {
       ffi_type_longdouble.size = 16;
       ffi_type_longdouble.alignment = 16;
@@ -76,49 +76,49 @@ ffi_prep_types_linux64 (ffi_abi abi)
 #endif
 
 
-static unsigned int
+സ്ഥിതം unsigned പൂർണ്ണസംഖ്യ
 discover_homogeneous_aggregate (ffi_abi abi,
-                                const ffi_type *t,
-                                unsigned int *elnum)
+                                സ്ഥിരം ffi_type *t,
+                                unsigned പൂർണ്ണസംഖ്യ *elnum)
 {
-  switch (t->type)
+  തിരഞ്ഞെടുപ്പ് (t->type)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
       /* 64-bit long doubles are equivalent to doubles. */
-      if ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
+      എങ്കിൽ ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
         {
           *elnum = 1;
-          return FFI_TYPE_DOUBLE;
+          തിരികെ FFI_TYPE_DOUBLE;
         }
       /* IBM extended precision values use unaligned pairs
          of FPRs, but according to the ABI must be considered
          distinct from doubles. They are also limited to a
          maximum of four members in a homogeneous aggregate. */
-      else if ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
+      അല്ലെങ്കിൽ എങ്കിൽ ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
         {
           *elnum = 2;
-          return FFI_TYPE_LONGDOUBLE;
+          തിരികെ FFI_TYPE_LONGDOUBLE;
         }
       /* Fall through. */
 #endif
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
       *elnum = 1;
-      return (int) t->type;
+      തിരികെ (പൂർണ്ണസംഖ്യ) t->type;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       /* Count complex of an FP base as two elements of that base, so a
 	 struct containing complex members is recognised as an HFA.  This
 	 only affects FFI_TYPE_COMPLEX *inside* structs; the top-level
 	 complex arg path has its own case in the cif/args/closure loops
 	 and never reaches the FFI_TYPE_STRUCT branches.  */
       {
-	unsigned int inner_elnum = 0;
-	unsigned int inner
+	unsigned പൂർണ്ണസംഖ്യ inner_elnum = 0;
+	unsigned പൂർണ്ണസംഖ്യ inner
 	  = discover_homogeneous_aggregate (abi, t->elements[0], &inner_elnum);
-	if (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
+	എങ്കിൽ (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
 	    || inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* A _Complex of an FP base counts as two of that base: an
@@ -126,159 +126,159 @@ discover_homogeneous_aggregate (ffi_abi abi,
 	       itself two FPRs (inner_elnum == 2), so a _Complex long double
 	       contributes four FPRs.  */
 	    *elnum = 2 * inner_elnum;
-	    return inner;
+	    തിരികെ inner;
 	  }
-	return 0;
+	തിരികെ 0;
       }
 #endif
 
-    case FFI_TYPE_STRUCT:;
+    അവസ്ഥ FFI_TYPE_STRUCT:;
       {
-	unsigned int base_elt = 0, total_elnum = 0;
+	unsigned പൂർണ്ണസംഖ്യ base_elt = 0, total_elnum = 0;
 	ffi_type **el = t->elements;
-	while (*el)
+	ആകുമ്പോൾ (*el)
 	  {
-	    unsigned int el_elt, el_elnum = 0;
+	    unsigned പൂർണ്ണസംഖ്യ el_elt, el_elnum = 0;
 	    el_elt = discover_homogeneous_aggregate (abi, *el, &el_elnum);
-	    if (el_elt == 0
+	    എങ്കിൽ (el_elt == 0
 		|| (base_elt && base_elt != el_elt))
-	      return 0;
+	      തിരികെ 0;
 	    base_elt = el_elt;
 	    total_elnum += el_elnum;
-#if _CALL_ELF == 2
-	    if (total_elnum > 8)
-	      return 0;
-#else
-	    if (total_elnum > 1)
-	      return 0;
+#എങ്കിൽ _CALL_ELF == 2
+	    എങ്കിൽ (total_elnum > 8)
+	      തിരികെ 0;
+#അല്ലെങ്കിൽ
+	    എങ്കിൽ (total_elnum > 1)
+	      തിരികെ 0;
 #endif
 	    el++;
 	  }
 	*elnum = total_elnum;
-	return base_elt;
+	തിരികെ base_elt;
       }
 
-    default:
-      return 0;
+    സ്ഥിരസ്ഥിതി:
+      തിരികെ 0;
     }
 }
 
 
 /* Perform machine dependent cif processing */
-static ffi_status
+സ്ഥിതം ffi_status
 ffi_prep_cif_linux64_core (ffi_cif *cif)
 {
   ffi_type **ptr;
   unsigned bytes;
-  unsigned i, fparg_count = 0, intarg_count = 0, vecarg_count = 0;
+  unsigned i, fparg_എണ്ണം = 0, intarg_എണ്ണം = 0, vecarg_എണ്ണം = 0;
   unsigned flags = cif->flags;
   unsigned elt, elnum, rtype;
 
-#if FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
   /* If compiled without long double support... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
+  എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#elif !defined(__VEC__)
+    തിരികെ FFI_BAD_ABI;
+#അല്ലെങ്കിലെങ്കിൽ !defined(__VEC__)
   /* If compiled without vector register support (used by assembly)... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#else
+  എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+    തിരികെ FFI_BAD_ABI;
+#അല്ലെങ്കിൽ
   /* If the IEEE128 flag is set, but long double is only 64 bits wide... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
+  എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
+    തിരികെ FFI_BAD_ABI;
 #endif
 
   /* The machine-independent calculation of cif->bytes doesn't work
      for us.  Redo the calculation.  */
-#if _CALL_ELF == 2
+#എങ്കിൽ _CALL_ELF == 2
   /* Space for backchain, CR, LR, TOC and the asm's temp regs.  */
-  bytes = (4 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  bytes = (4 + ASM_NEEDS_REGISTERS64) * വലുപ്പം (long);
 
   /* Space for the general registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS64 * sizeof (long);
-#else
+  bytes += അക്കം_GPR_ARG_REGISTERS64 * വലുപ്പം (long);
+#അല്ലെങ്കിൽ
   /* Space for backchain, CR, LR, cc/ld doubleword, TOC and the asm's temp
      regs.  */
-  bytes = (6 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  bytes = (6 + ASM_NEEDS_REGISTERS64) * വലുപ്പം (long);
 
   /* Space for the mandatory parm save area and general registers.  */
-  bytes += 2 * NUM_GPR_ARG_REGISTERS64 * sizeof (long);
+  bytes += 2 * അക്കം_GPR_ARG_REGISTERS64 * വലുപ്പം (long);
 #endif
 
   /* Return value handling.  */
   rtype = cif->rtype->type;
-#if _CALL_ELF == 2
+#എങ്കിൽ _CALL_ELF == 2
 homogeneous:
 #endif
-  switch (rtype)
+  തിരഞ്ഞെടുപ്പ് (rtype)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+      എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
         {
           flags |= FLAG_RETURNS_VEC;
-          break;
+          നിർത്തുക;
         }
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+      എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	flags |= FLAG_RETURNS_128BITS;
       /* Fall through.  */
 #endif
-    case FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
       flags |= FLAG_RETURNS_64BITS;
       /* Fall through.  */
-    case FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_POINTER:
       flags |= FLAG_RETURNS_64BITS;
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_STRUCT:
-#if _CALL_ELF == 2
+    അവസ്ഥ FFI_TYPE_STRUCT:
+#എങ്കിൽ _CALL_ELF == 2
       elt = discover_homogeneous_aggregate (cif->abi, cif->rtype, &elnum);
-      if (elt)
+      എങ്കിൽ (elt)
         {
           flags |= FLAG_RETURNS_SMST;
           rtype = elt;
-          goto homogeneous;
+          പോകുക homogeneous;
         }
-      if (cif->rtype->size <= 16)
+      എങ്കിൽ (cif->rtype->size <= 16)
         {
           flags |= FLAG_RETURNS_SMST;
-          break;
+          നിർത്തുക;
         }
 #endif
-      intarg_count++;
+      intarg_എണ്ണം++;
       flags |= FLAG_RETVAL_REFERENCE;
       /* Fall through.  */
-    case FFI_TYPE_VOID:
+    അവസ്ഥ FFI_TYPE_VOID:
       flags |= FLAG_RETURNS_NOTHING;
-      break;
+      നിർത്തുക;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       rtype = cif->rtype->elements[0]->type;
-      switch (rtype)
+      തിരഞ്ഞെടുപ്പ് (rtype)
         {
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_DOUBLE:
+        അവസ്ഥ FFI_TYPE_FLOAT:
+        അവസ്ഥ FFI_TYPE_DOUBLE:
           /* float/double _Complex are returned in (f1, f2), matching
              the assembly path for a 2-element FP HFA.  */
           flags |= FLAG_RETURNS_SMST;
-          goto homogeneous;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-        case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+          പോകുക homogeneous;
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+        അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+          എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
               /* IEEE-128 _Complex long double: real in v2, imag in v3.
                  Return via the vector-homogeneous small-struct path.  */
               flags |= FLAG_RETURNS_SMST | FLAG_RETURNS_VEC;
-              break;
+              നിർത്തുക;
             }
           /* IBM-128 _Complex long double is returned like a homogeneous
              aggregate of doubles: real in f1:f2, imag in f3:f4.  (For a
@@ -286,204 +286,204 @@ homogeneous:
              real in f1 and imag in f2.)  */
           flags |= FLAG_RETURNS_SMST;
           rtype = FFI_TYPE_DOUBLE;
-          goto homogeneous;
+          പോകുക homogeneous;
 #endif
-        case FFI_TYPE_INT:
-        case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-        case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-        case FFI_TYPE_POINTER:
+        അവസ്ഥ FFI_TYPE_INT:
+        അവസ്ഥ FFI_TYPE_SINT8:  അവസ്ഥ FFI_TYPE_UINT8:
+        അവസ്ഥ FFI_TYPE_SINT16: അവസ്ഥ FFI_TYPE_UINT16:
+        അവസ്ഥ FFI_TYPE_SINT32: അവസ്ഥ FFI_TYPE_UINT32:
+        അവസ്ഥ FFI_TYPE_SINT64: അവസ്ഥ FFI_TYPE_UINT64:
+        അവസ്ഥ FFI_TYPE_POINTER:
           /* Integer-typed _Complex: real returned in r3, imag in r4.
              Take the .Lsmall_struct return path (FLAG_RETURNS_SMST
              without FP/VEC) and let the bounce-buffer logic in
              ffi_call_int repack the two halves.  */
           flags |= FLAG_RETURNS_SMST;
-          break;
-        default:
-          return FFI_BAD_TYPEDEF;
+          നിർത്തുക;
+        സ്ഥിരസ്ഥിതി:
+          തിരികെ FFI_BAD_TYPEDEF;
         }
-      break;
+      നിർത്തുക;
 #endif
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       /* Returns 32-bit integer, or similar.  Nothing to do here.  */
-      break;
+      നിർത്തുക;
     }
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  വേണ്ടി (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      unsigned int align;
+      unsigned പൂർണ്ണസംഖ്യ align;
 
-      switch ((*ptr)->type)
+      തിരഞ്ഞെടുപ്പ് ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+          എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count++;
+              vecarg_എണ്ണം++;
               /* Align to 16 bytes, plus the 16-byte argument. */
-              intarg_count = (intarg_count + 3) & ~0x1;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              intarg_എണ്ണം = (intarg_എണ്ണം + 3) & ~0x1;
+              എങ്കിൽ (vecarg_എണ്ണം > അക്കം_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              നിർത്തുക;
             }
-	  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      fparg_count++;
-	      intarg_count++;
+	      fparg_എണ്ണം++;
+	      intarg_എണ്ണം++;
 	    }
 	  /* Fall through.  */
 #endif
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_FLOAT:
-	  fparg_count++;
-	  intarg_count++;
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	  fparg_എണ്ണം++;
+	  intarg_എണ്ണം++;
+	  എങ്കിൽ (fparg_എണ്ണം > അക്കം_FPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	  എങ്കിൽ ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      എങ്കിൽ (align > 16)
 		align = 16;
 	      align = align / 8;
-	      if (align > 1)
-		intarg_count = FFI_ALIGN (intarg_count, align);
+	      എങ്കിൽ (align > 1)
+		intarg_എണ്ണം = FFI_ALIGN (intarg_എണ്ണം, align);
 	    }
-	  intarg_count += ((*ptr)->size + 7) / 8;
+	  intarg_എണ്ണം += ((*ptr)->size + 7) / 8;
 	  elt = discover_homogeneous_aggregate (cif->abi, *ptr, &elnum);
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-          if (elt == FFI_TYPE_LONGDOUBLE &&
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+          എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE &&
               (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count += elnum;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              vecarg_എണ്ണം += elnum;
+              എങ്കിൽ (vecarg_എണ്ണം > അക്കം_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              നിർത്തുക;
             }
-	  else
+	  അല്ലെങ്കിൽ
 #endif
-	  if (elt)
+	  എങ്കിൽ (elt)
 	    {
-	      fparg_count += elnum;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_എണ്ണം += elnum;
+	      എങ്കിൽ (fparg_എണ്ണം > അക്കം_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
-	      if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	      എങ്കിൽ (intarg_എണ്ണം > അക്കം_GPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT16:
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 8-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  intarg_count++;
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  intarg_എണ്ണം++;
+	  എങ്കിൽ (intarg_എണ്ണം > അക്കം_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  നിർത്തുക;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  /* Each half of a _Complex argument is passed independently: an FP
 	     half in its own FPR (and its own GPR shadow slot); an integer
 	     half in its own GPR slot.  This matches GCC's split_complex_arg
 	     under ELFv2, and is what differentiates _Complex from a
 	     same-sized struct{T;T;} which uses fewer GPR shadow slots.  */
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE
 	      && (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
 #endif
-	  switch (elt)
+	  തിരഞ്ഞെടുപ്പ് (elt)
 	    {
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_DOUBLE:
-	      fparg_count += 2;
-	      intarg_count += 2;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	    അവസ്ഥ FFI_TYPE_FLOAT:
+	    അവസ്ഥ FFI_TYPE_DOUBLE:
+	      fparg_എണ്ണം += 2;
+	      intarg_എണ്ണം += 2;
+	      എങ്കിൽ (fparg_എണ്ണം > അക്കം_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	    case FFI_TYPE_LONGDOUBLE:
-	      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      നിർത്തുക;
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+	      എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 		{
 		  /* Two IEEE-128 halves: each occupies a vector register plus
 		     two GPR shadow doublewords, the pair 16-byte aligned.  */
-		  vecarg_count += 2;
-		  intarg_count = (intarg_count + 1) & ~0x1;
-		  intarg_count += 4;
-		  if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+		  vecarg_എണ്ണം += 2;
+		  intarg_എണ്ണം = (intarg_എണ്ണം + 1) & ~0x1;
+		  intarg_എണ്ണം += 4;
+		  എങ്കിൽ (vecarg_എണ്ണം > അക്കം_VEC_ARG_REGISTERS64)
 		    flags |= FLAG_ARG_NEEDS_PSAVE;
-		  break;
+		  നിർത്തുക;
 		}
 	      /* IBM-128: each half is a pair of FPRs, and each FPR half
 		 consumes a GPR shadow doubleword -- four of each in total.  */
-	      fparg_count += 4;
-	      intarg_count += 4;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_എണ്ണം += 4;
+	      intarg_എണ്ണം += 4;
+	      എങ്കിൽ (fparg_എണ്ണം > അക്കം_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
+	      നിർത്തുക;
 #endif
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-	    case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	      intarg_count += 2;
-	      break;
-	    default:
-	      return FFI_BAD_TYPEDEF;
+	    അവസ്ഥ FFI_TYPE_INT:
+	    അവസ്ഥ FFI_TYPE_SINT8:  അവസ്ഥ FFI_TYPE_UINT8:
+	    അവസ്ഥ FFI_TYPE_SINT16: അവസ്ഥ FFI_TYPE_UINT16:
+	    അവസ്ഥ FFI_TYPE_SINT32: അവസ്ഥ FFI_TYPE_UINT32:
+	    അവസ്ഥ FFI_TYPE_SINT64: അവസ്ഥ FFI_TYPE_UINT64:
+	    അവസ്ഥ FFI_TYPE_POINTER:
+	      intarg_എണ്ണം += 2;
+	      നിർത്തുക;
+	    സ്ഥിരസ്ഥിതി:
+	      തിരികെ FFI_BAD_TYPEDEF;
 	    }
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  എങ്കിൽ (intarg_എണ്ണം > അക്കം_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  FFI_ASSERT (0);
 	}
     }
 
-  if (fparg_count != 0)
+  എങ്കിൽ (fparg_എണ്ണം != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (intarg_count > 4)
+  എങ്കിൽ (intarg_എണ്ണം > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
-  if (vecarg_count != 0)
+  എങ്കിൽ (vecarg_എണ്ണം != 0)
     flags |= FLAG_VEC_ARGUMENTS;
 
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS64 * sizeof (double);
+  എങ്കിൽ (fparg_എണ്ണം != 0)
+    bytes += അക്കം_FPR_ARG_REGISTERS64 * വലുപ്പം (ഇരട്ട);
   /* Space for the vector registers, if needed, aligned to 16 bytes. */
-  if (vecarg_count != 0) {
+  എങ്കിൽ (vecarg_എണ്ണം != 0) {
     bytes = (bytes + 15) & ~0xF;
-    bytes += NUM_VEC_ARG_REGISTERS64 * sizeof (float128);
+    bytes += അക്കം_VEC_ARG_REGISTERS64 * വലുപ്പം (float128);
   }
 
   /* Stack space.  */
-#if _CALL_ELF == 2
-  if ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
-    bytes += intarg_count * sizeof (long);
-#else
-  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
-    bytes += (intarg_count - NUM_GPR_ARG_REGISTERS64) * sizeof (long);
+#എങ്കിൽ _CALL_ELF == 2
+  എങ്കിൽ ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
+    bytes += intarg_എണ്ണം * വലുപ്പം (long);
+#അല്ലെങ്കിൽ
+  എങ്കിൽ (intarg_എണ്ണം > അക്കം_GPR_ARG_REGISTERS64)
+    bytes += (intarg_എണ്ണം - അക്കം_GPR_ARG_REGISTERS64) * വലുപ്പം (long);
 #endif
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
@@ -492,16 +492,16 @@ homogeneous:
   cif->flags = flags;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_linux64 (ffi_cif *cif)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  എങ്കിൽ ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = cif->nargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#എങ്കിൽ _CALL_ELF != 2
+  അല്ലെങ്കിൽ എങ്കിൽ (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -510,20 +510,20 @@ ffi_prep_cif_linux64 (ffi_cif *cif)
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
 #endif
-  else
-    return FFI_BAD_ABI;
-  return ffi_prep_cif_linux64_core (cif);
+  അല്ലെങ്കിൽ
+    തിരികെ FFI_BAD_ABI;
+  തിരികെ ffi_prep_cif_linux64_core (cif);
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_linux64_var (ffi_cif *cif,
-			  unsigned int nfixedargs,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  unsigned പൂർണ്ണസംഖ്യ nfixedargs,
+			  unsigned പൂർണ്ണസംഖ്യ ntotalargs MAYBE_UNUSED)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  എങ്കിൽ ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = nfixedargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#എങ്കിൽ _CALL_ELF != 2
+  അല്ലെങ്കിൽ എങ്കിൽ (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -532,12 +532,12 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
 #endif
-  else
-    return FFI_BAD_ABI;
-#if _CALL_ELF == 2
+  അല്ലെങ്കിൽ
+    തിരികെ FFI_BAD_ABI;
+#എങ്കിൽ _CALL_ELF == 2
   cif->flags |= FLAG_ARG_NEEDS_PSAVE;
 #endif
-  return ffi_prep_cif_linux64_core (cif);
+  തിരികെ ffi_prep_cif_linux64_core (cif);
 }
 
 
@@ -577,18 +577,18 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
 
 */
 
-void FFI_HIDDEN
-ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
+ശൂന്യം FFI_HIDDEN
+ffi_prep_args64 (extended_cif *ecif, unsigned long *സ്ഥിരം അട്ടി)
 {
-  const unsigned long bytes = ecif->cif->bytes;
-  const unsigned long flags = ecif->cif->flags;
+  സ്ഥിരം unsigned long bytes = ecif->cif->bytes;
+  സ്ഥിരം unsigned long flags = ecif->cif->flags;
 
-  typedef union
+  തരനിർവചനം സംഘം
   {
-    char *c;
+    അക്ഷരം *c;
     unsigned long *ul;
-    float *f;
-    double *d;
+    ദശാംശം *f;
+    ഇരട്ട *d;
     float128 *f128;
     size_t p;
   } valp;
@@ -606,55 +606,55 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
   /* 'fpr_base' points at the space for f1, and grows upwards as
      we use FPR registers.  */
   valp fpr_base;
-  unsigned int fparg_count;
+  unsigned പൂർണ്ണസംഖ്യ fparg_എണ്ണം;
 
   /* 'vec_base' points at the space for v2, and grows upwards as
      we use vector registers.  */
   valp vec_base;
-  unsigned int vecarg_count;
+  unsigned പൂർണ്ണസംഖ്യ vecarg_എണ്ണം;
 
-  unsigned int i, words, nargs, nfixedargs;
+  unsigned പൂർണ്ണസംഖ്യ i, വാക്കുകൾ, nargs, nfixedargs;
   ffi_type **ptr;
-  double double_tmp;
-  union
+  ഇരട്ട double_tmp;
+  സംഘം
   {
-    void **v;
-    char **c;
-    signed char **sc;
-    unsigned char **uc;
+    ശൂന്യം **v;
+    അക്ഷരം **c;
+    signed അക്ഷരം **sc;
+    unsigned അക്ഷരം **uc;
     signed short **ss;
     unsigned short **us;
-    signed int **si;
-    unsigned int **ui;
+    signed പൂർണ്ണസംഖ്യ **si;
+    unsigned പൂർണ്ണസംഖ്യ **ui;
     unsigned long **ul;
-    float **f;
-    double **d;
+    ദശാംശം **f;
+    ഇരട്ട **d;
     float128 **f128;
   } p_argv;
   unsigned long gprvalue;
   unsigned long align;
 
-  stacktop.c = (char *) stack + bytes;
-  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - NUM_GPR_ARG_REGISTERS64;
-  gpr_end.ul = gpr_base.ul + NUM_GPR_ARG_REGISTERS64;
-#if _CALL_ELF == 2
-  rest.ul = stack + 4 + NUM_GPR_ARG_REGISTERS64;
-#else
-  rest.ul = stack + 6 + NUM_GPR_ARG_REGISTERS64;
+  stacktop.c = (അക്ഷരം *) അട്ടി + bytes;
+  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - അക്കം_GPR_ARG_REGISTERS64;
+  gpr_end.ul = gpr_base.ul + അക്കം_GPR_ARG_REGISTERS64;
+#എങ്കിൽ _CALL_ELF == 2
+  rest.ul = അട്ടി + 4 + അക്കം_GPR_ARG_REGISTERS64;
+#അല്ലെങ്കിൽ
+  rest.ul = അട്ടി + 6 + അക്കം_GPR_ARG_REGISTERS64;
 #endif
-  fpr_base.d = gpr_base.d - NUM_FPR_ARG_REGISTERS64;
-  fparg_count = 0;
+  fpr_base.d = gpr_base.d - അക്കം_FPR_ARG_REGISTERS64;
+  fparg_എണ്ണം = 0;
   /* Place the vector args below the FPRs, if used, else the GPRs. */
-  if (ecif->cif->flags & FLAG_FP_ARGUMENTS)
+  എങ്കിൽ (ecif->cif->flags & FLAG_FP_ARGUMENTS)
     vec_base.p = fpr_base.p & ~0xF;
-  else
+  അല്ലെങ്കിൽ
     vec_base.p = gpr_base.p;
-  vec_base.f128 -= NUM_VEC_ARG_REGISTERS64;
-  vecarg_count = 0;
+  vec_base.f128 -= അക്കം_VEC_ARG_REGISTERS64;
+  vecarg_എണ്ണം = 0;
   next_arg.ul = gpr_base.ul;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT (((unsigned long) (char *) stack & 0xF) == 0);
+  FFI_ASSERT (((unsigned long) (അക്ഷരം *) അട്ടി & 0xF) == 0);
   FFI_ASSERT (((unsigned long) stacktop.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) gpr_base.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) gpr_end.c  & 0xF) == 0);
@@ -662,410 +662,410 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
   FFI_ASSERT ((bytes & 0xF) == 0);
 
   /* Deal with return values that are actually pass-by-reference.  */
-  if (flags & FLAG_RETVAL_REFERENCE)
-    *next_arg.ul++ = (unsigned long) (char *) ecif->rvalue;
+  എങ്കിൽ (flags & FLAG_RETVAL_REFERENCE)
+    *next_arg.ul++ = (unsigned long) (അക്ഷരം *) ecif->rvalue;
 
   /* Now for the arguments.  */
   p_argv.v = ecif->avalue;
   nargs = ecif->cif->nargs;
-#if _CALL_ELF != 2
+#എങ്കിൽ _CALL_ELF != 2
   nfixedargs = (unsigned) -1;
-  if ((flags & FLAG_COMPAT) == 0)
+  എങ്കിൽ ((flags & FLAG_COMPAT) == 0)
 #endif
     nfixedargs = ecif->cif->nfixedargs;
-  for (ptr = ecif->cif->arg_types, i = 0;
+  വേണ്ടി (ptr = ecif->cif->arg_types, i = 0;
        i < nargs;
        i++, ptr++, p_argv.v++)
     {
-      unsigned int elt, elnum;
+      unsigned പൂർണ്ണസംഖ്യ elt, elnum;
 
-      switch ((*ptr)->type)
+      തിരഞ്ഞെടുപ്പ് ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+          എങ്കിൽ ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
               next_arg.p = FFI_ALIGN (next_arg.p, 16);
-              if (next_arg.ul == gpr_end.ul)
+              എങ്കിൽ (next_arg.ul == gpr_end.ul)
                 next_arg.ul = rest.ul;
-              if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		memcpy (vec_base.f128++, *p_argv.f128, sizeof (float128));
-              else
-		memcpy (next_arg.f128, *p_argv.f128, sizeof (float128));
-              if (++next_arg.f128 == gpr_end.f128)
+              എങ്കിൽ (vecarg_എണ്ണം < അക്കം_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		memcpy (vec_base.f128++, *p_argv.f128, വലുപ്പം (float128));
+              അല്ലെങ്കിൽ
+		memcpy (next_arg.f128, *p_argv.f128, വലുപ്പം (float128));
+              എങ്കിൽ (++next_arg.f128 == gpr_end.f128)
                 next_arg.f128 = rest.f128;
-              vecarg_count++;
+              vecarg_എണ്ണം++;
               FFI_ASSERT (__LDBL_MANT_DIG__ == 113);
               FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-              break;
+              നിർത്തുക;
             }
-	  if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  എങ്കിൽ ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
 	      double_tmp = (*p_argv.d)[0];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
 		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
+# എങ്കിൽ _CALL_ELF != 2
+		  എങ്കിൽ ((flags & FLAG_COMPAT) != 0)
 		    *next_arg.d = double_tmp;
 # endif
 		}
-	      else
+	      അല്ലെങ്കിൽ
 		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
+	      എങ്കിൽ (++next_arg.ul == gpr_end.ul)
 		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      fparg_എണ്ണം++;
 	      double_tmp = (*p_argv.d)[1];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
 		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
+# എങ്കിൽ _CALL_ELF != 2
+		  എങ്കിൽ ((flags & FLAG_COMPAT) != 0)
 		    *next_arg.d = double_tmp;
 # endif
 		}
-	      else
+	      അല്ലെങ്കിൽ
 		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
+	      എങ്കിൽ (++next_arg.ul == gpr_end.ul)
 		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      fparg_എണ്ണം++;
 	      FFI_ASSERT (__LDBL_MANT_DIG__ == 106);
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      നിർത്തുക;
 	    }
 	  /* Fall through.  */
 #endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+#എങ്കിൽ _CALL_ELF != 2
 	do_double:
 #endif
 	  double_tmp = **p_argv.d;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
 	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
+#എങ്കിൽ _CALL_ELF != 2
+	      എങ്കിൽ ((flags & FLAG_COMPAT) != 0)
 		*next_arg.d = double_tmp;
 #endif
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    *next_arg.d = double_tmp;
-	  if (++next_arg.ul == gpr_end.ul)
+	  എങ്കിൽ (++next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  fparg_എണ്ണം++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	അവസ്ഥ FFI_TYPE_FLOAT:
+#എങ്കിൽ _CALL_ELF != 2
 	do_float:
 #endif
 	  double_tmp = **p_argv.f;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
 	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
+#എങ്കിൽ _CALL_ELF != 2
+	      എങ്കിൽ ((flags & FLAG_COMPAT) != 0)
 		{
 # ifndef __LITTLE_ENDIAN__
-		  next_arg.f[1] = (float) double_tmp;
-# else
-		  next_arg.f[0] = (float) double_tmp;
+		  next_arg.f[1] = (ദശാംശം) double_tmp;
+# അല്ലെങ്കിൽ
+		  next_arg.f[0] = (ദശാംശം) double_tmp;
 # endif
 		}
 #endif
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 # ifndef __LITTLE_ENDIAN__
-	      next_arg.f[1] = (float) double_tmp;
-# else
-	      next_arg.f[0] = (float) double_tmp;
+	      next_arg.f[1] = (ദശാംശം) double_tmp;
+# അല്ലെങ്കിൽ
+	      next_arg.f[0] = (ദശാംശം) double_tmp;
 # endif
 	    }
-	  if (++next_arg.ul == gpr_end.ul)
+	  എങ്കിൽ (++next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  fparg_എണ്ണം++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  നിർത്തുക;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	    {
 	      /* IEEE-128 _Complex long double: each half goes in its own
 		 vector register (or the parameter save area), 16-byte
 		 aligned, consuming two GPR shadow doublewords.  */
 	      float128 *cval = (float128 *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      unsigned പൂർണ്ണസംഖ്യ j;
+	      വേണ്ടി (j = 0; j < 2; j++)
 		{
 		  next_arg.p = FFI_ALIGN (next_arg.p, 16);
-		  if (next_arg.ul == gpr_end.ul)
+		  എങ്കിൽ (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		    memcpy (vec_base.f128++, cval + j, sizeof (float128));
-		  else
-		    memcpy (next_arg.f128, cval + j, sizeof (float128));
-		  if (++next_arg.f128 == gpr_end.f128)
+		  എങ്കിൽ (vecarg_എണ്ണം < അക്കം_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		    memcpy (vec_base.f128++, cval + j, വലുപ്പം (float128));
+		  അല്ലെങ്കിൽ
+		    memcpy (next_arg.f128, cval + j, വലുപ്പം (float128));
+		  എങ്കിൽ (++next_arg.f128 == gpr_end.f128)
 		    next_arg.f128 = rest.f128;
-		  vecarg_count++;
+		  vecarg_എണ്ണം++;
 		}
 	      FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-	      break;
+	      നിർത്തുക;
 	    }
-	  if (elt == FFI_TYPE_LONGDOUBLE)
+	  എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE)
 	    {
 	      /* IBM-128 _Complex long double: four doubles (real hi/lo,
 		 imag hi/lo) into consecutive FPRs, each with a GPR shadow
 		 doubleword.  */
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 4; j++)
+	      ഇരട്ട *cval = (ഇരട്ട *) *p_argv.v;
+	      unsigned പൂർണ്ണസംഖ്യ j;
+	      വേണ്ടി (j = 0; j < 4; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
-		  else
+		  അല്ലെങ്കിൽ
 		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
+		  എങ്കിൽ (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_എണ്ണം++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      നിർത്തുക;
 	    }
 #endif
-	  if (elt == FFI_TYPE_FLOAT)
+	  എങ്കിൽ (elt == FFI_TYPE_FLOAT)
 	    {
-	      float *cval = (float *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      ദശാംശം *cval = (ദശാംശം *) *p_argv.v;
+	      unsigned പൂർണ്ണസംഖ്യ j;
+	      വേണ്ടി (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
-		  else
+		  അല്ലെങ്കിൽ
 		    {
 # ifndef __LITTLE_ENDIAN__
-		      next_arg.f[1] = (float) double_tmp;
-# else
-		      next_arg.f[0] = (float) double_tmp;
+		      next_arg.f[1] = (ദശാംശം) double_tmp;
+# അല്ലെങ്കിൽ
+		      next_arg.f[0] = (ദശാംശം) double_tmp;
 # endif
 		    }
-		  if (++next_arg.ul == gpr_end.ul)
+		  എങ്കിൽ (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_എണ്ണം++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else if (elt == FFI_TYPE_DOUBLE)
+	  അല്ലെങ്കിൽ എങ്കിൽ (elt == FFI_TYPE_DOUBLE)
 	    {
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      ഇരട്ട *cval = (ഇരട്ട *) *p_argv.v;
+	      unsigned പൂർണ്ണസംഖ്യ j;
+	      വേണ്ടി (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
-		  else
+		  അല്ലെങ്കിൽ
 		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
+		  എങ്കിൽ (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_എണ്ണം++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 	      /* Integer-typed _Complex: each half consumes one GPR slot,
 		 sign-/zero-extended to a doubleword.  */
-	      char *cval = (char *) *p_argv.v;
+	      അക്ഷരം *cval = (അക്ഷരം *) *p_argv.v;
 	      size_t hsize = (*ptr)->elements[0]->size;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      unsigned പൂർണ്ണസംഖ്യ j;
+	      വേണ്ടി (j = 0; j < 2; j++)
 		{
-		  char *half = cval + j * hsize;
+		  അക്ഷരം *half = cval + j * hsize;
 		  unsigned long gprvalue;
-		  switch (elt)
+		  തിരഞ്ഞെടുപ്പ് (elt)
 		    {
-		    case FFI_TYPE_UINT8:
-		      gprvalue = *(unsigned char *) half; break;
-		    case FFI_TYPE_SINT8:
-		      gprvalue = (unsigned long) (long) *(signed char *) half;
-		      break;
-		    case FFI_TYPE_UINT16:
-		      gprvalue = *(unsigned short *) half; break;
-		    case FFI_TYPE_SINT16:
+		    അവസ്ഥ FFI_TYPE_UINT8:
+		      gprvalue = *(unsigned അക്ഷരം *) half; നിർത്തുക;
+		    അവസ്ഥ FFI_TYPE_SINT8:
+		      gprvalue = (unsigned long) (long) *(signed അക്ഷരം *) half;
+		      നിർത്തുക;
+		    അവസ്ഥ FFI_TYPE_UINT16:
+		      gprvalue = *(unsigned short *) half; നിർത്തുക;
+		    അവസ്ഥ FFI_TYPE_SINT16:
 		      gprvalue = (unsigned long) (long) *(signed short *) half;
-		      break;
-		    case FFI_TYPE_UINT32:
-		      gprvalue = *(unsigned int *) half; break;
-		    case FFI_TYPE_INT:
-		    case FFI_TYPE_SINT32:
-		      gprvalue = (unsigned long) (long) *(signed int *) half;
-		      break;
-		    case FFI_TYPE_SINT64:
-		    case FFI_TYPE_UINT64:
-		    case FFI_TYPE_POINTER:
-		    default:
-		      gprvalue = *(unsigned long *) half; break;
+		      നിർത്തുക;
+		    അവസ്ഥ FFI_TYPE_UINT32:
+		      gprvalue = *(unsigned പൂർണ്ണസംഖ്യ *) half; നിർത്തുക;
+		    അവസ്ഥ FFI_TYPE_INT:
+		    അവസ്ഥ FFI_TYPE_SINT32:
+		      gprvalue = (unsigned long) (long) *(signed പൂർണ്ണസംഖ്യ *) half;
+		      നിർത്തുക;
+		    അവസ്ഥ FFI_TYPE_SINT64:
+		    അവസ്ഥ FFI_TYPE_UINT64:
+		    അവസ്ഥ FFI_TYPE_POINTER:
+		    സ്ഥിരസ്ഥിതി:
+		      gprvalue = *(unsigned long *) half; നിർത്തുക;
 		    }
 		  *next_arg.ul++ = gprvalue;
-		  if (next_arg.ul == gpr_end.ul)
+		  എങ്കിൽ (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
 		}
 	    }
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_STRUCT:
-	  if ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	  എങ്കിൽ ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      എങ്കിൽ (align > 16)
 		align = 16;
-	      if (align > 1)
+	      എങ്കിൽ (align > 1)
                 {
                   next_arg.p = FFI_ALIGN (next_arg.p, align);
-                  if (next_arg.ul == gpr_end.ul)
+                  എങ്കിൽ (next_arg.ul == gpr_end.ul)
                     next_arg.ul = rest.ul;
                 }
 	    }
 	  elt = discover_homogeneous_aggregate (ecif->cif->abi, *ptr, &elnum);
-	  if (elt)
+	  എങ്കിൽ (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
-		float *f;
-		double *d;
+#എങ്കിൽ _CALL_ELF == 2
+	      സംഘം {
+		ശൂന്യം *v;
+		ദശാംശം *f;
+		ഇരട്ട *d;
 		float128 *f128;
 	      } arg;
 
 	      arg.v = *p_argv.v;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE &&
                   (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  ചെയ്യുക
                     {
-                      if (vecarg_count < NUM_VEC_ARG_REGISTERS64
+                      എങ്കിൽ (vecarg_എണ്ണം < അക്കം_VEC_ARG_REGISTERS64
                           && i < nfixedargs)
-		        memcpy (vec_base.f128++, arg.f128++, sizeof (float128));
-                      else
-		        memcpy (next_arg.f128, arg.f128++, sizeof (float128));
-                      if (++next_arg.f128 == gpr_end.f128)
+		        memcpy (vec_base.f128++, arg.f128++, വലുപ്പം (float128));
+                      അല്ലെങ്കിൽ
+		        memcpy (next_arg.f128, arg.f128++, വലുപ്പം (float128));
+                      എങ്കിൽ (++next_arg.f128 == gpr_end.f128)
                         next_arg.f128 = rest.f128;
-                      vecarg_count++;
+                      vecarg_എണ്ണം++;
                     }
-                  while (--elnum != 0);
+                  ആകുമ്പോൾ (--elnum != 0);
                 }
-              else
+              അല്ലെങ്കിൽ
 #endif
-	      if (elt == FFI_TYPE_FLOAT)
+	      എങ്കിൽ (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  ചെയ്യുക
 		    {
 		      double_tmp = *arg.f++;
-		      if (fparg_count < NUM_FPR_ARG_REGISTERS64
+		      എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64
 			  && i < nfixedargs)
 			*fpr_base.d++ = double_tmp;
-		      else
-			*next_arg.f = (float) double_tmp;
-		      if (++next_arg.f == gpr_end.f)
+		      അല്ലെങ്കിൽ
+			*next_arg.f = (ദശാംശം) double_tmp;
+		      എങ്കിൽ (++next_arg.f == gpr_end.f)
 			next_arg.f = rest.f;
-		      fparg_count++;
+		      fparg_എണ്ണം++;
 		    }
-		  while (--elnum != 0);
-		  if ((next_arg.p & 7) != 0)
-                    if (++next_arg.f == gpr_end.f)
+		  ആകുമ്പോൾ (--elnum != 0);
+		  എങ്കിൽ ((next_arg.p & 7) != 0)
+                    എങ്കിൽ (++next_arg.f == gpr_end.f)
                       next_arg.f = rest.f;
 		}
-	      else
-		do
+	      അല്ലെങ്കിൽ
+		ചെയ്യുക
 		  {
 		    double_tmp = *arg.d++;
-		    if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    എങ്കിൽ (fparg_എണ്ണം < അക്കം_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		      *fpr_base.d++ = double_tmp;
-		    else
+		    അല്ലെങ്കിൽ
 		      *next_arg.d = double_tmp;
-		    if (++next_arg.d == gpr_end.d)
+		    എങ്കിൽ (++next_arg.d == gpr_end.d)
 		      next_arg.d = rest.d;
-		    fparg_count++;
+		    fparg_എണ്ണം++;
 		  }
-		while (--elnum != 0);
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
+		ആകുമ്പോൾ (--elnum != 0);
+#അല്ലെങ്കിൽ
+	      എങ്കിൽ (elt == FFI_TYPE_FLOAT)
+		പോകുക do_float;
+	      അല്ലെങ്കിൽ
+		പോകുക do_double;
 #endif
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
-	      words = ((*ptr)->size + 7) / 8;
-	      if (next_arg.ul >= gpr_base.ul && next_arg.ul + words > gpr_end.ul)
+	      വാക്കുകൾ = ((*ptr)->size + 7) / 8;
+	      എങ്കിൽ (next_arg.ul >= gpr_base.ul && next_arg.ul + വാക്കുകൾ > gpr_end.ul)
 		{
 		  size_t first = gpr_end.c - next_arg.c;
 		  memcpy (next_arg.c, *p_argv.c, first);
 		  memcpy (rest.c, *p_argv.c + first, (*ptr)->size - first);
-		  next_arg.c = rest.c + words * 8 - first;
+		  next_arg.c = rest.c + വാക്കുകൾ * 8 - first;
 		}
-	      else
+	      അല്ലെങ്കിൽ
 		{
-		  char *where = next_arg.c;
+		  അക്ഷരം *where = next_arg.c;
 
 #ifndef __LITTLE_ENDIAN__
 		  /* Structures with size less than eight bytes are passed
 		     left-padded.  */
-		  if ((*ptr)->size < 8)
+		  എങ്കിൽ ((*ptr)->size < 8)
 		    where += 8 - (*ptr)->size;
 #endif
 		  memcpy (where, *p_argv.c, (*ptr)->size);
-		  next_arg.ul += words;
-		  if (next_arg.ul == gpr_end.ul)
+		  next_arg.ul += വാക്കുകൾ;
+		  എങ്കിൽ (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
 		}
 	    }
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
 	  gprvalue = **p_argv.uc;
-	  goto putgpr;
-	case FFI_TYPE_SINT8:
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_SINT8:
 	  gprvalue = **p_argv.sc;
-	  goto putgpr;
-	case FFI_TYPE_UINT16:
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_UINT16:
 	  gprvalue = **p_argv.us;
-	  goto putgpr;
-	case FFI_TYPE_SINT16:
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_SINT16:
 	  gprvalue = **p_argv.ss;
-	  goto putgpr;
-	case FFI_TYPE_UINT32:
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_UINT32:
 	  gprvalue = **p_argv.ui;
-	  goto putgpr;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	  പോകുക putgpr;
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_SINT32:
 	  gprvalue = **p_argv.si;
-	  goto putgpr;
+	  പോകുക putgpr;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_POINTER:
 	  gprvalue = **p_argv.ul;
 	putgpr:
 	  *next_arg.ul++ = gprvalue;
-	  if (next_arg.ul == gpr_end.ul)
+	  എങ്കിൽ (next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  break;
+	  നിർത്തുക;
 	}
     }
 
@@ -1075,17 +1075,17 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 }
 
 
-#if _CALL_ELF == 2
-#define MIN_CACHE_LINE_SIZE 8
+#എങ്കിൽ _CALL_ELF == 2
+#define MIN_CACHE_വരി_SIZE 8
 
-static void
-flush_icache (char *wraddr, char *xaddr, int size)
+സ്ഥിതം ശൂന്യം
+flush_icache (അക്ഷരം *wraddr, അക്ഷരം *xaddr, പൂർണ്ണസംഖ്യ size)
 {
-  int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
-    __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
+  പൂർണ്ണസംഖ്യ i;
+  വേണ്ടി (i = 0; i < size; i += MIN_CACHE_വരി_SIZE)
+    __asm__ അസ്ഥിര ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
-  __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
+  __asm__ അസ്ഥിര ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
 		    : : "r"(xaddr + size - 1), "r"(wraddr + size - 1)
 		    : "memory");
 }
@@ -1095,40 +1095,40 @@ flush_icache (char *wraddr, char *xaddr, int size)
 ffi_status FFI_HIDDEN
 ffi_prep_closure_loc_linux64 (ffi_closure *closure,
 			      ffi_cif *cif,
-			      void (*fun) (ffi_cif *, void *, void **, void *),
-			      void *user_data,
-			      void *codeloc)
+			      ശൂന്യം (*fun) (ffi_cif *, ശൂന്യം *, ശൂന്യം **, ശൂന്യം *),
+			      ശൂന്യം *user_data,
+			      ശൂന്യം *codeloc)
 {
-  if (cif->abi < FFI_LINUX || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi < FFI_LINUX || cif->abi >= FFI_LAST_ABI)
+    തിരികെ FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present(closure))
+  എങ്കിൽ (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_LINUX64;
+      ശൂന്യം (*dest)(ശൂന്യം) = ffi_closure_LINUX64;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  അല്ലെങ്കിൽ
 #endif
     {
-#if _CALL_ELF == 2
-      unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+#എങ്കിൽ _CALL_ELF == 2
+      unsigned പൂർണ്ണസംഖ്യ *tramp = (unsigned പൂർണ്ണസംഖ്യ *) &closure->tramp[0];
       tramp[0] = 0xe96c0018;	/* 0:	ld	11,2f-0b(12)	*/
       tramp[1] = 0xe98c0010;	/*	ld	12,1f-0b(12)	*/
       tramp[2] = 0x7d8903a6;	/*	mtctr	12		*/
       tramp[3] = 0x4e800420;	/*	bctr			*/
 				/* 1:	.quad	function_addr	*/
 				/* 2:	.quad	context		*/
-      *(void **) &tramp[4] = (void *) ffi_closure_LINUX64;
-      *(void **) &tramp[6] = codeloc;
-      flush_icache ((char *) tramp, (char *) codeloc, 4 * 4);
-#else
+      *(ശൂന്യം **) &tramp[4] = (ശൂന്യം *) ffi_closure_LINUX64;
+      *(ശൂന്യം **) &tramp[6] = codeloc;
+      flush_icache ((അക്ഷരം *) tramp, (അക്ഷരം *) codeloc, 4 * 4);
+#അല്ലെങ്കിൽ
       /* Copy function address and TOC from ffi_closure_LINUX64 OPD.  */
-      void **tramp = (void **) &closure->tramp[0];
-      memcpy (&tramp[0], (void **) ffi_closure_LINUX64, sizeof (void *));
+      ശൂന്യം **tramp = (ശൂന്യം **) &closure->tramp[0];
+      memcpy (&tramp[0], (ശൂന്യം **) ffi_closure_LINUX64, വലുപ്പം (ശൂന്യം *));
       tramp[1] = codeloc;
-      memcpy (&tramp[2], (void **) ffi_closure_LINUX64 + 1, sizeof (void *));
+      memcpy (&tramp[2], (ശൂന്യം **) ffi_closure_LINUX64 + 1, വലുപ്പം (ശൂന്യം *));
 #endif
     }
 
@@ -1136,15 +1136,15 @@ ffi_prep_closure_loc_linux64 (ffi_closure *closure,
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 
-int FFI_HIDDEN
+പൂർണ്ണസംഖ്യ FFI_HIDDEN
 ffi_closure_helper_LINUX64 (ffi_cif *cif,
-			    void (*fun) (ffi_cif *, void *, void **, void *),
-			    void *user_data,
-			    void *rvalue,
+			    ശൂന്യം (*fun) (ffi_cif *, ശൂന്യം *, ശൂന്യം **, ശൂന്യം *),
+			    ശൂന്യം *user_data,
+			    ശൂന്യം *rvalue,
 			    unsigned long *pst,
                             ffi_dblfl *pfr,
                             float128 *pvec)
@@ -1155,89 +1155,89 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
   /* pfr is the pointer to where f1-f13 are stored in ffi_closure_LINUX64 */
   /* pvec is the pointer to where v2-v13 are stored in ffi_closure_LINUX64 */
 
-  void **avalue;
+  ശൂന്യം **avalue;
   ffi_type **arg_types;
   unsigned long i, avn, nfixedargs;
-  ffi_dblfl *end_pfr = pfr + NUM_FPR_ARG_REGISTERS64;
-  float128 *end_pvec = pvec + NUM_VEC_ARG_REGISTERS64;
+  ffi_dblfl *end_pfr = pfr + അക്കം_FPR_ARG_REGISTERS64;
+  float128 *end_pvec = pvec + അക്കം_VEC_ARG_REGISTERS64;
   unsigned long align;
 
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * വലുപ്പം (ശൂന്യം *));
 
   /* Copy the caller's structure return value address so that the
      closure returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  എങ്കിൽ (cif->rtype->type == FFI_TYPE_STRUCT
       && (cif->flags & FLAG_RETURNS_SMST) == 0)
     {
-      rvalue = (void *) *pst;
+      rvalue = (ശൂന്യം *) *pst;
       pst++;
     }
 
   i = 0;
   avn = cif->nargs;
-#if _CALL_ELF != 2
+#എങ്കിൽ _CALL_ELF != 2
   nfixedargs = (unsigned) -1;
-  if ((cif->flags & FLAG_COMPAT) == 0)
+  എങ്കിൽ ((cif->flags & FLAG_COMPAT) == 0)
 #endif
     nfixedargs = cif->nfixedargs;
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn)
+  ആകുമ്പോൾ (i < avn)
     {
-      unsigned int elt, elnum;
+      unsigned പൂർണ്ണസംഖ്യ elt, elnum;
 
-      switch (arg_types[i]->type)
+      തിരഞ്ഞെടുപ്പ് (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
 #ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 7;
+	  avalue[i] = (അക്ഷരം *) pst + 7;
 	  pst++;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT16:
 #ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 6;
+	  avalue[i] = (അക്ഷരം *) pst + 6;
 	  pst++;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT32:
 #ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 4;
+	  avalue[i] = (അക്ഷരം *) pst + 4;
 	  pst++;
-	  break;
+	  നിർത്തുക;
 #endif
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_POINTER:
 	  avalue[i] = pst;
 	  pst++;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	  എങ്കിൽ ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = arg_types[i]->alignment;
-	      if (align > 16)
+	      എങ്കിൽ (align > 16)
 		align = 16;
-	      if (align > 1)
+	      എങ്കിൽ (align > 1)
 		pst = (unsigned long *) FFI_ALIGN ((size_t) pst, align);
 	    }
 	  elt = discover_homogeneous_aggregate (cif->abi, arg_types[i], &elnum);
-	  if (elt)
+	  എങ്കിൽ (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
+#എങ്കിൽ _CALL_ELF == 2
+	      സംഘം {
+		ശൂന്യം *v;
 		unsigned long *ul;
-		float *f;
-		double *d;
+		ദശാംശം *f;
+		ഇരട്ട *d;
 		float128 *f128;
 		size_t p;
 	      } to, from;
@@ -1246,117 +1246,117 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 		 aggregate size is not greater than the space taken by
 		 the registers so store back to the register/parameter
 		 save arrays.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  if (pvec + elnum <= end_pvec)
+                  എങ്കിൽ (pvec + elnum <= end_pvec)
                     to.v = pvec;
-                  else
+                  അല്ലെങ്കിൽ
                     to.v = pst;
                 }
-              else
+              അല്ലെങ്കിൽ
 #endif
-	      if (pfr + elnum <= end_pfr)
+	      എങ്കിൽ (pfr + elnum <= end_pfr)
 		to.v = pfr;
-	      else
+	      അല്ലെങ്കിൽ
 		to.v = pst;
 
 	      avalue[i] = to.v;
 	      from.ul = pst;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  ചെയ്യുക
                     {
-                      if (pvec < end_pvec && i < nfixedargs)
-		        memcpy (to.f128, pvec++, sizeof (float128));
-                      else
-		        memcpy (to.f128, from.f128, sizeof (float128));
+                      എങ്കിൽ (pvec < end_pvec && i < nfixedargs)
+		        memcpy (to.f128, pvec++, വലുപ്പം (float128));
+                      അല്ലെങ്കിൽ
+		        memcpy (to.f128, from.f128, വലുപ്പം (float128));
                       to.f128++;
                       from.f128++;
                     }
-                  while (--elnum != 0);
+                  ആകുമ്പോൾ (--elnum != 0);
                 }
-              else
+              അല്ലെങ്കിൽ
 #endif
-	      if (elt == FFI_TYPE_FLOAT)
+	      എങ്കിൽ (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  ചെയ്യുക
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 			{
-			  *to.f = (float) pfr->d;
+			  *to.f = (ദശാംശം) pfr->d;
 			  pfr++;
 			}
-		      else
+		      അല്ലെങ്കിൽ
 			*to.f = *from.f;
 		      to.f++;
 		      from.f++;
 		    }
-		  while (--elnum != 0);
+		  ആകുമ്പോൾ (--elnum != 0);
 		}
-	      else
+	      അല്ലെങ്കിൽ
 		{
-		  do
+		  ചെയ്യുക
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 			{
 			  *to.d = pfr->d;
 			  pfr++;
 			}
-		      else
+		      അല്ലെങ്കിൽ
 			*to.d = *from.d;
 		      to.d++;
 		      from.d++;
 		    }
-		  while (--elnum != 0);
+		  ആകുമ്പോൾ (--elnum != 0);
 		}
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
+#അല്ലെങ്കിൽ
+	      എങ്കിൽ (elt == FFI_TYPE_FLOAT)
+		പോകുക do_float;
+	      അല്ലെങ്കിൽ
+		പോകുക do_double;
 #endif
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 #ifndef __LITTLE_ENDIAN__
 	      /* Structures with size less than eight bytes are passed
 		 left-padded.  */
-	      if (arg_types[i]->size < 8)
-		avalue[i] = (char *) pst + 8 - arg_types[i]->size;
-	      else
+	      എങ്കിൽ (arg_types[i]->size < 8)
+		avalue[i] = (അക്ഷരം *) pst + 8 - arg_types[i]->size;
+	      അല്ലെങ്കിൽ
 #endif
 		avalue[i] = pst;
 	    }
 	  pst += (arg_types[i]->size + 7) / 8;
-	  break;
+	  നിർത്തുക;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+          എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              if (((unsigned long) pst & 0xF) != 0)
+              എങ്കിൽ (((unsigned long) pst & 0xF) != 0)
                 ++pst;
-              if (pvec < end_pvec && i < nfixedargs)
+              എങ്കിൽ (pvec < end_pvec && i < nfixedargs)
                 avalue[i] = pvec++;
-              else
+              അല്ലെങ്കിൽ
                 avalue[i] = pst;
               pst += 2;
-              break;
+              നിർത്തുക;
             }
-          else if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+          അല്ലെങ്കിൽ എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      if (pfr + 1 < end_pfr && i + 1 < nfixedargs)
+	      എങ്കിൽ (pfr + 1 < end_pfr && i + 1 < nfixedargs)
 		{
 		  avalue[i] = pfr;
 		  pfr += 2;
 		}
-	      else
+	      അല്ലെങ്കിൽ
 		{
-		  if (pfr < end_pfr && i < nfixedargs)
+		  എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 		    {
 		      /* Passed partly in f13 and partly on the stack.
 			 Move it all to the stack.  */
@@ -1366,154 +1366,154 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 		  avalue[i] = pst;
 		}
 	      pst += 2;
-	      break;
+	      നിർത്തുക;
 	    }
 	  /* Fall through.  */
 #endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+#എങ്കിൽ _CALL_ELF != 2
 	do_double:
 #endif
 	  /* On the outgoing stack all values are aligned to 8 */
 	  /* there are 13 64bit floating point registers */
 
-	  if (pfr < end_pfr && i < nfixedargs)
+	  എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 	    {
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    avalue[i] = pst;
 	  pst++;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	അവസ്ഥ FFI_TYPE_FLOAT:
+#എങ്കിൽ _CALL_ELF != 2
 	do_float:
 #endif
-	  if (pfr < end_pfr && i < nfixedargs)
+	  എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 	    {
 	      /* Float values are stored as doubles in the
 		 ffi_closure_LINUX64 code.  Fix them here.  */
-	      pfr->f = (float) pfr->d;
+	      pfr->f = (ദശാംശം) pfr->d;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 #ifndef __LITTLE_ENDIAN__
-	      avalue[i] = (char *) pst + 4;
-#else
+	      avalue[i] = (അക്ഷരം *) pst + 4;
+#അല്ലെങ്കിൽ
 	      avalue[i] = pst;
 #endif
 	    }
 	  pst++;
-	  break;
+	  നിർത്തുക;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  /* Reassemble each _Complex argument from successive registers (or
 	     parameter-save slots when registers are exhausted) into a
 	     contiguous in-memory value for the closure.  */
 	  {
-	    unsigned int j;
+	    unsigned പൂർണ്ണസംഖ്യ j;
 	    elt = arg_types[i]->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	    /* A 64-bit long double arrives exactly like a double.  */
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	      elt = FFI_TYPE_DOUBLE;
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	      {
 		/* IEEE-128: each half arrives in a vector register (or the
 		   16-byte-aligned parameter save area) with two GPR shadow
 		   doublewords.  */
-		float128 *cval = alloca (2 * sizeof (float128));
-		if (((unsigned long) pst & 0xF) != 0)
+		float128 *cval = alloca (2 * വലുപ്പം (float128));
+		എങ്കിൽ (((unsigned long) pst & 0xF) != 0)
 		  ++pst;
-		for (j = 0; j < 2; j++)
+		വേണ്ടി (j = 0; j < 2; j++)
 		  {
-		    if (pvec < end_pvec && i < nfixedargs)
-		      memcpy (&cval[j], pvec++, sizeof (float128));
-		    else
-		      memcpy (&cval[j], pst, sizeof (float128));
+		    എങ്കിൽ (pvec < end_pvec && i < nfixedargs)
+		      memcpy (&cval[j], pvec++, വലുപ്പം (float128));
+		    അല്ലെങ്കിൽ
+		      memcpy (&cval[j], pst, വലുപ്പം (float128));
 		    pst += 2;
 		  }
 		avalue[i] = cval;
-		break;
+		നിർത്തുക;
 	      }
-	    if (elt == FFI_TYPE_LONGDOUBLE)
+	    എങ്കിൽ (elt == FFI_TYPE_LONGDOUBLE)
 	      {
 		/* IBM-128: four doubles, each in an FPR (or one GPR shadow
 		   doubleword) -- real hi/lo then imag hi/lo.  */
-		double *cval = alloca (4 * sizeof (double));
-		for (j = 0; j < 4; j++)
+		ഇരട്ട *cval = alloca (4 * വലുപ്പം (ഇരട്ട));
+		വേണ്ടി (j = 0; j < 4; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    അല്ലെങ്കിൽ
+		      cval[j] = *(ഇരട്ട *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
-		break;
+		നിർത്തുക;
 	      }
 #endif
-	    if (elt == FFI_TYPE_FLOAT)
+	    എങ്കിൽ (elt == FFI_TYPE_FLOAT)
 	      {
-		float *cval = alloca (2 * sizeof (float));
-		for (j = 0; j < 2; j++)
+		ദശാംശം *cval = alloca (2 * വലുപ്പം (ദശാംശം));
+		വേണ്ടി (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 		      {
-			cval[j] = (float) pfr->d;
+			cval[j] = (ദശാംശം) pfr->d;
 			pfr++;
 		      }
-		    else
+		    അല്ലെങ്കിൽ
 		      {
 #ifndef __LITTLE_ENDIAN__
-			cval[j] = ((float *) pst)[1];
-#else
-			cval[j] = ((float *) pst)[0];
+			cval[j] = ((ദശാംശം *) pst)[1];
+#അല്ലെങ്കിൽ
+			cval[j] = ((ദശാംശം *) pst)[0];
 #endif
 		      }
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else if (elt == FFI_TYPE_DOUBLE)
+	    അല്ലെങ്കിൽ എങ്കിൽ (elt == FFI_TYPE_DOUBLE)
 	      {
-		double *cval = alloca (2 * sizeof (double));
-		for (j = 0; j < 2; j++)
+		ഇരട്ട *cval = alloca (2 * വലുപ്പം (ഇരട്ട));
+		വേണ്ടി (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    എങ്കിൽ (pfr < end_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    അല്ലെങ്കിൽ
+		      cval[j] = *(ഇരട്ട *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else
+	    അല്ലെങ്കിൽ
 	      {
 		/* Integer-typed _Complex: each half lives in its own GPR
 		   slot, right-justified on BE, low-address on LE.  */
 		size_t hsize = arg_types[i]->elements[0]->size;
-		char *cval = alloca (2 * hsize);
-		for (j = 0; j < 2; j++)
+		അക്ഷരം *cval = alloca (2 * hsize);
+		വേണ്ടി (j = 0; j < 2; j++)
 		  {
-		    char *src;
+		    അക്ഷരം *src;
 #ifndef __LITTLE_ENDIAN__
-		    src = (char *) pst + (8 - hsize);
-#else
-		    src = (char *) pst;
+		    src = (അക്ഷരം *) pst + (8 - hsize);
+#അല്ലെങ്കിൽ
+		    src = (അക്ഷരം *) pst;
 #endif
 		    memcpy (cval + j * hsize, src, hsize);
 		    pst++;
@@ -1521,10 +1521,10 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 		avalue[i] = cval;
 	      }
 	  }
-	  break;
+	  നിർത്തുക;
 #endif
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  FFI_ASSERT (0);
 	}
 
@@ -1534,56 +1534,56 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
   (*fun) (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_LINUX64 how to perform return type promotions.  */
-  switch (cif->rtype->type)
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
-    case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
-    case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	return PPC64_LD_VECTOR;
-      return PPC_LD_F128;
+    അവസ്ഥ FFI_TYPE_VOID:
+      തിരികെ PPC_LD_NONE;
+    അവസ്ഥ FFI_TYPE_FLOAT:
+      തിരികെ PPC_LD_F32;
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+      തിരികെ PPC_LD_F64;
+#എങ്കിൽ FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+      എങ്കിൽ ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	തിരികെ PPC64_LD_VECTOR;
+      തിരികെ PPC_LD_F128;
 #endif
-    case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
-    case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
-    case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
-    case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
-    case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
-    case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
+    അവസ്ഥ FFI_TYPE_UINT8:
+      തിരികെ PPC_LD_U8;
+    അവസ്ഥ FFI_TYPE_SINT8:
+      തിരികെ PPC_LD_S8;
+    അവസ്ഥ FFI_TYPE_UINT16:
+      തിരികെ PPC_LD_U16;
+    അവസ്ഥ FFI_TYPE_SINT16:
+      തിരികെ PPC_LD_S16;
+    അവസ്ഥ FFI_TYPE_UINT32:
+      തിരികെ PPC_LD_U32;
+    അവസ്ഥ FFI_TYPE_INT:
+    അവസ്ഥ FFI_TYPE_SINT32:
+      തിരികെ PPC_LD_S32;
+    അവസ്ഥ FFI_TYPE_POINTER:
+      തിരികെ PPC_LD_PTR;
+    അവസ്ഥ FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_SINT64:
+      തിരികെ PPC_LD_I64;
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       {
-	int inner = cif->rtype->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	if (inner == FFI_TYPE_LONGDOUBLE)
+	പൂർണ്ണസംഖ്യ inner = cif->rtype->elements[0]->type;
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	എങ്കിൽ (inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* IEEE-128 _Complex long double returns in v2:v3; IBM-128 in
 	       f1:f2 (real) and f3:f4 (imag), i.e. as a double HFA.  */
-	    if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-	      return PPC64_LD_VECTOR_HOMOG;
+	    എങ്കിൽ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      തിരികെ PPC64_LD_VECTOR_HOMOG;
 	    inner = FFI_TYPE_DOUBLE;
 	  }
 #endif
-	if (inner == FFI_TYPE_FLOAT)
-	  return PPC64_LD_FLOAT_HOMOG;
-	if (inner == FFI_TYPE_DOUBLE)
-	  return PPC64_LD_DOUBLE_HOMOG;
+	എങ്കിൽ (inner == FFI_TYPE_FLOAT)
+	  തിരികെ PPC64_LD_FLOAT_HOMOG;
+	എങ്കിൽ (inner == FFI_TYPE_DOUBLE)
+	  തിരികെ PPC64_LD_DOUBLE_HOMOG;
 	/* Integer-typed _Complex: the user wrote the natural packed
 	   complex layout into rvalue (real@0, imag@hsize).  Repack into
 	   two sign-/zero-extended doublewords so the closure assembly
@@ -1591,89 +1591,89 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 	   recovers real in r3 and imag in r4.  The RETVAL stack area is
 	   large enough (64 or 128 bytes) to hold the 16-byte repack.  */
 	{
-	  char *rv = rvalue;
+	  അക്ഷരം *rv = rvalue;
 	  unsigned long re, im;
-	  switch (inner)
+	  തിരഞ്ഞെടുപ്പ് (inner)
 	    {
-	    case FFI_TYPE_UINT8:
-	      re = ((unsigned char *) rv)[0];
-	      im = ((unsigned char *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT8:
-	      re = (unsigned long) (long) ((signed char *) rv)[0];
-	      im = (unsigned long) (long) ((signed char *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT16:
+	    അവസ്ഥ FFI_TYPE_UINT8:
+	      re = ((unsigned അക്ഷരം *) rv)[0];
+	      im = ((unsigned അക്ഷരം *) rv)[1];
+	      നിർത്തുക;
+	    അവസ്ഥ FFI_TYPE_SINT8:
+	      re = (unsigned long) (long) ((signed അക്ഷരം *) rv)[0];
+	      im = (unsigned long) (long) ((signed അക്ഷരം *) rv)[1];
+	      നിർത്തുക;
+	    അവസ്ഥ FFI_TYPE_UINT16:
 	      re = ((unsigned short *) rv)[0];
 	      im = ((unsigned short *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT16:
+	      നിർത്തുക;
+	    അവസ്ഥ FFI_TYPE_SINT16:
 	      re = (unsigned long) (long) ((signed short *) rv)[0];
 	      im = (unsigned long) (long) ((signed short *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT32:
-	      re = ((unsigned int *) rv)[0];
-	      im = ((unsigned int *) rv)[1];
-	      break;
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT32:
-	      re = (unsigned long) (long) ((signed int *) rv)[0];
-	      im = (unsigned long) (long) ((signed int *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	    default:
+	      നിർത്തുക;
+	    അവസ്ഥ FFI_TYPE_UINT32:
+	      re = ((unsigned പൂർണ്ണസംഖ്യ *) rv)[0];
+	      im = ((unsigned പൂർണ്ണസംഖ്യ *) rv)[1];
+	      നിർത്തുക;
+	    അവസ്ഥ FFI_TYPE_INT:
+	    അവസ്ഥ FFI_TYPE_SINT32:
+	      re = (unsigned long) (long) ((signed പൂർണ്ണസംഖ്യ *) rv)[0];
+	      im = (unsigned long) (long) ((signed പൂർണ്ണസംഖ്യ *) rv)[1];
+	      നിർത്തുക;
+	    അവസ്ഥ FFI_TYPE_SINT64:
+	    അവസ്ഥ FFI_TYPE_UINT64:
+	    അവസ്ഥ FFI_TYPE_POINTER:
+	    സ്ഥിരസ്ഥിതി:
 	      re = ((unsigned long *) rv)[0];
 	      im = ((unsigned long *) rv)[1];
-	      break;
+	      നിർത്തുക;
 	    }
 	  ((unsigned long *) rv)[0] = re;
 	  ((unsigned long *) rv)[1] = im;
-	  return PPC_LD_R3R4;
+	  തിരികെ PPC_LD_R3R4;
 	}
       }
 #endif
-    case FFI_TYPE_STRUCT:
-      if ((cif->flags & FLAG_RETURNS_SMST) != 0)
+    അവസ്ഥ FFI_TYPE_STRUCT:
+      എങ്കിൽ ((cif->flags & FLAG_RETURNS_SMST) != 0)
 	{
-	  if ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
+	  എങ്കിൽ ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	    {
 	      /* A struct smaller than a dword is returned in the low bits
 		 of r3 right justified.  Larger structs are passed left
 		 justified in r3 and r4.  The return value area on the
 		 stack will have the structs as they are usually stored
 		 in memory. */
-	      switch (cif->rtype->size)
+	      തിരഞ്ഞെടുപ്പ് (cif->rtype->size)
 		{
-		case 0:
-		  return PPC_LD_NONE;
-		case 1:
-		  return PPC_LD_U8;
-		case 2:
-		  return PPC_LD_U16;
-		case 3:
-		  return PPC64_LD_STRUCT_3;
-		case 4:
-		  return PPC_LD_U32;
-		case 5:
-		  return PPC64_LD_STRUCT_5;
-		case 6:
-		  return PPC64_LD_STRUCT_6;
-		case 7:
-		  return PPC64_LD_STRUCT_7;
-		case 8 ... 16:
-		  return PPC_LD_R3R4;
+		അവസ്ഥ 0:
+		  തിരികെ PPC_LD_NONE;
+		അവസ്ഥ 1:
+		  തിരികെ PPC_LD_U8;
+		അവസ്ഥ 2:
+		  തിരികെ PPC_LD_U16;
+		അവസ്ഥ 3:
+		  തിരികെ PPC64_LD_STRUCT_3;
+		അവസ്ഥ 4:
+		  തിരികെ PPC_LD_U32;
+		അവസ്ഥ 5:
+		  തിരികെ PPC64_LD_STRUCT_5;
+		അവസ്ഥ 6:
+		  തിരികെ PPC64_LD_STRUCT_6;
+		അവസ്ഥ 7:
+		  തിരികെ PPC64_LD_STRUCT_7;
+		അവസ്ഥ 8 ... 16:
+		  തിരികെ PPC_LD_R3R4;
 		}
-	      break;
+	      നിർത്തുക;
 	    }
-	  if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	    return PPC64_LD_VECTOR_HOMOG;
-	  if ((cif->flags & FLAG_RETURNS_64BITS) != 0)
-	    return PPC64_LD_DOUBLE_HOMOG;
-	  return PPC64_LD_FLOAT_HOMOG;
+	  എങ്കിൽ ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	    തിരികെ PPC64_LD_VECTOR_HOMOG;
+	  എങ്കിൽ ((cif->flags & FLAG_RETURNS_64BITS) != 0)
+	    തിരികെ PPC64_LD_DOUBLE_HOMOG;
+	  തിരികെ PPC64_LD_FLOAT_HOMOG;
         }
-      return PPC_LD_NONE;
+      തിരികെ PPC_LD_NONE;
     }
   abort();
 }

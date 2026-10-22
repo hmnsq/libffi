@@ -60,14 +60,14 @@
 #define PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
 #define PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
 #define PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
-#else
+#അല്ലെങ്കിൽ
 #define PPC32_SYSV_LD_STRUCT_3	11
 #define PPC32_SYSV_LD_STRUCT_5	12
 #define PPC32_SYSV_LD_STRUCT_6	13
 #define PPC32_SYSV_LD_STRUCT_7	14
 #endif
 
-#else /* POWERPC64 */
+#അല്ലെങ്കിൽ /* POWERPC64 */
 
 #define PPC_LD_U32		10
 #define PPC_LD_S32		11
@@ -84,7 +84,7 @@
 #define PPC64_LD_STRUCT_5	PPC_LD_I64
 #define PPC64_LD_STRUCT_6	PPC_LD_I64
 #define PPC64_LD_STRUCT_7	PPC_LD_I64
-#else
+#അല്ലെങ്കിൽ
 #define PPC64_LD_STRUCT_3	16
 #define PPC64_LD_STRUCT_5	17
 #define PPC64_LD_STRUCT_6	18
@@ -95,7 +95,7 @@
 
 #ifndef LIBFFI_ASM
 
-enum {
+എണ്ണൽ {
   /* The assembly depends on these exact flags.  */
   /* These go in cr7 */
   FLAG_RETURNS_SMST     = 1 << (31-31), /* Used for FFI_SYSV small structs.  */
@@ -118,56 +118,56 @@ enum {
   FLAG_VEC_ARGUMENTS    = 1 << (31- 3),
 };
 
-typedef union
+തരനിർവചനം സംഘം
 {
-  float f;
-  double d;
+  ദശാംശം f;
+  ഇരട്ട d;
 } ffi_dblfl;
 
-#if defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
-typedef _Float128 float128;
-#elif defined(__FLOAT128__)
-typedef __float128 float128;
-#else
-typedef char float128[16] __attribute__((aligned(16)));
+#എങ്കിൽ defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
+തരനിർവചനം _Float128 float128;
+#അല്ലെങ്കിലെങ്കിൽ defined(__FLOAT128__)
+തരനിർവചനം __float128 float128;
+#അല്ലെങ്കിൽ
+തരനിർവചനം അക്ഷരം float128[16] __attribute__((aligned(16)));
 #endif
 
-void FFI_HIDDEN ffi_closure_SYSV (void);
-void FFI_HIDDEN ffi_go_closure_sysv (void);
-void FFI_HIDDEN ffi_call_SYSV(extended_cif *, void (*)(void), void *,
-			      unsigned, void *, int);
+ശൂന്യം FFI_HIDDEN ffi_closure_SYSV (ശൂന്യം);
+ശൂന്യം FFI_HIDDEN ffi_go_closure_sysv (ശൂന്യം);
+ശൂന്യം FFI_HIDDEN ffi_call_SYSV(extended_cif *, ശൂന്യം (*)(ശൂന്യം), ശൂന്യം *,
+			      unsigned, ശൂന്യം *, പൂർണ്ണസംഖ്യ);
 
-void FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
+ശൂന്യം FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
 ffi_status FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
 ffi_status FFI_HIDDEN ffi_prep_closure_loc_sysv (ffi_closure *,
 						 ffi_cif *,
-						 void (*) (ffi_cif *, void *,
-							   void **, void *),
-						 void *, void *);
-int FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
-					void (*) (ffi_cif *, void *,
-						  void **, void *),
-					void *, void *, unsigned long *,
+						 ശൂന്യം (*) (ffi_cif *, ശൂന്യം *,
+							   ശൂന്യം **, ശൂന്യം *),
+						 ശൂന്യം *, ശൂന്യം *);
+പൂർണ്ണസംഖ്യ FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
+					ശൂന്യം (*) (ffi_cif *, ശൂന്യം *,
+						  ശൂന്യം **, ശൂന്യം *),
+					ശൂന്യം *, ശൂന്യം *, unsigned long *,
 					ffi_dblfl *, unsigned long *);
 
-void FFI_HIDDEN ffi_call_LINUX64(extended_cif *, void (*) (void), void *,
-				 unsigned long, void *, long);
-void FFI_HIDDEN ffi_closure_LINUX64 (void);
-void FFI_HIDDEN ffi_go_closure_linux64 (void);
+ശൂന്യം FFI_HIDDEN ffi_call_LINUX64(extended_cif *, ശൂന്യം (*) (ശൂന്യം), ശൂന്യം *,
+				 unsigned long, ശൂന്യം *, long);
+ശൂന്യം FFI_HIDDEN ffi_closure_LINUX64 (ശൂന്യം);
+ശൂന്യം FFI_HIDDEN ffi_go_closure_linux64 (ശൂന്യം);
 
-void FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
+ശൂന്യം FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
 ffi_status FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned int,
-						unsigned int);
-void FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *const);
+ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned പൂർണ്ണസംഖ്യ,
+						unsigned പൂർണ്ണസംഖ്യ);
+ശൂന്യം FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *സ്ഥിരം);
 ffi_status FFI_HIDDEN ffi_prep_closure_loc_linux64 (ffi_closure *, ffi_cif *,
-						    void (*) (ffi_cif *, void *,
-							      void **, void *),
-						    void *, void *);
-int FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
-					   void (*) (ffi_cif *, void *,
-						     void **, void *),
-					   void *, void *,
+						    ശൂന്യം (*) (ffi_cif *, ശൂന്യം *,
+							      ശൂന്യം **, ശൂന്യം *),
+						    ശൂന്യം *, ശൂന്യം *);
+പൂർണ്ണസംഖ്യ FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
+					   ശൂന്യം (*) (ffi_cif *, ശൂന്യം *,
+						     ശൂന്യം **, ശൂന്യം *),
+					   ശൂന്യം *, ശൂന്യം *,
 					   unsigned long *, ffi_dblfl *,
 					   float128 *);
 

@@ -25,20 +25,20 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
+#അന്തര്ഭാവ <stdlib.h>
+#അന്തര്ഭാവ "internal.h"
 
 #ifndef SPARC64
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#എങ്കിൽ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# എങ്കിൽ FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#അല്ലെങ്കിൽ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
@@ -48,111 +48,111 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
+  പൂർണ്ണസംഖ്യ rtt = rtype->type;
   size_t bytes;
-  int i, n, flags;
+  പൂർണ്ണസംഖ്യ i, n, flags;
 
   /* Set the return type flag */
-  switch (rtt)
+  തിരഞ്ഞെടുപ്പ് (rtt)
     {
-    case FFI_TYPE_VOID:
+    അവസ്ഥ FFI_TYPE_VOID:
       flags = SPARC_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_FLOAT:
       flags = SPARC_RET_F_1;
-      break;
-    case FFI_TYPE_DOUBLE:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_DOUBLE:
       flags = SPARC_RET_F_2;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_LONGDOUBLE:
+    അവസ്ഥ FFI_TYPE_STRUCT:
       flags = (rtype->size & 0xfff) << SPARC_SIZEMASK_SHIFT;
       flags |= SPARC_RET_STRUCT;
-      break;
-    case FFI_TYPE_SINT8:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT8:
       flags = SPARC_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT8:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_UINT8:
       flags = SPARC_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT16:
       flags = SPARC_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT16:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_UINT16:
       flags = SPARC_RET_UINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_INT:
+    അവസ്ഥ FFI_TYPE_SINT32:
+    അവസ്ഥ FFI_TYPE_UINT32:
+    അവസ്ഥ FFI_TYPE_POINTER:
       flags = SPARC_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
       flags = SPARC_RET_INT64;
-      break;
-    case FFI_TYPE_COMPLEX:
+      നിർത്തുക;
+    അവസ്ഥ FFI_TYPE_COMPLEX:
       rtt = rtype->elements[0]->type;
-      switch (rtt)
+      തിരഞ്ഞെടുപ്പ് (rtt)
 	{
-	case FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
 	  flags = SPARC_RET_F_2;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_DOUBLE:
 	  flags = SPARC_RET_F_4;
-	  break;
-	case FFI_TYPE_LONGDOUBLE:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	  flags = SPARC_RET_F_8;
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_UINT64:
 	  flags = SPARC_RET_INT128;
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_UINT32:
 	  flags = SPARC_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_UINT16:
 	  flags = SP_V8_RET_CPLX16;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_SINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
 	  flags = SP_V8_RET_CPLX8;
-	  break;
-	default:
+	  നിർത്തുക;
+	സ്ഥിരസ്ഥിതി:
 	  abort();
 	}
-      break;
-    default:
+      നിർത്തുക;
+    സ്ഥിരസ്ഥിതി:
       abort();
     }
   cif->flags = flags;
 
   bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  വേണ്ടി (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t z = ty->size;
-      int tt = ty->type;
+      പൂർണ്ണസംഖ്യ tt = ty->type;
 
-      switch (tt)
+      തിരഞ്ഞെടുപ്പ് (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Passed by reference.  */
 	  z = 4;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_COMPLEX:
+	അവസ്ഥ FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
+	  എങ്കിൽ (tt == FFI_TYPE_FLOAT || z > 8)
+	    പോകുക by_reference;
 	  /* FALLTHRU */
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  z = FFI_ALIGN(z, 4);
 	}
       bytes += z;
@@ -160,7 +160,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary.  */
-  if (bytes < 6 * 4)
+  എങ്കിൽ (bytes < 6 * 4)
     bytes = 6 * 4;
 
   /* The ABI always requires space for the struct return pointer.  */
@@ -173,29 +173,29 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   bytes += 4*16 + 4*8;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
-			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_call_v8(ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue,
+			ശൂന്യം **avalue, size_t bytes, ശൂന്യം *closure) FFI_HIDDEN;
 
-int FFI_HIDDEN
-ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
+പൂർണ്ണസംഖ്യ FFI_HIDDEN
+ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  പൂർണ്ണസംഖ്യ flags = cif->flags;
+  പൂർണ്ണസംഖ്യ i, nargs;
 
-  if (rvalue == NULL)
+  എങ്കിൽ (rvalue == ശൂന്യ)
     {
-      if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+      എങ്കിൽ ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
-	  rvalue = (char *)argp + cif->bytes;
+	  rvalue = (അക്ഷരം *)argp + cif->bytes;
 	}
-      else
+      അല്ലെങ്കിൽ
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -213,105 +213,105 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 #endif
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  വേണ്ടി (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
-      void *a = avalue[i];
-      int tt = ty->type;
+      ശൂന്യം *a = avalue[i];
+      പൂർണ്ണസംഖ്യ tt = ty->type;
       size_t z;
 
-      switch (tt)
+      തിരഞ്ഞെടുപ്പ് (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  *argp++ = (unsigned long)a;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	അവസ്ഥ FFI_TYPE_SINT64:
 	  memcpy(argp, a, 8);
 	  argp += 2;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_POINTER:
 	  *argp++ = *(unsigned *)a;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_UINT8:
+	അവസ്ഥ FFI_TYPE_UINT8:
 	  *argp++ = *(UINT8 *)a;
-	  break;
-	case FFI_TYPE_SINT8:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_SINT8:
 	  *argp++ = *(SINT8 *)a;
-	  break;
-	case FFI_TYPE_UINT16:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_UINT16:
 	  *argp++ = *(UINT16 *)a;
-	  break;
-	case FFI_TYPE_SINT16:
+	  നിർത്തുക;
+	അവസ്ഥ FFI_TYPE_SINT16:
 	  *argp++ = *(SINT16 *)a;
-	  break;
+	  നിർത്തുക;
 
-        case FFI_TYPE_COMPLEX:
+        അവസ്ഥ FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
 	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  എങ്കിൽ (tt == FFI_TYPE_FLOAT || z > 8)
+	    പോകുക by_reference;
+	  എങ്കിൽ (z < 4)
 	    {
-	      memcpy((char *)argp + 4 - z, a, z);
+	      memcpy((അക്ഷരം *)argp + 4 - z, a, z);
 	      argp++;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 	      memcpy(argp, a, z);
 	      argp += z / 4;
 	    }
-	  break;
+	  നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  abort();
 	}
     }
 
-  return flags;
+  തിരികെ flags;
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+സ്ഥിതം ശൂന്യം
+ffi_call_int (ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue,
+	      ശൂന്യം **avalue, ശൂന്യം *closure)
 {
   size_t bytes = cif->bytes;
   size_t i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  ശൂന്യം **avalue_copy = ശൂന്യ;
 
   FFI_ASSERT (cif->abi == FFI_V8);
 
   /* If we've not got a return value, we need to create one if we've
      got to pass the return value to the callee.  Otherwise ignore it.  */
-  if (rvalue == NULL
+  എങ്കിൽ (rvalue == ശൂന്യ
       && (cif->flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
     bytes += FFI_ALIGN (cif->rtype->size, 8);
 
   /* If we have any structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  വേണ്ടി (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT)
+      പൂർണ്ണസംഖ്യ size = at->size;
+      എങ്കിൽ (at->type == FFI_TYPE_STRUCT)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          അക്ഷരം *argcopy = alloca (size);
+          എങ്കിൽ (avalue_copy == ശൂന്യ)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * വലുപ്പം (ശൂന്യം *));
+              memcpy (avalue_copy, avalue, nargs * വലുപ്പം (ശൂന്യം *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -322,47 +322,47 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   ffi_call_v8(cif, fn, rvalue, avalue, -bytes, closure);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ശൂന്യം
+ffi_call (ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue, ശൂന്യം **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ശൂന്യ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+ശൂന്യം
+ffi_call_go (ffi_cif *cif, ശൂന്യം (*fn)(ശൂന്യം), ശൂന്യം *rvalue,
+	     ശൂന്യം **avalue, ശൂന്യം *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
 
 #ifdef __GNUC__
-static inline void
-ffi_flush_icache (void *p)
+സ്ഥിതം വരിയിൽ ശൂന്യം
+ffi_flush_icache (ശൂന്യം *p)
 {
   /* SPARC v8 requires 5 instructions for flush to be visible */
-  __asm__ volatile ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
+  __asm__ അസ്ഥിര ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
 		: : "r" (p) : "memory");
 }
-#else
-extern void ffi_flush_icache (void *) FFI_HIDDEN;
+#അല്ലെങ്കിൽ
+ബാഹ്യ ശൂന്യം ffi_flush_icache (ശൂന്യം *) FFI_HIDDEN;
 #endif
 
-extern void ffi_closure_v8(void) FFI_HIDDEN;
-extern void ffi_go_closure_v8(void) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_closure_v8(ശൂന്യം) FFI_HIDDEN;
+ബാഹ്യ ശൂന്യം ffi_go_closure_v8(ശൂന്യം) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*),
+		      ശൂന്യം *user_data,
+		      ശൂന്യം *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+  unsigned പൂർണ്ണസംഖ്യ *tramp = (unsigned പൂർണ്ണസംഖ്യ *) &closure->tramp[0];
   unsigned long ctx = (unsigned long) closure;
   unsigned long fn = (unsigned long) ffi_closure_v8;
 
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi != FFI_V8)
+    തിരികെ FFI_BAD_ABI;
 
   tramp[0] = 0x03000000 | fn >> 10;	/* sethi %hi(fn), %g1	*/
   tramp[1] = 0x05000000 | ctx >> 10;	/* sethi %hi(ctx), %g2	*/
@@ -375,45 +375,45 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
   ffi_flush_icache (closure);
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*))
 {
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi != FFI_V8)
+    തിരികെ FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_v8;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
-int FFI_HIDDEN
+പൂർണ്ണസംഖ്യ FFI_HIDDEN
 ffi_closure_sparc_inner_v8(ffi_cif *cif, 
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data, void *rvalue,
+			   ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*),
+			   ശൂന്യം *user_data, ശൂന്യം *rvalue,
 			   unsigned long *argp)
 {
   ffi_type **arg_types;
-  void **avalue;
-  int i, nargs, flags;
+  ശൂന്യം **avalue;
+  പൂർണ്ണസംഖ്യ i, nargs, flags;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
   flags = cif->flags;
-  avalue = alloca(nargs * sizeof(void *));
+  avalue = alloca(nargs * വലുപ്പം(ശൂന്യം *));
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  Also install it so we
      can return the address in %o0.  */
-  if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+  എങ്കിൽ ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
     {
-      void *new_rvalue = (void *)*argp;
-      *(void **)rvalue = new_rvalue;
+      ശൂന്യം *new_rvalue = (ശൂന്യം *)*argp;
+      *(ശൂന്യം **)rvalue = new_rvalue;
       rvalue = new_rvalue;
     }
 
@@ -421,26 +421,26 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   argp++;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++)
+  വേണ്ടി (i = 0; i < nargs; i++)
     {
       ffi_type *ty = arg_types[i];
-      int tt = ty->type;
-      void *a = argp;
+      പൂർണ്ണസംഖ്യ tt = ty->type;
+      ശൂന്യം *a = argp;
       size_t z;
 
-      switch (tt)
+      തിരഞ്ഞെടുപ്പ് (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	അവസ്ഥ FFI_TYPE_STRUCT:
+	അവസ്ഥ FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Straight copy of invisible reference.  */
-	  a = (void *)*argp;
-	  break;
+	  a = (ശൂന്യം *)*argp;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  if ((unsigned long)a & 7)
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	അവസ്ഥ FFI_TYPE_SINT64:
+	അവസ്ഥ FFI_TYPE_UINT64:
+	  എങ്കിൽ ((unsigned long)a & 7)
 	    {
 	      /* Align on a 8-byte boundary.  */
 	      UINT64 *tmp = alloca(8);
@@ -448,35 +448,35 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 	      a = tmp;
 	    }
 	  argp++;
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  break;
-        case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT16:
+	അവസ്ഥ FFI_TYPE_INT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_UINT32:
+	അവസ്ഥ FFI_TYPE_SINT32:
+	അവസ്ഥ FFI_TYPE_POINTER:
+	  നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_UINT16:
+        അവസ്ഥ FFI_TYPE_SINT16:
 	  a += 2;
-	  break;
-        case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT8:
+	  നിർത്തുക;
+        അവസ്ഥ FFI_TYPE_UINT8:
+        അവസ്ഥ FFI_TYPE_SINT8:
 	  a += 3;
-	  break;
+	  നിർത്തുക;
 
-        case FFI_TYPE_COMPLEX:
+        അവസ്ഥ FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
 	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  എങ്കിൽ (tt == FFI_TYPE_FLOAT || z > 8)
+	    പോകുക by_reference;
+	  എങ്കിൽ (z < 4)
 	    a += 4 - z;
-	  else if (z > 4)
+	  അല്ലെങ്കിൽ എങ്കിൽ (z > 4)
 	    argp++;
-	  break;
+	  നിർത്തുക;
 
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  abort();
 	}
       argp++;
@@ -487,6 +487,6 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  തിരികെ flags;
 }
 #endif /* !SPARC64 */

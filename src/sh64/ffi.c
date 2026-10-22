@@ -25,233 +25,233 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#അന്തര്ഭാവ <ffi.h>
+#അന്തര്ഭാവ <ffi_common.h>
 
-#include <stdlib.h>
+#അന്തര്ഭാവ <stdlib.h>
 
 #define NGREGARG 8
 #define NFREGARG 12
 
-static int
+സ്ഥിതം പൂർണ്ണസംഖ്യ
 return_type (ffi_type *arg)
 {
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  എങ്കിൽ (arg->type != FFI_TYPE_STRUCT)
+    തിരികെ arg->type;
 
   /* gcc uses r2 if the result can be packed in on register.  */
-  if (arg->size <= sizeof (UINT8))
-    return FFI_TYPE_UINT8;
-  else if (arg->size <= sizeof (UINT16))
-    return FFI_TYPE_UINT16;
-  else if (arg->size <= sizeof (UINT32))
-    return FFI_TYPE_UINT32;
-  else if (arg->size <= sizeof (UINT64))
-    return FFI_TYPE_UINT64;
+  എങ്കിൽ (arg->size <= വലുപ്പം (UINT8))
+    തിരികെ FFI_TYPE_UINT8;
+  അല്ലെങ്കിൽ എങ്കിൽ (arg->size <= വലുപ്പം (UINT16))
+    തിരികെ FFI_TYPE_UINT16;
+  അല്ലെങ്കിൽ എങ്കിൽ (arg->size <= വലുപ്പം (UINT32))
+    തിരികെ FFI_TYPE_UINT32;
+  അല്ലെങ്കിൽ എങ്കിൽ (arg->size <= വലുപ്പം (UINT64))
+    തിരികെ FFI_TYPE_UINT64;
 
-  return FFI_TYPE_STRUCT;
+  തിരികെ FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+ശൂന്യം ffi_prep_args(അക്ഷരം *അട്ടി, extended_cif *ecif)
 {
-  register unsigned int i;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
+  രജിസ്റ്റർ unsigned പൂർണ്ണസംഖ്യ i;
+  രജിസ്റ്റർ unsigned പൂർണ്ണസംഖ്യ avn;
+  രജിസ്റ്റർ ശൂന്യം **p_argv;
+  രജിസ്റ്റർ അക്ഷരം *argp;
+  രജിസ്റ്റർ ffi_type **p_arg;
 
-  argp = stack;
+  argp = അട്ടി;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  എങ്കിൽ (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
-      *(void **) argp = ecif->rvalue;
-      argp += sizeof (UINT64);
+      *(ശൂന്യം **) argp = ecif->rvalue;
+      argp += വലുപ്പം (UINT64);
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  വേണ്ടി (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
-      int align;
+      പൂർണ്ണസംഖ്യ align;
 
       z = (*p_arg)->size;
       align = (*p_arg)->alignment;
-      if (z < sizeof (UINT32))
+      എങ്കിൽ (z < വലുപ്പം (UINT32))
 	{
-	  switch ((*p_arg)->type)
+	  തിരഞ്ഞെടുപ്പ് ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
+	    അവസ്ഥ FFI_TYPE_SINT8:
 	      *(SINT64 *) argp = (SINT64) *(SINT8 *)(*p_argv);
-	      break;
+	      നിർത്തുക;
   
-	    case FFI_TYPE_UINT8:
+	    അവസ്ഥ FFI_TYPE_UINT8:
 	      *(UINT64 *) argp = (UINT64) *(UINT8 *)(*p_argv);
-	      break;
+	      നിർത്തുക;
   
-	    case FFI_TYPE_SINT16:
+	    അവസ്ഥ FFI_TYPE_SINT16:
 	      *(SINT64 *) argp = (SINT64) *(SINT16 *)(*p_argv);
-	      break;
+	      നിർത്തുക;
   
-	    case FFI_TYPE_UINT16:
+	    അവസ്ഥ FFI_TYPE_UINT16:
 	      *(UINT64 *) argp = (UINT64) *(UINT16 *)(*p_argv);
-	      break;
+	      നിർത്തുക;
   
-	    case FFI_TYPE_STRUCT:
+	    അവസ്ഥ FFI_TYPE_STRUCT:
 	      memcpy (argp, *p_argv, z);
-	      break;
+	      നിർത്തുക;
 
-	    default:
+	    സ്ഥിരസ്ഥിതി:
 	      FFI_ASSERT(0);
 	    }
-	  argp += sizeof (UINT64);
+	  argp += വലുപ്പം (UINT64);
 	}
-      else if (z == sizeof (UINT32) && align == sizeof (UINT32))
+      അല്ലെങ്കിൽ എങ്കിൽ (z == വലുപ്പം (UINT32) && align == വലുപ്പം (UINT32))
 	{
-	  switch ((*p_arg)->type)
+	  തിരഞ്ഞെടുപ്പ് ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT32:
+	    അവസ്ഥ FFI_TYPE_INT:
+	    അവസ്ഥ FFI_TYPE_SINT32:
 	      *(SINT64 *) argp = (SINT64) *(SINT32 *) (*p_argv);
-	      break;
+	      നിർത്തുക;
 
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_POINTER:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_STRUCT:
+	    അവസ്ഥ FFI_TYPE_FLOAT:
+	    അവസ്ഥ FFI_TYPE_POINTER:
+	    അവസ്ഥ FFI_TYPE_UINT32:
+	    അവസ്ഥ FFI_TYPE_STRUCT:
 	      *(UINT64 *) argp = (UINT64) *(UINT32 *) (*p_argv);
-	      break;
+	      നിർത്തുക;
 
-	    default:
+	    സ്ഥിരസ്ഥിതി:
 	      FFI_ASSERT(0);
-	      break;
+	      നിർത്തുക;
 	    }
-	  argp += sizeof (UINT64);
+	  argp += വലുപ്പം (UINT64);
 	}
-      else if (z == sizeof (UINT64)
-	       && align == sizeof (UINT64)
-	       && ((int) *p_argv & (sizeof (UINT64) - 1)) == 0)
+      അല്ലെങ്കിൽ എങ്കിൽ (z == വലുപ്പം (UINT64)
+	       && align == വലുപ്പം (UINT64)
+	       && ((പൂർണ്ണസംഖ്യ) *p_argv & (വലുപ്പം (UINT64) - 1)) == 0)
 	{
 	  *(UINT64 *) argp = *(UINT64 *) (*p_argv);
-	  argp += sizeof (UINT64);
+	  argp += വലുപ്പം (UINT64);
 	}
-      else
+      അല്ലെങ്കിൽ
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  പൂർണ്ണസംഖ്യ n = (z + വലുപ്പം (UINT64) - 1) / വലുപ്പം (UINT64);
 
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (UINT64);
+	  argp += n * വലുപ്പം (UINT64);
 	}
     }
 
-  return;
+  തിരികെ;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-  int freg;
-  int fpair = -1;
+  പൂർണ്ണസംഖ്യ i, j;
+  പൂർണ്ണസംഖ്യ size, type;
+  പൂർണ്ണസംഖ്യ n, m;
+  പൂർണ്ണസംഖ്യ greg;
+  പൂർണ്ണസംഖ്യ freg;
+  പൂർണ്ണസംഖ്യ fpair = -1;
 
   greg = (return_type (cif->rtype) == FFI_TYPE_STRUCT ? 1 : 0);
   freg = 0;
   cif->flags2 = 0;
 
-  for (i = j = 0; i < cif->nargs; i++)
+  വേണ്ടി (i = j = 0; i < cif->nargs; i++)
     {
       type = (cif->arg_types)[i]->type;
-      switch (type)
+      തിരഞ്ഞെടുപ്പ് (type)
 	{
-	case FFI_TYPE_FLOAT:
+	അവസ്ഥ FFI_TYPE_FLOAT:
 	  greg++;
-	  cif->bytes += sizeof (UINT64) - sizeof (float);
-	  if (freg >= NFREGARG - 1)
-	    continue;
-	  if (fpair < 0)
+	  cif->bytes += വലുപ്പം (UINT64) - വലുപ്പം (ദശാംശം);
+	  എങ്കിൽ (freg >= NFREGARG - 1)
+	    തുടരുക;
+	  എങ്കിൽ (fpair < 0)
 	    {
 	      fpair = freg;
 	      freg += 2;
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    fpair = -1;
 	  cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
-	  break;
+	  നിർത്തുക;
 
-	case FFI_TYPE_DOUBLE:
-	  if (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
-	    continue;
-	  if ((freg + 1) < NFREGARG)
+	അവസ്ഥ FFI_TYPE_DOUBLE:
+	  എങ്കിൽ (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
+	    തുടരുക;
+	  എങ്കിൽ ((freg + 1) < NFREGARG)
 	    {
 	      freg += 2;
 	      cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  നിർത്തുക;
 	      
-	default:
+	സ്ഥിരസ്ഥിതി:
 	  size = (cif->arg_types)[i]->size;
-	  if (size < sizeof (UINT64))
-	    cif->bytes += sizeof (UINT64) - size;
-	  n = (size + sizeof (UINT64) - 1) / sizeof (UINT64);
-	  if (greg >= NGREGARG)
-	    continue;
-	  else if (greg + n - 1 >= NGREGARG)
+	  എങ്കിൽ (size < വലുപ്പം (UINT64))
+	    cif->bytes += വലുപ്പം (UINT64) - size;
+	  n = (size + വലുപ്പം (UINT64) - 1) / വലുപ്പം (UINT64);
+	  എങ്കിൽ (greg >= NGREGARG)
+	    തുടരുക;
+	  അല്ലെങ്കിൽ എങ്കിൽ (greg + n - 1 >= NGREGARG)
 	    greg = NGREGARG;
-	  else
+	  അല്ലെങ്കിൽ
 	    greg += n;
-	  for (m = 0; m < n; m++)
+	  വേണ്ടി (m = 0; m < n; m++)
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  നിർത്തുക;
 	}
     }
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  തിരഞ്ഞെടുപ്പ് (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
+    അവസ്ഥ FFI_TYPE_STRUCT:
       cif->flags = return_type (cif->rtype);
-      break;
+      നിർത്തുക;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    അവസ്ഥ FFI_TYPE_VOID:
+    അവസ്ഥ FFI_TYPE_FLOAT:
+    അവസ്ഥ FFI_TYPE_DOUBLE:
+    അവസ്ഥ FFI_TYPE_SINT64:
+    അവസ്ഥ FFI_TYPE_UINT64:
       cif->flags = cif->rtype->type;
-      break;
+      നിർത്തുക;
 
-    default:
+    സ്ഥിരസ്ഥിതി:
       cif->flags = FFI_TYPE_INT;
-      break;
+      നിർത്തുക;
     }
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 /*@-declundef@*/
 /*@-exportheader@*/
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), 
+ബാഹ്യ ശൂന്യം ffi_call_SYSV(ശൂന്യം (*)(അക്ഷരം *, extended_cif *), 
 			  /*@out@*/ extended_cif *, 
 			  unsigned, unsigned, long long,
 			  /*@out@*/ unsigned *, 
-			  void (*fn)(void));
+			  ശൂന്യം (*fn)(ശൂന്യം));
 /*@=declundef@*/
 /*@=exportheader@*/
 
-void ffi_call(/*@dependent@*/ ffi_cif *cif, 
-	      void (*fn)(void), 
-	      /*@out@*/ void *rvalue, 
-	      /*@dependent@*/ void **avalue)
+ശൂന്യം ffi_call(/*@dependent@*/ ffi_cif *cif, 
+	      ശൂന്യം (*fn)(ശൂന്യം), 
+	      /*@out@*/ ശൂന്യം *rvalue, 
+	      /*@dependent@*/ ശൂന്യം **avalue)
 {
   extended_cif ecif;
   UINT64 trvalue;
@@ -262,50 +262,50 @@ void ffi_call(/*@dependent@*/ ffi_cif *cif,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  എങ്കിൽ (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  അല്ലെങ്കിൽ എങ്കിൽ ((rvalue == ശൂന്യ) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  അല്ലെങ്കിൽ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi) 
+  തിരഞ്ഞെടുപ്പ് (cif->abi) 
     {
-    case FFI_SYSV:
+    അവസ്ഥ FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, cif->flags2,
 		    ecif.rvalue, fn);
-      break;
-    default:
+      നിർത്തുക;
+    സ്ഥിരസ്ഥിതി:
       FFI_ASSERT(0);
-      break;
+      നിർത്തുക;
     }
 
-  if (rvalue
+  എങ്കിൽ (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     memcpy (rvalue, &trvalue, cif->rtype->size);
 }
 
-extern void ffi_closure_SYSV (void);
-extern void __ic_invalidate (void *line);
+ബാഹ്യ ശൂന്യം ffi_closure_SYSV (ശൂന്യം);
+ബാഹ്യ ശൂന്യം __ic_invalidate (ശൂന്യം *വരി);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ശൂന്യം (*fun)(ffi_cif*, ശൂന്യം*, ശൂന്യം**, ശൂന്യം*),
+		      ശൂന്യം *user_data,
+		      ശൂന്യം *codeloc)
 {
-  unsigned int *tramp;
+  unsigned പൂർണ്ണസംഖ്യ *tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  എങ്കിൽ (cif->abi != FFI_SYSV)
+    തിരികെ FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned പൂർണ്ണസംഖ്യ *) &closure->tramp[0];
   /* Since ffi_closure is an aligned object, the ffi trampoline is
      called as an SHcompact code.  Sigh.
      SHcompact part:
@@ -316,7 +316,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0x7001c701;
   tramp[1] = 0x0009402b;
-#else
+#അല്ലെങ്കിൽ
   tramp[0] = 0xc7017001;
   tramp[1] = 0x402b0009;
 #endif
@@ -332,10 +332,10 @@ ffi_prep_closure_loc (ffi_closure *closure,
   closure->user_data = user_data;
 
   /* Flush the icache.  */
-  __asm__ volatile ("ocbwb %0,0; synco; icbi %1,0; synci" : : "r" (tramp),
+  __asm__ അസ്ഥിര ("ocbwb %0,0; synco; icbi %1,0; synci" : : "r" (tramp),
 		"r"(codeloc));
 
-  return FFI_OK;
+  തിരികെ FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -346,28 +346,28 @@ ffi_prep_closure_loc (ffi_closure *closure,
  * following helper function to do most of the work.
  */
 
-int
+പൂർണ്ണസംഖ്യ
 ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue, 
 			 UINT64 *pgr, UINT64 *pfr, UINT64 *pst)
 {
-  void **avalue;
+  ശൂന്യം **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int greg, freg;
+  പൂർണ്ണസംഖ്യ i, avn;
+  പൂർണ്ണസംഖ്യ greg, freg;
   ffi_cif *cif;
-  int fpair = -1;
+  പൂർണ്ണസംഖ്യ fpair = -1;
 
   cif = closure->cif;
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * വലുപ്പം (ശൂന്യം *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (return_type (cif->rtype) == FFI_TYPE_STRUCT)
+  എങ്കിൽ (return_type (cif->rtype) == FFI_TYPE_STRUCT)
     {
       rvalue = (UINT64 *) *pgr;
       greg = 1;
     }
-  else
+  അല്ലെങ്കിൽ
     greg = 0;
 
   freg = 0;
@@ -375,86 +375,86 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  വേണ്ടി (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
-      void *p;
+      ശൂന്യം *p;
 
       z = (*p_arg)->size;
-      if (z < sizeof (UINT32))
+      എങ്കിൽ (z < വലുപ്പം (UINT32))
 	{
 	  p = pgr + greg++;
 
-	  switch ((*p_arg)->type)
+	  തിരഞ്ഞെടുപ്പ് ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_STRUCT:
+	    അവസ്ഥ FFI_TYPE_SINT8:
+	    അവസ്ഥ FFI_TYPE_UINT8:
+	    അവസ്ഥ FFI_TYPE_SINT16:
+	    അവസ്ഥ FFI_TYPE_UINT16:
+	    അവസ്ഥ FFI_TYPE_STRUCT:
 #ifdef __LITTLE_ENDIAN__
 	      avalue[i] = p;
-#else
-	      avalue[i] = ((char *) p) + sizeof (UINT32) - z;
+#അല്ലെങ്കിൽ
+	      avalue[i] = ((അക്ഷരം *) p) + വലുപ്പം (UINT32) - z;
 #endif
-	      break;
+	      നിർത്തുക;
 
-	    default:
+	    സ്ഥിരസ്ഥിതി:
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof (UINT32))
+      അല്ലെങ്കിൽ എങ്കിൽ (z == വലുപ്പം (UINT32))
 	{
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+	  എങ്കിൽ ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg < NFREGARG - 1)
+	      എങ്കിൽ (freg < NFREGARG - 1)
 		{
-		  if (fpair >= 0)
+		  എങ്കിൽ (fpair >= 0)
 		    {
 		      avalue[i] = (UINT32 *) pfr + fpair;
 		      fpair = -1;
 		    }
-		  else
+		  അല്ലെങ്കിൽ
 		    {
 #ifdef __LITTLE_ENDIAN__
 		      fpair = freg;
 		      avalue[i] = (UINT32 *) pfr + (1 ^ freg);
-#else
+#അല്ലെങ്കിൽ
 		      fpair = 1 ^ freg;
 		      avalue[i] = (UINT32 *) pfr + freg;
 #endif
 		      freg += 2;
 		    }
 		}
-	      else
+	      അല്ലെങ്കിൽ
 #ifdef __LITTLE_ENDIAN__
 		avalue[i] = pgr + greg;
-#else
+#അല്ലെങ്കിൽ
 		avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	    }
-	  else
+	  അല്ലെങ്കിൽ
 #ifdef __LITTLE_ENDIAN__
 	    avalue[i] = pgr + greg;
-#else
+#അല്ലെങ്കിൽ
 	    avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	  greg++;
 	}
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+      അല്ലെങ്കിൽ എങ്കിൽ ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
+	  എങ്കിൽ (freg + 1 >= NFREGARG)
 	    avalue[i] = pgr + greg;
-	  else
+	  അല്ലെങ്കിൽ
 	    {
 	      avalue[i] = pfr + (freg >> 1);
 	      freg += 2;
 	    }
 	  greg++;
 	}
-      else
+      അല്ലെങ്കിൽ
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  പൂർണ്ണസംഖ്യ n = (z + വലുപ്പം (UINT64) - 1) / വലുപ്പം (UINT64);
 
 	  avalue[i] = pgr + greg;
 	  greg += n;
@@ -464,6 +464,6 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   (closure->fun) (cif, rvalue, avalue, closure->user_data);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  തിരികെ return_type (cif->rtype);
 }
 
