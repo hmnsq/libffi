@@ -46,6 +46,6 @@
    misdispatching small-struct/HFA returns.  When this fires: add a matching slot
    for the new type to both tables in unix.S, then bump FFI_IA64_TYPE_LAST.  */
 #define FFI_IA64_TYPE_LAST FFI_TYPE_VECTOR
-#if FFI_TYPE_LAST != FFI_IA64_TYPE_LAST
+#यदि FFI_TYPE_LAST != FFI_IA64_TYPE_LAST
 # error "new FFI_TYPE_* added: sync the unix.S jump tables and bump FFI_IA64_TYPE_LAST"
 #endif

@@ -39,7 +39,7 @@
 /* For code common to all platforms on x86 and x86_64. */
 #define X86_ANY
 
-#if defined (X86_64) && defined (__i386__)
+#यदि defined (X86_64) && defined (__i386__)
 #undef X86_64
 #define X86
 #endif
@@ -49,7 +49,7 @@
 #define USE_BUILTIN_FFS 0 /* not yet implemented in mingw-64 */
 #endif
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#define FFI_TARGET_SPECIFIC_ढेर_SPACE_ALLOCATION
 #ifndef _MSC_VER
 #define FFI_TARGET_HAS_COMPLEX_TYPE
 #endif
@@ -61,7 +61,7 @@
 /* The System V x86-64 psABI passes 8- and 16-byte vectors in SSE registers;
    this is implemented by the ffi64.c (FFI_UNIX64) backend only.  32-bit x86
    and the Windows x86-64 backend (ffiw64.c) do not marshal vectors.  */
-#if defined(X86_64) && !defined(X86_WIN64)
+#यदि defined(X86_64) && !defined(X86_WIN64)
 #define FFI_TARGET_HAS_VECTOR_TYPE
 #endif
 
@@ -70,37 +70,37 @@
 #ifndef LIBFFI_ASM
 #ifdef X86_WIN64
 #ifdef _MSC_VER
-typedef unsigned __int64       ffi_arg;
-typedef __int64                ffi_sarg;
-#else
-typedef unsigned long long     ffi_arg;
-typedef long long              ffi_sarg;
+प्रकारनिर्देश अचिन्हित __int64       ffi_arg;
+प्रकारनिर्देश __int64                ffi_sarg;
+#अन्यथा
+प्रकारनिर्देश अचिन्हित दीर्घ दीर्घ     ffi_arg;
+प्रकारनिर्देश दीर्घ दीर्घ              ffi_sarg;
 #endif
-#else
-#if defined __x86_64__ && defined __ILP32__
+#अन्यथा
+#यदि defined __x86_64__ && defined __ILP32__
 #define FFI_SIZEOF_ARG 8
 #define FFI_SIZEOF_JAVA_RAW  4
-typedef unsigned long long     ffi_arg;
-typedef long long              ffi_sarg;
-#else
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+प्रकारनिर्देश अचिन्हित दीर्घ दीर्घ     ffi_arg;
+प्रकारनिर्देश दीर्घ दीर्घ              ffi_sarg;
+#अन्यथा
+प्रकारनिर्देश अचिन्हित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिन्हित दीर्घ            ffi_sarg;
 #endif
 #endif
 
-typedef enum ffi_abi {
-#if defined(X86_WIN64)
+प्रकारनिर्देश गणना ffi_abi {
+#यदि defined(X86_WIN64)
   FFI_FIRST_ABI = 0,
   FFI_WIN64,            /* sizeof(long double) == 8  - microsoft compilers */
   FFI_GNUW64,           /* sizeof(long double) == 16 - GNU compilers */
   FFI_LAST_ABI,
 #ifdef __GNUC__
   FFI_DEFAULT_ABI = FFI_GNUW64
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_WIN64
 #endif
 
-#elif defined(X86_64) || (defined (__x86_64__) && defined (X86_DARWIN))
+#नोचेद्यदि defined(X86_64) || (defined (__x86_64__) && defined (X86_DARWIN))
   FFI_FIRST_ABI = 1,
   FFI_UNIX64,
   FFI_WIN64,
@@ -109,7 +109,7 @@ typedef enum ffi_abi {
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX64
 
-#elif defined(X86_WIN32)
+#नोचेद्यदि defined(X86_WIN32)
   FFI_FIRST_ABI = 0,
   FFI_SYSV      = 1,
   FFI_STDCALL   = 2,
@@ -120,7 +120,7 @@ typedef enum ffi_abi {
   FFI_REGISTER  = 7,
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_MS_CDECL
-#else
+#अन्यथा
   FFI_FIRST_ABI = 0,
   FFI_SYSV      = 1,
   FFI_THISCALL  = 3,
@@ -153,30 +153,30 @@ typedef enum ffi_abi {
    When this fires: add a matching E() slot for the new type in both win64.S
    and win64_intel.S, then bump FFI_X86_TYPE_LAST to match.  */
 #define FFI_X86_TYPE_LAST FFI_TYPE_VECTOR
-#if FFI_TYPE_LAST != FFI_X86_TYPE_LAST
+#यदि FFI_TYPE_LAST != FFI_X86_TYPE_LAST
 # error "new FFI_TYPE_* added: sync the win64.S/win64_intel.S jump tables and bump FFI_X86_TYPE_LAST"
 #endif
 
-#if defined (X86_64) || defined(X86_WIN64) \
+#यदि defined (X86_64) || defined(X86_WIN64) \
     || (defined (__x86_64__) && defined (X86_DARWIN))
 /* 4 bytes of ENDBR64 + 7 bytes of LEA + 6 bytes of JMP + 7 bytes of NOP
    + 8 bytes of pointer.  */
 # define FFI_TRAMPOLINE_SIZE 32
 # define FFI_NATIVE_RAW_API 0
-#else
+#अन्यथा
 /* 4 bytes of ENDBR32 + 5 bytes of MOV + 5 bytes of JMP + 2 unused
    bytes.  */
 # define FFI_TRAMPOLINE_SIZE 16
 # define FFI_NATIVE_RAW_API 1  /* x86 has native raw api support */
 #endif
 
-#if !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
+#यदि !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
 # include <cet.h>
-# if (__CET__ & 1) != 0
+# यदि (__CET__ & 1) != 0
 #   define ENDBR_PRESENT
 # endif
 # define _CET_NOTRACK notrack
-#else
+#अन्यथा
 # define _CET_ENDBR
 # define _CET_NOTRACK
 #endif
