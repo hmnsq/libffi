@@ -20,13 +20,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -39,8 +39,8 @@
 /* HPUX assembler needs to see these symbols, otherwise compilation
    fails */
 #ifdef __hpux
-      .global memcpy
-      .global ffi_closure_unix_inner
+      .वैश्विक memcpy
+      .वैश्विक ffi_closure_unix_inner
 #endif
 
 /* int ffi_call_unix (struct ia64_args *stack, PTR64 rvalue,
@@ -48,7 +48,7 @@
  */
 
         .align 16
-        .global	ffi_call_unix
+        .वैश्विक	ffi_call_unix
         .proc	ffi_call_unix
 ffi_call_unix:
 	.prologue
@@ -100,7 +100,7 @@ ffi_call_unix:
 	;;
 	ld8	gp = [in2]
 	mov	b6 = r16
-	br.call.sptk.many b0 = b6
+	br.आह्वान.sptk.many b0 = b6
 	;;
 
 	/* Dispatch to handle return value.  */
@@ -207,7 +207,7 @@ ffi_call_unix:
 	// PLT resolver uses that scratch space at
 	// 'memcpy' symbol reolution time
 	add	sp = -16, sp
-	br.call.sptk.many b0 = memcpy#
+	br.आह्वान.sptk.many b0 = memcpy#
 	;;
 	mov	ar.pfs = loc0
 	mov	b0 = loc1
@@ -289,7 +289,7 @@ ffi_call_unix:
         .endp ffi_call_unix
 
         .align 16
-        .global ffi_closure_unix
+        .वैश्विक ffi_closure_unix
         .proc ffi_closure_unix
 
 #define FRAME_SIZE	(8*16 + 8*8 + 8*16)
@@ -358,7 +358,7 @@ ffi_closure_unix:
 	st8.spill [r17] = in7
 
 	/* Invoke ffi_closure_unix_inner for the hard work.  */
-	br.call.sptk.many b0 = ffi_closure_unix_inner
+	br.आह्वान.sptk.many b0 = ffi_closure_unix_inner
 	;;
 
 	/* Dispatch to handle return value.  */
