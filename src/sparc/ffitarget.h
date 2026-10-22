@@ -34,22 +34,22 @@
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
+#𐡄𐡍 defined(__arch64__) || defined(__sparcv9)
 #ifndef SPARC64
 #define SPARC64
 #endif
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+تعريفنوع unsigned long          ffi_arg;
+تعريفنوع signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+تعريفنوع تعداد ffi_abi {
   FFI_FIRST_ABI = 0,
 #ifdef SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#وإلا
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
 #endif
@@ -62,7 +62,7 @@ typedef enum ffi_abi {
 
 #ifdef SPARC64
 # define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+# define FFI_EXTRA_CIF_FIELDS  unsigned صحيح nfixedargs
 #endif
 
 /* ---- Definitions for closures ----------------------------------------- */
@@ -73,7 +73,7 @@ typedef enum ffi_abi {
 
 #ifdef SPARC64
 #define FFI_TRAMPOLINE_SIZE 24
-#else
+#وإلا
 #define FFI_TRAMPOLINE_SIZE 16
 #endif
 

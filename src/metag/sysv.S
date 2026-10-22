@@ -16,13 +16,13 @@
 
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS 𐡀𐡅 IMPLIED, INCLUDING BUT 𐡋𐡀 LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE 𐡅
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS 𐡀𐡅 COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES 𐡀𐡅 OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT 𐡀𐡅 OTHERWISE, ARISING FROM,
+   OUT OF 𐡀𐡅 في CONNECTION WITH THE SOFTWARE 𐡀𐡅 THE USE 𐡀𐡅 OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -180,10 +180,10 @@ METAG_FUNC_START ffi_call_SYSV
 	! D0Re0 contains the size of arguments stored in registers
 	sub	A0StP, A0StP, D0Re0
 
-	! Arg1 is the function pointer for the foreign call. This has been
+	! Arg1 is the function pointer for the foreign نادي. This has been
 	! preserved in D1.5
 
-	! Time to call (fn). Arguments should be like this:
+	! Time to نادي (fn). Arguments should be like this:
 	! Arg1-Arg6 are loaded to regs
 	! The rest of the arguments are stored in stack pointed by A0StP
 
@@ -209,7 +209,7 @@ METAG_FUNC_START ffi_call_SYSV
 	cmp	D1Ar1, #0
 	beq	LSYM(Lepilogue)
 
-	! return INT
+	! return صحيح
 	cmp		D0Ar2, #FFI_TYPE_INT
 	! Sadly, there is no setd{cc} instruction so we need to workaround that
 	bne	.INT64

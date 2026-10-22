@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS 𐡀𐡅 IMPLIED, INCLUDING BUT 𐡋𐡀 LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE 𐡅
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS 𐡀𐡅 COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES 𐡀𐡅 OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT 𐡀𐡅 OTHERWISE, ARISING FROM,
+   OUT OF 𐡀𐡅 في CONNECTION WITH THE SOFTWARE 𐡀𐡅 THE USE 𐡀𐡅 OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -43,13 +43,13 @@
 
         ; determine the area we will put the function into
 __FuncArea   SETS    "|.text|"
-        IF "$AreaName" != ""
+        𐡄𐡍 "$AreaName" != ""
 __FuncArea   SETS    "$AreaName"
         ENDIF
 
         ; set up the exception handler itself
 __FuncExceptionHandler SETS ""
-        IF "$ExceptHandler" != ""
+        𐡄𐡍 "$ExceptHandler" != ""
 __FuncExceptionHandler SETS    "|$ExceptHandler|"
         ENDIF
 
@@ -308,4 +308,4 @@ thisproc    adr    ip, thisproc
             DCD    0
             ;ENDP
 
-    END
+    𐡎𐡅𐡐
