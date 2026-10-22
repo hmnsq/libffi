@@ -73,7 +73,7 @@ C(ffi_call_win64):
 	movq	24(%rsp), %r9
 	movsd	24(%rsp), %xmm3
 
-	call	*16(%rbp)
+	आह्वान	*16(%rbp)
 
 	movl	24(%rbp), %ecx
 	movq	32(%rbp), %r8
@@ -81,7 +81,7 @@ C(ffi_call_win64):
 	cmpl	$FFI_TYPE_SMALL_STRUCT_4B, %ecx
 	leaq	(%r10, %rcx, 8), %r10
 	ja	99f
-	_CET_NOTRACK jmp *%r10
+	_CET_NOTRACK कूर्द *%r10
 
 /* Below, we're space constrained most of the time.  Thus we eschew the
    modern "mov, pop, ret" sequence (5 bytes) for "leave, ret" (2 bytes).  */
@@ -90,7 +90,7 @@ C(ffi_call_win64):
 	cfi_remember_state;	\
 	cfi_def_cfa(%rsp, 8);	\
 	cfi_restore(%rbp);	\
-	ret;			\
+	प्रत्यागच्छ;			\
 	cfi_restore_state
 
 	.align	8
@@ -109,21 +109,21 @@ E(0b, FFI_TYPE_DOUBLE)
 	epilogue
 // FFI_TYPE_LONGDOUBLE may be FFI_TYPE_DOUBLE but we need a different value here.
 E(0b, FFI_TYPE_DOUBLE + 1)
-	call	PLT(C(abort))
+	आह्वान	PLT(C(abort))
 E(0b, FFI_TYPE_UINT8)
 	movzbl	%al, %eax
 	movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SINT8)
 	movsbq	%al, %rax
-	jmp	98f
+	कूर्द	98f
 E(0b, FFI_TYPE_UINT16)
 	movzwl	%ax, %eax
 	movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SINT16)
 	movswq	%ax, %rax
-	jmp	98f
+	कूर्द	98f
 E(0b, FFI_TYPE_UINT32)
 	movl	%eax, %eax
 	movq	%rax, (%r8)
@@ -144,7 +144,7 @@ E(0b, FFI_TYPE_POINTER)
 	movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_COMPLEX)
-	call	PLT(C(abort))
+	आह्वान	PLT(C(abort))
 E(0b, FFI_TYPE_UINT128)
 	movdqu	%xmm0, (%r8)
 	epilogue
@@ -155,7 +155,7 @@ E(0b, FFI_TYPE_SINT128)
    FFI_TYPE_SMALL_STRUCT_* codes are FFI_TYPE_LAST-relative, so this slot must
    exist to keep the table contiguous and the small-struct entries aligned.  */
 E(0b, FFI_TYPE_VECTOR)
-	call	PLT(C(abort))
+	आह्वान	PLT(C(abort))
 E(0b, FFI_TYPE_SMALL_STRUCT_1B)
 	movb	%al, (%r8)
 	epilogue
@@ -167,7 +167,7 @@ E(0b, FFI_TYPE_SMALL_STRUCT_4B)
 	epilogue
 
 	.align	8
-99:	call	PLT(C(abort))
+99:	आह्वान	PLT(C(abort))
 
 	epilogue
 
@@ -198,7 +198,7 @@ C(ffi_go_closure_win64):
 	movq	8(%r10), %rcx			/* load cif */
 	movq	16(%r10), %rdx			/* load fun */
 	movq	%r10, %r8			/* closure is user_data */
-	jmp	0f
+	कूर्द	0f
 	cfi_endproc
 	SEH(.seh_endproc)
 
@@ -232,7 +232,7 @@ C(ffi_closure_win64):
 	movsd	%xmm3, ffi_clo_OFF_X+24(%rsp)
 
 	leaq	ffi_clo_OFF_R(%rsp), %r9
-	call	PLT(C(ffi_closure_win64_inner))
+	आह्वान	PLT(C(ffi_closure_win64_inner))
 
 	/* Load the result into both possible result registers.  */
 	movq    ffi_clo_OFF_R(%rsp), %rax
@@ -240,7 +240,7 @@ C(ffi_closure_win64):
 
 	addq	$ffi_clo_FS, %rsp
 	cfi_adjust_cfa_offset(-ffi_clo_FS)
-	ret
+	प्रत्यागच्छ
 
 	cfi_endproc
 	SEH(.seh_endproc)
@@ -255,11 +255,11 @@ C(ffi_closure_win64_alt):
 	_CET_ENDBR
 	movq	8(%rsp), %r10
 	addq	$16, %rsp
-	jmp	C(ffi_closure_win64)
+	कूर्द	C(ffi_closure_win64)
 	SEH(.seh_endproc)
 #endif
 #endif /* __x86_64__ */
 
 #if defined __ELF__ && (defined __linux__ || defined __FreeBSD__)
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

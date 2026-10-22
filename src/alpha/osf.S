@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -54,10 +54,10 @@
 ffi_call_osf:
 	cfi_startproc
 	cfi_def_cfa($17, 32)
-	mov	$16, $30
+	चालय	$16, $30
 	stq	$26, 0($17)
 	stq	$15, 8($17)
-	mov	$17, $15
+	चालय	$17, $15
 	.prologue 0
 	cfi_def_cfa_register($15)
 	cfi_rel_offset($26, 0)
@@ -65,8 +65,8 @@ ffi_call_osf:
 
 	stq	$18, 16($17)		# save flags into frame
 	stq	$19, 24($17)		# save rvalue into frame
-	mov	$20, $27		# fn into place for call
-	mov	$21, $1			# closure into static chain
+	चालय	$20, $27		# fn into place for आह्वान
+	चालय	$21, $1			# closure into static chain
 
 	# Load up all of the (potential) argument registers.
 	ldq	$16, 0($30)
@@ -100,30 +100,30 @@ ffi_call_osf:
 	cmoveq	$2, ALPHA_ST_VOID, $3	# mash null rvalue to void
 	addq	$3, $3, $3
 	s8addq	$3, $1, $1		# 99f + stcode * 16
-	jmp	$31, ($1), $st_int
+	कूर्द	$31, ($1), $st_int
 
 	.align	4
 99:
 E ALPHA_ST_VOID
-	ret
+	प्रत्यागच्छ
 E ALPHA_ST_INT
 $st_int:
 	stq	$0, 0($2)
-	ret
+	प्रत्यागच्छ
 E ALPHA_ST_FLOAT
 	sts	$f0, 0($2)
-	ret
+	प्रत्यागच्छ
 E ALPHA_ST_DOUBLE
 	stt	$f0, 0($2)
-	ret
+	प्रत्यागच्छ
 E ALPHA_ST_CPLXF
 	sts	$f0, 0($2)
 	sts	$f1, 4($2)
-	ret
+	प्रत्यागच्छ
 E ALPHA_ST_CPLXD
 	stt	$f0, 0($2)
 	stt	$f1, 8($2)
-	ret
+	प्रत्यागच्छ
 
 	cfi_endproc
 	.end	ffi_call_osf
@@ -154,7 +154,7 @@ ffi_go_closure_osf:
 
 	ldq	$16, 8($1)			# load cif
 	ldq	$17, 16($1)			# load fun
-	mov	$1, $18				# closure is user_data
+	चालय	$1, $18				# closure is user_data
 	br	$do_closure
 
 	cfi_endproc
@@ -207,12 +207,12 @@ $do_closure:
 	lda	$29, 0($29)			!gpdisp!2
 	ldq	$26, 0($30)
 	cfi_restore($26)
-	jmp	$31, ($1), $load_32
+	कूर्द	$31, ($1), $load_32
 
 .macro epilogue
 	addq	$30, CLOSURE_FS, $30
 	cfi_adjust_cfa_offset(-CLOSURE_FS)
-	ret
+	प्रत्यागच्छ
 	.align	4
 	cfi_adjust_cfa_offset(CLOSURE_FS)
 .endm
@@ -278,5 +278,5 @@ E ALPHA_LD_CPLXD
 	.end	ffi_closure_osf
 
 #if defined __ELF__ && defined __linux__
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -59,16 +59,16 @@ C(ffi_call_v9):
 .LUW0:
 	save	%sp, %o4, %sp
 .LUW1:
-	mov	%i0, %o0			! copy cif
-	add	%sp, STACK_BIAS+128+48, %o1	! load args area
-	mov	%i2, %o2			! copy rvalue
-	call	C(ffi_prep_args_v9)
-	 mov	%i3, %o3			! copy avalue
+	चालय	%i0, %o0			! copy cif
+	योजय	%sp, STACK_BIAS+128+48, %o1	! load args area
+	चालय	%i2, %o2			! copy rvalue
+	आह्वान	C(ffi_prep_args_v9)
+	 चालय	%i3, %o3			! copy avalue
 
 	andcc	%o0, SPARC_FLAG_FP_ARGS, %g0	! need fp regs?
-	add	%sp, 48, %sp			! deallocate prep frame
+	योजय	%sp, 48, %sp			! deallocate prep frame
 	be,pt	%xcc, 1f
-	 mov	%o0, %l0			! save flags
+	 चालय	%o0, %l0			! save flags
 
 	ldd	[%sp+STACK_BIAS+128], %f0	! load all fp arg regs
 	ldd	[%sp+STACK_BIAS+128+8], %f2
@@ -93,14 +93,14 @@ C(ffi_call_v9):
 	ldx	[%sp+STACK_BIAS+128+24], %o3
 	ldx	[%sp+STACK_BIAS+128+32], %o4
 	ldx	[%sp+STACK_BIAS+128+40], %o5
-	call	%i1
-	 mov	%i5, %g5			! load static chain
+	आह्वान	%i1
+	 चालय	%i5, %g5			! load static chain
 
-0:	call	1f		! load pc in %o7
+0:	आह्वान	1f		! load pc in %o7
 	 and	%l0, SPARC_FLAG_RET_MASK, %l1
 1:	sll	%l1, 4, %l1
-	add	%o7, %l1, %o7	! o7 = 0b + ret_type*16
-	jmp	%o7+(2f-0b)
+	योजय	%o7, %l1, %o7	! o7 = 0b + ret_type*16
+	कूर्द	%o7+(2f-0b)
 	 nop
 
 	.align	16
@@ -109,8 +109,8 @@ E(SPARC_RET_VOID)
 	return	%i7+8
 	 nop
 E(SPARC_RET_STRUCT)
-	add	%sp, STACK_BIAS-64+128+48, %l2
-	sub	%sp, 64, %sp
+	योजय	%sp, STACK_BIAS-64+128+48, %l2
+	वियोजय	%sp, 64, %sp
 	b	8f
 	 stx	%o0, [%l2]
 E(SPARC_RET_UINT8)
@@ -187,10 +187,10 @@ E(SPARC_RET_F_1)
 
 	! Copy the structure into place.
 	srl	%l0, SPARC_SIZEMASK_SHIFT, %o0	! load size_mask
-	mov	%i2, %o1			! load dst
-	mov	%l2, %o2			! load src_gp
-	call	C(ffi_struct_float_copy)
-	 add	%l2, 32, %o3			! load src_fp
+	चालय	%i2, %o1			! load dst
+	चालय	%l2, %o2			! load src_gp
+	आह्वान	C(ffi_struct_float_copy)
+	 योजय	%l2, 32, %o3			! load src_fp
 
 	return	%i7+8
 	 nop
@@ -221,7 +221,7 @@ C(ffi_go_closure_v9):
 	ldx	[%g5+8], %o0
 	ldx	[%g5+16], %o1
 	b	0f
-	 mov	%g5, %o2
+	 चालय	%g5, %o2
 
 .LUW5:
 	.size	C(ffi_go_closure_v9), . - C(ffi_go_closure_v9)
@@ -266,16 +266,16 @@ C(ffi_closure_v9):
 	std     %f30, [FP-8]
 
 	! Call ffi_closure_sparc_inner to do the bulk of the work.
-	add	%fp, STACK_BIAS-160, %o3
-	add	%fp, STACK_BIAS+128, %o4
-	call	C(ffi_closure_sparc_inner_v9)
-	 add	%fp, STACK_BIAS-128, %o5
+	योजय	%fp, STACK_BIAS-160, %o3
+	योजय	%fp, STACK_BIAS+128, %o4
+	आह्वान	C(ffi_closure_sparc_inner_v9)
+	 योजय	%fp, STACK_BIAS-128, %o5
 
-0:	call	1f		! load pc in %o7
+0:	आह्वान	1f		! load pc in %o7
 	 and	%o0, SPARC_FLAG_RET_MASK, %o0
 1:	sll	%o0, 4, %o0	! o2 = i2 * 16
-	add	%o7, %o0, %o7	! o7 = 0b + i2*16
-	jmp	%o7+(2f-0b)
+	योजय	%o7, %o0, %o7	! o7 = 0b + i2*16
+	कूर्द	%o7+(2f-0b)
 	 nop
 
 	! Note that we cannot load the data in the delay slot of
@@ -367,9 +367,9 @@ E(SPARC_RET_F_1)
 	.size	C(ffi_closure_v9), . - C(ffi_closure_v9)
 
 #ifdef HAVE_RO_EH_FRAME
-        .section        ".eh_frame",#alloc
+        .खण्डः        ".eh_frame",#alloc
 #else
-        .section        ".eh_frame",#alloc,#write
+        .खण्डः        ".eh_frame",#alloc,#write
 #endif
 
 #ifdef HAVE_AS_SPARC_UA_PCREL
@@ -436,5 +436,5 @@ E(SPARC_RET_F_1)
 
 #endif /* SPARC64 */
 #ifdef __linux__
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

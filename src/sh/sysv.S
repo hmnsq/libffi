@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -56,86 +56,86 @@
 ENTRY(ffi_call_SYSV)
 	# Save registers
 .LFB1:
-	mov.l	r8,@-r15
+	चालय.l	r8,@-r15
 .LCFI0:
-	mov.l	r9,@-r15
+	चालय.l	r9,@-r15
 .LCFI1:
-	mov.l	r10,@-r15
+	चालय.l	r10,@-r15
 .LCFI2:
-	mov.l	r12,@-r15
+	चालय.l	r12,@-r15
 .LCFI3:
-	mov.l	r14,@-r15
+	चालय.l	r14,@-r15
 .LCFI4:
 	sts.l	pr,@-r15
 .LCFI5:
-	mov	r15,r14
+	चालय	r15,r14
 .LCFI6:
 #if defined(__SH4__)
-	mov	r6,r8
-	mov	r7,r9
+	चालय	r6,r8
+	चालय	r7,r9
 
-	sub	r6,r15
-	add	#-16,r15
-	mov	#~7,r0
+	वियोजय	r6,r15
+	योजय	#-16,r15
+	चालय	#~7,r0
 	and	r0,r15
 
-	mov	r4,r0
+	चालय	r4,r0
 	jsr	@r0
-	 mov	r15,r4
+	 चालय	r15,r4
 
-	mov	r9,r1
+	चालय	r9,r1
 	shlr8	r9
 	shlr8	r9
 	shlr8	r9
 
-	mov	#FFI_TYPE_STRUCT,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_STRUCT,r2
+	तुलय/eq	r2,r9
 	bf	1f
 #if STRUCT_VALUE_ADDRESS_WITH_ARG
- 	mov.l	@r15+,r4
+ 	चालय.l	@r15+,r4
 	bra	2f
-	 mov	#5,r2
+	 चालय	#5,r2
 #else
- 	mov.l	@r15+,r10
+ 	चालय.l	@r15+,r10
 #endif
 1:
-	mov	#4,r2
+	चालय	#4,r2
 2:
-	mov	#4,r3
+	चालय	#4,r3
 
 L_pass:
-	cmp/pl	r8
+	तुलय/pl	r8
 	bf	L_call_it
 
-	mov	r1,r0
+	चालय	r1,r0
 	and	#3,r0
 
 L_pass_d:
-	cmp/eq	#FFI_TYPE_DOUBLE,r0
+	तुलय/eq	#FFI_TYPE_DOUBLE,r0
 	bf	L_pass_f
 
-	mov	r3,r0
+	चालय	r3,r0
 	and	#1,r0
 	tst	r0,r0
 	bt	1f
-	add	#1,r3
+	योजय	#1,r3
 1:
-	mov	#12,r0
-	cmp/hs	r0,r3
+	चालय	#12,r0
+	तुलय/hs	r0,r3
 	bt/s	3f
 	 shlr2	r1
 	bsr	L_pop_d
 	 nop
 3:
-	add	#2,r3
+	योजय	#2,r3
 	bra	L_pass
-	 add	#-8,r8
+	 योजय	#-8,r8
 
 L_pop_d:
-	mov	r3,r0
-	add	r0,r0
-	add	r3,r0
-	add	#-12,r0
+	चालय	r3,r0
+	योजय	r0,r0
+	योजय	r3,r0
+	योजय	#-12,r0
 	braf	r0
 	 nop
 #ifdef __LITTLE_ENDIAN__
@@ -167,24 +167,24 @@ L_pop_d:
 #endif
 
 L_pass_f:
-	cmp/eq	#FFI_TYPE_FLOAT,r0
+	तुलय/eq	#FFI_TYPE_FLOAT,r0
 	bf	L_pass_i
 
-	mov	#12,r0
-	cmp/hs	r0,r3
+	चालय	#12,r0
+	तुलय/hs	r0,r3
 	bt/s	2f
 	 shlr2	r1
 	bsr	L_pop_f
 	 nop
 2:
-	add	#1,r3
+	योजय	#1,r3
 	bra	L_pass
-	 add	#-4,r8
+	 योजय	#-4,r8
 
 L_pop_f:
-	mov	r3,r0
+	चालय	r3,r0
 	shll2	r0
-	add	#-16,r0
+	योजय	#-16,r0
 	braf	r0
 	 nop
 #ifdef __LITTLE_ENDIAN__
@@ -224,271 +224,271 @@ L_pop_f:
 #endif
 
 L_pass_i:
-	cmp/eq	#FFI_TYPE_INT,r0
+	तुलय/eq	#FFI_TYPE_INT,r0
 	bf	L_call_it
 
-	mov	#8,r0
-	cmp/hs	r0,r2
+	चालय	#8,r0
+	तुलय/hs	r0,r2
 	bt/s	2f
 	 shlr2	r1
 	bsr	L_pop_i
 	 nop
 2:
-	add	#1,r2
+	योजय	#1,r2
 	bra	L_pass
-	 add	#-4,r8
+	 योजय	#-4,r8
 
 L_pop_i:
-	mov	r2,r0
+	चालय	r2,r0
 	shll2	r0
-	add	#-16,r0
+	योजय	#-16,r0
 	braf	r0
 	 nop
 	rts
-	 mov.l	@r15+,r4
+	 चालय.l	@r15+,r4
 	rts
-	 mov.l	@r15+,r5
+	 चालय.l	@r15+,r5
 	rts
-	 mov.l	@r15+,r6
+	 चालय.l	@r15+,r6
 	rts
-	 mov.l	@r15+,r7
+	 चालय.l	@r15+,r7
 
 L_call_it:
-	# call function
+	# आह्वान function
 #if (! STRUCT_VALUE_ADDRESS_WITH_ARG)
-	mov	r10, r2
+	चालय	r10, r2
 #endif
-	mov.l  @(28,r14),r1
+	चालय.l  @(28,r14),r1
 	jsr    @r1
 	 nop
 
 L_ret_d:
-	mov	#FFI_TYPE_DOUBLE,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_DOUBLE,r2
+	तुलय/eq	r2,r9
 	bf	L_ret_ll
 
-	mov.l	@(24,r14),r1
+	चालय.l	@(24,r14),r1
 #ifdef __LITTLE_ENDIAN__
 	fmov.s	fr1,@r1
-	add	#4,r1
+	योजय	#4,r1
 	bra	L_epilogue
 	 fmov.s	fr0,@r1
 #else
 	fmov.s	fr0,@r1
-	add	#4,r1
+	योजय	#4,r1
 	bra	L_epilogue
 	 fmov.s	fr1,@r1
 #endif
 
 L_ret_ll:
-	mov	#FFI_TYPE_SINT64,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_SINT64,r2
+	तुलय/eq	r2,r9
 	bt/s	1f
-	 mov	#FFI_TYPE_UINT64,r2
-	cmp/eq	r2,r9
+	 चालय	#FFI_TYPE_UINT64,r2
+	तुलय/eq	r2,r9
 	bf	L_ret_f
 
 1:
-	mov.l	@(24,r14),r2
-	mov.l	r0,@r2
+	चालय.l	@(24,r14),r2
+	चालय.l	r0,@r2
 	bra	L_epilogue
-	 mov.l	r1,@(4,r2)
+	 चालय.l	r1,@(4,r2)
 
 L_ret_f:
-	mov	#FFI_TYPE_FLOAT,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_FLOAT,r2
+	तुलय/eq	r2,r9
 	bf	L_ret_i
 
-	mov.l	@(24,r14),r1
+	चालय.l	@(24,r14),r1
 	bra	L_epilogue
 	 fmov.s	fr0,@r1
 
 L_ret_i:
-	mov	#FFI_TYPE_INT,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_INT,r2
+	तुलय/eq	r2,r9
 	bf	L_epilogue
 
-	mov.l	@(24,r14),r1
+	चालय.l	@(24,r14),r1
 	bra	L_epilogue
-	 mov.l	r0,@r1
+	 चालय.l	r0,@r1
 
 L_epilogue:
 	# Remove the space we pushed for the args
-	mov   r14,r15
+	चालय   r14,r15
 
 	lds.l  @r15+,pr
-	mov.l  @r15+,r14
-	mov.l  @r15+,r12
-	mov.l  @r15+,r10
-	mov.l  @r15+,r9
+	चालय.l  @r15+,r14
+	चालय.l  @r15+,r12
+	चालय.l  @r15+,r10
+	चालय.l  @r15+,r9
 	rts
-	 mov.l  @r15+,r8
+	 चालय.l  @r15+,r8
 #else
-	mov	r6,r8
-	mov	r7,r9
+	चालय	r6,r8
+	चालय	r7,r9
 
-	sub	r6,r15
-	add	#-16,r15
-	mov	#~7,r0
+	वियोजय	r6,r15
+	योजय	#-16,r15
+	चालय	#~7,r0
 	and	r0,r15
 
-	mov	r4,r0
+	चालय	r4,r0
 	jsr	@r0
-	 mov	r15,r4
+	 चालय	r15,r4
 
-	mov	r9,r3
+	चालय	r9,r3
 	shlr8	r9
 	shlr8	r9
 	shlr8	r9
 
-	mov	#FFI_TYPE_STRUCT,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_STRUCT,r2
+	तुलय/eq	r2,r9
 	bf	1f
 #if STRUCT_VALUE_ADDRESS_WITH_ARG
-	mov.l	@r15+,r4
+	चालय.l	@r15+,r4
 	bra	2f
-	 mov	#5,r2
+	 चालय	#5,r2
 #else
-	mov.l	@r15+,r10
+	चालय.l	@r15+,r10
 #endif
 1:
-	mov	#4,r2
+	चालय	#4,r2
 2:
 
 L_pass:
-	cmp/pl	r8
+	तुलय/pl	r8
 	bf	L_call_it
 
-	mov	r3,r0
+	चालय	r3,r0
 	and	#3,r0
 
 L_pass_d:
-	cmp/eq	#FFI_TYPE_DOUBLE,r0
+	तुलय/eq	#FFI_TYPE_DOUBLE,r0
 	bf	L_pass_i
 
-	mov	r15,r0
+	चालय	r15,r0
 	and	#7,r0
 	tst	r0,r0
 	bt	1f
-	add	#4,r15
+	योजय	#4,r15
 1:
-	mov	#8,r0
-	cmp/hs	r0,r2
+	चालय	#8,r0
+	तुलय/hs	r0,r2
 	bt/s	2f
 	 shlr2	r3
 	bsr	L_pop_d
 	 nop
 2:
-	add	#2,r2
+	योजय	#2,r2
 	bra	L_pass
-	 add	#-8,r8
+	 योजय	#-8,r8
 
 L_pop_d:
-	mov	r2,r0
-	add	r0,r0
-	add	r2,r0
-	add	#-12,r0
-	add	r0,r0
+	चालय	r2,r0
+	योजय	r0,r0
+	योजय	r2,r0
+	योजय	#-12,r0
+	योजय	r0,r0
 	braf	r0
 	 nop
-	mov.l	@r15+,r4
+	चालय.l	@r15+,r4
 	rts
-	 mov.l	@r15+,r5
-	mov.l	@r15+,r5
+	 चालय.l	@r15+,r5
+	चालय.l	@r15+,r5
 	rts
-	 mov.l	@r15+,r6
-	mov.l	@r15+,r6
+	 चालय.l	@r15+,r6
+	चालय.l	@r15+,r6
 	rts
-	 mov.l	@r15+,r7
+	 चालय.l	@r15+,r7
 	rts
-	 mov.l	@r15+,r7
+	 चालय.l	@r15+,r7
 
 L_pass_i:
-	cmp/eq	#FFI_TYPE_INT,r0
+	तुलय/eq	#FFI_TYPE_INT,r0
 	bf	L_call_it
 
-	mov	#8,r0
-	cmp/hs	r0,r2
+	चालय	#8,r0
+	तुलय/hs	r0,r2
 	bt/s	2f
 	 shlr2	r3
 	bsr	L_pop_i
 	 nop
 2:
-	add	#1,r2
+	योजय	#1,r2
 	bra	L_pass
-	 add	#-4,r8
+	 योजय	#-4,r8
 
 L_pop_i:
-	mov	r2,r0
+	चालय	r2,r0
 	shll2	r0
-	add	#-16,r0
+	योजय	#-16,r0
 	braf	r0
 	 nop
 	rts
-	 mov.l	@r15+,r4
+	 चालय.l	@r15+,r4
 	rts
-	 mov.l	@r15+,r5
+	 चालय.l	@r15+,r5
 	rts
-	 mov.l	@r15+,r6
+	 चालय.l	@r15+,r6
 	rts
-	 mov.l	@r15+,r7
+	 चालय.l	@r15+,r7
 
 L_call_it:
-	# call function
+	# आह्वान function
 #if (! STRUCT_VALUE_ADDRESS_WITH_ARG)
-	mov	r10, r2
+	चालय	r10, r2
 #endif
-	mov.l  @(28,r14),r1
+	चालय.l  @(28,r14),r1
 	jsr    @r1
 	 nop
 
 L_ret_d:
-	mov	#FFI_TYPE_DOUBLE,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_DOUBLE,r2
+	तुलय/eq	r2,r9
 	bf	L_ret_ll
 
-	mov.l	@(24,r14),r2
-	mov.l	r0,@r2
+	चालय.l	@(24,r14),r2
+	चालय.l	r0,@r2
 	bra	L_epilogue
-	 mov.l	r1,@(4,r2)
+	 चालय.l	r1,@(4,r2)
 
 L_ret_ll:
-	mov	#FFI_TYPE_SINT64,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_SINT64,r2
+	तुलय/eq	r2,r9
 	bt/s	1f
-	 mov	#FFI_TYPE_UINT64,r2
-	cmp/eq	r2,r9
+	 चालय	#FFI_TYPE_UINT64,r2
+	तुलय/eq	r2,r9
 	bf	L_ret_i
 
 1:
-	mov.l	@(24,r14),r2
-	mov.l	r0,@r2
+	चालय.l	@(24,r14),r2
+	चालय.l	r0,@r2
 	bra	L_epilogue
-	 mov.l	r1,@(4,r2)
+	 चालय.l	r1,@(4,r2)
 
 L_ret_i:
-	mov	#FFI_TYPE_FLOAT,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_FLOAT,r2
+	तुलय/eq	r2,r9
 	bt	1f
-	mov	#FFI_TYPE_INT,r2
-	cmp/eq	r2,r9
+	चालय	#FFI_TYPE_INT,r2
+	तुलय/eq	r2,r9
 	bf	L_epilogue
 1:
-	mov.l	@(24,r14),r1
+	चालय.l	@(24,r14),r1
 	bra	L_epilogue
-	 mov.l	r0,@r1
+	 चालय.l	r0,@r1
 
 L_epilogue:
 	# Remove the space we pushed for the args
-	mov   r14,r15
+	चालय   r14,r15
 
 	lds.l  @r15+,pr
-	mov.l  @r15+,r14
-	mov.l  @r15+,r12
-	mov.l  @r15+,r10
-	mov.l  @r15+,r9
+	चालय.l  @r15+,r14
+	चालय.l  @r15+,r12
+	चालय.l  @r15+,r10
+	चालय.l  @r15+,r9
 	rts
-	 mov.l  @r15+,r8
+	 चालय.l  @r15+,r8
 #endif
 .LFE1:
 .ffi_call_SYSV_end:
@@ -498,15 +498,15 @@ L_epilogue:
 
 ENTRY(ffi_closure_SYSV)
 .LFB2:
-	mov.l	r7,@-r15
+	चालय.l	r7,@-r15
 .LCFI7:
-	mov.l	r6,@-r15
+	चालय.l	r6,@-r15
 .LCFI8:
-	mov.l	r5,@-r15
+	चालय.l	r5,@-r15
 .LCFI9:
-	mov.l	r4,@-r15
+	चालय.l	r4,@-r15
 .LCFIA:
-	mov.l	r14,@-r15
+	चालय.l	r14,@-r15
 .LCFIB:
 	sts.l	pr,@-r15
 
@@ -523,17 +523,17 @@ ENTRY(ffi_closure_SYSV)
 	*/
 .LCFIC:
 #if defined(__SH4__)
-	add	#-48,r15
+	योजय	#-48,r15
 #else
-	add	#-16,r15
+	योजय	#-16,r15
 #endif
 .LCFID:
-	mov	r15,r14
+	चालय	r15,r14
 .LCFIE:
 
 #if defined(__SH4__)
-	mov	r14,r1
-	add	#48,r1
+	चालय	r14,r1
+	योजय	#48,r1
 #ifdef __LITTLE_ENDIAN__
 	fmov.s	fr10,@-r1
 	fmov.s	fr11,@-r1
@@ -553,49 +553,49 @@ ENTRY(ffi_closure_SYSV)
 	fmov.s	fr5,@-r1
 	fmov.s	fr4,@-r1
 #endif
-	mov	r1,r7
-	mov	r14,r6
-	add	#56,r6
+	चालय	r1,r7
+	चालय	r14,r6
+	योजय	#56,r6
 #else
-	mov	r14,r6
-	add	#24,r6
+	चालय	r14,r6
+	योजय	#24,r6
 #endif
 
 	bt/s	10f
-	 mov	r2, r5
-	mov	r14,r1
-	add	#8,r1
-	mov	r1,r5
+	 चालय	r2, r5
+	चालय	r14,r1
+	योजय	#8,r1
+	चालय	r1,r5
 10:
 
-	mov	r14,r1
+	चालय	r14,r1
 #if defined(__SH4__)
-	add	#72,r1
+	योजय	#72,r1
 #else
-	add	#40,r1
+	योजय	#40,r1
 #endif
-	mov.l	r1,@r14
+	चालय.l	r1,@r14
 
 #ifdef PIC
-	mov.l	L_got,r1
+	चालय.l	L_got,r1
 	mova	L_got,r0
-	add	r0,r1
-	mov.l	L_helper,r0
-	add	r1,r0
+	योजय	r0,r1
+	चालय.l	L_helper,r0
+	योजय	r1,r0
 #else
-	mov.l	L_helper,r0
+	चालय.l	L_helper,r0
 #endif
 	jsr	@r0
-	 mov	r3,r4
+	 चालय	r3,r4
 
 	shll	r0
-	mov	r0,r1
+	चालय	r0,r1
 	mova	L_table,r0
-	add	r1,r0
-	mov.w	@r0,r0
-	mov	r14,r2
+	योजय	r1,r0
+	चालय.w	@r0,r0
+	चालय	r14,r2
 	braf	r0
-	 add	#8,r2
+	 योजय	#8,r2
 0:
 	.align 2
 #ifdef PIC
@@ -648,67 +648,67 @@ L_case_f:
 #endif
 	
 L_case_ll:
-	mov.l	@r2+,r0
+	चालय.l	@r2+,r0
 	bra	L_case_v
-	 mov.l	@r2,r1
+	 चालय.l	@r2,r1
 	
 L_case_i:
 	bra	L_case_v
-	 mov.l	@r2,r0
+	 चालय.l	@r2,r0
 	
 L_case_q:
 #ifdef __LITTLE_ENDIAN__
 #else
-	add	#3,r2
+	योजय	#3,r2
 #endif
 	bra	L_case_v
-	 mov.b	@r2,r0
+	 चालय.b	@r2,r0
 
 L_case_uq:
 #ifdef __LITTLE_ENDIAN__
 #else
-	add	#3,r2
+	योजय	#3,r2
 #endif
-	mov.b	@r2,r0
+	चालय.b	@r2,r0
 	bra	L_case_v
 	 extu.b r0,r0
 
 L_case_h:
 #ifdef __LITTLE_ENDIAN__
 #else
-	add	#2,r2
+	योजय	#2,r2
 #endif
 	bra	L_case_v
-	 mov.w	@r2,r0
+	 चालय.w	@r2,r0
 
 L_case_uh:
 #ifdef __LITTLE_ENDIAN__
 #else
-	add	#2,r2
+	योजय	#2,r2
 #endif
-	mov.w	@r2,r0
+	चालय.w	@r2,r0
 	extu.w	r0,r0
 	/* fall through */
 
 L_case_v:
 #if defined(__SH4__)
-	add	#48,r15
+	योजय	#48,r15
 #else
-	add	#16,r15
+	योजय	#16,r15
 #endif
 	lds.l	@r15+,pr
-	mov.l	@r15+,r14
+	चालय.l	@r15+,r14
 	rts
-	 add	#16,r15
+	 योजय	#16,r15
 .LFE2:
 .ffi_closure_SYSV_end:
         .size    CNAME(ffi_closure_SYSV),.ffi_closure_SYSV_end-CNAME(ffi_closure_SYSV)
 
 #if defined __ELF__ && defined __linux__
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif
 
-	.section	".eh_frame","aw",@progbits
+	.खण्डः	".eh_frame","aw",@progbits
 __FRAME_BEGIN__:
 	.4byte	.LECIE1-.LSCIE1	/* Length of Common Information Entry */
 .LSCIE1:

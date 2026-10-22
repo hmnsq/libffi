@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -65,14 +65,14 @@ CSKY_FUNC_START ffi_call_SYSV
  stw lr, (sp, 0x18)
  .cfi_offset 15, -4
 
- mov l0, sp
+ चालय l0, sp
  .cfi_def_cfa_register 4
 
  /* Make room for all of the new args. */
  subu sp, sp, a2
 
  /* Place all of the ffi_prep_args in position */
- mov a0, sp
+ चालय a0, sp
  /*     a1 already set */
 
  /* Call ffi_prep_args(stack, &ecif) */
@@ -93,11 +93,11 @@ CSKY_FUNC_START ffi_call_SYSV
 
  ldw l1, (l0, 0) /* load fn() in advance */
 
- /* call (fn) (...) */
+ /* आह्वान (fn) (...) */
  jsr l1
 
  /* Remove the space we pushed for the args */
- mov sp, l0
+ चालय sp, l0
 
  /* Load r2 with the pointer to storage for the return value */
  ldw a2, (sp, 0x1C)
@@ -119,7 +119,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return पूर्णाङ्क */
  stw a0, (a2, 0x0)
 
 .Lepilogue:
@@ -145,7 +145,7 @@ CSKY_FUNC_START ffi_call_SYSV
   */
 CSKY_FUNC_START ffi_closure_SYSV
  .cfi_startproc
- mov a2, sp
+ चालय a2, sp
  addi a1, sp, 16
  subi sp, sp, 24
  .cfi_def_cfa_offset 40
@@ -177,19 +177,19 @@ CSKY_FUNC_START ffi_csky_trampoline
  stw a3, (sp, 0xC)
  lrw a0, [.Lctx]
  lrw a1, [.Lfun]
- jmp a1
+ कूर्द a1
 .Lctx:
- mov a0, a0
- mov a0, a0
+ चालय a0, a0
+ चालय a0, a0
 .Lfun:
 
         .size    ffi_csky_trampoline, .-ffi_csky_trampoline
 
 CSKY_FUNC_START ffi_csky_cacheflush
- mov t0, r7
+ चालय t0, r7
  movi r7, 123
  trap 0
- mov r7, t0
+ चालय r7, t0
  rts
 
         .size    ffi_csky_cacheflush, .-ffi_csky_cacheflush
@@ -228,14 +228,14 @@ CSKY_FUNC_START ffi_call_SYSV
  stw lr, (sp, 0x20)
  .cfi_offset 15, -8
 
- mov l0, sp
+ चालय l0, sp
  .cfi_def_cfa_register 8
 
  /* Make room for all of the new args. */
  subu sp, sp, a2
 
  /* Place all of the ffi_prep_args in position */
- mov a0, sp
+ चालय a0, sp
  /*     a1 already set */
 
  /* Call ffi_prep_args(stack, &ecif) */
@@ -250,7 +250,7 @@ CSKY_FUNC_START ffi_call_SYSV
  ldw a5, (sp, 0x14)
 
  /* and adjust stack */
- mov lr, l0
+ चालय lr, l0
  subu lr, sp  /* cif->bytes == l0 - sp */
  movi l1, 24
  cmphs lr, l1
@@ -259,11 +259,11 @@ CSKY_FUNC_START ffi_call_SYSV
 
  ldw l1, (l0, 0) /* load fn() in advance */
 
- /* call (fn) (...) */
+ /* आह्वान (fn) (...) */
  jsr l1
 
  /* Remove the space we pushed for the args */
- mov sp, l0
+ चालय sp, l0
 
  /* Load r2 with the pointer to storage for the return value */
  ldw a2, (sp, 0x10)
@@ -285,7 +285,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return पूर्णाङ्क */
  stw a0, (a2, 0x0)
 
 .Lepilogue:
@@ -315,8 +315,8 @@ CSKY_FUNC_START ffi_call_SYSV
   */
 CSKY_FUNC_START ffi_closure_SYSV
  .cfi_startproc
- mov a2, sp
- mov a1, sp
+ चालय a2, sp
+ चालय a1, sp
  addi a1, 24
  subi sp, sp, 24
  .cfi_def_cfa_offset 48
@@ -325,7 +325,7 @@ CSKY_FUNC_START ffi_closure_SYSV
  stw lr, (sp, 0x14)
  .cfi_offset 15, -28
  stw sp, (sp, 0x8)
- mov a1, sp
+ चालय a1, sp
  addi a1, 8
  jsri ffi_closure_SYSV_inner
  ldw a0, (sp, 0x0)
@@ -353,10 +353,10 @@ CSKY_FUNC_START ffi_csky_trampoline
  stw a5, (sp, 0x14)
  lrw a0, [.Lctx]
  lrw a1, [.Lfun]
- jmp a1
+ कूर्द a1
 .Lctx:
- mov a0, a0
- mov a0, a0
+ चालय a0, a0
+ चालय a0, a0
 .Lfun:
 
         .size    ffi_csky_trampoline, .-ffi_csky_trampoline

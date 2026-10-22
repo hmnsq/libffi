@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -63,7 +63,7 @@ ffi_call_pa32:
 
 	   [ 64-bytes register save area               ] <- %r4
 
-	   [ Stack space for actual call, passed as    ] <- %arg0
+	   [ Stack space for actual आह्वान, passed as    ] <- %arg0
 	   [     arg0 to ffi_prep_args_pa32           ]
 
 	   [ Stack for calling prep_args               ] <- %sp
@@ -97,7 +97,7 @@ ffi_call_pa32:
 	/* in case the function is going to return a structure
 	   we need to give it a place to put the result.  */
 	ldw -52(%r3), %ret0                     /* %ret0 <- rvalue */
-	ldw -56(%r3), %r22                      /* %r22 <- function to call */
+	ldw -56(%r3), %r22                      /* %r22 <- function to आह्वान */
 	bl $$dyncall, %r31                      /* Call the user function */
 	copy %r31, %rp
 
@@ -288,9 +288,9 @@ ffi_call_pa32:
 
 .Ldone:
 	/* all done, return */
-	copy %r4, %sp                           /* pop arg stack */
+	copy %r4, %sp                           /* उद्धर arg stack */
 	ldw 12(%r3), %r4
-	ldwm -64(%sp), %r3                      /* .. and pop stack */
+	ldwm -64(%sp), %r3                      /* .. and उद्धर stack */
 	ldw -20(%sp), %rp
 	bv %r0(%rp)
 	nop
@@ -318,7 +318,7 @@ ffi_closure_pa32:
 .LCFI22:
 	stwm %r1, 64(%sp)
 
-	/* Put arguments onto the stack and call ffi_closure_inner.  */
+	/* Put arguments onto the stack and आह्वान ffi_closure_inner.  */
 	stw %arg0, -36(%r3)
 	stw %arg1, -40(%r3)
 	stw %arg2, -44(%r3)
@@ -340,7 +340,7 @@ ffi_closure_pa32:
 	.procend
 .LFE2:
 
-	.section        ".eh_frame",EH_FRAME_FLAGS,@progbits
+	.खण्डः        ".eh_frame",EH_FRAME_FLAGS,@progbits
 .Lframe1:
 	.word   .LECIE1-.LSCIE1 ;# Length of Common Information Entry
 .LSCIE1:
@@ -427,5 +427,5 @@ ffi_closure_pa32:
 .LEFDE2:
 
 #if defined(__ELF__) && defined(__linux__)
-.section .note.GNU-stack,"",%progbits
+.खण्डः .note.GNU-stack,"",%progbits
 #endif

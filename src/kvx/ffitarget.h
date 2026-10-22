@@ -24,30 +24,30 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
+#यदि_अन्तः
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_चरमः_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
 /* Those values are set depending on return type
  * they are used in the assembly code in sysv.S
  */
-typedef enum kvx_intext_method {
+प्रकारनिर्देश गणना kvx_intext_विधानम् {
   KVX_RET_NONE = 0,
   KVX_RET_SXBD = 1,
   KVX_RET_SXHD = 2,
@@ -55,21 +55,21 @@ typedef enum kvx_intext_method {
   KVX_RET_ZXBD = 4,
   KVX_RET_ZXHD = 5,
   KVX_RET_ZXWD = 6
-} kvx_intext_method;
+} kvx_intext_विधानम्;
 
-#endif
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
 /* This is only to allow Python to compile
  * but closures are not supported yet
  */
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_TRAMPOLINE_आकार 0
 
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE
+#परिभाषय FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_TARGET_SPECIFIC_VARIADIC 1
+#परिभाषय FFI_TARGET_HAS_COMPLEX_TYPE
 
-#endif
+#यदि_अन्तः
 

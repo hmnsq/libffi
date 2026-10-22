@@ -19,85 +19,85 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
-#ifndef LIBFFI_ASM
-#ifdef __ILP32__
-#define FFI_SIZEOF_ARG 8
-#define FFI_SIZEOF_JAVA_RAW  4
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#elif defined(_WIN32)
-#define FFI_SIZEOF_ARG 8
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#else
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
-#endif
+#यदि_अपरिभाषितम् LIBFFI_ASM
+#यदि_परिभाषितम् __ILP32__
+#परिभाषय FFI_SIZEOF_ARG 8
+#परिभाषय FFI_SIZEOF_JAVA_RAW  4
+प्रकारनिर्देश अचिह्नित दीर्घ दीर्घ ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ दीर्घ ffi_sarg;
+#नोचेद्यदि defined(_WIN32)
+#परिभाषय FFI_SIZEOF_ARG 8
+प्रकारनिर्देश अचिह्नित दीर्घ दीर्घ ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ दीर्घ ffi_sarg;
+#अन्यथा
+प्रकारनिर्देश अचिह्नित दीर्घ ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ ffi_sarg;
+#यदि_अन्तः
 
-typedef enum ffi_abi
+प्रकारनिर्देश गणना ffi_abi
   {
     FFI_FIRST_ABI = 0,
     FFI_SYSV,
     FFI_WIN64,
-    FFI_LAST_ABI,
-#if defined(_WIN32)
+    FFI_चरमः_ABI,
+#यदि defined(_WIN32)
     FFI_DEFAULT_ABI = FFI_WIN64
-#else
+#अन्यथा
     FFI_DEFAULT_ABI = FFI_SYSV
-#endif
+#यदि_अन्तः
   } ffi_abi;
-#endif
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#यदि defined (FFI_EXEC_TRAMPOLINE_सारणी) && FFI_EXEC_TRAMPOLINE_सारणी
 
-#ifdef __MACH__
-#define FFI_TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET 16
-#else
-#error "No trampoline table implementation"
-#endif
+#यदि_परिभाषितम् __MACH__
+#परिभाषय FFI_TRAMPOLINE_आकार 16
+#परिभाषय FFI_TRAMPOLINE_संवृतिः_विस्थापनम् 16
+#अन्यथा
+#दोषः "No trampoline table implementation"
+#यदि_अन्तः
 
-#else
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
-#endif
+#अन्यथा
+#परिभाषय FFI_TRAMPOLINE_आकार 24
+#परिभाषय FFI_TRAMPOLINE_संवृतिः_विस्थापनम् FFI_TRAMPOLINE_आकार
+#यदि_अन्तः
 
-#ifdef _WIN32
-#define FFI_EXTRA_CIF_FIELDS unsigned is_variadic
-#endif
-#define FFI_TARGET_SPECIFIC_VARIADIC
+#यदि_परिभाषितम् _WIN32
+#परिभाषय FFI_EXTRA_CIF_FIELDS अचिह्नित is_variadic
+#यदि_अन्तः
+#परिभाषय FFI_TARGET_SPECIFIC_VARIADIC
 
 /* ---- Internal ---- */
 
-#if defined (__APPLE__)
-#define FFI_EXTRA_CIF_FIELDS unsigned aarch64_nfixedargs
-#elif !defined(_WIN32) && !defined(__ANDROID__)
+#यदि defined (__APPLE__)
+#परिभाषय FFI_EXTRA_CIF_FIELDS अचिह्नित aarch64_nfixedargs
+#नोचेद्यदि !defined(_WIN32) && !defined(__ANDROID__)
 /* iOS, Windows and Android reserve x18 for the system.  Disable Go closures until
    a new static chain is chosen.  */
-#define FFI_GO_CLOSURES 1
-#endif
+#परिभाषय FFI_GO_CLOSURES 1
+#यदि_अन्तः
 
-#ifndef _WIN32
+#यदि_अपरिभाषितम् _WIN32
 /* No complex type on Windows */
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#परिभाषय FFI_TARGET_HAS_COMPLEX_TYPE
+#यदि_अन्तः
 
 /* AAPCS64 passes 8- and 16-byte vectors in V/Q registers and homogeneous
    vector aggregates in consecutive V/Q registers; see is_vfp_type.  */
-#define FFI_TARGET_HAS_VECTOR_TYPE
+#परिभाषय FFI_TARGET_HAS_सदिशम्_TYPE
 
-#define FFI_TARGET_HAS_INT128 1
+#परिभाषय FFI_TARGET_HAS_INT128 1
 
-#endif
+#यदि_अन्तः

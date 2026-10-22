@@ -33,69 +33,69 @@
  */
 
 /* Common to ppc32 and ppc64 */
-#define PPC_LD_NONE		0
-#define PPC_LD_R3		1
-#define PPC_LD_R3R4		2
-#define PPC_LD_F32		3
-#define PPC_LD_F64		4
-#define PPC_LD_F128		5
-#define PPC_LD_U8		6
-#define PPC_LD_S8		7
-#define PPC_LD_U16		8
-#define PPC_LD_S16		9
+#परिभाषय PPC_LD_NONE		0
+#परिभाषय PPC_LD_R3		1
+#परिभाषय PPC_LD_R3R4		2
+#परिभाषय PPC_LD_F32		3
+#परिभाषय PPC_LD_F64		4
+#परिभाषय PPC_LD_F128		5
+#परिभाषय PPC_LD_U8		6
+#परिभाषय PPC_LD_S8		7
+#परिभाषय PPC_LD_U16		8
+#परिभाषय PPC_LD_S16		9
 
-#ifndef POWERPC64
+#यदि_अपरिभाषितम् POWERPC64
 
-#define PPC_LD_U32		PPC_LD_R3
-#define PPC_LD_S32		PPC_LD_R3
-#define PPC_LD_PTR		PPC_LD_R3
-#define PPC_LD_I64		PPC_LD_R3R4
+#परिभाषय PPC_LD_U32		PPC_LD_R3
+#परिभाषय PPC_LD_S32		PPC_LD_R3
+#परिभाषय PPC_LD_PTR		PPC_LD_R3
+#परिभाषय PPC_LD_I64		PPC_LD_R3R4
 
 /* Needed for soft-float long-double. */
-#define PPC32_LD_R3R6		10
+#परिभाषय PPC32_LD_R3R6		10
 
 /* Needed for FFI_SYSV small structure returns.  */
-#ifdef __LITTLE_ENDIAN__
-#define PPC32_SYSV_LD_STRUCT_3	PPC32_LD_R3
-#define PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
-#define PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
-#define PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
-#else
-#define PPC32_SYSV_LD_STRUCT_3	11
-#define PPC32_SYSV_LD_STRUCT_5	12
-#define PPC32_SYSV_LD_STRUCT_6	13
-#define PPC32_SYSV_LD_STRUCT_7	14
-#endif
+#यदि_परिभाषितम् __LITTLE_ENDIAN__
+#परिभाषय PPC32_SYSV_LD_STRUCT_3	PPC32_LD_R3
+#परिभाषय PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
+#परिभाषय PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
+#परिभाषय PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
+#अन्यथा
+#परिभाषय PPC32_SYSV_LD_STRUCT_3	11
+#परिभाषय PPC32_SYSV_LD_STRUCT_5	12
+#परिभाषय PPC32_SYSV_LD_STRUCT_6	13
+#परिभाषय PPC32_SYSV_LD_STRUCT_7	14
+#यदि_अन्तः
 
-#else /* POWERPC64 */
+#अन्यथा /* POWERPC64 */
 
-#define PPC_LD_U32		10
-#define PPC_LD_S32		11
-#define PPC_LD_PTR		PPC_LD_R3
-#define PPC_LD_I64		PPC_LD_R3
+#परिभाषय PPC_LD_U32		10
+#परिभाषय PPC_LD_S32		11
+#परिभाषय PPC_LD_PTR		PPC_LD_R3
+#परिभाषय PPC_LD_I64		PPC_LD_R3
 
 /* Used by ELFv2 for homogenous structure returns.  */
-#define PPC64_LD_VECTOR		12
-#define PPC64_LD_VECTOR_HOMOG	13
-#define PPC64_LD_FLOAT_HOMOG	14
-#define PPC64_LD_DOUBLE_HOMOG	15
-#ifdef __LITTLE_ENDIAN__
-#define PPC64_LD_STRUCT_3	PPC_LD_U32
-#define PPC64_LD_STRUCT_5	PPC_LD_I64
-#define PPC64_LD_STRUCT_6	PPC_LD_I64
-#define PPC64_LD_STRUCT_7	PPC_LD_I64
-#else
-#define PPC64_LD_STRUCT_3	16
-#define PPC64_LD_STRUCT_5	17
-#define PPC64_LD_STRUCT_6	18
-#define PPC64_LD_STRUCT_7	19
-#endif
+#परिभाषय PPC64_LD_सदिशम्		12
+#परिभाषय PPC64_LD_सदिशम्_HOMOG	13
+#परिभाषय PPC64_LD_FLOAT_HOMOG	14
+#परिभाषय PPC64_LD_DOUBLE_HOMOG	15
+#यदि_परिभाषितम् __LITTLE_ENDIAN__
+#परिभाषय PPC64_LD_STRUCT_3	PPC_LD_U32
+#परिभाषय PPC64_LD_STRUCT_5	PPC_LD_I64
+#परिभाषय PPC64_LD_STRUCT_6	PPC_LD_I64
+#परिभाषय PPC64_LD_STRUCT_7	PPC_LD_I64
+#अन्यथा
+#परिभाषय PPC64_LD_STRUCT_3	16
+#परिभाषय PPC64_LD_STRUCT_5	17
+#परिभाषय PPC64_LD_STRUCT_6	18
+#परिभाषय PPC64_LD_STRUCT_7	19
+#यदि_अन्तः
 
-#endif /* POWERPC64 */
+#यदि_अन्तः /* POWERPC64 */
 
-#ifndef LIBFFI_ASM
+#यदि_अपरिभाषितम् LIBFFI_ASM
 
-enum {
+गणना {
   /* The assembly depends on these exact flags.  */
   /* These go in cr7 */
   FLAG_RETURNS_SMST     = 1 << (31-31), /* Used for FFI_SYSV small structs.  */
@@ -104,8 +104,8 @@ enum {
   FLAG_RETURNS_VEC      = 1 << (31-28),
 
   /* These go in cr6 */
-  FLAG_RETURNS_64BITS   = 1 << (31-27),
-  FLAG_RETURNS_128BITS  = 1 << (31-26),
+  FLAG_RETURNS_64_द्वयङ्काः   = 1 << (31-27),
+  FLAG_RETURNS_128_द्वयङ्काः  = 1 << (31-26),
 
   FLAG_COMPAT           = 1 << (31- 8), /* Not used by assembly */
 
@@ -118,57 +118,57 @@ enum {
   FLAG_VEC_ARGUMENTS    = 1 << (31- 3),
 };
 
-typedef union
+प्रकारनिर्देश सङ्घ
 {
-  float f;
-  double d;
+  भिन्न f;
+  द्विगुण d;
 } ffi_dblfl;
 
-#if defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
-typedef _Float128 float128;
-#elif defined(__FLOAT128__)
-typedef __float128 float128;
-#else
-typedef char float128[16] __attribute__((aligned(16)));
-#endif
+#यदि defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
+प्रकारनिर्देश _Float128 float128;
+#नोचेद्यदि defined(__FLOAT128__)
+प्रकारनिर्देश __float128 float128;
+#अन्यथा
+प्रकारनिर्देश वर्ण float128[16] __attribute__((aligned(16)));
+#यदि_अन्तः
 
-void FFI_HIDDEN ffi_closure_SYSV (void);
-void FFI_HIDDEN ffi_go_closure_sysv (void);
-void FFI_HIDDEN ffi_call_SYSV(extended_cif *, void (*)(void), void *,
-			      unsigned, void *, int);
+शून्य FFI_HIDDEN ffi_संवृतिः_SYSV (शून्य);
+शून्य FFI_HIDDEN ffi_go_संवृतिः_sysv (शून्य);
+शून्य FFI_HIDDEN ffi_call_SYSV(extended_cif *, शून्य (*)(शून्य), शून्य *,
+			      अचिह्नित, शून्य *, पूर्णाङ्क);
 
-void FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
-ffi_status FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_closure_loc_sysv (ffi_closure *,
+शून्य FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
+ffi_स्थितिः FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
+ffi_स्थितिः FFI_HIDDEN ffi_prep_संवृतिः_loc_sysv (ffi_संवृतिः *,
 						 ffi_cif *,
-						 void (*) (ffi_cif *, void *,
-							   void **, void *),
-						 void *, void *);
-int FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
-					void (*) (ffi_cif *, void *,
-						  void **, void *),
-					void *, void *, unsigned long *,
-					ffi_dblfl *, unsigned long *);
+						 शून्य (*) (ffi_cif *, शून्य *,
+							   शून्य **, शून्य *),
+						 शून्य *, शून्य *);
+पूर्णाङ्क FFI_HIDDEN ffi_संवृतिः_helper_SYSV (ffi_cif *,
+					शून्य (*) (ffi_cif *, शून्य *,
+						  शून्य **, शून्य *),
+					शून्य *, शून्य *, अचिह्नित दीर्घ *,
+					ffi_dblfl *, अचिह्नित दीर्घ *);
 
-void FFI_HIDDEN ffi_call_LINUX64(extended_cif *, void (*) (void), void *,
-				 unsigned long, void *, long);
-void FFI_HIDDEN ffi_closure_LINUX64 (void);
-void FFI_HIDDEN ffi_go_closure_linux64 (void);
+शून्य FFI_HIDDEN ffi_call_LINUX64(extended_cif *, शून्य (*) (शून्य), शून्य *,
+				 अचिह्नित दीर्घ, शून्य *, दीर्घ);
+शून्य FFI_HIDDEN ffi_संवृतिः_LINUX64 (शून्य);
+शून्य FFI_HIDDEN ffi_go_संवृतिः_linux64 (शून्य);
 
-void FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned int,
-						unsigned int);
-void FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *const);
-ffi_status FFI_HIDDEN ffi_prep_closure_loc_linux64 (ffi_closure *, ffi_cif *,
-						    void (*) (ffi_cif *, void *,
-							      void **, void *),
-						    void *, void *);
-int FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
-					   void (*) (ffi_cif *, void *,
-						     void **, void *),
-					   void *, void *,
-					   unsigned long *, ffi_dblfl *,
+शून्य FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
+ffi_स्थितिः FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
+ffi_स्थितिः FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, अचिह्नित पूर्णाङ्क,
+						अचिह्नित पूर्णाङ्क);
+शून्य FFI_HIDDEN ffi_prep_args64 (extended_cif *, अचिह्नित दीर्घ *ध्रुव);
+ffi_स्थितिः FFI_HIDDEN ffi_prep_संवृतिः_loc_linux64 (ffi_संवृतिः *, ffi_cif *,
+						    शून्य (*) (ffi_cif *, शून्य *,
+							      शून्य **, शून्य *),
+						    शून्य *, शून्य *);
+पूर्णाङ्क FFI_HIDDEN ffi_संवृतिः_helper_LINUX64 (ffi_cif *,
+					   शून्य (*) (ffi_cif *, शून्य *,
+						     शून्य **, शून्य *),
+					   शून्य *, शून्य *,
+					   अचिह्नित दीर्घ *, ffi_dblfl *,
 					   float128 *);
 
-#endif /* !LIBFFI_ASM */
+#यदि_अन्तः /* !LIBFFI_ASM */

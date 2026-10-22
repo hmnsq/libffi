@@ -25,34 +25,34 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_OSF,
-  FFI_LAST_ABI,
+  FFI_चरमः_ABI,
   FFI_DEFAULT_ABI = FFI_OSF
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#define FFI_TARGET_HAS_INT128
+#परिभाषय FFI_TARGET_SPECIFIC_राशिः_SPACE_आवण्टनम्
+#परिभाषय FFI_TARGET_HAS_COMPLEX_TYPE
+#परिभाषय FFI_TARGET_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_GO_CLOSURES 1
+#परिभाषय FFI_TRAMPOLINE_आकार 24
+#परिभाषय FFI_NATIVE_RAW_API 0
 
-#endif
+#यदि_अन्तः

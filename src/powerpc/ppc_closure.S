@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 #define LIBFFI_ASM
 #include <fficonfig.h>
@@ -92,7 +92,7 @@ ENTRY(ffi_closure_SYSV)
 	# i.e. the previous frame pointer + 8
 	addi %r9,%r1,152
 
-	# make the call
+	# make the आह्वान
 	bl ffi_closure_helper_SYSV@local
 .Lret:
 	# now r3 contains the return type
@@ -106,7 +106,7 @@ ENTRY(ffi_closure_SYSV)
 	slwi %r3,%r3,4		# now multiply return type by 16
 	addi %r4, %r4, .Lret_type0 - .Lret
 	lwz %r0,148(%r1)
-	add %r3,%r3,%r4		# add contents of table to table address
+	योजय %r3,%r3,%r4		# योजय contents of table to table address
 	mtctr %r3
 	mtlr %r0
 	.cfi_restore 65
@@ -240,7 +240,7 @@ E PPC32_SYSV_LD_STRUCT_7
 #endif
 
 	.cfi_endproc
-END(ffi_closure_SYSV)
+अन्त(ffi_closure_SYSV)
 
 
 FFI_HIDDEN(ffi_go_closure_sysv)
@@ -264,7 +264,7 @@ ENTRY(ffi_go_closure_sysv)
 	mr %r5,%r11
 	b .Ldoclosure
 	.cfi_endproc
-END(ffi_go_closure_sysv)
+अन्त(ffi_go_closure_sysv)
 
 #ifdef FFI_EXEC_STATIC_TRAMP
 	.text
@@ -290,6 +290,6 @@ trampoline_code_table:
 #endif /* FFI_EXEC_STATIC_TRAMP */
 
 #if defined __ELF__ && defined __linux__
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif
 #endif

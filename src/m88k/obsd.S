@@ -13,12 +13,12 @@
  * in all copies or substantial portions of the Software.
  * 
  * THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+ * अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT HOLDERS BE LIABLE FOR ANY
+ * CLAIM, DAMAGES वा OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT,
+ * TORT वा OTHERWISE, ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE
+ * SOFTWARE वा THE USE वा OTHER DEALINGS अन्तः THE SOFTWARE.
  */
 
 /*
@@ -41,7 +41,7 @@
 ffi_cacheflush_OBSD:
 	tb0	0,   %r0, 451
 	or	%r0, %r0, %r0
-	jmp	%r1
+	कूर्द	%r1
 	.size	ffi_cacheflush_OBSD, . - ffi_cacheflush_OBSD
 
 /*
@@ -117,7 +117,7 @@ ffi_call_OBSD:
 9:
 	ld	%r1,  %r31, 0
 	ld	%r30, %r31, 4
-	jmp.n	%r1
+	कूर्द.n	%r1
 	 addu	%r31, %r31, 32
 	.size	ffi_call_OBSD, . - ffi_call_OBSD
 
@@ -167,7 +167,7 @@ ffi_closure_OBSD:
 	subu	%r31, %r30, 16
 	ld	%r1,  %r31, 0
 	ld	%r30, %r31, 4
-	jmp.n	%r1
+	कूर्द.n	%r1
 	 addu	%r31, %r31, 16
 	.size	ffi_closure_OBSD,.-ffi_closure_OBSD
 
@@ -204,6 +204,6 @@ ffi_closure_struct_OBSD:
 	subu	%r31, %r30, 16
 	ld	%r1,  %r31, 0
 	ld	%r30, %r31, 4
-	jmp.n	%r1
+	कूर्द.n	%r1
 	 addu	%r31, %r31, 16
 	.size	ffi_closure_struct_OBSD,.-ffi_closure_struct_OBSD

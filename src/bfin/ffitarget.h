@@ -24,20 +24,20 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed 	 long          ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित 	 दीर्घ          ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_चरमः_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
-#endif
+#यदि_अन्तः
 

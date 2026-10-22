@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -63,7 +63,7 @@ L$CFI12
 
 	   [ 48-byte register save area                ]
 
-	   [ Stack space for call arguments            ] <- %r4
+	   [ Stack space for आह्वान arguments            ] <- %r4
 
 	   [ 16-byte rame marker                       ]
 
@@ -83,7 +83,7 @@ L$CFI13
 	ldo	112(%sp), %r29		; arg pointer for prep args
 
 	/* Call prep_args:
-	   %arg0(stack) -- set up above to point to call arguments
+	   %arg0(stack) -- set up above to point to आह्वान arguments
 	   %arg1(ecif) -- same as incoming param
 	   %arg2(bytes) -- same as incoming param */
 	bl	ffi_prep_args_pa64,%r2
@@ -565,7 +565,7 @@ L$CFI22
 	std,ma	%r1, 128(%sp)
 L$CFI23
 
-	/* Put arguments onto the stack and call ffi_closure_inner.  */
+	/* Put arguments onto the stack and आह्वान ffi_closure_inner.  */
 	std	%r26, -64(%r29)
 	std	%r25, -56(%r29)
 	std	%r24, -48(%r29)
@@ -607,7 +607,7 @@ L$CFI23
 L$FE2:
 	.size	ffi_closure_pa64, .-ffi_closure_pa64
 
-	.section	.eh_frame,"aw",@progbits
+	.खण्डः	.eh_frame,"aw",@progbits
 L$frame1:
 	.word   L$ECIE1-L$SCIE1 ;# Length of Common Information Entry
 L$SCIE1:

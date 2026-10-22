@@ -27,63 +27,63 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_VFP,
-  FFI_LAST_ABI,
-#if defined(__ARM_PCS_VFP) || defined(_WIN32)
+  FFI_चरमः_ABI,
+#यदि defined(__ARM_PCS_VFP) || defined(_WIN32)
   FFI_DEFAULT_ABI = FFI_VFP,
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_SYSV,
-#endif
+#यदि_अन्तः
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
-#define FFI_EXTRA_CIF_FIELDS			\
-  int vfp_used;					\
-  unsigned short vfp_reg_free, vfp_nargs;	\
-  signed char vfp_args[16]			\
+#परिभाषय FFI_EXTRA_CIF_FIELDS			\
+  पूर्णाङ्क vfp_प्रयुक्तम्;					\
+  अचिह्नित ह्रस्व vfp_reg_free, vfp_nargs;	\
+  चिह्नित वर्ण vfp_तर्काः[16]			\
 
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#ifndef _WIN32
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#परिभाषय FFI_TARGET_SPECIFIC_VARIADIC
+#यदि_अपरिभाषितम् _WIN32
+#परिभाषय FFI_TARGET_HAS_COMPLEX_TYPE
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_GO_CLOSURES 1
+#परिभाषय FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#यदि defined (FFI_EXEC_TRAMPOLINE_सारणी) && FFI_EXEC_TRAMPOLINE_सारणी
 
-#ifdef __MACH__
-#define FFI_TRAMPOLINE_SIZE 12
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET 8
-#else
-#error "No trampoline table implementation"
-#endif
+#यदि_परिभाषितम् __MACH__
+#परिभाषय FFI_TRAMPOLINE_आकार 12
+#परिभाषय FFI_TRAMPOLINE_संवृतिः_विस्थापनम् 8
+#अन्यथा
+#दोषः "No trampoline table implementation"
+#यदि_अन्तः
 
-#else
-#ifdef _WIN32
-#define FFI_TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_CLOSURE_FUNCTION 12
-#else
-#define FFI_TRAMPOLINE_SIZE 12
-#endif
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
-#endif
+#अन्यथा
+#यदि_परिभाषितम् _WIN32
+#परिभाषय FFI_TRAMPOLINE_आकार 16
+#परिभाषय FFI_TRAMPOLINE_संवृतिः_FUNCTION 12
+#अन्यथा
+#परिभाषय FFI_TRAMPOLINE_आकार 12
+#यदि_अन्तः
+#परिभाषय FFI_TRAMPOLINE_संवृतिः_विस्थापनम् FFI_TRAMPOLINE_आकार
+#यदि_अन्तः
 
-#endif
+#यदि_अन्तः

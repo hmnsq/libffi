@@ -17,12 +17,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -61,7 +61,7 @@
 
 #define SAVED_FPR_COUNT 13
 #define FPR_SIZE	8
-/* biggest m64 struct ret is 8GPRS + 13FPRS = 168 bytes - rounded to 16bytes = 176. */
+/* biggest m64 struct प्रत्यागच्छ is 8GPRS + 13FPRS = 168 bytes - rounded to 16bytes = 176. */
 #define RESULT_BYTES	MODE_CHOICE(16,176)
 
 ; The whole stack frame **MUST** be 16byte-aligned.
@@ -120,7 +120,7 @@
    |   Saved CR [low word for m64]      4/8	| |
    |--------------------------------------------| |     stack pointer here
    |   Current backchain pointer	4/8	|-/	during
-   |--------------------------------------------|   <<<	call.
+   |--------------------------------------------|   <<<	आह्वान.
 
 */
 
@@ -183,7 +183,7 @@ LCFI1:
 	/* Now load up the pointer to the saved fpr registers.  */
 	addi	r6,r1,FP_SAVE_BASE
 
-	/* Make the call.  */
+	/* Make the आह्वान.  */
 	bl	BLCLS_HELP
 
 	/* r3 now holds a small PPC_LD_* jump-table index (see the PPC_LD_*
@@ -200,7 +200,7 @@ LCFI1:
 	bl	Lget_ret_type0_addr	/* Get pointer to Lret_type0 into LR.  */
 	mflr	r4			/* Move to r4.  */
 	slwi	r3,r3,4			/* Now multiply return type by 16.  */
-	add	r3,r3,r4		/* Add contents of table to table address.  */
+	योजय	r3,r3,r4		/* Add contents of table to table address.  */
 	mtctr	r3
 	bctr			 	 /* Jump to it.  */
 LFE1:
@@ -440,7 +440,7 @@ Lfinish:
 Lendcode:
 	.align 1
 	
-/* END(ffi_closure_ASM)  */
+/* अन्त(ffi_closure_ASM)  */
 
 /* EH frame stuff.  */
 #define EH_DATA_ALIGN_FACT MODE_CHOICE(0x7c,0x78)
@@ -448,7 +448,7 @@ Lendcode:
 #define EH_FRAME_OFFSETA MODE_CHOICE(176,0x90)
 #define EH_FRAME_OFFSETB MODE_CHOICE(1,3)
 
-	.section __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
+	.खण्डः __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
 EH_frame1:
 	.set	L$set$0,LECIE1-LSCIE1
 	.long	L$set$0	; Length of Common Information Entry
@@ -494,7 +494,7 @@ LEFDE1:
 	.align 	1
 
 #ifdef WANT_STUB
-	.section __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
+	.खण्डः __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
 	.align 5
 L_ffi_closure_helper_DARWIN$stub:
 	.indirect_symbol _ffi_closure_helper_DARWIN
@@ -513,7 +513,7 @@ L_ffi_closure_helper_DARWIN$lazy_ptr:
 	.g_long	dyld_stub_binding_helper
 
 #if defined(__ppc64__)
-	.section __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
+	.खण्डः __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
 	.align 5
 L_darwin64_struct_ret_by_value_p$stub:
 	.indirect_symbol _darwin64_struct_ret_by_value_p
@@ -531,7 +531,7 @@ L_darwin64_struct_ret_by_value_p$lazy_ptr:
 	.indirect_symbol _darwin64_struct_ret_by_value_p
 	.g_long	dyld_stub_binding_helper
 
-	.section __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
+	.खण्डः __TEXT,__picsymbolstub1,symbol_stubs,pure_instructions,32
 	.align 5
 L_darwin64_pass_struct_floats$stub:
 	.indirect_symbol _darwin64_pass_struct_floats

@@ -25,107 +25,107 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
-#include <stdlib.h>
+#अन्तर्भाव <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+शून्य ffi_prep_तर्काः(वर्ण *राशिः, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  अचिह्नित पूर्णाङ्क i;
+  पूर्णाङ्क tmp;
+  अचिह्नित पूर्णाङ्क avn;
+  शून्य **p_argv;
+  वर्ण *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = राशिः;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  यदि (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->आकार > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(शून्य **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  प्रति (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      यदि (((*p_arg)->alignment - 1) & (अचिह्नित) argp)
+	argp = (वर्ण *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      यदि (avn != 0)
 	{
 	  avn--;
-	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  z = (*p_arg)->आकार;
+	  यदि (z < परिमाण (पूर्णाङ्क))
 	    {
-	      z = sizeof (int);
+	      z = परिमाण (पूर्णाङ्क);
 
-	      switch ((*p_arg)->type)
+	      विकल्प ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_SINT8:
+		  *(चिह्नित पूर्णाङ्क *) argp = (चिह्नित पूर्णाङ्क)*(SINT8 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_UINT8:
+		  *(अचिह्नित पूर्णाङ्क *) argp = (अचिह्नित पूर्णाङ्क)*(UINT8 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_SINT16:
+		  *(चिह्नित पूर्णाङ्क *) argp = (चिह्नित पूर्णाङ्क)*(SINT16 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_UINT16:
+		  *(अचिह्नित पूर्णाङ्क *) argp = (अचिह्नित पूर्णाङ्क)*(UINT16 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_STRUCT:
-	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
-		    memcpy (argp, *p_argv, z);
-		  else
-		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+		पक्ष FFI_TYPE_STRUCT:
+	  	  z = (*p_arg)->आकार;
+	  	  यदि ((*p_arg)->alignment != 1)
+		    स्मृतिं_प्रतिलिख (argp, *p_argv, z);
+		  अन्यथा
+		    स्मृतिं_प्रतिलिख (argp + 4 - z, *p_argv, z);
+	  	  z = परिमाण (पूर्णाङ्क);
+		  भङ्ग;
 
-		default:
+		स्वभाव:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  अन्यथा यदि (z == परिमाण (पूर्णाङ्क))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(अचिह्नित पूर्णाङ्क *) argp = (अचिह्नित पूर्णाङ्क)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  अन्यथा
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      यदि ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  यदि (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(अचिह्नित पूर्णाङ्क *) argp = (अचिह्नित पूर्णाङ्क)(शून्य *)(* p_argv);
+		      z = परिमाण(शून्य *);
 		    }
-		  else
+		  अन्यथा
 		    {
-	              memcpy(argp, *p_argv, z);
+	              स्मृतिं_प्रतिलिख(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      अन्यथा
 	        {
 		  /* Double or long long 64bit.  */
-	          memcpy (argp, *p_argv, z);
+	          स्मृतिं_प्रतिलिख (argp, *p_argv, z);
 	        }
 	    }
 	  p_argv++;
@@ -133,125 +133,125 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  प्रत्यागम;
 }
 
 /* Perform machine dependent cif processing.  */
-ffi_status
+ffi_स्थितिः
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  विकल्प (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    पक्ष FFI_TYPE_VOID:
+      cif->flags = (अचिह्नित) cif->rtype->type;
+      भङ्ग;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    पक्ष FFI_TYPE_STRUCT:
+      यदि (cif->rtype->आकार <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      अन्यथा यदि (cif->rtype->आकार <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
-	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      अन्यथा
+	cif->flags = (अचिह्नित) cif->rtype->type;
+      भङ्ग;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    पक्ष FFI_TYPE_SINT64:
+    पक्ष FFI_TYPE_UINT64:
+    पक्ष FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    पक्ष FFI_TYPE_FLOAT:
+    स्वभाव:
       cif->flags = FFI_TYPE_INT;
-      break;
+      भङ्ग;
     }
 
-  return FFI_OK;
+  प्रत्यागम FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+बाह्य शून्य ffi_call_SYSV(शून्य (*)(वर्ण *, extended_cif *), extended_cif *,
+			  अचिह्नित, अचिह्नित, अचिह्नित *, शून्य (*fn)(शून्य));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+शून्य ffi_call(ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue, शून्य **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  शून्य **avalue_copy = रिक्त;
+  पूर्णाङ्क i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  यदि ((rvalue == रिक्त) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca (cif->rtype->size);
+      ecif.rvalue = alloca (cif->rtype->आकार);
     }
-  else
+  अन्यथा
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  प्रति (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      पूर्णाङ्क आकार = at->आकार;
+      यदि (at->type == FFI_TYPE_STRUCT && आकार > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          वर्ण *argcopy = alloca (आकार);
+          यदि (avalue_copy == रिक्त)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * परिमाण (शून्य *));
+              स्मृतिं_प्रतिलिख (avalue_copy, avalue, nargs * परिमाण (शून्य *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          स्मृतिं_प्रतिलिख (argcopy, avalue[i], आकार);
           avalue[i] = argcopy;
         }
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  विकल्प (cif->abi)
     {
-    case FFI_SYSV:
-      ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
+    पक्ष FFI_SYSV:
+      ffi_call_SYSV(ffi_prep_तर्काः, &ecif, cif->अष्टकानि,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      यदि (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  पूर्णाङ्क आकार = cif->rtype->आकार;
+	  पूर्णाङ्क align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  यदि (आकार < 4)
 	    {
-	      if (align == 1)
-	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
+	      यदि (align == 1)
+	        *(अचिह्नित दीर्घ *)(ecif.rvalue) <<= (4 - आकार) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  अन्यथा यदि (4 < आकार && आकार < 8)
 	    {
-	      if (align == 1)
+	      यदि (align == 1)
 		{
-		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
+		  स्मृतिं_प्रतिलिख (ecif.rvalue, ecif.rvalue + 8-आकार, आकार);
 		}
-	      else if (align == 2)
+	      अन्यथा यदि (align == 2)
 		{
-		  if (size & 1)
-		    size += 1;
+		  यदि (आकार & 1)
+		    आकार += 1;
 
-		  if (size != 8)
-		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
+		  यदि (आकार != 8)
+		    स्मृतिं_प्रतिलिख (ecif.rvalue, ecif.rvalue + 8-आकार, आकार);
 		}
 	    }
 	}
-      break;
+      भङ्ग;
 
-    default:
+    स्वभाव:
       FFI_ASSERT(0);
-      break;
+      भङ्ग;
     }
 }

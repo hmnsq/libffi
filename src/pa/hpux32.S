@@ -17,12 +17,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -31,7 +31,7 @@
 
 	.LEVEL 1.1
 	.SPACE	$PRIVATE$
-	.IMPORT	$global$,DATA
+	.IMPORT	$वैश्विक$,DATA
 	.IMPORT	$$dyncall,MILLICODE
 	.SUBSPA	$DATA$
 	.align	4
@@ -69,7 +69,7 @@ L$CFI12
 
 	   [ 64-bytes register save area               ] <- %r4
 
-	   [ Stack space for actual call, passed as    ] <- %arg0
+	   [ Stack space for actual आह्वान, passed as    ] <- %arg0
 	   [     arg0 to ffi_prep_args_pa32           ]
 
 	   [ Stack for calling prep_args               ] <- %sp
@@ -326,7 +326,7 @@ L$CFI21
 L$CFI22
 	stwm	%r1, 64(%sp)
 
-	/* Put arguments onto the stack and call ffi_closure_inner.  */
+	/* Put arguments onto the stack and आह्वान ffi_closure_inner.  */
 	stw	%arg0, -36(%r3)
 	stw	%arg1, -40(%r3)
 	stw	%arg2, -44(%r3)

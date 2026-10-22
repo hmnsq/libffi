@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 #define LIBFFI_ASM
 #include <fficonfig.h>
@@ -46,7 +46,7 @@ ffi_closure_LINUX64:
 #  endif
 	.localentry ffi_closure_LINUX64, . - ffi_closure_LINUX64
 # else
-	.section        ".opd","aw"
+	.खण्डः        ".opd","aw"
 	.align  3
 ffi_closure_LINUX64:
 #  ifdef _CALL_LINUX
@@ -193,7 +193,7 @@ ffi_closure_LINUX64:
 	.cfi_def_cfa_offset STACKFRAME
 	.cfi_offset 65, 16
 
-	# make the call
+	# make the आह्वान
 # if defined _CALL_LINUX || _CALL_ELF == 2
 #  ifdef __PCREL__
 	bl ffi_closure_helper_LINUX64@notoc
@@ -219,7 +219,7 @@ ffi_closure_LINUX64:
 	mflr %r4		# move address of .Lret to r4
 	sldi %r3, %r3, 4	# now multiply return type by 16
 	addi %r4, %r4, .Lret_type0 - .Lret
-	add %r3, %r3, %r4	# add contents of table to table address
+	योजय %r3, %r3, %r4	# योजय contents of table to table address
 	mtctr %r3
 	mtlr %r0		# restore function return address
 	.cfi_restore 65
@@ -420,7 +420,7 @@ ffi_go_closure_linux64:
 #  endif
 	.localentry ffi_go_closure_linux64, . - ffi_go_closure_linux64
 # else
-	.section        ".opd","aw"
+	.खण्डः        ".opd","aw"
 	.align  3
 ffi_go_closure_linux64:
 #  ifdef _CALL_LINUX
@@ -512,7 +512,7 @@ ffi_go_closure_linux64:
 trampoline_code_table:
 	.localentry trampoline_code_table,.-trampoline_code_table
 # else
-	.section	".opd","aw"
+	.खण्डः	".opd","aw"
 	.align  3
 trampoline_code_table:
 	.quad   .L.trampoline_code_table,.TOC.@tocbase,0
@@ -550,5 +550,5 @@ trampoline_code_table:
 #endif /* POWERPC64 */
 
 #if (defined __ELF__ && defined __linux__) || _CALL_ELF == 2
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

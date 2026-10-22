@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -79,46 +79,46 @@ C(ffi_call_v8):
 	! Allocate a stack frame sized by ffi_call.
 	save	%sp, %o4, %sp
 .LUW1:
-	mov	%i0, %o0		! copy cif
-	add	%sp, 64+32, %o1		! load args area
-	mov	%i2, %o2		! copy rvalue
-	call	C(ffi_prep_args_v8)
-	 mov	%i3, %o3		! copy avalue
+	चालय	%i0, %o0		! copy cif
+	योजय	%sp, 64+32, %o1		! load args area
+	चालय	%i2, %o2		! copy rvalue
+	आह्वान	C(ffi_prep_args_v8)
+	 चालय	%i3, %o3		! copy avalue
 
-	add	%sp, 32, %sp		! deallocate prep frame
+	योजय	%sp, 32, %sp		! deallocate prep frame
 	and	%o0, SPARC_FLAG_RET_MASK, %l0	! save return type
 	srl	%o0, SPARC_SIZEMASK_SHIFT, %l1	! save return size
 	ld	[%sp+64+4], %o0		! load all argument registers
 	ld	[%sp+64+8], %o1
 	ld	[%sp+64+12], %o2
 	ld	[%sp+64+16], %o3
-	cmp	%l0, SPARC_RET_STRUCT	! struct return needs an unimp 4
+	तुलय	%l0, SPARC_RET_STRUCT	! struct return needs an unimp 4
 	ld	[%sp+64+20], %o4
 	be	8f
 	 ld	[%sp+64+24], %o5
 
 	! Call foreign function
-	call	%i1
-	 mov	%i5, %g2		! load static chain
+	आह्वान	%i1
+	 चालय	%i5, %g2		! load static chain
 
-0:	call	1f		! load pc in %o7
+0:	आह्वान	1f		! load pc in %o7
 	 sll	%l0, 4, %l0
-1:	add	%o7, %l0, %o7	! o7 = 0b + ret_type*16
-	jmp	%o7+(2f-0b)
+1:	योजय	%o7, %l0, %o7	! o7 = 0b + ret_type*16
+	कूर्द	%o7+(2f-0b)
 	 nop
 
 	! Note that each entry is 4 insns, enforced by the E macro.
 	.align	16
 2:
 E(SPARC_RET_VOID)
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_STRUCT)
 	unimp
 E(SPARC_RET_UINT8)
 	and	%o0, 0xff, %o0
 	st	%o0, [%i2]
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_SINT8)
 	sll	%o0, 24, %o0
@@ -134,7 +134,7 @@ E(SPARC_RET_SINT16)
 	 sra	%o0, 16, %o0
 E(SPARC_RET_UINT32)
 7:	st	%o0, [%i2]
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SP_V8_RET_CPLX16)
 	sth	%o0, [%i2+2]
@@ -143,12 +143,12 @@ E(SP_V8_RET_CPLX16)
 E(SPARC_RET_INT64)
 	st	%o0, [%i2]
 	st	%o1, [%i2+4]
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_INT128)
 	std	%o0, [%i2]
 	std	%o2, [%i2+8]
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_F_8)
 	st	%f7, [%i2+7*4]
@@ -168,7 +168,7 @@ E(SPARC_RET_F_4)
 E(SPARC_RET_F_2)
 	st	%f1, [%i2+4]
 	st	%f0, [%i2]
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SP_V8_RET_CPLX8)
 	stb	%o0, [%i2+1]
@@ -176,16 +176,16 @@ E(SP_V8_RET_CPLX8)
 	 srl	%o0, 8, %o0
 E(SPARC_RET_F_1)
 	st	%f0, [%i2]
-	ret
+	प्रत्यागच्छ
 	 restore
 
 	.align	8
 9:	sth	%o0, [%i2]
-	ret
+	प्रत्यागच्छ
 	 restore
 	.align	8
 0:	stb	%o0, [%i2]
-	ret
+	प्रत्यागच्छ
 	 restore
 
 	! Struct returning functions expect and skip the unimp here.
@@ -193,21 +193,21 @@ E(SPARC_RET_F_1)
 	! make sure the low 12 bits of the unimp match the size of
 	! the struct being returned.
 	.align	8
-8:	call	1f				! load pc in %o7
+8:	आह्वान	1f				! load pc in %o7
 	 sll	%l1, 2, %l0			! size * 4
 1:	sll	%l1, 4, %l1			! size * 16
-	add	%l0, %l1, %l0			! size * 20
-	add	%o7, %l0, %o7			! o7 = 8b + size*20
-	jmp	%o7+(2f-8b)
-	 mov	%i5, %g2			! load static chain
+	योजय	%l0, %l1, %l0			! size * 20
+	योजय	%o7, %l0, %o7			! o7 = 8b + size*20
+	कूर्द	%o7+(2f-8b)
+	 चालय	%i5, %g2			! load static chain
 2:
 
 /* The Sun assembler doesn't understand .rept 0x1000.  */
 #define rept1			\
-	call	%i1;		\
+	आह्वान	%i1;		\
 	 nop;			\
 	unimp	(. - 2b) / 20;	\
-	ret;			\
+	प्रत्यागच्छ;			\
 	 restore
 
 #define rept16				\
@@ -255,7 +255,7 @@ C(ffi_go_closure_v8):
 	ld	[%g2+4], %o0			! load cif
 	ld	[%g2+8], %o1			! load fun
 	b	0f
-	 mov	%g2, %o2			! load user_data
+	 चालय	%g2, %o2			! load user_data
 .LUW5:
 	.size	C(ffi_go_closure_v8), . - C(ffi_go_closure_v8)
 
@@ -281,59 +281,59 @@ C(ffi_closure_v8):
 	st	%i5, [%fp+68+20]
 
 	! Call ffi_closure_sparc_inner to do the bulk of the work.
-	add	%fp, -8*4, %o3
-	call	ffi_closure_sparc_inner_v8
-	 add	%fp,  64, %o4
+	योजय	%fp, -8*4, %o3
+	आह्वान	ffi_closure_sparc_inner_v8
+	 योजय	%fp,  64, %o4
 
-0:	call	1f
+0:	आह्वान	1f
 	 and	%o0, SPARC_FLAG_RET_MASK, %o0
 1:	sll	%o0, 4, %o0	! o0 = o0 * 16
-	add	%o7, %o0, %o7	! o7 = 0b + o0*16
-	jmp	%o7+(2f-0b)
-	 add	%fp, -8*4, %i2
+	योजय	%o7, %o0, %o7	! o7 = 0b + o0*16
+	कूर्द	%o7+(2f-0b)
+	 योजय	%fp, -8*4, %i2
 	 
 	! Note that each entry is 4 insns, enforced by the E macro.
 	.align	16
 2:
 E(SPARC_RET_VOID)
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_STRUCT)
 	ld	[%i2], %i0
-	jmp	%i7+12
+	कूर्द	%i7+12
 	 restore
 E(SPARC_RET_UINT8)
 	ldub	[%i2+3], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_SINT8)
 	ldsb	[%i2+3], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_UINT16)
 	lduh	[%i2+2], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_SINT16)
 	ldsh	[%i2+2], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_UINT32)
 	ld	[%i2], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SP_V8_RET_CPLX16)
 	ld	[%i2], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_INT64)
 	ldd	[%i2], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_INT128)
 	ldd	[%i2], %i0
 	ldd	[%i2+8], %i2
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_F_8)
 	ld	[%i2+7*4], %f7
@@ -352,24 +352,24 @@ E(SPARC_RET_F_4)
 	nop
 E(SPARC_RET_F_2)
 	ldd	[%i2], %f0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SP_V8_RET_CPLX8)
 	lduh	[%i2], %i0
-	ret
+	प्रत्यागच्छ
 	 restore
 E(SPARC_RET_F_1)
 	ld	[%i2], %f0
-	ret
+	प्रत्यागच्छ
 	 restore
 
 .LUW8:
 	.size	C(ffi_closure_v8), . - C(ffi_closure_v8)
 
 #ifdef HAVE_RO_EH_FRAME
-        .section        ".eh_frame",#alloc
+        .खण्डः        ".eh_frame",#alloc
 #else
-        .section        ".eh_frame",#alloc,#write
+        .खण्डः        ".eh_frame",#alloc,#write
 #endif
 
 #ifdef HAVE_AS_SPARC_UA_PCREL
@@ -439,5 +439,5 @@ E(SPARC_RET_F_1)
 
 #endif /* !SPARC64 */
 #if defined __ELF__ && defined __linux__
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

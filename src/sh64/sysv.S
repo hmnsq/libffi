@@ -16,13 +16,13 @@
 
  
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -42,7 +42,7 @@
 #define OFS_FLT	4
 #endif
 
-	.section	.text..SHmedia32,"ax"
+	.खण्डः	.text..SHmedia32,"ax"
 
 	# r2:	ffi_prep_args
 	# r3:	&ecif
@@ -67,20 +67,20 @@ ENTRY(ffi_call_SYSV)
 	st.l	r15, 4, r18
 	st.l	r15, 0, r14
 .LCFI1:
-	add.l	r15, r63, r14
+	योजय.l	r15, r63, r14
 .LCFI2:
-#	add	r4, r63, r28
-	add	r5, r63, r29
-	add	r6, r63, r30
-	add	r7, r63, r31
-	add	r8, r63, r32
+#	योजय	r4, r63, r28
+	योजय	r5, r63, r29
+	योजय	r6, r63, r30
+	योजय	r7, r63, r31
+	योजय	r8, r63, r32
 
 	addi	r4, (64 + 7), r4
 	andi	r4, ~7, r4
-	sub.l	r15, r4, r15
+	वियोजय.l	r15, r4, r15
 
 	ptabs/l	r2, tr0
-	add	r15, r63, r2
+	योजय	r15, r63, r2
 	blink	tr0, r18
 
 	addi	r15, 64, r22
@@ -127,7 +127,7 @@ ENTRY(ffi_call_SYSV)
 	pt/l	.L_pop_d_tbl, tr1
 	gettr	tr1, r20
 	shlli	r1, 2, r21
-	add	r20, r21, r20
+	योजय	r20, r21, r20
 	ptabs/l	r20, tr1
 	blink	tr1, r63
 
@@ -165,17 +165,17 @@ ENTRY(ffi_call_SYSV)
 	pt/l	5f, tr2
 	gettr	tr1, r20
 	bge/l	r23, r63, tr2
-	add	r1, r63, r23 
+	योजय	r1, r63, r23 
 	shlli	r1, 3, r21
 	addi	r1, 2, r1
-	add	r20, r21, r20
+	योजय	r20, r21, r20
 	ptabs/l	r20, tr1
 	blink	tr1, r63
 5:
 	addi	r23, 1, r21
 	movi	-1, r23
 	shlli	r21, 3, r21
-	add	r20, r21, r20
+	योजय	r20, r21, r20
 	ptabs/l	r20, tr1
 	blink	tr1, r63
 
@@ -224,7 +224,7 @@ ENTRY(ffi_call_SYSV)
 	pt/l	.L_pop_i_tbl, tr1
 	gettr	tr1, r20
 	shlli	r0, 3, r21
-	add	r20, r21, r20
+	योजय	r20, r21, r20
 	ptabs/l	r20, tr1
 	blink	tr1, r63
 
@@ -247,12 +247,12 @@ ENTRY(ffi_call_SYSV)
 	blink	tr0, r63
 
 .L_call_it:
-	# call function
+	# आह्वान function
 	pt/l	1f, tr1
 	bnei/l	r29, FFI_TYPE_STRUCT, tr1
-	add	r19, r63, r2
+	योजय	r19, r63, r2
 1:
-	add	r22, r63, r15
+	योजय	r22, r63, r15
 	ptabs/l	r32, tr0
 	blink	tr0, r18
 
@@ -302,7 +302,7 @@ ENTRY(ffi_call_SYSV)
 
 .L_epilogue:
 	# Remove the space we pushed for the args
-	add	r14, r63, r15
+	योजय	r14, r63, r15
 
 	ld.l	r15, 0, r14
 	ld.l	r15, 4, r18
@@ -328,7 +328,7 @@ ENTRY(ffi_closure_SYSV)
 	st.l	r15, 8, r14
 	st.l	r15, 4, r12
 .LCFI4:
-	add	r15, r63, r14
+	योजय	r15, r63, r14
 .LCFI5:
 	/* Stack layout:	
 	   ...
@@ -356,7 +356,7 @@ ENTRY(ffi_closure_SYSV)
 	st.q	r14, 120, r8
 	st.q	r14, 128, r9
 
-	add	r1, r63, r2
+	योजय	r1, r63, r2
 	addi	r14, 16, r3
 	addi	r14, 72, r4
 	addi	r14, 24, r5
@@ -378,7 +378,7 @@ ENTRY(ffi_closure_SYSV)
         movi    (((datalabel .L_table) >> 16) & 65535), r2
         shori   ((datalabel .L_table) & 65535), r2
         ldx.w   r2, r1, r1
-        add     r1, r2, r1
+        योजय     r1, r2, r1
 	pt/l	.L_case_v, tr1
         ptabs   r1, tr0
         blink   tr0, r63
@@ -427,7 +427,7 @@ ENTRY(ffi_closure_SYSV)
 	ld.uw	r14, 16, r2
 	blink	tr1, r63
 .L_case_v:
-	add.l	r14, r63, r15
+	योजय.l	r14, r63, r15
 	ld.l	r15, 4, r12
 	ld.l	r15, 8, r14
 	ld.l	r15, 12, r18
@@ -440,10 +440,10 @@ ENTRY(ffi_closure_SYSV)
 	.size	 CNAME(ffi_closure_SYSV),.ffi_closure_SYSV_end-CNAME(ffi_closure_SYSV)
 
 #if defined __ELF__ && defined __linux__
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif
 
-	.section	".eh_frame","aw",@progbits
+	.खण्डः	".eh_frame","aw",@progbits
 __FRAME_BEGIN__:
 	.4byte	.LECIE1-.LSCIE1	/* Length of Common Information Entry */
 .LSCIE1:

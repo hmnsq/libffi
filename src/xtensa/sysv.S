@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -29,7 +29,7 @@
 #include <ffi.h>
 
 #define ENTRY(name) .text; .globl name; .type  name,@function; .align 4; name:
-#define END(name) .size name , . - name
+#define अन्त(name) .size name , . - name
 
 /* Assert that the table below is in sync with ffi.h.  */
 
@@ -60,9 +60,9 @@ ENTRY(ffi_call_SYSV)
 
 	entry	a1, 32              # 32 byte frame for using call8 below
 
-	mov	a10, a7             # a10(->arg0): ecif
-	sub	a11, a1, a6         # a11(->arg1): stack pointer
-	mov	a7, a1              # fp
+	चालय	a10, a7             # a10(->arg0): ecif
+	वियोजय	a11, a1, a6         # a11(->arg1): stack pointer
+	चालय	a7, a1              # fp
 	movsp	a1, a11             # set new sp = old_sp - bytes
 
 	# align ffi_prep_args stack argument so that arguments
@@ -118,7 +118,7 @@ ENTRY(ffi_call_SYSV)
 	addi	a4, a4, -FFI_TYPE_UINT8
 	bgei	a4, 7, .Lexit	# should never happen
 	movi	a6, store_calls
-	add	a4, a4, a4
+	योजय	a4, a4, a4
 	addx4	a6, a4, a6	# store_table + idx * 8
 	jx	a6
 
@@ -159,7 +159,7 @@ store_calls:
 	s32i	a11, a2, 4
 	retw
 
-END(ffi_call_SYSV)
+अन्त(ffi_call_SYSV)
 
 
 /*
@@ -184,7 +184,7 @@ ENTRY(ffi_cacheflush)
 
 	retw
 
-END(ffi_cacheflush)
+अन्त(ffi_cacheflush)
 
 /* ffi_trampoline is copied to the stack */
 
@@ -205,7 +205,7 @@ ENTRY(ffi_trampoline)
 	_mov 	a14, a0                           # [15]
 	callx0	a15                               # [18]
                                                   # [21]
-END(ffi_trampoline)
+अन्त(ffi_trampoline)
 
 /*
  * ffi_closure()
@@ -220,7 +220,7 @@ ENTRY(ffi_closure_SYSV)
 
 	# restore return address (a0) and move pointer to closure to a10
 	addi	a10, a0, -21
-	mov	a0, a14
+	चालय	a0, a14
 
 	# allow up to 4 arguments as return values
 	addi	a11, a1, 4 * 4
@@ -234,7 +234,7 @@ ENTRY(ffi_closure_SYSV)
 	s32i	a7, a11, 20
 
 	movi	a8, ffi_closure_SYSV_inner
-	mov	a12, a1
+	चालय	a12, a1
 	callx8	a8			# .._inner(*closure, **avalue, *rvalue)
 
 	# load up to four return arguments
@@ -265,4 +265,4 @@ ENTRY(ffi_closure_SYSV)
 
 1:	retw
 
-END(ffi_closure_SYSV)
+अन्त(ffi_closure_SYSV)

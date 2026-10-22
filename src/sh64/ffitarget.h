@@ -25,34 +25,34 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_चरमः_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
-#define FFI_EXTRA_CIF_FIELDS long long flags2
-#endif
+#परिभाषय FFI_EXTRA_CIF_FIELDS दीर्घ दीर्घ flags2
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 32
-#define FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_TRAMPOLINE_आकार 32
+#परिभाषय FFI_NATIVE_RAW_API 0
 
-#endif
+#यदि_अन्तः
 

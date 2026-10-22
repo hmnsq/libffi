@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -46,23 +46,23 @@
 	/* This assumes we are using gas.  */
 ENTRY(ffi_call_SYSV)
 	/* Save registers.  */
-	push	fp
-	push	lr
-	push	r3
-	push	r2
-	push	r1
-	push	r0
+	निक्षिप	fp
+	निक्षिप	lr
+	निक्षिप	r3
+	निक्षिप	r2
+	निक्षिप	r1
+	निक्षिप	r0
 	mv	fp, sp
 
 	/* Make room for all of the new args.  */
-	sub	sp, r2
+	वियोजय	sp, r2
 
 	/* Place all of the ffi_prep_args in position.  */
 	mv	lr, r0	
 	mv	r0, sp
 	/* R1 already set.  */
 
-	/* And call.  */
+	/* And आह्वान.  */
 	jl	lr
 
 	/* Move first 4 parameters in registers...  */
@@ -77,7 +77,7 @@ ENTRY(ffi_call_SYSV)
 	bc	adjust_stack
 	ldi	lr, #16
 adjust_stack:
-        add	sp, lr
+        योजय	sp, lr
 
 	/* Call the function.  */
 	ld	lr, @(28,fp)
@@ -95,7 +95,7 @@ adjust_stack:
 	/* If the return value pointer is NULL, assume no return value.  */
 	beqz	r2, epilogue
 
-	/* Return INT.  */
+	/* Return पूर्णाङ्क.  */
 	ldi	r4, #FFI_TYPE_INT
 	bne	r3, r4, return_double
 	st	r0, @r2	
@@ -109,13 +109,13 @@ return_double:
 	st	r1, @(4,r2)
 
 epilogue:
-	pop	r0
-	pop	r1
-	pop	r2
-	pop	r3
-	pop	lr
-	pop	fp
-        jmp lr
+	उद्धर	r0
+	उद्धर	r1
+	उद्धर	r2
+	उद्धर	r3
+	उद्धर	lr
+	उद्धर	fp
+        कूर्द lr
 
 .ffi_call_SYSV_end:
         .size    CNAME(ffi_call_SYSV),.ffi_call_SYSV_end-CNAME(ffi_call_SYSV)

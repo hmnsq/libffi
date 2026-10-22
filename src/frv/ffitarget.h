@@ -25,38 +25,38 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_EABI,
-  FFI_LAST_ABI,
+  FFI_चरमः_ABI,
   FFI_DEFAULT_ABI = FFI_EABI
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_NATIVE_RAW_API 0
 
-#ifdef __FRV_FDPIC__
+#यदि_परिभाषितम् __FRV_FDPIC__
 /* Trampolines are 8 4-byte instructions long.  */
-#define FFI_TRAMPOLINE_SIZE (8*4)
-#else
+#परिभाषय FFI_TRAMPOLINE_आकार (8*4)
+#अन्यथा
 /* Trampolines are 5 4-byte instructions long.  */
-#define FFI_TRAMPOLINE_SIZE (5*4)
-#endif
+#परिभाषय FFI_TRAMPOLINE_आकार (5*4)
+#यदि_अन्तः
 
-#endif
+#यदि_अन्तः

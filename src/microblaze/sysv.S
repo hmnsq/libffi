@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -42,7 +42,7 @@
 	.globl ffi_call_SYSV
 	.type ffi_call_SYSV, @function
 ffi_call_SYSV:
-	/* push callee saves */
+	/* निक्षिप callee saves */
 	addik r1, r1, -20
 	swi r19, r1, 0 /* Frame Pointer */
 	swi r20, r1, 4 /* PIC register */
@@ -67,7 +67,7 @@ ffi_call_SYSV:
 	/* prepare stack with allocation for n (bytes = r7) args */
 	rsub r1, r7, r1 /* subtract bytes from sp */
 
-	/* prep args for ffi_prep_args call */
+	/* prep args for ffi_prep_args आह्वान */
 	addik r5, r1, 0 /* store stack pointer into arg[0] */
 	/* r6 still holds ecif for arg[1] */
 
@@ -80,7 +80,7 @@ ffi_call_SYSV:
 	addik r1, r1, 4 /* restore the link register from the frame */
 	/* returns calling stack pointer location */
 
-	/* prepare args for fn call, prep_args populates them onto the stack */
+	/* prepare args for fn आह्वान, prep_args populates them onto the stack */
 	lwi r5, r1, 0 /* arg[0] */
 	lwi r6, r1, 4 /* arg[1] */
 	lwi r7, r1, 8 /* arg[2] */
@@ -88,7 +88,7 @@ ffi_call_SYSV:
 	lwi r9, r1, 16 /* arg[4] */
 	lwi r10, r1, 20 /* arg[5] */
 
-	/* call (fn) (...). */
+	/* आह्वान (fn) (...). */
 	addik r1, r1, -4
 	swi r15, r1, 0 /* store the link register in the frame */
 	brald r15, r23
@@ -171,7 +171,7 @@ ffi_call_SYSV_end:
 	lwi r23, r1, 16
 	addik r1, r1, 20
 
-	/* return from sub-routine (with delay slot) */
+	/* return from वियोजय-routine (with delay slot) */
 	rtsd r15, 8
 	nop
 
@@ -188,7 +188,7 @@ ffi_call_SYSV_end:
 	.globl ffi_closure_SYSV
 	.type ffi_closure_SYSV, @function
 ffi_closure_SYSV:
-	/* push callee saves */
+	/* निक्षिप callee saves */
 	addik r11, r1, 28 /* save stack args start location (excluding regs/link) */
 	addik r1, r1, -12
 	swi r19, r1, 0 /* Frame Pointer */
@@ -214,7 +214,7 @@ ffi_closure_SYSV:
 	addik r9, r1, 0 /* void* rtype */
 	addik r10, r1, 4 /* void* rsize */
 
-	/* call the wrap_call function */
+	/* आह्वान the wrap_call function */
 	addik r1, r1, -28 /* allocate args + link reg */
 	swi r15, r1, 0 /* store the link register in the frame */
 	brald r15, r3
@@ -295,7 +295,7 @@ ffi_closure_SYSV_end:
 	lwi r21, r1, 8 /* PIC register */
 	addik r1, r1, 12
 
-	/* return from sub-routine (with delay slot) */
+	/* return from वियोजय-routine (with delay slot) */
 	rtsd r15, 8
 	nop
 

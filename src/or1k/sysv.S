@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -35,8 +35,8 @@
   r3: size to allocate on stack
   r4: extended cif structure
   r5: function pointer ffi_prep_args
-  r6: ret address
-  r7: function to call
+  r6: प्रत्यागच्छ address
+  r7: function to आह्वान
   r8: flag for return type
 */
 
@@ -53,17 +53,17 @@ ffi_call_SYSV:
 	l.addi r1, r1, -24
 
 	l.ori r16, r7, 0x0 /* save function address */
-	l.ori r18, r6, 0x0 /* save ret address */
+	l.ori r18, r6, 0x0 /* save प्रत्यागच्छ address */
 	l.ori r20, r8, 0x0 /* save flag */
 
-	l.sub r1, r1, r3 /* reserve space on stack */
+	l.वियोजय r1, r1, r3 /* reserve space on stack */
 
 	/* Call ffi_prep_args */
 	l.ori r3, r1, 0x0  /* first argument stack address, second already ecif */
 	l.jalr r5
 	l.nop
 
-	/* Load register arguments and call*/
+	/* Load register arguments and आह्वान*/
 
 	l.lwz r3, 0(r1)
 	l.lwz r4, 4(r1)
@@ -78,10 +78,10 @@ ffi_call_SYSV:
 	/* handle return values */
 
 	l.sfeqi r20, FFI_TYPE_STRUCT
-	l.bf ret  /* structs don't return an rvalue */
+	l.bf प्रत्यागच्छ  /* structs don't return an rvalue */
 	l.nop
 
-	/* copy ret address */
+	/* copy प्रत्यागच्छ address */
 
 	l.sfeqi r20, FFI_TYPE_UINT64
 	l.bnf four_byte_ret  /* 8 byte value is returned */
@@ -92,7 +92,7 @@ ffi_call_SYSV:
 four_byte_ret:
 	l.sw 0(r18), r11
 
-ret:
+प्रत्यागच्छ:
 	/* return */
 	l.ori r1, r14, 0x0 /* reset stack pointer */
 	l.lwz r9, -4(r1)

@@ -18,13 +18,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __x86_64__
@@ -41,7 +41,7 @@
    The use of ORG asserts that we're at the correct location.  */
 /* ??? The clang assembler doesn't handle .org with symbolic expressions.  */
 #ifdef __CET__
-/* Double slot size to 16 byte to add 4 bytes of ENDBR64.  */
+/* Double slot size to 16 byte to योजय 4 bytes of ENDBR64.  */
 # define E(BASE, X)	.balign 8; .org BASE + X * 16
 #elif defined(__clang__) || defined(__APPLE__) || (defined (__sun__) && defined(__svr4__))
 # define E(BASE, X)	.balign 8
@@ -97,12 +97,12 @@ L(UW1):
 	jnz	L(load_sse)
 L(ret_from_load_sse):
 
-	/* Deallocate the reg arg area, except for r10, then load via pop.  */
+	/* Deallocate the reg arg area, except for r10, then load via उद्धर.  */
 	leaq	0xb8(%r10), %rsp
 	popq	%r10
 
 	/* Call the user function.  */
-	call	*%r11
+	आह्वान	*%r11
 
 	/* Deallocate stack arg area; local stack frame in redzone.  */
 	leaq	24(%rbp), %rsp
@@ -129,99 +129,99 @@ L(UW2):
 
 	/* Prep for the structure cases: scratch area in redzone.  */
 	leaq	-20(%rsp), %rsi
-	jmp	*%r10
+	कूर्द	*%r10
 
 	.balign	8
 L(store_table):
 E(L(store_table), UNIX64_RET_VOID)
 	_CET_ENDBR
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_UINT8)
 	_CET_ENDBR
 	movzbl	%al, %eax
 	movq	%rax, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_UINT16)
 	_CET_ENDBR
 	movzwl	%ax, %eax
 	movq	%rax, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_UINT32)
 	_CET_ENDBR
 	movl	%eax, %eax
 	movq	%rax, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_SINT8)
 	_CET_ENDBR
 	movsbq	%al, %rax
 	movq	%rax, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_SINT16)
 	_CET_ENDBR
 	movswq	%ax, %rax
 	movq	%rax, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_SINT32)
 	_CET_ENDBR
 	cltq
 	movq	%rax, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_INT64)
 	_CET_ENDBR
 	movq	%rax, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_XMM32)
 	_CET_ENDBR
 	movd	%xmm0, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_XMM64)
 	_CET_ENDBR
 	movq	%xmm0, (%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_X87)
 	_CET_ENDBR
 	fstpt	(%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_X87_2)
 	_CET_ENDBR
 	fstpt	(%rdi)
 	fstpt	16(%rdi)
-	ret
+	प्रत्यागच्छ
 E(L(store_table), UNIX64_RET_ST_XMM0_RAX)
 	_CET_ENDBR
 	movq	%rax, 8(%rsi)
-	jmp	L(s3)
+	कूर्द	L(s3)
 E(L(store_table), UNIX64_RET_ST_RAX_XMM0)
 	_CET_ENDBR
 	movq	%xmm0, 8(%rsi)
-	jmp	L(s2)
+	कूर्द	L(s2)
 E(L(store_table), UNIX64_RET_ST_XMM0_XMM1)
 	_CET_ENDBR
 	movq	%xmm1, 8(%rsi)
-	jmp	L(s3)
+	कूर्द	L(s3)
 E(L(store_table), UNIX64_RET_ST_RAX_RDX)
 	_CET_ENDBR
 	movq	%rdx, 8(%rsi)
-	jmp	L(s2)
+	कूर्द	L(s2)
 E(L(store_table), UNIX64_RET_XMM128)
 	_CET_ENDBR
 	movups	%xmm0, (%rdi)
-	ret
+	प्रत्यागच्छ
 
 	.balign 8
 L(s2):
 	movq	%rax, (%rsi)
 	shrl	$UNIX64_SIZE_SHIFT, %ecx
 	rep movsb
-	ret
+	प्रत्यागच्छ
 	.balign 8
 L(s3):
 	movq	%xmm0, (%rsi)
 	shrl	$UNIX64_SIZE_SHIFT, %ecx
 	rep movsb
-	ret
+	प्रत्यागच्छ
 
-L(sa):	call	PLT(C(abort))
+L(sa):	आह्वान	PLT(C(abort))
 
 	/* Many times we can avoid loading any SSE registers at all.
 	   It's not worth an indirect jump to load the exact set of
@@ -238,7 +238,7 @@ L(load_sse):
 	movdqa	0x80(%r10), %xmm5
 	movdqa	0x90(%r10), %xmm6
 	movdqa	0xa0(%r10), %xmm7
-	jmp	L(ret_from_load_sse)
+	कूर्द	L(ret_from_load_sse)
 
 L(UW4):
 ENDF(C(ffi_call_unix64))
@@ -279,17 +279,17 @@ C(ffi_plan_fast_call):
 	movq	0x20(%rax), %r8
 	movq	0x28(%rax), %r9
 	movl	%r10d, %eax		/* %al = ssecount */
-	subq	$8, %rsp		/* realign to 16 across the call */
+	subq	$8, %rsp		/* realign to 16 across the आह्वान */
 	.cfi_adjust_cfa_offset 8
-	call	*%r11
+	आह्वान	*%r11
 	addq	$8, %rsp
 	.cfi_adjust_cfa_offset -8
-	ret				/* rax + xmm0 carry the callee's return */
+	प्रत्यागच्छ				/* rax + xmm0 carry the callee's return */
 	.cfi_endproc
 	ENDF(C(ffi_plan_fast_call))
 
 /* Count-based direct thunks for the pure-GP64 fast path: load avalue[0..N-1]
-   straight into the argument registers (no register_args image) and call.
+   straight into the argument registers (no register_args image) and आह्वान.
    struct { UINT64 rax; double xmm0; }
    ffi_plan_gpN (void **avalue /rdi/, void (*fn)(void) /rsi/);
    Eligible only when every arg is a single 64-bit GP value (no sign-extension,
@@ -308,10 +308,10 @@ C(ffi_plan_fast_call):
 	xorl	%eax, %eax;			\
 	subq	$8, %rsp;			\
 	.cfi_adjust_cfa_offset 8;		\
-	call	*%r11;				\
+	आह्वान	*%r11;				\
 	addq	$8, %rsp;			\
 	.cfi_adjust_cfa_offset -8;		\
-	ret;					\
+	प्रत्यागच्छ;					\
 	.cfi_endproc
 
 	.balign	8
@@ -420,7 +420,7 @@ L(UW6):
 	movdqa	%xmm5, ffi_closure_OFS_V+0x50(%rsp)
 	movdqa	%xmm6, ffi_closure_OFS_V+0x60(%rsp)
 	movdqa	%xmm7, ffi_closure_OFS_V+0x70(%rsp)
-	jmp	L(sse_entry1)
+	कूर्द	L(sse_entry1)
 
 L(UW7):
 ENDF(C(ffi_closure_unix64_sse))
@@ -456,7 +456,7 @@ L(do_closure):
 	leaq	ffi_closure_OFS_RVALUE(%rsp), %rcx	/* Load rvalue */
 	movq	%rsp, %r8				/* Load reg_args */
 	leaq	ffi_closure_FS+8(%rsp), %r9		/* Load argp */
-	call	PLT(C(ffi_closure_unix64_inner))
+	आह्वान	PLT(C(ffi_closure_unix64_inner))
 
 	/* Deallocate stack frame early; return value is now in redzone.  */
 	addq	$ffi_closure_FS, %rsp
@@ -475,89 +475,89 @@ L(UW10):
 #endif
 	leaq	(%r11, %r10, 8), %r10
 	leaq	ffi_closure_RED_RVALUE(%rsp), %rsi
-	jmp	*%r10
+	कूर्द	*%r10
 
 	.balign	8
 L(load_table):
 E(L(load_table), UNIX64_RET_VOID)
 	_CET_ENDBR
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_UINT8)
 	_CET_ENDBR
 	movzbl	(%rsi), %eax
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_UINT16)
 	_CET_ENDBR
 	movzwl	(%rsi), %eax
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_UINT32)
 	_CET_ENDBR
 	movl	(%rsi), %eax
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_SINT8)
 	_CET_ENDBR
 	movsbl	(%rsi), %eax
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_SINT16)
 	_CET_ENDBR
 	movswl	(%rsi), %eax
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_SINT32)
 	_CET_ENDBR
 	movl	(%rsi), %eax
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_INT64)
 	_CET_ENDBR
 	movq	(%rsi), %rax
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_XMM32)
 	_CET_ENDBR
 	movd	(%rsi), %xmm0
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_XMM64)
 	_CET_ENDBR
 	movq	(%rsi), %xmm0
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_X87)
 	_CET_ENDBR
 	fldt	(%rsi)
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_X87_2)
 	_CET_ENDBR
 	fldt	16(%rsi)
 	fldt	(%rsi)
-	ret
+	प्रत्यागच्छ
 E(L(load_table), UNIX64_RET_ST_XMM0_RAX)
 	_CET_ENDBR
 	movq	8(%rsi), %rax
-	jmp	L(l3)
+	कूर्द	L(l3)
 E(L(load_table), UNIX64_RET_ST_RAX_XMM0)
 	_CET_ENDBR
 	movq	8(%rsi), %xmm0
-	jmp	L(l2)
+	कूर्द	L(l2)
 E(L(load_table), UNIX64_RET_ST_XMM0_XMM1)
 	_CET_ENDBR
 	movq	8(%rsi), %xmm1
-	jmp	L(l3)
+	कूर्द	L(l3)
 E(L(load_table), UNIX64_RET_ST_RAX_RDX)
 	_CET_ENDBR
 	movq	8(%rsi), %rdx
-	jmp	L(l2)
+	कूर्द	L(l2)
 E(L(load_table), UNIX64_RET_XMM128)
 	_CET_ENDBR
 	movups	(%rsi), %xmm0
-	ret
+	प्रत्यागच्छ
 
 	.balign	8
 L(l2):
 	movq	(%rsi), %rax
-	ret
+	प्रत्यागच्छ
 	.balign	8
 L(l3):
 	movq	(%rsi), %xmm0
-	ret
+	प्रत्यागच्छ
 
-L(la):	call	PLT(C(abort))
+L(la):	आह्वान	PLT(C(abort))
 
 L(UW11):
 ENDF(C(ffi_closure_unix64))
@@ -581,7 +581,7 @@ L(UW13):
 	movdqa	%xmm5, ffi_closure_OFS_V+0x50(%rsp)
 	movdqa	%xmm6, ffi_closure_OFS_V+0x60(%rsp)
 	movdqa	%xmm7, ffi_closure_OFS_V+0x70(%rsp)
-	jmp	L(sse_entry2)
+	कूर्द	L(sse_entry2)
 
 L(UW14):
 ENDF(C(ffi_go_closure_unix64_sse))
@@ -613,7 +613,7 @@ L(sse_entry2):
 	movq	16(%r10), %rsi		/* Load fun */
 	movq	%r10, %rdx		/* Load closure (user_data) */
 #endif
-	jmp	L(do_closure)
+	कूर्द	L(do_closure)
 
 L(UW17):
 ENDF(C(ffi_go_closure_unix64))
@@ -628,7 +628,7 @@ C(ffi_closure_unix64_sse_alt):
 	_CET_ENDBR
 	movq	8(%rsp), %r10			/* Load closure in r10 */
 	addq	$16, %rsp			/* Restore the stack */
-	jmp	C(ffi_closure_unix64_sse)
+	कूर्द	C(ffi_closure_unix64_sse)
 ENDF(C(ffi_closure_unix64_sse_alt))
 
 	.balign	8
@@ -640,7 +640,7 @@ C(ffi_closure_unix64_alt):
 	_CET_ENDBR
 	movq	8(%rsp), %r10			/* Load closure in r10 */
 	addq	$16, %rsp			/* Restore the stack */
-	jmp	C(ffi_closure_unix64)
+	कूर्द	C(ffi_closure_unix64)
 	ENDF(C(ffi_closure_unix64_alt))
 
 /*
@@ -702,7 +702,7 @@ C(trampoline_code_table):
 #else
 	movq	X86_CODE_OFFSET(%rip), %r10	/* Copy code into %r10 */
 #endif
-	jmp	*%r10				/* Jump to code */
+	कूर्द	*%r10				/* Jump to code */
 	.align	8
 	.endr
 ENDF(C(trampoline_code_table))
@@ -712,12 +712,12 @@ ENDF(C(trampoline_code_table))
 /* Sadly, OSX cctools-as doesn't understand .cfi directives at all.  */
 
 #ifdef __APPLE__
-.section __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
+.खण्डः __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
 EHFrame0:
 #elif defined(HAVE_AS_X86_64_UNWIND_SECTION_TYPE)
-.section .eh_frame,"a",@unwind
+.खण्डः .eh_frame,"a",@unwind
 #else
-.section .eh_frame,"a",@progbits
+.खण्डः .eh_frame,"a",@progbits
 #endif
 
 #ifdef HAVE_AS_X86_PCREL
@@ -829,7 +829,7 @@ L(SFDE5):
 L(EFDE5):
 #ifdef __APPLE__
 	.subsections_via_symbols
-	.section __LD,__compact_unwind,regular,debug
+	.खण्डः __LD,__compact_unwind,regular,debug
 
 	/* compact unwind for ffi_call_unix64 */
 	.quad    C(ffi_call_unix64)
@@ -874,5 +874,5 @@ L(EFDE5):
 
 #endif /* __x86_64__ */
 #if defined __ELF__ && (defined __linux__ || defined __FreeBSD__)
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

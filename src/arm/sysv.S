@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __arm__
@@ -73,15 +73,15 @@
 #endif
 #ifdef __ELF__
 # define SIZE(X)	.size CNAME(X), . - CNAME(X)
-# define TYPE(X, Y)	.type CNAME(X), Y
+# define प्रकार(X, Y)	.type CNAME(X), Y
 #else
 # define SIZE(X)
-# define TYPE(X, Y)
+# define प्रकार(X, Y)
 #endif
 
 #define ARM_FUNC_START_LOCAL(name)	\
 	.align	3;			\
-	TYPE(CNAME(name), %function);	\
+	प्रकार(CNAME(name), %function);	\
 	CNAME(name):
 
 #define ARM_FUNC_START(name)		\
@@ -140,17 +140,17 @@ ARM_FUNC_START(ffi_call_VFP)
 	UNWIND(.fnstart)
 	cfi_startproc
 
-	cmp	r3, #3			@ load only d0 if possible
+	तुलय	r3, #3			@ load only d0 if possible
 	ite	le
 	ldcle	p11, cr0, [r0]		@ vldrle d0, [r0]
 	ldcgt	p11, cr0, [r0], {16}	@ vldmgt r0, {d0-d7}
-	add	r0, r0, #64		@ discard the vfp register args
+	योजय	r0, r0, #64		@ discard the vfp register args
 	/* FALLTHRU */
 ARM_FUNC_END(ffi_call_VFP)
 
 ARM_FUNC_START(ffi_call_SYSV)
 	stm	r1, {fp, lr}
-	mov	fp, r1
+	चालय	fp, r1
 
 	@ This is a bit of a lie wrt the origin of the unwind info, but
 	@ now we've got the usual frame pointer and two saved registers.
@@ -160,11 +160,11 @@ ARM_FUNC_START(ffi_call_SYSV)
 	cfi_rel_offset(fp, 0)
 	cfi_rel_offset(lr, 4)
 
-	mov	sp, r0		@ install the stack pointer
-	mov	lr, r2		@ move the fn pointer out of the way
+	चालय	sp, r0		@ install the stack pointer
+	चालय	lr, r2		@ move the fn pointer out of the way
 	ldr	ip, [fp, #16]	@ install the static chain
 	ldmia	sp!, {r0-r3}	@ move first 4 parameters in registers.
-	blx	lr		@ call fn
+	blx	lr		@ आह्वान fn
 
 	@ Load r2 with the pointer to storage for the return value
 	@ Load r3 with the return type code
@@ -172,41 +172,41 @@ ARM_FUNC_START(ffi_call_SYSV)
 	ldr	r3, [fp, #12]
 
 	@ Deallocate the stack with the arguments.
-	mov	sp, fp
+	चालय	sp, fp
 	cfi_def_cfa_register(sp)
 
 	@ Store values stored in registers.
 #ifndef __thumb__
 	.align	3
-	add	pc, pc, r3, lsl #3
+	योजय	pc, pc, r3, lsl #3
 	nop
 #else
 	adr	ip, 0f
-	add	ip, ip, r3, lsl #3
-	mov	pc, ip
+	योजय	ip, ip, r3, lsl #3
+	चालय	pc, ip
 	.align	3
 #endif
 0:
 E(ARM_TYPE_VFP_S)
 	stc	p10, cr0, [r2]		@ vstr s0, [r2]
-	pop	{fp,pc}
+	उद्धर	{fp,pc}
 E(ARM_TYPE_VFP_D)
 	stc	p11, cr0, [r2]		@ vstr d0, [r2]
-	pop	{fp,pc}
+	उद्धर	{fp,pc}
 E(ARM_TYPE_VFP_N)
 	stc	p11, cr0, [r2], {8}	@ vstm r2, {d0-d3}
-	pop	{fp,pc}
+	उद्धर	{fp,pc}
 E(ARM_TYPE_INT64)
 	str	r1, [r2, #4]
 	nop
 E(ARM_TYPE_INT)
 	str	r0, [r2]
-	pop	{fp,pc}
+	उद्धर	{fp,pc}
 E(ARM_TYPE_VOID)
-	pop	{fp,pc}
+	उद्धर	{fp,pc}
 	nop
 E(ARM_TYPE_STRUCT)
-	pop	{fp,pc}
+	उद्धर	{fp,pc}
 
 	cfi_endproc
 	UNWIND(.fnend)
@@ -224,7 +224,7 @@ ARM_FUNC_START(ffi_go_closure_SYSV)
 	cfi_adjust_cfa_offset(16)
 	ldr	r0, [ip, #4]			@ load cif
 	ldr	r1, [ip, #8]			@ load fun
-	mov	r2, ip				@ load user_data
+	चालय	r2, ip				@ load user_data
 	b	0f
 	cfi_endproc
 ARM_FUNC_END(ffi_go_closure_SYSV)
@@ -245,29 +245,29 @@ ARM_FUNC_START(ffi_closure_SYSV)
 	ldr	r1, [ip, #FFI_TRAMPOLINE_CLOSURE_OFFSET+4]  @ load fun
 	ldr	r2, [ip, #FFI_TRAMPOLINE_CLOSURE_OFFSET+8]  @ load user_data
 0:
-	add	ip, sp, #16			@ compute entry sp
-	sub	sp, sp, #64+32			@ allocate frame
+	योजय	ip, sp, #16			@ compute entry sp
+	वियोजय	sp, sp, #64+32			@ allocate frame
 	cfi_adjust_cfa_offset(64+32)
 	stmdb	sp!, {ip,lr}
 
-	/* Remember that EABI unwind info only applies at call sites.
+	/* Remember that EABI unwind info only applies at आह्वान sites.
 	   We need do nothing except note the save of the stack pointer
 	   and the link registers.  */
 	UNWIND(.save {sp,lr})
 	cfi_adjust_cfa_offset(8)
 	cfi_rel_offset(lr, 4)
 
-	add	r3, sp, #8			@ load frame
+	योजय	r3, sp, #8			@ load frame
 	bl	CNAME(ffi_closure_inner_SYSV)
 
 	@ Load values returned in registers.
-	add	r2, sp, #8+64			@ load result
+	योजय	r2, sp, #8+64			@ load result
 	adr	r3, CNAME(ffi_closure_ret)
 #ifndef __thumb__
-	add	pc, r3, r0, lsl #3
+	योजय	pc, r3, r0, lsl #3
 #else
-	add	r3, r3, r0, lsl #3
-	mov	pc, r3
+	योजय	r3, r3, r0, lsl #3
+	चालय	pc, r3
 #endif
 	cfi_endproc
 	UNWIND(.fnend)
@@ -279,7 +279,7 @@ ARM_FUNC_START(ffi_go_closure_VFP)
 	cfi_adjust_cfa_offset(16)
 	ldr	r0, [ip, #4]			@ load cif
 	ldr	r1, [ip, #8]			@ load fun
-	mov	r2, ip				@ load user_data
+	चालय	r2, ip				@ load user_data
 	b	0f
 	cfi_endproc
 ARM_FUNC_END(ffi_go_closure_VFP)
@@ -300,8 +300,8 @@ ARM_FUNC_START(ffi_closure_VFP)
 	ldr	r1, [ip, #FFI_TRAMPOLINE_CLOSURE_OFFSET+4]  @ load fun
 	ldr	r2, [ip, #FFI_TRAMPOLINE_CLOSURE_OFFSET+8]  @ load user_data
 0:
-	add	ip, sp, #16
-	sub	sp, sp, #64+32			@ allocate frame
+	योजय	ip, sp, #16
+	वियोजय	sp, sp, #64+32			@ allocate frame
 	cfi_adjust_cfa_offset(64+32)
 	stc	p11, cr0, [sp], {16}		@ vstm sp, {d0-d7}
 	stmdb	sp!, {ip,lr}
@@ -311,17 +311,17 @@ ARM_FUNC_START(ffi_closure_VFP)
 	cfi_adjust_cfa_offset(8)
 	cfi_rel_offset(lr, 4)
 
-	add	r3, sp, #8			@ load frame
+	योजय	r3, sp, #8			@ load frame
 	bl	CNAME(ffi_closure_inner_VFP)
 
 	@ Load values returned in registers.
-	add	r2, sp, #8+64			@ load result
+	योजय	r2, sp, #8+64			@ load result
 	adr	r3, CNAME(ffi_closure_ret)
 #ifndef __thumb__
-	add	pc, r3, r0, lsl #3
+	योजय	pc, r3, r0, lsl #3
 #else
-	add	r3, r3, r0, lsl #3
-	mov	pc, r3
+	योजय	r3, r3, r0, lsl #3
+	चालय	pc, r3
 #endif
 	cfi_endproc
 	UNWIND(.fnend)
@@ -361,7 +361,7 @@ call_epilogue:
 	ldm	sp, {sp,pc}
 #else
 	ldm	sp, {ip,lr}
-	mov	sp, ip
+	चालय	sp, ip
 	bx	lr
 #endif
 	cfi_endproc
@@ -371,14 +371,14 @@ ARM_FUNC_END(ffi_closure_ret)
 ARM_FUNC_START(ffi_closure_SYSV_alt)
 	/* See the comments above trampoline_code_table. */
 	ldr	ip, [sp, #4]			/* Load closure in ip */
-	add	sp, sp, 8			/* Restore the stack */
+	योजय	sp, sp, 8			/* Restore the stack */
 	b	CNAME(ffi_closure_SYSV)
 ARM_FUNC_END(ffi_closure_SYSV_alt)
 
 ARM_FUNC_START(ffi_closure_VFP_alt)
 	/* See the comments above trampoline_code_table. */
 	ldr	ip, [sp, #4]			/* Load closure in ip */
-	add	sp, sp, 8			/* Restore the stack */
+	योजय	sp, sp, 8			/* Restore the stack */
 	b	CNAME(ffi_closure_VFP)
 ARM_FUNC_END(ffi_closure_VFP_alt)
 
@@ -404,7 +404,7 @@ ARM_FUNC_END(ffi_closure_VFP_alt)
 	.align	ARM_TRAMP_MAP_SHIFT
 ARM_FUNC_START(trampoline_code_table)
 	.rept	ARM_TRAMP_MAP_SIZE / ARM_TRAMP_SIZE
-	sub	sp, sp, #8		/* Make space on the stack */
+	वियोजय	sp, sp, #8		/* Make space on the stack */
 	str	ip, [sp]		/* Save ip on stack */
 	ldr	ip, [pc, #4080]		/* Copy data into ip */
 	str	ip, [sp, #4]		/* Save data on stack */
@@ -425,7 +425,7 @@ ARM_FUNC_END(trampoline_code_table)
 ARM_FUNC_START(ffi_closure_trampoline_table_page)
 .rept	PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE
 	adr ip, #-PAGE_MAX_SIZE   @ the config page is PAGE_MAX_SIZE behind the trampoline page
-	sub ip, #8				  @ account for pc bias
+	वियोजय ip, #8				  @ account for pc bias
 	ldr	pc, [ip, #4]		  @ jump to ffi_closure_SYSV or ffi_closure_VFP
 .endr
 ARM_FUNC_END(ffi_closure_trampoline_table_page)
@@ -452,5 +452,5 @@ ARM_FUNC_END(ffi_arm_trampoline)
 #endif /* __arm__ */
 
 #if defined __ELF__ && defined __linux__
-	.section	.note.GNU-stack,"",%progbits
+	.खण्डः	.note.GNU-stack,"",%progbits
 #endif

@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#यदि defined(__arch64__) || defined(__sparcv9)
+#यदि_अपरिभाषितम् SPARC64
+#परिभाषय SPARC64
+#यदि_अन्तः
+#यदि_अन्तः
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+#यदि_परिभाषितम् SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#अन्यथा
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
-  FFI_LAST_ABI
+#यदि_अन्तः
+  FFI_चरमः_ABI
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#परिभाषय FFI_TARGET_SPECIFIC_राशिः_SPACE_आवण्टनम् 1
+#परिभाषय FFI_TARGET_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
+#यदि_परिभाषितम् SPARC64
 # define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+# define FFI_EXTRA_CIF_FIELDS  अचिह्नित पूर्णाङ्क nfixedargs
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_GO_CLOSURES 1
+#परिभाषय FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#यदि_परिभाषितम् SPARC64
+#परिभाषय FFI_TRAMPOLINE_आकार 24
+#अन्यथा
+#परिभाषय FFI_TRAMPOLINE_आकार 16
+#यदि_अन्तः
 
-#endif
+#यदि_अन्तः
 

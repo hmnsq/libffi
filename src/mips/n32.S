@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -596,7 +596,7 @@ ffi_closure_N32:
 	REG_L	a2, 72($12) # user_data
 #endif
 	ADDU	a3, $sp, V0_OFF2
-	# FIXME: a4 does work, while if ret is _Complex long double, it will overwrite Fn_OFF2
+	# FIXME: a4 does work, while if प्रत्यागच्छ is _Complex long double, it will overwrite Fn_OFF2
 	ADDU	a4, $sp, A0_OFF2
 	ADDU	a5, $sp, F12_OFF2
 
@@ -742,7 +742,7 @@ cls_epilogue:
 	.end	ffi_closure_N32
 
 #ifdef __GNUC__
-        .section        .eh_frame,EH_FRAME_FLAGS,@progbits
+        .खण्डः        .eh_frame,EH_FRAME_FLAGS,@progbits
 .Lframe1:
         .4byte  .LECIE1-.LSCIE1		# length
 .LSCIE1:
@@ -823,5 +823,5 @@ cls_epilogue:
 #endif
 
 #if defined __ELF__ && defined __linux__
-	.section .note.GNU-stack,"",%progbits
+	.खण्डः .note.GNU-stack,"",%progbits
 #endif

@@ -16,13 +16,13 @@
 
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -35,7 +35,7 @@
 #define CONCAT1(a, b) CONCAT2(a, b)
 #define CONCAT2(a, b) a ## b
 
-/* Use the right prefix for global labels. */
+/* Use the right prefix for वैश्विक labels. */
 #define CNAME(x) CONCAT1 (__USER_LABEL_PREFIX__, x)
 #else
 #define CNAME(x) x
@@ -52,7 +52,7 @@
 .macro call_reg x=
 	.text
 	.balign 4
-	mov D1RtP, \x
+	चालय D1RtP, \x
 	swap D1RtP, PC
 .endm
 
@@ -76,7 +76,7 @@
 	.endif
 .endm
 
-! Declare a global function
+! Declare a वैश्विक function
 .macro METAG_FUNC_START name
 	.text
 	.balign 4
@@ -112,8 +112,8 @@ METAG_FUNC_START ffi_call_SYSV
 	SAVE_ARGS
 
 	! new frame
-	mov	D0FrT, A0FrP
-	add     A0FrP, A0StP, #0
+	चालय	D0FrT, A0FrP
+	योजय     A0FrP, A0StP, #0
 
 	! Preserve the old frame pointer
 	SAVE_REGS "D1.5, D0.5"
@@ -121,14 +121,14 @@ METAG_FUNC_START ffi_call_SYSV
 	! Make room for new args. cifs->bytes is the total space for input
 	! and return arguments
 
-	add	A0StP, A0StP, D1Ar3
+	योजय	A0StP, A0StP, D1Ar3
 
 	! Preserve cifs->bytes & fn
-	mov	D0.5, D1Ar3
-	mov	D1.5, D1Ar1
+	चालय	D0.5, D1Ar3
+	चालय	D1.5, D1Ar1
 
 	! Place all of the ffi_prep_args in position
-	mov	D1Ar1, A0StP
+	चालय	D1Ar1, A0StP
 
 	! Call ffi_prep_args(stack, &ecif)
 #ifdef __PIC__
@@ -155,7 +155,7 @@ METAG_FUNC_START ffi_call_SYSV
 	getl	D0Ar6, D1Ar5, [--A0StP]
 
 	! Place A0StP to the first argument again
-	add	A0StP, A0StP, #24 ! That's because we loaded 6 regs x 4 byte each
+	योजय	A0StP, A0StP, #24 ! That's because we loaded 6 regs x 4 byte each
 
 	! A0FrP points to the initial stack without the reserved space for the
 	! cifs->bytes, whilst A0StP points to the stack after the space allocation
@@ -178,12 +178,12 @@ METAG_FUNC_START ffi_call_SYSV
 	!
 
 	! D0Re0 contains the size of arguments stored in registers
-	sub	A0StP, A0StP, D0Re0
+	वियोजय	A0StP, A0StP, D0Re0
 
-	! Arg1 is the function pointer for the foreign call. This has been
+	! Arg1 is the function pointer for the foreign आह्वान. This has been
 	! preserved in D1.5
 
-	! Time to call (fn). Arguments should be like this:
+	! Time to आह्वान (fn). Arguments should be like this:
 	! Arg1-Arg6 are loaded to regs
 	! The rest of the arguments are stored in stack pointed by A0StP
 
@@ -191,7 +191,7 @@ METAG_FUNC_START ffi_call_SYSV
 
 	! Reset stack.
 
-	mov	A0StP, A0FrP
+	चालय	A0StP, A0FrP
 
 	! Load Arg1 with the pointer to storage for the return type
 	! This was stored in Arg5
@@ -206,11 +206,11 @@ METAG_FUNC_START ffi_call_SYSV
 	! D0Re0 (and D1Re0) hold the return value
 
 	! If the return value is NULL, assume no return value
-	cmp	D1Ar1, #0
+	तुलय	D1Ar1, #0
 	beq	LSYM(Lepilogue)
 
-	! return INT
-	cmp		D0Ar2, #FFI_TYPE_INT
+	! return पूर्णाङ्क
+	तुलय		D0Ar2, #FFI_TYPE_INT
 	! Sadly, there is no setd{cc} instruction so we need to workaround that
 	bne	.INT64
 	setd	[D1Ar1], D0Re0
@@ -218,22 +218,22 @@ METAG_FUNC_START ffi_call_SYSV
 
 	! return INT64
 .INT64:
-	cmp	D0Ar2, #FFI_TYPE_SINT64
+	तुलय	D0Ar2, #FFI_TYPE_SINT64
 	setleq	[D1Ar1], D0Re0, D1Re0
 
 	! return DOUBLE
-	cmp	D0Ar2, #FFI_TYPE_DOUBLE
+	तुलय	D0Ar2, #FFI_TYPE_DOUBLE
 	setl	[D1AR1++], D0Re0, D1Re0
 
 LSYM(Lepilogue):
 	! At this point, the stack pointer points right after the argument
 	! saved area. We need to restore 4 regs, therefore we need to move
 	! 16 bytes ahead.
-	add     A0StP, A0StP, #16
+	योजय     A0StP, A0StP, #16
 	RET_REGS "D1.5, D0.5"
 	RET_ARGS
 	getd	D0Re0, [A0StP]
-	mov     A0FrP, D0FrT
+	चालय     A0FrP, D0FrT
 	swap	D1RtP, PC
 
 .ffi_call_SYSV_end:
@@ -260,17 +260,17 @@ METAG_FUNC_START ffi_closure_SYSV
 
 	! D1Ar1 is ready
 	! Allocate stack space for return value
-	add A0StP, A0StP, #8
+	योजय A0StP, A0StP, #8
 	! Store it to D0Ar2
-	sub D0Ar2, A0StP, #8
+	वियोजय D0Ar2, A0StP, #8
 
-	sub D1Ar3, A0FrP, #4
+	वियोजय D1Ar3, A0FrP, #4
 
 	! D1Ar3 contains the address of the original D1Ar1 argument
 	! We need to subtract #4 later on
 
 	! Preverve D0Ar2
-	mov D0.5, D0Ar2
+	चालय D0.5, D0Ar2
 
 #ifdef __PIC__
 	callr D1RtP, CNAME(ffi_closure_SYSV_inner@PLT)
@@ -279,12 +279,12 @@ METAG_FUNC_START ffi_closure_SYSV
 #endif
 
 	! Check the return value and store it to D0.5
-	cmp D0Re0, #FFI_TYPE_INT
+	तुलय D0Re0, #FFI_TYPE_INT
 	beq .Lretint
-	cmp D0Re0, #FFI_TYPE_DOUBLE
+	तुलय D0Re0, #FFI_TYPE_DOUBLE
 	beq .Lretdouble
 .Lclosure_epilogue:
-	sub A0StP, A0StP, #8
+	वियोजय A0StP, A0StP, #8
 	RET_REGS "D1.5, D0.5"
 	RET_ARGS
 	swap	D1RtP, PC
@@ -302,9 +302,9 @@ METAG_FUNC_START ffi_closure_SYSV
 ENTRY(ffi_metag_trampoline)
 	SAVE_ARGS
 	! New frame
-	mov A0FrP, A0StP
+	चालय A0FrP, A0StP
 	SAVE_REGS "D1.5, D0.5"
-	mov D0.5, PC
+	चालय D0.5, PC
 	! Load D1Ar1 the value of ffi_metag_trampoline
 	getd D1Ar1, [D0.5 + #8]
 	! Jump to ffi_closure_SYSV

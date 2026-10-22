@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -67,7 +67,7 @@
         When the invoked function returns, the values of r0-r9 are
         blindly stored back into REG_ARGS for the caller to examine. */
 
-        .section .text.ffi_call_tile, "ax", @progbits
+        .खण्डः .text.ffi_call_tile, "ax", @progbits
         .align  8
         .globl  ffi_call_tile
         FFI_HIDDEN(ffi_call_tile)
@@ -114,14 +114,14 @@ ffi_call_tile:
          move   r52, sp
          .cfi_def_cfa_register r52
          /* Push stack frame. */
-         sub    sp, sp, FRAME_SIZE
+         वियोजय    sp, sp, FRAME_SIZE
         }
         {
          /* Prepare to set up stack linkage. */
          addi   TMP, sp, REG_SIZE
          /* Prepare to memcpy stack args. */
          addi   OUTGOING_STACK_ARGS, sp, LINKAGE_SIZE
-         /* Save REG_ARGS which we will need after we call the subroutine. */
+         /* Save REG_ARGS which we will need after we आह्वान the subroutine. */
          SW     TMP2, REG_ARGS
         }
         {
@@ -160,10 +160,10 @@ ffi_call_tile:
         }
 
         /* Load up argument registers from the REG_ARGS array. */
-#define LOAD_REG(REG, PTR) \
+#define LOAD_REG(REG, निर्देशक) \
         { \
-         LW     REG, PTR ; \
-         addi   PTR, PTR, REG_SIZE \
+         LW     REG, निर्देशक ; \
+         addi   निर्देशक, निर्देशक, REG_SIZE \
         }
 
         LOAD_REG(r1, REG_ADDR_PTR)
@@ -201,10 +201,10 @@ ffi_call_tile:
          LW     r52, TMP
         }
 
-#define STORE_REG(REG, PTR) \
+#define STORE_REG(REG, निर्देशक) \
         { \
-         SW     PTR, REG ; \
-         addi   PTR, PTR, REG_SIZE \
+         SW     निर्देशक, REG ; \
+         addi   निर्देशक, निर्देशक, REG_SIZE \
         }
 
         /* Return all register values by reference. */
@@ -235,7 +235,7 @@ ffi_call_tile:
    and passes the closure, the registers array, and the stack arguments
    to C code that does all of the actual closure processing. */
 
-        .section .text.ffi_closure_tile, "ax", @progbits
+        .खण्डः .text.ffi_closure_tile, "ax", @progbits
         .align  8
         .globl  ffi_closure_tile
         FFI_HIDDEN(ffi_closure_tile)
@@ -337,7 +337,7 @@ ffi_closure_tile:
    closure trampoline by ffi_prep_closure_loc.  The zeroed operands
    get replaced by their proper values at runtime. */
 
-        .section .text.ffi_template_tramp_tile, "ax", @progbits
+        .खण्डः .text.ffi_template_tramp_tile, "ax", @progbits
         .align  8
         .globl  ffi_template_tramp_tile
         FFI_HIDDEN(ffi_template_tramp_tile)
@@ -352,7 +352,7 @@ ffi_template_tramp_tile:
         { shl16insli r11, r11, 0 ; shl16insli r10, r10, 0 }
         { info 2+8 /* for backtracer: -> pc in lr, frame size 0 */ ; jr r10 }
 #else
-        /* 'jal .' yields a PC-relative offset of zero so we can OR in the
+        /* 'jal .' yields a PC-relative offset of zero so we can वा in the
            right offset at runtime. */
         { move r10, lr ; jal . /* ffi_closure_tile */ }
 #endif

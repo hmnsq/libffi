@@ -25,55 +25,55 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+प्रकारनिर्देश अचिह्नित दीर्घ ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ ffi_sarg;
 
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
-typedef void (*ffi_fp)(void);
+प्रकारनिर्देश शून्य (*ffi_fp)(शून्य);
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+#यदि __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
-#elif __SIZEOF_POINTER__ == 8
+#नोचेद्यदि __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
-#error "Unknown pointer size"
-#endif
-  FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
-#ifdef __EMSCRIPTEN__
+#अन्यथा
+#दोषः "Unknown pointer size"
+#यदि_अन्तः
+  FFI_चरमः_ABI,
+#यदि __SIZEOF_POINTER__ == 4
+#यदि_परिभाषितम् __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_WASM32
-#endif
-#elif __SIZEOF_POINTER__ == 8
-#ifdef __EMSCRIPTEN__
+#यदि_अन्तः
+#नोचेद्यदि __SIZEOF_POINTER__ == 8
+#यदि_परिभाषितम् __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_WASM64
-#endif
-#else
-#error "Unknown pointer size"
-#endif
+#यदि_अन्तः
+#अन्यथा
+#दोषः "Unknown pointer size"
+#यदि_अन्तः
 } ffi_abi;
 
-#define FFI_CLOSURES 1
+#परिभाषय FFI_CLOSURES 1
 // #define FFI_GO_CLOSURES 0
-#define FFI_TRAMPOLINE_SIZE 4
+#परिभाषय FFI_TRAMPOLINE_आकार 4
 // #define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#परिभाषय FFI_TARGET_SPECIFIC_VARIADIC 1
+#परिभाषय FFI_EXTRA_CIF_FIELDS  अचिह्नित पूर्णाङ्क nfixedargs
 
-#endif
+#यदि_अन्तः

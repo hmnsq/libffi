@@ -25,25 +25,25 @@
  * vax Foreign Function Interface
  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_ELFBSD,
   FFI_DEFAULT_ABI = FFI_ELFBSD,
-  FFI_LAST_ABI = FFI_DEFAULT_ABI + 1
+  FFI_चरमः_ABI = FFI_DEFAULT_ABI + 1
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 15
-#define FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_TRAMPOLINE_आकार 15
+#परिभाषय FFI_NATIVE_RAW_API 0
 
-#endif
+#यदि_अन्तः

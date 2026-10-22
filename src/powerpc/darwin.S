@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -79,11 +79,11 @@
 	   r6 = ptr to return value.
 	   r7 = fn pointer (user func).
 	   r8 = fn pointer (ffi_prep_args).
-	   r9 = ffi_type* for the ret val.  */
+	   r9 = ffi_type* for the प्रत्यागच्छ val.  */
 
 _ffi_call_DARWIN:
 Lstartcode:
-	mr   	r12,r8	/* We only need r12 until the call,
+	mr   	r12,r8	/* We only need r12 until the आह्वान,
 			   so it does not have to be saved.  */
 LFB1:
 	/* Save the old stack pointer as AP.  */
@@ -112,7 +112,7 @@ LCFI0:
 
 LCFI1:
 
-	/* Save arguments over call.  */
+	/* Save arguments over आह्वान.  */
 	mr	r31,r5	/* flags,  */
 	mr	r30,r6	/* rvalue,  */
 	mr	r29,r7	/* function address,  */
@@ -129,10 +129,10 @@ LCFI2:
 	/* The TOC slot is reserved in the Darwin ABI and r2 is volatile.  */
 	lg     r2,(5 * GPR_BYTES)(r1)
 #endif
-	/* Now do the call.
+	/* Now do the आह्वान.
 	   Set up cr1 with bits 4-7 of the flags.  */
 	mtcrf	0x40,r31
-	/* Get the address to call into CTR.  */
+	/* Get the address to आह्वान into CTR.  */
 	mtctr	r29
 	/* Load all those argument registers.
 	   We have set up a nice stack frame, just load it into registers.  */
@@ -172,7 +172,7 @@ L2:
 	nop
 	nop
 
-	/* Make the call.  */
+	/* Make the आह्वान.  */
 	bctrl
 
 	/* Now, deal with the return value.  */
@@ -193,7 +193,7 @@ L2:
 
 	/* OK, we have to map the return back to a mem struct.
 	   We are about to trample the parents param area, so recover the
-	   return type.  r29 is free, since the call is done.  */
+	   return type.  r29 is free, since the आह्वान is done.  */
 	lg	r29,(LINKAGE_SIZE + 6 * GPR_BYTES)(r28)
 
 	sg	r3, (LINKAGE_SIZE                )(r28)
@@ -304,7 +304,7 @@ L(done_return_value):
 	blr
 LFE1:
 	.align	1
-/* END(_ffi_call_DARWIN)  */
+/* अन्त(_ffi_call_DARWIN)  */
 
 /* Provide a null definition of _ffi_call_AIX.  */
 	.text
@@ -312,13 +312,13 @@ LFE1:
 	.align 2
 _ffi_call_AIX:
 	blr
-/* END(_ffi_call_AIX)  */
+/* अन्त(_ffi_call_AIX)  */
 
 /* EH stuff.  */
 
 #define EH_DATA_ALIGN_FACT MODE_CHOICE(0x7c,0x78)
 
-	.section __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
+	.खण्डः __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
 EH_frame1:
 	.set	L$set$0,LECIE1-LSCIE1
 	.long	L$set$0	; Length of Common Information Entry

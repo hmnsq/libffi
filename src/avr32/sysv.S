@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-   CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT HOLDERS BE LIABLE FOR ANY
+   CLAIM, DAMAGES वा OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT,
+   TORT वा OTHERWISE, ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE
+   SOFTWARE वा THE USE वा OTHER DEALINGS अन्तः THE SOFTWARE.
    --------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -42,31 +42,31 @@
 ffi_call_SYSV:
     stm     --sp, r0,r1,lr
     stm     --sp, r8-r12
-    mov     r0, sp
+    चालय     r0, sp
 
     /* Make room for all of the new args. */
-    sub     sp, r10
+    वियोजय     sp, r10
     /* Pad to make way for potential skipped registers */
-    sub     sp, 20
+    वियोजय     sp, 20
 
     /* Call ffi_prep_args(stack, &ecif). */
     /* r11 already set */
-    mov     r1, r12
-    mov     r12, sp
+    चालय     r1, r12
+    चालय     r12, sp
     icall   r1
 
     /* Save new argument size */
-    mov     r1, r12
+    चालय     r1, r12
 
     /* Move first 5 parameters in registers. */
     ldm     sp++, r8-r12
 
-    /* call (fn) (...). */
+    /* आह्वान (fn) (...). */
     ld.w    r1, r0[36]
     icall   r1
 
     /* Remove the space we pushed for the args. */
-    mov     sp, r0
+    चालय     sp, r0
 
     /* Load r1 with the rstruct flag. */
     ld.w    r1, sp[32]
@@ -127,7 +127,7 @@ ffi_call_SYSV:
     bral    .Lend
 
 .Lend:
-    sub     sp, -20
+    वियोजय     sp, -20
     ldm     sp++, r0,r1,pc
 
     .size   ffi_call_SYSV, . - ffi_call_SYSV
@@ -142,12 +142,12 @@ ffi_call_SYSV:
     .type   ffi_closure_SYSV, @function
 ffi_closure_SYSV:
     stm     --sp, r0,lr
-    mov     r0, r11
-    mov     r8, r10
-    sub     r10, sp, -8
-    sub     sp, 12
+    चालय     r0, r11
+    चालय     r8, r10
+    वियोजय     r10, sp, -8
+    वियोजय     sp, 12
     st.w    sp[8], sp
-    sub     r11, sp, -8
+    वियोजय     r11, sp, -8
     icall   r8
 
     /* Check if return type is actually a struct */
@@ -196,13 +196,13 @@ ffi_closure_SYSV:
     bral    .Lclend
 
 .Lclend:
-    sub     sp, -12
+    वियोजय     sp, -12
     ldm     sp++, r0,lr
-    sub     sp, -20
-    mov     pc, lr
+    वियोजय     sp, -20
+    चालय     pc, lr
 
     .size   ffi_closure_SYSV, . - ffi_closure_SYSV
 
 #if defined __ELF__ && defined __linux__
-    .section    .note.GNU-stack,"",@progbits
+    .खण्डः    .note.GNU-stack,"",@progbits
 #endif

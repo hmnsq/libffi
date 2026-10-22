@@ -12,12 +12,12 @@ The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
+EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES वा OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT,
+TORT वा OTHERWISE, ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE
+SOFTWARE वा THE USE वा OTHER DEALINGS अन्तः THE SOFTWARE.  */
 
 #if defined(__aarch64__) || defined(__arm64__)
 #define LIBFFI_ASM
@@ -33,7 +33,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #define CONCAT1(a, b) CONCAT2(a, b)
 #define CONCAT2(a, b) a ## b
 
-/* Use the right prefix for global labels.  */
+/* Use the right prefix for वैश्विक labels.  */
 #define CNAME(x) CONCAT1 (__USER_LABEL_PREFIX__, x)
 #else
 #define CNAME(x) x
@@ -67,7 +67,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #define BTI_C hint #34
 #define BTI_J hint #36
 /*
- * The ELF Notes section needs to indicate if BTI is supported, as the first ELF loaded that doesn't
+ * The ELF Notes खण्डः needs to indicate if BTI is supported, as the first ELF loaded that doesn't
  * declare this support disables it for memory region containing the loaded library.
  */
 # define AARCH64_BTI (1 << 0)         /* Has Branch Target Identification */
@@ -114,16 +114,16 @@ CNAME(ffi_call_SYSV):
 	cfi_def_cfa_register(x1)
 	cfi_rel_offset (x29, 0)
 	cfi_rel_offset (x30, 8)
-	mov	x9, sp
+	चालय	x9, sp
 	str	x9, [x1, #32]
-	mov	x29, x1
+	चालय	x29, x1
 	cfi_def_cfa_register(x29)
-	mov	sp, x0
+	चालय	sp, x0
 
-	mov	x9, x2			/* save fn */
-	mov	x8, x3			/* install structure return */
+	चालय	x9, x2			/* save fn */
+	चालय	x8, x3			/* install structure return */
 #ifdef FFI_GO_CLOSURES
-	mov	x18, x5			/* install static chain */
+	चालय	x18, x5			/* install static chain */
 #endif
 	stp	x3, x4, [x29, #16]	/* save rvalue and flags */
 
@@ -142,23 +142,23 @@ CNAME(ffi_call_SYSV):
 	ldp     x6, x7, [sp, #16*N_V_ARG_REG + 48]
 
 	/* Deallocate the context, leaving the stacked arguments.  */
-	add	sp, sp, #CALL_CONTEXT_SIZE
+	योजय	sp, sp, #CALL_CONTEXT_SIZE
 
-	BRANCH_AND_LINK_TO_REG     x9			/* call fn */
+	BRANCH_AND_LINK_TO_REG     x9			/* आह्वान fn */
 
 	ldp	x3, x4, [x29, #16]	/* reload rvalue and flags */
 
 	/* Partially deconstruct the stack frame.  */
 	ldr	x9, [x29, #32]
-	mov	sp, x9
+	चालय	sp, x9
 	cfi_def_cfa_register (sp)
-	mov	x2, x29			/* Preserve for auth */
+	चालय	x2, x29			/* Preserve for auth */
 	ldp     x29, x30, [x29]
 
 	/* Save the return value as directed.  */
 	adr	x5, 0f
 	and	w4, w4, #AARCH64_RET_MASK
-	add	x5, x5, x4, lsl #4
+	योजय	x5, x5, x4, lsl #4
 	br	x5
 
 	/* Note that each table entry is 4 insns, and thus 16 bytes.
@@ -263,7 +263,7 @@ CNAME(ffi_call_SYSV):
 	nop
 	nop
 24:	BTI_J				/* UINT32 */
-	mov	w0, w0
+	चालय	w0, w0
 	str	x0, [x3]
 	nop
 25:	b 99f				/* reserved */
@@ -298,7 +298,7 @@ CNAME(ffi_call_SYSV):
 	/* Return now that result has been populated. */
 99:
 	AUTH_LR_WITH_REG(x2)
-	ret
+	प्रत्यागच्छ
 
 	cfi_endproc
 
@@ -314,15 +314,15 @@ CNAME(ffi_call_SYSV):
 /* ffi_closure_SYSV
 
    Closure invocation glue. This is the low level code invoked directly by
-   the closure trampoline to setup and call a closure.
+   the closure trampoline to setup and आह्वान a closure.
 
    On entry x17 points to a struct ffi_closure, x16 has been clobbered
    all other registers are preserved.
 
-   We allocate a call context and save the argument passing registers,
+   We allocate a आह्वान context and save the argument passing registers,
    then invoked the generic C ffi_closure_SYSV_inner() function to do all
    the real work, on return we load the result passing registers back from
-   the call context.
+   the आह्वान context.
 */
 
 #define ffi_closure_SYSV_FS (8*2 + CALL_CONTEXT_SIZE + 64)
@@ -364,7 +364,7 @@ CNAME(ffi_closure_SYSV):
 	cfi_rel_offset (x29, 0)
 	cfi_rel_offset (x30, 8)
 0:
-	mov     x29, sp
+	चालय     x29, sp
 
 	/* Save the argument passing core registers.  */
 	stp     x0, x1, [sp, #16 + 16*N_V_ARG_REG + 0]
@@ -378,17 +378,17 @@ CNAME(ffi_closure_SYSV):
 #ifdef FFI_GO_CLOSURES
 L(do_closure):
 #endif
-	add	x3, sp, #16				/* load context */
-	add	x4, sp, #ffi_closure_SYSV_FS		/* load stack */
-	add	x5, sp, #16+CALL_CONTEXT_SIZE		/* load rvalue */
-	mov	x6, x8					/* load struct_rval */
+	योजय	x3, sp, #16				/* load context */
+	योजय	x4, sp, #ffi_closure_SYSV_FS		/* load stack */
+	योजय	x5, sp, #16+CALL_CONTEXT_SIZE		/* load rvalue */
+	चालय	x6, x8					/* load struct_rval */
 	bl      CNAME(ffi_closure_SYSV_inner)
 
 	/* Load the return value as directed.  */
 	adr	x1, 0f
 	and	w0, w0, #AARCH64_RET_MASK
-	add	x1, x1, x0, lsl #4
-	add	x3, sp, #16+CALL_CONTEXT_SIZE
+	योजय	x1, x1, x0, lsl #4
+	योजय	x3, sp, #16+CALL_CONTEXT_SIZE
 	br	x1
 
 	/* Note that each table entry is 4 insns, and thus 16 bytes.  */
@@ -538,7 +538,7 @@ CNAME(ffi_closure_SYSV_V_alt):
 	BTI_C
 	/* See the comments above trampoline_code_table. */
 	ldr	x17, [sp, #8]			/* Load closure in x17 */
-	add	sp, sp, #16			/* Restore the stack */
+	योजय	sp, sp, #16			/* Restore the stack */
 	b	CNAME(ffi_closure_SYSV_V)
 
 	.globl	CNAME(ffi_closure_SYSV_V_alt)
@@ -553,7 +553,7 @@ CNAME(ffi_closure_SYSV_alt):
 	BTI_C
 	/* See the comments above trampoline_code_table. */
 	ldr	x17, [sp, #8]			/* Load closure in x17 */
-	add	sp, sp, #16			/* Restore the stack */
+	योजय	sp, sp, #16			/* Restore the stack */
 	b	CNAME(ffi_closure_SYSV)
 
 	.globl	CNAME(ffi_closure_SYSV_alt)
@@ -585,7 +585,7 @@ CNAME(ffi_closure_SYSV_alt):
 	.align	AARCH64_TRAMP_MAP_SHIFT
 CNAME(trampoline_code_table):
 	.rept	AARCH64_TRAMP_MAP_SIZE / AARCH64_TRAMP_SIZE
-	sub	sp, sp, #16		/* Make space on the stack */
+	वियोजय	sp, sp, #16		/* Make space on the stack */
 	str	x17, [sp]		/* Save x17 on stack */
 	adr	x17, #16376		/* Get data address */
 	ldr	x17, [x17]		/* Copy data into x17 */
@@ -663,7 +663,7 @@ CNAME(ffi_go_closure_SYSV):
 	cfi_rel_offset (x29, 0)
 	cfi_rel_offset (x30, 8)
 0:
-	mov     x29, sp
+	चालय     x29, sp
 
 	/* Save the argument passing core registers.  */
 	stp     x0, x1, [sp, #16 + 16*N_V_ARG_REG + 0]
@@ -673,7 +673,7 @@ CNAME(ffi_go_closure_SYSV):
 
 	/* Load ffi_closure_inner arguments.  */
 	ldp	PTR_REG(0), PTR_REG(1), [x18, #PTR_SIZE]/* load cif, fn */
-	mov	x2, x18					/* load user_data */
+	चालय	x2, x18					/* load user_data */
 	b	L(do_closure)
 	cfi_endproc
 
@@ -725,7 +725,7 @@ CNAME(ffi_go_closure_SYSV):
 #endif /* __ARM_BUILDATTR64_FV */
 
 #if defined __ELF__ && defined __linux__
-	.section .note.GNU-stack,"",%progbits
+	.खण्डः .note.GNU-stack,"",%progbits
 FEATURE_1_AND_MARK(AARCH64_BTI | AARCH64_POINTER_AUTH | AARCH64_GCS)
 #endif
 

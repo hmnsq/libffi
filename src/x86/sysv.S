@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __i386__
@@ -118,7 +118,7 @@ L(UW1):
 	movl	20+R_EDX*4(%ebp), %edx
 	movl	20+R_ECX*4(%ebp), %ecx
 
-	call	*8(%ebp)
+	आह्वान	*8(%ebp)
 
 	movl	12(%ebp), %ecx		/* load return type code */
 	movl	%ebx, 8(%ebp)		/* preserve %ebx */
@@ -127,42 +127,42 @@ L(UW2):
 
 	andl	$X86_RET_TYPE_MASK, %ecx
 #ifdef __PIC__
-	call	C(__x86.get_pc_thunk.bx)
+	आह्वान	C(__x86.get_pc_thunk.bx)
 L(pc1):
 	leal	L(store_table)-L(pc1)(%ebx, %ecx, 8), %ebx
 #else
 	leal	L(store_table)(,%ecx, 8), %ebx
 #endif
 	movl	16(%ebp), %ecx		/* load result address */
-	_CET_NOTRACK jmp *%ebx
+	_CET_NOTRACK कूर्द *%ebx
 
 	.balign	8
 L(store_table):
 E(L(store_table), X86_RET_FLOAT)
 	fstps	(%ecx)
-	jmp	L(e1)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_DOUBLE)
 	fstpl	(%ecx)
-	jmp	L(e1)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_LDOUBLE)
 	fstpt	(%ecx)
-	jmp	L(e1)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_SINT8)
 	movsbl	%al, %eax
-	mov	%eax, (%ecx)
-	jmp	L(e1)
+	चालय	%eax, (%ecx)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_SINT16)
 	movswl	%ax, %eax
-	mov	%eax, (%ecx)
-	jmp	L(e1)
+	चालय	%eax, (%ecx)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_UINT8)
 	movzbl	%al, %eax
-	mov	%eax, (%ecx)
-	jmp	L(e1)
+	चालय	%eax, (%ecx)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_UINT16)
 	movzwl	%ax, %eax
-	mov	%eax, (%ecx)
-	jmp	L(e1)
+	चालय	%eax, (%ecx)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_INT64)
 	movl	%edx, 4(%ecx)
 	/* fallthru */
@@ -179,20 +179,20 @@ L(UW3):
 	/* cfi_def_cfa(%esp, 4) */
 	/* cfi_restore(%ebx) */
 	/* cfi_restore(%ebp) */
-	ret
+	प्रत्यागच्छ
 L(UW4):
 	/* cfi_restore_state */
 
 E(L(store_table), X86_RET_STRUCTPOP)
-	jmp	L(e1)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_STRUCTARG)
-	jmp	L(e1)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_STRUCT_1B)
 	movb	%al, (%ecx)
-	jmp	L(e1)
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_STRUCT_2B)
 	movw	%ax, (%ecx)
-	jmp	L(e1)
+	कूर्द	L(e1)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(store_table), X86_RET_UNUSED14)
@@ -251,24 +251,24 @@ ENDF(ffi_call_i386)
 #endif
 
 #define FFI_CLOSURE_CALL_INNER(UWN) \
-	call	ffi_closure_inner
+	आह्वान	ffi_closure_inner
 
 #define FFI_CLOSURE_MASK_AND_JUMP(N, UW)				\
 	andl	$X86_RET_TYPE_MASK, %eax;				\
 	leal	L(C1(load_table,N))(, %eax, 8), %edx;			\
 	movl	closure_CF(%esp), %eax;		/* optimiztic load */	\
-	_CET_NOTRACK jmp *%edx
+	_CET_NOTRACK कूर्द *%edx
 
 #ifdef __PIC__
 # if defined X86_DARWIN || defined HAVE_HIDDEN_VISIBILITY_ATTRIBUTE
 #  undef FFI_CLOSURE_MASK_AND_JUMP
 #  define FFI_CLOSURE_MASK_AND_JUMP(N, UW)				\
 	andl	$X86_RET_TYPE_MASK, %eax;				\
-	call	C(__x86.get_pc_thunk.dx);				\
+	आह्वान	C(__x86.get_pc_thunk.dx);				\
 L(C1(pc,N)):								\
 	leal	L(C1(load_table,N))-L(C1(pc,N))(%edx, %eax, 8), %edx;	\
 	movl	closure_CF(%esp), %eax;		/* optimiztic load */	\
-	_CET_NOTRACK jmp *%edx
+	_CET_NOTRACK कूर्द *%edx
 # else
 #  define FFI_CLOSURE_CALL_INNER_SAVE_EBX
 #  undef FFI_CLOSURE_CALL_INNER
@@ -276,9 +276,9 @@ L(C1(pc,N)):								\
 	movl	%ebx, 40(%esp);			/* save ebx */		\
 L(C1(UW,UWN)):								\
 	/* cfi_rel_offset(%ebx, 40); */					\
-	call	C(__x86.get_pc_thunk.bx);	/* load got register */	\
+	आह्वान	C(__x86.get_pc_thunk.bx);	/* load got register */	\
 	addl	$C(_GLOBAL_OFFSET_TABLE_), %ebx;			\
-	call	ffi_closure_inner@PLT
+	आह्वान	ffi_closure_inner@PLT
 #  undef FFI_CLOSURE_MASK_AND_JUMP
 #  define FFI_CLOSURE_MASK_AND_JUMP(N, UWN)				\
 	andl	$X86_RET_TYPE_MASK, %eax;				\
@@ -287,7 +287,7 @@ L(C1(UW,UWN)):								\
 L(C1(UW,UWN)):								\
 	/* cfi_restore(%ebx); */					\
 	movl	closure_CF(%esp), %eax;		/* optimiztic load */	\
-	_CET_NOTRACK jmp *%edx
+	_CET_NOTRACK कूर्द *%edx
 # endif /* DARWIN || HIDDEN */
 #endif /* __PIC__ */
 
@@ -307,7 +307,7 @@ L(UW7):
 	movl	%edx, closure_CF+28(%esp)
 	movl	%ecx, closure_CF+32(%esp)
 	movl	%eax, closure_CF+36(%esp)	/* closure is user_data */
-	jmp	L(do_closure_i386)
+	कूर्द	L(do_closure_i386)
 L(UW8):
 	/* cfi_endproc */
 ENDF(C(ffi_go_closure_EAX))
@@ -328,7 +328,7 @@ L(UW10):
 	movl	%edx, closure_CF+28(%esp)
 	movl	%eax, closure_CF+32(%esp)
 	movl	%ecx, closure_CF+36(%esp)	/* closure is user_data */
-	jmp	L(do_closure_i386)
+	कूर्द	L(do_closure_i386)
 L(UW11):
 	/* cfi_endproc */
 ENDF(C(ffi_go_closure_ECX))
@@ -362,28 +362,28 @@ L(do_closure_i386):
 L(load_table2):
 E(L(load_table2), X86_RET_FLOAT)
 	flds	closure_CF(%esp)
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_DOUBLE)
 	fldl	closure_CF(%esp)
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_LDOUBLE)
 	fldt	closure_CF(%esp)
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_SINT8)
 	movsbl	%al, %eax
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_SINT16)
 	movswl	%ax, %eax
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_UINT8)
 	movzbl	%al, %eax
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_UINT16)
 	movzwl	%ax, %eax
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_INT64)
 	movl	closure_CF+4(%esp), %edx
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_INT32)
 	nop
 	/* fallthru */
@@ -392,24 +392,24 @@ L(e2):
 	addl	$closure_FS, %esp
 L(UW16):
 	/* cfi_adjust_cfa_offset(-closure_FS) */
-	ret
+	प्रत्यागच्छ
 L(UW17):
 	/* cfi_adjust_cfa_offset(closure_FS) */
 E(L(load_table2), X86_RET_STRUCTPOP)
 	addl	$closure_FS, %esp
 L(UW18):
 	/* cfi_adjust_cfa_offset(-closure_FS) */
-	ret	$4
+	प्रत्यागच्छ	$4
 L(UW19):
 	/* cfi_adjust_cfa_offset(closure_FS) */
 E(L(load_table2), X86_RET_STRUCTARG)
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_STRUCT_1B)
 	movzbl	%al, %eax
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_STRUCT_2B)
 	movzwl	%ax, %eax
-	jmp	L(e2)
+	कूर्द	L(e2)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table2), X86_RET_UNUSED14)
@@ -437,7 +437,7 @@ L(UW22):
 	movl	%edx, closure_CF+28(%esp)
 	movl	%eax, closure_CF+32(%esp)
 	movl	%ecx, closure_CF+36(%esp)	/* closure is user_data */
-	jmp	L(do_closure_STDCALL)
+	कूर्द	L(do_closure_STDCALL)
 L(UW23):
 	/* cfi_endproc */
 ENDF(C(ffi_go_closure_STDCALL))
@@ -459,12 +459,12 @@ L(UW25):
 	/* cfi_def_cfa_offset(closure_FS + 4) */
 	FFI_CLOSURE_SAVE_REGS
 	movl	closure_FS-4(%esp), %eax	/* load closure */
-	jmp	L(do_closure_REGISTER)
+	कूर्द	L(do_closure_REGISTER)
 L(UW26):
 	/* cfi_endproc */
 ENDF(C(ffi_closure_REGISTER))
 
-/* For STDCALL (and others), we need to pop N bytes of arguments off
+/* For STDCALL (and others), we need to उद्धर N bytes of arguments off
    the stack following the closure.  The amount needing to be popped
    is returned to us from ffi_closure_inner.  */
 
@@ -493,7 +493,7 @@ L(do_closure_STDCALL):
 	FFI_CLOSURE_CALL_INNER(29)
 
 	movl	%eax, %ecx
-	shrl	$X86_RET_POP_SHIFT, %ecx	/* isolate pop count */
+	shrl	$X86_RET_POP_SHIFT, %ecx	/* isolate उद्धर count */
 	leal	closure_FS(%esp, %ecx), %ecx	/* compute popped esp */
 	movl	closure_FS(%esp), %edx		/* move return address */
 	movl	%edx, (%ecx)
@@ -501,7 +501,7 @@ L(do_closure_STDCALL):
 	/* From this point on, the value of %esp upon return is %ecx+4,
 	   and we've copied the return address to %ecx to make return easy.
 	   There's no point in representing this in the unwind info, as
-	   there is always a window between the mov and the ret which
+	   there is always a window between the चालय and the प्रत्यागच्छ which
 	   will be wrong from one point of view or another.  */
 
 	FFI_CLOSURE_MASK_AND_JUMP(3, 30)
@@ -511,55 +511,55 @@ L(load_table3):
 E(L(load_table3), X86_RET_FLOAT)
 	flds    closure_CF(%esp)
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_DOUBLE)
 	fldl    closure_CF(%esp)
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_LDOUBLE)
 	fldt    closure_CF(%esp)
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_SINT8)
 	movsbl  %al, %eax
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_SINT16)
 	movswl  %ax, %eax
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_UINT8)
 	movzbl  %al, %eax
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_UINT16)
 	movzwl  %ax, %eax
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_INT64)
 	movl	closure_CF+4(%esp), %edx
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_INT32)
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_VOID)
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCTPOP)
 	movl    %ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCTARG)
 	movl	%ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCT_1B)
 	movzbl	%al, %eax
 	movl	%ecx, %esp
-	ret
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCT_2B)
 	movzwl	%ax, %eax
 	movl	%ecx, %esp
-	ret
+	प्रत्यागच्छ
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table3), X86_RET_UNUSED14)
@@ -579,8 +579,8 @@ C(ffi_closure_i386_alt):
 	/* See the comments above trampoline_code_table. */
 	_CET_ENDBR
 	movl	4(%esp), %eax			/* Load closure in eax */
-	add	$8, %esp			/* Restore the stack */
-	jmp	C(ffi_closure_i386)
+	योजय	$8, %esp			/* Restore the stack */
+	कूर्द	C(ffi_closure_i386)
 ENDF(C(ffi_closure_i386_alt))
 
 	.balign	16
@@ -590,8 +590,8 @@ C(ffi_closure_REGISTER_alt):
 	/* See the comments above trampoline_code_table. */
 	_CET_ENDBR
 	movl	(%esp), %eax			/* Restore eax */
-	add	$4, %esp			/* Leave closure on stack */
-	jmp	C(ffi_closure_REGISTER)
+	योजय	$4, %esp			/* Leave closure on stack */
+	कूर्द	C(ffi_closure_REGISTER)
 ENDF(C(ffi_closure_REGISTER_alt))
 
 	.balign	16
@@ -601,8 +601,8 @@ C(ffi_closure_STDCALL_alt):
 	/* See the comments above trampoline_code_table. */
 	_CET_ENDBR
 	movl	4(%esp), %eax			/* Load closure in eax */
-	add	$8, %esp			/* Restore the stack */
-	jmp	C(ffi_closure_STDCALL)
+	योजय	$8, %esp			/* Restore the stack */
+	कूर्द	C(ffi_closure_STDCALL)
 ENDF(C(ffi_closure_STDCALL_alt))
 
 /*
@@ -642,17 +642,17 @@ ENDF(C(ffi_closure_STDCALL_alt))
 C(trampoline_code_table):
 	.rept	X86_TRAMP_MAP_SIZE / X86_TRAMP_SIZE
 	_CET_ENDBR
-	sub	$8, %esp
+	वियोजय	$8, %esp
 	movl	%eax, (%esp)			/* Save %eax on stack */
-	call	1f				/* Get next PC into %eax */
+	आह्वान	1f				/* Get next PC into %eax */
 	movl	X86_DATA_OFFSET(%eax), %eax	/* Copy data into %eax */
 	movl	%eax, 4(%esp)			/* Save data on stack */
-	call	1f				/* Get next PC into %eax */
+	आह्वान	1f				/* Get next PC into %eax */
 	movl	X86_CODE_OFFSET(%eax), %eax	/* Copy code into %eax */
-	jmp	*%eax				/* Jump to code */
+	कूर्द	*%eax				/* Jump to code */
 1:
-	mov	(%esp), %eax
-	ret
+	चालय	(%esp), %eax
+	प्रत्यागच्छ
 	.align	4
 	.endr
 ENDF(C(trampoline_code_table))
@@ -685,12 +685,12 @@ L(UW34):
 	movl	%edx, 4(%esp)
 	movl	FFI_TRAMPOLINE_SIZE(%eax), %ebx		/* load cl->cif */
 	movl	%ebx, (%esp)
-	call	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* call cl->fun */
+	आह्वान	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* आह्वान cl->fun */
 
 	movl	20(%ebx), %eax				/* load cif->flags */
 	andl	$X86_RET_TYPE_MASK, %eax
 #ifdef __PIC__
-	call	C(__x86.get_pc_thunk.bx)
+	आह्वान	C(__x86.get_pc_thunk.bx)
 L(pc4):
 	leal	L(load_table4)-L(pc4)(%ebx, %eax, 8), %ecx
 #else
@@ -700,34 +700,34 @@ L(pc4):
 L(UW35):
 	/* cfi_restore(%ebx) */
 	movl	16(%esp), %eax				/* Optimistic load */
-	jmp	*%ecx
+	कूर्द	*%ecx
 
 	.balign	8
 L(load_table4):
 E(L(load_table4), X86_RET_FLOAT)
 	flds	16(%esp)
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_DOUBLE)
 	fldl	16(%esp)
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_LDOUBLE)
 	fldt	16(%esp)
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_SINT8)
 	movsbl	%al, %eax
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_SINT16)
 	movswl	%ax, %eax
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_UINT8)
 	movzbl	%al, %eax
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_UINT16)
 	movzwl	%ax, %eax
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_INT64)
 	movl	16+4(%esp), %edx
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_INT32)
 	nop
 	/* fallthru */
@@ -736,24 +736,24 @@ L(e4):
 	addl	$raw_closure_S_FS, %esp
 L(UW36):
 	/* cfi_adjust_cfa_offset(-raw_closure_S_FS) */
-	ret
+	प्रत्यागच्छ
 L(UW37):
 	/* cfi_adjust_cfa_offset(raw_closure_S_FS) */
 E(L(load_table4), X86_RET_STRUCTPOP)
 	addl	$raw_closure_S_FS, %esp
 L(UW38):
 	/* cfi_adjust_cfa_offset(-raw_closure_S_FS) */
-	ret	$4
+	प्रत्यागच्छ	$4
 L(UW39):
 	/* cfi_adjust_cfa_offset(raw_closure_S_FS) */
 E(L(load_table4), X86_RET_STRUCTARG)
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_STRUCT_1B)
 	movzbl	%al, %eax
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_STRUCT_2B)
 	movzwl	%ax, %eax
-	jmp	L(e4)
+	कूर्द	L(e4)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table4), X86_RET_UNUSED14)
@@ -802,12 +802,12 @@ L(UW46):
 	movl	%edx, 4(%esp)
 	movl	FFI_TRAMPOLINE_SIZE(%eax), %ebx		/* load cl->cif */
 	movl	%ebx, (%esp)
-	call	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* call cl->fun */
+	आह्वान	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* आह्वान cl->fun */
 
 	movl	20(%ebx), %eax				/* load cif->flags */
 	andl	$X86_RET_TYPE_MASK, %eax
 #ifdef __PIC__
-	call	C(__x86.get_pc_thunk.bx)
+	आह्वान	C(__x86.get_pc_thunk.bx)
 L(pc5):
 	leal	L(load_table5)-L(pc5)(%ebx, %eax, 8), %ecx
 #else
@@ -817,34 +817,34 @@ L(pc5):
 L(UW47):
 	/* cfi_restore(%ebx) */
 	movl	16(%esp), %eax				/* Optimistic load */
-	jmp	*%ecx
+	कूर्द	*%ecx
 
 	.balign	8
 L(load_table5):
 E(L(load_table5), X86_RET_FLOAT)
 	flds	16(%esp)
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_DOUBLE)
 	fldl	16(%esp)
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_LDOUBLE)
 	fldt	16(%esp)
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_SINT8)
 	movsbl	%al, %eax
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_SINT16)
 	movswl	%ax, %eax
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_UINT8)
 	movzbl	%al, %eax
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_UINT16)
 	movzwl	%ax, %eax
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_INT64)
 	movl	16+4(%esp), %edx
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_INT32)
 	nop
 	/* fallthru */
@@ -854,24 +854,24 @@ L(e5):
 L(UW48):
 	/* cfi_adjust_cfa_offset(-raw_closure_T_FS) */
 	/* Remove the extra %ecx argument we pushed.  */
-	ret	$4
+	प्रत्यागच्छ	$4
 L(UW49):
 	/* cfi_adjust_cfa_offset(raw_closure_T_FS) */
 E(L(load_table5), X86_RET_STRUCTPOP)
 	addl	$raw_closure_T_FS, %esp
 L(UW50):
 	/* cfi_adjust_cfa_offset(-raw_closure_T_FS) */
-	ret	$8
+	प्रत्यागच्छ	$8
 L(UW51):
 	/* cfi_adjust_cfa_offset(raw_closure_T_FS) */
 E(L(load_table5), X86_RET_STRUCTARG)
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_STRUCT_1B)
 	movzbl	%al, %eax
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_STRUCT_2B)
 	movzwl	%ax, %eax
-	jmp	L(e5)
+	कूर्द	L(e5)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table5), X86_RET_UNUSED14)
@@ -887,18 +887,18 @@ ENDF(C(ffi_closure_raw_THISCALL))
 
 #ifdef X86_DARWIN
 /* The linker in use on earlier Darwin needs weak definitions to be
-   placed in a coalesced section.  That section should not be called
+   placed in a coalesced खण्डः.  That खण्डः should not be called
    __TEXT,__text since that would be re-defining the attributes of the
-   .text section (which is an error for earlier tools). Here we use
+   .text खण्डः (which is an error for earlier tools). Here we use
    '__textcoal_nt' which is what GCC emits for this.
-   Later linker versions are happy to use a normal section and, after
+   Later linker versions are happy to use a normal खण्डः and, after
    Darwin12 / OSX 10.8, the tools warn that using coalesced sections
    for this is deprecated so we must switch to avoid build fails and/or
    deprecation warnings.  */
 # if defined(__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__) &&		\
    __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1080
 #  define COMDAT(X)							\
-        .section __TEXT,__textcoal_nt,coalesced,pure_instructions;	\
+        .खण्डः __TEXT,__textcoal_nt,coalesced,pure_instructions;	\
         .weak_definition X;						\
         FFI_HIDDEN(X)
 # else
@@ -909,7 +909,7 @@ ENDF(C(ffi_closure_raw_THISCALL))
 # endif
 #elif defined __ELF__ && !(defined(__sun__) && defined(__svr4__))
 # define COMDAT(X)							\
-	.section .text.X,"axG",@progbits,X,comdat;			\
+	.खण्डः .text.X,"axG",@progbits,X,comdat;			\
 	.globl	X;							\
 	FFI_HIDDEN(X)
 #else
@@ -920,13 +920,13 @@ ENDF(C(ffi_closure_raw_THISCALL))
 	COMDAT(C(__x86.get_pc_thunk.bx))
 C(__x86.get_pc_thunk.bx):
 	movl	(%esp), %ebx
-	ret
+	प्रत्यागच्छ
 ENDF(C(__x86.get_pc_thunk.bx))
 # if defined X86_DARWIN || defined HAVE_HIDDEN_VISIBILITY_ATTRIBUTE
 	COMDAT(C(__x86.get_pc_thunk.dx))
 C(__x86.get_pc_thunk.dx):
 	movl	(%esp), %edx
-	ret
+	प्रत्यागच्छ
 ENDF(C(__x86.get_pc_thunk.dx))
 #endif /* DARWIN || HIDDEN */
 #endif /* __PIC__ */
@@ -968,14 +968,14 @@ ENDF(C(__x86.get_pc_thunk.dx))
 #endif
 
 #ifdef __APPLE__
-.section __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
+.खण्डः __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
 EHFrame0:
 #elif defined(X86_WIN32)
-.section .eh_frame,"r"
+.खण्डः .eh_frame,"r"
 #elif defined(HAVE_AS_X86_64_UNWIND_SECTION_TYPE)
-.section .eh_frame,EH_FRAME_FLAGS,@unwind
+.खण्डः .eh_frame,EH_FRAME_FLAGS,@unwind
 #else
-.section .eh_frame,EH_FRAME_FLAGS,@progbits
+.खण्डः .eh_frame,EH_FRAME_FLAGS,@progbits
 #endif
 #ifndef __APPLE__
 /* EH sections are already suitably aligned on Darwin.  */
@@ -1189,7 +1189,7 @@ L(EFDE9):
    __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ >= 1070 && __clang__
 /* compact unwind is not used with GCC at present, was not present before 10.6
    but has some bugs there, so do not emit until 10.7.  */
-    .section __LD,__compact_unwind,regular,debug
+    .खण्डः __LD,__compact_unwind,regular,debug
 
     /* compact unwind for ffi_call_i386 */
     .long    C(ffi_call_i386)
@@ -1270,5 +1270,5 @@ L(EFDE9):
 #endif /* ifdef __i386__ */
 
 #if defined __ELF__ && (defined __linux__ || defined __FreeBSD__)
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

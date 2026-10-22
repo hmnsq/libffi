@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -43,13 +43,13 @@
 
         ; determine the area we will put the function into
 __FuncArea   SETS    "|.text|"
-        IF "$AreaName" != ""
+        यदि "$AreaName" != ""
 __FuncArea   SETS    "$AreaName"
         ENDIF
 
         ; set up the exception handler itself
 __FuncExceptionHandler SETS ""
-        IF "$ExceptHandler" != ""
+        यदि "$ExceptHandler" != ""
 __FuncExceptionHandler SETS    "|$ExceptHandler|"
         ENDIF
 
@@ -85,10 +85,10 @@ __FuncExceptionHandler SETS    "|$ExceptHandler|"
     PROLOG_PUSH  {r11, lr}          ; save fp and lr for unwind
 
     ALTERNATE_ENTRY ffi_call_VFP
-    cmp    r3, #3                   ; load only d0 if possible
+    तुलय    r3, #3                   ; load only d0 if possible
     vldrle d0, [r0]
     vldmgt r0, {d0-d7}
-    add    r0, r0, #64              ; discard the vfp register args
+    योजय    r0, r0, #64              ; discard the vfp register args
     b ffi_call_SYSV
     NESTED_END ffi_call_VFP_fake
 
@@ -99,10 +99,10 @@ __FuncExceptionHandler SETS    "|$ExceptHandler|"
 
     ALTERNATE_ENTRY ffi_call_SYSV
     stm    r1, {fp, lr}
-    mov    fp, r1
+    चालय    fp, r1
 
-    mov    sp, r0                   ; install the stack pointer
-    mov    lr, r2                   ; move the fn pointer out of the way
+    चालय    sp, r0                   ; install the stack pointer
+    चालय    lr, r2                   ; move the fn pointer out of the way
     ldr    ip, [fp, #16]            ; install the static chain
     ldmia  sp!, {r0-r3}             ; move first 4 parameters in registers.
     blx    lr                       ; call fn
@@ -113,28 +113,28 @@ __FuncExceptionHandler SETS    "|$ExceptHandler|"
     ldr    r3, [fp, #12]
 
     ; Deallocate the stack with the arguments.
-    mov    sp, fp
+    चालय    sp, fp
 
     ; Store values stored in registers.
     ALIGN 8
     lsl     r3, #3
-    add     r3, r3, pc
-    add     r3, #8
-    mov     pc, r3
+    योजय     r3, r3, pc
+    योजय     r3, #8
+    चालय     pc, r3
 
 
 E(ARM_TYPE_VFP_S, ffi_call)
     ALIGN 8
     vstr s0, [r2]
-    pop    {fp,pc}
+    उद्धर    {fp,pc}
 E(ARM_TYPE_VFP_D, ffi_call)
     ALIGN 8
     vstr d0, [r2]
-    pop    {fp,pc}
+    उद्धर    {fp,pc}
 E(ARM_TYPE_VFP_N, ffi_call)
     ALIGN 8
     vstm r2, {d0-d3}
-    pop    {fp,pc}
+    उद्धर    {fp,pc}
 E(ARM_TYPE_INT64, ffi_call)
     ALIGN 8
     str    r1, [r2, #4]
@@ -142,15 +142,15 @@ E(ARM_TYPE_INT64, ffi_call)
 E(ARM_TYPE_INT, ffi_call)
     ALIGN 8
     str    r0, [r2]
-    pop    {fp,pc}
+    उद्धर    {fp,pc}
 E(ARM_TYPE_VOID, ffi_call)
     ALIGN 8
-    pop    {fp,pc}
+    उद्धर    {fp,pc}
     nop
 E(ARM_TYPE_STRUCT, ffi_call)
     ALIGN 8
-    cmp r3, #ARM_TYPE_STRUCT
-    pop    {fp,pc}
+    तुलय r3, #ARM_TYPE_STRUCT
+    उद्धर    {fp,pc}
     NESTED_END ffi_call_SYSV_fake
 
     IMPORT |ffi_closure_inner_SYSV|
@@ -168,7 +168,7 @@ E(ARM_TYPE_STRUCT, ffi_call)
     stmdb   sp!, {r0-r3}            ; save argument regs
     ldr     r0, [ip, #4]            ; load cif
     ldr     r1, [ip, #8]            ; load fun
-    mov     r2, ip                  ; load user_data
+    चालय     r2, ip                  ; load user_data
     b       ffi_go_closure_SYSV_0
     NESTED_END ffi_go_closure_SYSV
 
@@ -187,21 +187,21 @@ E(ARM_TYPE_STRUCT, ffi_call)
     ldr     r2, [ip, #FFI_TRAMPOLINE_CLOSURE_OFFSET+8]  ; ffi_closure->user_data
 
     ALTERNATE_ENTRY ffi_go_closure_SYSV_0
-    add     ip, sp, #16             ; compute entry sp
+    योजय     ip, sp, #16             ; compute entry sp
 
-    sub     sp, sp, #64+32          ; allocate frame parameter (sizeof(vfp_space) = 64, sizeof(result) = 32)
-    mov     r3, sp                  ; set frame parameter
+    वियोजय     sp, sp, #64+32          ; allocate frame parameter (sizeof(vfp_space) = 64, sizeof(result) = 32)
+    चालय     r3, sp                  ; set frame parameter
     stmdb   sp!, {ip,lr}
 
     bl      ffi_closure_inner_SYSV  ; call the Python closure
 
                                     ; Load values returned in registers.
-    add     r2, sp, #64+8           ; address of closure_frame->result
+    योजय     r2, sp, #64+8           ; address of closure_frame->result
     bl      ffi_closure_ret         ; move result to correct register or memory for type
 
     ldmfd   sp!, {ip,lr}
-    mov     sp, ip                  ; restore stack pointer
-    mov     pc, lr
+    चालय     sp, ip                  ; restore stack pointer
+    चालय     pc, lr
     NESTED_END ffi_closure_SYSV_fake
 
     IMPORT |ffi_closure_inner_VFP|
@@ -219,7 +219,7 @@ E(ARM_TYPE_STRUCT, ffi_call)
     stmdb   sp!, {r0-r3}			; save argument regs
     ldr	r0, [ip, #4]			; load cif
     ldr	r1, [ip, #8]			; load fun
-    mov	r2, ip				; load user_data
+    चालय	r2, ip				; load user_data
     b	ffi_go_closure_VFP_0
     NESTED_END ffi_go_closure_VFP
 
@@ -238,21 +238,21 @@ E(ARM_TYPE_STRUCT, ffi_call)
     ldr     r2, [ip, #FFI_TRAMPOLINE_CLOSURE_OFFSET+8]  ; load user_data
 
     ALTERNATE_ENTRY ffi_go_closure_VFP_0
-    add     ip, sp, #16             ; compute entry sp
-    sub     sp, sp, #32             ; save space for closure_frame->result
+    योजय     ip, sp, #16             ; compute entry sp
+    वियोजय     sp, sp, #32             ; save space for closure_frame->result
     vstmdb  sp!, {d0-d7}            ; push closure_frame->vfp_space
 
-    mov     r3, sp                  ; save closure_frame
+    चालय     r3, sp                  ; save closure_frame
     stmdb   sp!, {ip,lr}
 
     bl      ffi_closure_inner_VFP
 
     ; Load values returned in registers.
-    add     r2, sp, #64+8           ; load result
+    योजय     r2, sp, #64+8           ; load result
     bl      ffi_closure_ret
     ldmfd   sp!, {ip,lr}
-    mov     sp, ip                  ; restore stack pointer
-    mov     pc, lr
+    चालय     sp, ip                  ; restore stack pointer
+    चालय     pc, lr
     NESTED_END ffi_closure_VFP_fake
 
 /* Load values returned in registers for both closure entry points.
@@ -264,9 +264,9 @@ E(ARM_TYPE_STRUCT, ffi_call)
 
     ALIGN 8
     lsl     r0, #3
-    add     r0, r0, pc
-    add     r0, #8
-    mov     pc, r0
+    योजय     r0, r0, pc
+    योजय     r0, #8
+    चालय     pc, r0
 
 E(ARM_TYPE_VFP_S, ffi_closure)
     ALIGN 8
@@ -308,4 +308,4 @@ thisproc    adr    ip, thisproc
             DCD    0
             ;ENDP
 
-    END
+    अन्त

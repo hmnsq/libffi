@@ -25,32 +25,32 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
-#ifndef LIBFFI_ASM
-typedef unsigned long long          ffi_arg;
-typedef signed long long            ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ दीर्घ          ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_UNIX,   	/* Linux and all Unix variants use the same conventions	*/
-  FFI_LAST_ABI,
+  FFI_चरमः_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24  /* Really the following struct, which 	*/
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_TRAMPOLINE_आकार 24  /* Really the following struct, which 	*/
 				/* can be interpreted as a C function	*/
 				/* descriptor:				*/
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
+#परिभाषय FFI_TARGET_SPECIFIC_VARIADIC 1
+#परिभाषय FFI_EXTRA_CIF_FIELDS अचिह्नित nfixedargs
 
-#endif
+#यदि_अन्तः

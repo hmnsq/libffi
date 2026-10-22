@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -78,7 +78,7 @@ ffi_call_asm:
     .cfi_startproc
 
     /*
-      We are NOT going to set up an ordinary stack frame.  In order to pass
+      We are न going to set up an ordinary stack frame.  In order to pass
       the stacked args to the called function, we adjust our stack pointer to
       a0, which is in the _caller's_ alloca area.  We establish our own stack
       frame at the end of the call_context.
@@ -140,7 +140,7 @@ ffi_call_asm:
     .cfi_restore 1
     LARG    fp, -2*PTRS(fp)
     .cfi_restore 8
-    ret
+    प्रत्यागच्छ
     .cfi_endproc
     .size   ffi_call_asm, .-ffi_call_asm
 
@@ -197,7 +197,7 @@ ffi_closure_asm:
     addi    a3, sp, FRAME_LEN
     mv      a4, sp
 
-    call    ffi_closure_inner
+    आह्वान    ffi_closure_inner
 
     /* return values */
 #if FLTS
@@ -215,7 +215,7 @@ ffi_closure_asm:
     .cfi_restore 8
     addi    sp, sp, FRAME_LEN
     .cfi_def_cfa_offset 0
-    ret
+    प्रत्यागच्छ
     .cfi_endproc
     .size ffi_closure_asm, .-ffi_closure_asm
 
@@ -271,7 +271,7 @@ ffi_go_closure_asm:
     addi    a3, sp, FRAME_LEN
     mv      a4, sp
 
-    call    ffi_closure_inner
+    आह्वान    ffi_closure_inner
 
     /* return values */
 #if FLTS
@@ -289,7 +289,7 @@ ffi_go_closure_asm:
     .cfi_restore 8
     addi    sp, sp, FRAME_LEN
     .cfi_def_cfa_offset 0
-    ret
+    प्रत्यागच्छ
     .cfi_endproc
     .size ffi_go_closure_asm, .-ffi_go_closure_asm
 
@@ -302,7 +302,7 @@ ffi_go_closure_asm:
     .type trampoline_code_table, @function
     .align RISCV_TRAMP_MAP_SHIFT
 trampoline_code_table:
-    .option push
+    .option निक्षिप
     # Do not allow the jr insn to be encoded as c.jr for alignment purposes
     .option norvc
     .rept   RISCV_TRAMP_MAP_SIZE / RISCV_TRAMP_SIZE
@@ -311,7 +311,7 @@ trampoline_code_table:
     LARG    t2, PTRS(t2)
     jr      t2
     .endr
-    .option pop
+    .option उद्धर
     .size   trampoline_code_table,.-trampoline_code_table
     .align RISCV_TRAMP_MAP_SHIFT
 #endif /* FFI_EXEC_STATIC_TRAMP */

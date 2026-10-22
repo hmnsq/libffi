@@ -19,13 +19,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -65,7 +65,7 @@ CALLFUNC(ffi_call_SYSV):
 	CFI_OFFSET(2,-12)
 
 	| Make room for all of the new args.
-	sub.l	12(%fp),%sp
+	वियोजय.l	12(%fp),%sp
 
 	| Call ffi_prep_args
 	move.l	8(%fp),-(%sp)
@@ -98,7 +98,7 @@ CALLFUNC(ffi_call_SYSV):
 	jsr	(%a0)
 
 	| Remove the space we pushed for the args
-	add.l	12(%fp),%sp
+	योजय.l	12(%fp),%sp
 
 	| Load the pointer to storage for the return value
 	move.l	20(%fp),%a1
@@ -109,7 +109,7 @@ CALLFUNC(ffi_call_SYSV):
 	| If the return value pointer is NULL, assume no return value.
 	| NOTE: On the mc68000, tst on an address register is not supported.
 #if !defined(__mc68020__) && !defined(__mc68030__) && !defined(__mc68040__) && !defined(__mc68060__) && !defined(__mcoldfire__)
-	cmp.w	#0, %a1
+	तुलय.w	#0, %a1
 #else
 	tst.l	%a1
 #endif
@@ -353,5 +353,5 @@ CALLFUNC(ffi_closure_struct_SYSV):
 	.size	CALLFUNC(ffi_closure_struct_SYSV),.-CALLFUNC(ffi_closure_struct_SYSV)
 
 #if defined __ELF__ && defined __linux__
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif

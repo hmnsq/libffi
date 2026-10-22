@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च
+   NONINFRINGEMENT.  अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES वा OTHER LIABILITY,
+   WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE, ARISING FROM,
+   OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा OTHER
+   DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifndef __x86_64__
@@ -53,7 +53,7 @@
     .686P
     .MODEL FLAT
 
-EXTRN	@ffi_closure_inner@8:PROC
+EXTRN	@ffi_closure_inner@8:विधि
 _TEXT SEGMENT
 
 /* This is declared as
@@ -68,17 +68,17 @@ _TEXT SEGMENT
 */
 
 ALIGN 16
-PUBLIC @ffi_call_i386@8
-@ffi_call_i386@8 PROC
+सार्वजनिक @ffi_call_i386@8
+@ffi_call_i386@8 विधि
 L(UW0):
 	cfi_startproc
  #if !HAVE_FASTCALL
-	mov	    ecx, [esp+4]
-	mov 	edx, [esp+8]
+	चालय	    ecx, [esp+4]
+	चालय 	edx, [esp+8]
  #endif
-	mov	    eax, [esp]		/* move the return address */
-	mov	    [ecx], ebp		/* store ebp into local frame */
-	mov 	[ecx+4], eax	/* store retaddr into local frame */
+	चालय	    eax, [esp]		/* move the return address */
+	चालय	    [ecx], ebp		/* store ebp into local frame */
+	चालय 	[ecx+4], eax	/* store retaddr into local frame */
 
 	/* New stack frame based off ebp.  This is a itty bit of unwind
 	   trickery in that the CFA *has* changed.  There is no easy way
@@ -87,85 +87,85 @@ L(UW0):
 	   unwind back to ffi_call.  Note that the location to which we
 	   moved the return address is (the new) CFA-4, so from the
 	   perspective of the unwind info, it hasn't moved.  */
-	mov 	ebp, ecx
+	चालय 	ebp, ecx
 L(UW1):
 	/* cfi_def_cfa(%ebp, 8) */
 	/* cfi_rel_offset(%ebp, 0) */
 
-	mov 	esp, edx		/* set outgoing argument stack */
-	mov 	eax, [20+R_EAX*4+ebp]	/* set register arguments */
-	mov 	edx, [20+R_EDX*4+ebp]
-	mov	    ecx, [20+R_ECX*4+ebp]
+	चालय 	esp, edx		/* set outgoing argument stack */
+	चालय 	eax, [20+R_EAX*4+ebp]	/* set register arguments */
+	चालय 	edx, [20+R_EDX*4+ebp]
+	चालय	    ecx, [20+R_ECX*4+ebp]
 
-	call	dword ptr [ebp+8]
+	आह्वान	dword ptr [ebp+8]
 
-	mov	    ecx, [12+ebp]		/* load return type code */
-	mov 	[ebp+8], ebx		/* preserve %ebx */
+	चालय	    ecx, [12+ebp]		/* load return type code */
+	चालय 	[ebp+8], ebx		/* preserve %ebx */
 L(UW2):
 	/* cfi_rel_offset(%ebx, 8) */
 
 	and 	ecx, X86_RET_TYPE_MASK
 	lea 	ebx, [L(store_table) + ecx * 8]
-	mov 	ecx, [ebp+16]		/* load result address */
-	jmp	    ebx
+	चालय 	ecx, [ebp+16]		/* load result address */
+	कूर्द	    ebx
 
 	ALIGN	8
 L(store_table):
 E(L(store_table), X86_RET_FLOAT)
-	fstp	DWORD PTR [ecx]
-	jmp	L(e1)
+	fstp	DWORD निर्देशक [ecx]
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_DOUBLE)
-	fstp	QWORD PTR [ecx]
-	jmp	L(e1)
+	fstp	QWORD निर्देशक [ecx]
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_LDOUBLE)
-	fstp	QWORD PTR [ecx]
-	jmp	L(e1)
+	fstp	QWORD निर्देशक [ecx]
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_SINT8)
 	movsx	eax, al
-	mov	[ecx], eax
-	jmp	L(e1)
+	चालय	[ecx], eax
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_SINT16)
 	movsx	eax, ax
-	mov	[ecx], eax
-	jmp	L(e1)
+	चालय	[ecx], eax
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_UINT8)
 	movzx	eax, al
-	mov	[ecx], eax
-	jmp	L(e1)
+	चालय	[ecx], eax
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_UINT16)
 	movzx	eax, ax
-	mov	[ecx], eax
-	jmp	L(e1)
+	चालय	[ecx], eax
+	कूर्द	L(e1)
 E(L(store_table), X86_RET_INT64)
-	mov	[ecx+4], edx
+	चालय	[ecx+4], edx
 	/* fallthru */
 E(L(store_table), X86_RET_int 32)
-	mov	[ecx], eax
+	चालय	[ecx], eax
 	/* fallthru */
 E(L(store_table), X86_RET_VOID)
 L(e1):
-	mov	    ebx, [ebp+8]
-	mov	    esp, ebp
-	pop 	ebp
+	चालय	    ebx, [ebp+8]
+	चालय	    esp, ebp
+	उद्धर 	ebp
 L(UW3):
 	/* cfi_remember_state */
 	/* cfi_def_cfa(%esp, 4) */
 	/* cfi_restore(%ebx) */
 	/* cfi_restore(%ebp) */
-	ret
+	प्रत्यागच्छ
 L(UW4):
 	/* cfi_restore_state */
 
 E(L(store_table), X86_RET_STRUCTPOP)
-	jmp	    L(e1)
+	कूर्द	    L(e1)
 E(L(store_table), X86_RET_STRUCTARG)
-	jmp	    L(e1)
+	कूर्द	    L(e1)
 E(L(store_table), X86_RET_STRUCT_1B)
-	mov 	[ecx], al
-	jmp	    L(e1)
+	चालय 	[ecx], al
+	कूर्द	    L(e1)
 E(L(store_table), X86_RET_STRUCT_2B)
-	mov 	[ecx], ax
-	jmp	    L(e1)
+	चालय 	[ecx], ax
+	कूर्द	    L(e1)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(store_table), X86_RET_UNUSED14)
@@ -199,79 +199,79 @@ ENDF(@ffi_call_i386@8)
 #endif
 
 FFI_CLOSURE_SAVE_REGS MACRO
-	mov 	[esp + closure_CF+16+R_EAX*4], eax
-	mov 	[esp + closure_CF+16+R_EDX*4], edx
-	mov 	[esp + closure_CF+16+R_ECX*4], ecx
+	चालय 	[esp + closure_CF+16+R_EAX*4], eax
+	चालय 	[esp + closure_CF+16+R_EDX*4], edx
+	चालय 	[esp + closure_CF+16+R_ECX*4], ecx
 ENDM
 
 FFI_CLOSURE_COPY_TRAMP_DATA MACRO
-	mov 	edx, [eax+FFI_TRAMPOLINE_SIZE]      /* copy cif */
-	mov 	ecx, [eax+FFI_TRAMPOLINE_SIZE+4]    /* copy fun */
-	mov 	eax, [eax+FFI_TRAMPOLINE_SIZE+8];   /* copy user_data */
-	mov 	[esp+closure_CF+28], edx
-	mov 	[esp+closure_CF+32], ecx
-	mov 	[esp+closure_CF+36], eax
+	चालय 	edx, [eax+FFI_TRAMPOLINE_SIZE]      /* copy cif */
+	चालय 	ecx, [eax+FFI_TRAMPOLINE_SIZE+4]    /* copy fun */
+	चालय 	eax, [eax+FFI_TRAMPOLINE_SIZE+8];   /* copy user_data */
+	चालय 	[esp+closure_CF+28], edx
+	चालय 	[esp+closure_CF+32], ecx
+	चालय 	[esp+closure_CF+36], eax
 ENDM
 
 #if HAVE_FASTCALL
 FFI_CLOSURE_PREP_CALL MACRO
-	mov	    ecx, esp                    /* load closure_data */
+	चालय	    ecx, esp                    /* load closure_data */
 	lea 	edx, [esp+closure_FS+4]     /* load incoming stack */
 ENDM
 #else
 FFI_CLOSURE_PREP_CALL MACRO
 	lea 	ecx, [esp+closure_CF]       /* load closure_data */
 	lea 	edx, [esp+closure_FS+4]     /* load incoming stack */
-	mov 	[esp], ecx
-	mov 	[esp+4], edx
+	चालय 	[esp], ecx
+	चालय 	[esp+4], edx
 ENDM
 #endif
 
 FFI_CLOSURE_CALL_INNER MACRO UWN
-	call	@ffi_closure_inner@8
+	आह्वान	@ffi_closure_inner@8
 ENDM
 
 FFI_CLOSURE_MASK_AND_JUMP MACRO LABEL
 	and	    eax, X86_RET_TYPE_MASK
 	lea 	edx, [LABEL+eax*8]
-	mov 	eax, [esp+closure_CF]       /* optimiztic load */
-	jmp	    edx
+	चालय 	eax, [esp+closure_CF]       /* optimiztic load */
+	कूर्द	    edx
 ENDM
 
 ALIGN 16
-PUBLIC ffi_go_closure_EAX
-ffi_go_closure_EAX PROC C
+सार्वजनिक ffi_go_closure_EAX
+ffi_go_closure_EAX विधि C
 L(UW6):
 	/* cfi_startproc */
-	sub	esp, closure_FS
+	वियोजय	esp, closure_FS
 L(UW7):
 	/* cfi_def_cfa_offset(closure_FS + 4) */
 	FFI_CLOSURE_SAVE_REGS
-	mov     edx, [eax+4]			/* copy cif */
-	mov 	ecx, [eax +8]			/* copy fun */
-	mov 	[esp+closure_CF+28], edx
-	mov 	[esp+closure_CF+32], ecx
-	mov 	[esp+closure_CF+36], eax	/* closure is user_data */
-	jmp	L(do_closure_i386)
+	चालय     edx, [eax+4]			/* copy cif */
+	चालय 	ecx, [eax +8]			/* copy fun */
+	चालय 	[esp+closure_CF+28], edx
+	चालय 	[esp+closure_CF+32], ecx
+	चालय 	[esp+closure_CF+36], eax	/* closure is user_data */
+	कूर्द	L(do_closure_i386)
 L(UW8):
 	/* cfi_endproc */
 ENDF(ffi_go_closure_EAX)
 
 ALIGN 16
-PUBLIC ffi_go_closure_ECX
-ffi_go_closure_ECX PROC C
+सार्वजनिक ffi_go_closure_ECX
+ffi_go_closure_ECX विधि C
 L(UW9):
 	/* cfi_startproc */
-	sub 	esp, closure_FS
+	वियोजय 	esp, closure_FS
 L(UW10):
 	/* cfi_def_cfa_offset(closure_FS + 4) */
 	FFI_CLOSURE_SAVE_REGS
-	mov 	edx, [ecx+4]			/* copy cif */
-	mov 	eax, [ecx+8]			/* copy fun */
-	mov 	[esp+closure_CF+28], edx
-	mov 	[esp+closure_CF+32], eax
-	mov 	[esp+closure_CF+36], ecx	/* closure is user_data */
-	jmp	L(do_closure_i386)
+	चालय 	edx, [ecx+4]			/* copy cif */
+	चालय 	eax, [ecx+8]			/* copy fun */
+	चालय 	[esp+closure_CF+28], edx
+	चालय 	[esp+closure_CF+32], eax
+	चालय 	[esp+closure_CF+36], ecx	/* closure is user_data */
+	कूर्द	L(do_closure_i386)
 L(UW11):
 	/* cfi_endproc */
 ENDF(ffi_go_closure_ECX)
@@ -280,11 +280,11 @@ ENDF(ffi_go_closure_ECX)
    On entry, %eax contains the address of the ffi_closure.  */
 
 ALIGN 16
-PUBLIC ffi_closure_i386
-ffi_closure_i386 PROC C
+सार्वजनिक ffi_closure_i386
+ffi_closure_i386 विधि C
 L(UW12):
 	/* cfi_startproc */
-	sub	    esp, closure_FS
+	वियोजय	    esp, closure_FS
 L(UW13):
 	/* cfi_def_cfa_offset(closure_FS + 4) */
 
@@ -302,54 +302,54 @@ L(do_closure_i386)::
 L(load_table2):
 E(L(load_table2), X86_RET_FLOAT)
 	fld 	dword ptr [esp+closure_CF]
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_DOUBLE)
 	fld 	qword ptr [esp+closure_CF]
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_LDOUBLE)
 	fld 	qword ptr [esp+closure_CF]
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_SINT8)
 	movsx	eax, al
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_SINT16)
 	movsx	eax, ax
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_UINT8)
 	movzx	eax, al
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_UINT16)
 	movzx	eax, ax
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_INT64)
-	mov 	edx, [esp+closure_CF+4]
-	jmp	L(e2)
+	चालय 	edx, [esp+closure_CF+4]
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_INT32)
 	nop
 	/* fallthru */
 E(L(load_table2), X86_RET_VOID)
 L(e2):
-	add 	esp, closure_FS
+	योजय 	esp, closure_FS
 L(UW16):
 	/* cfi_adjust_cfa_offset(-closure_FS) */
-	ret
+	प्रत्यागच्छ
 L(UW17):
 	/* cfi_adjust_cfa_offset(closure_FS) */
 E(L(load_table2), X86_RET_STRUCTPOP)
-	add 	esp, closure_FS
+	योजय 	esp, closure_FS
 L(UW18):
 	/* cfi_adjust_cfa_offset(-closure_FS) */
-	ret	4
+	प्रत्यागच्छ	4
 L(UW19):
 	/* cfi_adjust_cfa_offset(closure_FS) */
 E(L(load_table2), X86_RET_STRUCTARG)
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_STRUCT_1B)
 	movzx	eax, al
-	jmp	L(e2)
+	कूर्द	L(e2)
 E(L(load_table2), X86_RET_STRUCT_2B)
 	movzx	eax, ax
-	jmp	L(e2)
+	कूर्द	L(e2)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table2), X86_RET_UNUSED14)
@@ -362,20 +362,20 @@ L(UW20):
 ENDF(ffi_closure_i386)
 
 ALIGN 16
-PUBLIC	ffi_go_closure_STDCALL
-ffi_go_closure_STDCALL PROC C
+सार्वजनिक	ffi_go_closure_STDCALL
+ffi_go_closure_STDCALL विधि C
 L(UW21):
 	/* cfi_startproc */
-	sub 	esp, closure_FS
+	वियोजय 	esp, closure_FS
 L(UW22):
 	/* cfi_def_cfa_offset(closure_FS + 4) */
 	FFI_CLOSURE_SAVE_REGS
-	mov 	edx, [ecx+4]			/* copy cif */
-	mov 	eax, [ecx+8]			/* copy fun */
-	mov 	[esp+closure_CF+28], edx
-	mov 	[esp+closure_CF+32], eax
-	mov 	[esp+closure_CF+36], ecx	/* closure is user_data */
-	jmp	L(do_closure_STDCALL)
+	चालय 	edx, [ecx+4]			/* copy cif */
+	चालय 	eax, [ecx+8]			/* copy fun */
+	चालय 	[esp+closure_CF+28], edx
+	चालय 	[esp+closure_CF+32], eax
+	चालय 	[esp+closure_CF+36], ecx	/* closure is user_data */
+	कूर्द	L(do_closure_STDCALL)
 L(UW23):
 	/* cfi_endproc */
 ENDF(ffi_go_closure_STDCALL)
@@ -384,32 +384,32 @@ ENDF(ffi_go_closure_STDCALL)
    enter here having pushed the closure onto the stack.  */
 
 ALIGN 16
-PUBLIC ffi_closure_REGISTER
-ffi_closure_REGISTER PROC C
+सार्वजनिक ffi_closure_REGISTER
+ffi_closure_REGISTER विधि C
 L(UW24):
 	/* cfi_startproc */
 	/* cfi_def_cfa(%esp, 8) */
 	/* cfi_offset(%eip, -8) */
-	sub 	esp, closure_FS-4
+	वियोजय 	esp, closure_FS-4
 L(UW25):
 	/* cfi_def_cfa_offset(closure_FS + 4) */
 	FFI_CLOSURE_SAVE_REGS
-	mov	eax, [esp+closure_FS-4] 	/* load closure */
-	jmp	L(do_closure_REGISTER)
+	चालय	eax, [esp+closure_FS-4] 	/* load closure */
+	कूर्द	L(do_closure_REGISTER)
 L(UW26):
 	/* cfi_endproc */
 ENDF(ffi_closure_REGISTER)
 
-/* For STDCALL (and others), we need to pop N bytes of arguments off
+/* For STDCALL (and others), we need to उद्धर N bytes of arguments off
    the stack following the closure.  The amount needing to be popped
    is returned to us from ffi_closure_inner.  */
 
 ALIGN 16
-PUBLIC ffi_closure_STDCALL
-ffi_closure_STDCALL PROC C
+सार्वजनिक ffi_closure_STDCALL
+ffi_closure_STDCALL विधि C
 L(UW27):
 	/* cfi_startproc */
-	sub 	esp, closure_FS
+	वियोजय 	esp, closure_FS
 L(UW28):
 	/* cfi_def_cfa_offset(closure_FS + 4) */
 
@@ -426,16 +426,16 @@ L(do_closure_STDCALL)::
 	FFI_CLOSURE_PREP_CALL
 	FFI_CLOSURE_CALL_INNER(29)
 
-	mov 	ecx, eax
-	shr 	ecx, X86_RET_POP_SHIFT	    /* isolate pop count */
+	चालय 	ecx, eax
+	shr 	ecx, X86_RET_POP_SHIFT	    /* isolate उद्धर count */
 	lea 	ecx, [esp+closure_FS+ecx]	/* compute popped esp */
-	mov 	edx, [esp+closure_FS]		/* move return address */
-	mov 	[ecx], edx
+	चालय 	edx, [esp+closure_FS]		/* move return address */
+	चालय 	[ecx], edx
 
 	/* From this point on, the value of %esp upon return is %ecx+4,
 	   and we've copied the return address to %ecx to make return easy.
 	   There's no point in representing this in the unwind info, as
-	   there is always a window between the mov and the ret which
+	   there is always a window between the चालय and the प्रत्यागच्छ which
 	   will be wrong from one point of view or another.  */
 
 	FFI_CLOSURE_MASK_AND_JUMP  L(C1(load_table,3))
@@ -443,57 +443,57 @@ L(do_closure_STDCALL)::
     ALIGN 8
 L(load_table3):
 E(L(load_table3), X86_RET_FLOAT)
-	fld    DWORD PTR [esp+closure_CF]
-	mov     esp, ecx
-	ret
+	fld    DWORD निर्देशक [esp+closure_CF]
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_DOUBLE)
-	fld    QWORD PTR [esp+closure_CF]
-	mov     esp, ecx
-	ret
+	fld    QWORD निर्देशक [esp+closure_CF]
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_LDOUBLE)
-	fld    QWORD PTR [esp+closure_CF]
-	mov     esp, ecx
-	ret
+	fld    QWORD निर्देशक [esp+closure_CF]
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_SINT8)
 	movsx   eax, al
-	mov     esp, ecx
-	ret
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_SINT16)
 	movsx   eax, ax
-	mov     esp, ecx
-	ret
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_UINT8)
 	movzx   eax, al
-	mov     esp, ecx
-	ret
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_UINT16)
 	movzx   eax, ax
-	mov     esp, ecx
-	ret
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_INT64)
-	mov 	edx, [esp+closure_CF+4]
-	mov     esp, ecx
-	ret
+	चालय 	edx, [esp+closure_CF+4]
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_int 32)
-	mov     esp, ecx
-	ret
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_VOID)
-	mov     esp, ecx
-	ret
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCTPOP)
-	mov     esp, ecx
-	ret
+	चालय     esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCTARG)
-	mov 	esp, ecx
-	ret
+	चालय 	esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCT_1B)
 	movzx	eax, al
-	mov 	esp, ecx
-	ret
+	चालय 	esp, ecx
+	प्रत्यागच्छ
 E(L(load_table3), X86_RET_STRUCT_2B)
 	movzx	eax, ax
-	mov 	esp, ecx
-	ret
+	चालय 	esp, ecx
+	प्रत्यागच्छ
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table3), X86_RET_UNUSED14)
@@ -510,94 +510,94 @@ ENDF(ffi_closure_STDCALL)
 #define raw_closure_S_FS	(16+16+12)
 
 ALIGN 16
-PUBLIC ffi_closure_raw_SYSV
-ffi_closure_raw_SYSV PROC C
+सार्वजनिक ffi_closure_raw_SYSV
+ffi_closure_raw_SYSV विधि C
 L(UW32):
 	/* cfi_startproc */
-	sub 	esp, raw_closure_S_FS
+	वियोजय 	esp, raw_closure_S_FS
 L(UW33):
 	/* cfi_def_cfa_offset(raw_closure_S_FS + 4) */
-	mov 	[esp+raw_closure_S_FS-4], ebx
+	चालय 	[esp+raw_closure_S_FS-4], ebx
 L(UW34):
 	/* cfi_rel_offset(%ebx, raw_closure_S_FS-4) */
 
-	mov 	edx, [eax+FFI_TRAMPOLINE_SIZE+8]	/* load cl->user_data */
-	mov 	[esp+12], edx
+	चालय 	edx, [eax+FFI_TRAMPOLINE_SIZE+8]	/* load cl->user_data */
+	चालय 	[esp+12], edx
 	lea 	edx, [esp+raw_closure_S_FS+4]		/* load raw_args */
-	mov 	[esp+8], edx
+	चालय 	[esp+8], edx
 	lea 	edx, [esp+16]				/* load &res */
-	mov 	[esp+4], edx
-	mov 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
-	mov 	[esp], ebx
-	call	DWORD PTR [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
+	चालय 	[esp+4], edx
+	चालय 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
+	चालय 	[esp], ebx
+	आह्वान	DWORD निर्देशक [eax+FFI_TRAMPOLINE_SIZE+4]		/* आह्वान cl->fun */
 
-	mov 	eax, [ebx+20]			/* load cif->flags */
+	चालय 	eax, [ebx+20]			/* load cif->flags */
 	and 	eax, X86_RET_TYPE_MASK
 /* #ifdef __PIC__ */
-/* 	call	__x86.get_pc_thunk.bx */
+/* 	आह्वान	__x86.get_pc_thunk.bx */
 /* L(pc4): */
 /* 	lea 	ecx, L(load_table4)-L(pc4)(%ebx, %eax, 8), %ecx */
 /* #else */
 	lea 	ecx, [L(load_table4)+eax+8]
 /* #endif */
-	mov 	ebx, [esp+raw_closure_S_FS-4]
+	चालय 	ebx, [esp+raw_closure_S_FS-4]
 L(UW35):
 	/* cfi_restore(%ebx) */
-	mov 	eax, [esp+16]				/* Optimistic load */
-	jmp	    dword ptr [ecx]
+	चालय 	eax, [esp+16]				/* Optimistic load */
+	कूर्द	    dword ptr [ecx]
 
 	ALIGN 8
 L(load_table4):
 E(L(load_table4), X86_RET_FLOAT)
-	fld 	DWORD PTR [esp +16]
-	jmp	L(e4)
+	fld 	DWORD निर्देशक [esp +16]
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_DOUBLE)
-	fld 	QWORD PTR [esp +16]
-	jmp	L(e4)
+	fld 	QWORD निर्देशक [esp +16]
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_LDOUBLE)
-	fld 	QWORD PTR [esp +16]
-	jmp	L(e4)
+	fld 	QWORD निर्देशक [esp +16]
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_SINT8)
 	movsx	eax, al
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_SINT16)
 	movsx	eax, ax
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_UINT8)
 	movzx	eax, al
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_UINT16)
 	movzx	eax, ax
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_INT64)
-	mov 	edx, [esp+16+4]
-	jmp	L(e4)
+	चालय 	edx, [esp+16+4]
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_int 32)
 	nop
 	/* fallthru */
 E(L(load_table4), X86_RET_VOID)
 L(e4):
-	add 	esp, raw_closure_S_FS
+	योजय 	esp, raw_closure_S_FS
 L(UW36):
 	/* cfi_adjust_cfa_offset(-raw_closure_S_FS) */
-	ret
+	प्रत्यागच्छ
 L(UW37):
 	/* cfi_adjust_cfa_offset(raw_closure_S_FS) */
 E(L(load_table4), X86_RET_STRUCTPOP)
-	add 	esp, raw_closure_S_FS
+	योजय 	esp, raw_closure_S_FS
 L(UW38):
 	/* cfi_adjust_cfa_offset(-raw_closure_S_FS) */
-	ret	4
+	प्रत्यागच्छ	4
 L(UW39):
 	/* cfi_adjust_cfa_offset(raw_closure_S_FS) */
 E(L(load_table4), X86_RET_STRUCTARG)
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_STRUCT_1B)
 	movzx	eax, al
-	jmp	L(e4)
+	कूर्द	L(e4)
 E(L(load_table4), X86_RET_STRUCT_2B)
 	movzx	eax, ax
-	jmp	L(e4)
+	कूर्द	L(e4)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table4), X86_RET_UNUSED14)
@@ -612,108 +612,108 @@ ENDF(ffi_closure_raw_SYSV)
 #define raw_closure_T_FS	(16+16+8)
 
 ALIGN 16
-PUBLIC ffi_closure_raw_THISCALL
-ffi_closure_raw_THISCALL PROC C
+सार्वजनिक ffi_closure_raw_THISCALL
+ffi_closure_raw_THISCALL विधि C
 L(UW41):
 	/* cfi_startproc */
 	/* Rearrange the stack such that %ecx is the first argument.
 	   This means moving the return address.  */
-	pop 	edx
+	उद्धर 	edx
 L(UW42):
 	/* cfi_def_cfa_offset(0) */
 	/* cfi_register(%eip, %edx) */
-	push	ecx
+	निक्षिप	ecx
 L(UW43):
 	/* cfi_adjust_cfa_offset(4) */
-	push 	edx
+	निक्षिप 	edx
 L(UW44):
 	/* cfi_adjust_cfa_offset(4) */
 	/* cfi_rel_offset(%eip, 0) */
-	sub 	esp, raw_closure_T_FS
+	वियोजय 	esp, raw_closure_T_FS
 L(UW45):
 	/* cfi_adjust_cfa_offset(raw_closure_T_FS) */
-	mov 	[esp+raw_closure_T_FS-4], ebx
+	चालय 	[esp+raw_closure_T_FS-4], ebx
 L(UW46):
 	/* cfi_rel_offset(%ebx, raw_closure_T_FS-4) */
 
-	mov 	edx, [eax+FFI_TRAMPOLINE_SIZE+8]	/* load cl->user_data */
-	mov 	[esp+12], edx
+	चालय 	edx, [eax+FFI_TRAMPOLINE_SIZE+8]	/* load cl->user_data */
+	चालय 	[esp+12], edx
 	lea 	edx, [esp+raw_closure_T_FS+4]		/* load raw_args */
-	mov 	[esp+8], edx
+	चालय 	[esp+8], edx
 	lea 	edx, [esp+16]				/* load &res */
-	mov 	[esp+4], edx
-	mov 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
-	mov 	[esp], ebx
-	call	DWORD PTR [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
+	चालय 	[esp+4], edx
+	चालय 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
+	चालय 	[esp], ebx
+	आह्वान	DWORD निर्देशक [eax+FFI_TRAMPOLINE_SIZE+4]		/* आह्वान cl->fun */
 
-	mov 	eax, [ebx+20]				/* load cif->flags */
+	चालय 	eax, [ebx+20]				/* load cif->flags */
 	and 	eax, X86_RET_TYPE_MASK
 /* #ifdef __PIC__ */
-/* 	call	__x86.get_pc_thunk.bx */
+/* 	आह्वान	__x86.get_pc_thunk.bx */
 /* L(pc5): */
 /* 	leal	L(load_table5)-L(pc5)(%ebx, %eax, 8), %ecx */
 /* #else */
 	lea 	ecx, [L(load_table5)+eax*8]
 /*#endif */
-	mov 	ebx, [esp+raw_closure_T_FS-4]
+	चालय 	ebx, [esp+raw_closure_T_FS-4]
 L(UW47):
 	/* cfi_restore(%ebx) */
-	mov 	eax, [esp+16]				/* Optimistic load */
-	jmp	    DWORD PTR [ecx]
+	चालय 	eax, [esp+16]				/* Optimistic load */
+	कूर्द	    DWORD निर्देशक [ecx]
 
 	AlIGN 4
 L(load_table5):
 E(L(load_table5), X86_RET_FLOAT)
-	fld	DWORD PTR [esp +16]
-	jmp	L(e5)
+	fld	DWORD निर्देशक [esp +16]
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_DOUBLE)
-	fld	QWORD PTR [esp +16]
-	jmp	L(e5)
+	fld	QWORD निर्देशक [esp +16]
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_LDOUBLE)
-	fld	QWORD PTR [esp+16]
-	jmp	L(e5)
+	fld	QWORD निर्देशक [esp+16]
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_SINT8)
 	movsx	eax, al
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_SINT16)
 	movsx	eax, ax
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_UINT8)
 	movzx	eax, al
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_UINT16)
 	movzx	eax, ax
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_INT64)
-	mov 	edx, [esp+16+4]
-	jmp	L(e5)
+	चालय 	edx, [esp+16+4]
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_int 32)
 	nop
 	/* fallthru */
 E(L(load_table5), X86_RET_VOID)
 L(e5):
-	add 	esp, raw_closure_T_FS
+	योजय 	esp, raw_closure_T_FS
 L(UW48):
 	/* cfi_adjust_cfa_offset(-raw_closure_T_FS) */
 	/* Remove the extra %ecx argument we pushed.  */
-	ret	4
+	प्रत्यागच्छ	4
 L(UW49):
 	/* cfi_adjust_cfa_offset(raw_closure_T_FS) */
 E(L(load_table5), X86_RET_STRUCTPOP)
-	add 	esp, raw_closure_T_FS
+	योजय 	esp, raw_closure_T_FS
 L(UW50):
 	/* cfi_adjust_cfa_offset(-raw_closure_T_FS) */
-	ret	8
+	प्रत्यागच्छ	8
 L(UW51):
 	/* cfi_adjust_cfa_offset(raw_closure_T_FS) */
 E(L(load_table5), X86_RET_STRUCTARG)
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_STRUCT_1B)
 	movzx	eax, al
-	jmp	L(e5)
+	कूर्द	L(e5)
 E(L(load_table5), X86_RET_STRUCT_2B)
 	movzx	eax, ax
-	jmp	L(e5)
+	कूर्द	L(e5)
 
 	/* Fill out the table so that bad values are predictable.  */
 E(L(load_table5), X86_RET_UNUSED14)
@@ -729,13 +729,13 @@ ENDF(ffi_closure_raw_THISCALL)
 
 #ifdef X86_DARWIN
 # define COMDAT(X)							\
-        .section __TEXT,__text,coalesced,pure_instructions;		\
+        .खण्डः __TEXT,__text,coalesced,pure_instructions;		\
         .weak_definition X;						\
         FFI_HIDDEN(X)
 #elif defined __ELF__ && !(defined(__sun__) && defined(__svr4__))
 # define COMDAT(X)							\
-	.section .text.X,"axG",@progbits,X,comdat;			\
-	PUBLIC	X;							\
+	.खण्डः .text.X,"axG",@progbits,X,comdat;			\
+	सार्वजनिक	X;							\
 	FFI_HIDDEN(X)
 #else
 # define COMDAT(X)
@@ -746,13 +746,13 @@ ENDF(ffi_closure_raw_THISCALL)
 	COMDAT(C(__x86.get_pc_thunk.bx))
 C(__x86.get_pc_thunk.bx):
 	movl	(%esp), %ebx
-	ret
+	प्रत्यागच्छ
 ENDF(C(__x86.get_pc_thunk.bx))
 # if defined X86_DARWIN || defined HAVE_HIDDEN_VISIBILITY_ATTRIBUTE
 	COMDAT(C(__x86.get_pc_thunk.dx))
 C(__x86.get_pc_thunk.dx):
 	movl	(%esp), %edx
-	ret
+	प्रत्यागच्छ
 ENDF(C(__x86.get_pc_thunk.dx))
 #endif /* DARWIN || HIDDEN */
 #endif /* __PIC__ */
@@ -763,14 +763,14 @@ ENDF(C(__x86.get_pc_thunk.dx))
 /* Sadly, OSX cctools-as doesn't understand .cfi directives at all.  */
 
 #ifdef __APPLE__
-.section __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
+.खण्डः __TEXT,__eh_frame,coalesced,no_toc+strip_static_syms+live_support
 EHFrame0:
 #elif defined(X86_WIN32)
-.section .eh_frame,"r"
+.खण्डः .eh_frame,"r"
 #elif defined(HAVE_AS_X86_64_UNWIND_SECTION_TYPE)
-.section .eh_frame,EH_FRAME_FLAGS,@unwind
+.खण्डः .eh_frame,EH_FRAME_FLAGS,@unwind
 #else
-.section .eh_frame,EH_FRAME_FLAGS,@progbits
+.खण्डः .eh_frame,EH_FRAME_FLAGS,@progbits
 #endif
 
 #ifdef HAVE_AS_X86_PCREL
@@ -985,7 +985,7 @@ L(EFDE9):
 	.scl	3;
 	.type	0;
 	.endef
-	PUBLIC	@feat.00
+	सार्वजनिक	@feat.00
 @feat.00 = 1
 #endif
 
@@ -993,8 +993,8 @@ L(EFDE9):
 #endif /* ifndef __x86_64__ */
 
 #if defined __ELF__ && (defined __linux__ || defined __FreeBSD__)
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif
 #endif
 
-END
+अन्त

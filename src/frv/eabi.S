@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -59,7 +59,7 @@ ffi_call_EABI:
 	sti	gr12, @(fp, #-20)
 	sti	gr13, @(fp, #-24)
 
-	sub     sp, gr10, sp
+	वियोजय     sp, gr10, sp
 	
 	/* Call ffi_prep_args.  */
 	ldi	@(fp, #-4), gr4
@@ -73,7 +73,7 @@ ffi_call_EABI:
 #endif	
 
 	/* ffi_prep_args returns the new stack pointer.  */
-	mov	gr8, gr4
+	चालय	gr8, gr4
 		
 	ldi	@(sp, #0), gr8
 	ldi	@(sp, #4), gr9
@@ -89,7 +89,7 @@ ffi_call_EABI:
 	ldi	@(fp, #-20), gr3
 
 	/* Use the ffi_prep_args return value for the new sp.  */
-	mov	gr4, sp
+	चालय	gr4, sp
 	
 	/* Call the target function.  */
 	ldi	@(fp, -24), gr4

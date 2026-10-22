@@ -9,12 +9,12 @@ the following conditions:
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
+EXPRESS वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+अन्तः NO EVENT SHALL THE AUTHORS वा COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES वा OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT,
+TORT वा OTHERWISE, ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE
+SOFTWARE वा THE USE वा OTHER DEALINGS अन्तः THE SOFTWARE.  */
 
 #define LIBFFI_ASM
 #include <fficonfig.h>
@@ -23,7 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #include "internal.h"
 
 	OPT	2 /*disable listing */
-/* For some macros to add unwind information */
+/* For some macros to योजय unwind information */
 #include "ksarm64.h"
 	OPT	1 /*re-enable listing */
 
@@ -65,13 +65,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 	ALTERNATE_ENTRY ffi_call_SYSV
 	/* Use a stack frame allocated by our caller. */
 	stp	x29, x30, [x1]
-	mov	x29, x1
-	mov	sp, x0
+	चालय	x29, x1
+	चालय	sp, x0
 
-	mov	x9, x2			/* save fn */
-	mov	x8, x3			/* install structure return */
+	चालय	x9, x2			/* save fn */
+	चालय	x8, x3			/* install structure return */
 #ifdef FFI_GO_CLOSURES
-	/*mov	x18, x5			install static chain */
+	/*चालय	x18, x5			install static chain */
 #endif
 	stp	x3, x4, [x29, #16]	/* save rvalue and flags */
 	
@@ -91,20 +91,20 @@ ffi_call_SYSV_L1
 	ldp     x6, x7, [sp, #16*N_V_ARG_REG + 48]
 
 	/* Deallocate the context, leaving the stacked arguments.  */
-	add	sp, sp, #CALL_CONTEXT_SIZE	
+	योजय	sp, sp, #CALL_CONTEXT_SIZE	
 
-	blr     x9			/* call fn */
+	blr     x9			/* आह्वान fn */
 
 	ldp	x3, x4, [x29, #16]	/* reload rvalue and flags */
 
 	/* Partially deconstruct the stack frame. */
-	mov     sp, x29 
+	चालय     sp, x29 
 	ldp     x29, x30, [x29]
 
 	/* Save the return value as directed.  */
 	adr	x5, ffi_call_SYSV_return
 	and	w4, w4, #AARCH64_RET_MASK
-	add	x5, x5, x4, lsl #3
+	योजय	x5, x5, x4, lsl #3
 	br	x5
 	
 	/* Note that each table entry is 2 insns, and thus 8 bytes.
@@ -113,69 +113,69 @@ ffi_call_SYSV_L1
 	   have two consecutive entries allocated for them.  */
 	ALIGN 4
 ffi_call_SYSV_return
-	ret				/* VOID */
+	प्रत्यागच्छ				/* VOID */
 	nop
 	str	x0, [x3]		/* INT64 */
-	ret
+	प्रत्यागच्छ
 	stp	x0, x1, [x3]		/* INT128 */
-	ret
+	प्रत्यागच्छ
 	brk	#1000			/* UNUSED */
-	ret
+	प्रत्यागच्छ
 	brk	#1000			/* UNUSED */
-	ret
+	प्रत्यागच्छ
 	brk	#1000			/* UNUSED */
-	ret
+	प्रत्यागच्छ
 	brk	#1000			/* UNUSED */
-	ret
+	प्रत्यागच्छ
 	brk	#1000			/* UNUSED */
-	ret
+	प्रत्यागच्छ
 	st4	{ v0.s, v1.s, v2.s, v3.s }[0], [x3]	/* S4 */
-	ret
+	प्रत्यागच्छ
 	st3	{ v0.s, v1.s, v2.s }[0], [x3]	/* S3 */
-	ret
+	प्रत्यागच्छ
 	stp	s0, s1, [x3]		/* S2 */
-	ret
+	प्रत्यागच्छ
 	str	s0, [x3]		/* S1 */
-	ret
+	प्रत्यागच्छ
 	st4	{ v0.d, v1.d, v2.d, v3.d }[0], [x3]	/* D4 */
-	ret
+	प्रत्यागच्छ
 	st3	{ v0.d, v1.d, v2.d }[0], [x3]	/* D3 */
-	ret
+	प्रत्यागच्छ
 	stp	d0, d1, [x3]		/* D2 */
-	ret
+	प्रत्यागच्छ
 	str	d0, [x3]		/* D1 */
-	ret
+	प्रत्यागच्छ
 	str	q3, [x3, #48]		/* Q4 */
 	nop
 	str	q2, [x3, #32]		/* Q3 */
 	nop
 	stp	q0, q1, [x3]		/* Q2 */
-	ret
+	प्रत्यागच्छ
 	str	q0, [x3]		/* Q1 */
-	ret
+	प्रत्यागच्छ
 	uxtb	w0, w0			/* UINT8 */
 	str	x0, [x3]
-	ret				/* reserved */
+	प्रत्यागच्छ				/* reserved */
 	nop
 	uxth	w0, w0			/* UINT16 */
 	str	x0, [x3]
-	ret				/* reserved */
+	प्रत्यागच्छ				/* reserved */
 	nop
-	mov	w0, w0			/* UINT32 */
+	चालय	w0, w0			/* UINT32 */
 	str	x0, [x3]
-	ret				/* reserved */
+	प्रत्यागच्छ				/* reserved */
 	nop
 	sxtb	x0, w0			/* SINT8 */
 	str	x0, [x3]
-	ret				/* reserved */
+	प्रत्यागच्छ				/* reserved */
 	nop
 	sxth	x0, w0			/* SINT16 */
 	str	x0, [x3]
-	ret				/* reserved */
+	प्रत्यागच्छ				/* reserved */
 	nop
 	sxtw	x0, w0			/* SINT32 */
 	str	x0, [x3]
-	ret				/* reserved */
+	प्रत्यागच्छ				/* reserved */
 	nop
 	
 	
@@ -184,13 +184,13 @@ ffi_call_SYSV_return
 
 /* ffi_closure_SYSV
    Closure invocation glue. This is the low level code invoked directly by
-   the closure trampoline to setup and call a closure.
+   the closure trampoline to setup and आह्वान a closure.
    On entry x17 points to a struct ffi_closure, x16 has been clobbered
    all other registers are preserved.
-   We allocate a call context and save the argument passing registers,
+   We allocate a आह्वान context and save the argument passing registers,
    then invoked the generic C ffi_closure_SYSV_inner() function to do all
    the real work, on return we load the result passing registers back from
-   the call context.
+   the आह्वान context.
 */
 
 #define ffi_closure_SYSV_FS (8*2 + CALL_CONTEXT_SIZE + 64)
@@ -222,18 +222,18 @@ ffi_closure_SYSV_save_argument
 	ldr	PTR_REG(2), [x17, #FFI_TRAMPOLINE_CLOSURE_OFFSET+PTR_SIZE*2]	/* load user_data */
 
 do_closure
-	add	x3, sp, #16							/* load context */
-	add	x4, sp, #ffi_closure_SYSV_FS		/* load stack */
-	add	x5, sp, #16+CALL_CONTEXT_SIZE		/* load rvalue */
-	mov	x6, x8					/* load struct_rval */
+	योजय	x3, sp, #16							/* load context */
+	योजय	x4, sp, #ffi_closure_SYSV_FS		/* load stack */
+	योजय	x5, sp, #16+CALL_CONTEXT_SIZE		/* load rvalue */
+	चालय	x6, x8					/* load struct_rval */
 
 	bl	ffi_closure_SYSV_inner
 
 	/* Load the return value as directed.  */
 	adr	x1, ffi_closure_SYSV_return_base
 	and	w0, w0, #AARCH64_RET_MASK
-	add	x1, x1, x0, lsl #3
-	add	x3, sp, #16+CALL_CONTEXT_SIZE
+	योजय	x1, x1, x0, lsl #3
+	योजय	x3, sp, #16+CALL_CONTEXT_SIZE
 	br	x1
 
 	/* Note that each table entry is 2 insns, and thus 8 bytes.  */
@@ -333,7 +333,7 @@ ffi_go_closure_SYSV_save_argument
 
 	/* Load ffi_closure_inner arguments.  */
 	ldp	PTR_REG(0), PTR_REG(1), [x18, #PTR_SIZE]/* load cif, fn */
-	mov	x2, x18					/* load user_data */
+	चालय	x2, x18					/* load user_data */
 	b	do_closure
 	NESTED_END	ffi_go_closure_SYSV
 
@@ -346,8 +346,8 @@ ffi_go_closure_SYSV_save_argument
 
 	adr	x3, extend_hfa_type_jump_base
 	and	w2, w2, #AARCH64_RET_MASK
-	sub	x2, x2, #AARCH64_RET_S4
-	add	x3, x3, x2, lsl #4
+	वियोजय	x2, x2, #AARCH64_RET_S4
+	योजय	x3, x3, x2, lsl #4
 	br	x3
 
 	ALIGN	4
@@ -418,7 +418,7 @@ extend_hfa_type_store_2
 	str	q17, [x0, #16]
 extend_hfa_type_store_1
 	str	q16, [x0]
-	ret
+	प्रत्यागच्छ
 
 	LEAF_END	extend_hfa_type
 
@@ -429,8 +429,8 @@ extend_hfa_type_store_1
 
 	adr	x3, compress_hfa_type_jump_base
 	and	w2, w2, #AARCH64_RET_MASK
-	sub	x2, x2, #AARCH64_RET_S4
-	add	x3, x3, x2, lsl #4
+	वियोजय	x2, x2, #AARCH64_RET_S4
+	योजय	x3, x3, x2, lsl #4
 	br	x3
 
 	ALIGN	4
@@ -438,41 +438,41 @@ compress_hfa_type_jump_base
 	ldp	q16, q17, [x1]		/* S4 */
 	ldp	q18, q19, [x1, #32]
 	st4	{ v16.s, v17.s, v18.s, v19.s }[0], [x0]
-	ret
+	प्रत्यागच्छ
 
 	ldp	q16, q17, [x1]		/* S3 */
 	ldr	q18, [x1, #32]
 	st3	{ v16.s, v17.s, v18.s }[0], [x0]
-	ret
+	प्रत्यागच्छ
 
 	ldp	q16, q17, [x1]		/* S2 */
 	st2	{ v16.s, v17.s }[0], [x0]
-	ret
+	प्रत्यागच्छ
 	nop
 
 	ldr	q16, [x1]		/* S1 */
 	st1	{ v16.s }[0], [x0]
-	ret
+	प्रत्यागच्छ
 	nop
 
 	ldp	q16, q17, [x1]		/* D4 */
 	ldp	q18, q19, [x1, #32]
 	st4	{ v16.d, v17.d, v18.d, v19.d }[0], [x0]
-	ret
+	प्रत्यागच्छ
 
 	ldp	q16, q17, [x1]		/* D3 */
 	ldr	q18, [x1, #32]
 	st3	{ v16.d, v17.d, v18.d }[0], [x0]
-	ret
+	प्रत्यागच्छ
 
 	ldp	q16, q17, [x1]		/* D2 */
 	st2	{ v16.d, v17.d }[0], [x0]
-	ret
+	प्रत्यागच्छ
 	nop
 
 	ldr	q16, [x1]		/* D1 */
 	st1	{ v16.d }[0], [x0]
-	ret
+	प्रत्यागच्छ
 	nop
 
 	ldp	q16, q17, [x1]		/* Q4 */
@@ -487,20 +487,20 @@ compress_hfa_type_jump_base
 
 	ldp	q16, q17, [x1]		/* Q2 */
 	stp	q16, q17, [x0]
-	ret
+	प्रत्यागच्छ
 	nop
 
 	ldr	q16, [x1]		/* Q1 */
 	str	q16, [x0]
-	ret
+	प्रत्यागच्छ
 
 compress_hfa_type_store_q4
 	str	q19, [x0, #48]
 compress_hfa_type_store_q3
 	str	q18, [x0, #32]
 	stp	q16, q17, [x0]
-	ret
+	प्रत्यागच्छ
 
 	LEAF_END	compress_hfa_type
 
-	END
+	अन्त

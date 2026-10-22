@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -42,9 +42,9 @@
 	# $r5 :   fn
 	
 ffi_call_EABI:
-	push	$sp, $r6
-	push	$sp, $r7
-	push	$sp, $r8
+	निक्षिप	$sp, $r6
+	निक्षिप	$sp, $r7
+	निक्षिप	$sp, $r8
 	dec	$sp, 24
 
 	/* Store incoming args on stack.  */
@@ -56,11 +56,11 @@ ffi_call_EABI:
 	sto.l	20($sp), $r5 /* fn */
 	
 	/* Call ffi_prep_args.  */
-	mov 	$r6, $r4 /* Save result buffer */
-	mov	$r7, $r5 /* Save the target fn */
-	mov	$r8, $r3 /* Save the flags */
-	sub	$sp, $r2 /* Allocate stack space */
-	mov	$r0, $sp /* We can stomp over $r0 */
+	चालय 	$r6, $r4 /* Save result buffer */
+	चालय	$r7, $r5 /* Save the target fn */
+	चालय	$r8, $r3 /* Save the flags */
+	वियोजय	$sp, $r2 /* Allocate stack space */
+	चालय	$r0, $sp /* We can stomp over $r0 */
 	/* $r1 is already set up */
 	jsra 	ffi_prep_args
 
@@ -76,11 +76,11 @@ ffi_call_EABI:
 	jsr	$r7
 
 	ldi.l	$r7, 0xffffffff
-	cmp	$r8, $r7
+	तुलय	$r8, $r7
 	beq	retstruct
 
 	ldi.l	$r7, 4
-	cmp	$r8, $r7
+	तुलय	$r8, $r7
 	bgt	ret2reg
 
 	st.l	($r6), $r0
@@ -96,6 +96,6 @@ retdone:
 	ldo.l	$r6, -4($fp)
 	ldo.l	$r7, -8($fp)
 	ldo.l	$r8, -12($fp)
-	ret
+	प्रत्यागच्छ
 	.size ffi_call_EABI, .-ffi_call_EABI
 	

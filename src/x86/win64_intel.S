@@ -43,39 +43,39 @@
    deallocate some of the stack that has been alloca'd.  */
 
 	ALIGN	8
-	PUBLIC	C(ffi_call_win64)
+	सार्वजनिक	C(ffi_call_win64)
 
 	; SEH(.safesh ffi_call_win64)
 C(ffi_call_win64) proc SEH(frame)
 	cfi_startproc
 	/* Set up the local stack frame and install it in rbp/rsp.  */
-	mov	RAX, [RSP] ; 	movq	(%rsp), %rax
-	mov [arg1], RBP ; movq	%rbp, (arg1)
-	mov [arg1 + 8], RAX;	movq	%rax, 8(arg1)
-	mov	 RBP, arg1; movq	arg1, %rbp
+	चालय	RAX, [RSP] ; 	movq	(%rsp), %rax
+	चालय [arg1], RBP ; movq	%rbp, (arg1)
+	चालय [arg1 + 8], RAX;	movq	%rax, 8(arg1)
+	चालय	 RBP, arg1; movq	arg1, %rbp
 	cfi_def_cfa(rbp, 16)
 	cfi_rel_offset(rbp, 0)
 	SEH(.pushreg rbp)
 	SEH(.setframe rbp, 0)
 	SEH(.endprolog)
-	mov	RSP, arg0 ;	movq	arg0, %rsp
+	चालय	RSP, arg0 ;	movq	arg0, %rsp
 
-	mov	R10, arg2 ; movq	arg2, %r10
+	चालय	R10, arg2 ; movq	arg2, %r10
 
 	/* Load all slots into both general and xmm registers.  */
-	mov	RCX, [RSP] ;	movq	(%rsp), %rcx
+	चालय	RCX, [RSP] ;	movq	(%rsp), %rcx
 	movsd XMM0, qword ptr [RSP] ; movsd	(%rsp), %xmm0
-	mov	RDX, [RSP + 8] ;movq	8(%rsp), %rdx
+	चालय	RDX, [RSP + 8] ;movq	8(%rsp), %rdx
 	movsd XMM1, qword ptr [RSP + 8];	movsd	8(%rsp), %xmm1
-	mov R8, [RSP + 16] ; movq	16(%rsp), %r8
+	चालय R8, [RSP + 16] ; movq	16(%rsp), %r8
 	movsd	XMM2, qword ptr [RSP + 16] ; movsd	16(%rsp), %xmm2
-	mov	R9, [RSP + 24] ; movq	24(%rsp), %r9
+	चालय	R9, [RSP + 24] ; movq	24(%rsp), %r9
 	movsd	XMM3, qword ptr [RSP + 24] ;movsd	24(%rsp), %xmm3
 
-	CALL qword ptr [RBP + 16] ; call	*16(%rbp)
+	आह्वान qword ptr [RBP + 16] ; call	*16(%rbp)
 
-	mov	 ECX, [RBP + 24] ; movl	24(%rbp), %ecx
-	mov	R8, [RBP + 32] ; movq	32(%rbp), %r8
+	चालय	 ECX, [RBP + 24] ; movl	24(%rbp), %ecx
+	चालय	R8, [RBP + 32] ; movq	32(%rbp), %r8
 	LEA	R10, ffi_call_win64_tab ; leaq	0f(%rip), %r10
 	CMP	ECX, FFI_TYPE_SMALL_STRUCT_4B ; cmpl	$FFI_TYPE_SMALL_STRUCT_4B, %ecx
 	LEA	R10, [R10 + RCX*8] ; leaq	(%r10, %rcx, 8), %r10
@@ -99,7 +99,7 @@ E(0b, FFI_TYPE_VOID)
 	epilogue
 E(0b, FFI_TYPE_INT)
 	movsxd rax, eax ; movslq	%eax, %rax
-	mov qword ptr [r8], rax; movq	%rax, (%r8)
+	चालय qword ptr [r8], rax; movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_FLOAT)
 	movss dword ptr [r8], xmm0 ; movss	%xmm0, (%r8)
@@ -109,43 +109,43 @@ E(0b, FFI_TYPE_DOUBLE)
 	epilogue
 // FFI_TYPE_LONGDOUBLE may be FFI_TYPE_DOUBLE but we need a different value here.
 E(0b, FFI_TYPE_DOUBLE + 1)
-	call	PLT(C(abort))
+	आह्वान	PLT(C(abort))
 E(0b, FFI_TYPE_UINT8)
 	movzx eax, al ;movzbl	%al, %eax
-	mov qword ptr[r8], rax; movq	%rax, (%r8)
+	चालय qword ptr[r8], rax; movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SINT8)
 	movsx rax, al ; movsbq	%al, %rax
-	jmp	L98
+	कूर्द	L98
 E(0b, FFI_TYPE_UINT16)
 	movzx eax, ax ; movzwl	%ax, %eax
-	mov qword ptr[r8], rax; movq	%rax, (%r8)
+	चालय qword ptr[r8], rax; movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SINT16)
 	movsx rax, ax; movswq	%ax, %rax
-	jmp	L98
+	कूर्द	L98
 E(0b, FFI_TYPE_UINT32)
-	mov eax, eax; movl	%eax, %eax
-	mov qword ptr[r8], rax ; movq	%rax, (%r8)
+	चालय eax, eax; movl	%eax, %eax
+	चालय qword ptr[r8], rax ; movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SINT32)
 	movsxd rax, eax; movslq	%eax, %rax
-	mov qword ptr [r8], rax; movq	%rax, (%r8)
+	चालय qword ptr [r8], rax; movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_UINT64)
 L98 LABEL near
-	mov qword ptr [r8], rax ; movq	%rax, (%r8)
+	चालय qword ptr [r8], rax ; movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SINT64)
-	mov qword ptr [r8], rax;movq	%rax, (%r8)
+	चालय qword ptr [r8], rax;movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_STRUCT)
 	epilogue
 E(0b, FFI_TYPE_POINTER)
-	mov qword ptr [r8], rax ;movq	%rax, (%r8)
+	चालय qword ptr [r8], rax ;movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_COMPLEX)
-	call	PLT(C(abort))
+	आह्वान	PLT(C(abort))
 E(0b, FFI_TYPE_UINT128)
 	movdqu	xmmword ptr [r8], xmm0
 	epilogue
@@ -156,20 +156,20 @@ E(0b, FFI_TYPE_SINT128)
    FFI_TYPE_SMALL_STRUCT_* codes are FFI_TYPE_LAST-relative, so this slot must
    exist to keep the table contiguous and the small-struct entries aligned.  */
 E(0b, FFI_TYPE_VECTOR)
-	call	PLT(C(abort))
+	आह्वान	PLT(C(abort))
 E(0b, FFI_TYPE_SMALL_STRUCT_1B)
-	mov byte ptr [r8], al ; movb	%al, (%r8)
+	चालय byte ptr [r8], al ; movb	%al, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SMALL_STRUCT_2B)
-	mov word ptr [r8], ax ; movw	%ax, (%r8)
+	चालय word ptr [r8], ax ; movw	%ax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_SMALL_STRUCT_4B)
-	mov dword ptr [r8], eax ; movl	%eax, (%r8)
+	चालय dword ptr [r8], eax ; movl	%eax, (%r8)
 	epilogue
 
 	align	8
 L99 LABEL near
-	call	PLT(C(abort))
+	आह्वान	PLT(C(abort))
 
 	epilogue
 
@@ -184,39 +184,39 @@ L99 LABEL near
 #define ffi_clo_OFF_X	(32+8+16)
 
 	align	8
-	PUBLIC	C(ffi_go_closure_win64)
+	सार्वजनिक	C(ffi_go_closure_win64)
 
 C(ffi_go_closure_win64) proc
 	cfi_startproc
 	/* Save all integer arguments into the incoming reg stack space.  */
-	mov qword ptr [rsp + 8], rcx; movq	%rcx, 8(%rsp)
-	mov qword ptr [rsp + 16], rdx; movq	%rdx, 16(%rsp)
-	mov qword ptr [rsp + 24], r8; movq	%r8, 24(%rsp)
-	mov qword ptr [rsp + 32], r9 ;movq	%r9, 32(%rsp)
+	चालय qword ptr [rsp + 8], rcx; movq	%rcx, 8(%rsp)
+	चालय qword ptr [rsp + 16], rdx; movq	%rdx, 16(%rsp)
+	चालय qword ptr [rsp + 24], r8; movq	%r8, 24(%rsp)
+	चालय qword ptr [rsp + 32], r9 ;movq	%r9, 32(%rsp)
 
-	mov rcx, qword ptr [r10 + 8]; movq	8(%r10), %rcx			/* load cif */
-	mov rdx, qword ptr [r10 + 16];  movq	16(%r10), %rdx			/* load fun */
-	mov r8, r10 ; movq	%r10, %r8			/* closure is user_data */
-	jmp	ffi_closure_win64_2
+	चालय rcx, qword ptr [r10 + 8]; movq	8(%r10), %rcx			/* load cif */
+	चालय rdx, qword ptr [r10 + 16];  movq	16(%r10), %rdx			/* load fun */
+	चालय r8, r10 ; movq	%r10, %r8			/* closure is user_data */
+	कूर्द	ffi_closure_win64_2
 	cfi_endproc
 	C(ffi_go_closure_win64) endp
 
 	align	8
 	
-PUBLIC C(ffi_closure_win64)
-C(ffi_closure_win64) PROC FRAME
+सार्वजनिक C(ffi_closure_win64)
+C(ffi_closure_win64) विधि FRAME
 	cfi_startproc
 	/* Save all integer arguments into the incoming reg stack space.  */
-	mov qword ptr [rsp + 8], rcx; movq	%rcx, 8(%rsp)
-	mov qword ptr [rsp + 16], rdx;	movq	%rdx, 16(%rsp)
-	mov qword ptr [rsp + 24], r8; 	movq	%r8, 24(%rsp)
-	mov qword ptr [rsp + 32], r9;	movq	%r9, 32(%rsp)
+	चालय qword ptr [rsp + 8], rcx; movq	%rcx, 8(%rsp)
+	चालय qword ptr [rsp + 16], rdx;	movq	%rdx, 16(%rsp)
+	चालय qword ptr [rsp + 24], r8; 	movq	%r8, 24(%rsp)
+	चालय qword ptr [rsp + 32], r9;	movq	%r9, 32(%rsp)
 
-	mov rcx, qword ptr [FFI_TRAMPOLINE_SIZE + r10]	;movq	FFI_TRAMPOLINE_SIZE(%r10), %rcx		/* load cif */
-	mov rdx, qword ptr [FFI_TRAMPOLINE_SIZE + 8 + r10] ;	movq	FFI_TRAMPOLINE_SIZE+8(%r10), %rdx	/* load fun */
-	mov r8, qword ptr [FFI_TRAMPOLINE_SIZE+16+r10] ;movq	FFI_TRAMPOLINE_SIZE+16(%r10), %r8	/* load user_data */
+	चालय rcx, qword ptr [FFI_TRAMPOLINE_SIZE + r10]	;movq	FFI_TRAMPOLINE_SIZE(%r10), %rcx		/* load cif */
+	चालय rdx, qword ptr [FFI_TRAMPOLINE_SIZE + 8 + r10] ;	movq	FFI_TRAMPOLINE_SIZE+8(%r10), %rdx	/* load fun */
+	चालय r8, qword ptr [FFI_TRAMPOLINE_SIZE+16+r10] ;movq	FFI_TRAMPOLINE_SIZE+16(%r10), %r8	/* load user_data */
 ffi_closure_win64_2 LABEL near
-	sub rsp, ffi_clo_FS ;subq	$ffi_clo_FS, %rsp
+	वियोजय rsp, ffi_clo_FS ;subq	$ffi_clo_FS, %rsp
 	cfi_adjust_cfa_offset(ffi_clo_FS)
 	SEH(.allocstack ffi_clo_FS)
 	SEH(.endprolog)
@@ -228,22 +228,22 @@ ffi_closure_win64_2 LABEL near
 	movsd qword ptr [ffi_clo_OFF_X+24+rsp], xmm3 ; movsd %xmm3, ffi_clo_OFF_X+24(%rsp)
 
 	lea	r9, [ffi_clo_OFF_R + rsp] ; leaq	ffi_clo_OFF_R(%rsp), %r9
-	call C(ffi_closure_win64_inner)
+	आह्वान C(ffi_closure_win64_inner)
 
 	/* Load the result into both possible result registers.  */
 	
-	mov rax, qword ptr [ffi_clo_OFF_R + rsp] ;movq    ffi_clo_OFF_R(%rsp), %rax
+	चालय rax, qword ptr [ffi_clo_OFF_R + rsp] ;movq    ffi_clo_OFF_R(%rsp), %rax
 	movsd xmm0, qword ptr [rsp + ffi_clo_OFF_R] ;movsd   ffi_clo_OFF_R(%rsp), %xmm0
 
-	add rsp, ffi_clo_FS ;addq	$ffi_clo_FS, %rsp
+	योजय rsp, ffi_clo_FS ;addq	$ffi_clo_FS, %rsp
 	cfi_adjust_cfa_offset(-ffi_clo_FS)
-	ret
+	प्रत्यागच्छ
 
 	cfi_endproc
 	C(ffi_closure_win64) endp
 
 #if defined __ELF__ && (defined __linux__ || defined __FreeBSD__)
-	.section	.note.GNU-stack,"",@progbits
+	.खण्डः	.note.GNU-stack,"",@progbits
 #endif
 _text ends
 end

@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL SIMON POSNJAK BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   वा IMPLIED, INCLUDING BUT न LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE च NONINFRINGEMENT.
+   अन्तः NO EVENT SHALL SIMON POSNJAK BE LIABLE FOR ANY CLAIM, DAMAGES वा
+   OTHER LIABILITY, WHETHER अन्तः AN ACTION OF CONTRACT, TORT वा OTHERWISE,
+   ARISING FROM, OUT OF वा अन्तः CONNECTION WITH THE SOFTWARE वा THE USE वा
+   OTHER DEALINGS अन्तः THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -48,16 +48,16 @@
 
 L(ffi_call_SYSV):
 	;; Save the regs to the stack.
-	push $srp
+	निक्षिप $srp
 	;; Used for stack pointer saving.
-	push $r6
+	निक्षिप $r6
 	;; Used for function address pointer.
-	push $r7
+	निक्षिप $r7
 	;; Used for stack pointer saving.
-	push $r8
+	निक्षिप $r8
 	;; We save fig->flags to stack we will need them after we
 	;; call The Function.
-	push $r13
+	निक्षिप $r13
 
 	;; Saving current stack pointer.
 	move.d $sp,$r8
@@ -67,7 +67,7 @@ L(ffi_call_SYSV):
 	move.d $r10,$r13
 
 	;; Make room on the stack for the args of fn.
-	sub.d  $r12,$sp
+	वियोजय.d  $r12,$sp
 
 	;; Function void ffi_prep_args(char *stack, extended_cif *ecif) parameters are:
 	;; 	r10 <-- stack pointer
@@ -88,8 +88,8 @@ L(ffi_call_SYSV):
 
 	;; Adjust the stack and check if any parameters are given on stack.
 	addq 16,$sp
-	sub.d $r7,$r6
-	cmp.d $sp,$r6
+	वियोजय.d $r7,$r6
+	तुलय.d $sp,$r6
 
 	bpl go_on
 	nop
@@ -118,7 +118,7 @@ call_now:
 	move.d $r8,$sp
 
 	;; Load rval type (fig->flags) in to r13.
-	pop $r13
+	उद्धर $r13
 
 	;; Detect rval type.
 	cmpq FFI_TYPE_VOID,$r13
@@ -156,9 +156,9 @@ return:
 	move.d $r10,[$r13]
 
 epilogue:
-	pop $r8
-	pop $r7
-	pop $r6
+	उद्धर $r8
+	उद्धर $r7
+	उद्धर $r6
 	Jump [$sp+]
 
 	.size   ffi_call_SYSV,.-ffi_call_SYSV

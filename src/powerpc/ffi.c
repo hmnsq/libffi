@@ -28,56 +28,56 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
-#include "internal.h"
-#include <tramp.h>
+#अन्तर्भाव "ffi.h"
+#अन्तर्भाव "ffi_common.h"
+#अन्तर्भाव "ffi_powerpc.h"
+#अन्तर्भाव "internal.h"
+#अन्तर्भाव <tramp.h>
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#यदि HAVE_LONG_DOUBLE_VARIANT
 /* Adjust ffi_type_longdouble.  */
-void FFI_HIDDEN
+शून्य FFI_HIDDEN
 ffi_prep_types (ffi_abi abi)
 {
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# यदि FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 #  ifdef POWERPC64
   ffi_prep_types_linux64 (abi);
-#  else
+#  अन्यथा
   ffi_prep_types_sysv (abi);
 #  endif
 # endif
 }
-#endif
+#यदि_अन्तः
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_स्थितिः FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64 (cif);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#यदि_परिभाषितम् POWERPC64
+  प्रत्यागम ffi_prep_cif_linux64 (cif);
+#अन्यथा
+  प्रत्यागम ffi_prep_cif_sysv (cif);
+#यदि_अन्तः
 }
 
-ffi_status FFI_HIDDEN
+ffi_स्थितिः FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif *cif,
-			  unsigned int nfixedargs MAYBE_UNUSED,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  अचिह्नित पूर्णाङ्क nfixedargs MAYBE_अप्रयुक्तम्,
+			  अचिह्नित पूर्णाङ्क ntotalargs MAYBE_अप्रयुक्तम्)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#यदि_परिभाषितम् POWERPC64
+  प्रत्यागम ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
+#अन्यथा
+  प्रत्यागम ffi_prep_cif_sysv (cif);
+#यदि_अन्तः
 }
 
-static void
+स्थिर शून्य
 ffi_call_int (ffi_cif *cif,
-	      void (*fn) (void),
-	      void *rvalue,
-	      void **avalue,
-	      void *closure)
+	      शून्य (*fn) (शून्य),
+	      शून्य *rvalue,
+	      शून्य **avalue,
+	      शून्य *संवृतिः)
 {
   /* The final SYSV ABI says that structures smaller or equal 8 bytes
      are returned in r3/r4.  A draft ABI used by linux instead returns
@@ -89,126 +89,126 @@ ffi_call_int (ffi_cif *cif,
      For ELFv2 ABI, use a bounce buffer for homogeneous structs too,
      for similar reasons. This bounce buffer must be aligned to 16
      bytes for use with homogeneous structs of vectors (float128).  */
-  float128 smst_buffer[8];
+  float128 smst_बफर[8];
   extended_cif ecif;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
   ecif.rvalue = rvalue;
-  if ((cif->flags & FLAG_RETURNS_SMST) != 0)
-    ecif.rvalue = smst_buffer;
+  यदि ((cif->flags & FLAG_RETURNS_SMST) != 0)
+    ecif.rvalue = smst_बफर;
   /* Ensure that we have a valid struct return value.
      FIXME: Isn't this just papering over a user problem?  */
-  else if (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
-    ecif.rvalue = alloca (cif->rtype->size);
+  अन्यथा यदि (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
+    ecif.rvalue = alloca (cif->rtype->आकार);
 
-#ifdef POWERPC64
-  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, closure,
-		    -(long) cif->bytes);
-#else
-  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, closure, -cif->bytes);
-#endif
+#यदि_परिभाषितम् POWERPC64
+  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, संवृतिः,
+		    -(दीर्घ) cif->अष्टकानि);
+#अन्यथा
+  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, संवृतिः, -cif->अष्टकानि);
+#यदि_अन्तः
 
   /* Check for a bounce-buffered return value */
-  if (rvalue && ecif.rvalue == smst_buffer)
+  यदि (rvalue && ecif.rvalue == smst_बफर)
     {
-      unsigned int rsize = cif->rtype->size;
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
+      अचिह्नित पूर्णाङ्क rsize = cif->rtype->आकार;
+#यदि_परिभाषितम् FFI_TARGET_HAS_COMPLEX_TYPE
       /* Integer-typed _Complex: the .Lsmall_struct return path stored
 	 r3 at buffer offset 0 and r4 at offset 8.  Extract one inner-
 	 sized half from each slot — right-justified on BE, low-address
 	 on LE — and lay them out as the natural packed complex value
 	 the caller expects (real@0, imag@hsize).  */
-      if (cif->rtype->type == FFI_TYPE_COMPLEX
+      यदि (cif->rtype->type == FFI_TYPE_COMPLEX
 	  && (cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	{
-	  size_t hsize = cif->rtype->elements[0]->size;
-#ifndef __LITTLE_ENDIAN__
+	  size_t hsize = cif->rtype->elements[0]->आकार;
+#यदि_अपरिभाषितम् __LITTLE_ENDIAN__
 	  size_t off = 8 - hsize;
-#else
+#अन्यथा
 	  size_t off = 0;
-#endif
-	  memcpy ((char *) rvalue,         (char *) smst_buffer + off, hsize);
-	  memcpy ((char *) rvalue + hsize, (char *) smst_buffer + 8 + off, hsize);
+#यदि_अन्तः
+	  स्मृतिं_प्रतिलिख ((वर्ण *) rvalue,         (वर्ण *) smst_बफर + off, hsize);
+	  स्मृतिं_प्रतिलिख ((वर्ण *) rvalue + hsize, (वर्ण *) smst_बफर + 8 + off, hsize);
 	}
-      else
-#endif
-#ifndef __LITTLE_ENDIAN__
+      अन्यथा
+#यदि_अन्तः
+#यदि_अपरिभाषितम् __LITTLE_ENDIAN__
       /* The SYSV ABI returns a structure of up to 4 bytes in size
 	 left-padded in r3.  */
 # ifndef POWERPC64
-      if (rsize <= 4)
-	memcpy (rvalue, (char *) smst_buffer + 4 - rsize, rsize);
-      else
+      यदि (rsize <= 4)
+	स्मृतिं_प्रतिलिख (rvalue, (वर्ण *) smst_बफर + 4 - rsize, rsize);
+      अन्यथा
 # endif
 	/* The SYSV ABI returns a structure of up to 8 bytes in size
 	   left-padded in r3/r4, and the ELFv2 ABI similarly returns a
 	   structure of up to 8 bytes in size left-padded in r3. But
 	   note that a structure of a single float is not paddded.  */
-	if (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
-	  memcpy (rvalue, (char *) smst_buffer + 8 - rsize, rsize);
-	else
-#endif
-	  memcpy (rvalue, smst_buffer, rsize);
+	यदि (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
+	  स्मृतिं_प्रतिलिख (rvalue, (वर्ण *) smst_बफर + 8 - rsize, rsize);
+	अन्यथा
+#यदि_अन्तः
+	  स्मृतिं_प्रतिलिख (rvalue, smst_बफर, rsize);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+शून्य
+ffi_call (ffi_cif *cif, शून्य (*fn) (शून्य), शून्य *rvalue, शून्य **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, रिक्त);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+शून्य
+ffi_call_go (ffi_cif *cif, शून्य (*fn) (शून्य), शून्य *rvalue, शून्य **avalue,
+	     शून्य *संवृतिः)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, संवृतिः);
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_स्थितिः
+ffi_prep_संवृतिः_loc (ffi_संवृतिः *संवृतिः,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      शून्य (*fun) (ffi_cif *, शून्य *, शून्य **, शून्य *),
+		      शून्य *user_दत्त,
+		      शून्य *codeloc)
 {
-#ifdef POWERPC64
-  return ffi_prep_closure_loc_linux64 (closure, cif, fun, user_data, codeloc);
-#else
-  return ffi_prep_closure_loc_sysv (closure, cif, fun, user_data, codeloc);
-#endif
+#यदि_परिभाषितम् POWERPC64
+  प्रत्यागम ffi_prep_संवृतिः_loc_linux64 (संवृतिः, cif, fun, user_दत्त, codeloc);
+#अन्यथा
+  प्रत्यागम ffi_prep_संवृतिः_loc_sysv (संवृतिः, cif, fun, user_दत्त, codeloc);
+#यदि_अन्तः
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure,
+ffi_स्थितिः
+ffi_prep_go_संवृतिः (ffi_go_संवृतिः *संवृतिः,
 		     ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     शून्य (*fun) (ffi_cif *, शून्य *, शून्य **, शून्य *))
 {
-#ifdef POWERPC64
-  closure->tramp = ffi_go_closure_linux64;
-#else
-  closure->tramp = ffi_go_closure_sysv;
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  return FFI_OK;
+#यदि_परिभाषितम् POWERPC64
+  संवृतिः->tramp = ffi_go_संवृतिः_linux64;
+#अन्यथा
+  संवृतिः->tramp = ffi_go_संवृतिः_sysv;
+#यदि_अन्तः
+  संवृतिः->cif = cif;
+  संवृतिः->fun = fun;
+  प्रत्यागम FFI_OK;
 }
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#यदि_परिभाषितम् FFI_EXEC_STATIC_TRAMP
+शून्य *
+ffi_tramp_arch (size_t *tramp_आकार, size_t *map_आकार)
 {
-  extern void *trampoline_code_table;
-  *tramp_size = PPC_TRAMP_SIZE;
-  *map_size = PPC_TRAMP_MAP_SIZE;
-#if defined (_CALL_AIX) || _CALL_ELF == 1
+  बाह्य शून्य *trampoline_संहिता_सारणी;
+  *tramp_आकार = PPC_TRAMP_आकार;
+  *map_आकार = PPC_TRAMP_MAP_आकार;
+#यदि defined (_CALL_AIX) || _CALL_ELF == 1
   /* The caller wants the entry point address of the trampoline code,
      not the address of the function descriptor.  */
-  return *(void **)trampoline_code_table;
-#else
-  return &trampoline_code_table;
-#endif
+  प्रत्यागम *(शून्य **)trampoline_संहिता_सारणी;
+#अन्यथा
+  प्रत्यागम &trampoline_संहिता_सारणी;
+#यदि_अन्तः
 }
-#endif
+#यदि_अन्तः

@@ -23,35 +23,35 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#यदि_अपरिभाषितम् LIBFFI_TARGET_H
+#परिभाषय LIBFFI_TARGET_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#यदि_अपरिभाषितम् LIBFFI_H
+#दोषः "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#यदि_अन्तः
 
-#ifndef LIBFFI_ASM
-typedef unsigned long	ffi_arg;
-typedef signed long	ffi_sarg;
+#यदि_अपरिभाषितम् LIBFFI_ASM
+प्रकारनिर्देश अचिह्नित दीर्घ	ffi_arg;
+प्रकारनिर्देश चिह्नित दीर्घ	ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_चरमः_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#यदि_अन्तः
 
-#define FFI_REGISTER_NARGS	6
-#define XTENSA_STACK_ALIGNMENT	16
-#define FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
-				  XTENSA_STACK_ALIGNMENT - 1) & \
-				  -XTENSA_STACK_ALIGNMENT)
+#परिभाषय FFI_पञ्जिकाकोशः_NARGS	6
+#परिभाषय XTENSA_राशिः_ALIGNMENT	16
+#परिभाषय FFI_पञ्जिकाकोशः_तर्काः_SPACE ((FFI_पञ्जिकाकोशः_NARGS * 4 + \
+				  XTENSA_राशिः_ALIGNMENT - 1) & \
+				  -XTENSA_राशिः_ALIGNMENT)
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TRAMPOLINE_SIZE 24
+#परिभाषय FFI_CLOSURES 1
+#परिभाषय FFI_NATIVE_RAW_API 0
+#परिभाषय FFI_TRAMPOLINE_आकार 24
 
-#endif
+#यदि_अन्तः
