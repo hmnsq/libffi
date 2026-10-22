@@ -1,30 +1,30 @@
-#ifndef ASMNAMES_H
-#define ASMNAMES_H
+#جيڪڏهن_وصف_نه_ٿيل ASMNAMES_H
+#وصف_ڪريو ASMNAMES_H
 
-#define C2(X, Y)  X ## Y
-#define C1(X, Y)  C2(X, Y)
-#ifdef __USER_LABEL_PREFIX__
+#وصف_ڪريو C2(X, Y)  X ## Y
+#وصف_ڪريو C1(X, Y)  C2(X, Y)
+#جيڪڏهن_وصف_ٿيل __USER_LABEL_PREFIX__
 # define C(X)     C1(__USER_LABEL_PREFIX__, X)
-#else
+#وإلا
 # define C(X)     X
-#endif
+#جيڪڏهن_پورو
 
-#ifdef __APPLE__
+#جيڪڏهن_وصف_ٿيل __APPLE__
 # define L(X)     C1(L, X)
-#else
+#وإلا
 # define L(X)     C1(.L, X)
-#endif
+#جيڪڏهن_پورو
 
-#if defined(__ELF__) && defined(__PIC__)
+#إذا defined(__ELF__) && defined(__PIC__)
 # define PLT(X)	  X@PLT
-#else
+#وإلا
 # define PLT(X)	  X
-#endif
+#جيڪڏهن_پورو
 
-#ifdef __ELF__
-# define ENDF(X)  .type	X,@function; .size X, . - X
-#else
+#جيڪڏهن_وصف_ٿيل __ELF__
+# define ENDF(X)  .type	X,@function; .سائيز X, . - X
+#وإلا
 # define ENDF(X)
-#endif
+#جيڪڏهن_پورو
 
-#endif /* ASMNAMES_H */
+#جيڪڏهن_پورو /* ASMNAMES_H */

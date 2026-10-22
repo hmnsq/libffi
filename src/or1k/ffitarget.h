@@ -24,35 +24,35 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
-#endif
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
+#جيڪڏهن_پورو
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
+تعريفنوع بنانشان ڊگهو          ffi_arg;
+تعريفنوع نشانوارو ڊگهو            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#جيڪڏهن_پورو
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TRAMPOLINE_SIZE (24)
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز (24)
 
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
+#وصف_ڪريو FFI_هدف_SPECIFIC_VARIADIC 1
+#وصف_ڪريو FFI_EXTRA_CIF_FIELDS بنانشان nfixedargs
 
-#endif
+#جيڪڏهن_پورو
 

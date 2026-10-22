@@ -25,23 +25,23 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جيڪڏهن_پورو
 
-#ifdef __rtems__
+#جيڪڏهن_وصف_ٿيل __rtems__
 /*
  * Subprogram calling convention - copied from sgidefs.h
  */
-#define _MIPS_SIM_ABI32		1
-#define _MIPS_SIM_NABI32	2
-#define _MIPS_SIM_ABI64		3
-#elif !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__linux__)
+#وصف_ڪريو _MIPS_SIM_ABI32		1
+#وصف_ڪريو _MIPS_SIM_NABI32	2
+#وصف_ڪريو _MIPS_SIM_ABI64		3
+#وإلاإذا !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__linux__)
 # include <sgidefs.h>
-#endif
+#جيڪڏهن_پورو
 
 #  ifndef _ABIN32
 #    define _ABIN32 _MIPS_SIM_NABI32
@@ -53,197 +53,197 @@
 #    define _ABIO32 _MIPS_SIM_ABI32
 #  endif
 
-#if !defined(_MIPS_SIM)
+#إذا !defined(_MIPS_SIM)
 # error -- something is very wrong --
-#else
-#  if (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
+#وإلا
+#  إذا (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
 #    define FFI_MIPS_N32
-#  else
-#    if (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
+#  وإلا
+#    إذا (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
 #      define FFI_MIPS_O32
-#    else
+#    وإلا
 #     error -- this is an unsupported platform --
 #    endif
 #  endif
-#endif
+#جيڪڏهن_پورو
 
-#ifdef FFI_MIPS_O32
+#جيڪڏهن_وصف_ٿيل FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
 #  define FFI_SIZEOF_ARG    4
-#else
+#وإلا
 /* N32 and N64 frames have 64bit integer args */
 #  define FFI_SIZEOF_ARG    8
-#  if _MIPS_SIM == _ABIN32
+#  إذا _MIPS_SIM == _ABIN32
 #    define FFI_SIZEOF_JAVA_RAW  4
 #  endif
-#endif
+#جيڪڏهن_پورو
 
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
-#define FFI_FLAG_BITS 2
+#وصف_ڪريو FFI_هدف_HAS_COMPLEX_TYPE 1
+#وصف_ڪريو FFI_FLAG_بٽ 2
 
 /* SGI's strange assembler requires that we multiply by 4 rather 
    than shift left by FFI_FLAG_BITS */
 
-#define FFI_ARGS_D   FFI_TYPE_DOUBLE
-#define FFI_ARGS_F   FFI_TYPE_FLOAT
-#define FFI_ARGS_DD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_DOUBLE
-#define FFI_ARGS_FF  FFI_TYPE_FLOAT * 4 +  FFI_TYPE_FLOAT
-#define FFI_ARGS_FD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_FLOAT
-#define FFI_ARGS_DF  FFI_TYPE_FLOAT * 4 + FFI_TYPE_DOUBLE
+#وصف_ڪريو FFI_دليلون_D   FFI_TYPE_DOUBLE
+#وصف_ڪريو FFI_دليلون_F   FFI_TYPE_FLOAT
+#وصف_ڪريو FFI_دليلون_DD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_DOUBLE
+#وصف_ڪريو FFI_دليلون_FF  FFI_TYPE_FLOAT * 4 +  FFI_TYPE_FLOAT
+#وصف_ڪريو FFI_دليلون_FD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_FLOAT
+#وصف_ڪريو FFI_دليلون_DF  FFI_TYPE_FLOAT * 4 + FFI_TYPE_DOUBLE
 
 /* Needed for N32 structure returns */
-#define FFI_TYPE_SMALLSTRUCT  FFI_TYPE_UINT8
-#define FFI_TYPE_SMALLSTRUCT2 FFI_TYPE_SINT8
+#وصف_ڪريو FFI_TYPE_SMALLSTRUCT  FFI_TYPE_UINT8
+#وصف_ڪريو FFI_TYPE_SMALLSTRUCT2 FFI_TYPE_SINT8
 
-#if 0
+#إذا 0
 /* The SGI assembler can't handle this.. */
-#define FFI_TYPE_STRUCT_DD (( FFI_ARGS_DD ) << 4) + FFI_TYPE_STRUCT
+#وصف_ڪريو FFI_TYPE_STRUCT_DD (( FFI_دليلون_DD ) << 4) + FFI_TYPE_STRUCT
 /* (and so on) */
-#else
+#وإلا
 /* ...so we calculate these by hand! */
-#define FFI_TYPE_STRUCT_D      61
-#define FFI_TYPE_STRUCT_F      45
-#define FFI_TYPE_STRUCT_DD     253
-#define FFI_TYPE_STRUCT_FF     173
-#define FFI_TYPE_STRUCT_FD     237
-#define FFI_TYPE_STRUCT_DF     189
-#define FFI_TYPE_STRUCT_SMALL  93
-#define FFI_TYPE_STRUCT_SMALL2 109
+#وصف_ڪريو FFI_TYPE_STRUCT_D      61
+#وصف_ڪريو FFI_TYPE_STRUCT_F      45
+#وصف_ڪريو FFI_TYPE_STRUCT_DD     253
+#وصف_ڪريو FFI_TYPE_STRUCT_FF     173
+#وصف_ڪريو FFI_TYPE_STRUCT_FD     237
+#وصف_ڪريو FFI_TYPE_STRUCT_DF     189
+#وصف_ڪريو FFI_TYPE_STRUCT_SMALL  93
+#وصف_ڪريو FFI_TYPE_STRUCT_SMALL2 109
 
-#define FFI_TYPE_COMPLEX_SMALL    95
-#define FFI_TYPE_COMPLEX_SMALL2   111
-#define FFI_TYPE_COMPLEX_FF       47
-#define FFI_TYPE_COMPLEX_DD       63
-#define FFI_TYPE_COMPLEX_LDLD     79
+#وصف_ڪريو FFI_TYPE_COMPLEX_SMALL    95
+#وصف_ڪريو FFI_TYPE_COMPLEX_SMALL2   111
+#وصف_ڪريو FFI_TYPE_COMPLEX_FF       47
+#وصف_ڪريو FFI_TYPE_COMPLEX_DD       63
+#وصف_ڪريو FFI_TYPE_COMPLEX_LDLD     79
 
 /* and for n32 soft float, add 16 * 2^4 */
-#define FFI_TYPE_STRUCT_D_SOFT      317
-#define FFI_TYPE_STRUCT_F_SOFT      301
-#define FFI_TYPE_STRUCT_DD_SOFT     509
-#define FFI_TYPE_STRUCT_FF_SOFT     429
-#define FFI_TYPE_STRUCT_FD_SOFT     493
-#define FFI_TYPE_STRUCT_DF_SOFT     445
-#define FFI_TYPE_STRUCT_SOFT        16
-#endif
+#وصف_ڪريو FFI_TYPE_STRUCT_D_SOFT      317
+#وصف_ڪريو FFI_TYPE_STRUCT_F_SOFT      301
+#وصف_ڪريو FFI_TYPE_STRUCT_DD_SOFT     509
+#وصف_ڪريو FFI_TYPE_STRUCT_FF_SOFT     429
+#وصف_ڪريو FFI_TYPE_STRUCT_FD_SOFT     493
+#وصف_ڪريو FFI_TYPE_STRUCT_DF_SOFT     445
+#وصف_ڪريو FFI_TYPE_STRUCT_SOFT        16
+#جيڪڏهن_پورو
 
-#ifdef LIBFFI_ASM
-#define v0 $2
-#define v1 $3
-#define a0 $4
-#define a1 $5
-#define a2 $6
-#define a3 $7
-#define a4 $8		
-#define a5 $9		
-#define a6 $10		
-#define a7 $11		
-#define t0 $8
-#define t1 $9
-#define t2 $10
-#define t3 $11
-#define t4 $12		
-#define t5 $13
-#define t6 $14	
-#define t7 $15
-#define t8 $24
-#define t9 $25
-#define ra $31		
+#جيڪڏهن_وصف_ٿيل LIBFFI_ASM
+#وصف_ڪريو v0 $2
+#وصف_ڪريو v1 $3
+#وصف_ڪريو a0 $4
+#وصف_ڪريو a1 $5
+#وصف_ڪريو a2 $6
+#وصف_ڪريو a3 $7
+#وصف_ڪريو a4 $8		
+#وصف_ڪريو a5 $9		
+#وصف_ڪريو a6 $10		
+#وصف_ڪريو a7 $11		
+#وصف_ڪريو t0 $8
+#وصف_ڪريو t1 $9
+#وصف_ڪريو t2 $10
+#وصف_ڪريو t3 $11
+#وصف_ڪريو t4 $12		
+#وصف_ڪريو t5 $13
+#وصف_ڪريو t6 $14	
+#وصف_ڪريو t7 $15
+#وصف_ڪريو t8 $24
+#وصف_ڪريو t9 $25
+#وصف_ڪريو ra $31		
 
-#ifdef FFI_MIPS_O32
+#جيڪڏهن_وصف_ٿيل FFI_MIPS_O32
 # define REG_L	lw
 # define REG_S	sw
 # define SUBU	subu
 # define ADDU	addu
 # define SRL	srl
 # define LI	li
-#else /* !FFI_MIPS_O32 */
+#وإلا /* !FFI_MIPS_O32 */
 # define REG_L	ld
 # define REG_S	sd
 # define SUBU	dsubu
 # define ADDU	daddu
 # define SRL	dsrl
 # define LI 	dli
-# if (_MIPS_SIM==_ABI64)
+# إذا (_MIPS_SIM==_ABI64)
 #  define LA dla
-#  define EH_FRAME_ALIGN 3
-#  define FDE_ADDR_BYTES .8byte
-# else
+#  define EH_چوکٺو_ALIGN 3
+#  define FDE_ADDR_بائيٽون .8byte
+# وإلا
 #  define LA la
-#  define EH_FRAME_ALIGN 2
-#  define FDE_ADDR_BYTES .4byte
+#  define EH_چوکٺو_ALIGN 2
+#  define FDE_ADDR_بائيٽون .4byte
 # endif /* _MIPS_SIM==_ABI64 */
-#endif /* !FFI_MIPS_O32 */
-#else /* !LIBFFI_ASM */
+#جيڪڏهن_پورو /* !FFI_MIPS_O32 */
+#وإلا /* !LIBFFI_ASM */
 # ifdef __GNUC__
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__SI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__SI__)));
-#else
+تعريفنوع بنانشان صحيح     ffi_arg __attribute__((__mode__(__SI__)));
+تعريفنوع نشانوارو   صحيح     ffi_sarg __attribute__((__mode__(__SI__)));
+#وإلا
 /* N32 and N64 frames have 64bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__DI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__DI__)));
+تعريفنوع بنانشان صحيح     ffi_arg __attribute__((__mode__(__DI__)));
+تعريفنوع نشانوارو   صحيح     ffi_sarg __attribute__((__mode__(__DI__)));
 #  endif
-# else
+# وإلا
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
-typedef __uint32_t ffi_arg;
-typedef __int32_t ffi_sarg;
-#  else
+تعريفنوع __uint32_t ffi_arg;
+تعريفنوع __int32_t ffi_sarg;
+#  وإلا
 /* N32 and N64 frames have 64bit integer args */
-typedef __uint64_t ffi_arg;
-typedef __int64_t ffi_sarg;
+تعريفنوع __uint64_t ffi_arg;
+تعريفنوع __int64_t ffi_sarg;
 #  endif
 # endif /* __GNUC__ */
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
   FFI_O32,
   FFI_N32,
   FFI_N64,
   FFI_O32_SOFT_FLOAT,
   FFI_N32_SOFT_FLOAT,
   FFI_N64_SOFT_FLOAT,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
 
-#ifdef FFI_MIPS_O32
-#ifdef __mips_soft_float
+#جيڪڏهن_وصف_ٿيل FFI_MIPS_O32
+#جيڪڏهن_وصف_ٿيل __mips_soft_float
   FFI_DEFAULT_ABI = FFI_O32_SOFT_FLOAT
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_O32
-#endif
-#else
-# if _MIPS_SIM==_ABI64
+#جيڪڏهن_پورو
+#وإلا
+# إذا _MIPS_SIM==_ABI64
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N64_SOFT_FLOAT
-#  else
+#  وإلا
   FFI_DEFAULT_ABI = FFI_N64
 #  endif
-# else
+# وإلا
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N32_SOFT_FLOAT
-#  else
+#  وإلا
   FFI_DEFAULT_ABI = FFI_N32
 #  endif
 # endif
-#endif
+#جيڪڏهن_پورو
 } ffi_abi;
 
-#define FFI_EXTRA_CIF_FIELDS unsigned rstruct_flag; unsigned mips_nfixedargs
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#endif /* !LIBFFI_ASM */
+#وصف_ڪريو FFI_EXTRA_CIF_FIELDS بنانشان rstruct_flag; بنانشان mips_nfixedargs
+#وصف_ڪريو FFI_هدف_SPECIFIC_VARIADIC
+#جيڪڏهن_پورو /* !LIBFFI_ASM */
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_GO_CLOSURES 1
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
 
-#if defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
-# define FFI_TRAMPOLINE_SIZE 20
-#else
-# define FFI_TRAMPOLINE_SIZE 56
-#endif
+#إذا defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
+# define FFI_TRAMPOLINE_سائيز 20
+#وإلا
+# define FFI_TRAMPOLINE_سائيز 56
+#جيڪڏهن_پورو
 
-#endif
+#جيڪڏهن_پورو
 

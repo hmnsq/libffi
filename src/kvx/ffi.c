@@ -19,201 +19,201 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__kvx__)
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fficonfig.h>
-#include <ffi.h>
-#include "ffi_common.h"
-#include "asm.h"
+#إذا defined(__kvx__)
+#ضمن <stdio.h>
+#ضمن <stdlib.h>
+#ضمن <stdint.h>
+#ضمن <fficonfig.h>
+#ضمن <ffi.h>
+#ضمن "ffi_common.h"
+#ضمن "asm.h"
 
-#define ALIGN(x, a) ALIGN_MASK(x, (typeof(x))(a) - 1)
-#define ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
-#define KVX_ABI_STACK_ALIGNMENT (32)
-#define KVX_ABI_STACK_ARG_ALIGNMENT (8)
-#define max(a,b) ((a) > (b) ? (a) : (b))
+#وصف_ڪريو ALIGN(x, a) ALIGN_نقاب(x, (typeof(x))(a) - 1)
+#وصف_ڪريو ALIGN_نقاب(x, نقاب) (((x) + (نقاب)) & ~(نقاب))
+#وصف_ڪريو KVX_ABI_ڍير_ALIGNMENT (32)
+#وصف_ڪريو KVX_ABI_ڍير_ARG_ALIGNMENT (8)
+#وصف_ڪريو max(a,b) ((a) > (b) ? (a) : (b))
 
-#ifdef FFI_DEBUG
-#define DEBUG_PRINT(...) do{ fprintf( stderr, __VA_ARGS__ ); } while(0)
-#else
-#define DEBUG_PRINT(...)
-#endif
+#جيڪڏهن_وصف_ٿيل FFI_DEBUG
+#وصف_ڪريو DEBUG_PRINT(...) افعل{ fprintf( stderr, __VA_ARGS__ ); } طالما(0)
+#وإلا
+#وصف_ڪريو DEBUG_PRINT(...)
+#جيڪڏهن_پورو
 
-struct ret_value {
-	unsigned long int r0;
-	unsigned long int r1;
-	unsigned long int r2;
-	unsigned long int r3;
+بنية ret_قدر {
+	بنانشان ڊگهو صحيح r0;
+	بنانشان ڊگهو صحيح r1;
+	بنانشان ڊگهو صحيح r2;
+	بنانشان ڊگهو صحيح r3;
 };
 
-extern struct ret_value ffi_call_SYSV(unsigned total_size,
-                                      unsigned size,
+خارجي بنية ret_قدر ffi_call_SYSV(بنانشان ڪل_سائيز,
+                                      بنانشان سائيز,
                                       extended_cif *ecif,
-                                      unsigned *rvalue_addr,
-                                      void *fn,
-                                      unsigned int_ext_method);
+                                      بنانشان *rvalue_addr,
+                                      فراغ *fn,
+                                      بنانشان int_ext_طريقو);
 
 /* Perform machine dependent cif processing */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_حالت ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  cif->flags = cif->rtype->size;
-  return FFI_OK;
+  cif->flags = cif->rtype->سائيز;
+  أرجع FFI_OK;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, unsigned int arg_slots_size, extended_cif *ecif)
+فراغ *ffi_prep_دليلون(حرف *ڍير, بنانشان صحيح arg_slots_سائيز, extended_cif *ecif)
 {
-  char *stacktemp = stack;
-  char *current_arg_passed_by_value = stack + arg_slots_size;
-  int i, s;
+  حرف *stacktemp = ڍير;
+  حرف *current_arg_passed_by_قدر = ڍير + arg_slots_سائيز;
+  صحيح i, s;
   ffi_type **arg;
-  int count = 0;
+  صحيح ڳڻپ = 0;
   ffi_cif *cif = ecif->cif;
-  void **argv = ecif->avalue;
+  فراغ **argv = ecif->avalue;
 
   arg = cif->arg_types;
 
-  DEBUG_PRINT("stack: %p\n", stack);
-  DEBUG_PRINT("arg_slots_size: %u\n", arg_slots_size);
-  DEBUG_PRINT("current_arg_passed_by_value: %p\n", current_arg_passed_by_value);
+  DEBUG_PRINT("stack: %p\n", ڍير);
+  DEBUG_PRINT("arg_slots_size: %u\n", arg_slots_سائيز);
+  DEBUG_PRINT("current_arg_passed_by_value: %p\n", current_arg_passed_by_قدر);
   DEBUG_PRINT("ecif: %p\n", ecif);
   DEBUG_PRINT("ecif->avalue: %p\n", ecif->avalue);
 
-  for (i = 0; i < cif->nargs; i++) {
+  لكل (i = 0; i < cif->nargs; i++) {
 
-    s = KVX_ABI_SLOT_SIZE;
-    switch((*arg)->type) {
-      case FFI_TYPE_SINT8:
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_POINTER:
-        DEBUG_PRINT("INT64/32/16/8/FLOAT/DOUBLE or POINTER @%p\n", stack);
-        *(uint64_t *) stack = *(uint64_t *)(* argv);
-        break;
+    s = KVX_ABI_جڳهه_سائيز;
+    بدل((*arg)->type) {
+      حالة FFI_TYPE_SINT8:
+      حالة FFI_TYPE_UINT8:
+      حالة FFI_TYPE_SINT16:
+      حالة FFI_TYPE_UINT16:
+      حالة FFI_TYPE_SINT32:
+      حالة FFI_TYPE_UINT32:
+      حالة FFI_TYPE_FLOAT:
+      حالة FFI_TYPE_DOUBLE:
+      حالة FFI_TYPE_UINT64:
+      حالة FFI_TYPE_SINT64:
+      حالة FFI_TYPE_اشارو:
+        DEBUG_PRINT("INT64/32/16/8/FLOAT/DOUBLE or POINTER @%p\n", ڍير);
+        *(uint64_t *) ڍير = *(uint64_t *)(* argv);
+        اكسر;
 
-      case FFI_TYPE_COMPLEX:
-        if ((*arg)->size == 8)
-          *(_Complex float *) stack = *(_Complex float *)(* argv);
-        else if ((*arg)->size == 16) {
-          *(_Complex double *) stack = *(_Complex double *)(* argv);
+      حالة FFI_TYPE_COMPLEX:
+        إذا ((*arg)->سائيز == 8)
+          *(_Complex عائم *) ڍير = *(_Complex عائم *)(* argv);
+        وإلا إذا ((*arg)->سائيز == 16) {
+          *(_Complex مزدوج *) ڍير = *(_Complex مزدوج *)(* argv);
           s = 16;
-        } else
+        } وإلا
           abort();
-        break;
-      case FFI_TYPE_STRUCT: {
-        char *value;
-        unsigned int written_size = 0;
-        DEBUG_PRINT("struct by value @%p\n", stack);
-        if ((*arg)->size > KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
+        اكسر;
+      حالة FFI_TYPE_STRUCT: {
+        حرف *قدر;
+        بنانشان صحيح written_سائيز = 0;
+        DEBUG_PRINT("struct by value @%p\n", ڍير);
+        إذا ((*arg)->سائيز > KVX_ABI_MAX_AGGREGATE_اندريون_REG_سائيز) {
           DEBUG_PRINT("big struct\n");
-          *(uint64_t *) stack = (uintptr_t)current_arg_passed_by_value;
-          value = current_arg_passed_by_value;
-          current_arg_passed_by_value += (*arg)->size;
-          written_size = KVX_ABI_SLOT_SIZE;
-        } else {
-          value = stack;
-          written_size = (*arg)->size;
+          *(uint64_t *) ڍير = (uintptr_t)current_arg_passed_by_قدر;
+          قدر = current_arg_passed_by_قدر;
+          current_arg_passed_by_قدر += (*arg)->سائيز;
+          written_سائيز = KVX_ABI_جڳهه_سائيز;
+        } وإلا {
+          قدر = ڍير;
+          written_سائيز = (*arg)->سائيز;
         }
-        memcpy(value, *argv, (*arg)->size);
-        s = ALIGN(written_size, KVX_ABI_STACK_ARG_ALIGNMENT);
-        break;
+        يادگيري_نقل(قدر, *argv, (*arg)->سائيز);
+        s = ALIGN(written_سائيز, KVX_ABI_ڍير_ARG_ALIGNMENT);
+        اكسر;
       }
-      default:
-        printf("Error: unsupported arg type %d\n", (*arg)->type);
+      افتراضي:
+        لکو("Error: unsupported arg type %d\n", (*arg)->type);
         abort();
-        break;
+        اكسر;
 
     }
-    stack += s;
-    count += s;
+    ڍير += s;
+    ڳڻپ += s;
     argv++;
     arg++;
   }
-#ifdef FFI_DEBUG
-  FFI_ASSERT(((intptr_t)(stacktemp + REG_ARGS_SIZE) & (KVX_ABI_STACK_ALIGNMENT-1)) == 0);
-#endif
-  return stacktemp + REG_ARGS_SIZE;
+#جيڪڏهن_وصف_ٿيل FFI_DEBUG
+  FFI_ASSERT(((intptr_t)(stacktemp + REG_دليلون_سائيز) & (KVX_ABI_ڍير_ALIGNMENT-1)) == 0);
+#جيڪڏهن_پورو
+  أرجع stacktemp + REG_دليلون_سائيز;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-                                    unsigned int ntotalargs)
+ffi_حالت ffi_prep_cif_machdep_var(ffi_cif *cif, بنانشان صحيح nfixedargs,
+                                    بنانشان صحيح ntotalargs)
 {
-  cif->flags = cif->rtype->size;
-  return FFI_OK;
+  cif->flags = cif->rtype->سائيز;
+  أرجع FFI_OK;
 }
 
-static unsigned long handle_small_int_ext(kvx_intext_method *int_ext_method,
-                                          const ffi_type *rtype)
+ساكن بنانشان ڊگهو handle_small_int_ext(kvx_intext_طريقو *int_ext_طريقو,
+                                          ثابت ffi_type *rtype)
 {
-  switch (rtype->type) {
-    case FFI_TYPE_SINT8:
-      *int_ext_method = KVX_RET_SXBD;
-      return KVX_REGISTER_SIZE;
+  بدل (rtype->type) {
+    حالة FFI_TYPE_SINT8:
+      *int_ext_طريقو = KVX_RET_SXBD;
+      أرجع KVX_رجسٽر_سائيز;
 
-    case FFI_TYPE_SINT16:
-      *int_ext_method = KVX_RET_SXHD;
-      return KVX_REGISTER_SIZE;
+    حالة FFI_TYPE_SINT16:
+      *int_ext_طريقو = KVX_RET_SXHD;
+      أرجع KVX_رجسٽر_سائيز;
 
-    case FFI_TYPE_SINT32:
-      *int_ext_method = KVX_RET_SXWD;
-      return KVX_REGISTER_SIZE;
+    حالة FFI_TYPE_SINT32:
+      *int_ext_طريقو = KVX_RET_SXWD;
+      أرجع KVX_رجسٽر_سائيز;
 
-    case FFI_TYPE_UINT8:
-      *int_ext_method = KVX_RET_ZXBD;
-      return KVX_REGISTER_SIZE;
+    حالة FFI_TYPE_UINT8:
+      *int_ext_طريقو = KVX_RET_ZXBD;
+      أرجع KVX_رجسٽر_سائيز;
 
-    case FFI_TYPE_UINT16:
-      *int_ext_method = KVX_RET_ZXHD;
-      return KVX_REGISTER_SIZE;
+    حالة FFI_TYPE_UINT16:
+      *int_ext_طريقو = KVX_RET_ZXHD;
+      أرجع KVX_رجسٽر_سائيز;
 
-    case FFI_TYPE_UINT32:
-      *int_ext_method = KVX_RET_ZXWD;
-      return KVX_REGISTER_SIZE;
+    حالة FFI_TYPE_UINT32:
+      *int_ext_طريقو = KVX_RET_ZXWD;
+      أرجع KVX_رجسٽر_سائيز;
 
-    default:
-      *int_ext_method = KVX_RET_NONE;
-      return rtype->size;
+    افتراضي:
+      *int_ext_طريقو = KVX_RET_NONE;
+      أرجع rtype->سائيز;
   }
 }
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+فراغ ffi_call(ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, فراغ **avalue)
 {
-  int i;
-  unsigned long int slot_fitting_args_size = 0;
-  unsigned long int total_size = 0;
-  unsigned long int big_struct_size = 0;
-  kvx_intext_method int_extension_method;
+  صحيح i;
+  بنانشان ڊگهو صحيح جڳهه_fitting_دليلون_سائيز = 0;
+  بنانشان ڊگهو صحيح ڪل_سائيز = 0;
+  بنانشان ڊگهو صحيح big_struct_سائيز = 0;
+  kvx_intext_طريقو int_extension_طريقو;
   ffi_type **arg;
-  struct ret_value local_rvalue = {0};
-  size_t wb_size;
+  بنية ret_قدر local_rvalue = {0};
+  size_t wb_سائيز;
 
 
   /* Calculate size to allocate on stack */
-  for (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
-    DEBUG_PRINT("argument %d, type %d, size %lu\n", i, (*arg)->type, (*arg)->size);
-    if (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
-      if ((*arg)->size <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
-        slot_fitting_args_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
-      } else {
-        slot_fitting_args_size += KVX_ABI_SLOT_SIZE; /* aggregate passed by reference */
-        big_struct_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
+  لكل (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
+    DEBUG_PRINT("argument %d, type %d, size %lu\n", i, (*arg)->type, (*arg)->سائيز);
+    إذا (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
+      إذا ((*arg)->سائيز <= KVX_ABI_MAX_AGGREGATE_اندريون_REG_سائيز) {
+        جڳهه_fitting_دليلون_سائيز += ALIGN((*arg)->سائيز, KVX_ABI_جڳهه_سائيز);
+      } وإلا {
+        جڳهه_fitting_دليلون_سائيز += KVX_ABI_جڳهه_سائيز; /* aggregate passed by reference */
+        big_struct_سائيز += ALIGN((*arg)->سائيز, KVX_ABI_جڳهه_سائيز);
       }
-    } else if ((*arg)->size <= KVX_ABI_SLOT_SIZE) {
-      slot_fitting_args_size += KVX_ABI_SLOT_SIZE;
-    } else {
-      printf("Error: unsupported arg size %ld arg type %d\n", (*arg)->size, (*arg)->type);
+    } وإلا إذا ((*arg)->سائيز <= KVX_ABI_جڳهه_سائيز) {
+      جڳهه_fitting_دليلون_سائيز += KVX_ABI_جڳهه_سائيز;
+    } وإلا {
+      لکو("Error: unsupported arg size %ld arg type %d\n", (*arg)->سائيز, (*arg)->type);
       abort(); /* should never happen? */
     }
   }
@@ -224,9 +224,9 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ecif.rvalue = rvalue;
 
   /* This implementation allocates anyway for all register based args */
-  slot_fitting_args_size = max(slot_fitting_args_size, REG_ARGS_SIZE);
-  total_size = slot_fitting_args_size + big_struct_size;
-  total_size = ALIGN(total_size, KVX_ABI_STACK_ALIGNMENT);
+  جڳهه_fitting_دليلون_سائيز = max(جڳهه_fitting_دليلون_سائيز, REG_دليلون_سائيز);
+  ڪل_سائيز = جڳهه_fitting_دليلون_سائيز + big_struct_سائيز;
+  ڪل_سائيز = ALIGN(ڪل_سائيز, KVX_ABI_ڍير_ALIGNMENT);
 
   /* wb_size: write back size, the size we will need to write back to user
    * provided buffer. In theory it should always be cif->flags which is
@@ -236,38 +236,38 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
    * in our case, if size <= 8 bytes we must write back 8 bytes.
    * floats, complex and structs are not affected, only integrals.
    */
-  wb_size = handle_small_int_ext(&int_extension_method, cif->rtype);
+  wb_سائيز = handle_small_int_ext(&int_extension_طريقو, cif->rtype);
 
-  switch (cif->abi) {
-    case FFI_SYSV:
-      DEBUG_PRINT("total_size: %lu\n", total_size);
-      DEBUG_PRINT("slot fitting args size: %lu\n", slot_fitting_args_size);
+  بدل (cif->abi) {
+    حالة FFI_SYSV:
+      DEBUG_PRINT("total_size: %lu\n", ڪل_سائيز);
+      DEBUG_PRINT("slot fitting args size: %lu\n", جڳهه_fitting_دليلون_سائيز);
       DEBUG_PRINT("rvalue: %p\n", rvalue);
       DEBUG_PRINT("fn: %p\n", fn);
       DEBUG_PRINT("rsize: %u\n", cif->flags);
-      DEBUG_PRINT("wb_size: %u\n", wb_size);
-      DEBUG_PRINT("int_extension_method: %u\n", int_extension_method);
-      local_rvalue = ffi_call_SYSV(total_size, slot_fitting_args_size,
-                                   &ecif, rvalue, fn, int_extension_method);
-      if ((cif->flags <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE)
+      DEBUG_PRINT("wb_size: %u\n", wb_سائيز);
+      DEBUG_PRINT("int_extension_method: %u\n", int_extension_طريقو);
+      local_rvalue = ffi_call_SYSV(ڪل_سائيز, جڳهه_fitting_دليلون_سائيز,
+                                   &ecif, rvalue, fn, int_extension_طريقو);
+      إذا ((cif->flags <= KVX_ABI_MAX_AGGREGATE_اندريون_REG_سائيز)
           && (cif->rtype->type != FFI_TYPE_VOID))
-        memcpy(rvalue, &local_rvalue, wb_size);
-      break;
-    default:
+        يادگيري_نقل(rvalue, &local_rvalue, wb_سائيز);
+      اكسر;
+    افتراضي:
       abort();
-      break;
+      اكسر;
   }
 }
 
 /* Closures not supported yet */
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_حالت
+ffi_prep_گهيرو_loc (ffi_گهيرو* گهيرو,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      فراغ (*fun)(ffi_cif*,فراغ*,فراغ**,فراغ*),
+                      فراغ *user_معلومات,
+                      فراغ *codeloc)
 {
-  return FFI_BAD_ABI;
+  أرجع FFI_BAD_ABI;
 }
 
-#endif /* (__kvx__) */
+#جيڪڏهن_پورو /* (__kvx__) */

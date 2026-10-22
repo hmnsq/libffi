@@ -24,30 +24,30 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
-#endif
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي "Please do not include ffitarget.h directly into your source. Use ffi.h instead."
+#جيڪڏهن_پورو
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
+تعريفنوع بنانشان ڊگهو          ffi_arg;
+تعريفنوع نشانوارو ڊگهو            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
 /* Those values are set depending on return type
  * they are used in the assembly code in sysv.S
  */
-typedef enum kvx_intext_method {
+تعريفنوع تعداد kvx_intext_طريقو {
   KVX_RET_NONE = 0,
   KVX_RET_SXBD = 1,
   KVX_RET_SXHD = 2,
@@ -55,21 +55,21 @@ typedef enum kvx_intext_method {
   KVX_RET_ZXBD = 4,
   KVX_RET_ZXHD = 5,
   KVX_RET_ZXWD = 6
-} kvx_intext_method;
+} kvx_intext_طريقو;
 
-#endif
+#جيڪڏهن_پورو
 
 /* ---- Definitions for closures ----------------------------------------- */
 
 /* This is only to allow Python to compile
  * but closures are not supported yet
  */
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 0
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 0
 
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_هدف_SPECIFIC_VARIADIC 1
+#وصف_ڪريو FFI_هدف_HAS_COMPLEX_TYPE
 
-#endif
+#جيڪڏهن_پورو
 

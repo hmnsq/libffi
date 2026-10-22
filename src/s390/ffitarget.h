@@ -25,47 +25,47 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جيڪڏهن_پورو
 
-#if defined (__s390x__)
-#ifndef S390X
-#define S390X
-#endif
-#endif
+#إذا defined (__s390x__)
+#جيڪڏهن_وصف_نه_ٿيل S390X
+#وصف_ڪريو S390X
+#جيڪڏهن_پورو
+#جيڪڏهن_پورو
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
+تعريفنوع بنانشان ڊگهو          ffi_arg;
+تعريفنوع نشانوارو ڊگهو            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#جيڪڏهن_پورو
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#define FFI_TARGET_HAS_INT128
+#وصف_ڪريو FFI_هدف_SPECIFIC_ڍير_SPACE_ورهاست
+#وصف_ڪريو FFI_هدف_HAS_COMPLEX_TYPE
+#وصف_ڪريو FFI_هدف_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#ifdef S390X
-#define FFI_TRAMPOLINE_SIZE 32
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
-#define FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_GO_CLOSURES 1
+#جيڪڏهن_وصف_ٿيل S390X
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 32
+#وإلا
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 16
+#جيڪڏهن_پورو
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
 
-#endif
+#جيڪڏهن_پورو
 

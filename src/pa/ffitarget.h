@@ -25,62 +25,62 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جيڪڏهن_پورو
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
+تعريفنوع بنانشان ڊگهو          ffi_arg;
+تعريفنوع نشانوارو ڊگهو            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
 
-#ifdef PA_LINUX
+#جيڪڏهن_وصف_ٿيل PA_LINUX
   FFI_PA32,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
   FFI_DEFAULT_ABI = FFI_PA32
-#endif
+#جيڪڏهن_پورو
 
-#ifdef PA_HPUX
+#جيڪڏهن_وصف_ٿيل PA_HPUX
   FFI_PA32,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
   FFI_DEFAULT_ABI = FFI_PA32
-#endif
+#جيڪڏهن_پورو
 
-#ifdef PA64_HPUX
+#جيڪڏهن_وصف_ٿيل PA64_HPUX
   FFI_PA64,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
   FFI_DEFAULT_ABI = FFI_PA64
-#endif
+#جيڪڏهن_پورو
 } ffi_abi;
-#endif
+#جيڪڏهن_پورو
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#وصف_ڪريو FFI_هدف_SPECIFIC_ڍير_SPACE_ورهاست
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#if defined(PA64_HPUX)
-#define FFI_TRAMPOLINE_SIZE 32
-#else
-#define FFI_TRAMPOLINE_SIZE 12
-#endif
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
+#إذا defined(PA64_HPUX)
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 32
+#وإلا
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 12
+#جيڪڏهن_پورو
 
-#define FFI_TYPE_SMALL_STRUCT1 -1
-#define FFI_TYPE_SMALL_STRUCT2 -2
-#define FFI_TYPE_SMALL_STRUCT3 -3
-#define FFI_TYPE_SMALL_STRUCT4 -4
-#define FFI_TYPE_SMALL_STRUCT5 -5
-#define FFI_TYPE_SMALL_STRUCT6 -6
-#define FFI_TYPE_SMALL_STRUCT7 -7
-#define FFI_TYPE_SMALL_STRUCT8 -8
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT1 -1
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT2 -2
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT3 -3
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT4 -4
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT5 -5
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT6 -6
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT7 -7
+#وصف_ڪريو FFI_TYPE_SMALL_STRUCT8 -8
 
 /* The return-value jump tables in linux.S and hpux32.S are indexed by
    cif->flags, which ffi_prep_cif_machdep derives from the return type.  Any
@@ -95,13 +95,13 @@ typedef enum ffi_abi {
    FFI_TARGET_HAS_VECTOR_TYPE, so ffi_prep_cif_core rejects any vector
    signature with FFI_BAD_TYPEDEF before machdep runs.  Bumping the tripwire
    past it is therefore safe.  */
-#define FFI_PA_TYPE_LAST FFI_TYPE_VECTOR
+#وصف_ڪريو FFI_PA_TYPE_آخري FFI_TYPE_ويڪٽر
 
 /* Tripwire: when a new generic type is added FFI_TYPE_LAST changes and this
    fires, forcing a review of ffi_prep_cif_machdep and the linux.S / hpux32.S
    jump tables before FFI_PA_TYPE_LAST above is bumped.  */
-#if FFI_TYPE_LAST != FFI_PA_TYPE_LAST
+#إذا FFI_TYPE_آخري != FFI_PA_TYPE_آخري
 # error "You likely have broken jump tables"
-#endif
+#جيڪڏهن_پورو
 
-#endif
+#جيڪڏهن_پورو

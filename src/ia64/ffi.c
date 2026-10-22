@@ -26,28 +26,28 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdbool.h>
-#include <float.h>
+#ضمن <stdlib.h>
+#ضمن <stdbool.h>
+#ضمن <float.h>
 
-#include "ia64_flags.h"
+#ضمن "ia64_flags.h"
 
 /* A 64-bit pointer value.  In LP64 mode, this is effectively a plain
    pointer.  In ILP32 mode, it's a pointer that's been extended to 
    64 bits by "addp4".  */
-#ifdef __hpux
-typedef void *PTR64;
-#else // some other unix
-typedef void *PTR64 __attribute__((mode(DI)));
-#endif
+#جيڪڏهن_وصف_ٿيل __hpux
+تعريفنوع فراغ *PTR64;
+#وإلا // some other unix
+تعريفنوع فراغ *PTR64 __attribute__((گهڻائي(DI)));
+#جيڪڏهن_پورو
 
 /* Memory image of fp register contents.  This is the implementation
    specific format used by ldf.fill/stf.spill.  All we care about is
    that it wants a 16 byte aligned slot.  */
-typedef struct
+تعريفنوع بنية
 {
   UINT64 x[2] __attribute__((aligned(16)));
 } fpreg;
@@ -55,24 +55,24 @@ typedef struct
 
 /* The stack layout given to ffi_call_unix and ffi_closure_unix_inner.  */
 
-struct ia64_args
+بنية ia64_دليلون
 {
   fpreg fp_regs[8];	/* Contents of 8 fp arg registers.  */
   UINT64 gp_regs[8];	/* Contents of 8 gp arg registers.  */
-  UINT64 other_args[];	/* Arguments passed on stack, variable size.  */
+  UINT64 other_دليلون[];	/* Arguments passed on stack, variable size.  */
 };
 
 
 /* Adjust ADDR, a pointer to an 8 byte slot, to point to the low LEN bytes.  */
 
-static inline void *
-endian_adjust (void *addr, size_t len)
+ساكن مضمن فراغ *
+endian_adjust (فراغ *addr, size_t len)
 {
-#ifdef __BIG_ENDIAN__
-  return addr + (8 - len);
-#else
-  return addr;
-#endif
+#جيڪڏهن_وصف_ٿيل __BIG_ENDIAN__
+  أرجع addr + (8 - len);
+#وإلا
+  أرجع addr;
+#جيڪڏهن_پورو
 }
 
 /* Store VALUE to ADDR in the current cpu implementation's fp spill format.
@@ -80,38 +80,38 @@ endian_adjust (void *addr, size_t len)
    point types without type conversions.  Type conversion to long double breaks
    the denorm support.  */
 
-#ifdef __hpux
-#define stf_spill(addr, value)
-#else
-#define stf_spill(addr, value)	\
-  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(value));
-#endif
+#جيڪڏهن_وصف_ٿيل __hpux
+#وصف_ڪريو stf_spill(addr, قدر)
+#وإلا
+#وصف_ڪريو stf_spill(addr, قدر)	\
+  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(قدر));
+#جيڪڏهن_پورو
 
 /* Load a value from ADDR, which is in the current cpu implementation's
    fp spill format.  As above, this must also be a macro.  */
 
-#ifdef __hpux
-#define ldf_fill(result, addr)
-#else
-#define ldf_fill(result, addr)	\
-  __asm__ ("ldf.fill %0 = %1%P1" : "=f"(result) : "m"(*addr));
-#endif
+#جيڪڏهن_وصف_ٿيل __hpux
+#وصف_ڪريو ldf_fill(نتيجو, addr)
+#وإلا
+#وصف_ڪريو ldf_fill(نتيجو, addr)	\
+  __asm__ ("ldf.fill %0 = %1%P1" : "=f"(نتيجو) : "m"(*addr));
+#جيڪڏهن_پورو
 
 /* Return the size of the C type associated with with TYPE.  Which will
    be one of the FFI_IA64_TYPE_HFA_* values.  */
 
-static size_t
-hfa_type_size (int type)
+ساكن size_t
+hfa_type_سائيز (صحيح type)
 {
-  switch (type)
+  بدل (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
-      return sizeof(float);
-    case FFI_IA64_TYPE_HFA_DOUBLE:
-      return sizeof(double);
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
-      return sizeof(__float80);
-    default:
+    حالة FFI_IA64_TYPE_HFA_FLOAT:
+      أرجع حجم(عائم);
+    حالة FFI_IA64_TYPE_HFA_DOUBLE:
+      أرجع حجم(مزدوج);
+    حالة FFI_IA64_TYPE_HFA_LDOUBLE:
+      أرجع حجم(__float80);
+    افتراضي:
       abort ();
     }
 }
@@ -119,21 +119,21 @@ hfa_type_size (int type)
 /* Load from ADDR a value indicated by TYPE.  Which will be one of
    the FFI_IA64_TYPE_HFA_* values.  */
 
-static void
-hfa_type_load (fpreg *fpaddr, int type, void *addr)
+ساكن فراغ
+hfa_type_ڀريو (fpreg *fpaddr, صحيح type, فراغ *addr)
 {
-  switch (type)
+  بدل (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
-      stf_spill (fpaddr, *(float *) addr);
-      return;
-    case FFI_IA64_TYPE_HFA_DOUBLE:
-      stf_spill (fpaddr, *(double *) addr);
-      return;
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
+    حالة FFI_IA64_TYPE_HFA_FLOAT:
+      stf_spill (fpaddr, *(عائم *) addr);
+      أرجع;
+    حالة FFI_IA64_TYPE_HFA_DOUBLE:
+      stf_spill (fpaddr, *(مزدوج *) addr);
+      أرجع;
+    حالة FFI_IA64_TYPE_HFA_LDOUBLE:
       stf_spill (fpaddr, *(__float80 *) addr);
-      return;
-    default:
+      أرجع;
+    افتراضي:
       abort ();
     }
 }
@@ -141,33 +141,33 @@ hfa_type_load (fpreg *fpaddr, int type, void *addr)
 /* Load VALUE into ADDR as indicated by TYPE.  Which will be one of
    the FFI_IA64_TYPE_HFA_* values.  */
 
-static void
-hfa_type_store (int type, void *addr, fpreg *fpaddr)
+ساكن فراغ
+hfa_type_store (صحيح type, فراغ *addr, fpreg *fpaddr)
 {
-  switch (type)
+  بدل (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
+    حالة FFI_IA64_TYPE_HFA_FLOAT:
       {
-	float result;
-	ldf_fill (result, fpaddr);
-	*(float *) addr = result;
-	break;
+	عائم نتيجو;
+	ldf_fill (نتيجو, fpaddr);
+	*(عائم *) addr = نتيجو;
+	اكسر;
       }
-    case FFI_IA64_TYPE_HFA_DOUBLE:
+    حالة FFI_IA64_TYPE_HFA_DOUBLE:
       {
-	double result;
-	ldf_fill (result, fpaddr);
-	*(double *) addr = result;
-	break;
+	مزدوج نتيجو;
+	ldf_fill (نتيجو, fpaddr);
+	*(مزدوج *) addr = نتيجو;
+	اكسر;
       }
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
+    حالة FFI_IA64_TYPE_HFA_LDOUBLE:
       {
-	__float80 result;
-	ldf_fill (result, fpaddr);
-	*(__float80 *) addr = result;
-	break;
+	__float80 نتيجو;
+	ldf_fill (نتيجو, fpaddr);
+	*(__float80 *) addr = نتيجو;
+	اكسر;
       }
-    default:
+    افتراضي:
       abort ();
     }
 }
@@ -176,244 +176,244 @@ hfa_type_store (int type, void *addr, fpreg *fpaddr)
    all of the same fp type?  If so, return the element type.  Return
    FFI_TYPE_VOID if not.  */
 
-static int
-hfa_element_type (ffi_type *type, int nested)
+ساكن صحيح
+hfa_element_type (ffi_type *type, صحيح nested)
 {
-  int element = FFI_TYPE_VOID;
+  صحيح element = FFI_TYPE_VOID;
 
-  switch (type->type)
+  بدل (type->type)
     {
-    case FFI_TYPE_FLOAT:
+    حالة FFI_TYPE_FLOAT:
       /* We want to return VOID for raw floating-point types, but the
 	 synthetic HFA type if we're nested within an aggregate.  */
-      if (nested)
+      إذا (nested)
 	element = FFI_IA64_TYPE_HFA_FLOAT;
-      break;
+      اكسر;
 
-    case FFI_TYPE_DOUBLE:
+    حالة FFI_TYPE_DOUBLE:
       /* Similarly.  */
-      if (nested)
+      إذا (nested)
 	element = FFI_IA64_TYPE_HFA_DOUBLE;
-      break;
+      اكسر;
 
-    case FFI_TYPE_LONGDOUBLE:
+    حالة FFI_TYPE_LONGDOUBLE:
       /* Similarly, except that that HFA is true for double extended,
 	 but not quad precision.  Both have sizeof == 16, so tell the
 	 difference based on the precision.  */
-      if (LDBL_MANT_DIG == 64 && nested)
+      إذا (LDBL_MANT_DIG == 64 && nested)
 	element = FFI_IA64_TYPE_HFA_LDOUBLE;
-      break;
+      اكسر;
 
-    case FFI_TYPE_STRUCT:
+    حالة FFI_TYPE_STRUCT:
       {
 	ffi_type **ptr = &type->elements[0];
 
-	for (ptr = &type->elements[0]; *ptr ; ptr++)
+	لكل (ptr = &type->elements[0]; *ptr ; ptr++)
 	  {
-	    int sub_element = hfa_element_type (*ptr, 1);
-	    if (sub_element == FFI_TYPE_VOID)
-	      return FFI_TYPE_VOID;
+	    صحيح sub_element = hfa_element_type (*ptr, 1);
+	    إذا (sub_element == FFI_TYPE_VOID)
+	      أرجع FFI_TYPE_VOID;
 
-	    if (element == FFI_TYPE_VOID)
+	    إذا (element == FFI_TYPE_VOID)
 	      element = sub_element;
-	    else if (element != sub_element)
-	      return FFI_TYPE_VOID;
+	    وإلا إذا (element != sub_element)
+	      أرجع FFI_TYPE_VOID;
 	  }
       }
-      break;
+      اكسر;
 
-    default:
-      return FFI_TYPE_VOID;
+    افتراضي:
+      أرجع FFI_TYPE_VOID;
     }
 
-  return element;
+  أرجع element;
 }
 
 
 /* Perform machine dependent cif processing. */
 
-static ffi_status
+ساكن ffi_حالت
 ffi_prep_cif_machdep_core(ffi_cif *cif)
 {
-  int flags;
+  صحيح flags;
 
   /* Adjust cif->bytes to include space for the bits of the ia64_args frame
      that precedes the integer register portion.  The estimate that the
      generic bits did for the argument space required is good enough for the
      integer component.  */
-  cif->bytes += offsetof(struct ia64_args, gp_regs[0]);
-  if (cif->bytes < sizeof(struct ia64_args))
-    cif->bytes = sizeof(struct ia64_args);
+  cif->بائيٽون += offsetof(بنية ia64_دليلون, gp_regs[0]);
+  إذا (cif->بائيٽون < حجم(بنية ia64_دليلون))
+    cif->بائيٽون = حجم(بنية ia64_دليلون);
 
   /* Set the return type flag. */
   flags = cif->rtype->type;
-  switch (cif->rtype->type)
+  بدل (cif->rtype->type)
     {
-    case FFI_TYPE_LONGDOUBLE:
+    حالة FFI_TYPE_LONGDOUBLE:
       /* Leave FFI_TYPE_LONGDOUBLE as meaning double extended precision,
 	 and encode quad precision as a two-word integer structure.  */
-      if (LDBL_MANT_DIG != 64)
+      إذا (LDBL_MANT_DIG != 64)
 	flags = FFI_IA64_TYPE_SMALL_STRUCT | (16 << 8);
-      break;
+      اكسر;
 
-    case FFI_TYPE_STRUCT:
+    حالة FFI_TYPE_STRUCT:
       {
-        size_t size = cif->rtype->size;
-  	int hfa_type = hfa_element_type (cif->rtype, 0);
+        size_t سائيز = cif->rtype->سائيز;
+  	صحيح hfa_type = hfa_element_type (cif->rtype, 0);
 
-	if (hfa_type != FFI_TYPE_VOID)
+	إذا (hfa_type != FFI_TYPE_VOID)
 	  {
-	    size_t nelts = size / hfa_type_size (hfa_type);
-	    if (nelts <= 8)
-	      flags = hfa_type | (size << 8);
+	    size_t nelts = سائيز / hfa_type_سائيز (hfa_type);
+	    إذا (nelts <= 8)
+	      flags = hfa_type | (سائيز << 8);
 	  }
-	else
+	وإلا
 	  {
-	    if (size <= 32)
-	      flags = FFI_IA64_TYPE_SMALL_STRUCT | (size << 8);
+	    إذا (سائيز <= 32)
+	      flags = FFI_IA64_TYPE_SMALL_STRUCT | (سائيز << 8);
 	  }
       }
-      break;
+      اكسر;
 
-    default:
-      break;
+    افتراضي:
+      اكسر;
     }
   cif->flags = flags;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-ffi_status
+ffi_حالت
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   cif->nfixedargs = cif->nargs;
-  return ffi_prep_cif_machdep_core(cif);
+  أرجع ffi_prep_cif_machdep_core(cif);
 }
 
-ffi_status
+ffi_حالت
 ffi_prep_cif_machdep_var(ffi_cif *cif,
-			 unsigned int nfixedargs,
-			 unsigned int ntotalargs MAYBE_UNUSED)
+			 بنانشان صحيح nfixedargs,
+			 بنانشان صحيح ntotalargs MAYBE_اڻ_استعمال_ٿيل)
 {
   cif->nfixedargs = nfixedargs;
-  return ffi_prep_cif_machdep_core(cif);
+  أرجع ffi_prep_cif_machdep_core(cif);
 }
 
-extern int ffi_call_unix (struct ia64_args *, PTR64, void (*)(void), UINT64);
+خارجي صحيح ffi_call_unix (بنية ia64_دليلون *, PTR64, فراغ (*)(فراغ), UINT64);
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+فراغ
+ffi_call(ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, فراغ **avalue)
 {
-  struct ia64_args *stack;
-  long i, avn, gpcount, fpcount;
+  بنية ia64_دليلون *ڍير;
+  ڊگهو i, avn, gpcount, fpcount;
   ffi_type **p_arg;
 
   FFI_ASSERT (cif->abi == FFI_UNIX);
 
   /* If we have no spot for a return value, make one.  */
-  if (rvalue == NULL && cif->rtype->type != FFI_TYPE_VOID)
-    rvalue = alloca (cif->rtype->size);
+  إذا (rvalue == عدم && cif->rtype->type != FFI_TYPE_VOID)
+    rvalue = alloca (cif->rtype->سائيز);
     
   /* Allocate the stack frame.  */
-  stack = alloca (cif->bytes);
+  ڍير = alloca (cif->بائيٽون);
 
   gpcount = fpcount = 0;
   avn = cif->nargs;
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  لكل (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      switch ((*p_arg)->type)
+      بدل ((*p_arg)->type)
 	{
-	case FFI_TYPE_SINT8:
-	  stack->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT8:
-	  stack->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT16:
-	  stack->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT16:
-	  stack->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT32:
-	  stack->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT32:
-	  stack->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  stack->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
-	  break;
+	حالة FFI_TYPE_SINT8:
+	  ڍير->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
+	  اكسر;
+	حالة FFI_TYPE_UINT8:
+	  ڍير->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
+	  اكسر;
+	حالة FFI_TYPE_SINT16:
+	  ڍير->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
+	  اكسر;
+	حالة FFI_TYPE_UINT16:
+	  ڍير->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
+	  اكسر;
+	حالة FFI_TYPE_SINT32:
+	  ڍير->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
+	  اكسر;
+	حالة FFI_TYPE_UINT32:
+	  ڍير->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
+	  اكسر;
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	  ڍير->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
+	  اكسر;
 
-	case FFI_TYPE_POINTER:
-	  stack->gp_regs[gpcount++] = (UINT64)(PTR64) *(void **)avalue[i];
-	  break;
+	حالة FFI_TYPE_اشارو:
+	  ڍير->gp_regs[gpcount++] = (UINT64)(PTR64) *(فراغ **)avalue[i];
+	  اكسر;
 
-	case FFI_TYPE_FLOAT:
-	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(float *)avalue[i]);
+	حالة FFI_TYPE_FLOAT:
+	  إذا (gpcount < 8 && fpcount < 8)
+	    stf_spill (&ڍير->fp_regs[fpcount++], *(عائم *)avalue[i]);
 	  {
 	    UINT32 tmp;
-	    memcpy (&tmp, avalue[i], sizeof (UINT32));
-	    stack->gp_regs[gpcount++] = tmp;
+	    يادگيري_نقل (&tmp, avalue[i], حجم (UINT32));
+	    ڍير->gp_regs[gpcount++] = tmp;
 	  }
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_DOUBLE:
-	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(double *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount++], avalue[i], sizeof (UINT64));
-	  break;
+	حالة FFI_TYPE_DOUBLE:
+	  إذا (gpcount < 8 && fpcount < 8)
+	    stf_spill (&ڍير->fp_regs[fpcount++], *(مزدوج *)avalue[i]);
+	  يادگيري_نقل (&ڍير->gp_regs[gpcount++], avalue[i], حجم (UINT64));
+	  اكسر;
 
-	case FFI_TYPE_LONGDOUBLE:
-	  if (gpcount & 1)
+	حالة FFI_TYPE_LONGDOUBLE:
+	  إذا (gpcount & 1)
 	    gpcount++;
-	  if (LDBL_MANT_DIG == 64 && gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(__float80 *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount], avalue[i], 16);
+	  إذا (LDBL_MANT_DIG == 64 && gpcount < 8 && fpcount < 8)
+	    stf_spill (&ڍير->fp_regs[fpcount++], *(__float80 *)avalue[i]);
+	  يادگيري_نقل (&ڍير->gp_regs[gpcount], avalue[i], 16);
 	  gpcount += 2;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_STRUCT:
 	  {
-	    size_t size = (*p_arg)->size;
+	    size_t سائيز = (*p_arg)->سائيز;
 	    size_t align = (*p_arg)->alignment;
-	    int hfa_type = hfa_element_type (*p_arg, 0);
+	    صحيح hfa_type = hfa_element_type (*p_arg, 0);
 
 	    FFI_ASSERT (align <= 16);
-	    if (align == 16 && (gpcount & 1))
+	    إذا (align == 16 && (gpcount & 1))
 	      gpcount++;
 
-	    if (hfa_type != FFI_TYPE_VOID)
+	    إذا (hfa_type != FFI_TYPE_VOID)
 	      {
-		size_t hfa_size = hfa_type_size (hfa_type);
+		size_t hfa_سائيز = hfa_type_سائيز (hfa_type);
 		size_t offset = 0;
-		size_t gp_offset = gpcount * 8;
+		size_t gp_وٿي = gpcount * 8;
 
-		while (fpcount < 8
-		       && offset < size
-		       && gp_offset < 8 * 8)
+		طالما (fpcount < 8
+		       && offset < سائيز
+		       && gp_وٿي < 8 * 8)
 		  {
-		    hfa_type_load (&stack->fp_regs[fpcount], hfa_type,
+		    hfa_type_ڀريو (&ڍير->fp_regs[fpcount], hfa_type,
 				   avalue[i] + offset);
-		    offset += hfa_size;
-		    gp_offset += hfa_size;
+		    offset += hfa_سائيز;
+		    gp_وٿي += hfa_سائيز;
 		    fpcount += 1;
 		  }
 	      }
 
-	    memcpy (&stack->gp_regs[gpcount], avalue[i], size);
-	    gpcount += (size + 7) / 8;
+	    يادگيري_نقل (&ڍير->gp_regs[gpcount], avalue[i], سائيز);
+	    gpcount += (سائيز + 7) / 8;
 	  }
-	  break;
+	  اكسر;
 
-	default:
+	افتراضي:
 	  abort ();
 	}
     }
 
-  ffi_call_unix (stack, rvalue, fn, cif->flags);
+  ffi_call_unix (ڍير, rvalue, fn, cif->flags);
 }
 
 /* Closures represent a pair consisting of a function pointer, and
@@ -431,186 +431,186 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
    gp pointer to the closure.  This allows the function entry code to
    both retrieve the user data, and to restore the correct gp pointer.  */
 
-extern void ffi_closure_unix ();
+خارجي فراغ ffi_گهيرو_unix ();
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_حالت
+ffi_prep_گهيرو_loc (ffi_گهيرو* گهيرو,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      فراغ (*fun)(ffi_cif*,فراغ*,فراغ**,فراغ*),
+		      فراغ *user_معلومات,
+		      فراغ *codeloc)
 {
   /* The layout of a function descriptor.  A C function pointer really 
      points to one of these.  */
-  struct ia64_fd
+  بنية ia64_fd
   {
-    UINT64 code_pointer;
+    UINT64 ڪوڊ_اشارو;
     UINT64 gp;
   };
 
-  struct ffi_ia64_trampoline_struct
+  بنية ffi_ia64_trampoline_struct
   {
-    UINT64 code_pointer;	/* Pointer to ffi_closure_unix.  */
+    UINT64 ڪوڊ_اشارو;	/* Pointer to ffi_closure_unix.  */
     UINT64 fake_gp;		/* Pointer to closure, installed as gp.  */
     UINT64 real_gp;		/* Real gp value.  */
   };
 
-  struct ffi_ia64_trampoline_struct *tramp;
-  struct ia64_fd *fd;
+  بنية ffi_ia64_trampoline_struct *tramp;
+  بنية ia64_fd *fd;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  إذا (cif->abi != FFI_UNIX)
+    أرجع FFI_BAD_ABI;
 
-  tramp = (struct ffi_ia64_trampoline_struct *)closure->tramp;
-  fd = (struct ia64_fd *)(void *)ffi_closure_unix;
+  tramp = (بنية ffi_ia64_trampoline_struct *)گهيرو->tramp;
+  fd = (بنية ia64_fd *)(فراغ *)ffi_گهيرو_unix;
 
-  tramp->code_pointer = fd->code_pointer;
+  tramp->ڪوڊ_اشارو = fd->ڪوڊ_اشارو;
   tramp->real_gp = fd->gp;
   tramp->fake_gp = (UINT64)(PTR64)codeloc;
-  closure->cif = cif;
-  closure->user_data = user_data;
-  closure->fun = fun;
+  گهيرو->cif = cif;
+  گهيرو->user_معلومات = user_معلومات;
+  گهيرو->fun = fun;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
 
 UINT64
-ffi_closure_unix_inner (ffi_closure *closure, struct ia64_args *stack,
-			void *rvalue, void *r8)
+ffi_گهيرو_unix_inner (ffi_گهيرو *گهيرو, بنية ia64_دليلون *ڍير,
+			فراغ *rvalue, فراغ *r8)
 {
   ffi_cif *cif;
-  void **avalue;
+  فراغ **avalue;
   ffi_type **p_arg;
-  long i, avn, gpcount, fpcount, nfixedargs;
+  ڊگهو i, avn, gpcount, fpcount, nfixedargs;
 
-  cif = closure->cif;
+  cif = گهيرو->cif;
   avn = cif->nargs;
   nfixedargs = cif->nfixedargs;
-  avalue = alloca (avn * sizeof (void *));
+  avalue = alloca (avn * حجم (فراغ *));
 
   /* If the structure return value is passed in memory get that location
      from r8 so as to pass the value directly back to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  إذا (cif->flags == FFI_TYPE_STRUCT)
     rvalue = r8;
 
   gpcount = fpcount = 0;
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  لكل (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      int named = i < nfixedargs;
-      switch ((*p_arg)->type)
+      صحيح named = i < nfixedargs;
+      بدل ((*p_arg)->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 1);
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 2);
-	  break;
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 4);
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  avalue[i] = &stack->gp_regs[gpcount++];
-	  break;
-	case FFI_TYPE_POINTER:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], sizeof(void*));
-	  break;
+	حالة FFI_TYPE_SINT8:
+	حالة FFI_TYPE_UINT8:
+	  avalue[i] = endian_adjust(&ڍير->gp_regs[gpcount++], 1);
+	  اكسر;
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT16:
+	  avalue[i] = endian_adjust(&ڍير->gp_regs[gpcount++], 2);
+	  اكسر;
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT32:
+	  avalue[i] = endian_adjust(&ڍير->gp_regs[gpcount++], 4);
+	  اكسر;
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	  avalue[i] = &ڍير->gp_regs[gpcount++];
+	  اكسر;
+	حالة FFI_TYPE_اشارو:
+	  avalue[i] = endian_adjust(&ڍير->gp_regs[gpcount++], حجم(فراغ*));
+	  اكسر;
 
-	case FFI_TYPE_FLOAT:
-	  if (named && gpcount < 8 && fpcount < 8)
+	حالة FFI_TYPE_FLOAT:
+	  إذا (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      float result;
+	      fpreg *addr = &ڍير->fp_regs[fpcount++];
+	      عائم نتيجو;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(float *)addr = result;
+	      ldf_fill (نتيجو, addr);
+	      *(عائم *)addr = نتيجو;
 	    }
-	  else
-	    avalue[i] = endian_adjust(&stack->gp_regs[gpcount], 4);
+	  وإلا
+	    avalue[i] = endian_adjust(&ڍير->gp_regs[gpcount], 4);
 	  gpcount++;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_DOUBLE:
-	  if (named && gpcount < 8 && fpcount < 8)
+	حالة FFI_TYPE_DOUBLE:
+	  إذا (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      double result;
+	      fpreg *addr = &ڍير->fp_regs[fpcount++];
+	      مزدوج نتيجو;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(double *)addr = result;
+	      ldf_fill (نتيجو, addr);
+	      *(مزدوج *)addr = نتيجو;
 	    }
-	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	  وإلا
+	    avalue[i] = &ڍير->gp_regs[gpcount];
 	  gpcount++;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_LONGDOUBLE:
-	  if (gpcount & 1)
+	حالة FFI_TYPE_LONGDOUBLE:
+	  إذا (gpcount & 1)
 	    gpcount++;
-	  if (LDBL_MANT_DIG == 64 && named && gpcount < 8 && fpcount < 8)
+	  إذا (LDBL_MANT_DIG == 64 && named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      __float80 result;
+	      fpreg *addr = &ڍير->fp_regs[fpcount++];
+	      __float80 نتيجو;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(__float80 *)addr = result;
+	      ldf_fill (نتيجو, addr);
+	      *(__float80 *)addr = نتيجو;
 	    }
-	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	  وإلا
+	    avalue[i] = &ڍير->gp_regs[gpcount];
 	  gpcount += 2;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_STRUCT:
 	  {
-	    size_t size = (*p_arg)->size;
+	    size_t سائيز = (*p_arg)->سائيز;
 	    size_t align = (*p_arg)->alignment;
-	    int hfa_type = hfa_element_type (*p_arg, 0);
+	    صحيح hfa_type = hfa_element_type (*p_arg, 0);
 
 	    FFI_ASSERT (align <= 16);
-	    if (align == 16 && (gpcount & 1))
+	    إذا (align == 16 && (gpcount & 1))
 	      gpcount++;
 
-	    if (hfa_type != FFI_TYPE_VOID)
+	    إذا (hfa_type != FFI_TYPE_VOID)
 	      {
-		size_t hfa_size = hfa_type_size (hfa_type);
+		size_t hfa_سائيز = hfa_type_سائيز (hfa_type);
 		size_t offset = 0;
-		size_t gp_offset = gpcount * 8;
-		void *addr = alloca (size);
+		size_t gp_وٿي = gpcount * 8;
+		فراغ *addr = alloca (سائيز);
 
 		avalue[i] = addr;
 
-		while (fpcount < 8
-		       && offset < size
-		       && gp_offset < 8 * 8)
+		طالما (fpcount < 8
+		       && offset < سائيز
+		       && gp_وٿي < 8 * 8)
 		  {
 		    hfa_type_store (hfa_type, addr + offset,
-				    &stack->fp_regs[fpcount]);
-		    offset += hfa_size;
-		    gp_offset += hfa_size;
+				    &ڍير->fp_regs[fpcount]);
+		    offset += hfa_سائيز;
+		    gp_وٿي += hfa_سائيز;
 		    fpcount += 1;
 		  }
 
-		if (offset < size)
-		  memcpy (addr + offset, (char *)stack->gp_regs + gp_offset,
-			  size - offset);
+		إذا (offset < سائيز)
+		  يادگيري_نقل (addr + offset, (حرف *)ڍير->gp_regs + gp_وٿي,
+			  سائيز - offset);
 	      }
-	    else
-	      avalue[i] = &stack->gp_regs[gpcount];
+	    وإلا
+	      avalue[i] = &ڍير->gp_regs[gpcount];
 
-	    gpcount += (size + 7) / 8;
+	    gpcount += (سائيز + 7) / 8;
 	  }
-	  break;
+	  اكسر;
 
-	default:
+	افتراضي:
 	  abort ();
 	}
     }
 
-  closure->fun (cif, rvalue, avalue, closure->user_data);
+  گهيرو->fun (cif, rvalue, avalue, گهيرو->user_معلومات);
 
-  return cif->flags;
+  أرجع cif->flags;
 }

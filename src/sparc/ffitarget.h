@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جيڪڏهن_پورو
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#إذا defined(__arch64__) || defined(__sparcv9)
+#جيڪڏهن_وصف_نه_ٿيل SPARC64
+#وصف_ڪريو SPARC64
+#جيڪڏهن_پورو
+#جيڪڏهن_پورو
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
+تعريفنوع بنانشان ڊگهو          ffi_arg;
+تعريفنوع نشانوارو ڊگهو            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
+#جيڪڏهن_وصف_ٿيل SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#وإلا
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
-  FFI_LAST_ABI
+#جيڪڏهن_پورو
+  FFI_آخري_ABI
 } ffi_abi;
-#endif
+#جيڪڏهن_پورو
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#وصف_ڪريو FFI_هدف_SPECIFIC_ڍير_SPACE_ورهاست 1
+#وصف_ڪريو FFI_هدف_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+#جيڪڏهن_وصف_ٿيل SPARC64
+# define FFI_هدف_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS  بنانشان صحيح nfixedargs
+#جيڪڏهن_پورو
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_GO_CLOSURES 1
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#جيڪڏهن_وصف_ٿيل SPARC64
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 24
+#وإلا
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 16
+#جيڪڏهن_پورو
 
-#endif
+#جيڪڏهن_پورو
 

@@ -25,25 +25,25 @@
  * vax Foreign Function Interface
  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
+تعريفنوع بنانشان ڊگهو ffi_arg;
+تعريفنوع نشانوارو ڊگهو ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
   FFI_ELFBSD,
   FFI_DEFAULT_ABI = FFI_ELFBSD,
-  FFI_LAST_ABI = FFI_DEFAULT_ABI + 1
+  FFI_آخري_ABI = FFI_DEFAULT_ABI + 1
 } ffi_abi;
-#endif
+#جيڪڏهن_پورو
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 15
-#define FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 15
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
 
-#endif
+#جيڪڏهن_پورو

@@ -26,72 +26,72 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error \
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي \
   "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جيڪڏهن_پورو
 
-#ifndef __loongarch__
-#error \
+#جيڪڏهن_وصف_نه_ٿيل __loongarch__
+#غلطي \
   "libffi was configured for a LoongArch target but this does not appear to be a LoongArch compiler."
-#endif
+#جيڪڏهن_پورو
 
-#ifndef LIBFFI_ASM
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+تعريفنوع بنانشان ڊگهو ffi_arg;
+تعريفنوع نشانوارو ڊگهو ffi_sarg;
 
-typedef enum ffi_abi
+تعريفنوع تعداد ffi_abi
 {
-  FFI_FIRST_ABI = 0,
+  FFI_پهريون_ABI = 0,
   FFI_LP64S,
   FFI_LP64F,
   FFI_LP64D,
   FFI_ILP32S,
   FFI_ILP32F,
   FFI_ILP32D,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
 
-#if __loongarch_grlen == 64
-  #if defined(__loongarch_soft_float)
+#إذا __loongarch_grlen == 64
+  #إذا defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_LP64S
-  #elif defined(__loongarch_single_float)
+  #وإلاإذا defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_LP64F
-  #elif defined(__loongarch_double_float)
+  #وإلاإذا defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_LP64D
-  #else
-    #error unsupported LoongArch floating-point ABI
-  #endif
-#elif __loongarch_grlen == 32
-  #if defined(__loongarch_soft_float)
+  #وإلا
+    #غلطي unsupported LoongArch floating-نقطو ABI
+  #جيڪڏهن_پورو
+#وإلاإذا __loongarch_grlen == 32
+  #إذا defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_ILP32S
-  #elif defined(__loongarch_single_float)
+  #وإلاإذا defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_ILP32F
-  #elif defined(__loongarch_double_float)
+  #وإلاإذا defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_ILP32D
-  #else
-    #error unsupported LoongArch floating-point ABI
-  #endif
-#else
-  #error unsupported LoongArch base architecture
-#endif
+  #وإلا
+    #غلطي unsupported LoongArch floating-نقطو ABI
+  #جيڪڏهن_پورو
+#وإلا
+  #غلطي unsupported LoongArch بنياد architecture
+#جيڪڏهن_پورو
 } ffi_abi;
 
-#endif /* LIBFFI_ASM */
+#جيڪڏهن_پورو /* LIBFFI_ASM */
 
-#define FFI_TARGET_HAS_INT128
+#وصف_ڪريو FFI_هدف_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
-#define FFI_EXTRA_CIF_FIELDS \
-  unsigned loongarch_nfixedargs; \
-  unsigned loongarch_unused
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#endif
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_GO_CLOSURES 1
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز 24
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_EXTRA_CIF_FIELDS \
+  بنانشان loongarch_nfixedargs; \
+  بنانشان loongarch_اڻ_استعمال_ٿيل
+#وصف_ڪريو FFI_هدف_SPECIFIC_VARIADIC
+#جيڪڏهن_پورو

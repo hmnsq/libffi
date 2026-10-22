@@ -25,32 +25,32 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_هدف_H
+#وصف_ڪريو LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_H
+#غلطي "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جيڪڏهن_پورو
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جيڪڏهن_وصف_نه_ٿيل LIBFFI_ASM
+تعريفنوع بنانشان ڊگهو          ffi_arg;
+تعريفنوع نشانوارو ڊگهو            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پهريون_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخري_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#جيڪڏهن_پورو
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_CRIS_TRAMPOLINE_CODE_PART_SIZE 36
-#define FFI_CRIS_TRAMPOLINE_DATA_PART_SIZE (7*4)
-#define FFI_TRAMPOLINE_SIZE \
- (FFI_CRIS_TRAMPOLINE_CODE_PART_SIZE + FFI_CRIS_TRAMPOLINE_DATA_PART_SIZE)
-#define FFI_NATIVE_RAW_API 0
+#وصف_ڪريو FFI_CLOSURES 1
+#وصف_ڪريو FFI_CRIS_TRAMPOLINE_ڪوڊ_PART_سائيز 36
+#وصف_ڪريو FFI_CRIS_TRAMPOLINE_معلومات_PART_سائيز (7*4)
+#وصف_ڪريو FFI_TRAMPOLINE_سائيز \
+ (FFI_CRIS_TRAMPOLINE_ڪوڊ_PART_سائيز + FFI_CRIS_TRAMPOLINE_معلومات_PART_سائيز)
+#وصف_ڪريو FFI_NATIVE_RAW_API 0
 
-#endif
+#جيڪڏهن_پورو

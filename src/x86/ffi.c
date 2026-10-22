@@ -29,260 +29,260 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__i386__) || defined(_M_IX86)
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <tramp.h>
-#include "internal.h"
+#إذا defined(__i386__) || defined(_M_IX86)
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
+#ضمن <stdint.h>
+#ضمن <stdlib.h>
+#ضمن <tramp.h>
+#ضمن "internal.h"
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 80-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# إذا FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE ٻاهريون جو date
 # endif
-#else
+#وإلا
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#جيڪڏهن_پورو
 
-#if defined(__GNUC__) && !defined(__declspec)
+#إذا defined(__GNUC__) && !defined(__declspec)
 # define __declspec(x)  __attribute__((x))
-#endif
+#جيڪڏهن_پورو
 
-#if defined(_MSC_VER) && defined(_M_IX86)
+#إذا defined(_MSC_VER) && defined(_M_IX86)
 /* Stack is not 16-byte aligned on Windows.  */
-#define STACK_ALIGN(bytes) (bytes)
-#else
-#define STACK_ALIGN(bytes) FFI_ALIGN (bytes, 16)
-#endif
+#وصف_ڪريو ڍير_ALIGN(بائيٽون) (بائيٽون)
+#وإلا
+#وصف_ڪريو ڍير_ALIGN(بائيٽون) FFI_ALIGN (بائيٽون, 16)
+#جيڪڏهن_پورو
 
 /* Perform machine dependent cif processing.  */
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  size_t bytes = 0;
-  int i, n, flags, cabi = cif->abi;
+  size_t بائيٽون = 0;
+  صحيح i, n, flags, cabi = cif->abi;
 
-  switch (cabi)
+  بدل (cabi)
     {
-    case FFI_SYSV:
-    case FFI_STDCALL:
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
-    case FFI_MS_CDECL:
-    case FFI_PASCAL:
-    case FFI_REGISTER:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    حالة FFI_SYSV:
+    حالة FFI_STDCALL:
+    حالة FFI_THISCALL:
+    حالة FFI_FASTCALL:
+    حالة FFI_MS_CDECL:
+    حالة FFI_PASCAL:
+    حالة FFI_رجسٽر:
+      اكسر;
+    افتراضي:
+      أرجع FFI_BAD_ABI;
     }
 
-  switch (cif->rtype->type)
+  بدل (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    حالة FFI_TYPE_VOID:
       flags = X86_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      اكسر;
+    حالة FFI_TYPE_FLOAT:
       flags = X86_RET_FLOAT;
-      break;
-    case FFI_TYPE_DOUBLE:
+      اكسر;
+    حالة FFI_TYPE_DOUBLE:
       flags = X86_RET_DOUBLE;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      اكسر;
+    حالة FFI_TYPE_LONGDOUBLE:
       flags = X86_RET_LDOUBLE;
-      break;
-    case FFI_TYPE_UINT8:
+      اكسر;
+    حالة FFI_TYPE_UINT8:
       flags = X86_RET_UINT8;
-      break;
-    case FFI_TYPE_UINT16:
+      اكسر;
+    حالة FFI_TYPE_UINT16:
       flags = X86_RET_UINT16;
-      break;
-    case FFI_TYPE_SINT8:
+      اكسر;
+    حالة FFI_TYPE_SINT8:
       flags = X86_RET_SINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      اكسر;
+    حالة FFI_TYPE_SINT16:
       flags = X86_RET_SINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      اكسر;
+    حالة FFI_TYPE_INT:
+    حالة FFI_TYPE_SINT32:
+    حالة FFI_TYPE_UINT32:
+    حالة FFI_TYPE_اشارو:
       flags = X86_RET_INT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      اكسر;
+    حالة FFI_TYPE_SINT64:
+    حالة FFI_TYPE_UINT64:
       flags = X86_RET_INT64;
-      break;
-    case FFI_TYPE_STRUCT:
+      اكسر;
+    حالة FFI_TYPE_STRUCT:
       {
-#if defined(X86_WIN32) || defined(X86_DARWIN) || defined(X86_FREEBSD)
-        size_t size = cif->rtype->size;
-        if (size == 1)
+#إذا defined(X86_WIN32) || defined(X86_DARWIN) || defined(X86_FREEBSD)
+        size_t سائيز = cif->rtype->سائيز;
+        إذا (سائيز == 1)
           flags = X86_RET_STRUCT_1B;
-        else if (size == 2)
+        وإلا إذا (سائيز == 2)
           flags = X86_RET_STRUCT_2B;
-        else if (size == 4)
+        وإلا إذا (سائيز == 4)
           flags = X86_RET_INT32;
-        else if (size == 8)
+        وإلا إذا (سائيز == 8)
           flags = X86_RET_INT64;
-        else
-#endif
+        وإلا
+#جيڪڏهن_پورو
           {
           do_struct:
-            switch (cabi)
+            بدل (cabi)
               {
-              case FFI_THISCALL:
-              case FFI_FASTCALL:
-              case FFI_STDCALL:
-              case FFI_MS_CDECL:
+              حالة FFI_THISCALL:
+              حالة FFI_FASTCALL:
+              حالة FFI_STDCALL:
+              حالة FFI_MS_CDECL:
                 flags = X86_RET_STRUCTARG;
-                break;
-              default:
+                اكسر;
+              افتراضي:
                 flags = X86_RET_STRUCTPOP;
-                break;
+                اكسر;
               }
             /* Allocate space for return value pointer.  */
-            bytes += FFI_ALIGN (sizeof(void*), FFI_SIZEOF_ARG);
+            بائيٽون += FFI_ALIGN (حجم(فراغ*), FFI_SIZEOF_ARG);
           }
       }
-      break;
-    case FFI_TYPE_COMPLEX:
-      switch (cif->rtype->elements[0]->type)
+      اكسر;
+    حالة FFI_TYPE_COMPLEX:
+      بدل (cif->rtype->elements[0]->type)
 	{
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  goto do_struct;
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	حالة FFI_TYPE_DOUBLE:
+	حالة FFI_TYPE_LONGDOUBLE:
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	  اذهب do_struct;
+	حالة FFI_TYPE_FLOAT:
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT32:
 	  flags = X86_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  اكسر;
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT16:
 	  flags = X86_RET_INT32;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  اكسر;
+	حالة FFI_TYPE_SINT8:
+	حالة FFI_TYPE_UINT8:
 	  flags = X86_RET_STRUCT_2B;
-	  break;
-	default:
-	  return FFI_BAD_TYPEDEF;
+	  اكسر;
+	افتراضي:
+	  أرجع FFI_BAD_TYPEDEF;
 	}
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+      اكسر;
+    افتراضي:
+      أرجع FFI_BAD_TYPEDEF;
     }
   cif->flags = flags;
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  لكل (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *t = cif->arg_types[i];
 
-#if defined(X86_WIN32)
-      if (cabi == FFI_STDCALL)
-        bytes = FFI_ALIGN (bytes, FFI_SIZEOF_ARG);
-      else
-#endif
-        bytes = FFI_ALIGN (bytes, t->alignment);
-      bytes += FFI_ALIGN (t->size, FFI_SIZEOF_ARG);
+#إذا defined(X86_WIN32)
+      إذا (cabi == FFI_STDCALL)
+        بائيٽون = FFI_ALIGN (بائيٽون, FFI_SIZEOF_ARG);
+      وإلا
+#جيڪڏهن_پورو
+        بائيٽون = FFI_ALIGN (بائيٽون, t->alignment);
+      بائيٽون += FFI_ALIGN (t->سائيز, FFI_SIZEOF_ARG);
     }
-  cif->bytes = bytes;
+  cif->بائيٽون = بائيٽون;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-static ffi_arg
-extend_basic_type(void *arg, int type)
+ساكن ffi_arg
+extend_basic_type(فراغ *arg, صحيح type)
 {
-  switch (type)
+  بدل (type)
     {
-    case FFI_TYPE_SINT8:
-      return *(SINT8 *)arg;
-    case FFI_TYPE_UINT8:
-      return *(UINT8 *)arg;
-    case FFI_TYPE_SINT16:
-      return *(SINT16 *)arg;
-    case FFI_TYPE_UINT16:
-      return *(UINT16 *)arg;
+    حالة FFI_TYPE_SINT8:
+      أرجع *(SINT8 *)arg;
+    حالة FFI_TYPE_UINT8:
+      أرجع *(UINT8 *)arg;
+    حالة FFI_TYPE_SINT16:
+      أرجع *(SINT16 *)arg;
+    حالة FFI_TYPE_UINT16:
+      أرجع *(UINT16 *)arg;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_FLOAT:
-      return *(UINT32 *)arg;
+    حالة FFI_TYPE_SINT32:
+    حالة FFI_TYPE_UINT32:
+    حالة FFI_TYPE_اشارو:
+    حالة FFI_TYPE_FLOAT:
+      أرجع *(UINT32 *)arg;
 
-    default:
+    افتراضي:
       abort();
     }
 }
 
-struct call_frame
+بنية call_چوکٺو
 {
-  void *ebp;		/* 0 */
-  void *retaddr;	/* 4 */
-  void (*fn)(void);	/* 8 */
-  int flags;		/* 12 */
-  void *rvalue;		/* 16 */
-  unsigned regs[3];	/* 20-28 */
+  فراغ *ebp;		/* 0 */
+  فراغ *retaddr;	/* 4 */
+  فراغ (*fn)(فراغ);	/* 8 */
+  صحيح flags;		/* 12 */
+  فراغ *rvalue;		/* 16 */
+  بنانشان regs[3];	/* 20-28 */
 };
 
-struct abi_params
+بنية abi_params
 {
-  int dir;		/* parameter growth direction */
-  int static_chain;	/* the static chain register used by gcc */
-  int nregs;		/* number of register parameters */
-  int regs[3];
+  صحيح dir;		/* parameter growth direction */
+  صحيح static_chain;	/* the static chain register used by gcc */
+  صحيح nregs;		/* number of register parameters */
+  صحيح regs[3];
 };
 
-static const struct abi_params abi_params[FFI_LAST_ABI] = {
+ساكن ثابت بنية abi_params abi_params[FFI_آخري_ABI] = {
   [FFI_SYSV] = { 1, R_ECX, 0 },
   [FFI_THISCALL] = { 1, R_EAX, 1, { R_ECX } },
   [FFI_FASTCALL] = { 1, R_EAX, 2, { R_ECX, R_EDX } },
   [FFI_STDCALL] = { 1, R_ECX, 0 },
   [FFI_PASCAL] = { -1, R_ECX, 0 },
   /* ??? No defined static chain; gcc does not support REGISTER.  */
-  [FFI_REGISTER] = { -1, R_ECX, 3, { R_EAX, R_EDX, R_ECX } },
+  [FFI_رجسٽر] = { -1, R_ECX, 3, { R_EAX, R_EDX, R_ECX } },
   [FFI_MS_CDECL] = { 1, R_ECX, 0 }
 };
 
-#ifdef HAVE_FASTCALL
-  #ifdef _MSC_VER
-    #define FFI_DECLARE_FASTCALL __fastcall
-  #else
-    #define FFI_DECLARE_FASTCALL __declspec(fastcall)
-  #endif
-#else
-  #define FFI_DECLARE_FASTCALL
-#endif
+#جيڪڏهن_وصف_ٿيل HAVE_FASTCALL
+  #جيڪڏهن_وصف_ٿيل _MSC_VER
+    #وصف_ڪريو FFI_DECLARE_FASTCALL __fastcall
+  #وإلا
+    #وصف_ڪريو FFI_DECLARE_FASTCALL __declspec(fastcall)
+  #جيڪڏهن_پورو
+#وإلا
+  #وصف_ڪريو FFI_DECLARE_FASTCALL
+#جيڪڏهن_پورو
 
-extern void FFI_DECLARE_FASTCALL ffi_call_i386(struct call_frame *, char *) FFI_HIDDEN;
+خارجي فراغ FFI_DECLARE_FASTCALL ffi_call_i386(بنية call_چوکٺو *, حرف *) FFI_HIDDEN;
 
 /* We perform some black magic here to use some of the parent's stack frame in
  * ffi_call_i386() that breaks with the MSVC compiler with the /RTCs or /GZ
  * flags.  Disable the 'Stack frame run time error checking' for this function
  * so we don't hit weird exceptions in debug builds. */
-#if defined(_MSC_VER)
-#pragma runtime_checks("s", off)
-#endif
+#إذا defined(_MSC_VER)
+#هدايت runtime_checks("s", off)
+#جيڪڏهن_پورو
 /* n.b. ffi_call_unix64 will steal the alloca'd `stack` variable here for use
    _as its own stack_ - so we need to compile this function without ASAN */
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ساكن فراغ
+ffi_call_int (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue,
+	      فراغ **avalue, فراغ *گهيرو)
 {
-  size_t rsize, bytes;
-  struct call_frame *frame;
-  char *stack, *argp;
+  size_t rsize, بائيٽون;
+  بنية call_چوکٺو *چوکٺو;
+  حرف *ڍير, *argp;
   ffi_type **arg_types;
-  int flags, cabi, i, n, dir, narg_reg;
-  const struct abi_params *pabi;
+  صحيح flags, cabi, i, n, dir, narg_reg;
+  ثابت بنية abi_params *pabi;
 
   flags = cif->flags;
   cabi = cif->abi;
@@ -290,82 +290,82 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   dir = pabi->dir;
 
   rsize = 0;
-  if (rvalue == NULL)
+  إذا (rvalue == عدم)
     {
-      switch (flags)
+      بدل (flags)
 	{
-	case X86_RET_FLOAT:
-	case X86_RET_DOUBLE:
-	case X86_RET_LDOUBLE:
-	case X86_RET_STRUCTPOP:
-	case X86_RET_STRUCTARG:
+	حالة X86_RET_FLOAT:
+	حالة X86_RET_DOUBLE:
+	حالة X86_RET_LDOUBLE:
+	حالة X86_RET_STRUCTPOP:
+	حالة X86_RET_STRUCTARG:
 	  /* The float cases need to pop the 387 stack.
 	     The struct cases need to pass a valid pointer to the callee.  */
-	  rsize = cif->rtype->size;
-	  break;
-	default:
+	  rsize = cif->rtype->سائيز;
+	  اكسر;
+	افتراضي:
 	  /* We can pretend that the callee returns nothing.  */
 	  flags = X86_RET_VOID;
-	  break;
+	  اكسر;
 	}
     }
 
-  bytes = STACK_ALIGN (cif->bytes);
-  stack = alloca(bytes + sizeof(*frame) + rsize);
-  argp = (dir < 0 ? stack + bytes : stack);
-  frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
-    rvalue = frame + 1;
+  بائيٽون = ڍير_ALIGN (cif->بائيٽون);
+  ڍير = alloca(بائيٽون + حجم(*چوکٺو) + rsize);
+  argp = (dir < 0 ? ڍير + بائيٽون : ڍير);
+  چوکٺو = (بنية call_چوکٺو *)(ڍير + بائيٽون);
+  إذا (rsize)
+    rvalue = چوکٺو + 1;
 
-  frame->fn = fn;
-  frame->flags = flags;
-  frame->rvalue = rvalue;
-  frame->regs[pabi->static_chain] = (unsigned)closure;
+  چوکٺو->fn = fn;
+  چوکٺو->flags = flags;
+  چوکٺو->rvalue = rvalue;
+  چوکٺو->regs[pabi->static_chain] = (بنانشان)گهيرو;
 
   narg_reg = 0;
-  switch (flags)
+  بدل (flags)
     {
-    case X86_RET_STRUCTARG:
+    حالة X86_RET_STRUCTARG:
       /* The pointer is passed as the first argument.  */
-      if (pabi->nregs > 0)
+      إذا (pabi->nregs > 0)
 	{
-	  frame->regs[pabi->regs[0]] = (unsigned)rvalue;
+	  چوکٺو->regs[pabi->regs[0]] = (بنانشان)rvalue;
 	  narg_reg = 1;
-	  break;
+	  اكسر;
 	}
       /* fallthru */
-    case X86_RET_STRUCTPOP:
-      *(void **)argp = rvalue;
-      argp += sizeof(void *);
-      break;
+    حالة X86_RET_STRUCTPOP:
+      *(فراغ **)argp = rvalue;
+      argp += حجم(فراغ *);
+      اكسر;
     }
 
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; i < n; i++)
+  لكل (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *valp = avalue[i];
-      size_t z = ty->size;
-      int t = ty->type;
+      فراغ *valp = avalue[i];
+      size_t z = ty->سائيز;
+      صحيح t = ty->type;
 
-      if (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
+      إذا (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
         {
 	  ffi_arg val = extend_basic_type (valp, t);
 
-	  if (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
-	    frame->regs[pabi->regs[narg_reg++]] = val;
-	  else if (dir < 0)
+	  إذا (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
+	    چوکٺو->regs[pabi->regs[narg_reg++]] = val;
+	  وإلا إذا (dir < 0)
 	    {
 	      argp -= 4;
 	      *(ffi_arg *)argp = val;
 	    }
-	  else
+	  وإلا
 	    {
 	      *(ffi_arg *)argp = val;
 	      argp += 4;
 	    }
 	}
-      else
+      وإلا
 	{
 	  size_t za = FFI_ALIGN (z, FFI_SIZEOF_ARG);
 	  size_t align = FFI_SIZEOF_ARG;
@@ -373,7 +373,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	  /* Issue 434: For thiscall and fastcall, if the parameter passed
 	     as 64-bit integer or struct, all following integer parameters
 	     will be passed on stack.  */
-	  if ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
+	  إذا ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
 	      && (t == FFI_TYPE_SINT64
 		  || t == FFI_TYPE_UINT64
 		  || t == FFI_TYPE_STRUCT))
@@ -386,158 +386,158 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	     inside, however, would get 16 byte alignment.  Since libffi does
 	     not support vectors, we need non concern ourselves with other
 	     cases.  */
-	  if (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
+	  إذا (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
 	    align = 16;
 
-	  if (dir < 0)
+	  إذا (dir < 0)
 	    {
 	      /* ??? These reverse argument ABIs are probably too old
 		 to have cared about alignment.  Someone should check.  */
 	      argp -= za;
-	      memcpy (argp, valp, z);
+	      يادگيري_نقل (argp, valp, z);
 	    }
-	  else
+	  وإلا
 	    {
-	      argp = (char *)FFI_ALIGN (argp, align);
-	      memcpy (argp, valp, z);
+	      argp = (حرف *)FFI_ALIGN (argp, align);
+	      يادگيري_نقل (argp, valp, z);
 	      argp += za;
 	    }
 	}
     }
-  FFI_ASSERT (dir > 0 || argp == stack);
+  FFI_ASSERT (dir > 0 || argp == ڍير);
 
-  ffi_call_i386 (frame, stack);
+  ffi_call_i386 (چوکٺو, ڍير);
 }
-#if defined(_MSC_VER)
-#pragma runtime_checks("s", restore)
-#endif
+#إذا defined(_MSC_VER)
+#هدايت runtime_checks("s", restore)
+#جيڪڏهن_پورو
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+فراغ
+ffi_call (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, فراغ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, عدم);
 }
 
-#ifdef FFI_GO_CLOSURES
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+#جيڪڏهن_وصف_ٿيل FFI_GO_CLOSURES
+فراغ
+ffi_call_go (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue,
+	     فراغ **avalue, فراغ *گهيرو)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, گهيرو);
 }
-#endif
+#جيڪڏهن_پورو
 
 /** private members **/
 
-void FFI_HIDDEN ffi_closure_i386(void);
-void FFI_HIDDEN ffi_closure_STDCALL(void);
-void FFI_HIDDEN ffi_closure_REGISTER(void);
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void FFI_HIDDEN ffi_closure_i386_alt(void);
-void FFI_HIDDEN ffi_closure_STDCALL_alt(void);
-void FFI_HIDDEN ffi_closure_REGISTER_alt(void);
-#endif
+فراغ FFI_HIDDEN ffi_گهيرو_i386(فراغ);
+فراغ FFI_HIDDEN ffi_گهيرو_STDCALL(فراغ);
+فراغ FFI_HIDDEN ffi_گهيرو_رجسٽر(فراغ);
+#إذا defined(FFI_EXEC_STATIC_TRAMP)
+فراغ FFI_HIDDEN ffi_گهيرو_i386_alt(فراغ);
+فراغ FFI_HIDDEN ffi_گهيرو_STDCALL_alt(فراغ);
+فراغ FFI_HIDDEN ffi_گهيرو_رجسٽر_alt(فراغ);
+#جيڪڏهن_پورو
 
-struct closure_frame
+بنية گهيرو_چوکٺو
 {
-  unsigned rettemp[4];				/* 0 */
-  unsigned regs[3];				/* 16-24 */
+  بنانشان rettemp[4];				/* 0 */
+  بنانشان regs[3];				/* 16-24 */
   ffi_cif *cif;					/* 28 */
-  void (*fun)(ffi_cif*,void*,void**,void*);	/* 32 */
-  void *user_data;				/* 36 */
+  فراغ (*fun)(ffi_cif*,فراغ*,فراغ**,فراغ*);	/* 32 */
+  فراغ *user_معلومات;				/* 36 */
 };
 
-int FFI_HIDDEN FFI_DECLARE_FASTCALL
-ffi_closure_inner (struct closure_frame *frame, char *stack)
+صحيح FFI_HIDDEN FFI_DECLARE_FASTCALL
+ffi_گهيرو_inner (بنية گهيرو_چوکٺو *چوکٺو, حرف *ڍير)
 {
-  ffi_cif *cif = frame->cif;
-  int cabi, i, n, flags, dir, narg_reg;
-  const struct abi_params *pabi;
+  ffi_cif *cif = چوکٺو->cif;
+  صحيح cabi, i, n, flags, dir, narg_reg;
+  ثابت بنية abi_params *pabi;
   ffi_type **arg_types;
-  char *argp;
-  void *rvalue;
-  void **avalue;
+  حرف *argp;
+  فراغ *rvalue;
+  فراغ **avalue;
 
   cabi = cif->abi;
   flags = cif->flags;
   narg_reg = 0;
-  rvalue = frame->rettemp;
+  rvalue = چوکٺو->rettemp;
   pabi = &abi_params[cabi];
   dir = pabi->dir;
-  argp = (dir < 0 ? stack + STACK_ALIGN (cif->bytes) : stack);
+  argp = (dir < 0 ? ڍير + ڍير_ALIGN (cif->بائيٽون) : ڍير);
 
-  switch (flags)
+  بدل (flags)
     {
-    case X86_RET_STRUCTARG:
-      if (pabi->nregs > 0)
+    حالة X86_RET_STRUCTARG:
+      إذا (pabi->nregs > 0)
 	{
-	  rvalue = (void *)frame->regs[pabi->regs[0]];
+	  rvalue = (فراغ *)چوکٺو->regs[pabi->regs[0]];
 	  narg_reg = 1;
-	  frame->rettemp[0] = (unsigned)rvalue;
-	  break;
+	  چوکٺو->rettemp[0] = (بنانشان)rvalue;
+	  اكسر;
 	}
       /* fallthru */
-    case X86_RET_STRUCTPOP:
-      rvalue = *(void **)argp;
-      argp += sizeof(void *);
-      frame->rettemp[0] = (unsigned)rvalue;
-      break;
+    حالة X86_RET_STRUCTPOP:
+      rvalue = *(فراغ **)argp;
+      argp += حجم(فراغ *);
+      چوکٺو->rettemp[0] = (بنانشان)rvalue;
+      اكسر;
     }
 
   n = cif->nargs;
-  avalue = alloca(sizeof(void *) * n);
+  avalue = alloca(حجم(فراغ *) * n);
 
   arg_types = cif->arg_types;
-  for (i = 0; i < n; ++i)
+  لكل (i = 0; i < n; ++i)
     {
       ffi_type *ty = arg_types[i];
-      size_t z = ty->size;
-      int t = ty->type;
-      void *valp;
+      size_t z = ty->سائيز;
+      صحيح t = ty->type;
+      فراغ *valp;
 
-      if (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
+      إذا (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
 	{
-	  if (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
-	    valp = &frame->regs[pabi->regs[narg_reg++]];
-	  else if (dir < 0)
+	  إذا (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
+	    valp = &چوکٺو->regs[pabi->regs[narg_reg++]];
+	  وإلا إذا (dir < 0)
 	    {
 	      argp -= 4;
 	      valp = argp;
 	    }
-	  else
+	  وإلا
 	    {
 	      valp = argp;
 	      argp += 4;
 	    }
 	}
-      else
+      وإلا
 	{
 	  size_t za = FFI_ALIGN (z, FFI_SIZEOF_ARG);
 	  size_t align = FFI_SIZEOF_ARG;
 
 	  /* See the comment in ffi_call_int.  */
-	  if (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
+	  إذا (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
 	    align = 16;
 
 	  /* Issue 434: For thiscall and fastcall, if the parameter passed
 	     as 64-bit integer or struct, all following integer parameters
 	     will be passed on stack.  */
-	  if ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
+	  إذا ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
 	      && (t == FFI_TYPE_SINT64
 		  || t == FFI_TYPE_UINT64
 		  || t == FFI_TYPE_STRUCT))
 	    narg_reg = 2;
 
-	  if (dir < 0)
+	  إذا (dir < 0)
 	    {
 	      /* ??? These reverse argument ABIs are probably too old
 		 to have cared about alignment.  Someone should check.  */
 	      argp -= za;
 	      valp = argp;
 	    }
-	  else
+	  وإلا
 	    {
-	      argp = (char *)FFI_ALIGN (argp, align);
+	      argp = (حرف *)FFI_ALIGN (argp, align);
 	      valp = argp;
 	      argp += za;
 	    }
@@ -546,14 +546,14 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
       avalue[i] = valp;
     }
 
-  frame->fun (cif, rvalue, avalue, frame->user_data);
+  چوکٺو->fun (cif, rvalue, avalue, چوکٺو->user_معلومات);
 
-  switch (cabi)
+  بدل (cabi)
     {
-    case FFI_STDCALL:
-      return flags | (cif->bytes << X86_RET_POP_SHIFT);
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
+    حالة FFI_STDCALL:
+      أرجع flags | (cif->بائيٽون << X86_RET_ڪڍو_سرڪايو);
+    حالة FFI_THISCALL:
+    حالة FFI_FASTCALL:
       /* The callee must pop exactly the bytes that were passed on the
 	 stack.  Deriving that from cif->bytes minus narg_reg * 4 is wrong
 	 once narg_reg has been force-bumped to 2 (above) for a 64-bit or
@@ -561,57 +561,57 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
 	 then discounts register slots that were never used, under-popping
 	 the stack.  argp has advanced past exactly the stack-resident
 	 arguments (dir == 1 for these ABIs), so use that directly.  */
-      return flags | (((unsigned) (argp - stack)) << X86_RET_POP_SHIFT);
-    default:
-      return flags;
+      أرجع flags | (((بنانشان) (argp - ڍير)) << X86_RET_ڪڍو_سرڪايو);
+    افتراضي:
+      أرجع flags;
     }
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_حالت
+ffi_prep_گهيرو_loc (ffi_گهيرو* گهيرو,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      فراغ (*fun)(ffi_cif*,فراغ*,فراغ**,فراغ*),
+                      فراغ *user_معلومات,
+                      فراغ *codeloc)
 {
-  char *tramp = closure->tramp;
-  void (*dest)(void);
-  int op = 0xb8;  /* movl imm, %eax */
+  حرف *tramp = گهيرو->tramp;
+  فراغ (*dest)(فراغ);
+  صحيح op = 0xb8;  /* movl imm, %eax */
 
-  switch (cif->abi)
+  بدل (cif->abi)
     {
-    case FFI_SYSV:
-    case FFI_MS_CDECL:
-      dest = ffi_closure_i386;
-      break;
-    case FFI_STDCALL:
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
-    case FFI_PASCAL:
-      dest = ffi_closure_STDCALL;
-      break;
-    case FFI_REGISTER:
-      dest = ffi_closure_REGISTER;
+    حالة FFI_SYSV:
+    حالة FFI_MS_CDECL:
+      dest = ffi_گهيرو_i386;
+      اكسر;
+    حالة FFI_STDCALL:
+    حالة FFI_THISCALL:
+    حالة FFI_FASTCALL:
+    حالة FFI_PASCAL:
+      dest = ffi_گهيرو_STDCALL;
+      اكسر;
+    حالة FFI_رجسٽر:
+      dest = ffi_گهيرو_رجسٽر;
       op = 0x68;  /* pushl imm */
-      break;
-    default:
-      return FFI_BAD_ABI;
+      اكسر;
+    افتراضي:
+      أرجع FFI_BAD_ABI;
     }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#إذا defined(FFI_EXEC_STATIC_TRAMP)
+  إذا (ffi_tramp_is_present(گهيرو))
     {
       /* Initialize the static trampoline's parameters. */
-      if (dest == ffi_closure_i386)
-        dest = ffi_closure_i386_alt;
-      else if (dest == ffi_closure_STDCALL)
-        dest = ffi_closure_STDCALL_alt;
-      else
-        dest = ffi_closure_REGISTER_alt;
-      ffi_tramp_set_parms (closure->ftramp, dest, closure);
-      goto out;
+      إذا (dest == ffi_گهيرو_i386)
+        dest = ffi_گهيرو_i386_alt;
+      وإلا إذا (dest == ffi_گهيرو_STDCALL)
+        dest = ffi_گهيرو_STDCALL_alt;
+      وإلا
+        dest = ffi_گهيرو_رجسٽر_alt;
+      ffi_tramp_سيٽ_parms (گهيرو->ftramp, dest, گهيرو);
+      اذهب ٻاهريون;
     }
-#endif
+#جيڪڏهن_پورو
 
   /* Initialize the dynamic trampoline. */
   /* endbr32.  */
@@ -619,223 +619,223 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
   /* movl or pushl immediate.  */
   tramp[4] = op;
-  *(void **)(tramp + 5) = codeloc;
+  *(فراغ **)(tramp + 5) = codeloc;
 
   /* jmp dest */
   tramp[9] = 0xe9;
-  *(unsigned *)(tramp + 10) = (unsigned)dest - ((unsigned)codeloc + 14);
+  *(بنانشان *)(tramp + 10) = (بنانشان)dest - ((بنانشان)codeloc + 14);
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-out:
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+#إذا defined(FFI_EXEC_STATIC_TRAMP)
+ٻاهريون:
+#جيڪڏهن_پورو
+  گهيرو->cif = cif;
+  گهيرو->fun = fun;
+  گهيرو->user_معلومات = user_معلومات;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-#ifdef FFI_GO_CLOSURES
+#جيڪڏهن_وصف_ٿيل FFI_GO_CLOSURES
 
-void FFI_HIDDEN ffi_go_closure_EAX(void);
-void FFI_HIDDEN ffi_go_closure_ECX(void);
-void FFI_HIDDEN ffi_go_closure_STDCALL(void);
+فراغ FFI_HIDDEN ffi_go_گهيرو_EAX(فراغ);
+فراغ FFI_HIDDEN ffi_go_گهيرو_ECX(فراغ);
+فراغ FFI_HIDDEN ffi_go_گهيرو_STDCALL(فراغ);
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*,void*,void**,void*))
+ffi_حالت
+ffi_prep_go_گهيرو (ffi_go_گهيرو* گهيرو, ffi_cif* cif,
+		     فراغ (*fun)(ffi_cif*,فراغ*,فراغ**,فراغ*))
 {
-  void (*dest)(void);
+  فراغ (*dest)(فراغ);
 
-  switch (cif->abi)
+  بدل (cif->abi)
     {
-    case FFI_SYSV:
-    case FFI_MS_CDECL:
-      dest = ffi_go_closure_ECX;
-      break;
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
-      dest = ffi_go_closure_EAX;
-      break;
-    case FFI_STDCALL:
-    case FFI_PASCAL:
-      dest = ffi_go_closure_STDCALL;
-      break;
-    case FFI_REGISTER:
-    default:
-      return FFI_BAD_ABI;
+    حالة FFI_SYSV:
+    حالة FFI_MS_CDECL:
+      dest = ffi_go_گهيرو_ECX;
+      اكسر;
+    حالة FFI_THISCALL:
+    حالة FFI_FASTCALL:
+      dest = ffi_go_گهيرو_EAX;
+      اكسر;
+    حالة FFI_STDCALL:
+    حالة FFI_PASCAL:
+      dest = ffi_go_گهيرو_STDCALL;
+      اكسر;
+    حالة FFI_رجسٽر:
+    افتراضي:
+      أرجع FFI_BAD_ABI;
     }
 
-  closure->tramp = dest;
-  closure->cif = cif;
-  closure->fun = fun;
+  گهيرو->tramp = dest;
+  گهيرو->cif = cif;
+  گهيرو->fun = fun;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-#endif /* FFI_GO_CLOSURES */
+#جيڪڏهن_پورو /* FFI_GO_CLOSURES */
 
 /* ------- Native raw API support -------------------------------- */
 
-#if !FFI_NO_RAW_API
+#إذا !FFI_NO_RAW_API
 
-void FFI_HIDDEN ffi_closure_raw_SYSV(void);
-void FFI_HIDDEN ffi_closure_raw_THISCALL(void);
+فراغ FFI_HIDDEN ffi_گهيرو_raw_SYSV(فراغ);
+فراغ FFI_HIDDEN ffi_گهيرو_raw_THISCALL(فراغ);
 
-ffi_status
-ffi_prep_raw_closure_loc (ffi_raw_closure *closure,
+ffi_حالت
+ffi_prep_raw_گهيرو_loc (ffi_raw_گهيرو *گهيرو,
                           ffi_cif *cif,
-                          void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-                          void *user_data,
-                          void *codeloc)
+                          فراغ (*fun)(ffi_cif*,فراغ*,ffi_raw*,فراغ*),
+                          فراغ *user_معلومات,
+                          فراغ *codeloc)
 {
-  char *tramp = closure->tramp;
-  void (*dest)(void);
-  int i;
+  حرف *tramp = گهيرو->tramp;
+  فراغ (*dest)(فراغ);
+  صحيح i;
 
   /* We currently don't support certain kinds of arguments for raw
      closures.  This should be implemented by a separate assembly
      language routine, since it would require argument processing,
      something we don't do now for performance.  */
-  for (i = cif->nargs-1; i >= 0; i--)
-    switch (cif->arg_types[i]->type)
+  لكل (i = cif->nargs-1; i >= 0; i--)
+    بدل (cif->arg_types[i]->type)
       {
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_LONGDOUBLE:
-	return FFI_BAD_TYPEDEF;
+      حالة FFI_TYPE_STRUCT:
+      حالة FFI_TYPE_LONGDOUBLE:
+	أرجع FFI_BAD_TYPEDEF;
       }
 
-  switch (cif->abi)
+  بدل (cif->abi)
     {
-    case FFI_THISCALL:
-      dest = ffi_closure_raw_THISCALL;
-      break;
-    case FFI_SYSV:
-      dest = ffi_closure_raw_SYSV;
-      break;
-    default:
-      return FFI_BAD_ABI;
+    حالة FFI_THISCALL:
+      dest = ffi_گهيرو_raw_THISCALL;
+      اكسر;
+    حالة FFI_SYSV:
+      dest = ffi_گهيرو_raw_SYSV;
+      اكسر;
+    افتراضي:
+      أرجع FFI_BAD_ABI;
     }
 
   /* movl imm, %eax.  */
   tramp[0] = 0xb8;
-  *(void **)(tramp + 1) = codeloc;
+  *(فراغ **)(tramp + 1) = codeloc;
 
   /* jmp dest */
   tramp[5] = 0xe9;
-  *(unsigned *)(tramp + 6) = (unsigned)dest - ((unsigned)codeloc + 10);
+  *(بنانشان *)(tramp + 6) = (بنانشان)dest - ((بنانشان)codeloc + 10);
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  گهيرو->cif = cif;
+  گهيرو->fun = fun;
+  گهيرو->user_معلومات = user_معلومات;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-void
-ffi_raw_call(ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *avalue)
+فراغ
+ffi_raw_call(ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, ffi_raw *avalue)
 {
-  size_t rsize, bytes;
-  struct call_frame *frame;
-  char *stack, *argp;
+  size_t rsize, بائيٽون;
+  بنية call_چوکٺو *چوکٺو;
+  حرف *ڍير, *argp;
   ffi_type **arg_types;
-  int flags, cabi, i, n, narg_reg;
-  const struct abi_params *pabi;
+  صحيح flags, cabi, i, n, narg_reg;
+  ثابت بنية abi_params *pabi;
 
   flags = cif->flags;
   cabi = cif->abi;
   pabi = &abi_params[cabi];
 
   rsize = 0;
-  if (rvalue == NULL)
+  إذا (rvalue == عدم)
     {
-      switch (flags)
+      بدل (flags)
 	{
-	case X86_RET_FLOAT:
-	case X86_RET_DOUBLE:
-	case X86_RET_LDOUBLE:
-	case X86_RET_STRUCTPOP:
-	case X86_RET_STRUCTARG:
+	حالة X86_RET_FLOAT:
+	حالة X86_RET_DOUBLE:
+	حالة X86_RET_LDOUBLE:
+	حالة X86_RET_STRUCTPOP:
+	حالة X86_RET_STRUCTARG:
 	  /* The float cases need to pop the 387 stack.
 	     The struct cases need to pass a valid pointer to the callee.  */
-	  rsize = cif->rtype->size;
-	  break;
-	default:
+	  rsize = cif->rtype->سائيز;
+	  اكسر;
+	افتراضي:
 	  /* We can pretend that the callee returns nothing.  */
 	  flags = X86_RET_VOID;
-	  break;
+	  اكسر;
 	}
     }
 
-  bytes = STACK_ALIGN (cif->bytes);
-  argp = stack =
-      (void *)((uintptr_t)alloca(bytes + sizeof(*frame) + rsize + 15) & ~16);
-  frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
-    rvalue = frame + 1;
+  بائيٽون = ڍير_ALIGN (cif->بائيٽون);
+  argp = ڍير =
+      (فراغ *)((uintptr_t)alloca(بائيٽون + حجم(*چوکٺو) + rsize + 15) & ~16);
+  چوکٺو = (بنية call_چوکٺو *)(ڍير + بائيٽون);
+  إذا (rsize)
+    rvalue = چوکٺو + 1;
 
-  frame->fn = fn;
-  frame->flags = flags;
-  frame->rvalue = rvalue;
+  چوکٺو->fn = fn;
+  چوکٺو->flags = flags;
+  چوکٺو->rvalue = rvalue;
 
   narg_reg = 0;
-  switch (flags)
+  بدل (flags)
     {
-    case X86_RET_STRUCTARG:
+    حالة X86_RET_STRUCTARG:
       /* The pointer is passed as the first argument.  */
-      if (pabi->nregs > 0)
+      إذا (pabi->nregs > 0)
 	{
-	  frame->regs[pabi->regs[0]] = (unsigned)rvalue;
+	  چوکٺو->regs[pabi->regs[0]] = (بنانشان)rvalue;
 	  narg_reg = 1;
-	  break;
+	  اكسر;
 	}
       /* fallthru */
-    case X86_RET_STRUCTPOP:
-      *(void **)argp = rvalue;
-      argp += sizeof(void *);
-      bytes -= sizeof(void *);
-      break;
+    حالة X86_RET_STRUCTPOP:
+      *(فراغ **)argp = rvalue;
+      argp += حجم(فراغ *);
+      بائيٽون -= حجم(فراغ *);
+      اكسر;
     }
 
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; narg_reg < pabi->nregs && i < n; i++)
+  لكل (i = 0, n = cif->nargs; narg_reg < pabi->nregs && i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      size_t z = ty->size;
-      int t = ty->type;
+      size_t z = ty->سائيز;
+      صحيح t = ty->type;
 
-      if (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT && t != FFI_TYPE_FLOAT)
+      إذا (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT && t != FFI_TYPE_FLOAT)
 	{
 	  ffi_arg val = extend_basic_type (avalue, t);
-	  frame->regs[pabi->regs[narg_reg++]] = val;
+	  چوکٺو->regs[pabi->regs[narg_reg++]] = val;
 	  z = FFI_SIZEOF_ARG;
 	}
-      else
+      وإلا
 	{
-	  memcpy (argp, avalue, z);
+	  يادگيري_نقل (argp, avalue, z);
 	  z = FFI_ALIGN (z, FFI_SIZEOF_ARG);
 	  argp += z;
 	}
       avalue += z;
-      bytes -= z;
+      بائيٽون -= z;
     }
-  if (i < n)
-    memcpy (argp, avalue, bytes);
+  إذا (i < n)
+    يادگيري_نقل (argp, avalue, بائيٽون);
 
-  ffi_call_i386 (frame, stack);
+  ffi_call_i386 (چوکٺو, ڍير);
 }
-#endif /* !FFI_NO_RAW_API */
+#جيڪڏهن_پورو /* !FFI_NO_RAW_API */
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#إذا defined(FFI_EXEC_STATIC_TRAMP)
+فراغ *
+ffi_tramp_arch (size_t *tramp_سائيز, size_t *map_سائيز)
 {
-  extern void *trampoline_code_table;
+  خارجي فراغ *trampoline_ڪوڊ_جدول;
 
-  *map_size = X86_TRAMP_MAP_SIZE;
-  *tramp_size = X86_TRAMP_SIZE;
-  return &trampoline_code_table;
+  *map_سائيز = X86_TRAMP_MAP_سائيز;
+  *tramp_سائيز = X86_TRAMP_سائيز;
+  أرجع &trampoline_ڪوڊ_جدول;
 }
-#endif
+#جيڪڏهن_پورو
 
-#endif /* __i386__ */
+#جيڪڏهن_پورو /* __i386__ */
