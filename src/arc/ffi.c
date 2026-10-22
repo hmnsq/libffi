@@ -45,7 +45,7 @@ typedef struct call_context
 typedef struct call_builder
 {
   call_context *aregs;
-  int used_integer;
+  정수 used_integer;
   //int used_float;
   size_t *used_stack;
   void *struct_stack;
@@ -53,17 +53,17 @@ typedef struct call_builder
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if defined(__ARC64_ARCH64__)
+#만약 defined(__ARC64_ARCH64__)
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#아니면
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
 #endif
 
 /* for little endian ARC, the code is in fact stored as mixed endian for
    performance reasons */
-#if __BIG_ENDIAN__
+#만약 __BIG_ENDIAN__
 #define CODE_ENDIAN(x) (x)
-#else
+#아니면
 #define CODE_ENDIAN(x) ( (((uint32_t) (x)) << 16) | (((uint32_t) (x)) >> 16))
 #endif
 
@@ -94,11 +94,11 @@ ffi_prep_cif_machdep (ffi_cif * cif)
       break;
     }
 
-  return FFI_OK;
+  반환 FFI_OK;
 }
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
+static void marshal_atom(call_builder *cb, 정수 type, void *data) {
   size_t value = 0;
   switch (type) {
     case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
@@ -108,7 +108,7 @@ static void marshal_atom(call_builder *cb, int type, void *data) {
     /* 32-bit quantities are always sign-extended in the ABI */
     case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
     case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if defined(__ARC64_ARCH64__)
+#만약 defined(__ARC64_ARCH64__)
     case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
     case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
 #endif
@@ -116,60 +116,60 @@ static void marshal_atom(call_builder *cb, int type, void *data) {
     default: FFI_ASSERT(0); break;
   }
 
-  if (cb->used_integer == NARGREG) {
+  만약 (cb->used_integer == NARGREG) {
     *cb->used_stack++ = value;
-  } else {
+  } 아니면 {
     cb->aregs->r[cb->used_integer++] = value;
   }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
+static void marshal(call_builder *cb, ffi_type *type, 정수 var, void *data) {
   size_t realign[2];
 
-#if (defined(__ARC64_ARCH64__) || defined(__ARC64_ARCH32__))
-  if (type->size > 2 * __SIZEOF_POINTER__) {
-    if (var) {
+#만약 (defined(__ARC64_ARCH64__) || defined(__ARC64_ARCH32__))
+  만약 (type->size > 2 * __SIZEOF_POINTER__) {
+    만약 (var) {
       marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else {
+    } 아니면 {
       /* copy to stack and pass by reference */
       data = memcpy (cb->struct_stack, data, type->size);
       cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
       marshal_atom(cb, FFI_TYPE_POINTER, &data);
     }
   }
-#else
-  if (type->type == FFI_TYPE_STRUCT) {
-    if (var) {
-      if (type->size > 0)
+#아니면
+  만약 (type->type == FFI_TYPE_STRUCT) {
+    만약 (var) {
+      만약 (type->size > 0)
         marshal_atom(cb, FFI_TYPE_POINTER, data);
-    } else {
-      int i;
+    } 아니면 {
+      정수 i;
       
-      for (i = 0; i < type->size; i += sizeof(size_t)) {
+      위해 (i = 0; i < type->size; i += sizeof(size_t)) {
         marshal_atom(cb, FFI_TYPE_POINTER, data);
         data += sizeof(size_t);
       }
     }
   }
 #endif
-  else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+  아니면 만약 (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
     marshal_atom(cb, type->type, data);
-  } else {
+  } 아니면 {
       memcpy(realign, data, type->size);
-      if (type->size > 0)
+      만약 (type->size > 0)
         marshal_atom(cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
+      만약 (type->size > __SIZEOF_POINTER__)
         marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
   }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
+static void unmarshal_atom(call_builder *cb, 정수 type, void *data) {
   size_t value;
 
-  if (cb->used_integer == NARGREG) {
+  만약 (cb->used_integer == NARGREG) {
     value = *cb->used_stack++;
-  } else {
+  } 아니면 {
     value = cb->aregs->r[cb->used_integer++];
   }
 
@@ -180,7 +180,7 @@ static void unmarshal_atom(call_builder *cb, int type, void *data) {
     case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
     case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
     case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if defined(__ARC64_ARCH64__)
+#만약 defined(__ARC64_ARCH64__)
     case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
     case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
 #endif
@@ -190,72 +190,72 @@ static void unmarshal_atom(call_builder *cb, int type, void *data) {
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
+static void *unmarshal(call_builder *cb, ffi_type *type, 정수 var, void *data) {
   size_t realign[2];
 
-#if defined(__ARC64_ARCH64__)
+#만약 defined(__ARC64_ARCH64__)
   void *pointer;
 
-  if (type->size > 2 * __SIZEOF_POINTER__) {
+  만약 (type->size > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
         unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
+        반환 pointer;
     }
 #elif defined(__ARC64_ARCH32__)
-  if (type->type == FFI_TYPE_STRUCT) {
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+  만약 (type->type == FFI_TYPE_STRUCT) {
+    만약 (type->size > 2 * __SIZEOF_POINTER__) {
       unmarshal_atom(cb, FFI_TYPE_POINTER, &realign[0]);
       memcpy(data, (const void*)realign[0], type->size);
-      return data;
-    } else {
-      int i;
+      반환 data;
+    } 아니면 {
+      정수 i;
       void *pdata = data;
 
-      for (i = 0; i < type->size; i += sizeof(size_t)) {
+      위해 (i = 0; i < type->size; i += sizeof(size_t)) {
         unmarshal_atom(cb, FFI_TYPE_POINTER, pdata);
         pdata += sizeof(size_t);
       }
-      return data;
+      반환 data;
     }
   }
-#else
-  if (type->type == FFI_TYPE_STRUCT) {
+#아니면
+  만약 (type->type == FFI_TYPE_STRUCT) {
 
-      if (var) {
-        int i;
+      만약 (var) {
+        정수 i;
         void *pdata = data;
 
-        for (i = 0; i < type->size; i += sizeof(size_t)) {
+        위해 (i = 0; i < type->size; i += sizeof(size_t)) {
           unmarshal_atom(cb, FFI_TYPE_POINTER, pdata);
           pdata += sizeof(size_t);
         }
-        return data;
-      } else {
-        if (type->size > 0)
+        반환 data;
+      } 아니면 {
+        만약 (type->size > 0)
           unmarshal_atom(cb, FFI_TYPE_POINTER, &realign[0]);
         memcpy(data, (const void*)realign[0], type->size);
-        return data;
+        반환 data;
       }
   }
 #endif
-  else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+  아니면 만약 (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
     unmarshal_atom(cb, type->type, data);
-    return data;
-  } else {
-      if (type->size > 0)
+    반환 data;
+  } 아니면 {
+      만약 (type->size > 0)
         unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
+      만약 (type->size > __SIZEOF_POINTER__)
         unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
       memcpy(data, realign, type->size);
-      return data;
+      반환 data;
   }
 }
 
-static int passed_by_ref(ffi_type *type, int var) {
-  if (type->type == FFI_TYPE_STRUCT)
-	  return 1;
+static 정수 passed_by_ref(ffi_type *type, 정수 var) {
+  만약 (type->type == FFI_TYPE_STRUCT)
+	  반환 1;
   
-  return type->size > 2 * __SIZEOF_POINTER__;
+  반환 type->size > 2 * __SIZEOF_POINTER__;
 }
 
 /* Low level routine for calling functions */
@@ -266,7 +266,7 @@ static void
 ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
 	      void *closure)
 {
-  int return_by_ref = passed_by_ref(cif->rtype, 0);
+  정수 return_by_ref = passed_by_ref(cif->rtype, 0);
 
   /* Allocate space for stack arg parameters.  */
   size_t arg_bytes = FFI_ALIGN(2 * sizeof(size_t) * cif->nargs, STKALIGN);
@@ -290,19 +290,19 @@ ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
   // if (cif->rtype->type == FFI_TYPE_STRUCT)
   //   marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-  if (return_by_ref)
+  만약 (return_by_ref)
 	  marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-  int i;
-  for (i = 0; i < cif->nargs; i++)
+  정수 i;
+  위해 (i = 0; i < cif->nargs; i++)
     marshal(&cb, cif->arg_types[i], 0, avalue[i]);
 
   ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
 
   cb.used_integer = 0;
-  if (!return_by_ref && rvalue)
+  만약 (!return_by_ref && rvalue)
     {
-	    if (IS_INT(cif->rtype->type)
+	    만약 (IS_INT(cif->rtype->type)
 	        && cif->rtype->size < sizeof (ffi_arg))
 	    {
         /* Integer types smaller than ffi_arg need to be extended.  */
@@ -323,7 +323,7 @@ ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
 		      break;
 	      }
 	    }
-	    else
+	    아니면
 	      unmarshal(&cb, cif->rtype, 0, rvalue);
     }
 }
@@ -350,13 +350,13 @@ ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
 {
   uint32_t *tramp = (uint32_t *) & (closure->tramp[0]);
 
-#if defined(__ARC64_ARCH64__)
+#만약 defined(__ARC64_ARCH64__)
   size_t address_ffi_closure = (size_t) ffi_closure_asm;
 #endif
 
   switch (cif->abi)
     {
-#if defined(__ARC64_ARCH64__)
+#만약 defined(__ARC64_ARCH64__)
     case FFI_ARC64:
       FFI_ASSERT (tramp == codeloc);
       tramp[0] = CODE_ENDIAN (0x580a1fc0);	/* movl r8, pcl  */
@@ -366,7 +366,7 @@ ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
       tramp[4] = CODE_ENDIAN ((uint32_t)(address_ffi_closure & 0xffffffff));
       tramp[5] = CODE_ENDIAN (0x20200300);	/* j [r12] */
       break;
-#else
+#아니면
     case FFI_ARCOMPACT:
       FFI_ASSERT (tramp == codeloc);
       tramp[0] = CODE_ENDIAN (0x200a1fc0);	/* mov r8, pcl  */
@@ -376,7 +376,7 @@ ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
 #endif
 
     default:
-      return FFI_BAD_ABI;
+      반환 FFI_BAD_ABI;
     }
 
   closure->cif = cif;
@@ -384,7 +384,7 @@ ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
   closure->user_data = user_data;
   cacheflush (codeloc, FFI_TRAMPOLINE_SIZE, BCACHE);
 
-  return FFI_OK;
+  반환 FFI_OK;
 }
 
 extern void ffi_go_closure_asm (void) FFI_HIDDEN;
@@ -393,14 +393,14 @@ ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 		     void (*fun) (ffi_cif *, void *, void **, void *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  만약 (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    반환 FFI_BAD_ABI;
 
   closure->tramp = (void *) ffi_go_closure_asm;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  반환 FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
@@ -421,26 +421,26 @@ ffi_closure_inner (ffi_cif *cif,
     char *ptr = astorage;
     void *rvalue;
     call_builder cb;
-    int i;
+    정수 i;
 
     cb.aregs = aregs;
     cb.used_integer = 0;
     cb.used_stack = stack;
     
     /* handle hidden argument */
-    if (cif->flags == FFI_TYPE_STRUCT)
+    만약 (cif->flags == FFI_TYPE_STRUCT)
       unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
+    아니면
       rvalue = alloca(cif->rtype->size);
 
-    for (i = 0; i < cif->nargs; i++) {
+    위해 (i = 0; i < cif->nargs; i++) {
       avalue[i] = unmarshal(&cb, cif->arg_types[i], 1, ptr);
       ptr += cif->arg_types[i]->size;
     }
 
     fun (cif, rvalue, avalue, user_data);
 
-    if (cif->rtype->type != FFI_TYPE_VOID) {
+    만약 (cif->rtype->type != FFI_TYPE_VOID) {
         cb.used_integer = 0;
         marshal(&cb, cif->rtype, 1, rvalue);
     }

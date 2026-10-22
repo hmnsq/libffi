@@ -28,12 +28,12 @@
 #include <ffi_common.h>
 
 extern void ffi_call_SYSV(void (*)(void*, extended_cif*), extended_cif*,
-		unsigned int, unsigned int, unsigned int*, void (*fn)(void),
-		unsigned int, unsigned int);
+		unsigned 정수, unsigned 정수, unsigned 정수*, void (*fn)(void),
+		unsigned 정수, unsigned 정수);
 
 extern void ffi_closure_SYSV(void);
 
-#define WORD_SIZE			sizeof(unsigned int)
+#define WORD_SIZE			sizeof(unsigned 정수)
 #define ARGS_REGISTER_SIZE	(WORD_SIZE * 6)
 #define WORD_FFI_ALIGN(x)		FFI_ALIGN(x, WORD_SIZE)
 
@@ -41,18 +41,18 @@ extern void ffi_closure_SYSV(void);
    has been allocated for the function's arguments */
 void ffi_prep_args(void* stack, extended_cif* ecif)
 {
-	unsigned int i;
+	unsigned 정수 i;
 	ffi_type** p_arg;
 	void** p_argv;
 	void* stack_args_p = stack;
 
-	if (ecif == NULL || ecif->cif == NULL) {
-		return; /* no description to prepare */
+	만약 (ecif == NULL || ecif->cif == NULL) {
+		반환; /* no description to prepare */
 	}
 
 	p_argv = ecif->avalue;
 
-	if ((ecif->cif->rtype != NULL) &&
+	만약 ((ecif->cif->rtype != NULL) &&
 			(ecif->cif->rtype->type == FFI_TYPE_STRUCT))
 	{
 		/* if return type is a struct which is referenced on the stack/reg5,
@@ -63,18 +63,18 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 		stack_args_p += WORD_SIZE;
 	}
 
-	if (ecif->avalue == NULL) {
-		return; /* no arguments to prepare */
+	만약 (ecif->avalue == NULL) {
+		반환; /* no arguments to prepare */
 	}
 
-	for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+	위해 (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
 			i++, p_arg++)
 	{
 		size_t size = (*p_arg)->size;
-		int type = (*p_arg)->type;
+		정수 type = (*p_arg)->type;
 		void* value = p_argv[i];
 		char* addr = stack_args_p;
-		int aligned_size = WORD_FFI_ALIGN(size);
+		정수 aligned_size = WORD_FFI_ALIGN(size);
 
 		/* force word alignment on the stack */
 		stack_args_p += aligned_size;
@@ -82,19 +82,19 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 		switch (type)
 		{
 			case FFI_TYPE_UINT8:
-				*(unsigned int *)addr = (unsigned int)*(UINT8*)(value);
+				*(unsigned 정수 *)addr = (unsigned 정수)*(UINT8*)(value);
 				break;
 			case FFI_TYPE_SINT8:
-				*(signed int *)addr = (signed int)*(SINT8*)(value);
+				*(signed 정수 *)addr = (signed 정수)*(SINT8*)(value);
 				break;
 			case FFI_TYPE_UINT16:
-				*(unsigned int *)addr = (unsigned int)*(UINT16*)(value);
+				*(unsigned 정수 *)addr = (unsigned 정수)*(UINT16*)(value);
 				break;
 			case FFI_TYPE_SINT16:
-				*(signed int *)addr = (signed int)*(SINT16*)(value);
+				*(signed 정수 *)addr = (signed 정수)*(SINT16*)(value);
 				break;
 			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+#만약 __BIG_ENDIAN__
 				/*
 				 * MicroBlaze toolchain appears to emit:
 				 * bsrli r5, r5, 8 (caller)
@@ -117,7 +117,7 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 				 * above mentioned case, it will re-align the contents of a
 				 * <= 3-byte struct value.
 				 */
-				if (size < WORD_SIZE)
+				만약 (size < WORD_SIZE)
 				{
 				  memcpy (addr + (WORD_SIZE - size), value, size);
 				  break;
@@ -143,9 +143,9 @@ ffi_status ffi_prep_cif_machdep(ffi_cif* cif)
 		case FFI_SYSV:
 			break;
 		default:
-			return FFI_BAD_ABI;
+			반환 FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	반환 FFI_OK;
 }
 
 void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
@@ -156,9 +156,9 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 
 	/* If the return value is a struct and we don't have a return */
 	/* value address then we need to make one */
-	if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+	만약 ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
 		ecif.rvalue = alloca(cif->rtype->size);
-	} else {
+	} 아니면 {
 		ecif.rvalue = rvalue;
 	}
 
@@ -176,7 +176,7 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 
 void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 			ffi_closure* closure, void* rvalue,
-			unsigned int* rtype, unsigned int* rsize)
+			unsigned 정수* rtype, unsigned 정수* rsize)
 {
 	/* prepare arguments for closure call */
 	ffi_cif* cif = closure->cif;
@@ -191,29 +191,29 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	void** avalue = alloca(cif->nargs * sizeof(void*));
 	void* struct_rvalue = NULL;
 	char* ptr = stackclone;
-	int i;
+	정수 i;
 
 	/* copy registers into stack clone */
-	int registers_used = cif->bytes;
-	if (registers_used > ARGS_REGISTER_SIZE) {
+	정수 registers_used = cif->bytes;
+	만약 (registers_used > ARGS_REGISTER_SIZE) {
 		registers_used = ARGS_REGISTER_SIZE;
 	}
 	memcpy(stackclone, register_args, registers_used);
 
 	/* copy stack allocated args into stack clone */
-	if (cif->bytes > ARGS_REGISTER_SIZE) {
-		int stack_used = cif->bytes - ARGS_REGISTER_SIZE;
+	만약 (cif->bytes > ARGS_REGISTER_SIZE) {
+		정수 stack_used = cif->bytes - ARGS_REGISTER_SIZE;
 		memcpy(stackclone + ARGS_REGISTER_SIZE, stack_args, stack_used);
 	}
 
 	/* preserve struct type return pointer passing */
-	if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+	만약 ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
 		struct_rvalue = *((void**)ptr);
 		ptr += WORD_SIZE;
 	}
 
 	/* populate arg pointer list */
-	for (i = 0; i < cif->nargs; i++)
+	위해 (i = 0; i < cif->nargs; i++)
 	{
 		switch (arg_types[i]->type)
 		{
@@ -221,7 +221,7 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 			case FFI_TYPE_UINT8:
 #ifdef __BIG_ENDIAN__
 				avalue[i] = ptr + 3;
-#else
+#아니면
 				avalue[i] = ptr;
 #endif
 				break;
@@ -229,17 +229,17 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 			case FFI_TYPE_UINT16:
 #ifdef __BIG_ENDIAN__
 				avalue[i] = ptr + 2;
-#else
+#아니면
 				avalue[i] = ptr;
 #endif
 				break;
 			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+#만약 __BIG_ENDIAN__
 				/*
 				 * Work around strange ABI behaviour.
 				 * (see info in ffi_prep_args)
 				 */
-				if (arg_types[i]->size < WORD_SIZE)
+				만약 (arg_types[i]->size < WORD_SIZE)
 				{
 				  memcpy (ptr, ptr + (WORD_SIZE - arg_types[i]->size), arg_types[i]->size);
 				}
@@ -265,11 +265,11 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	/* set the return type info passed back to the wrapper */
 	*rsize = cif->rtype->size;
 	*rtype = cif->rtype->type;
-	if (struct_rvalue != NULL) {
+	만약 (struct_rvalue != NULL) {
 		closure->fun(cif, struct_rvalue, avalue, closure->user_data);
 		/* copy struct return pointer value into function return value */
 		*((void**)rvalue) = struct_rvalue;
-	} else {
+	} 아니면 {
 		closure->fun(cif, rvalue, avalue, closure->user_data);
 	}
 }
@@ -315,7 +315,7 @@ ffi_status ffi_prep_closure_loc(
 
 		break;
 	default:
-		return FFI_BAD_ABI;
+		반환 FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	반환 FFI_OK;
 }

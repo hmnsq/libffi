@@ -209,7 +209,7 @@ METAG_FUNC_START ffi_call_SYSV
 	cmp	D1Ar1, #0
 	beq	LSYM(Lepilogue)
 
-	! return INT
+	! return 정수
 	cmp		D0Ar2, #FFI_TYPE_INT
 	! Sadly, there is no setd{cc} instruction so we need to workaround that
 	bne	.INT64

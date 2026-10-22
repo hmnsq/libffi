@@ -28,7 +28,7 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__arm__) || defined(_M_ARM)
+#만약 defined(__arm__) || defined(_M_ARM)
 #include <fficonfig.h>
 #include <ffi.h>
 #include <ffi_common.h>
@@ -37,21 +37,21 @@
 #include <tramp.h>
 #include "internal.h"
 
-#if defined(_WIN32)
+#만약 defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#만약 FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 #include <mach/machine/vm_param.h>
 #endif
 
-#else
+#아니면
 #ifndef _WIN32
-extern unsigned int ffi_arm_trampoline[2] FFI_HIDDEN;
-#else
+extern unsigned 정수 ffi_arm_trampoline[2] FFI_HIDDEN;
+#아니면
 // Declare this as an array of char, instead of array of int,
 // otherwise Clang optimizes out the "& 0xFFFFFFFE" for clearing
 // the thumb bit.
@@ -59,17 +59,17 @@ extern unsigned char ffi_arm_trampoline[12] FFI_HIDDEN;
 #endif
 #endif
 
-#if defined(__FreeBSD__) && defined(__arm__)
+#만약 defined(__FreeBSD__) && defined(__arm__)
 #include <sys/types.h>
 #include <machine/sysarch.h>
 #endif
 
-#if defined(__QNX__)
+#만약 defined(__QNX__)
 #include <sys/mman.h>
 #endif
 
 /* Forward declares. */
-static int vfp_type_p (const ffi_type *);
+static 정수 vfp_type_p (const ffi_type *);
 static void layout_vfp_args (ffi_cif *);
 
 static void *
@@ -79,12 +79,12 @@ ffi_align (ffi_type *ty, void *p)
   size_t alignment;
 #ifdef _WIN32_WCE
   alignment = 4;
-#else
+#아니면
   alignment = ty->alignment;
-  if (alignment < 4)
+  만약 (alignment < 4)
     alignment = 4;
 #endif
-  return (void *) FFI_ALIGN (p, alignment);
+  반환 (void *) FFI_ALIGN (p, alignment);
 }
 
 static size_t
@@ -140,7 +140,7 @@ ffi_put_arg (ffi_type *ty, void *src, void *dst)
       abort();
     }
 
-  return FFI_ALIGN (z, 4);
+  반환 FFI_ALIGN (z, 4);
 }
 
 /* ffi_prep_args is called once stack space has been allocated
@@ -151,19 +151,19 @@ ffi_put_arg (ffi_type *ty, void *src, void *dst)
    arguments). These are only used for the VFP hard-float ABI.
 */
 static void
-ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
+ffi_prep_args_SYSV (ffi_cif *cif, 정수 flags, void *rvalue,
 		    void **avalue, char *argp)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n;
+  정수 i, n;
 
-  if (flags == ARM_TYPE_STRUCT)
+  만약 (flags == ARM_TYPE_STRUCT)
     {
       *(void **) argp = rvalue;
       argp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  위해 (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
       argp = ffi_align (ty, argp);
@@ -172,11 +172,11 @@ ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
 }
 
 static void
-ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
+ffi_prep_args_VFP (ffi_cif *cif, 정수 flags, void *rvalue,
                    void **avalue, char *stack, char *vfp_space)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n, vi = 0;
+  정수 i, n, vi = 0;
   char *argp, *regp, *eo_regp;
   char stack_used = 0;
   char done_with_regs = 0;
@@ -188,34 +188,34 @@ ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
 
   /* If the function returns an FFI_TYPE_STRUCT in memory,
      that address is passed in r0 to the function.  */
-  if (flags == ARM_TYPE_STRUCT)
+  만약 (flags == ARM_TYPE_STRUCT)
     {
       *(void **) regp = rvalue;
       regp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  위해 (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
       void *a = avalue[i];
-      int is_vfp_type = vfp_type_p (ty);
+      정수 is_vfp_type = vfp_type_p (ty);
 
       /* Allocated in VFP registers. */
-      if (vi < cif->vfp_nargs && is_vfp_type)
+      만약 (vi < cif->vfp_nargs && is_vfp_type)
 	{
 	  char *vfp_slot = vfp_space + cif->vfp_args[vi++] * 4;
 	  ffi_put_arg (ty, a, vfp_slot);
 	  continue;
 	}
       /* Try allocating in core registers. */
-      else if (!done_with_regs && !is_vfp_type)
+      아니면 만약 (!done_with_regs && !is_vfp_type)
 	{
 	  char *tregp = ffi_align (ty, regp);
 	  size_t size = ty->size;
 	  size = (size < 4) ? 4 : size;	// pad
 	  /* Check if there is space left in the aligned register
 	     area to place the argument.  */
-	  if (tregp + size <= eo_regp)
+	  만약 (tregp + size <= eo_regp)
 	    {
 	      regp = tregp + ffi_put_arg (ty, a, tregp);
 	      done_with_regs = (regp == argp);
@@ -226,7 +226,7 @@ ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
 	  /* In case there are no arguments in the stack area yet,
 	     the argument is passed in the remaining core registers
 	     and on the stack.  */
-	  else if (!stack_used)
+	  아니면 만약 (!stack_used)
 	    {
 	      stack_used = 1;
 	      done_with_regs = 1;
@@ -246,14 +246,14 @@ ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-  int flags = 0, cabi = cif->abi;
+  정수 flags = 0, cabi = cif->abi;
   size_t bytes = cif->bytes;
 
   /* Map out the register placements of VFP register args.  The VFP
      hard-float calling conventions are slightly more sophisticated
      than the base calling conventions, so we do it here instead of
      in ffi_prep_args(). */
-  if (cabi == FFI_VFP)
+  만약 (cabi == FFI_VFP)
     layout_vfp_args (cif);
 
   /* Set the return type flag */
@@ -288,16 +288,16 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 
     case FFI_TYPE_STRUCT:
     case FFI_TYPE_COMPLEX:
-      if (cabi == FFI_VFP)
+      만약 (cabi == FFI_VFP)
 	{
-	  int h = vfp_type_p (cif->rtype);
+	  정수 h = vfp_type_p (cif->rtype);
 
 	  flags = ARM_TYPE_VFP_N;
-	  if (h == 0x100 + FFI_TYPE_FLOAT)
+	  만약 (h == 0x100 + FFI_TYPE_FLOAT)
 	    flags = ARM_TYPE_VFP_S;
-	  if (h == 0x100 + FFI_TYPE_DOUBLE)
+	  만약 (h == 0x100 + FFI_TYPE_DOUBLE)
 	    flags = ARM_TYPE_VFP_D;
-	  if (h != 0)
+	  만약 (h != 0)
 	      break;
 	}
 
@@ -305,9 +305,9 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	 A Composite Type larger than 4 bytes, or whose size cannot
 	 be determined statically ... is stored in memory at an
 	 address passed [in r0].  */
-      if (cif->rtype->size <= 4)
+      만약 (cif->rtype->size <= 4)
 	flags = ARM_TYPE_INT;
-      else
+      아니면
 	{
 	  flags = ARM_TYPE_STRUCT;
 	  bytes += 4;
@@ -324,25 +324,25 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   bytes = FFI_ALIGN (bytes, 8);
 
   /* Minimum stack space is the 4 register arguments that we pop.  */
-  if (bytes < 4*4)
+  만약 (bytes < 4*4)
     bytes = 4*4;
 
   cif->bytes = bytes;
   cif->flags = flags;
 
-  return FFI_OK;
+  반환 FFI_OK;
 }
 
 /* Perform machine dependent cif processing for variadic calls */
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif * cif,
-			  unsigned int nfixedargs, unsigned int ntotalargs)
+			  unsigned 정수 nfixedargs, unsigned 정수 ntotalargs)
 {
   /* VFP variadic calls actually use the SYSV ABI */
-  if (cif->abi == FFI_VFP)
+  만약 (cif->abi == FFI_VFP)
     cif->abi = FFI_SYSV;
 
-  return ffi_prep_cif_machdep (cif);
+  반환 ffi_prep_cif_machdep (cif);
 }
 
 /* Prototypes for assembly functions, in sysv.S.  */
@@ -352,7 +352,7 @@ struct call_frame
   void *fp;
   void *lr;
   void *rvalue;
-  int flags;
+  정수 flags;
   void *closure;
 };
 
@@ -365,29 +365,29 @@ static void
 ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
 	      void **avalue, void *closure)
 {
-  int flags = cif->flags;
+  정수 flags = cif->flags;
   ffi_type *rtype = cif->rtype;
   size_t bytes, rsize, vfp_size;
   char *stack, *vfp_space, *new_rvalue;
   struct call_frame *frame;
 
   rsize = 0;
-  if (rvalue == NULL)
+  만약 (rvalue == NULL)
     {
       /* If the return value is a struct and we don't have a return
 	 value address then we need to make one.  Otherwise the return
 	 value is in registers and we can ignore them.  */
-      if (flags == ARM_TYPE_STRUCT)
+      만약 (flags == ARM_TYPE_STRUCT)
 	rsize = rtype->size;
-      else
+      아니면
 	flags = ARM_TYPE_VOID;
     }
-  else if (flags == ARM_TYPE_VFP_N)
+  아니면 만약 (flags == ARM_TYPE_VFP_N)
     {
       /* Largest case is double x 4. */
       rsize = 32;
     }
-  else if (flags == ARM_TYPE_INT && rtype->type == FFI_TYPE_STRUCT)
+  아니면 만약 (flags == ARM_TYPE_INT && rtype->type == FFI_TYPE_STRUCT)
     rsize = 4;
 
   /* Largest case.  */
@@ -397,7 +397,7 @@ ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
   stack = alloca (vfp_size + bytes + sizeof(struct call_frame) + rsize);
 
   vfp_space = NULL;
-  if (vfp_size)
+  만약 (vfp_size)
     {
       vfp_space = stack;
       stack += vfp_size;
@@ -406,25 +406,25 @@ ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
   frame = (struct call_frame *)(stack + bytes);
 
   new_rvalue = rvalue;
-  if (rsize)
+  만약 (rsize)
     new_rvalue = (void *)(frame + 1);
 
   frame->rvalue = new_rvalue;
   frame->flags = flags;
   frame->closure = closure;
 
-  if (vfp_space)
+  만약 (vfp_space)
     {
       ffi_prep_args_VFP (cif, flags, new_rvalue, avalue, stack, vfp_space);
       ffi_call_VFP (vfp_space, frame, fn, cif->vfp_used);
     }
-  else
+  아니면
     {
       ffi_prep_args_SYSV (cif, flags, new_rvalue, avalue, stack);
       ffi_call_SYSV (stack, frame, fn);
     }
 
-  if (rvalue && rvalue != new_rvalue)
+  만약 (rvalue && rvalue != new_rvalue)
     memcpy (rvalue, new_rvalue, rtype->size);
 }
 
@@ -448,35 +448,35 @@ ffi_prep_incoming_args_SYSV (ffi_cif *cif, void *rvalue,
 			     char *argp, void **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n;
+  정수 i, n;
 
-  if (cif->flags == ARM_TYPE_STRUCT)
+  만약 (cif->flags == ARM_TYPE_STRUCT)
     {
       rvalue = *(void **) argp;
       argp += 4;
     }
-  else
+  아니면
     {
-      if (cif->rtype->size && cif->rtype->size < 4)
+      만약 (cif->rtype->size && cif->rtype->size < 4)
         *(uint32_t *) rvalue = 0;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  위해 (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
       size_t z = ty->size;
 
       argp = ffi_align (ty, argp);
 #ifdef __ARMEB__
-      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
+      만약 (z < 4 && ty->type != FFI_TYPE_STRUCT)
 	avalue[i] = (void *) (argp + 4 - z);
-      else
+      아니면
 #endif
       avalue[i] = (void *) argp;
       argp += z;
     }
 
-  return rvalue;
+  반환 rvalue;
 }
 
 static void *
@@ -484,7 +484,7 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
 			    char *vfp_space, void **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n, vi = 0;
+  정수 i, n, vi = 0;
   char *argp, *regp, *eo_regp;
   char done_with_regs = 0;
   char stack_used = 0;
@@ -492,24 +492,24 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
   regp = stack;
   eo_regp = argp = regp + 16;
 
-  if (cif->flags == ARM_TYPE_STRUCT)
+  만약 (cif->flags == ARM_TYPE_STRUCT)
     {
       rvalue = *(void **) regp;
       regp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  위해 (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      int is_vfp_type = vfp_type_p (ty);
+      정수 is_vfp_type = vfp_type_p (ty);
       size_t z = ty->size;
 
-      if (vi < cif->vfp_nargs && is_vfp_type)
+      만약 (vi < cif->vfp_nargs && is_vfp_type)
 	{
 	  avalue[i] = vfp_space + cif->vfp_args[vi++] * 4;
 	  continue;
 	}
-      else if (!done_with_regs && !is_vfp_type)
+      아니면 만약 (!done_with_regs && !is_vfp_type)
 	{
 	  char *tregp = ffi_align (ty, regp);
 
@@ -517,13 +517,13 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
 
 	  /* If the arguments either fits into the registers or uses registers
 	     and stack, while we haven't read other things from the stack */
-	  if (tregp + z <= eo_regp || !stack_used)
+	  만약 (tregp + z <= eo_regp || !stack_used)
 	    {
 	      /* Because we're little endian, this is what it turns into.  */
 #ifdef __ARMEB__
-	      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
+	      만약 (z < 4 && ty->type != FFI_TYPE_STRUCT)
 		avalue[i] = (void *) (tregp + 4 - z);
-	      else
+	      아니면
 #endif
 	      avalue[i] = (void *) tregp;
 	      regp = tregp + z;
@@ -531,12 +531,12 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
 	      /* If we read past the last core register, make sure we
 		 have not read from the stack before and continue
 		 reading after regp.  */
-	      if (regp > eo_regp)
+	      만약 (regp > eo_regp)
 		{
 		  FFI_ASSERT (!stack_used);
 		  argp = regp;
 		}
-	      if (regp >= eo_regp)
+	      만약 (regp >= eo_regp)
 		{
 		  done_with_regs = 1;
 		  stack_used = 1;
@@ -548,18 +548,18 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
       stack_used = 1;
       argp = ffi_align (ty, argp);
 #ifdef __ARMEB__
-      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
+      만약 (z < 4 && ty->type != FFI_TYPE_STRUCT)
 	avalue[i] = (void *) (argp + 4 - z);
-      else
+      아니면
 #endif
       avalue[i] = (void *) argp;
       argp += z;
     }
 
-  return rvalue;
+  반환 rvalue;
 }
 
-#if FFI_CLOSURES
+#만약 FFI_CLOSURES
 
 struct closure_frame
 {
@@ -568,7 +568,7 @@ struct closure_frame
   char argp[];
 };
 
-int FFI_HIDDEN
+정수 FFI_HIDDEN
 ffi_closure_inner_SYSV (ffi_cif *cif,
 		        void (*fun) (ffi_cif *, void *, void **, void *),
 		        void *user_data,
@@ -578,10 +578,10 @@ ffi_closure_inner_SYSV (ffi_cif *cif,
   void *rvalue = ffi_prep_incoming_args_SYSV (cif, frame->result,
 					      frame->argp, avalue);
   fun (cif, rvalue, avalue, user_data);
-  return cif->flags;
+  반환 cif->flags;
 }
 
-int FFI_HIDDEN
+정수 FFI_HIDDEN
 ffi_closure_inner_VFP (ffi_cif *cif,
 		       void (*fun) (ffi_cif *, void *, void **, void *),
 		       void *user_data,
@@ -591,12 +591,12 @@ ffi_closure_inner_VFP (ffi_cif *cif,
   void *rvalue = ffi_prep_incoming_args_VFP (cif, frame->result, frame->argp,
 					     frame->vfp_space, avalue);
   fun (cif, rvalue, avalue, user_data);
-  return cif->flags;
+  반환 cif->flags;
 }
 
 void ffi_closure_SYSV (void) FFI_HIDDEN;
 void ffi_closure_VFP (void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#만약 defined(FFI_EXEC_STATIC_TRAMP)
 void ffi_closure_SYSV_alt (void) FFI_HIDDEN;
 void ffi_closure_VFP_alt (void) FFI_HIDDEN;
 #endif
@@ -608,14 +608,14 @@ void ffi_go_closure_VFP (void) FFI_HIDDEN;
 
 /* the cif must already be prep'ed */
 
-#if defined(__FreeBSD__) && defined(__arm__)
+#만약 defined(__FreeBSD__) && defined(__arm__)
 #define __clear_cache(start, end) do { \
 		struct arm_sync_icache_args ua; 		\
 								\
 		ua.addr = (uintptr_t)(start);			\
 		ua.len = (char *)(end) - (char *)start;		\
 		sysarch(ARM_SYNC_ICACHE, &ua);			\
-	} while (0);
+	} 동안 (0);
 #endif
 
 ffi_status
@@ -626,28 +626,28 @@ ffi_prep_closure_loc (ffi_closure * closure,
 {
   void (*closure_func) (void) = ffi_closure_SYSV;
 
-  if (cif->abi == FFI_VFP)
+  만약 (cif->abi == FFI_VFP)
     {
       /* We only need take the vfp path if there are vfp arguments.  */
-      if (cif->vfp_used)
+      만약 (cif->vfp_used)
 	closure_func = ffi_closure_VFP;
     }
-  else if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  아니면 만약 (cif->abi != FFI_SYSV)
+    반환 FFI_BAD_ABI;
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#만약 FFI_EXEC_TRAMPOLINE_TABLE
   void **config = (void **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
   config[0] = closure;
   config[1] = closure_func;
-#else
+#아니면
 
-# if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+# 만약 defined(FFI_EXEC_STATIC_TRAMP)
+  만약 (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      if (closure_func == ffi_closure_SYSV)
+      만약 (closure_func == ffi_closure_SYSV)
         closure_func = ffi_closure_SYSV_alt;
-      else
+      아니면
         closure_func = ffi_closure_VFP_alt;
       ffi_tramp_set_parms (closure->ftramp, closure_func, closure);
       goto out;
@@ -657,26 +657,26 @@ ffi_prep_closure_loc (ffi_closure * closure,
   /* Initialize the dynamic trampoline. */
 # ifndef _WIN32
   memcpy(closure->tramp, ffi_arm_trampoline, 8);
-# else
+# 아니면
   // cast away function type so MSVC doesn't set the lower bit of the function pointer
   memcpy(closure->tramp, (void*)((uintptr_t)ffi_arm_trampoline & 0xFFFFFFFE), FFI_TRAMPOLINE_CLOSURE_OFFSET);
 # endif
 
-# if defined(__QNX__)
+# 만약 defined(__QNX__)
   msync (closure->tramp, 8, MS_INVALIDATE_ICACHE);	/* clear data map */
   msync (codeloc, 8, MS_INVALIDATE_ICACHE);		/* clear insn map */
 # elif defined(_WIN32)
   FlushInstructionCache(GetCurrentProcess(), closure->tramp, FFI_TRAMPOLINE_SIZE);
-# else
+# 아니면
   __clear_cache(closure->tramp, closure->tramp + 8);	/* clear data map */
   __clear_cache(codeloc, codeloc + 8);			/* clear insn map */
 # endif
 # ifdef _WIN32
   *(void(**)(void))(closure->tramp + FFI_TRAMPOLINE_CLOSURE_FUNCTION) = closure_func;
-# else
+# 아니면
   *(void (**)(void))(closure->tramp + 8) = closure_func;
 # endif
-# if defined(FFI_EXEC_STATIC_TRAMP)
+# 만약 defined(FFI_EXEC_STATIC_TRAMP)
 out:
 # endif
 #endif
@@ -685,7 +685,7 @@ out:
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  반환 FFI_OK;
 }
 
 #ifdef FFI_GO_CLOSURES
@@ -695,20 +695,20 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 {
   void (*closure_func) (void) = ffi_go_closure_SYSV;
 
-  if (cif->abi == FFI_VFP)
+  만약 (cif->abi == FFI_VFP)
     {
       /* We only need take the vfp path if there are vfp arguments.  */
-      if (cif->vfp_used)
+      만약 (cif->vfp_used)
 	closure_func = ffi_go_closure_VFP;
     }
-  else if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  아니면 만약 (cif->abi != FFI_SYSV)
+    반환 FFI_BAD_ABI;
 
   closure->tramp = closure_func;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  반환 FFI_OK;
 }
 #endif
 
@@ -720,51 +720,51 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
    of the first non-structure element.  Recurse for structure elements.
    Return -1 if the structure is in fact empty, i.e. no nested elements.  */
 
-static int
+static 정수
 is_hfa0 (const ffi_type *ty)
 {
   ffi_type **elements = ty->elements;
-  int i, ret = -1;
+  정수 i, ret = -1;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  만약 (elements != NULL)
+    위해 (i = 0; elements[i]; ++i)
       {
         ret = elements[i]->type;
-        if (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_COMPLEX)
+        만약 (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_COMPLEX)
           {
             ret = is_hfa0 (elements[i]);
-            if (ret < 0)
+            만약 (ret < 0)
               continue;
           }
         break;
       }
 
-  return ret;
+  반환 ret;
 }
 
 /* A subroutine of vfp_type_p.  Given a structure type, return true if all
    of the non-structure elements are the same as CANDIDATE.  */
 
-static int
-is_hfa1 (const ffi_type *ty, int candidate)
+static 정수
+is_hfa1 (const ffi_type *ty, 정수 candidate)
 {
   ffi_type **elements = ty->elements;
-  int i;
+  정수 i;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  만약 (elements != NULL)
+    위해 (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+        정수 t = elements[i]->type;
+        만약 (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
           {
-            if (!is_hfa1 (elements[i], candidate))
-              return 0;
+            만약 (!is_hfa1 (elements[i], candidate))
+              반환 0;
           }
-        else if (t != candidate)
-          return 0;
+        아니면 만약 (t != candidate)
+          반환 0;
       }
 
-  return 1;
+  반환 1;
 }
 
 /* Determine if TY is an homogenous floating point aggregate (HFA).
@@ -774,11 +774,11 @@ is_hfa1 (const ffi_type *ty, int candidate)
    Returns non-zero iff TY is an HFA.  The result is an encoded value where
    bits 0-7 contain the type code, and bits 8-10 contain the element count.  */
 
-static int
+static 정수
 vfp_type_p (const ffi_type *ty)
 {
   ffi_type **elements;
-  int candidate, i;
+  정수 candidate, i;
   size_t size, ele_count;
 
   /* Quickest tests first.  */
@@ -786,15 +786,15 @@ vfp_type_p (const ffi_type *ty)
   switch (ty->type)
     {
     default:
-      return 0;
+      반환 0;
     case FFI_TYPE_FLOAT:
     case FFI_TYPE_DOUBLE:
       ele_count = 1;
       goto done;
     case FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
-      if (candidate != FFI_TYPE_FLOAT && candidate != FFI_TYPE_DOUBLE)
-	return 0;
+      만약 (candidate != FFI_TYPE_FLOAT && candidate != FFI_TYPE_DOUBLE)
+	반환 0;
       ele_count = 2;
       goto done;
     case FFI_TYPE_STRUCT:
@@ -803,18 +803,18 @@ vfp_type_p (const ffi_type *ty)
 
   /* No HFA types are smaller than 4 bytes, or larger than 32 bytes.  */
   size = ty->size;
-  if (size < 4 || size > 32)
-    return 0;
+  만약 (size < 4 || size > 32)
+    반환 0;
 
   /* Find the type of the first non-structure member.  */
   elements = ty->elements;
   candidate = elements[0]->type;
-  if (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_COMPLEX)
+  만약 (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_COMPLEX)
     {
-      for (i = 0; ; ++i)
+      위해 (i = 0; ; ++i)
         {
           candidate = is_hfa0 (elements[i]);
-          if (candidate >= 0)
+          만약 (candidate >= 0)
             break;
         }
     }
@@ -825,58 +825,58 @@ vfp_type_p (const ffi_type *ty)
     {
     case FFI_TYPE_FLOAT:
       ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
-        return 0;
+      만약 (size != ele_count * sizeof(float))
+        반환 0;
       break;
     case FFI_TYPE_DOUBLE:
       ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
-        return 0;
+      만약 (size != ele_count * sizeof(double))
+        반환 0;
       break;
     default:
-      return 0;
+      반환 0;
     }
-  if (ele_count > 4)
-    return 0;
+  만약 (ele_count > 4)
+    반환 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
-  for (i = 0; elements[i]; ++i)
+  위해 (i = 0; elements[i]; ++i)
     {
-      int t = elements[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+      정수 t = elements[i]->type;
+      만약 (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
         {
-          if (!is_hfa1 (elements[i], candidate))
-            return 0;
+          만약 (!is_hfa1 (elements[i], candidate))
+            반환 0;
         }
-      else if (t != candidate)
-        return 0;
+      아니면 만약 (t != candidate)
+        반환 0;
     }
 
   /* All tests succeeded.  Encode the result.  */
  done:
-  return (ele_count << 8) | candidate;
+  반환 (ele_count << 8) | candidate;
 }
 
-static int
-place_vfp_arg (ffi_cif *cif, int h)
+static 정수
+place_vfp_arg (ffi_cif *cif, 정수 h)
 {
   unsigned short reg = cif->vfp_reg_free;
-  int align = 1, nregs = h >> 8;
+  정수 align = 1, nregs = h >> 8;
 
-  if ((h & 0xff) == FFI_TYPE_DOUBLE)
+  만약 ((h & 0xff) == FFI_TYPE_DOUBLE)
     align = 2, nregs *= 2;
 
   /* Align register number. */
-  if ((reg & 1) && align == 2)
+  만약 ((reg & 1) && align == 2)
     reg++;
 
-  while (reg + nregs <= 16)
+  동안 (reg + nregs <= 16)
     {
-      int s, new_used = 0;
-      for (s = reg; s < reg + nregs; s++)
+      정수 s, new_used = 0;
+      위해 (s = reg; s < reg + nregs; s++)
 	{
 	  new_used |= (1 << s);
-	  if (cif->vfp_used & (1 << s))
+	  만약 (cif->vfp_used & (1 << s))
 	    {
 	      reg += align;
 	      goto next_reg;
@@ -887,41 +887,41 @@ place_vfp_arg (ffi_cif *cif, int h)
       cif->vfp_args[cif->vfp_nargs++] = (signed char)reg;
 
       /* Update vfp_reg_free. */
-      if (cif->vfp_used & (1 << cif->vfp_reg_free))
+      만약 (cif->vfp_used & (1 << cif->vfp_reg_free))
 	{
 	  reg += nregs;
-	  while (cif->vfp_used & (1 << reg))
+	  동안 (cif->vfp_used & (1 << reg))
 	    reg += 1;
 	  cif->vfp_reg_free = reg;
 	}
-      return 0;
+      반환 0;
     next_reg:;
     }
   // done, mark all regs as used
   cif->vfp_reg_free = 16;
   cif->vfp_used = 0xFFFF;
-  return 1;
+  반환 1;
 }
 
 static void
 layout_vfp_args (ffi_cif * cif)
 {
-  unsigned int i;
+  unsigned 정수 i;
   /* Init VFP fields */
   cif->vfp_used = 0;
   cif->vfp_nargs = 0;
   cif->vfp_reg_free = 0;
   memset (cif->vfp_args, -1, 16);	/* Init to -1. */
 
-  for (i = 0; i < cif->nargs; i++)
+  위해 (i = 0; i < cif->nargs; i++)
     {
-      int h = vfp_type_p (cif->arg_types[i]);
-      if (h && place_vfp_arg (cif, h) == 1)
+      정수 h = vfp_type_p (cif->arg_types[i]);
+      만약 (h && place_vfp_arg (cif, h) == 1)
 	break;
     }
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#만약 defined(FFI_EXEC_STATIC_TRAMP)
 void *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
@@ -929,7 +929,7 @@ ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 
   *tramp_size = ARM_TRAMP_SIZE;
   *map_size = ARM_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  반환 &trampoline_code_table;
 }
 #endif
 

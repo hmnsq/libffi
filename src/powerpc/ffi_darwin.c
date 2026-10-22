@@ -61,7 +61,7 @@ struct ffi_aix_trampoline_struct {
 # define PPC_LD_PTR		PPC_LD_R3
 # define PPC_LD_I64		PPC_LD_R3R4
 # define PPC_LD_STRUCT		10
-#else
+#아니면
 # define PPC_LD_U32		10
 # define PPC_LD_S32		11
 # define PPC_LD_PTR		PPC_LD_R3
@@ -71,7 +71,7 @@ struct ffi_aix_trampoline_struct {
 
 extern void ffi_closure_ASM (void);
 
-#if defined (FFI_GO_CLOSURES)
+#만약 defined (FFI_GO_CLOSURES)
 extern void ffi_go_closure_ASM (void);
 #endif
 
@@ -135,7 +135,7 @@ enum { ASM_NEEDS_REGISTERS = 4 }; /* r28-r31 */
 
    */
 
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
 static void
 darwin64_pass_struct_by_value 
   (ffi_type *, char *, unsigned, unsigned *, double **, unsigned long **);
@@ -149,7 +149,7 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
   const unsigned bytes = ecif->cif->bytes;
   const unsigned flags = ecif->cif->flags;
   const unsigned nargs = ecif->cif->nargs;
-#if !defined(POWERPC_DARWIN64) 
+#만약 !defined(POWERPC_DARWIN64) 
   const ffi_abi abi = ecif->cif->abi;
 #endif
 
@@ -159,17 +159,17 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
   /* 'fpr_base' points at the space for fpr1, and grows upwards as
      we use FPR registers.  */
   double *fpr_base = (double *) (stacktop - ASM_NEEDS_REGISTERS) - NUM_FPR_ARG_REGISTERS;
-  int gp_count = 0, fparg_count = 0;
+  정수 gp_count = 0, fparg_count = 0;
 
   /* 'next_arg' grows up as we put parameters in it.  */
   unsigned long *next_arg = stack + LINKAGE_AREA_GPRS; /* 6 reserved positions.  */
 
-  int i;
+  정수 i;
   double double_tmp;
   void **p_argv = ecif->avalue;
   unsigned long gprvalue;
   ffi_type** ptr = ecif->cif->arg_types;
-#if !defined(POWERPC_DARWIN64) 
+#만약 !defined(POWERPC_DARWIN64) 
   char *dest_cpy;
 #endif
   unsigned size_al = 0;
@@ -183,11 +183,11 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
      Rule:
      Return values are referenced by r3, so r4 is the first parameter.  */
 
-  if (flags & FLAG_RETVAL_REFERENCE)
+  만약 (flags & FLAG_RETVAL_REFERENCE)
     *next_arg++ = (unsigned long) (char *) ecif->rvalue;
 
   /* Now for the arguments.  */
-  for (i = nargs; i > 0; i--, ptr++, p_argv++)
+  위해 (i = nargs; i > 0; i--, ptr++, p_argv++)
     {
       switch ((*ptr)->type)
 	{
@@ -196,11 +196,11 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
 	   the size of the floating-point parameter are skipped.  */
 	case FFI_TYPE_FLOAT:
 	  double_tmp = *(float *) *p_argv;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  만약 (fparg_count < NUM_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-#if defined(POWERPC_DARWIN)
+#만약 defined(POWERPC_DARWIN)
 	  *(float *)next_arg = *(float *) *p_argv;
-#else
+#아니면
 	  *(double *)next_arg = double_tmp;
 #endif
 	  next_arg++;
@@ -211,13 +211,13 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
 
 	case FFI_TYPE_DOUBLE:
 	  double_tmp = *(double *) *p_argv;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  만약 (fparg_count < NUM_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
 	  *(double *)next_arg = double_tmp;
 #ifdef POWERPC64
 	  next_arg++;
 	  gp_count++;
-#else
+#아니면
 	  next_arg += 2;
 	  gp_count += 2;
 #endif
@@ -225,39 +225,39 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
 	  FFI_ASSERT(flags & FLAG_FP_ARGUMENTS);
 	  break;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#만약 FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 
 	case FFI_TYPE_LONGDOUBLE:
-#  if defined(POWERPC64) && !defined(POWERPC_DARWIN64)
+#  만약 defined(POWERPC64) && !defined(POWERPC_DARWIN64)
 	  /* ??? This will exceed the regs count when the value starts at fp13
 	     and it will not put the extra bit on the stack.  */
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  만약 (fparg_count < NUM_FPR_ARG_REGISTERS)
 	    *(long double *) fpr_base++ = *(long double *) *p_argv;
-	  else
+	  아니면
 	    *(long double *) next_arg = *(long double *) *p_argv;
 	  next_arg += 2;
 	  fparg_count += 2;
-#  else
+#  아니면
 	  double_tmp = ((double *) *p_argv)[0];
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  만약 (fparg_count < NUM_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
 	  *(double *) next_arg = double_tmp;
-#    if defined(POWERPC_DARWIN64)
+#    만약 defined(POWERPC_DARWIN64)
 	  next_arg++;
 	  gp_count++;
-#    else
+#    아니면
 	  next_arg += 2;
 	  gp_count += 2;
 #    endif
 	  fparg_count++;
 	  double_tmp = ((double *) *p_argv)[1];
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  만약 (fparg_count < NUM_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
 	  *(double *) next_arg = double_tmp;
-#    if defined(POWERPC_DARWIN64)
+#    만약 defined(POWERPC_DARWIN64)
 	  next_arg++;
 	  gp_count++;
-#    else
+#    아니면
 	  next_arg += 2;
 	  gp_count += 2;
 #    endif
@@ -271,7 +271,7 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
 #ifdef POWERPC64
 	  gprvalue = *(long long *) *p_argv;
 	  goto putgpr;
-#else
+#아니면
 	  *(long long *) next_arg = *(long long *) *p_argv;
 	  next_arg += 2;
 	  gp_count += 2;
@@ -295,29 +295,29 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
 
 	case FFI_TYPE_STRUCT:
 	  size_al = (*ptr)->size;
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
 	  next_arg = (unsigned long *)FFI_ALIGN((char *)next_arg, (*ptr)->alignment);
 	  darwin64_pass_struct_by_value (*ptr, (char *) *p_argv, 
 					 (unsigned) size_al,
-					 (unsigned int *) &fparg_count,
+					 (unsigned 정수 *) &fparg_count,
 					 &fpr_base, &next_arg);
-#else
+#아니면
 	  dest_cpy = (char *) next_arg;
 
 	  /* If the first member of the struct is a double, then include enough
 	     padding in the struct size to align it to double-word.  */
-	  if ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
+	  만약 ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN((*ptr)->size, 8);
 
-#  if defined(POWERPC64) 
+#  만약 defined(POWERPC64) 
 	  FFI_ASSERT (abi != FFI_DARWIN);
 	  memcpy ((char *) dest_cpy, (char *) *p_argv, size_al);
 	  next_arg += (size_al + 7) / 8;
-#  else
+#  아니면
 	  /* Structures that match the basic modes (QI 1 byte, HI 2 bytes,
 	     SI 4 bytes) are aligned as if they were those modes.
 	     Structures with 3 byte in size are padded upwards.  */
-	  if (size_al < 3 && abi == FFI_DARWIN)
+	  만약 (size_al < 3 && abi == FFI_DARWIN)
 	    dest_cpy += 4 - size_al;
 
 	  memcpy((char *) dest_cpy, (char *) *p_argv, size_al);
@@ -328,11 +328,11 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
 
 	case FFI_TYPE_INT:
 	case FFI_TYPE_SINT32:
-	  gprvalue = *(signed int *) *p_argv;
+	  gprvalue = *(signed 정수 *) *p_argv;
 	  goto putgpr;
 
 	case FFI_TYPE_UINT32:
-	  gprvalue = *(unsigned int *) *p_argv;
+	  gprvalue = *(unsigned 정수 *) *p_argv;
 	putgpr:
 	  *next_arg++ = gprvalue;
 	  gp_count++;
@@ -349,7 +349,7 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
      FFI_ASSERT(flags & FLAG_4_GPR_ARGUMENTS || intarg_count <= 4);  */
 }
 
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
 
 /* See if we can put some of the struct into fprs.
    This should not be called for structures of size 16 bytes, since these are not
@@ -357,11 +357,11 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
 static void
 darwin64_scan_struct_for_floats (ffi_type *s, unsigned *nfpr)
 {
-  int i;
+  정수 i;
 
   FFI_ASSERT (s->type == FFI_TYPE_STRUCT)
 
-  for (i = 0; s->elements[i] != NULL; i++)
+  위해 (i = 0; s->elements[i] != NULL; i++)
     {
       ffi_type *p = s->elements[i];
       switch (p->type)
@@ -382,17 +382,17 @@ darwin64_scan_struct_for_floats (ffi_type *s, unsigned *nfpr)
     }
 }
 
-static int
+static 정수
 darwin64_struct_size_exceeds_gprs_p (ffi_type *s, char *src, unsigned *nfpr)
 {
   unsigned struct_offset=0, i;
 
-  for (i = 0; s->elements[i] != NULL; i++)
+  위해 (i = 0; s->elements[i] != NULL; i++)
     {
       char *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      만약 (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
 
       item_base = src + struct_offset;
@@ -400,40 +400,40 @@ darwin64_struct_size_exceeds_gprs_p (ffi_type *s, char *src, unsigned *nfpr)
       switch (p->type)
 	{
 	  case FFI_TYPE_STRUCT:
-	    if (darwin64_struct_size_exceeds_gprs_p (p, item_base, nfpr))
-	      return 1;
+	    만약 (darwin64_struct_size_exceeds_gprs_p (p, item_base, nfpr))
+	      반환 1;
 	    break;
 	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	    만약 (*nfpr >= NUM_FPR_ARG_REGISTERS)
+	      반환 1;
 	    (*nfpr) += 1;
 	    item_base += 8;
 	  /* FALL THROUGH */
 	  case FFI_TYPE_DOUBLE:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	    만약 (*nfpr >= NUM_FPR_ARG_REGISTERS)
+	      반환 1;
 	    (*nfpr) += 1;
 	    break;
 	  case FFI_TYPE_FLOAT:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	    만약 (*nfpr >= NUM_FPR_ARG_REGISTERS)
+	      반환 1;
 	    (*nfpr) += 1;
 	    break;
 	  default:
 	    /* If we try and place any item, that is non-float, once we've
 	       exceeded the 8 GPR mark, then we can't fit the struct.  */
-	    if ((unsigned long)item_base >= 8*8) 
-	      return 1;
+	    만약 ((unsigned long)item_base >= 8*8) 
+	      반환 1;
 	    break;    
 	}
       /* now count the size of what we just used.  */
       struct_offset += p->size;
     }
-  return 0;
+  반환 0;
 }
 
 /* Can this struct be returned by value?  */
-int 
+정수 
 darwin64_struct_ret_by_value_p (ffi_type *s)
 {
   unsigned nfp = 0;
@@ -441,42 +441,42 @@ darwin64_struct_ret_by_value_p (ffi_type *s)
   FFI_ASSERT (s && s->type == FFI_TYPE_STRUCT);
   
   /* The largest structure we can return is 8long + 13 doubles.  */
-  if (s->size > 168)
-    return 0;
+  만약 (s->size > 168)
+    반환 0;
   
   /* We can't pass more than 13 floats.  */
   darwin64_scan_struct_for_floats (s, &nfp);
-  if (nfp > 13)
-    return 0;
+  만약 (nfp > 13)
+    반환 0;
   
   /* If there are not too many floats, and the struct is
      small enough to accommodate in the GPRs, then it must be OK.  */
-  if (s->size <= 64)
-    return 1;
+  만약 (s->size <= 64)
+    반환 1;
   
   /* Well, we have to look harder.  */
   nfp = 0;
-  if (darwin64_struct_size_exceeds_gprs_p (s, NULL, &nfp))
-    return 0;
+  만약 (darwin64_struct_size_exceeds_gprs_p (s, NULL, &nfp))
+    반환 0;
   
-  return 1;
+  반환 1;
 }
 
 void
 darwin64_pass_struct_floats (ffi_type *s, char *src, 
 			     unsigned *nfpr, double **fprs)
 {
-  int i;
+  정수 i;
   double *fpr_base = *fprs;
   unsigned struct_offset = 0;
 
   /* We don't assume anything about the alignment of the source.  */
-  for (i = 0; s->elements[i] != NULL; i++)
+  위해 (i = 0; s->elements[i] != NULL; i++)
     {
       char *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      만약 (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
       item_base = src + struct_offset;
 
@@ -487,18 +487,18 @@ darwin64_pass_struct_floats (ffi_type *s, char *src,
 					   &fpr_base);
 	    break;
 	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
+	    만약 (*nfpr < NUM_FPR_ARG_REGISTERS)
 	      *fpr_base++ = *(double *)item_base;
 	    (*nfpr) += 1;
 	    item_base += 8;
 	  /* FALL THROUGH */
 	  case FFI_TYPE_DOUBLE:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
+	    만약 (*nfpr < NUM_FPR_ARG_REGISTERS)
 	      *fpr_base++ = *(double *)item_base;
 	    (*nfpr) += 1;
 	    break;
 	  case FFI_TYPE_FLOAT:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
+	    만약 (*nfpr < NUM_FPR_ARG_REGISTERS)
 	      *fpr_base++ = (double) *(float *)item_base;
 	    (*nfpr) += 1;
 	    break;
@@ -523,11 +523,11 @@ darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
 
   FFI_ASSERT (s->type == FFI_TYPE_STRUCT)
 
-  if (!size)
-    return;
+  만약 (!size)
+    반환;
 
   /* First... special cases.  */
-  if (size < 3
+  만약 (size < 3
       || (size == 4 
 	  && s->elements[0] 
 	  && s->elements[0]->type != FFI_TYPE_FLOAT))
@@ -539,12 +539,12 @@ darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
       memcpy ((char *) dest_cpy, src, size);
       next_arg++;
     }
-  else if (size == 16)
+  아니면 만약 (size == 16)
     {
       memcpy ((char *) dest_cpy, src, size);
       next_arg += 2;
     }
-  else
+  아니면
     {
       /* now the general case, we consider embedded floats.  */
       memcpy ((char *) dest_cpy, src, size);
@@ -558,16 +558,16 @@ darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
 double *
 darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *nf)
 {
-  int i;
+  정수 i;
   unsigned struct_offset = 0;
 
   /* We don't assume anything about the alignment of the source.  */
-  for (i = 0; s->elements[i] != NULL; i++)
+  위해 (i = 0; s->elements[i] != NULL; i++)
     {
       char *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      만약 (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
       item_base = dest + struct_offset;
 
@@ -577,7 +577,7 @@ darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *
 	    fprs = darwin64_struct_floats_to_mem (p, item_base, fprs, nf);
 	    break;
 	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	    만약 (*nf < NUM_FPR_ARG_REGISTERS)
 	      {
 		*(double *)item_base = *fprs++ ;
 		(*nf) += 1;
@@ -585,14 +585,14 @@ darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *
 	    item_base += 8;
 	  /* FALL THROUGH */
 	  case FFI_TYPE_DOUBLE:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	    만약 (*nf < NUM_FPR_ARG_REGISTERS)
 	      {
 		*(double *)item_base = *fprs++ ;
 		(*nf) += 1;
 	      }
 	    break;
 	  case FFI_TYPE_FLOAT:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	    만약 (*nf < NUM_FPR_ARG_REGISTERS)
 	      {
 		*(float *)item_base = (float) *fprs++ ;
 		(*nf) += 1;
@@ -604,7 +604,7 @@ darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *
       /* now count the size of what we just used.  */
       struct_offset += p->size;
     }
-  return fprs;
+  반환 fprs;
 }
 
 #endif
@@ -616,31 +616,31 @@ darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *
 static void
 darwin_adjust_aggregate_sizes (ffi_type *s)
 {
-  int i;
+  정수 i;
 
-  if (s->type != FFI_TYPE_STRUCT)
-    return;
+  만약 (s->type != FFI_TYPE_STRUCT)
+    반환;
 
   s->size = 0;
-  for (i = 0; s->elements[i] != NULL; i++)
+  위해 (i = 0; s->elements[i] != NULL; i++)
     {
       ffi_type *p;
-      int align;
+      정수 align;
       
       p = s->elements[i];
-      if (p->type == FFI_TYPE_STRUCT)
+      만약 (p->type == FFI_TYPE_STRUCT)
 	darwin_adjust_aggregate_sizes (p);
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
       /* Natural alignment for all items.  */
       align = p->alignment;
-#else
+#아니면
       /* Natural alignment for the first item... */
-      if (i == 0)
+      만약 (i == 0)
 	align = p->alignment;
-      else if (p->alignment == 16 || p->alignment < 4)
+      아니면 만약 (p->alignment == 16 || p->alignment < 4)
 	/* .. subsequent items with vector or align < 4 have natural align.  */
 	align = p->alignment;
-      else
+      아니면
 	/* .. or align is 4.  */
 	align = 4;
 #endif
@@ -651,7 +651,7 @@ darwin_adjust_aggregate_sizes (ffi_type *s)
   s->size = FFI_ALIGN(s->size, s->alignment);
   
   /* This should not be necessary on m64, but harmless.  */
-  if (s->elements[0]->type == FFI_TYPE_UINT64
+  만약 (s->elements[0]->type == FFI_TYPE_UINT64
       || s->elements[0]->type == FFI_TYPE_SINT64
       || s->elements[0]->type == FFI_TYPE_DOUBLE
       || s->elements[0]->alignment == 8)
@@ -663,34 +663,34 @@ darwin_adjust_aggregate_sizes (ffi_type *s)
    Word-align double unless it is the first member of a structure recursively.
    Return non-zero if we found a recursive first member aggregate of interest. */
 
-static int
-aix_adjust_aggregate_sizes (ffi_type *s, int outer_most_type_or_first_member)
+static 정수
+aix_adjust_aggregate_sizes (ffi_type *s, 정수 outer_most_type_or_first_member)
 {
-  int i, nested_first_member=0, final_align, rc=0;
+  정수 i, nested_first_member=0, final_align, rc=0;
 
-  if (s->type != FFI_TYPE_STRUCT)
-    return 0;
+  만약 (s->type != FFI_TYPE_STRUCT)
+    반환 0;
 
   s->size = 0;
-  for (i = 0; s->elements[i] != NULL; i++)
+  위해 (i = 0; s->elements[i] != NULL; i++)
     {
       ffi_type p;
-      int align;
+      정수 align;
 
       /* nested aggregates layout differently on AIX, so take a copy of the type */
       p = *(s->elements[i]);
-      if (i == 0)
+      만약 (i == 0)
         nested_first_member = aix_adjust_aggregate_sizes(&p, outer_most_type_or_first_member);
-      else
+      아니면
         aix_adjust_aggregate_sizes(&p, 0);
       align = p.alignment;
-      if (i != 0 && p.type == FFI_TYPE_DOUBLE)
+      만약 (i != 0 && p.type == FFI_TYPE_DOUBLE)
         align = 4;
       s->size = FFI_ALIGN(s->size, align) + p.size;
     }
 
   final_align=s->alignment;
-  if ((s->elements[0]->type == FFI_TYPE_UINT64
+  만약 ((s->elements[0]->type == FFI_TYPE_UINT64
           || s->elements[0]->type == FFI_TYPE_SINT64
           || s->elements[0]->type == FFI_TYPE_DOUBLE
           || s->elements[0]->alignment == 8 || nested_first_member)) {
@@ -698,12 +698,12 @@ aix_adjust_aggregate_sizes (ffi_type *s, int outer_most_type_or_first_member)
       rc=1;
       /* still use the adjusted alignment to calculate tail padding, but don't adjust the types alignment if
          we aren't in the recursive first position */
-      if (outer_most_type_or_first_member)
+      만약 (outer_most_type_or_first_member)
         s->alignment=final_align;
   }
 
   s->size = FFI_ALIGN(s->size, final_align);
-  return rc;
+  반환 rc;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -722,17 +722,17 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      All the calculation of structure sizes will also be wrong.
      Redo the calculation for DARWIN.  */
 
-  if (cif->abi == FFI_DARWIN)
+  만약 (cif->abi == FFI_DARWIN)
     {
       darwin_adjust_aggregate_sizes (cif->rtype);
-      for (i = 0; i < cif->nargs; i++)
+      위해 (i = 0; i < cif->nargs; i++)
 	darwin_adjust_aggregate_sizes (cif->arg_types[i]);
     }
 
-  if (cif->abi == FFI_AIX)
+  만약 (cif->abi == FFI_AIX)
     {
       aix_adjust_aggregate_sizes (cif->rtype, 1);
-      for (i = 0; i < cif->nargs; i++)
+      위해 (i = 0; i < cif->nargs; i++)
 	aix_adjust_aggregate_sizes (cif->arg_types[i], 1);
     }
 
@@ -763,7 +763,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   switch (cif->rtype->type)
     {
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#만약 FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
     case FFI_TYPE_LONGDOUBLE:
       flags |= FLAG_RETURNS_128BITS;
       flags |= FLAG_RETURNS_FP;
@@ -786,22 +786,22 @@ ffi_prep_cif_machdep (ffi_cif *cif)
       break;
 
     case FFI_TYPE_STRUCT:
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
       {
 	/* Can we fit the struct into regs?  */
-	if (darwin64_struct_ret_by_value_p (cif->rtype))
+	만약 (darwin64_struct_ret_by_value_p (cif->rtype))
 	  {
 	    unsigned nfpr = 0;
 	    flags |= FLAG_RETURNS_STRUCT;
-	    if (cif->rtype->size != 16)
+	    만약 (cif->rtype->size != 16)
 	      darwin64_scan_struct_for_floats (cif->rtype, &nfpr) ;
-	    else
+	    아니면
 	      flags |= FLAG_RETURNS_128BITS;
 	    /* Will be 0 for 16byte struct.  */
-	    if (nfpr)
+	    만약 (nfpr)
 	      flags |= FLAG_RETURNS_FP;
 	  }
-	else /* By ref. */
+	아니면 /* By ref. */
 	  {
 	    flags |= FLAG_RETVAL_REFERENCE;
 	    flags |= FLAG_RETURNS_NOTHING;
@@ -809,15 +809,15 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	  }
       }
 #elif defined(DARWIN_PPC)
-      if (cif->rtype->size <= 4)
+      만약 (cif->rtype->size <= 4)
 	flags |= FLAG_RETURNS_STRUCT;
-      else /* else by reference.  */
+      아니면 /* else by reference.  */
 	{
 	  flags |= FLAG_RETVAL_REFERENCE;
 	  flags |= FLAG_RETURNS_NOTHING;
 	  intarg_count++;
 	}
-#else /* assume we pass by ref.  */
+#아니면 /* assume we pass by ref.  */
       flags |= FLAG_RETVAL_REFERENCE;
       flags |= FLAG_RETURNS_NOTHING;
       intarg_count++;
@@ -838,7 +838,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      ??? Structures are passed as a pointer to a copy of the structure. 
      Stuff on the stack needs to keep proper alignment.  
      For m64 the count is effectively of half-GPRs.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  위해 (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
       unsigned align_words;
       switch ((*ptr)->type)
@@ -846,24 +846,24 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	case FFI_TYPE_FLOAT:
 	case FFI_TYPE_DOUBLE:
 	  fparg_count++;
-#if !defined(POWERPC_DARWIN64)
+#만약 !defined(POWERPC_DARWIN64)
 	  /* If this FP arg is going on the stack, it must be
 	     8-byte-aligned.  */
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS
+	  만약 (fparg_count > NUM_FPR_ARG_REGISTERS
 	      && (intarg_count & 0x01) != 0)
 	    intarg_count++;
 #endif
 	  break;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#만약 FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	case FFI_TYPE_LONGDOUBLE:
 	  fparg_count += 2;
 	  /* If this FP arg is going on the stack, it must be
 	     16-byte-aligned.  */
-	  if (fparg_count >= NUM_FPR_ARG_REGISTERS)
-#if defined (POWERPC64)
+	  만약 (fparg_count >= NUM_FPR_ARG_REGISTERS)
+#만약 defined (POWERPC64)
 	    intarg_count = FFI_ALIGN(intarg_count, 2);
-#else
+#아니면
 	    intarg_count = FFI_ALIGN(intarg_count, 4);
 #endif
 	  break;
@@ -871,14 +871,14 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 
 	case FFI_TYPE_UINT64:
 	case FFI_TYPE_SINT64:
-#if defined(POWERPC64)
+#만약 defined(POWERPC64)
 	  intarg_count++;
-#else
+#아니면
 	  /* 'long long' arguments are passed as two words, but
 	     either both words must fit in registers or both go
 	     on the stack.  If they go on the stack, they must
 	     be 8-byte-aligned.  */
-	  if (intarg_count == NUM_GPR_ARG_REGISTERS-1
+	  만약 (intarg_count == NUM_GPR_ARG_REGISTERS-1
 	      || (intarg_count >= NUM_GPR_ARG_REGISTERS 
 	          && (intarg_count & 0x01) != 0))
 	    intarg_count++;
@@ -888,19 +888,19 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 
 	case FFI_TYPE_STRUCT:
 	  size_al = (*ptr)->size;
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
 	  align_words = (*ptr)->alignment >> 3;
-	  if (align_words)
+	  만약 (align_words)
 	    intarg_count = FFI_ALIGN(intarg_count, align_words);
 	  /* Base size of the struct.  */
 	  intarg_count += (size_al + 7) / 8;
 	  /* If 16 bytes then don't worry about floats.  */
-	  if (size_al != 16)
+	  만약 (size_al != 16)
 	    /* Scan through for floats to be placed in regs.  */
 	    darwin64_scan_struct_for_floats (*ptr, &fparg_count) ;
-#else
+#아니면
 	  align_words = (*ptr)->alignment >> 2;
-	  if (align_words)
+	  만약 (align_words)
 	    intarg_count = FFI_ALIGN(intarg_count, align_words);
 	  /* If the first member of the struct is a double, then align
 	     the struct to double-word. 
@@ -908,7 +908,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	    size_al = FFI_ALIGN((*ptr)->size, 8); */
 #  ifdef POWERPC64
 	  intarg_count += (size_al + 7) / 8;
-#  else
+#  아니면
 	  intarg_count += (size_al + 3) / 4;
 #  endif
 #endif
@@ -922,31 +922,31 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	}
     }
 
-  if (fparg_count != 0)
+  만약 (fparg_count != 0)
     flags |= FLAG_FP_ARGUMENTS;
 
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
   /* Space to image the FPR registers, if needed - which includes when they might be
      used in a struct return.  */
-  if (fparg_count != 0 
+  만약 (fparg_count != 0 
       || ((flags & FLAG_RETURNS_STRUCT)
 	   && (flags & FLAG_RETURNS_FP)))
     bytes += NUM_FPR_ARG_REGISTERS * sizeof(double);
-#else
+#아니면
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
+  만약 (fparg_count != 0)
     bytes += NUM_FPR_ARG_REGISTERS * sizeof(double);
 #endif
 
   /* Stack space.  */
 #ifdef POWERPC64
-  if ((intarg_count + fparg_count) > NUM_GPR_ARG_REGISTERS)
+  만약 ((intarg_count + fparg_count) > NUM_GPR_ARG_REGISTERS)
     bytes += (intarg_count + fparg_count) * sizeof(long);
-#else
-  if ((intarg_count + 2 * fparg_count) > NUM_GPR_ARG_REGISTERS)
+#아니면
+  만약 ((intarg_count + 2 * fparg_count) > NUM_GPR_ARG_REGISTERS)
     bytes += (intarg_count + 2 * fparg_count) * sizeof(long);
 #endif
-  else
+  아니면
     bytes += NUM_GPR_ARG_REGISTERS * sizeof(long);
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
@@ -955,13 +955,13 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   cif->flags = flags;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  반환 FFI_OK;
 }
 
 extern void ffi_call_AIX(extended_cif *, long, unsigned, unsigned *,
 			 void (*fn)(void), void (*fn2)(void));
 
-#if defined (FFI_GO_CLOSURES)
+#만약 defined (FFI_GO_CLOSURES)
 extern void ffi_call_go_AIX(extended_cif *, long, unsigned, unsigned *,
 			    void (*fn)(void), void (*fn2)(void), void *closure);
 #endif
@@ -980,12 +980,12 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if ((rvalue == NULL) &&
+  만약 ((rvalue == NULL) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  아니면
     ecif.rvalue = rvalue;
 
   switch (cif->abi)
@@ -1004,7 +1004,7 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 }
 
-#if defined (FFI_GO_CLOSURES)
+#만약 defined (FFI_GO_CLOSURES)
 void
 ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
 	     void *closure)
@@ -1017,12 +1017,12 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if ((rvalue == NULL) &&
+  만약 ((rvalue == NULL) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  아니면
     ecif.rvalue = rvalue;
 
   switch (cif->abi)
@@ -1039,7 +1039,7 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
 #endif
 
 static void flush_icache(char *);
-static void flush_range(char *, int);
+static void flush_range(char *, 정수);
 
 /* The layout of a function descriptor.  A C function pointer really
    points to one of these.  */
@@ -1099,7 +1099,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp;
+  unsigned 정수 *tramp;
   struct ffi_aix_trampoline_struct *tramp_aix;
   aix_fd *fd;
 
@@ -1109,8 +1109,8 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
 	FFI_ASSERT (cif->abi == FFI_DARWIN);
 
-	tramp = (unsigned int *) &closure->tramp[0];
-#if defined(POWERPC_DARWIN64)
+	tramp = (unsigned 정수 *) &closure->tramp[0];
+#만약 defined(POWERPC_DARWIN64)
 	tramp[0] = 0x7c0802a6;  /*   mflr    r0  */
 	tramp[1] = 0x429f0015;  /*   bcl-    20,4*cr7+so,  +0x18 (L1)  */
 	/* We put the addresses here.  */
@@ -1123,7 +1123,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
 	*((unsigned long *)&tramp[2]) = (unsigned long) ffi_closure_ASM; /* function  */
 	*((unsigned long *)&tramp[4]) = (unsigned long) codeloc; /* context  */
-#else
+#아니면
 	tramp[0] = 0x7c0802a6;  /*   mflr    r0  */
 	tramp[1] = 0x429f000d;  /*   bcl-    20,4*cr7+so,0x10  */
 	tramp[4] = 0x7d6802a6;  /*   mflr    r11  */
@@ -1160,13 +1160,13 @@ ffi_prep_closure_loc (ffi_closure* closure,
       break;
 
     default:
-      return FFI_BAD_ABI;
+      반환 FFI_BAD_ABI;
       break;
     }
-  return FFI_OK;
+  반환 FFI_OK;
 }
 
-#if defined (FFI_GO_CLOSURES)
+#만약 defined (FFI_GO_CLOSURES)
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure,
 		     ffi_cif* cif,
@@ -1181,14 +1181,14 @@ ffi_prep_go_closure (ffi_go_closure* closure,
         closure->tramp = (void *)ffi_go_closure_ASM;
         closure->cif = cif;
         closure->fun = fun;
-        return FFI_OK;
+        반환 FFI_OK;
       
       // For now, ffi_prep_go_closure is only implemented for AIX, not for Darwin
       default:
-        return FFI_BAD_ABI;
+        반환 FFI_BAD_ABI;
         break;
     }
-  return FFI_OK;
+  반환 FFI_OK;
 }
 #endif
 
@@ -1207,11 +1207,11 @@ flush_icache(char *addr)
 }
 
 static void
-flush_range(char * addr1, int size)
+flush_range(char * addr1, 정수 size)
 {
 #define MIN_LINE_SIZE 32
-  int i;
-  for (i = 0; i < size; i += MIN_LINE_SIZE)
+  정수 i;
+  위해 (i = 0; i < size; i += MIN_LINE_SIZE)
     flush_icache(addr1+i);
   flush_icache(addr1+size-1);
 }
@@ -1222,12 +1222,12 @@ typedef union
   double d;
 } ffi_dblfl;
 
-int
+정수
 ffi_closure_helper_DARWIN (ffi_closure *, void *,
 			   unsigned long *, ffi_dblfl *);
 
-#if defined (FFI_GO_CLOSURES)
-int
+#만약 defined (FFI_GO_CLOSURES)
+정수
 ffi_go_closure_helper_DARWIN (ffi_go_closure*, void *,
 			      unsigned long *, ffi_dblfl *);
 #endif
@@ -1239,7 +1239,7 @@ ffi_go_closure_helper_DARWIN (ffi_go_closure*, void *,
    up space for a return value, ffi_closure_ASM invokes the
    following helper function to do most of the work.  */
 
-static int
+static 정수
 ffi_closure_helper_common (ffi_cif* cif,
 			   void (*fun)(ffi_cif*, void*, void**, void*),
 			   void *user_data, void *rvalue,
@@ -1262,39 +1262,39 @@ ffi_closure_helper_common (ffi_cif* cif,
   long             i, avn;
   ffi_dblfl *      end_pfr = pfr + NUM_FPR_ARG_REGISTERS;
   unsigned         size_al;
-  int              struct_ret_by_value = 0;
+  정수              struct_ret_by_value = 0;
   /* When a struct is returned by value, ffi_closure_ASM's jump-table
      dispatch carries only a small integer return code (see PPC_LD_* above),
      with no room for cif->rtype.  We hand cif->rtype back in the first
      parameter-save slot -- which is dead by the time we return -- for the
      PPC_LD_STRUCT fragment in darwin_closure.S to recover.  */
   unsigned long *  pgr0 = pgr;
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
   unsigned 	   fpsused = 0;
 #endif
 
   avalue = alloca (cif->nargs * sizeof(void *));
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  만약 (cif->rtype->type == FFI_TYPE_STRUCT)
     {
-#if defined(POWERPC_DARWIN64)
-      if (!darwin64_struct_ret_by_value_p (cif->rtype))
+#만약 defined(POWERPC_DARWIN64)
+      만약 (!darwin64_struct_ret_by_value_p (cif->rtype))
 	{
     	  /* Won't fit into the regs - return by ref.  */
 	  rvalue = (void *) *pgr;
 	  pgr++;
 	}
-      else
+      아니면
 	struct_ret_by_value = 1;
 #elif defined(DARWIN_PPC)
-      if (cif->rtype->size > 4)
+      만약 (cif->rtype->size > 4)
 	{
 	  rvalue = (void *) *pgr;
 	  pgr++;
 	}
-      else
+      아니면
 	struct_ret_by_value = 1;
-#else /* assume we return by ref.  */
+#아니면 /* assume we return by ref.  */
       rvalue = (void *) *pgr;
       pgr++;
 #endif
@@ -1305,15 +1305,15 @@ ffi_closure_helper_common (ffi_cif* cif,
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn)
+  동안 (i < avn)
     {
       switch (arg_types[i]->type)
 	{
 	case FFI_TYPE_SINT8:
 	case FFI_TYPE_UINT8:
-#if  defined(POWERPC64)
+#만약  defined(POWERPC64)
 	  avalue[i] = (char *) pgr + 7;
-#else
+#아니면
 	  avalue[i] = (char *) pgr + 3;
 #endif
 	  pgr++;
@@ -1321,9 +1321,9 @@ ffi_closure_helper_common (ffi_cif* cif,
 
 	case FFI_TYPE_SINT16:
 	case FFI_TYPE_UINT16:
-#if  defined(POWERPC64)
+#만약  defined(POWERPC64)
 	  avalue[i] = (char *) pgr + 6;
-#else
+#아니면
 	  avalue[i] = (char *) pgr + 2;
 #endif
 	  pgr++;
@@ -1331,9 +1331,9 @@ ffi_closure_helper_common (ffi_cif* cif,
 
 	case FFI_TYPE_SINT32:
 	case FFI_TYPE_UINT32:
-#if  defined(POWERPC64)
+#만약  defined(POWERPC64)
 	  avalue[i] = (char *) pgr + 4;
-#else
+#아니면
 	case FFI_TYPE_POINTER:
 	  avalue[i] = pgr;
 #endif
@@ -1342,12 +1342,12 @@ ffi_closure_helper_common (ffi_cif* cif,
 
 	case FFI_TYPE_STRUCT:
 	  size_al = arg_types[i]->size;
-#if defined(POWERPC_DARWIN64)
+#만약 defined(POWERPC_DARWIN64)
 	  pgr = (unsigned long *)FFI_ALIGN((char *)pgr, arg_types[i]->alignment);
-	  if (size_al < 3 || size_al == 4)
+	  만약 (size_al < 3 || size_al == 4)
 	    {
 	      avalue[i] = ((char *)pgr)+8-size_al;
-	      if (arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT
+	      만약 (arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT
 		  && fpsused < NUM_FPR_ARG_REGISTERS)
 		{
 		  *(float *)pgr = (float) *(double *)pfr;
@@ -1355,30 +1355,30 @@ ffi_closure_helper_common (ffi_cif* cif,
 		  fpsused++;
 		}
 	    }
-	  else 
+	  아니면 
 	    {
-	      if (size_al != 16)
+	      만약 (size_al != 16)
 		pfr = (ffi_dblfl *) 
 		    darwin64_struct_floats_to_mem (arg_types[i], (char *)pgr,
 						   (double *)pfr, &fpsused);
 	      avalue[i] = pgr;
 	    }
 	  pgr += (size_al + 7) / 8;
-#else
+#아니면
 	  /* If the first member of the struct is a double, then align
 	     the struct to double-word.  */
-	  if (arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
+	  만약 (arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN(arg_types[i]->size, 8);
-#  if defined(POWERPC64)
+#  만약 defined(POWERPC64)
 	  FFI_ASSERT (cif->abi != FFI_DARWIN);
 	  avalue[i] = pgr;
 	  pgr += (size_al + 7) / 8;
-#  else
+#  아니면
 	  /* Structures that match the basic modes (QI 1 byte, HI 2 bytes,
 	     SI 4 bytes) are aligned as if they were those modes.  */
-	  if (size_al < 3 && cif->abi == FFI_DARWIN)
+	  만약 (size_al < 3 && cif->abi == FFI_DARWIN)
 	    avalue[i] = (char*) pgr + 4 - size_al;
-	  else
+	  아니면
 	    avalue[i] = pgr;
 	  pgr += (size_al + 3) / 4;
 #  endif
@@ -1387,12 +1387,12 @@ ffi_closure_helper_common (ffi_cif* cif,
 
 	case FFI_TYPE_SINT64:
 	case FFI_TYPE_UINT64:
-#if  defined(POWERPC64)
+#만약  defined(POWERPC64)
 	case FFI_TYPE_POINTER:
 	  avalue[i] = pgr;
 	  pgr++;
 	  break;
-#else
+#아니면
 	  /* Long long ints are passed in two gpr's.  */
 	  avalue[i] = pgr;
 	  pgr += 2;
@@ -1402,14 +1402,14 @@ ffi_closure_helper_common (ffi_cif* cif,
 	case FFI_TYPE_FLOAT:
 	  /* A float value consumes a GPR.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr < end_pfr)
+	  만약 (pfr < end_pfr)
 	    {
 	      double temp = pfr->d;
 	      pfr->f = (float) temp;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  아니면
 	    {
 	      avalue[i] = pgr;
 	    }
@@ -1419,34 +1419,34 @@ ffi_closure_helper_common (ffi_cif* cif,
 	case FFI_TYPE_DOUBLE:
 	  /* A double value consumes two GPRs.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr < end_pfr)
+	  만약 (pfr < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  아니면
 	    {
 	      avalue[i] = pgr;
 	    }
 #ifdef POWERPC64
 	  pgr++;
-#else
+#아니면
 	  pgr += 2;
 #endif
 	  break;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#만약 FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 
 	case FFI_TYPE_LONGDOUBLE:
 #ifdef POWERPC64
-	  if (pfr + 1 < end_pfr)
+	  만약 (pfr + 1 < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr += 2;
 	    }
-	  else
+	  아니면
 	    {
-	      if (pfr < end_pfr)
+	      만약 (pfr < end_pfr)
 		{
 		  *pgr = *(unsigned long *) pfr;
 		  pfr++;
@@ -1454,10 +1454,10 @@ ffi_closure_helper_common (ffi_cif* cif,
 	      avalue[i] = pgr;
 	    }
 	  pgr += 2;
-#else  /* POWERPC64 */
+#아니면  /* POWERPC64 */
 	  /* A long double value consumes four GPRs and two FPRs.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr + 1 < end_pfr)
+	  만약 (pfr + 1 < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr += 2;
@@ -1465,7 +1465,7 @@ ffi_closure_helper_common (ffi_cif* cif,
 	  /* Here we have the situation where one part of the long double
 	     is stored in fpr13 and the other part is already on the stack.
 	     We use a union to pass the long double to avalue[i].  */
-	  else if (pfr + 1 == end_pfr)
+	  아니면 만약 (pfr + 1 == end_pfr)
 	    {
 	      union ldu temp_ld;
 	      memcpy (&temp_ld.lb[0], pfr, sizeof(ldbits));
@@ -1473,7 +1473,7 @@ ffi_closure_helper_common (ffi_cif* cif,
 	      avalue[i] = &temp_ld.ld;
 	      pfr++;
 	    }
-	  else
+	  아니면
 	    {
 	      avalue[i] = pgr;
 	    }
@@ -1493,63 +1493,63 @@ ffi_closure_helper_common (ffi_cif* cif,
   switch (cif->rtype->type)
     {
     case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
+      반환 PPC_LD_NONE;
     case FFI_TYPE_STRUCT:
       /* A by-reference struct return needs nothing further here: the result
 	 was written straight to the caller's buffer.  A by-value struct
 	 return is loaded into registers by darwin_closure.S, which needs
 	 cif->rtype -- hand it back in the first parameter-save slot.  */
-      if (struct_ret_by_value)
+      만약 (struct_ret_by_value)
 	{
 	  *pgr0 = (unsigned long) cif->rtype;
-	  return PPC_LD_STRUCT;
+	  반환 PPC_LD_STRUCT;
 	}
-      return PPC_LD_NONE;
+      반환 PPC_LD_NONE;
     case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
+      반환 PPC_LD_F32;
     case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+      반환 PPC_LD_F64;
+#만약 FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
     case FFI_TYPE_LONGDOUBLE:
-      return PPC_LD_F128;
+      반환 PPC_LD_F128;
 #endif
     case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
+      반환 PPC_LD_U8;
     case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
+      반환 PPC_LD_S8;
     case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
+      반환 PPC_LD_U16;
     case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
+      반환 PPC_LD_S16;
     case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
+      반환 PPC_LD_U32;
     case FFI_TYPE_INT:
     case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
+      반환 PPC_LD_S32;
     case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
+      반환 PPC_LD_PTR;
     case FFI_TYPE_UINT64:
     case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
+      반환 PPC_LD_I64;
     default:
       abort();
     }
 }
 
-int
+정수
 ffi_closure_helper_DARWIN (ffi_closure *closure, void *rvalue,
 			   unsigned long *pgr, ffi_dblfl *pfr)
 {
-  return ffi_closure_helper_common (closure->cif, closure->fun,
+  반환 ffi_closure_helper_common (closure->cif, closure->fun,
 				    closure->user_data, rvalue, pgr, pfr);
 }
 
-#if defined (FFI_GO_CLOSURES)
-int
+#만약 defined (FFI_GO_CLOSURES)
+정수
 ffi_go_closure_helper_DARWIN (ffi_go_closure *closure, void *rvalue,
 			      unsigned long *pgr, ffi_dblfl *pfr)
 {
-  return ffi_closure_helper_common (closure->cif, closure->fun,
+  반환 ffi_closure_helper_common (closure->cif, closure->fun,
 				    closure, rvalue, pgr, pfr);
 }
 #endif

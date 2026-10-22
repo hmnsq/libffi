@@ -32,7 +32,7 @@
 #error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
 #endif
 
-#if defined (__s390x__)
+#만약 defined (__s390x__)
 #ifndef S390X
 #define S390X
 #endif
@@ -62,7 +62,7 @@ typedef enum ffi_abi {
 #define FFI_GO_CLOSURES 1
 #ifdef S390X
 #define FFI_TRAMPOLINE_SIZE 32
-#else
+#아니면
 #define FFI_TRAMPOLINE_SIZE 16
 #endif
 #define FFI_NATIVE_RAW_API 0

@@ -27,7 +27,7 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
+#만약 (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
 #define _GNU_SOURCE 1
 #endif
 
@@ -42,7 +42,7 @@
 #include <sys/param.h>
 #endif
 
-#if __NetBSD_Version__ - 0 >= 799007200
+#만약 __NetBSD_Version__ - 0 >= 799007200
 /* NetBSD with PROT_MPROTECT */
 #include <sys/mman.h>
 
@@ -65,14 +65,14 @@ ffi_closure_alloc (size_t size, void **code)
   static size_t page_size;
   size_t rounded_size;
   void *codeseg, *dataseg;
-  int prot;
+  정수 prot;
 
   /* Expect that PAX mprotect is active and a separate code mapping is necessary. */
-  if (!code)
-    return NULL;
+  만약 (!code)
+    반환 NULL;
 
   /* Obtain system page size. */
-  if (!page_size)
+  만약 (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
 
   /* Round allocation size up to the next page, keeping in mind the size field and pointer to code map. */
@@ -81,26 +81,26 @@ ffi_closure_alloc (size_t size, void **code)
   /* Primary mapping is RW, but request permission to switch to PROT_EXEC later. */
   prot = PROT_READ | PROT_WRITE | PROT_MPROTECT(PROT_EXEC);
   dataseg = mmap(NULL, rounded_size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
-  if (dataseg == MAP_FAILED)
-    return NULL;
+  만약 (dataseg == MAP_FAILED)
+    반환 NULL;
 
   /* Create secondary mapping and switch it to RX. */
   codeseg = mremap(dataseg, rounded_size, NULL, rounded_size, MAP_REMAPDUP);
-  if (codeseg == MAP_FAILED) {
+  만약 (codeseg == MAP_FAILED) {
     munmap(dataseg, rounded_size);
-    return NULL;
+    반환 NULL;
   }
-  if (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
+  만약 (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
     munmap(codeseg, rounded_size);
     munmap(dataseg, rounded_size);
-    return NULL;
+    반환 NULL;
   }
 
   /* Remember allocation size and location of the secondary mapping for ffi_closure_free. */
   memcpy(dataseg, &rounded_size, sizeof(rounded_size));
   memcpy(ADD_TO_POINTER(dataseg, sizeof(size_t)), &codeseg, sizeof(void *));
   *code = ADD_TO_POINTER(codeseg, overhead);
-  return ADD_TO_POINTER(dataseg, overhead);
+  반환 ADD_TO_POINTER(dataseg, overhead);
 }
 
 void
@@ -116,15 +116,15 @@ ffi_closure_free (void *ptr)
   munmap(codeseg, rounded_size);
 }
 
-int
+정수
 ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 {
-  return 0;
+  반환 0;
 }
-#else /* !NetBSD with PROT_MPROTECT */
+#아니면 /* !NetBSD with PROT_MPROTECT */
 
-#if !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
-# if __linux__ && !defined(__ANDROID__)
+#만약 !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
+# 만약 __linux__ && !defined(__ANDROID__)
 /* This macro indicates it may be forbidden to map anonymous memory
    with both write and execute permission.  Code compiled when this
    option is defined will attempt to map such pages once, but if it
@@ -135,7 +135,7 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 #  define FFI_MMAP_EXEC_WRIT 1
 #  define HAVE_MNTENT 1
 # endif
-# if defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
+# 만약 defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
 /* Windows systems may have Data Execution Protection (DEP) enabled,
    which requires the use of VirtualMalloc/VirtualFree to alloc/free
    executable memory. */
@@ -143,22 +143,22 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 # endif
 #endif
 
-#if FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
-# if !defined FFI_MMAP_EXEC_SELINUX
+#만약 FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
+# 만약 !defined FFI_MMAP_EXEC_SELINUX
 /* When defined to 1 check for SELinux and if SELinux is active,
    don't attempt PROT_EXEC|PROT_WRITE mapping at all, as that
    might cause audit messages.  */
 #  define FFI_MMAP_EXEC_SELINUX 1
 # endif /* !defined FFI_MMAP_EXEC_SELINUX */
-# if !defined FFI_MMAP_PAX
+# 만약 !defined FFI_MMAP_PAX
 /* Also check for PaX MPROTECT */
 #  define FFI_MMAP_PAX 1
 # endif /* !defined FFI_MMAP_PAX */
 #endif /* FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__) */
 
-#if FFI_CLOSURES
+#만약 FFI_CLOSURES
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#만약 FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 
@@ -217,15 +217,15 @@ ffi_trampoline_table_alloc (void)
   config_page = 0x0;
   kt = vm_allocate (mach_task_self (), &config_page, PAGE_MAX_SIZE * 2,
 		    VM_FLAGS_ANYWHERE);
-  if (kt != KERN_SUCCESS)
-    return NULL;
+  만약 (kt != KERN_SUCCESS)
+    반환 NULL;
 
   /* Remap the trampoline table on top of the placeholder page */
   trampoline_page = config_page + PAGE_MAX_SIZE;
 
 #ifdef HAVE_ARM64E_PTRAUTH
   trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((void *)&ffi_closure_trampoline_table_page, ptrauth_key_function_pointer, 0);
-#else
+#아니면
   trampoline_page_template = (vm_address_t)&ffi_closure_trampoline_table_page;
 #endif
 
@@ -236,30 +236,30 @@ ffi_trampoline_table_alloc (void)
   kt = vm_remap (mach_task_self (), &trampoline_page, PAGE_MAX_SIZE, 0x0,
 		 VM_FLAGS_OVERWRITE, mach_task_self (), trampoline_page_template,
 		 FALSE, &cur_prot, &max_prot, VM_INHERIT_SHARE);
-  if (kt != KERN_SUCCESS)
+  만약 (kt != KERN_SUCCESS)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      반환 NULL;
     }
 
-  if (!(cur_prot & VM_PROT_EXECUTE))
+  만약 (!(cur_prot & VM_PROT_EXECUTE))
     {
       /* If VM_PROT_EXECUTE isn't set on the remapped trampoline page, set it */
       kt = vm_protect (mach_task_self (), trampoline_page, PAGE_MAX_SIZE,
          FALSE, cur_prot | VM_PROT_EXECUTE);
-      if (kt != KERN_SUCCESS)
+      만약 (kt != KERN_SUCCESS)
         {
           vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-          return NULL;
+          반환 NULL;
         }
     }
 
   /* We have valid trampoline and config pages */
   table = calloc (1, sizeof (ffi_trampoline_table));
-  if (table == NULL)
+  만약 (table == NULL)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      반환 NULL;
     }
   table->free_count = FFI_TRAMPOLINE_COUNT;
   table->config_page = config_page;
@@ -267,14 +267,14 @@ ffi_trampoline_table_alloc (void)
   /* Create and initialize the free list */
   table->free_list_pool =
     calloc (FFI_TRAMPOLINE_COUNT, sizeof (ffi_trampoline_table_entry));
-  if (table->free_list_pool == NULL)
+  만약 (table->free_list_pool == NULL)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
       free (table);
-      return NULL;
+      반환 NULL;
     }
 
-  for (i = 0; i < table->free_count; i++)
+  위해 (i = 0; i < table->free_count; i++)
     {
       ffi_trampoline_table_entry *entry = &table->free_list_pool[i];
       entry->trampoline =
@@ -283,23 +283,23 @@ ffi_trampoline_table_alloc (void)
       entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_key_function_pointer, 0);
 #endif
 
-      if (i < table->free_count - 1)
+      만약 (i < table->free_count - 1)
 	entry->next = &table->free_list_pool[i + 1];
     }
 
   table->free_list = table->free_list_pool;
 
-  return table;
+  반환 table;
 }
 
 static void
 ffi_trampoline_table_free (ffi_trampoline_table *table)
 {
   /* Remove from the list */
-  if (table->prev != NULL)
+  만약 (table->prev != NULL)
     table->prev->next = table->next;
 
-  if (table->next != NULL)
+  만약 (table->next != NULL)
     table->next->prev = table->prev;
 
   /* Deallocate pages */
@@ -315,26 +315,26 @@ ffi_closure_alloc (size_t size, void **code)
 {
   /* Create the closure */
   ffi_closure *closure = malloc (size);
-  if (closure == NULL)
-    return NULL;
+  만약 (closure == NULL)
+    반환 NULL;
 
   pthread_mutex_lock (&ffi_trampoline_lock);
 
   /* Check for an active trampoline table with available entries. */
   ffi_trampoline_table *table = ffi_trampoline_tables;
-  if (table == NULL || table->free_list == NULL)
+  만약 (table == NULL || table->free_list == NULL)
     {
       table = ffi_trampoline_table_alloc ();
-      if (table == NULL)
+      만약 (table == NULL)
 	{
 	  pthread_mutex_unlock (&ffi_trampoline_lock);
 	  free (closure);
-	  return NULL;
+	  반환 NULL;
 	}
 
       /* Insert the new table at the top of the list */
       table->next = ffi_trampoline_tables;
-      if (table->next != NULL)
+      만약 (table->next != NULL)
 	table->next->prev = table;
 
       ffi_trampoline_tables = table;
@@ -353,7 +353,7 @@ ffi_closure_alloc (size_t size, void **code)
   closure->trampoline_table = table;
   closure->trampoline_table_entry = entry;
 
-  return closure;
+  반환 closure;
 }
 
 void
@@ -374,17 +374,17 @@ ffi_closure_free (void *ptr)
 
   /* If all trampolines within this table are free, and at least one other table exists, deallocate
    * the table */
-  if (table->free_count == FFI_TRAMPOLINE_COUNT
+  만약 (table->free_count == FFI_TRAMPOLINE_COUNT
       && ffi_trampoline_tables != table)
     {
       ffi_trampoline_table_free (table);
     }
-  else if (ffi_trampoline_tables != table)
+  아니면 만약 (ffi_trampoline_tables != table)
     {
       /* Otherwise, bump this table to the top of the list */
       table->prev = NULL;
       table->next = ffi_trampoline_tables;
-      if (ffi_trampoline_tables != NULL)
+      만약 (ffi_trampoline_tables != NULL)
 	ffi_trampoline_tables->prev = table;
 
       ffi_trampoline_tables = table;
@@ -433,7 +433,7 @@ ffi_closure_free (void *ptr)
 #endif
 #include <string.h>
 #include <stdio.h>
-#if !defined(_WIN32)
+#만약 !defined(_WIN32)
 #ifdef HAVE_MNTENT
 #include <mntent.h>
 #endif /* HAVE_MNTENT */
@@ -445,13 +445,13 @@ ffi_closure_free (void *ptr)
 #include <sys/mman.h>
 #define LACKS_SYS_MMAN_H 1
 
-#if FFI_MMAP_EXEC_SELINUX
+#만약 FFI_MMAP_EXEC_SELINUX
 #include <sys/statfs.h>
 #include <stdlib.h>
 
-static int selinux_enabled = -1;
+static 정수 selinux_enabled = -1;
 
-static int
+static 정수
 selinux_enabled_check (void)
 {
   struct statfs sfs;
@@ -459,75 +459,75 @@ selinux_enabled_check (void)
   char *buf = NULL;
   size_t len = 0;
 
-  if (statfs ("/selinux", &sfs) >= 0
-      && (unsigned int) sfs.f_type == 0xf97cff8cU)
-    return 1;
+  만약 (statfs ("/selinux", &sfs) >= 0
+      && (unsigned 정수) sfs.f_type == 0xf97cff8cU)
+    반환 1;
   f = fopen ("/proc/mounts", "r");
-  if (f == NULL)
-    return 0;
-  while (getline (&buf, &len, f) >= 0)
+  만약 (f == NULL)
+    반환 0;
+  동안 (getline (&buf, &len, f) >= 0)
     {
       char *p = strchr (buf, ' ');
-      if (p == NULL)
+      만약 (p == NULL)
         break;
       p = strchr (p + 1, ' ');
-      if (p == NULL)
+      만약 (p == NULL)
         break;
-      if (strncmp (p + 1, "selinuxfs ", 10) == 0)
+      만약 (strncmp (p + 1, "selinuxfs ", 10) == 0)
         {
           free (buf);
           fclose (f);
-          return 1;
+          반환 1;
         }
     }
   free (buf);
   fclose (f);
-  return 0;
+  반환 0;
 }
 
 #define is_selinux_enabled() (selinux_enabled >= 0 ? selinux_enabled \
 			      : (selinux_enabled = selinux_enabled_check ()))
 
-#else
+#아니면
 
 #define is_selinux_enabled() 0
 
 #endif /* !FFI_MMAP_EXEC_SELINUX */
 
 /* On PaX enable kernels that have MPROTECT enabled we can't use PROT_EXEC. */
-#if defined FFI_MMAP_PAX
+#만약 defined FFI_MMAP_PAX
 #include <stdlib.h>
 
 enum {
   PAX_MPROTECT = (1 << 0),
   PAX_EMUTRAMP = (1 << 1),
 };
-static int cached_pax_flags = -1;
+static 정수 cached_pax_flags = -1;
 
-static int
+static 정수
 pax_flags_check (void)
 {
   char *buf = NULL;
   size_t len = 0;
   FILE *f;
-  int ret;
+  정수 ret;
   f = fopen ("/proc/self/status", "r");
-  if (f == NULL)
-    return 0;
+  만약 (f == NULL)
+    반환 0;
   ret = 0;
 
-  while (getline (&buf, &len, f) != -1)
-    if (!strncmp (buf, "PaX:", 4))
+  동안 (getline (&buf, &len, f) != -1)
+    만약 (!strncmp (buf, "PaX:", 4))
       {
-        if (NULL != strchr (buf + 4, 'M'))
+        만약 (NULL != strchr (buf + 4, 'M'))
           ret |= PAX_MPROTECT;
-        if (NULL != strchr (buf + 4, 'E'))
+        만약 (NULL != strchr (buf + 4, 'E'))
           ret |= PAX_EMUTRAMP;
         break;
       }
   free (buf);
   fclose (f);
-  return ret;
+  반환 ret;
 }
 
 #define get_pax_flags() (cached_pax_flags >= 0 ? cached_pax_flags \
@@ -547,7 +547,7 @@ pax_flags_check (void)
 
 #endif /* !defined(X86_WIN32) && !defined(X86_WIN64) */
 
-#if !defined FFI_MMAP_PAX
+#만약 !defined FFI_MMAP_PAX
 # define is_mprotect_enabled() 0
 # define is_emutramp_enabled() 0
 #endif /* !defined FFI_MMAP_PAX */
@@ -559,20 +559,20 @@ static void *dlcalloc(size_t, size_t) MAYBE_UNUSED;
 static void *dlrealloc(void *, size_t) MAYBE_UNUSED;
 static void *dlmemalign(size_t, size_t) MAYBE_UNUSED;
 static void *dlvalloc(size_t) MAYBE_UNUSED;
-static int dlmallopt(int, int) MAYBE_UNUSED;
+static 정수 dlmallopt(정수, 정수) MAYBE_UNUSED;
 static size_t dlmalloc_footprint(void) MAYBE_UNUSED;
 static size_t dlmalloc_max_footprint(void) MAYBE_UNUSED;
 static void** dlindependent_calloc(size_t, size_t, void**) MAYBE_UNUSED;
 static void** dlindependent_comalloc(size_t, size_t*, void**) MAYBE_UNUSED;
 static void *dlpvalloc(size_t) MAYBE_UNUSED;
-static int dlmalloc_trim(size_t) MAYBE_UNUSED;
+static 정수 dlmalloc_trim(size_t) MAYBE_UNUSED;
 static size_t dlmalloc_usable_size(void*) MAYBE_UNUSED;
 static void dlmalloc_stats(void) MAYBE_UNUSED;
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#만약 !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 /* Use these for mmap and munmap within dlmalloc.c.  */
-static void *dlmmap(void *, size_t, int, int, int, off_t);
-static int dlmunmap(void *, size_t);
+static void *dlmmap(void *, size_t, 정수, 정수, 정수, off_t);
+static 정수 dlmunmap(void *, size_t);
 #endif /* !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
 
 #define mmap dlmmap
@@ -583,97 +583,97 @@ static int dlmunmap(void *, size_t);
 #undef mmap
 #undef munmap
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#만약 !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 
 /* A mutex used to synchronize access to *exec* variables in this file.  */
 static pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* A file descriptor of a temporary file from which we'll map
    executable pages.  */
-static int execfd = -1;
+static 정수 execfd = -1;
 
 /* The amount of space already allocated from the temporary file.  */
 static size_t execsize = 0;
 
 #ifdef HAVE_MEMFD_CREATE
 /* Open a temporary file name, and immediately unlink it.  */
-static int
+static 정수
 open_temp_exec_file_memfd (const char *name)
 {
-  int fd;
+  정수 fd;
   fd = memfd_create (name, MFD_CLOEXEC);
-  return fd;
+  반환 fd;
 }
 #endif
 
 /* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_name (char *name, int flags MAYBE_UNUSED)
+static 정수
+open_temp_exec_file_name (char *name, 정수 flags MAYBE_UNUSED)
 {
-  int fd;
+  정수 fd;
 
 #ifdef HAVE_MKOSTEMP
   fd = mkostemp (name, flags);
-#else
+#아니면
   fd = mkstemp (name);
 #endif
 
-  if (fd != -1)
+  만약 (fd != -1)
     unlink (name);
 
-  return fd;
+  반환 fd;
 }
 
 /* Open a temporary file in the named directory.  */
-static int
+static 정수
 open_temp_exec_file_dir (const char *dir)
 {
   static const char suffix[] = "/ffiXXXXXX";
-  int lendir, flags;
+  정수 lendir, flags;
   char *tempname;
 #ifdef O_TMPFILE
-  int fd;
+  정수 fd;
 #endif
 
 #ifdef O_CLOEXEC
   flags = O_CLOEXEC;
-#else
+#아니면
   flags = 0;
 #endif
 
 #ifdef O_TMPFILE
   fd = open (dir, flags | O_RDWR | O_EXCL | O_TMPFILE, 0700);
   /* If the running system does not support the O_TMPFILE flag then retry without it. */
-  if (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
-    return fd;
-  } else {
+  만약 (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
+    반환 fd;
+  } 아니면 {
     errno = 0;
   }
 #endif
 
-  lendir = (int) strlen (dir);
+  lendir = (정수) strlen (dir);
   tempname = __builtin_alloca (lendir + sizeof (suffix));
 
-  if (!tempname)
-    return -1;
+  만약 (!tempname)
+    반환 -1;
 
   memcpy (tempname, dir, lendir);
   memcpy (tempname + lendir, suffix, sizeof (suffix));
 
-  return open_temp_exec_file_name (tempname, flags);
+  반환 open_temp_exec_file_name (tempname, flags);
 }
 
 /* Open a temporary file in the directory in the named environment
    variable.  */
-static int
+static 정수
 open_temp_exec_file_env (const char *envvar)
 {
   const char *value = getenv (envvar);
 
-  if (!value)
-    return -1;
+  만약 (!value)
+    반환 -1;
 
-  return open_temp_exec_file_dir (value);
+  반환 open_temp_exec_file_dir (value);
 }
 
 #ifdef HAVE_MNTENT
@@ -681,46 +681,46 @@ open_temp_exec_file_env (const char *envvar)
    listed in the mounts file.  Subsequent calls with the same mounts
    keep searching for mount points in the same file.  Providing NULL
    as the mounts file closes the file.  */
-static int
+static 정수
 open_temp_exec_file_mnt (const char *mounts)
 {
   static const char *last_mounts;
   static FILE *last_mntent;
 
-  if (mounts != last_mounts)
+  만약 (mounts != last_mounts)
     {
-      if (last_mntent)
+      만약 (last_mntent)
 	endmntent (last_mntent);
 
       last_mounts = mounts;
 
-      if (mounts)
+      만약 (mounts)
 	last_mntent = setmntent (mounts, "r");
-      else
+      아니면
 	last_mntent = NULL;
     }
 
-  if (!last_mntent)
-    return -1;
+  만약 (!last_mntent)
+    반환 -1;
 
-  for (;;)
+  위해 (;;)
     {
-      int fd;
+      정수 fd;
       struct mntent mnt;
       char buf[MAXPATHLEN * 3];
 
-      if (getmntent_r (last_mntent, &mnt, buf, sizeof (buf)) == NULL)
-	return -1;
+      만약 (getmntent_r (last_mntent, &mnt, buf, sizeof (buf)) == NULL)
+	반환 -1;
 
-      if (hasmntopt (&mnt, "ro")
+      만약 (hasmntopt (&mnt, "ro")
 	  || hasmntopt (&mnt, "noexec")
 	  || access (mnt.mnt_dir, W_OK))
 	continue;
 
       fd = open_temp_exec_file_dir (mnt.mnt_dir);
 
-      if (fd != -1)
-	return fd;
+      만약 (fd != -1)
+	반환 fd;
     }
 }
 #endif /* HAVE_MNTENT */
@@ -729,9 +729,9 @@ open_temp_exec_file_mnt (const char *mounts)
    can be mapped in for execution.  */
 static struct
 {
-  int (*func)(const char *);
+  정수 (*func)(const char *);
   const char *arg;
-  int repeat;
+  정수 repeat;
 } open_temp_exec_file_opts[] = {
 #ifdef HAVE_MEMFD_CREATE
   { open_temp_exec_file_memfd, "libffi", 0 },
@@ -749,51 +749,51 @@ static struct
 };
 
 /* Current index into open_temp_exec_file_opts.  */
-static int open_temp_exec_file_opts_idx = 0;
+static 정수 open_temp_exec_file_opts_idx = 0;
 
 /* Reset a current multi-call func, then advances to the next entry.
    If we're at the last, go back to the first and return nonzero,
    otherwise return zero.  */
-static int
+static 정수
 open_temp_exec_file_opts_next (void)
 {
-  if (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
+  만약 (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
     open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func (NULL);
 
   open_temp_exec_file_opts_idx++;
-  if (open_temp_exec_file_opts_idx
+  만약 (open_temp_exec_file_opts_idx
       == (sizeof (open_temp_exec_file_opts)
 	  / sizeof (*open_temp_exec_file_opts)))
     {
       open_temp_exec_file_opts_idx = 0;
-      return 1;
+      반환 1;
     }
 
-  return 0;
+  반환 0;
 }
 
 /* Return a file descriptor of a temporary zero-sized file in a
    writable and executable filesystem.  */
-int
+정수
 open_temp_exec_file (void)
 {
-  int fd;
+  정수 fd;
 
   do
     {
       fd = open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func
 	(open_temp_exec_file_opts[open_temp_exec_file_opts_idx].arg);
 
-      if (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
+      만약 (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
 	  || fd == -1)
 	{
-	  if (open_temp_exec_file_opts_next ())
+	  만약 (open_temp_exec_file_opts_next ())
 	    break;
 	}
     }
-  while (fd == -1);
+  동안 (fd == -1);
 
-  return fd;
+  반환 fd;
 }
 
 /* We need to allocate space in a file that will be backing a writable
@@ -803,29 +803,29 @@ open_temp_exec_file (void)
    - ftruncate() does not allocate space on filesystems with sparse files
    Failure to allocate the space will cause SIGBUS to be thrown when
    the mapping is subsequently written to.  */
-static int
-allocate_space (int fd, off_t len)
+static 정수
+allocate_space (정수 fd, off_t len)
 {
   static long page_size;
 
   /* Obtain system page size. */
-  if (!page_size)
+  만약 (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
-  if (page_size <= 0)
-    return -1;
+  만약 (page_size <= 0)
+    반환 -1;
 
   unsigned char buf[page_size];
   memset (buf, 0, page_size);
 
-  while (len > 0)
+  동안 (len > 0)
     {
       off_t to_write = (len < page_size) ? len : page_size;
-      if (write (fd, buf, to_write) < to_write)
-        return -1;
+      만약 (write (fd, buf, to_write) < to_write)
+        반환 -1;
       len -= to_write;
     }
 
-  return 0;
+  반환 0;
 }
 
 /* Map in a chunk of memory from the temporary exec file into separate
@@ -834,75 +834,75 @@ allocate_space (int fd, off_t len)
    storing an offset to the corresponding executable portion at the
    last word of the requested chunk.  */
 static void *
-dlmmap_locked (void *start, size_t length, int prot, int flags, off_t offset)
+dlmmap_locked (void *start, size_t length, 정수 prot, 정수 flags, off_t offset)
 {
   void *ptr;
 
-  if (execfd == -1)
+  만약 (execfd == -1)
     {
       open_temp_exec_file_opts_idx = 0;
     retry_open:
       execfd = open_temp_exec_file ();
-      if (execfd == -1)
-	return MFAIL;
+      만약 (execfd == -1)
+	반환 MFAIL;
     }
 
   offset = execsize;
 
-  if (allocate_space (execfd, length))
-    return MFAIL;
+  만약 (allocate_space (execfd, length))
+    반환 MFAIL;
 
   flags &= ~(MAP_PRIVATE | MAP_ANONYMOUS);
   flags |= MAP_SHARED;
 
   ptr = mmap (NULL, length, (prot & ~PROT_WRITE) | PROT_EXEC,
 	      flags, execfd, offset);
-  if (ptr == MFAIL)
+  만약 (ptr == MFAIL)
     {
-      if (!offset)
+      만약 (!offset)
 	{
 	  close (execfd);
 	  goto retry_open;
 	}
-      if (ftruncate (execfd, offset) != 0)
+      만약 (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
 
-      return MFAIL;
+      반환 MFAIL;
     }
-  else if (!offset
+  아니면 만약 (!offset
 	   && open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
     open_temp_exec_file_opts_next ();
 
   start = mmap (start, length, prot, flags, execfd, offset);
 
-  if (start == MFAIL)
+  만약 (start == MFAIL)
     {
       munmap (ptr, length);
-      if (ftruncate (execfd, offset) != 0)
+      만약 (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
-      return start;
+      반환 start;
     }
 
   mmap_exec_offset ((char *)start, length) = (char*)ptr - (char*)start;
 
   execsize += length;
 
-  return start;
+  반환 start;
 }
 
 /* Map in a writable and executable chunk of memory if possible.
    Failing that, fall back to dlmmap_locked.  */
 static void *
-dlmmap (void *start, size_t length, int prot,
-	int flags, int fd, off_t offset)
+dlmmap (void *start, size_t length, 정수 prot,
+	정수 flags, 정수 fd, off_t offset)
 {
   void *ptr;
 
@@ -911,35 +911,35 @@ dlmmap (void *start, size_t length, int prot,
 	  && flags == (MAP_PRIVATE | MAP_ANONYMOUS)
 	  && fd == -1 && offset == 0);
 
-  if (execfd == -1 && ffi_tramp_is_supported ())
+  만약 (execfd == -1 && ffi_tramp_is_supported ())
     {
       ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-      return ptr;
+      반환 ptr;
     }
 
   /* -1 != execfd hints that we already decided to use dlmmap_locked
      last time.  */
-  if (execfd == -1 && is_mprotect_enabled ())
+  만약 (execfd == -1 && is_mprotect_enabled ())
     {
 #ifdef FFI_MMAP_EXEC_EMUTRAMP_PAX
-      if (is_emutramp_enabled ())
+      만약 (is_emutramp_enabled ())
         {
           /* emutramp requires the kernel recognizing the trampoline pattern
              generated by ffi_prep_closure_loc; there is no way to test
              in advance whether this will work, so this is experimental.  */
           ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-          return ptr;
+          반환 ptr;
         }
 #endif
       /* fallback to dlmmap_locked.  */
     }
-  else if (execfd == -1 && !is_selinux_enabled ())
+  아니면 만약 (execfd == -1 && !is_selinux_enabled ())
     {
       ptr = mmap (start, length, prot | PROT_EXEC, flags, fd, offset);
 
-      if (ptr != MFAIL || (errno != EPERM && errno != EACCES))
+      만약 (ptr != MFAIL || (errno != EPERM && errno != EACCES))
 	/* Cool, no need to mess with separate segments.  */
-	return ptr;
+	반환 ptr;
 
       /* If MREMAP_DUP is ever introduced and implemented, try mmap
 	 with ((prot & ~PROT_WRITE) | PROT_EXEC) and mremap with
@@ -950,12 +950,12 @@ dlmmap (void *start, size_t length, int prot,
   ptr = dlmmap_locked (start, length, prot, flags, offset);
   pthread_mutex_unlock (&open_temp_exec_file_mutex);
 
-  return ptr;
+  반환 ptr;
 }
 
 /* Release memory at the given address, as well as the corresponding
    executable page if it's separate.  */
-static int
+static 정수
 dlmunmap (void *start, size_t length)
 {
   /* We don't bother decreasing execsize or truncating the file, since
@@ -967,28 +967,28 @@ dlmunmap (void *start, size_t length)
   msegmentptr seg = segment_holding (gm, start);
   void *code;
 
-  if (seg && (code = add_segment_exec_offset (start, seg)) != start)
+  만약 (seg && (code = add_segment_exec_offset (start, seg)) != start)
     {
-      int ret = munmap (code, length);
-      if (ret)
-	return ret;
+      정수 ret = munmap (code, length);
+      만약 (ret)
+	반환 ret;
     }
 
-  return munmap (start, length);
+  반환 munmap (start, length);
 }
 
-#if FFI_CLOSURE_FREE_CODE
+#만약 FFI_CLOSURE_FREE_CODE
 /* Return segment holding given code address.  */
 static msegmentptr
 segment_holding_code (mstate m, char* addr)
 {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if (addr >= add_segment_exec_offset (sp->base, sp)
+  위해 (;;) {
+    만약 (addr >= add_segment_exec_offset (sp->base, sp)
 	&& addr < add_segment_exec_offset (sp->base, sp) + sp->size)
-      return sp;
-    if ((sp = sp->next) == 0)
-      return 0;
+      반환 sp;
+    만약 ((sp = sp->next) == 0)
+      반환 0;
   }
 }
 #endif
@@ -1003,30 +1003,30 @@ ffi_closure_alloc (size_t size, void **code)
 {
   void *ptr, *ftramp;
 
-  if (!code)
-    return NULL;
+  만약 (!code)
+    반환 NULL;
 
   ptr = dlmalloc (size);
 
-  if (ptr)
+  만약 (ptr)
     {
       msegmentptr seg = segment_holding (gm, ptr);
 
       *code = FFI_FN (add_segment_exec_offset (ptr, seg));
-      if (!ffi_tramp_is_supported ())
-        return ptr;
+      만약 (!ffi_tramp_is_supported ())
+        반환 ptr;
 
       ftramp = ffi_tramp_alloc (0);
-      if (ftramp == NULL)
+      만약 (ftramp == NULL)
       {
         dlfree (ptr);
-        return NULL;
+        반환 NULL;
       }
       *code = FFI_FN (ffi_tramp_get_addr (ftramp));
       ((ffi_closure *) ptr)->ftramp = ftramp;
     }
 
-  return ptr;
+  반환 ptr;
 }
 
 void *
@@ -1037,14 +1037,14 @@ ffi_data_to_code_pointer (void *data)
      which case seg will be non-NULL.  However, some users take on the
      burden of managing this memory themselves, in which case this
      we'll just return data. */
-  if (seg)
+  만약 (seg)
     {
-      if (!ffi_tramp_is_supported ())
-        return add_segment_exec_offset (data, seg);
-      return ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
+      만약 (!ffi_tramp_is_supported ())
+        반환 add_segment_exec_offset (data, seg);
+      반환 ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
     }
-  else
-    return data;
+  아니면
+    반환 data;
 }
 
 /* Release a chunk of memory allocated with ffi_closure_alloc.  If
@@ -1054,26 +1054,26 @@ ffi_data_to_code_pointer (void *data)
 void
 ffi_closure_free (void *ptr)
 {
-#if FFI_CLOSURE_FREE_CODE
+#만약 FFI_CLOSURE_FREE_CODE
   msegmentptr seg = segment_holding_code (gm, ptr);
 
-  if (seg)
+  만약 (seg)
     ptr = sub_segment_exec_offset (ptr, seg);
 #endif
-  if (ffi_tramp_is_supported ())
+  만약 (ffi_tramp_is_supported ())
     ffi_tramp_free (((ffi_closure *) ptr)->ftramp);
 
   dlfree (ptr);
 }
 
-int
+정수
 ffi_tramp_is_present (void *ptr)
 {
   msegmentptr seg = segment_holding (gm, ptr);
-  return seg != NULL && ffi_tramp_is_supported();
+  반환 seg != NULL && ffi_tramp_is_supported();
 }
 
-# else /* ! FFI_MMAP_EXEC_WRIT */
+# 아니면 /* ! FFI_MMAP_EXEC_WRIT */
 
 /* On many systems, memory returned by malloc is writable and
    executable, so just use it.  */
@@ -1085,12 +1085,12 @@ ffi_closure_alloc (size_t size, void **code)
 {
   void *c;
 
-  if (!code)
-    return NULL;
+  만약 (!code)
+    반환 NULL;
 
   c = malloc (size);
   *code = FFI_FN (c);
-  return c;
+  반환 c;
 }
 
 void
@@ -1102,13 +1102,13 @@ ffi_closure_free (void *ptr)
 void *
 ffi_data_to_code_pointer (void *data)
 {
-  return data;
+  반환 data;
 }
 
-int
+정수
 ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 {
-  return 0;
+  반환 0;
 }
 
 # endif /* ! FFI_MMAP_EXEC_WRIT */
