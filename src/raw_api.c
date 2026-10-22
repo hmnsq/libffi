@@ -29,27 +29,27 @@
 #include <ffi.h>
 #include <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#ᬬᬾᬦ᭄ !FFI_NO_RAW_API
 
 size_t
 ffi_raw_size (ffi_cif *cif)
 {
   size_t result = 0;
-  int i;
+  puur_naa_nka i;
 
   ffi_type **at = cif->arg_types;
 
   for (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
+#ᬬᬾᬦ᭄ !FFI_NO_STRUCTS
+      ᬬᬾᬦ᭄ ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
+	result += FFI_ALIGN (parimaa_na (void*), FFI_SIZEOF_ARG);
+      ᬮᬶᬬ
 #endif
 	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  ᬯᬮᬶ result;
 }
 
 
@@ -59,43 +59,43 @@ ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#ᬬᬾᬦ᭄ WORDS_BIGENDIAN
 
   for (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
       switch ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	pak_sa FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_SINT8:
+	  *args = (void*) ((var_na*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  bha_nga;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	pak_sa FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_SINT16:
+	  *args = (void*) ((var_na*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  bha_nga;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
+#ᬬᬾᬦ᭄ FFI_SIZEOF_ARG >= 4	  
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT32:
+	  *args = (void*) ((var_na*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  bha_nga;
 #endif
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#ᬬᬾᬦ᭄ !FFI_NO_STRUCTS
+	pak_sa FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_VECTOR:
 	  *args = (raw++)->ptr;
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_COMPLEX:
 	  *args = (raw++)->ptr;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_POINTER:
 	  *args = (void*) &(raw++)->ptr;
-	  break;
+	  bha_nga;
 	  
 	default:
 	  *args = raw;
@@ -103,32 +103,32 @@ ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#ᬮᬶᬬ /* WORDS_BIGENDIAN */
 
-#if !PDP
+#ᬬᬾᬦ᭄ !PDP
 
   /* then assume little endian */
   for (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#ᬬᬾᬦ᭄ !FFI_NO_STRUCTS
+      ᬬᬾᬦ᭄ ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      ᬮᬶᬬ
 #endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      ᬬᬾᬦ᭄ ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      ᬮᬶᬬ
 	{
 	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  raw += FFI_ALIGN ((*tp)->size, parimaa_na (void*)) / parimaa_na (void*);
 	}
     }
 
-#else
+#ᬮᬶᬬ
 #error "pdp endian not supported"
 #endif /* ! PDP */
 
@@ -145,46 +145,46 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
     {	  
       switch ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_UINT8:
 	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_SINT8:
 	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_UINT16:
 	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_SINT16:
 	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	  bha_nga;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
+#ᬬᬾᬦ᭄ FFI_SIZEOF_ARG >= 4
+	pak_sa FFI_TYPE_UINT32:
 	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_SINT32:
 	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
+	  bha_nga;
 #endif
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#ᬬᬾᬦ᭄ !FFI_NO_STRUCTS
+	pak_sa FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_VECTOR:
 	  (raw++)->ptr = *args;
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_COMPLEX:
 	  (raw++)->ptr = *args;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_POINTER:
 	  (raw++)->ptr = **(void***) args;
-	  break;
+	  bha_nga;
 
 	default:
 	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
@@ -193,7 +193,7 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#ᬬᬾᬦ᭄ !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -205,12 +205,12 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
 
 void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
+  void **avalue = (void**) alloca (cif->nargs * parimaa_na (void*));
   ffi_raw_to_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#ᬬᬾᬦ᭄ FFI_CLOSURES		/* base system provides closures */
 
 static void
 ffi_translate_args (ffi_cif *cif, void *rvalue,
@@ -237,19 +237,19 @@ ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 				 &ffi_translate_args,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  ᬬᬾᬦ᭄ (status == FFI_OK)
     {
       cl->fun       = fun;
       cl->user_data = user_data;
     }
 
-  return status;
+  ᬯᬮᬶ status;
 }
 
 #endif /* FFI_CLOSURES */
 #endif /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#ᬬᬾᬦ᭄ FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
@@ -261,7 +261,7 @@ ffi_prep_raw_closure (ffi_raw_closure* cl,
 		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
 		      void *user_data)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  ᬯᬮᬶ ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
 }
 
 #endif /* FFI_CLOSURES */
