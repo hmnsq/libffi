@@ -27,52 +27,52 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
+#اگر (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
 #define _GNU_SOURCE 1
 #endif
 
 #ifndef __EMSCRIPTEN__
 
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include <tramp.h>
+#شامل <fficonfig.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
+#شامل <tramp.h>
 
 #ifdef __NetBSD__
-#include <sys/param.h>
+#شامل <sys/param.h>
 #endif
 
-#if __NetBSD_Version__ - 0 >= 799007200
+#اگر __NetBSD_Version__ - 0 >= 799007200
 /* NetBSD with PROT_MPROTECT */
-#include <sys/mman.h>
+#شامل <sys/mman.h>
 
-#include <stddef.h>
-#include <unistd.h>
+#شامل <stddef.h>
+#شامل <unistd.h>
 #ifdef  HAVE_SYS_MEMFD_H
-#include <sys/memfd.h>
+#شامل <sys/memfd.h>
 #endif
 
-static const size_t overhead =
-  (sizeof(max_align_t) > sizeof(void *) + sizeof(size_t)) ?
-    sizeof(max_align_t)
-    : sizeof(void *) + sizeof(size_t);
+ایستا ثابت size_t overhead =
+  (اندازه(max_align_t) > اندازه(تهی *) + اندازه(size_t)) ?
+    اندازه(max_align_t)
+    : اندازه(تهی *) + اندازه(size_t);
 
-#define ADD_TO_POINTER(p, d) ((void *)((uintptr_t)(p) + (d)))
+#define ADD_TO_POINTER(p, d) ((تهی *)((uintptr_t)(p) + (d)))
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+تهی *
+ffi_closure_alloc (size_t size, تهی **code)
 {
-  static size_t page_size;
+  ایستا size_t page_size;
   size_t rounded_size;
-  void *codeseg, *dataseg;
-  int prot;
+  تهی *codeseg, *dataseg;
+  صحیح prot;
 
   /* Expect that PAX mprotect is active and a separate code mapping is necessary. */
-  if (!code)
-    return NULL;
+  اگر (!code)
+    بازگشت پوچ;
 
   /* Obtain system page size. */
-  if (!page_size)
+  اگر (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
 
   /* Round allocation size up to the next page, keeping in mind the size field and pointer to code map. */
@@ -80,51 +80,51 @@ ffi_closure_alloc (size_t size, void **code)
 
   /* Primary mapping is RW, but request permission to switch to PROT_EXEC later. */
   prot = PROT_READ | PROT_WRITE | PROT_MPROTECT(PROT_EXEC);
-  dataseg = mmap(NULL, rounded_size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
-  if (dataseg == MAP_FAILED)
-    return NULL;
+  dataseg = mmap(پوچ, rounded_size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
+  اگر (dataseg == MAP_FAILED)
+    بازگشت پوچ;
 
   /* Create secondary mapping and switch it to RX. */
-  codeseg = mremap(dataseg, rounded_size, NULL, rounded_size, MAP_REMAPDUP);
-  if (codeseg == MAP_FAILED) {
+  codeseg = mremap(dataseg, rounded_size, پوچ, rounded_size, MAP_REMAPDUP);
+  اگر (codeseg == MAP_FAILED) {
     munmap(dataseg, rounded_size);
-    return NULL;
+    بازگشت پوچ;
   }
-  if (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
+  اگر (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
     munmap(codeseg, rounded_size);
     munmap(dataseg, rounded_size);
-    return NULL;
+    بازگشت پوچ;
   }
 
   /* Remember allocation size and location of the secondary mapping for ffi_closure_free. */
-  memcpy(dataseg, &rounded_size, sizeof(rounded_size));
-  memcpy(ADD_TO_POINTER(dataseg, sizeof(size_t)), &codeseg, sizeof(void *));
+  memcpy(dataseg, &rounded_size, اندازه(rounded_size));
+  memcpy(ADD_TO_POINTER(dataseg, اندازه(size_t)), &codeseg, اندازه(تهی *));
   *code = ADD_TO_POINTER(codeseg, overhead);
-  return ADD_TO_POINTER(dataseg, overhead);
+  بازگشت ADD_TO_POINTER(dataseg, overhead);
 }
 
-void
-ffi_closure_free (void *ptr)
+تهی
+ffi_closure_free (تهی *ptr)
 {
-  void *codeseg, *dataseg;
+  تهی *codeseg, *dataseg;
   size_t rounded_size;
 
   dataseg = ADD_TO_POINTER(ptr, -overhead);
-  memcpy(&rounded_size, dataseg, sizeof(rounded_size));
-  memcpy(&codeseg, ADD_TO_POINTER(dataseg, sizeof(size_t)), sizeof(void *));
+  memcpy(&rounded_size, dataseg, اندازه(rounded_size));
+  memcpy(&codeseg, ADD_TO_POINTER(dataseg, اندازه(size_t)), اندازه(تهی *));
   munmap(dataseg, rounded_size);
   munmap(codeseg, rounded_size);
 }
 
-int
-ffi_tramp_is_present (__attribute__((unused)) void *ptr)
+صحیح
+ffi_tramp_is_present (__attribute__((unused)) تهی *ptr)
 {
-  return 0;
+  بازگشت 0;
 }
-#else /* !NetBSD with PROT_MPROTECT */
+#وگرنه /* !NetBSD with PROT_MPROTECT */
 
-#if !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
-# if __linux__ && !defined(__ANDROID__)
+#اگر !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
+# اگر __linux__ && !defined(__ANDROID__)
 /* This macro indicates it may be forbidden to map anonymous memory
    with both write and execute permission.  Code compiled when this
    option is defined will attempt to map such pages once, but if it
@@ -135,7 +135,7 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 #  define FFI_MMAP_EXEC_WRIT 1
 #  define HAVE_MNTENT 1
 # endif
-# if defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
+# اگر defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
 /* Windows systems may have Data Execution Protection (DEP) enabled,
    which requires the use of VirtualMalloc/VirtualFree to alloc/free
    executable memory. */
@@ -143,45 +143,45 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 # endif
 #endif
 
-#if FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
-# if !defined FFI_MMAP_EXEC_SELINUX
+#اگر FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
+# اگر !defined FFI_MMAP_EXEC_SELINUX
 /* When defined to 1 check for SELinux and if SELinux is active,
    don't attempt PROT_EXEC|PROT_WRITE mapping at all, as that
    might cause audit messages.  */
 #  define FFI_MMAP_EXEC_SELINUX 1
 # endif /* !defined FFI_MMAP_EXEC_SELINUX */
-# if !defined FFI_MMAP_PAX
+# اگر !defined FFI_MMAP_PAX
 /* Also check for PaX MPROTECT */
 #  define FFI_MMAP_PAX 1
 # endif /* !defined FFI_MMAP_PAX */
 #endif /* FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__) */
 
-#if FFI_CLOSURES
+#اگر FFI_CLOSURES
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#اگر FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 
-#include <mach/mach.h>
-#include <pthread.h>
+#شامل <mach/mach.h>
+#شامل <pthread.h>
 #ifdef HAVE_ARM64E_PTRAUTH
-#include <ptrauth.h>
+#شامل <ptrauth.h>
 #endif
-#include <stdio.h>
-#include <stdlib.h>
+#شامل <stdio.h>
+#شامل <stdlib.h>
 
-extern void *ffi_closure_trampoline_table_page;
+بیرونی تهی *ffi_closure_trampoline_table_page;
 
-typedef struct ffi_trampoline_table ffi_trampoline_table;
-typedef struct ffi_trampoline_table_entry ffi_trampoline_table_entry;
+تعریفنوع ساختار ffi_trampoline_table ffi_trampoline_table;
+تعریفنوع ساختار ffi_trampoline_table_entry ffi_trampoline_table_entry;
 
-struct ffi_trampoline_table
+ساختار ffi_trampoline_table
 {
   /* contiguous writable and executable pages */
   vm_address_t config_page;
 
   /* free list tracking */
-  uint16_t free_count;
+  uint16_t free_شمار;
   ffi_trampoline_table_entry *free_list;
   ffi_trampoline_table_entry *free_list_pool;
 
@@ -189,20 +189,20 @@ struct ffi_trampoline_table
   ffi_trampoline_table *next;
 };
 
-struct ffi_trampoline_table_entry
+ساختار ffi_trampoline_table_entry
 {
-  void *(*trampoline) (void);
+  تهی *(*trampoline) (تهی);
   ffi_trampoline_table_entry *next;
 };
 
 /* Total number of trampolines that fit in one trampoline table */
-#define FFI_TRAMPOLINE_COUNT (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
+#define FFI_TRAMPOLINE_شمار (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
 
-static pthread_mutex_t ffi_trampoline_lock = PTHREAD_MUTEX_INITIALIZER;
-static ffi_trampoline_table *ffi_trampoline_tables = NULL;
+ایستا pthread_mutex_t ffi_trampoline_lock = PTHREAD_MUTEX_INITIALIZER;
+ایستا ffi_trampoline_table *ffi_trampoline_tables = پوچ;
 
-static ffi_trampoline_table *
-ffi_trampoline_table_alloc (void)
+ایستا ffi_trampoline_table *
+ffi_trampoline_table_alloc (تهی)
 {
   ffi_trampoline_table *table;
   vm_address_t config_page;
@@ -217,15 +217,15 @@ ffi_trampoline_table_alloc (void)
   config_page = 0x0;
   kt = vm_allocate (mach_task_self (), &config_page, PAGE_MAX_SIZE * 2,
 		    VM_FLAGS_ANYWHERE);
-  if (kt != KERN_SUCCESS)
-    return NULL;
+  اگر (kt != KERN_SUCCESS)
+    بازگشت پوچ;
 
   /* Remap the trampoline table on top of the placeholder page */
   trampoline_page = config_page + PAGE_MAX_SIZE;
 
 #ifdef HAVE_ARM64E_PTRAUTH
-  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((void *)&ffi_closure_trampoline_table_page, ptrauth_key_function_pointer, 0);
-#else
+  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((تهی *)&ffi_closure_trampoline_table_page, ptrauth_کلید_function_pointer, 0);
+#وگرنه
   trampoline_page_template = (vm_address_t)&ffi_closure_trampoline_table_page;
 #endif
 
@@ -236,105 +236,105 @@ ffi_trampoline_table_alloc (void)
   kt = vm_remap (mach_task_self (), &trampoline_page, PAGE_MAX_SIZE, 0x0,
 		 VM_FLAGS_OVERWRITE, mach_task_self (), trampoline_page_template,
 		 FALSE, &cur_prot, &max_prot, VM_INHERIT_SHARE);
-  if (kt != KERN_SUCCESS)
+  اگر (kt != KERN_SUCCESS)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      بازگشت پوچ;
     }
 
-  if (!(cur_prot & VM_PROT_EXECUTE))
+  اگر (!(cur_prot & VM_PROT_EXECUTE))
     {
       /* If VM_PROT_EXECUTE isn't set on the remapped trampoline page, set it */
       kt = vm_protect (mach_task_self (), trampoline_page, PAGE_MAX_SIZE,
          FALSE, cur_prot | VM_PROT_EXECUTE);
-      if (kt != KERN_SUCCESS)
+      اگر (kt != KERN_SUCCESS)
         {
           vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-          return NULL;
+          بازگشت پوچ;
         }
     }
 
   /* We have valid trampoline and config pages */
-  table = calloc (1, sizeof (ffi_trampoline_table));
-  if (table == NULL)
+  table = calloc (1, اندازه (ffi_trampoline_table));
+  اگر (table == پوچ)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      بازگشت پوچ;
     }
-  table->free_count = FFI_TRAMPOLINE_COUNT;
+  table->free_شمار = FFI_TRAMPOLINE_شمار;
   table->config_page = config_page;
 
   /* Create and initialize the free list */
   table->free_list_pool =
-    calloc (FFI_TRAMPOLINE_COUNT, sizeof (ffi_trampoline_table_entry));
-  if (table->free_list_pool == NULL)
+    calloc (FFI_TRAMPOLINE_شمار, اندازه (ffi_trampoline_table_entry));
+  اگر (table->free_list_pool == پوچ)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      free (table);
-      return NULL;
+      آزاد (table);
+      بازگشت پوچ;
     }
 
-  for (i = 0; i < table->free_count; i++)
+  برای (i = 0; i < table->free_شمار; i++)
     {
       ffi_trampoline_table_entry *entry = &table->free_list_pool[i];
       entry->trampoline =
-	(void *) (trampoline_page + (i * FFI_TRAMPOLINE_SIZE));
+	(تهی *) (trampoline_page + (i * FFI_TRAMPOLINE_SIZE));
 #ifdef HAVE_ARM64E_PTRAUTH
-      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_key_function_pointer, 0);
+      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_کلید_function_pointer, 0);
 #endif
 
-      if (i < table->free_count - 1)
+      اگر (i < table->free_شمار - 1)
 	entry->next = &table->free_list_pool[i + 1];
     }
 
   table->free_list = table->free_list_pool;
 
-  return table;
+  بازگشت table;
 }
 
-static void
+ایستا تهی
 ffi_trampoline_table_free (ffi_trampoline_table *table)
 {
   /* Remove from the list */
-  if (table->prev != NULL)
+  اگر (table->prev != پوچ)
     table->prev->next = table->next;
 
-  if (table->next != NULL)
+  اگر (table->next != پوچ)
     table->next->prev = table->prev;
 
   /* Deallocate pages */
   vm_deallocate (mach_task_self (), table->config_page, PAGE_MAX_SIZE * 2);
 
   /* Deallocate free list */
-  free (table->free_list_pool);
-  free (table);
+  آزاد (table->free_list_pool);
+  آزاد (table);
 }
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+تهی *
+ffi_closure_alloc (size_t size, تهی **code)
 {
   /* Create the closure */
   ffi_closure *closure = malloc (size);
-  if (closure == NULL)
-    return NULL;
+  اگر (closure == پوچ)
+    بازگشت پوچ;
 
   pthread_mutex_lock (&ffi_trampoline_lock);
 
   /* Check for an active trampoline table with available entries. */
   ffi_trampoline_table *table = ffi_trampoline_tables;
-  if (table == NULL || table->free_list == NULL)
+  اگر (table == پوچ || table->free_list == پوچ)
     {
       table = ffi_trampoline_table_alloc ();
-      if (table == NULL)
+      اگر (table == پوچ)
 	{
 	  pthread_mutex_unlock (&ffi_trampoline_lock);
-	  free (closure);
-	  return NULL;
+	  آزاد (closure);
+	  بازگشت پوچ;
 	}
 
       /* Insert the new table at the top of the list */
       table->next = ffi_trampoline_tables;
-      if (table->next != NULL)
+      اگر (table->next != پوچ)
 	table->next->prev = table;
 
       ffi_trampoline_tables = table;
@@ -343,8 +343,8 @@ ffi_closure_alloc (size_t size, void **code)
   /* Claim the free entry */
   ffi_trampoline_table_entry *entry = ffi_trampoline_tables->free_list;
   ffi_trampoline_tables->free_list = entry->next;
-  ffi_trampoline_tables->free_count--;
-  entry->next = NULL;
+  ffi_trampoline_tables->free_شمار--;
+  entry->next = پوچ;
 
   pthread_mutex_unlock (&ffi_trampoline_lock);
 
@@ -353,11 +353,11 @@ ffi_closure_alloc (size_t size, void **code)
   closure->trampoline_table = table;
   closure->trampoline_table_entry = entry;
 
-  return closure;
+  بازگشت closure;
 }
 
-void
-ffi_closure_free (void *ptr)
+تهی
+ffi_closure_free (تهی *ptr)
 {
   ffi_closure *closure = ptr;
 
@@ -370,21 +370,21 @@ ffi_closure_free (void *ptr)
   /* Return the entry to the free list */
   entry->next = table->free_list;
   table->free_list = entry;
-  table->free_count++;
+  table->free_شمار++;
 
   /* If all trampolines within this table are free, and at least one other table exists, deallocate
    * the table */
-  if (table->free_count == FFI_TRAMPOLINE_COUNT
+  اگر (table->free_شمار == FFI_TRAMPOLINE_شمار
       && ffi_trampoline_tables != table)
     {
       ffi_trampoline_table_free (table);
     }
-  else if (ffi_trampoline_tables != table)
+  وگرنه اگر (ffi_trampoline_tables != table)
     {
       /* Otherwise, bump this table to the top of the list */
-      table->prev = NULL;
+      table->prev = پوچ;
       table->next = ffi_trampoline_tables;
-      if (ffi_trampoline_tables != NULL)
+      اگر (ffi_trampoline_tables != پوچ)
 	ffi_trampoline_tables->prev = table;
 
       ffi_trampoline_tables = table;
@@ -393,14 +393,14 @@ ffi_closure_free (void *ptr)
   pthread_mutex_unlock (&ffi_trampoline_lock);
 
   /* Free the closure */
-  free (closure);
+  آزاد (closure);
 }
 
 #endif
 
 // Per-target implementation; It's unclear what can reasonable be shared between two OS/architecture implementations.
 
-#elif FFI_MMAP_EXEC_WRIT /* !FFI_EXEC_TRAMPOLINE_TABLE */
+#وگرنهاگر FFI_MMAP_EXEC_WRIT /* !FFI_EXEC_TRAMPOLINE_TABLE */
 
 #define USE_LOCKS 1
 #define USE_DL_PREFIX 1
@@ -424,110 +424,110 @@ ffi_closure_free (void *ptr)
 /* Don't allocate more than a page unless needed.  */
 #define DEFAULT_GRANULARITY ((size_t)malloc_getpagesize)
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
+#شامل <sys/types.h>
+#شامل <sys/stat.h>
+#شامل <fcntl.h>
+#شامل <errno.h>
 #ifndef _MSC_VER
-#include <unistd.h>
+#شامل <unistd.h>
 #endif
-#include <string.h>
-#include <stdio.h>
-#if !defined(_WIN32)
+#شامل <string.h>
+#شامل <stdio.h>
+#اگر !defined(_WIN32)
 #ifdef HAVE_MNTENT
-#include <mntent.h>
+#شامل <mntent.h>
 #endif /* HAVE_MNTENT */
-#include <sys/param.h>
-#include <pthread.h>
+#شامل <sys/param.h>
+#شامل <pthread.h>
 
 /* We don't want sys/mman.h to be included after we redefine mmap and
    dlmunmap.  */
-#include <sys/mman.h>
+#شامل <sys/mman.h>
 #define LACKS_SYS_MMAN_H 1
 
-#if FFI_MMAP_EXEC_SELINUX
-#include <sys/statfs.h>
-#include <stdlib.h>
+#اگر FFI_MMAP_EXEC_SELINUX
+#شامل <sys/statfs.h>
+#شامل <stdlib.h>
 
-static int selinux_enabled = -1;
+ایستا صحیح selinux_enabled = -1;
 
-static int
-selinux_enabled_check (void)
+ایستا صحیح
+selinux_enabled_check (تهی)
 {
-  struct statfs sfs;
+  ساختار statfs sfs;
   FILE *f;
-  char *buf = NULL;
+  نویسه *buf = پوچ;
   size_t len = 0;
 
-  if (statfs ("/selinux", &sfs) >= 0
-      && (unsigned int) sfs.f_type == 0xf97cff8cU)
-    return 1;
+  اگر (statfs ("/selinux", &sfs) >= 0
+      && (unsigned صحیح) sfs.f_type == 0xf97cff8cU)
+    بازگشت 1;
   f = fopen ("/proc/mounts", "r");
-  if (f == NULL)
-    return 0;
-  while (getline (&buf, &len, f) >= 0)
+  اگر (f == پوچ)
+    بازگشت 0;
+  وقتی (getline (&buf, &len, f) >= 0)
     {
-      char *p = strchr (buf, ' ');
-      if (p == NULL)
-        break;
+      نویسه *p = strchr (buf, ' ');
+      اگر (p == پوچ)
+        بشکن;
       p = strchr (p + 1, ' ');
-      if (p == NULL)
-        break;
-      if (strncmp (p + 1, "selinuxfs ", 10) == 0)
+      اگر (p == پوچ)
+        بشکن;
+      اگر (strncmp (p + 1, "selinuxfs ", 10) == 0)
         {
-          free (buf);
+          آزاد (buf);
           fclose (f);
-          return 1;
+          بازگشت 1;
         }
     }
-  free (buf);
+  آزاد (buf);
   fclose (f);
-  return 0;
+  بازگشت 0;
 }
 
 #define is_selinux_enabled() (selinux_enabled >= 0 ? selinux_enabled \
 			      : (selinux_enabled = selinux_enabled_check ()))
 
-#else
+#وگرنه
 
 #define is_selinux_enabled() 0
 
 #endif /* !FFI_MMAP_EXEC_SELINUX */
 
 /* On PaX enable kernels that have MPROTECT enabled we can't use PROT_EXEC. */
-#if defined FFI_MMAP_PAX
-#include <stdlib.h>
+#اگر defined FFI_MMAP_PAX
+#شامل <stdlib.h>
 
-enum {
+شمارش {
   PAX_MPROTECT = (1 << 0),
   PAX_EMUTRAMP = (1 << 1),
 };
-static int cached_pax_flags = -1;
+ایستا صحیح cached_pax_flags = -1;
 
-static int
-pax_flags_check (void)
+ایستا صحیح
+pax_flags_check (تهی)
 {
-  char *buf = NULL;
+  نویسه *buf = پوچ;
   size_t len = 0;
   FILE *f;
-  int ret;
+  صحیح ret;
   f = fopen ("/proc/self/status", "r");
-  if (f == NULL)
-    return 0;
+  اگر (f == پوچ)
+    بازگشت 0;
   ret = 0;
 
-  while (getline (&buf, &len, f) != -1)
-    if (!strncmp (buf, "PaX:", 4))
+  وقتی (getline (&buf, &len, f) != -1)
+    اگر (!strncmp (buf, "PaX:", 4))
       {
-        if (NULL != strchr (buf + 4, 'M'))
+        اگر (پوچ != strchr (buf + 4, 'M'))
           ret |= PAX_MPROTECT;
-        if (NULL != strchr (buf + 4, 'E'))
+        اگر (پوچ != strchr (buf + 4, 'E'))
           ret |= PAX_EMUTRAMP;
-        break;
+        بشکن;
       }
-  free (buf);
+  آزاد (buf);
   fclose (f);
-  return ret;
+  بازگشت ret;
 }
 
 #define get_pax_flags() (cached_pax_flags >= 0 ? cached_pax_flags \
@@ -538,142 +538,142 @@ pax_flags_check (void)
 
 #endif /* defined FFI_MMAP_PAX */
 
-#elif defined (__CYGWIN__) || defined(__INTERIX)
+#وگرنهاگر defined (__CYGWIN__) || defined(__INTERIX)
 
-#include <sys/mman.h>
+#شامل <sys/mman.h>
 
 /* Cygwin is Linux-like, but not quite that Linux-like.  */
 #define is_selinux_enabled() 0
 
 #endif /* !defined(X86_WIN32) && !defined(X86_WIN64) */
 
-#if !defined FFI_MMAP_PAX
+#اگر !defined FFI_MMAP_PAX
 # define is_mprotect_enabled() 0
 # define is_emutramp_enabled() 0
 #endif /* !defined FFI_MMAP_PAX */
 
 /* Declare all functions defined in dlmalloc.c as static.  */
-static void *dlmalloc(size_t);
-static void dlfree(void*);
-static void *dlcalloc(size_t, size_t) MAYBE_UNUSED;
-static void *dlrealloc(void *, size_t) MAYBE_UNUSED;
-static void *dlmemalign(size_t, size_t) MAYBE_UNUSED;
-static void *dlvalloc(size_t) MAYBE_UNUSED;
-static int dlmallopt(int, int) MAYBE_UNUSED;
-static size_t dlmalloc_footprint(void) MAYBE_UNUSED;
-static size_t dlmalloc_max_footprint(void) MAYBE_UNUSED;
-static void** dlindependent_calloc(size_t, size_t, void**) MAYBE_UNUSED;
-static void** dlindependent_comalloc(size_t, size_t*, void**) MAYBE_UNUSED;
-static void *dlpvalloc(size_t) MAYBE_UNUSED;
-static int dlmalloc_trim(size_t) MAYBE_UNUSED;
-static size_t dlmalloc_usable_size(void*) MAYBE_UNUSED;
-static void dlmalloc_stats(void) MAYBE_UNUSED;
+ایستا تهی *dlmalloc(size_t);
+ایستا تهی dlfree(تهی*);
+ایستا تهی *dlcalloc(size_t, size_t) MAYBE_UNUSED;
+ایستا تهی *dlrealloc(تهی *, size_t) MAYBE_UNUSED;
+ایستا تهی *dlmemalign(size_t, size_t) MAYBE_UNUSED;
+ایستا تهی *dlvalloc(size_t) MAYBE_UNUSED;
+ایستا صحیح dlmallopt(صحیح, صحیح) MAYBE_UNUSED;
+ایستا size_t dlmalloc_footprint(تهی) MAYBE_UNUSED;
+ایستا size_t dlmalloc_max_footprint(تهی) MAYBE_UNUSED;
+ایستا تهی** dlindependent_calloc(size_t, size_t, تهی**) MAYBE_UNUSED;
+ایستا تهی** dlindependent_comalloc(size_t, size_t*, تهی**) MAYBE_UNUSED;
+ایستا تهی *dlpvalloc(size_t) MAYBE_UNUSED;
+ایستا صحیح dlmalloc_trim(size_t) MAYBE_UNUSED;
+ایستا size_t dlmalloc_usable_size(تهی*) MAYBE_UNUSED;
+ایستا تهی dlmalloc_stats(تهی) MAYBE_UNUSED;
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#اگر !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 /* Use these for mmap and munmap within dlmalloc.c.  */
-static void *dlmmap(void *, size_t, int, int, int, off_t);
-static int dlmunmap(void *, size_t);
+ایستا تهی *dlmmap(تهی *, size_t, صحیح, صحیح, صحیح, off_t);
+ایستا صحیح dlmunmap(تهی *, size_t);
 #endif /* !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
 
 #define mmap dlmmap
 #define munmap dlmunmap
 
-#include "dlmalloc.c"
+#شامل "dlmalloc.c"
 
 #undef mmap
 #undef munmap
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#اگر !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 
 /* A mutex used to synchronize access to *exec* variables in this file.  */
-static pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
+ایستا pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* A file descriptor of a temporary file from which we'll map
    executable pages.  */
-static int execfd = -1;
+ایستا صحیح execfd = -1;
 
 /* The amount of space already allocated from the temporary file.  */
-static size_t execsize = 0;
+ایستا size_t execsize = 0;
 
 #ifdef HAVE_MEMFD_CREATE
 /* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_memfd (const char *name)
+ایستا صحیح
+open_temp_exec_file_memfd (ثابت نویسه *name)
 {
-  int fd;
+  صحیح fd;
   fd = memfd_create (name, MFD_CLOEXEC);
-  return fd;
+  بازگشت fd;
 }
 #endif
 
 /* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_name (char *name, int flags MAYBE_UNUSED)
+ایستا صحیح
+open_temp_exec_file_name (نویسه *name, صحیح flags MAYBE_UNUSED)
 {
-  int fd;
+  صحیح fd;
 
 #ifdef HAVE_MKOSTEMP
   fd = mkostemp (name, flags);
-#else
+#وگرنه
   fd = mkstemp (name);
 #endif
 
-  if (fd != -1)
+  اگر (fd != -1)
     unlink (name);
 
-  return fd;
+  بازگشت fd;
 }
 
 /* Open a temporary file in the named directory.  */
-static int
-open_temp_exec_file_dir (const char *dir)
+ایستا صحیح
+open_temp_exec_file_dir (ثابت نویسه *dir)
 {
-  static const char suffix[] = "/ffiXXXXXX";
-  int lendir, flags;
-  char *tempname;
+  ایستا ثابت نویسه suffix[] = "/ffiXXXXXX";
+  صحیح lendir, flags;
+  نویسه *tempname;
 #ifdef O_TMPFILE
-  int fd;
+  صحیح fd;
 #endif
 
 #ifdef O_CLOEXEC
   flags = O_CLOEXEC;
-#else
+#وگرنه
   flags = 0;
 #endif
 
 #ifdef O_TMPFILE
   fd = open (dir, flags | O_RDWR | O_EXCL | O_TMPFILE, 0700);
   /* If the running system does not support the O_TMPFILE flag then retry without it. */
-  if (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
-    return fd;
-  } else {
+  اگر (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
+    بازگشت fd;
+  } وگرنه {
     errno = 0;
   }
 #endif
 
-  lendir = (int) strlen (dir);
-  tempname = __builtin_alloca (lendir + sizeof (suffix));
+  lendir = (صحیح) strlen (dir);
+  tempname = __builtin_alloca (lendir + اندازه (suffix));
 
-  if (!tempname)
-    return -1;
+  اگر (!tempname)
+    بازگشت -1;
 
   memcpy (tempname, dir, lendir);
-  memcpy (tempname + lendir, suffix, sizeof (suffix));
+  memcpy (tempname + lendir, suffix, اندازه (suffix));
 
-  return open_temp_exec_file_name (tempname, flags);
+  بازگشت open_temp_exec_file_name (tempname, flags);
 }
 
 /* Open a temporary file in the directory in the named environment
    variable.  */
-static int
-open_temp_exec_file_env (const char *envvar)
+ایستا صحیح
+open_temp_exec_file_env (ثابت نویسه *envvar)
 {
-  const char *value = getenv (envvar);
+  ثابت نویسه *مقدار = getenv (envvar);
 
-  if (!value)
-    return -1;
+  اگر (!مقدار)
+    بازگشت -1;
 
-  return open_temp_exec_file_dir (value);
+  بازگشت open_temp_exec_file_dir (مقدار);
 }
 
 #ifdef HAVE_MNTENT
@@ -681,57 +681,57 @@ open_temp_exec_file_env (const char *envvar)
    listed in the mounts file.  Subsequent calls with the same mounts
    keep searching for mount points in the same file.  Providing NULL
    as the mounts file closes the file.  */
-static int
-open_temp_exec_file_mnt (const char *mounts)
+ایستا صحیح
+open_temp_exec_file_mnt (ثابت نویسه *mounts)
 {
-  static const char *last_mounts;
-  static FILE *last_mntent;
+  ایستا ثابت نویسه *last_mounts;
+  ایستا FILE *last_mntent;
 
-  if (mounts != last_mounts)
+  اگر (mounts != last_mounts)
     {
-      if (last_mntent)
+      اگر (last_mntent)
 	endmntent (last_mntent);
 
       last_mounts = mounts;
 
-      if (mounts)
+      اگر (mounts)
 	last_mntent = setmntent (mounts, "r");
-      else
-	last_mntent = NULL;
+      وگرنه
+	last_mntent = پوچ;
     }
 
-  if (!last_mntent)
-    return -1;
+  اگر (!last_mntent)
+    بازگشت -1;
 
-  for (;;)
+  برای (;;)
     {
-      int fd;
-      struct mntent mnt;
-      char buf[MAXPATHLEN * 3];
+      صحیح fd;
+      ساختار mntent mnt;
+      نویسه buf[MAXPATHLEN * 3];
 
-      if (getmntent_r (last_mntent, &mnt, buf, sizeof (buf)) == NULL)
-	return -1;
+      اگر (getmntent_r (last_mntent, &mnt, buf, اندازه (buf)) == پوچ)
+	بازگشت -1;
 
-      if (hasmntopt (&mnt, "ro")
+      اگر (hasmntopt (&mnt, "ro")
 	  || hasmntopt (&mnt, "noexec")
 	  || access (mnt.mnt_dir, W_OK))
-	continue;
+	ادامه;
 
       fd = open_temp_exec_file_dir (mnt.mnt_dir);
 
-      if (fd != -1)
-	return fd;
+      اگر (fd != -1)
+	بازگشت fd;
     }
 }
 #endif /* HAVE_MNTENT */
 
 /* Instructions to look for a location to hold a temporary file that
    can be mapped in for execution.  */
-static struct
+ایستا ساختار
 {
-  int (*func)(const char *);
-  const char *arg;
-  int repeat;
+  صحیح (*func)(ثابت نویسه *);
+  ثابت نویسه *arg;
+  صحیح repeat;
 } open_temp_exec_file_opts[] = {
 #ifdef HAVE_MEMFD_CREATE
   { open_temp_exec_file_memfd, "libffi", 0 },
@@ -749,51 +749,51 @@ static struct
 };
 
 /* Current index into open_temp_exec_file_opts.  */
-static int open_temp_exec_file_opts_idx = 0;
+ایستا صحیح open_temp_exec_file_opts_idx = 0;
 
 /* Reset a current multi-call func, then advances to the next entry.
    If we're at the last, go back to the first and return nonzero,
    otherwise return zero.  */
-static int
-open_temp_exec_file_opts_next (void)
+ایستا صحیح
+open_temp_exec_file_opts_next (تهی)
 {
-  if (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
-    open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func (NULL);
+  اگر (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
+    open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func (پوچ);
 
   open_temp_exec_file_opts_idx++;
-  if (open_temp_exec_file_opts_idx
-      == (sizeof (open_temp_exec_file_opts)
-	  / sizeof (*open_temp_exec_file_opts)))
+  اگر (open_temp_exec_file_opts_idx
+      == (اندازه (open_temp_exec_file_opts)
+	  / اندازه (*open_temp_exec_file_opts)))
     {
       open_temp_exec_file_opts_idx = 0;
-      return 1;
+      بازگشت 1;
     }
 
-  return 0;
+  بازگشت 0;
 }
 
 /* Return a file descriptor of a temporary zero-sized file in a
    writable and executable filesystem.  */
-int
-open_temp_exec_file (void)
+صحیح
+open_temp_exec_file (تهی)
 {
-  int fd;
+  صحیح fd;
 
-  do
+  انجامبده
     {
       fd = open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func
 	(open_temp_exec_file_opts[open_temp_exec_file_opts_idx].arg);
 
-      if (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
+      اگر (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
 	  || fd == -1)
 	{
-	  if (open_temp_exec_file_opts_next ())
-	    break;
+	  اگر (open_temp_exec_file_opts_next ())
+	    بشکن;
 	}
     }
-  while (fd == -1);
+  وقتی (fd == -1);
 
-  return fd;
+  بازگشت fd;
 }
 
 /* We need to allocate space in a file that will be backing a writable
@@ -803,29 +803,29 @@ open_temp_exec_file (void)
    - ftruncate() does not allocate space on filesystems with sparse files
    Failure to allocate the space will cause SIGBUS to be thrown when
    the mapping is subsequently written to.  */
-static int
-allocate_space (int fd, off_t len)
+ایستا صحیح
+allocate_space (صحیح fd, off_t len)
 {
-  static long page_size;
+  ایستا long page_size;
 
   /* Obtain system page size. */
-  if (!page_size)
+  اگر (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
-  if (page_size <= 0)
-    return -1;
+  اگر (page_size <= 0)
+    بازگشت -1;
 
-  unsigned char buf[page_size];
+  unsigned نویسه buf[page_size];
   memset (buf, 0, page_size);
 
-  while (len > 0)
+  وقتی (len > 0)
     {
       off_t to_write = (len < page_size) ? len : page_size;
-      if (write (fd, buf, to_write) < to_write)
-        return -1;
+      اگر (اكتب (fd, buf, to_write) < to_write)
+        بازگشت -1;
       len -= to_write;
     }
 
-  return 0;
+  بازگشت 0;
 }
 
 /* Map in a chunk of memory from the temporary exec file into separate
@@ -833,113 +833,113 @@ allocate_space (int fd, off_t len)
    executable.  Returns the address of the writable portion, after
    storing an offset to the corresponding executable portion at the
    last word of the requested chunk.  */
-static void *
-dlmmap_locked (void *start, size_t length, int prot, int flags, off_t offset)
+ایستا تهی *
+dlmmap_locked (تهی *start, size_t length, صحیح prot, صحیح flags, off_t offset)
 {
-  void *ptr;
+  تهی *ptr;
 
-  if (execfd == -1)
+  اگر (execfd == -1)
     {
       open_temp_exec_file_opts_idx = 0;
     retry_open:
       execfd = open_temp_exec_file ();
-      if (execfd == -1)
-	return MFAIL;
+      اگر (execfd == -1)
+	بازگشت MFAIL;
     }
 
   offset = execsize;
 
-  if (allocate_space (execfd, length))
-    return MFAIL;
+  اگر (allocate_space (execfd, length))
+    بازگشت MFAIL;
 
   flags &= ~(MAP_PRIVATE | MAP_ANONYMOUS);
   flags |= MAP_SHARED;
 
-  ptr = mmap (NULL, length, (prot & ~PROT_WRITE) | PROT_EXEC,
+  ptr = mmap (پوچ, length, (prot & ~PROT_WRITE) | PROT_EXEC,
 	      flags, execfd, offset);
-  if (ptr == MFAIL)
+  اگر (ptr == MFAIL)
     {
-      if (!offset)
+      اگر (!offset)
 	{
 	  close (execfd);
-	  goto retry_open;
+	  برو retry_open;
 	}
-      if (ftruncate (execfd, offset) != 0)
+      اگر (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
 
-      return MFAIL;
+      بازگشت MFAIL;
     }
-  else if (!offset
+  وگرنه اگر (!offset
 	   && open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
     open_temp_exec_file_opts_next ();
 
   start = mmap (start, length, prot, flags, execfd, offset);
 
-  if (start == MFAIL)
+  اگر (start == MFAIL)
     {
       munmap (ptr, length);
-      if (ftruncate (execfd, offset) != 0)
+      اگر (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
-      return start;
+      بازگشت start;
     }
 
-  mmap_exec_offset ((char *)start, length) = (char*)ptr - (char*)start;
+  mmap_exec_offset ((نویسه *)start, length) = (نویسه*)ptr - (نویسه*)start;
 
   execsize += length;
 
-  return start;
+  بازگشت start;
 }
 
 /* Map in a writable and executable chunk of memory if possible.
    Failing that, fall back to dlmmap_locked.  */
-static void *
-dlmmap (void *start, size_t length, int prot,
-	int flags, int fd, off_t offset)
+ایستا تهی *
+dlmmap (تهی *start, size_t length, صحیح prot,
+	صحیح flags, صحیح fd, off_t offset)
 {
-  void *ptr;
+  تهی *ptr;
 
-  assert (start == NULL && length % malloc_getpagesize == 0
+  أكد (start == پوچ && length % malloc_getpagesize == 0
 	  && prot == (PROT_READ | PROT_WRITE)
 	  && flags == (MAP_PRIVATE | MAP_ANONYMOUS)
 	  && fd == -1 && offset == 0);
 
-  if (execfd == -1 && ffi_tramp_is_supported ())
+  اگر (execfd == -1 && ffi_tramp_is_supported ())
     {
       ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-      return ptr;
+      بازگشت ptr;
     }
 
   /* -1 != execfd hints that we already decided to use dlmmap_locked
      last time.  */
-  if (execfd == -1 && is_mprotect_enabled ())
+  اگر (execfd == -1 && is_mprotect_enabled ())
     {
 #ifdef FFI_MMAP_EXEC_EMUTRAMP_PAX
-      if (is_emutramp_enabled ())
+      اگر (is_emutramp_enabled ())
         {
           /* emutramp requires the kernel recognizing the trampoline pattern
              generated by ffi_prep_closure_loc; there is no way to test
              in advance whether this will work, so this is experimental.  */
           ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-          return ptr;
+          بازگشت ptr;
         }
 #endif
       /* fallback to dlmmap_locked.  */
     }
-  else if (execfd == -1 && !is_selinux_enabled ())
+  وگرنه اگر (execfd == -1 && !is_selinux_enabled ())
     {
       ptr = mmap (start, length, prot | PROT_EXEC, flags, fd, offset);
 
-      if (ptr != MFAIL || (errno != EPERM && errno != EACCES))
+      اگر (ptr != MFAIL || (errno != EPERM && errno != EACCES))
 	/* Cool, no need to mess with separate segments.  */
-	return ptr;
+	بازگشت ptr;
 
       /* If MREMAP_DUP is ever introduced and implemented, try mmap
 	 with ((prot & ~PROT_WRITE) | PROT_EXEC) and mremap with
@@ -950,13 +950,13 @@ dlmmap (void *start, size_t length, int prot,
   ptr = dlmmap_locked (start, length, prot, flags, offset);
   pthread_mutex_unlock (&open_temp_exec_file_mutex);
 
-  return ptr;
+  بازگشت ptr;
 }
 
 /* Release memory at the given address, as well as the corresponding
    executable page if it's separate.  */
-static int
-dlmunmap (void *start, size_t length)
+ایستا صحیح
+dlmunmap (تهی *start, size_t length)
 {
   /* We don't bother decreasing execsize or truncating the file, since
      we can't quite tell whether we're unmapping the end of the file.
@@ -965,30 +965,30 @@ dlmunmap (void *start, size_t length)
      deallocated and checking that the file contents change.
      Yuck.  */
   msegmentptr seg = segment_holding (gm, start);
-  void *code;
+  تهی *code;
 
-  if (seg && (code = add_segment_exec_offset (start, seg)) != start)
+  اگر (seg && (code = add_segment_exec_offset (start, seg)) != start)
     {
-      int ret = munmap (code, length);
-      if (ret)
-	return ret;
+      صحیح ret = munmap (code, length);
+      اگر (ret)
+	بازگشت ret;
     }
 
-  return munmap (start, length);
+  بازگشت munmap (start, length);
 }
 
-#if FFI_CLOSURE_FREE_CODE
+#اگر FFI_CLOSURE_FREE_CODE
 /* Return segment holding given code address.  */
-static msegmentptr
-segment_holding_code (mstate m, char* addr)
+ایستا msegmentptr
+segment_holding_code (mstate m, نویسه* addr)
 {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if (addr >= add_segment_exec_offset (sp->base, sp)
+  برای (;;) {
+    اگر (addr >= add_segment_exec_offset (sp->base, sp)
 	&& addr < add_segment_exec_offset (sp->base, sp) + sp->size)
-      return sp;
-    if ((sp = sp->next) == 0)
-      return 0;
+      بازگشت sp;
+    اگر ((sp = sp->next) == 0)
+      بازگشت 0;
   }
 }
 #endif
@@ -998,117 +998,117 @@ segment_holding_code (mstate m, char* addr)
 /* Allocate a chunk of memory with the given size.  Returns a pointer
    to the writable address, and sets *CODE to the executable
    corresponding virtual address.  */
-void *
-ffi_closure_alloc (size_t size, void **code)
+تهی *
+ffi_closure_alloc (size_t size, تهی **code)
 {
-  void *ptr, *ftramp;
+  تهی *ptr, *ftramp;
 
-  if (!code)
-    return NULL;
+  اگر (!code)
+    بازگشت پوچ;
 
   ptr = dlmalloc (size);
 
-  if (ptr)
+  اگر (ptr)
     {
       msegmentptr seg = segment_holding (gm, ptr);
 
       *code = FFI_FN (add_segment_exec_offset (ptr, seg));
-      if (!ffi_tramp_is_supported ())
-        return ptr;
+      اگر (!ffi_tramp_is_supported ())
+        بازگشت ptr;
 
       ftramp = ffi_tramp_alloc (0);
-      if (ftramp == NULL)
+      اگر (ftramp == پوچ)
       {
         dlfree (ptr);
-        return NULL;
+        بازگشت پوچ;
       }
       *code = FFI_FN (ffi_tramp_get_addr (ftramp));
       ((ffi_closure *) ptr)->ftramp = ftramp;
     }
 
-  return ptr;
+  بازگشت ptr;
 }
 
-void *
-ffi_data_to_code_pointer (void *data)
+تهی *
+ffi_data_to_code_pointer (تهی *data)
 {
   msegmentptr seg = segment_holding (gm, data);
   /* We expect closures to be allocated with ffi_closure_alloc(), in
      which case seg will be non-NULL.  However, some users take on the
      burden of managing this memory themselves, in which case this
      we'll just return data. */
-  if (seg)
+  اگر (seg)
     {
-      if (!ffi_tramp_is_supported ())
-        return add_segment_exec_offset (data, seg);
-      return ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
+      اگر (!ffi_tramp_is_supported ())
+        بازگشت add_segment_exec_offset (data, seg);
+      بازگشت ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
     }
-  else
-    return data;
+  وگرنه
+    بازگشت data;
 }
 
 /* Release a chunk of memory allocated with ffi_closure_alloc.  If
    FFI_CLOSURE_FREE_CODE is nonzero, the given address can be the
    writable or the executable address given.  Otherwise, only the
    writable address can be provided here.  */
-void
-ffi_closure_free (void *ptr)
+تهی
+ffi_closure_free (تهی *ptr)
 {
-#if FFI_CLOSURE_FREE_CODE
+#اگر FFI_CLOSURE_FREE_CODE
   msegmentptr seg = segment_holding_code (gm, ptr);
 
-  if (seg)
+  اگر (seg)
     ptr = sub_segment_exec_offset (ptr, seg);
 #endif
-  if (ffi_tramp_is_supported ())
+  اگر (ffi_tramp_is_supported ())
     ffi_tramp_free (((ffi_closure *) ptr)->ftramp);
 
   dlfree (ptr);
 }
 
-int
-ffi_tramp_is_present (void *ptr)
+صحیح
+ffi_tramp_is_present (تهی *ptr)
 {
   msegmentptr seg = segment_holding (gm, ptr);
-  return seg != NULL && ffi_tramp_is_supported();
+  بازگشت seg != پوچ && ffi_tramp_is_supported();
 }
 
-# else /* ! FFI_MMAP_EXEC_WRIT */
+# وگرنه /* ! FFI_MMAP_EXEC_WRIT */
 
 /* On many systems, memory returned by malloc is writable and
    executable, so just use it.  */
 
-#include <stdlib.h>
+#شامل <stdlib.h>
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+تهی *
+ffi_closure_alloc (size_t size, تهی **code)
 {
-  void *c;
+  تهی *c;
 
-  if (!code)
-    return NULL;
+  اگر (!code)
+    بازگشت پوچ;
 
   c = malloc (size);
   *code = FFI_FN (c);
-  return c;
+  بازگشت c;
 }
 
-void
-ffi_closure_free (void *ptr)
+تهی
+ffi_closure_free (تهی *ptr)
 {
-  free (ptr);
+  آزاد (ptr);
 }
 
-void *
-ffi_data_to_code_pointer (void *data)
+تهی *
+ffi_data_to_code_pointer (تهی *data)
 {
-  return data;
+  بازگشت data;
 }
 
-int
-ffi_tramp_is_present (__attribute__((unused)) void *ptr)
+صحیح
+ffi_tramp_is_present (__attribute__((unused)) تهی *ptr)
 {
-  return 0;
+  بازگشت 0;
 }
 
 # endif /* ! FFI_MMAP_EXEC_WRIT */

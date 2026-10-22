@@ -28,11 +28,11 @@
  * be implemented in C.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#شامل <stdlib.h>
+#شامل <unistd.h>
 
 #define CIF_FLAGS_CHAR		1	/* for struct only */
 #define CIF_FLAGS_SHORT		2	/* for struct only */
@@ -43,124 +43,124 @@
  * Foreign Function Interface API
  */
 
-void ffi_call_elfbsd (extended_cif *, unsigned, unsigned, void *,
-		       void (*) ());
-void *ffi_prep_args (extended_cif *ecif, void *stack);
+تهی ffi_call_elfbsd (extended_cif *, unsigned, unsigned, تهی *,
+		       تهی (*) ());
+تهی *ffi_prep_args (extended_cif *ecif, تهی *پشته);
 
-void *
-ffi_prep_args (extended_cif *ecif, void *stack)
+تهی *
+ffi_prep_args (extended_cif *ecif, تهی *پشته)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  unsigned صحیح i;
+  تهی **p_argv;
+  نویسه *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  تهی *struct_مقدار_ptr;
 
-  argp = stack;
+  argp = پشته;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  اگر (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_مقدار_ptr = ecif->rvalue;
+  وگرنه
+    struct_مقدار_ptr = پوچ;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  برای (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof (int))
+      اگر (z < اندازه (صحیح))
 	{
-	  switch ((*p_arg)->type)
+	  انتخاب ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    حالت FFI_TYPE_SINT8:
+	      *(signed صحیح *) argp = (signed صحیح) *(SINT8 *) *p_argv;
+	      بشکن;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    حالت FFI_TYPE_UINT8:
+	      *(unsigned صحیح *) argp = (unsigned صحیح) *(UINT8 *) *p_argv;
+	      بشکن;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    حالت FFI_TYPE_SINT16:
+	      *(signed صحیح *) argp = (signed صحیح) *(SINT16 *) *p_argv;
+	      بشکن;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    حالت FFI_TYPE_UINT16:
+	      *(unsigned صحیح *) argp = (unsigned صحیح) *(UINT16 *) *p_argv;
+	      بشکن;
 
-	    case FFI_TYPE_STRUCT:
+	    حالت FFI_TYPE_STRUCT:
 	      memcpy (argp, *p_argv, z);
-	      break;
+	      بشکن;
 
-	    default:
+	    پیشفرض:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = اندازه (صحیح);
 	}
-      else
+      وگرنه
 	{
 	  memcpy (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  اگر ((اندازه(صحیح) - 1) & z)
+	    z = FFI_ALIGN(z, اندازه(صحیح));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  بازگشت struct_مقدار_ptr;
 }
 
 ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    حالت FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      بشکن;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    حالت FFI_TYPE_STRUCT:
+      اگر (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
 	  cif->rtype->elements[1])
 	{
 	  cif->flags = 0;
-	  break;
+	  بشکن;
 	}
 
-      if (cif->rtype->size == sizeof (char))
+      اگر (cif->rtype->size == اندازه (نویسه))
 	cif->flags = CIF_FLAGS_CHAR;
-      else if (cif->rtype->size == sizeof (short))
+      وگرنه اگر (cif->rtype->size == اندازه (short))
 	cif->flags = CIF_FLAGS_SHORT;
-      else if (cif->rtype->size == sizeof (int))
+      وگرنه اگر (cif->rtype->size == اندازه (صحیح))
 	cif->flags = CIF_FLAGS_INT;
-      else if (cif->rtype->size == 2 * sizeof (int))
+      وگرنه اگر (cif->rtype->size == 2 * اندازه (صحیح))
 	cif->flags = CIF_FLAGS_DINT;
-      else
+      وگرنه
 	cif->flags = 0;
-      break;
+      بشکن;
 
-    default:
-      if (cif->rtype->size <= sizeof (int))
+    پیشفرض:
+      اگر (cif->rtype->size <= اندازه (صحیح))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      وگرنه
 	cif->flags = CIF_FLAGS_DINT;
-      break;
+      بشکن;
     }
 
-  return FFI_OK;
+  بازگشت FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+تهی
+ffi_call (ffi_cif *cif, تهی (*fn) (), تهی *rvalue, تهی **avalue)
 {
   extended_cif ecif;
 
@@ -170,22 +170,22 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  اگر (rvalue == پوچ
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->flags == 0)
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  وگرنه
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  انتخاب (cif->abi)
     {
-    case FFI_ELFBSD:
+    حالت FFI_ELFBSD:
       ffi_call_elfbsd (&ecif, cif->bytes, cif->flags, ecif.rvalue, fn);
-      break;
+      بشکن;
 
-    default:
+    پیشفرض:
       FFI_ASSERT (0);
-      break;
+      بشکن;
     }
 }
 
@@ -193,20 +193,20 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-void ffi_closure_elfbsd (void);
-void ffi_closure_struct_elfbsd (void);
-unsigned int ffi_closure_elfbsd_inner (ffi_closure *, void *, char *);
+تهی ffi_closure_elfbsd (تهی);
+تهی ffi_closure_struct_elfbsd (تهی);
+unsigned صحیح ffi_closure_elfbsd_inner (ffi_closure *, تهی *, نویسه *);
 
-static void
-ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
+ایستا تهی
+ffi_prep_closure_elfbsd (ffi_cif *cif, تهی **avalue, نویسه *stackp)
 {
-  unsigned int i;
-  void **p_argv;
+  unsigned صحیح i;
+  تهی **p_argv;
   ffi_type **p_arg;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  برای (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
 
@@ -214,37 +214,37 @@ ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
       *p_argv = stackp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      اگر ((اندازه (صحیح) - 1) & z)
+	z = FFI_ALIGN(z, اندازه (صحیح));
 
       p_argv++;
       stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+unsigned صحیح
+ffi_closure_elfbsd_inner (ffi_closure *closure, تهی *resp, نویسه *پشته)
 {
   ffi_cif *cif;
-  void **arg_area;
+  تهی **arg_area;
 
   cif = closure->cif;
-  arg_area = (void **) alloca (cif->nargs * sizeof (void *));
+  arg_area = (تهی **) alloca (cif->nargs * اندازه (تهی *));
 
-  ffi_prep_closure_elfbsd (cif, arg_area, stack);
+  ffi_prep_closure_elfbsd (cif, arg_area, پشته);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  بازگشت cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun)(ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      تهی (*fun)(ffi_cif *, تهی *, تهی **, تهی *),
+		      تهی *user_data, تهی *codeloc)
 {
-  char *tramp = (char *) codeloc;
-  void *fn;
+  نویسه *tramp = (نویسه *) codeloc;
+  تهی *fn;
 
   FFI_ASSERT (cif->abi == FFI_ELFBSD);
 
@@ -253,24 +253,24 @@ ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
   /* movl #closure, r0 */
   tramp[2] = 0xd0;
   tramp[3] = 0x8f;
-  *(unsigned int *)(tramp + 4) = (unsigned int) closure;
+  *(unsigned صحیح *)(tramp + 4) = (unsigned صحیح) closure;
   tramp[8] = 0x50;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  اگر (cif->rtype->type == FFI_TYPE_STRUCT
       && !cif->flags)
     fn = &ffi_closure_struct_elfbsd;
-  else
+  وگرنه
     fn = &ffi_closure_elfbsd;
 
   /* jmpl #fn */
   tramp[9] = 0x17;
   tramp[10] = 0xef;
-  *(unsigned int *)(tramp + 11) = (unsigned int)fn + 2 -
-				  (unsigned int)tramp - 9 - 6;
+  *(unsigned صحیح *)(tramp + 11) = (unsigned صحیح)fn + 2 -
+				  (unsigned صحیح)tramp - 9 - 6;
 
   closure->cif = cif;
   closure->user_data = user_data;
   closure->fun = fun;
 
-  return FFI_OK;
+  بازگشت FFI_OK;
 }

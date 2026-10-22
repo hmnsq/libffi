@@ -27,104 +27,104 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include "internal.h"
-#include <tramp.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
+#شامل "internal.h"
+#شامل <tramp.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#شامل <stdlib.h>
+#شامل <stdint.h>
 
-#if __riscv_float_abi_double
+#اگر __riscv_float_abi_double
 #define ABI_FLEN 64
-typedef union {
+تعریفنوع اجتماع {
     uint64_t i;
-    double d;
+    دوگانه d;
 } float_reg;
-#elif __riscv_float_abi_single
+#وگرنهاگر __riscv_float_abi_single
 #define ABI_FLEN 32
-typedef union {
-    float f;
+تعریفنوع اجتماع {
+    اعشاری f;
 } float_reg;
 #endif
 
 #define NARGREG 8
 #define STKALIGN 16
-#define MAXCOPYARG (2 * sizeof(double))
+#define MAXCOPYARG (2 * اندازه(دوگانه))
 
-typedef struct call_context
+تعریفنوع ساختار call_context
 {
-#if ABI_FLEN
+#اگر ABI_FLEN
     float_reg fa[8];
 #endif
     size_t a[8];
     /* used by the assembly code to in-place construct its own stack frame */
-    char frame[16];
+    نویسه frame[16];
 } call_context;
 
-typedef struct call_builder
+تعریفنوع ساختار call_builder
 {
     call_context *aregs;
-    int used_integer;
-    int used_float;
-    size_t *used_stack;
-    void *struct_stack;
+    صحیح used_integer;
+    صحیح used_float;
+    size_t *used_پشته;
+    تهی *struct_پشته;
 } call_builder;
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if __SIZEOF_POINTER__ == 8
+#اگر __SIZEOF_POINTER__ == 8
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#وگرنه
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
 #endif
 
-#if ABI_FLEN
-typedef struct {
-    char as_elements, type1, offset2, type2;
+#اگر ABI_FLEN
+تعریفنوع ساختار {
+    نویسه as_elements, type1, offset2, type2;
 } float_struct_info;
 
-#if ABI_FLEN >= 64
+#اگر ABI_FLEN >= 64
 #define IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
-#else
+#وگرنه
 #define IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
 #endif
 
-static ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
-    int i;
-    if (out == out_end) return out;
-    if (in->type != FFI_TYPE_STRUCT) {
+ایستا ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
+    صحیح i;
+    اگر (out == out_end) بازگشت out;
+    اگر (in->type != FFI_TYPE_STRUCT) {
         *(out++) = in;
-    } else {
-        for (i = 0; in->elements[i]; i++)
+    } وگرنه {
+        برای (i = 0; in->elements[i]; i++)
             out = flatten_struct(in->elements[i], out, out_end);
     }
-    return out;
+    بازگشت out;
 }
 
 /* Structs with at most two fields after flattening, one of which is of
    floating point type, are passed in multiple registers if sufficient
    registers are available. */
-static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *top) {
+ایستا float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *بالاترین) {
     float_struct_info ret = {0, 0, 0, 0};
     ffi_type *fields[3];
-    int num_floats, num_ints;
-    int num_fields = flatten_struct(top, fields, fields + 3) - fields;
+    صحیح رقم_floats, رقم_ints;
+    صحیح رقم_fields = flatten_struct(بالاترین, fields, fields + 3) - fields;
 
-    if (num_fields == 1) {
-        if (IS_FLOAT(fields[0]->type)) {
+    اگر (رقم_fields == 1) {
+        اگر (IS_FLOAT(fields[0]->type)) {
             ret.as_elements = 1;
             ret.type1 = fields[0]->type;
         }
-    } else if (num_fields == 2) {
-        num_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
-        num_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
-        if (num_floats == 0 || num_floats + num_ints != 2)
-            return ret;
-        if (cb->used_float + num_floats > NARGREG || cb->used_integer + (2 - num_floats) > NARGREG)
-            return ret;
-        if (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
-            return ret;
+    } وگرنه اگر (رقم_fields == 2) {
+        رقم_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
+        رقم_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
+        اگر (رقم_floats == 0 || رقم_floats + رقم_ints != 2)
+            بازگشت ret;
+        اگر (cb->used_float + رقم_floats > NARGREG || cb->used_integer + (2 - رقم_floats) > NARGREG)
+            بازگشت ret;
+        اگر (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
+            بازگشت ret;
 
         ret.type1 = fields[0]->type;
         ret.type2 = fields[1]->type;
@@ -132,345 +132,345 @@ static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *t
         ret.as_elements = 1;
     }
 
-    return ret;
+    بازگشت ret;
 }
 
-#if ABI_FLEN >= 64
+#اگر ABI_FLEN >= 64
 /* Float values in wider RISC-V FP registers are NaN-boxed */
-static void marshal_float(call_builder *cb, void *data) {
-    union {
+ایستا تهی marshal_float(call_builder *cb, تهی *data) {
+    اجتماع {
         uint32_t i;
-        float f;
-    } value;
+        اعشاری f;
+    } مقدار;
 
-    value.f = *(float *)data;
+    مقدار.f = *(اعشاری *)data;
     cb->aregs->fa[cb->used_float++].i =
-        UINT64_C(0xffffffff00000000) | value.i;
+        UINT64_C(0xffffffff00000000) | مقدار.i;
 }
 
-static void unmarshal_float(call_builder *cb, void *data) {
-    union {
+ایستا تهی unmarshal_float(call_builder *cb, تهی *data) {
+    اجتماع {
         uint32_t i;
-        float f;
-    } value;
+        اعشاری f;
+    } مقدار;
 
-    value.i = (uint32_t)cb->aregs->fa[cb->used_float++].i;
-    *(float *)data = value.f;
+    مقدار.i = (uint32_t)cb->aregs->fa[cb->used_float++].i;
+    *(اعشاری *)data = مقدار.f;
 }
 #endif
 #endif
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
-    size_t value = 0;
-    switch (type) {
-        case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
-        case FFI_TYPE_SINT8: value = *(int8_t *)data; break;
-        case FFI_TYPE_UINT16: value = *(uint16_t *)data; break;
-        case FFI_TYPE_SINT16: value = *(int16_t *)data; break;
+ایستا تهی marshal_atom(call_builder *cb, صحیح type, تهی *data) {
+    size_t مقدار = 0;
+    انتخاب (type) {
+        حالت FFI_TYPE_UINT8: مقدار = *(uint8_t *)data; بشکن;
+        حالت FFI_TYPE_SINT8: مقدار = *(int8_t *)data; بشکن;
+        حالت FFI_TYPE_UINT16: مقدار = *(uint16_t *)data; بشکن;
+        حالت FFI_TYPE_SINT16: مقدار = *(int16_t *)data; بشکن;
         /* 32-bit quantities are always sign-extended in the ABI */
-        case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
-        case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
-        case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
+        حالت FFI_TYPE_UINT32: مقدار = *(int32_t *)data; بشکن;
+        حالت FFI_TYPE_SINT32: مقدار = *(int32_t *)data; بشکن;
+#اگر __SIZEOF_POINTER__ == 8
+        حالت FFI_TYPE_UINT64: مقدار = *(uint64_t *)data; بشکن;
+        حالت FFI_TYPE_SINT64: مقدار = *(int64_t *)data; بشکن;
 #endif
-        case FFI_TYPE_POINTER: value = *(size_t *)data; break;
+        حالت FFI_TYPE_POINTER: مقدار = *(size_t *)data; بشکن;
 
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+#اگر ABI_FLEN >= 64
+        حالت FFI_TYPE_FLOAT:
             marshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(float *)data));
-            return;
+            بازگشت;
+#وگرنهاگر ABI_FLEN >= 32
+        حالت FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(اعشاری *)data));
+            بازگشت;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(double *)data));
-            return;
+#اگر ABI_FLEN >= 64
+        حالت FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(دوگانه *)data));
+            بازگشت;
 #endif
-        default: FFI_ASSERT(0); break;
+        پیشفرض: FFI_ASSERT(0); بشکن;
     }
 
-    if (cb->used_integer == NARGREG) {
-        *cb->used_stack++ = value;
-    } else {
-        cb->aregs->a[cb->used_integer++] = value;
+    اگر (cb->used_integer == NARGREG) {
+        *cb->used_پشته++ = مقدار;
+    } وگرنه {
+        cb->aregs->a[cb->used_integer++] = مقدار;
     }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
-    size_t value;
-    switch (type) {
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+ایستا تهی unmarshal_atom(call_builder *cb, صحیح type, تهی *data) {
+    size_t مقدار;
+    انتخاب (type) {
+#اگر ABI_FLEN >= 64
+        حالت FFI_TYPE_FLOAT:
             unmarshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(*(float *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
-            return;
+            بازگشت;
+#وگرنهاگر ABI_FLEN >= 32
+        حالت FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(*(اعشاری *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
+            بازگشت;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(*(double *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
-            return;
+#اگر ABI_FLEN >= 64
+        حالت FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(*(دوگانه *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
+            بازگشت;
 #endif
     }
 
-    if (cb->used_integer == NARGREG) {
-        value = *cb->used_stack++;
-    } else {
-        value = cb->aregs->a[cb->used_integer++];
+    اگر (cb->used_integer == NARGREG) {
+        مقدار = *cb->used_پشته++;
+    } وگرنه {
+        مقدار = cb->aregs->a[cb->used_integer++];
     }
 
-    switch (type) {
-        case FFI_TYPE_UINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_SINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_UINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
-        case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
-        case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
+    انتخاب (type) {
+        حالت FFI_TYPE_UINT8: *(uint8_t *)data = مقدار; بشکن;
+        حالت FFI_TYPE_SINT8: *(uint8_t *)data = مقدار; بشکن;
+        حالت FFI_TYPE_UINT16: *(uint16_t *)data = مقدار; بشکن;
+        حالت FFI_TYPE_SINT16: *(uint16_t *)data = مقدار; بشکن;
+        حالت FFI_TYPE_UINT32: *(uint32_t *)data = مقدار; بشکن;
+        حالت FFI_TYPE_SINT32: *(uint32_t *)data = مقدار; بشکن;
+#اگر __SIZEOF_POINTER__ == 8
+        حالت FFI_TYPE_UINT64: *(uint64_t *)data = مقدار; بشکن;
+        حالت FFI_TYPE_SINT64: *(uint64_t *)data = مقدار; بشکن;
 #endif
-        case FFI_TYPE_POINTER: *(size_t *)data = value; break;
-        default: FFI_ASSERT(0); break;
+        حالت FFI_TYPE_POINTER: *(size_t *)data = مقدار; بشکن;
+        پیشفرض: FFI_ASSERT(0); بشکن;
     }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
+ایستا تهی marshal(call_builder *cb, ffi_type *type, صحیح var, تهی *data) {
     size_t realign[2];
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#اگر ABI_FLEN
+    اگر (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        اگر (fsi.as_elements) {
             marshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                marshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return;
+            اگر (fsi.offset2)
+                marshal_atom(cb, fsi.type2, ((نویسه*)data) + fsi.offset2);
+            بازگشت;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    اگر (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         marshal_atom(cb, type->type, data);
-        return;
+        بازگشت;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    اگر (type->size > 2 * __SIZEOF_POINTER__) {
         /* copy to stack and pass by reference */
-        data = memcpy (cb->struct_stack, data, type->size);
-        cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
+        data = memcpy (cb->struct_پشته, data, type->size);
+        cb->struct_پشته = (size_t *) FFI_ALIGN ((نویسه *) cb->struct_پشته + type->size, __SIZEOF_POINTER__);
         marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+    } وگرنه اگر (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         marshal_atom(cb, type->type, data);
-    } else {
+    } وگرنه {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        اگر (type->alignment > __SIZEOF_POINTER__) {
+            اگر (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+            cb->used_پشته = (size_t *)FFI_ALIGN(cb->used_پشته, 2*__SIZEOF_POINTER__);
         }
 
         memcpy(realign, data, type->size);
-        if (type->size > 0)
+        اگر (type->size > 0)
             marshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        اگر (type->size > __SIZEOF_POINTER__)
             marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
     }
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
+ایستا تهی *unmarshal(call_builder *cb, ffi_type *type, صحیح var, تهی *data) {
     size_t realign[2];
-    void *pointer;
+    تهی *pointer;
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#اگر ABI_FLEN
+    اگر (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        اگر (fsi.as_elements) {
             unmarshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                unmarshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return data;
+            اگر (fsi.offset2)
+                unmarshal_atom(cb, fsi.type2, ((نویسه*)data) + fsi.offset2);
+            بازگشت data;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    اگر (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         unmarshal_atom(cb, type->type, data);
-        return data;
+        بازگشت data;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    اگر (type->size > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
-        unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+        unmarshal_atom(cb, FFI_TYPE_POINTER, (نویسه*)&pointer);
+        بازگشت pointer;
+    } وگرنه اگر (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         unmarshal_atom(cb, type->type, data);
-        return data;
-    } else {
+        بازگشت data;
+    } وگرنه {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        اگر (type->alignment > __SIZEOF_POINTER__) {
+            اگر (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+            cb->used_پشته = (size_t *)FFI_ALIGN(cb->used_پشته, 2*__SIZEOF_POINTER__);
         }
 
-        if (type->size > 0)
+        اگر (type->size > 0)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        اگر (type->size > __SIZEOF_POINTER__)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
         memcpy(data, realign, type->size);
-        return data;
+        بازگشت data;
     }
 }
 
-static int passed_by_ref(call_builder *cb, ffi_type *type, int var) {
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+ایستا صحیح passed_by_ref(call_builder *cb, ffi_type *type, صحیح var) {
+#اگر ABI_FLEN
+    اگر (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) return 0;
+        اگر (fsi.as_elements) بازگشت 0;
     }
 #endif
 
-    return type->size > 2 * __SIZEOF_POINTER__;
+    بازگشت type->size > 2 * __SIZEOF_POINTER__;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif) {
     cif->riscv_nfixedargs = cif->nargs;
-    return FFI_OK;
+    بازگشت FFI_OK;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs) {
+ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned صحیح nfixedargs, unsigned صحیح ntotalargs) {
     cif->riscv_nfixedargs = nfixedargs;
-    return FFI_OK;
+    بازگشت FFI_OK;
 }
 
 /* Low level routine for calling functions */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+بیرونی تهی ffi_call_asm (تهی *پشته, ساختار call_context *regs,
+			  تهی (*fn) (تهی), تهی *closure) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+ایستا تهی
+ffi_call_int (ffi_cif *cif, تهی (*fn) (تهی), تهی *rvalue, تهی **avalue,
+	      تهی *closure)
 {
     /* this is a conservative estimate, assuming a complex return value and
        that all remaining arguments are long long / __int128 */
     size_t arg_bytes = cif->nargs <= 3 ? 0 :
-        FFI_ALIGN(2 * sizeof(size_t) * (cif->nargs - 3), STKALIGN);
+        FFI_ALIGN(2 * اندازه(size_t) * (cif->nargs - 3), STKALIGN);
     /* Allocate space for copies of big structures.  */
     size_t struct_bytes = FFI_ALIGN (cif->bytes, STKALIGN);
     size_t rval_bytes = 0;
-    if (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
+    اگر (rvalue == پوچ && cif->rtype->size > 2*__SIZEOF_POINTER__)
         rval_bytes = FFI_ALIGN(cif->rtype->size, STKALIGN);
-    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + sizeof(call_context);
+    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + اندازه(call_context);
 
     /* the assembly code will deallocate all stack data at lower addresses
        than the argument region, so we need to allocate the frame and the
        return value after the arguments in a single allocation */
     size_t alloc_base;
     /* Argument region must be 16-byte aligned */
-    if (_Alignof(max_align_t) >= STKALIGN) {
+    اگر (_Alignof(max_align_t) >= STKALIGN) {
         /* since sizeof long double is normally 16, the compiler will
            guarantee alloca alignment to at least that much */
         alloc_base = (size_t)alloca(alloc_size);
-    } else {
+    } وگرنه {
         alloc_base = FFI_ALIGN(alloca(alloc_size + STKALIGN - 1), STKALIGN);
     }
 
-    if (rval_bytes)
-        rvalue = (void*)(alloc_base + arg_bytes);
+    اگر (rval_bytes)
+        rvalue = (تهی*)(alloc_base + arg_bytes);
 
     call_builder cb;
     cb.used_float = cb.used_integer = 0;
     cb.aregs = (call_context*)(alloc_base + arg_bytes + rval_bytes + struct_bytes);
-    cb.used_stack = (void*)alloc_base;
-    cb.struct_stack = (void *) (alloc_base + arg_bytes + rval_bytes);
+    cb.used_پشته = (تهی*)alloc_base;
+    cb.struct_پشته = (تهی *) (alloc_base + arg_bytes + rval_bytes);
 
-    int return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    صحیح return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
+    اگر (return_by_ref)
         marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-    int i;
-    for (i = 0; i < cif->nargs; i++)
+    صحیح i;
+    برای (i = 0; i < cif->nargs; i++)
         marshal(&cb, cif->arg_types[i], i >= cif->riscv_nfixedargs, avalue[i]);
 
-    ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+    ffi_call_asm ((تهی *) alloc_base, cb.aregs, fn, closure);
 
     cb.used_float = cb.used_integer = 0;
-    if (!return_by_ref && rvalue)
+    اگر (!return_by_ref && rvalue)
       {
-	if (IS_INT(cif->rtype->type)
-	    && cif->rtype->size < sizeof (ffi_arg))
+	اگر (IS_INT(cif->rtype->type)
+	    && cif->rtype->size < اندازه (ffi_arg))
 	  {
 	    /* Integer types smaller than ffi_arg need to be extended.  */
-	    switch (cif->rtype->type)
+	    انتخاب (cif->rtype->type)
 	      {
-	      case FFI_TYPE_SINT8:
-	      case FFI_TYPE_SINT16:
-	      case FFI_TYPE_SINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+	      حالت FFI_TYPE_SINT8:
+	      حالت FFI_TYPE_SINT16:
+	      حالت FFI_TYPE_SINT32:
+		unmarshal_atom (&cb, (اندازه (ffi_arg) > 4
 				      ? FFI_TYPE_SINT64 : FFI_TYPE_SINT32),
 				rvalue);
-		break;
-	      case FFI_TYPE_UINT8:
-	      case FFI_TYPE_UINT16:
-	      case FFI_TYPE_UINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+		بشکن;
+	      حالت FFI_TYPE_UINT8:
+	      حالت FFI_TYPE_UINT16:
+	      حالت FFI_TYPE_UINT32:
+		unmarshal_atom (&cb, (اندازه (ffi_arg) > 4
 				      ? FFI_TYPE_UINT64 : FFI_TYPE_UINT32),
 				rvalue);
-		break;
+		بشکن;
 	      }
 	  }
-	else
+	وگرنه
 	  unmarshal(&cb, cif->rtype, 0, rvalue);
       }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+تهی
+ffi_call (ffi_cif *cif, تهی (*fn) (تهی), تهی *rvalue, تهی **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, پوچ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+تهی
+ffi_call_go (ffi_cif *cif, تهی (*fn) (تهی), تهی *rvalue,
+	     تهی **avalue, تهی *closure)
 {
   ffi_call_int(cif, fn, rvalue, avalue, closure);
 }
 
-extern void ffi_closure_asm(void) FFI_HIDDEN;
+بیرونی تهی ffi_closure_asm(تهی) FFI_HIDDEN;
 
-ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(ffi_cif*,void*,void**,void*), void *user_data, void *codeloc)
+ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, تهی (*fun)(ffi_cif*,تهی*,تهی**,تهی*), تهی *user_data, تهی *codeloc)
 {
-    if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-        return FFI_BAD_ABI;
+    اگر (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+        بازگشت FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present (closure))
+  اگر (ffi_tramp_is_present (closure))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_asm;
+      تهی (*dest)(تهی) = ffi_closure_asm;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  وگرنه
 #endif
     {
       uint32_t *tramp = (uint32_t *) &closure->tramp[0];
@@ -480,16 +480,16 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
 	 as the memory is readable it should work */
 
       tramp[0] = 0x00000317; /* auipc t1, 0 (i.e. t0 <- codeloc) */
-#if __SIZEOF_POINTER__ == 8
+#اگر __SIZEOF_POINTER__ == 8
       tramp[1] = 0x01033383; /* ld t2, 16(t1) */
-#else
+#وگرنه
       tramp[1] = 0x01032383; /* lw t2, 16(t1) */
 #endif
       tramp[2] = 0x00038067; /* jr t2 */
       tramp[3] = 0x00000013; /* nop */
       tramp[4] = fn;
       tramp[5] = fn >> 32;
-#if !defined(__FreeBSD__)
+#اگر !defined(__FreeBSD__)
     __builtin___clear_cache(codeloc, codeloc + FFI_TRAMPOLINE_SIZE);
 #endif
     }
@@ -498,74 +498,74 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
     closure->fun = fun;
     closure->user_data = user_data;
 
-    return FFI_OK;
+    بازگشت FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+بیرونی تهی ffi_go_closure_asm (تهی) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     تهی (*fun) (ffi_cif *, تهی *, تهی **, تهی *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  اگر (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    بازگشت FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
+  closure->tramp = (تهی *) ffi_go_closure_asm;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  بازگشت FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs. */
-void FFI_HIDDEN
+تهی FFI_HIDDEN
 ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data,
-		   size_t *stack, call_context *aregs)
+		   تهی (*fun) (ffi_cif *, تهی *, تهی **, تهی *),
+		   تهی *user_data,
+		   size_t *پشته, call_context *aregs)
 {
-    void **avalue = alloca(cif->nargs * sizeof(void*));
+    تهی **avalue = alloca(cif->nargs * اندازه(تهی*));
     /* storage for arguments which will be copied by unmarshal().  We could
        theoretically avoid the copies in many cases and use at most 128 bytes
        of memory, but allocating disjoint storage for each argument is
        simpler. */
-    char *astorage = alloca(cif->nargs * MAXCOPYARG);
-    void *rvalue;
+    نویسه *astorage = alloca(cif->nargs * MAXCOPYARG);
+    تهی *rvalue;
     call_builder cb;
-    int return_by_ref;
-    int i;
+    صحیح return_by_ref;
+    صحیح i;
 
     cb.aregs = aregs;
     cb.used_integer = cb.used_float = 0;
-    cb.used_stack = stack;
+    cb.used_پشته = پشته;
 
     return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    اگر (return_by_ref)
         unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
+    وگرنه
         rvalue = alloca(cif->rtype->size);
 
-    for (i = 0; i < cif->nargs; i++)
+    برای (i = 0; i < cif->nargs; i++)
         avalue[i] = unmarshal(&cb, cif->arg_types[i],
             i >= cif->riscv_nfixedargs, astorage + i*MAXCOPYARG);
 
     fun (cif, rvalue, avalue, user_data);
 
-    if (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
+    اگر (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
         cb.used_integer = cb.used_float = 0;
         marshal(&cb, cif->rtype, 0, rvalue);
     }
 }
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-void *
+تهی *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  بیرونی تهی *trampoline_code_table;
   *tramp_size = RISCV_TRAMP_SIZE;
   *map_size = RISCV_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  بازگشت &trampoline_code_table;
 }
 #endif

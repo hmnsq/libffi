@@ -9,12 +9,12 @@ the following conditions:
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
+EXPRESS یا IMPLIED, INCLUDING BUT نه LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE و NONINFRINGEMENT.
+در NO EVENT SHALL THE AUTHORS یا COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES یا OTHER LIABILITY, WHETHER در AN ACTION OF CONTRACT,
+TORT یا OTHERWISE, ARISING FROM, OUT OF یا در CONNECTION WITH THE
+SOFTWARE یا THE USE یا OTHER DEALINGS در THE SOFTWARE.  */
 
 #define LIBFFI_ASM
 #include <fficonfig.h>
@@ -93,7 +93,7 @@ ffi_call_SYSV_L1
 	/* Deallocate the context, leaving the stacked arguments.  */
 	add	sp, sp, #CALL_CONTEXT_SIZE	
 
-	blr     x9			/* call fn */
+	blr     x9			/* فراخوان fn */
 
 	ldp	x3, x4, [x29, #16]	/* reload rvalue and flags */
 
@@ -184,13 +184,13 @@ ffi_call_SYSV_return
 
 /* ffi_closure_SYSV
    Closure invocation glue. This is the low level code invoked directly by
-   the closure trampoline to setup and call a closure.
+   the closure trampoline to setup and فراخوان a closure.
    On entry x17 points to a struct ffi_closure, x16 has been clobbered
    all other registers are preserved.
-   We allocate a call context and save the argument passing registers,
+   We allocate a فراخوان context and save the argument passing registers,
    then invoked the generic C ffi_closure_SYSV_inner() function to do all
    the real work, on return we load the result passing registers back from
-   the call context.
+   the فراخوان context.
 */
 
 #define ffi_closure_SYSV_FS (8*2 + CALL_CONTEXT_SIZE + 64)
@@ -503,4 +503,4 @@ compress_hfa_type_store_q3
 
 	LEAF_END	compress_hfa_type
 
-	END
+	پایان

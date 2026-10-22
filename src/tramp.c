@@ -26,7 +26,7 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <fficonfig.h>
+#شامل <fficonfig.h>
 
 #ifdef FFI_EXEC_STATIC_TRAMP
 
@@ -35,28 +35,28 @@
  * Add support for other OSes later. For now, it is just Linux and Cygwin.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#اگر defined (__linux__) || defined (__CYGWIN__)
 #ifdef __linux__
 #define _GNU_SOURCE 1
 #endif
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <sys/mman.h>
-#include <tramp.h>
+#شامل <stdio.h>
+#شامل <unistd.h>
+#شامل <stdlib.h>
+#شامل <stdint.h>
+#شامل <fcntl.h>
+#شامل <pthread.h>
+#شامل <sys/mman.h>
+#شامل <tramp.h>
 #ifdef __linux__
-#include <linux/limits.h>
-#include <linux/types.h>
+#شامل <linux/limits.h>
+#شامل <linux/types.h>
 #endif
 #ifdef __CYGWIN__
-#include <limits.h>
+#شامل <limits.h>
 #endif
 #endif
 
@@ -70,12 +70,12 @@
  *	- the size of each trampoline in the trampoline code table
  *	- the size of the mapping for the whole trampoline code table
  */
-void __attribute__((weak)) *ffi_tramp_arch (size_t *tramp_size,
+تهی __attribute__((weak)) *ffi_tramp_arch (size_t *tramp_size,
   size_t *map_size);
 
 /* ------------------------- Trampoline Data Structures --------------------*/
 
-struct tramp;
+ساختار tramp;
 
 /*
  * Trampoline table. Manages one trampoline code table and one trampoline
@@ -88,15 +88,15 @@ struct tramp;
  * free		List of free trampolines.
  * nfree	Number of free trampolines.
  */
-struct tramp_table
+ساختار tramp_table
 {
-  struct tramp_table *prev;
-  struct tramp_table *next;
-  void *code_table;
-  void *parm_table;
-  struct tramp *array;
-  struct tramp *free;
-  int nfree;
+  ساختار tramp_table *prev;
+  ساختار tramp_table *next;
+  تهی *code_table;
+  تهی *parm_table;
+  ساختار tramp *array;
+  ساختار tramp *آزاد;
+  صحیح nfree;
 };
 
 /*
@@ -107,10 +107,10 @@ struct tramp_table
  * target
  *	Target code that the trampoline jumps to.
  */
-struct tramp_parm
+ساختار tramp_parm
 {
-  void *data;
-  void *target;
+  تهی *data;
+  تهی *target;
 };
 
 /*
@@ -122,16 +122,16 @@ struct tramp_parm
  * parm		Address of this trampoline's parameters in the parameter
  *		table mapping.
  */
-struct tramp
+ساختار tramp
 {
-  struct tramp *prev;
-  struct tramp *next;
-  struct tramp_table *table;
-  void *code;
-  struct tramp_parm *parm;
+  ساختار tramp *prev;
+  ساختار tramp *next;
+  ساختار tramp_table *table;
+  تهی *code;
+  ساختار tramp_parm *parm;
 };
 
-enum tramp_globals_status {
+شمارش tramp_globals_status {
 	TRAMP_GLOBALS_UNINITIALIZED = 0,
 	TRAMP_GLOBALS_PASSED,
 	TRAMP_GLOBALS_FAILED,
@@ -159,20 +159,20 @@ enum tramp_globals_status {
  * status
  *	Initialization status.
  */
-struct tramp_globals
+ساختار tramp_globals
 {
-  int fd;
+  صحیح fd;
   off_t offset;
-  void *text;
+  تهی *text;
   size_t map_size;
   size_t size;
-  int ntramp;
-  struct tramp_table *free_tables;
-  int nfree_tables;
-  enum tramp_globals_status status;
+  صحیح ntramp;
+  ساختار tramp_table *free_tables;
+  صحیح nfree_tables;
+  شمارش tramp_globals_status status;
 };
 
-static struct tramp_globals tramp_globals;
+ایستا ساختار tramp_globals tramp_globals;
 
 /* --------------------- Trampoline File Initialization --------------------*/
 
@@ -197,85 +197,85 @@ static struct tramp_globals tramp_globals;
  * directly remapped (e.g., MACH vm_remap ()), then we don't need the
  * trampoline file.
  */
-static int tramp_table_alloc (void);
+ایستا صحیح tramp_table_alloc (تهی);
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#اگر defined (__linux__) || defined (__CYGWIN__)
 
 /* Stringify a macro value for use in a scanf field-width specifier.  */
 #define FFI_TRAMP_STR_(x) #x
 #define FFI_TRAMP_STR(x)  FFI_TRAMP_STR_(x)
 
-static int
-ffi_tramp_get_libffi (void)
+ایستا صحیح
+ffi_tramp_get_libffi (تهی)
 {
   FILE *fp;
   /* `file' is sized PATH_MAX+1 so a scanf field width of PATH_MAX
      (which permits PATH_MAX characters plus the terminating NUL) cannot
      overflow.  */
-  char file[PATH_MAX+1], line[PATH_MAX+100], perm[10], dev[10];
+  نویسه file[PATH_MAX+1], سطر[PATH_MAX+100], perm[10], dev[10];
   unsigned long start, end, offset, inode;
   uintptr_t addr = (uintptr_t) tramp_globals.text;
-  int nfields, found;
-  int open_flags = O_RDONLY;
+  صحیح nfields, found;
+  صحیح open_flags = O_RDONLY;
 
 #ifdef O_CLOEXEC
   open_flags |= O_CLOEXEC;
 #endif
 
-  snprintf (file, sizeof (file), "/proc/%d/maps", getpid());
+  snprintf (file, اندازه (file), "/proc/%d/maps", getpid());
   fp = fopen (file, "r");
-  if (fp == NULL)
-    return 0;
+  اگر (fp == پوچ)
+    بازگشت 0;
 
   found = 0;
-  while (feof (fp) == 0) {
-    if (fgets (line, sizeof (line), fp) == 0)
-      break;
+  وقتی (feof (fp) == 0) {
+    اگر (fgets (سطر, اندازه (سطر), fp) == 0)
+      بشکن;
 
     /* Bound the path field width so a long mapping name cannot overflow
        the fixed-size `file' buffer.  */
-    nfields = sscanf (line,
+    nfields = sscanf (سطر,
       "%lx-%lx %9s %lx %9s %ld %" FFI_TRAMP_STR(PATH_MAX) "s",
       &start, &end, perm, &offset, dev, &inode, file);
-    if (nfields != 7)
-      continue;
+    اگر (nfields != 7)
+      ادامه;
 
-    if (addr >= start && addr < end) {
+    اگر (addr >= start && addr < end) {
       tramp_globals.offset = offset + (addr - start);
       found = 1;
-      break;
+      بشکن;
     }
   }
   fclose (fp);
 
-  if (!found)
-    return 0;
+  اگر (!found)
+    بازگشت 0;
 
   tramp_globals.fd = open (file, open_flags);
-  if (tramp_globals.fd == -1)
-    return 0;
+  اگر (tramp_globals.fd == -1)
+    بازگشت 0;
 
   /*
    * Allocate a trampoline table just to make sure that the trampoline code
    * table can be mapped.
    */
-  if (!tramp_table_alloc ())
+  اگر (!tramp_table_alloc ())
     {
       close (tramp_globals.fd);
       tramp_globals.fd = -1;
-      return 0;
+      بازگشت 0;
     }
-  return 1;
+  بازگشت 1;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#اگر defined (__linux__) || defined (__CYGWIN__)
 
-static int
-ffi_tramp_get_temp_file (void)
+ایستا صحیح
+ffi_tramp_get_temp_file (تهی)
 {
-  ssize_t count;
+  ssize_t شمار;
 
   tramp_globals.offset = 0;
   tramp_globals.fd = open_temp_exec_file ();
@@ -284,45 +284,45 @@ ffi_tramp_get_temp_file (void)
    * Write the trampoline code table into the temporary file and allocate a
    * trampoline table to make sure that the temporary file can be mapped.
    */
-  count = write(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
-  if (count >=0 && (size_t)count == tramp_globals.map_size && tramp_table_alloc ())
-    return 1;
+  شمار = اكتب(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
+  اگر (شمار >=0 && (size_t)شمار == tramp_globals.map_size && tramp_table_alloc ())
+    بازگشت 1;
 
   close (tramp_globals.fd);
   tramp_globals.fd = -1;
-  return 0;
+  بازگشت 0;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* ------------------------ OS-specific Initialization ----------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#اگر defined (__linux__) || defined (__CYGWIN__)
 
-static int
-ffi_tramp_init_os (void)
+ایستا صحیح
+ffi_tramp_init_os (تهی)
 {
-  if (ffi_tramp_get_libffi ())
-    return 1;
-  return ffi_tramp_get_temp_file ();
+  اگر (ffi_tramp_get_libffi ())
+    بازگشت 1;
+  بازگشت ffi_tramp_get_temp_file ();
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* --------------------------- OS-specific Locking -------------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#اگر defined (__linux__) || defined (__CYGWIN__)
 
-static pthread_mutex_t tramp_globals_mutex = PTHREAD_MUTEX_INITIALIZER;
+ایستا pthread_mutex_t tramp_globals_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void
-ffi_tramp_lock(void)
+ایستا تهی
+ffi_tramp_lock(تهی)
 {
   pthread_mutex_lock (&tramp_globals_mutex);
 }
 
-static void
-ffi_tramp_unlock(void)
+ایستا تهی
+ffi_tramp_unlock(تهی)
 {
   pthread_mutex_unlock (&tramp_globals_mutex);
 }
@@ -346,41 +346,41 @@ ffi_tramp_unlock(void)
  * sizeof (struct tramp_parm) cannot exceed the size of a parameter block.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#اگر defined (__linux__) || defined (__CYGWIN__)
 
-static int
-tramp_table_map (struct tramp_table *table)
+ایستا صحیح
+tramp_table_map (ساختار tramp_table *table)
 {
-  char *addr;
+  نویسه *addr;
 
   /*
    * Create an anonymous mapping twice the map size. The top half will be used
    * for the code table. The bottom half will be used for the parameter table.
    */
-  addr = mmap (NULL, tramp_globals.map_size * 2, PROT_READ | PROT_WRITE,
+  addr = mmap (پوچ, tramp_globals.map_size * 2, PROT_READ | PROT_WRITE,
     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-  if (addr == MAP_FAILED)
-    return 0;
+  اگر (addr == MAP_FAILED)
+    بازگشت 0;
 
   /*
    * Replace the top half of the anonymous mapping with the code table mapping.
    */
   table->code_table = mmap (addr, tramp_globals.map_size, PROT_READ | PROT_EXEC,
     MAP_PRIVATE | MAP_FIXED, tramp_globals.fd, tramp_globals.offset);
-  if (table->code_table == MAP_FAILED)
+  اگر (table->code_table == MAP_FAILED)
     {
-      (void) munmap (addr, tramp_globals.map_size * 2);
-      return 0;
+      (تهی) munmap (addr, tramp_globals.map_size * 2);
+      بازگشت 0;
     }
   table->parm_table = table->code_table + tramp_globals.map_size;
-  return 1;
+  بازگشت 1;
 }
 
-static void
-tramp_table_unmap (struct tramp_table *table)
+ایستا تهی
+tramp_table_unmap (ساختار tramp_table *table)
 {
-  (void) munmap (table->code_table, tramp_globals.map_size);
-  (void) munmap (table->parm_table, tramp_globals.map_size);
+  (تهی) munmap (table->code_table, tramp_globals.map_size);
+  (تهی) munmap (table->parm_table, tramp_globals.map_size);
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
@@ -390,24 +390,24 @@ tramp_table_unmap (struct tramp_table *table)
 /*
  * Initialize the static trampoline feature.
  */
-static int
-ffi_tramp_init (void)
+ایستا صحیح
+ffi_tramp_init (تهی)
 {
   long page_size;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_PASSED)
-    return 1;
+  اگر (tramp_globals.status == TRAMP_GLOBALS_PASSED)
+    بازگشت 1;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_FAILED)
-    return 0;
+  اگر (tramp_globals.status == TRAMP_GLOBALS_FAILED)
+    بازگشت 0;
 
-  if (ffi_tramp_arch == NULL)
+  اگر (ffi_tramp_arch == پوچ)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      بازگشت 0;
     }
 
-  tramp_globals.free_tables = NULL;
+  tramp_globals.free_tables = پوچ;
   tramp_globals.nfree_tables = 0;
 
   /*
@@ -425,77 +425,77 @@ ffi_tramp_init (void)
    * whole initialization on every allocation.
    */
   page_size = sysconf (_SC_PAGESIZE);
-  if (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
+  اگر (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      بازگشت 0;
     }
 
-  if (ffi_tramp_init_os ())
+  اگر (ffi_tramp_init_os ())
     {
       tramp_globals.status = TRAMP_GLOBALS_PASSED;
-      return 1;
+      بازگشت 1;
     }
 
   tramp_globals.status = TRAMP_GLOBALS_FAILED;
-  return 0;
+  بازگشت 0;
 }
 
 /* ---------------------- Trampoline Table functions ---------------------- */
 
 /* This code assumes that malloc () is available on all OSes. */
 
-static void tramp_add (struct tramp *tramp);
+ایستا تهی tramp_add (ساختار tramp *tramp);
 
 /*
  * Allocate and initialize a trampoline table.
  */
-static int
-tramp_table_alloc (void)
+ایستا صحیح
+tramp_table_alloc (تهی)
 {
-  struct tramp_table *table;
-  struct tramp *tramp_array, *tramp;
+  ساختار tramp_table *table;
+  ساختار tramp *tramp_array, *tramp;
   size_t size;
-  char *code, *parm;
-  int i;
+  نویسه *code, *parm;
+  صحیح i;
 
   /*
    * If we already have tables with free trampolines, there is no need to
    * allocate a new table.
    */
-  if (tramp_globals.nfree_tables > 0)
-    return 1;
+  اگر (tramp_globals.nfree_tables > 0)
+    بازگشت 1;
 
   /*
    * Allocate a new trampoline table structure.
    */
-  table = malloc (sizeof (*table));
-  if (table == NULL)
-    return 0;
+  table = malloc (اندازه (*table));
+  اگر (table == پوچ)
+    بازگشت 0;
 
   /*
    * Allocate new trampoline structures.
    */
-  tramp_array = malloc (sizeof (*tramp) * tramp_globals.ntramp);
-  if (tramp_array == NULL)
-    goto free_table;
+  tramp_array = malloc (اندازه (*tramp) * tramp_globals.ntramp);
+  اگر (tramp_array == پوچ)
+    برو free_table;
 
   /*
    * Map a code table and a parameter table into the caller's address space.
    */
-  if (!tramp_table_map (table))
+  اگر (!tramp_table_map (table))
     {
       /*
        * Failed to map the code and parameter tables.
        */
-      goto free_tramp_array;
+      برو free_tramp_array;
     }
 
   /*
    * Initialize the trampoline table.
    */
   table->array = tramp_array;
-  table->free = NULL;
+  table->آزاد = پوچ;
   table->nfree = 0;
 
   /*
@@ -505,48 +505,48 @@ tramp_table_alloc (void)
   size = tramp_globals.size;
   code = table->code_table;
   parm = table->parm_table;
-  for (i = 0; i < tramp_globals.ntramp; i++)
+  برای (i = 0; i < tramp_globals.ntramp; i++)
     {
       tramp = &tramp_array[i];
       tramp->table = table;
       tramp->code = code;
-      tramp->parm = (struct tramp_parm *) parm;
+      tramp->parm = (ساختار tramp_parm *) parm;
       tramp_add (tramp);
 
       code += size;
       parm += size;
     }
   /* Success */
-  return 1;
+  بازگشت 1;
 
 /* Failure */
 free_tramp_array:
-  free (tramp_array);
+  آزاد (tramp_array);
 free_table:
-  free (table);
-  return 0;
+  آزاد (table);
+  بازگشت 0;
 }
 
 /*
  * Free a trampoline table.
  */
-static void
-tramp_table_free (struct tramp_table *table)
+ایستا تهی
+tramp_table_free (ساختار tramp_table *table)
 {
   tramp_table_unmap (table);
-  free (table->array);
-  free (table);
+  آزاد (table->array);
+  آزاد (table);
 }
 
 /*
  * Add a new trampoline table to the global table list.
  */
-static void
-tramp_table_add (struct tramp_table *table)
+ایستا تهی
+tramp_table_add (ساختار tramp_table *table)
 {
   table->next = tramp_globals.free_tables;
-  table->prev = NULL;
-  if (tramp_globals.free_tables != NULL)
+  table->prev = پوچ;
+  اگر (tramp_globals.free_tables != پوچ)
     tramp_globals.free_tables->prev = table;
   tramp_globals.free_tables = table;
   tramp_globals.nfree_tables++;
@@ -555,15 +555,15 @@ tramp_table_add (struct tramp_table *table)
 /*
  * Delete a trampoline table from the global table list.
  */
-static void
-tramp_table_del (struct tramp_table *table)
+ایستا تهی
+tramp_table_del (ساختار tramp_table *table)
 {
   tramp_globals.nfree_tables--;
-  if (table->prev != NULL)
+  اگر (table->prev != پوچ)
     table->prev->next = table->next;
-  if (table->next != NULL)
+  اگر (table->next != پوچ)
     table->next->prev = table->prev;
-  if (tramp_globals.free_tables == table)
+  اگر (tramp_globals.free_tables == table)
     tramp_globals.free_tables = table->next;
 }
 
@@ -572,25 +572,25 @@ tramp_table_del (struct tramp_table *table)
 /*
  * Add a trampoline to its trampoline table.
  */
-static void
-tramp_add (struct tramp *tramp)
+ایستا تهی
+tramp_add (ساختار tramp *tramp)
 {
-  struct tramp_table *table = tramp->table;
+  ساختار tramp_table *table = tramp->table;
 
-  tramp->next = table->free;
-  tramp->prev = NULL;
-  if (table->free != NULL)
-    table->free->prev = tramp;
-  table->free = tramp;
+  tramp->next = table->آزاد;
+  tramp->prev = پوچ;
+  اگر (table->آزاد != پوچ)
+    table->آزاد->prev = tramp;
+  table->آزاد = tramp;
   table->nfree++;
 
-  if (table->nfree == 1)
+  اگر (table->nfree == 1)
     tramp_table_add (table);
 
   /*
    * We don't want to keep too many free trampoline tables lying around.
    */
-  if (table->nfree == tramp_globals.ntramp &&
+  اگر (table->nfree == tramp_globals.ntramp &&
     tramp_globals.nfree_tables > 1)
     {
       tramp_table_del (table);
@@ -601,73 +601,73 @@ tramp_add (struct tramp *tramp)
 /*
  * Remove a trampoline from its trampoline table.
  */
-static void
-tramp_del (struct tramp *tramp)
+ایستا تهی
+tramp_del (ساختار tramp *tramp)
 {
-  struct tramp_table *table = tramp->table;
+  ساختار tramp_table *table = tramp->table;
 
   table->nfree--;
-  if (tramp->prev != NULL)
+  اگر (tramp->prev != پوچ)
     tramp->prev->next = tramp->next;
-  if (tramp->next != NULL)
+  اگر (tramp->next != پوچ)
     tramp->next->prev = tramp->prev;
-  if (table->free == tramp)
-    table->free = tramp->next;
+  اگر (table->آزاد == tramp)
+    table->آزاد = tramp->next;
 
-  if (table->nfree == 0)
+  اگر (table->nfree == 0)
     tramp_table_del (table);
 }
 
 /* ------------------------ Trampoline API functions ------------------------ */
 
-int
-ffi_tramp_is_supported(void)
+صحیح
+ffi_tramp_is_supported(تهی)
 {
-  int ret;
+  صحیح ret;
 
   ffi_tramp_lock();
   ret = ffi_tramp_init ();
   ffi_tramp_unlock();
-  return ret;
+  بازگشت ret;
 }
 
 /*
  * Allocate a trampoline and return its opaque address.
  */
-void *
-ffi_tramp_alloc (int flags)
+تهی *
+ffi_tramp_alloc (صحیح flags)
 {
-  struct tramp *tramp;
+  ساختار tramp *tramp;
 
   ffi_tramp_lock();
 
-  if (!ffi_tramp_init () || flags != 0)
+  اگر (!ffi_tramp_init () || flags != 0)
     {
       ffi_tramp_unlock();
-      return NULL;
+      بازگشت پوچ;
     }
 
-  if (!tramp_table_alloc ())
+  اگر (!tramp_table_alloc ())
     {
       ffi_tramp_unlock();
-      return NULL;
+      بازگشت پوچ;
     }
 
-  tramp = tramp_globals.free_tables->free;
+  tramp = tramp_globals.free_tables->آزاد;
   tramp_del (tramp);
 
   ffi_tramp_unlock();
 
-  return tramp;
+  بازگشت tramp;
 }
 
 /*
  * Set the parameters for a trampoline.
  */
-void
-ffi_tramp_set_parms (void *arg, void *target, void *data)
+تهی
+ffi_tramp_set_parms (تهی *arg, تهی *target, تهی *data)
 {
-  struct tramp *tramp = arg;
+  ساختار tramp *tramp = arg;
 
   ffi_tramp_lock();
   tramp->parm->target = target;
@@ -678,26 +678,26 @@ ffi_tramp_set_parms (void *arg, void *target, void *data)
 /*
  * Get the invocation address of a trampoline.
  */
-void *
-ffi_tramp_get_addr (void *arg)
+تهی *
+ffi_tramp_get_addr (تهی *arg)
 {
-  struct tramp *tramp = arg;
-  void *addr;
+  ساختار tramp *tramp = arg;
+  تهی *addr;
 
   ffi_tramp_lock();
   addr = tramp->code;
   ffi_tramp_unlock();
 
-  return addr;
+  بازگشت addr;
 }
 
 /*
  * Free a trampoline.
  */
-void
-ffi_tramp_free (void *arg)
+تهی
+ffi_tramp_free (تهی *arg)
 {
-  struct tramp *tramp = arg;
+  ساختار tramp *tramp = arg;
 
   ffi_tramp_lock();
   tramp_add (tramp);
@@ -706,35 +706,35 @@ ffi_tramp_free (void *arg)
 
 /* ------------------------------------------------------------------------- */
 
-#else /* !FFI_EXEC_STATIC_TRAMP */
+#وگرنه /* !FFI_EXEC_STATIC_TRAMP */
 
-#include <stddef.h>
+#شامل <stddef.h>
 
-int
-ffi_tramp_is_supported(void)
+صحیح
+ffi_tramp_is_supported(تهی)
 {
-  return 0;
+  بازگشت 0;
 }
 
-void *
-ffi_tramp_alloc (int flags)
+تهی *
+ffi_tramp_alloc (صحیح flags)
 {
-  return NULL;
+  بازگشت پوچ;
 }
 
-void
-ffi_tramp_set_parms (void *arg, void *target, void *data)
+تهی
+ffi_tramp_set_parms (تهی *arg, تهی *target, تهی *data)
 {
 }
 
-void *
-ffi_tramp_get_addr (void *arg)
+تهی *
+ffi_tramp_get_addr (تهی *arg)
 {
-  return NULL;
+  بازگشت پوچ;
 }
 
-void
-ffi_tramp_free (void *arg)
+تهی
+ffi_tramp_free (تهی *arg)
 {
 }
 

@@ -35,10 +35,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+تعریفنوع unsigned long          ffi_arg;
+تعریفنوع signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+تعریفنوع شمارش ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -50,7 +50,7 @@ typedef enum ffi_abi {
 #define FFI_ASM_ARGREG_SIZE 16
 #define TRAMPOLINE_SIZE 16
 #define FFI_TRAMPOLINE_SIZE 24
-#else
+#وگرنه
 #define FFI_ASM_ARGREG_SIZE 24
 #define TRAMPOLINE_SIZE 20
 #define FFI_TRAMPOLINE_SIZE 28

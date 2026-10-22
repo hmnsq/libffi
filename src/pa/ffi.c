@@ -28,30 +28,30 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#شامل <stdlib.h>
+#شامل <stdio.h>
 
 #define ROUND_UP(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
 
-#define MIN_STACK_SIZE  64
+#define MIN_پشته_SIZE  64
 #define FIRST_ARG_SLOT  9
 #define DEBUG_LEVEL   0
 
 #define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+  __asm__ فرار ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
 #define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ فرار ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
 #define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
+  __asm__ فرار ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
 #define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ فرار ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) انجامبده { اگر (lvl <= DEBUG_LEVEL) { printf(x); } } وقتی (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+ایستا درونخطی صحیح ffi_struct_type(ffi_type *t)
 {
   size_t sz = t->size;
 
@@ -60,10 +60,10 @@ static inline int ffi_struct_type(ffi_type *t)
      structures differ from the corresponding integer
      types in that they have different alignment requirements.  */
 
-  if (sz <= 8)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
+  اگر (sz <= 8)
+    بازگشت -sz;
+  وگرنه
+    بازگشت FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
 }
 
 /* PA has a downward growing stack, which looks like this:
@@ -124,116 +124,116 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
+تهی ffi_prep_args_pa32(UINT32 *پشته, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
-  char *dest_cpy;
+  ثبات unsigned صحیح i;
+  ثبات ffi_type **p_arg;
+  ثبات تهی **p_argv;
+  unsigned صحیح slot = FIRST_ARG_SLOT;
+  نویسه *dest_cpy;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, پشته,
 	ecif, bytes);
 
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  برای (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      صحیح type = (*p_arg)->type;
 
-      switch (type)
+      انتخاب (type)
 	{
-	case FFI_TYPE_SINT8:
-	  *(SINT32 *)(stack - slot) = *(SINT8 *)(*p_argv);
-	  break;
+	حالت FFI_TYPE_SINT8:
+	  *(SINT32 *)(پشته - slot) = *(SINT8 *)(*p_argv);
+	  بشکن;
 
-	case FFI_TYPE_UINT8:
-	  *(UINT32 *)(stack - slot) = *(UINT8 *)(*p_argv);
-	  break;
+	حالت FFI_TYPE_UINT8:
+	  *(UINT32 *)(پشته - slot) = *(UINT8 *)(*p_argv);
+	  بشکن;
 
-	case FFI_TYPE_SINT16:
-	  *(SINT32 *)(stack - slot) = *(SINT16 *)(*p_argv);
-	  break;
+	حالت FFI_TYPE_SINT16:
+	  *(SINT32 *)(پشته - slot) = *(SINT16 *)(*p_argv);
+	  بشکن;
 
-	case FFI_TYPE_UINT16:
-	  *(UINT32 *)(stack - slot) = *(UINT16 *)(*p_argv);
-	  break;
+	حالت FFI_TYPE_UINT16:
+	  *(UINT32 *)(پشته - slot) = *(UINT16 *)(*p_argv);
+	  بشکن;
 
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
+	حالت FFI_TYPE_UINT32:
+	حالت FFI_TYPE_SINT32:
+	حالت FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT32 %u in slot %u\n", *(UINT32 *)(*p_argv),
 		slot);
-	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
-	  break;
+	  *(UINT32 *)(پشته - slot) = *(UINT32 *)(*p_argv);
+	  بشکن;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	حالت FFI_TYPE_UINT64:
+	حالت FFI_TYPE_SINT64:
 	  /* Align slot for 64-bit type.  */
 	  slot += (slot & 1) ? 1 : 2;
-	  *(UINT64 *)(stack - slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  *(UINT64 *)(پشته - slot) = *(UINT64 *)(*p_argv);
+	  بشکن;
 
-	case FFI_TYPE_FLOAT:
+	حالت FFI_TYPE_FLOAT:
 	  /* First 4 args go in fr4L - fr7L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT32 *)(پشته - slot) = *(UINT32 *)(*p_argv);
+	  انتخاب (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack - slot, fr4); break;
-	    case 1: fldw(stack - slot, fr5); break;
-	    case 2: fldw(stack - slot, fr6); break;
-	    case 3: fldw(stack - slot, fr7); break;
+	    حالت 0: fldw(پشته - slot, fr4); بشکن;
+	    حالت 1: fldw(پشته - slot, fr5); بشکن;
+	    حالت 2: fldw(پشته - slot, fr6); بشکن;
+	    حالت 3: fldw(پشته - slot, fr7); بشکن;
 	    }
-	  break;
+	  بشکن;
 
-	case FFI_TYPE_DOUBLE:
+	حالت FFI_TYPE_DOUBLE:
 	  /* Align slot for 64-bit type.  */
 	  slot += (slot & 1) ? 1 : 2;
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack - slot) = *(UINT64 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(پشته - slot) = *(UINT64 *)(*p_argv);
+	  انتخاب (slot - FIRST_ARG_SLOT)
 	    {
 	      /* First 2 args go in fr5, fr7.  */
-	      case 1: fldd(stack - slot, fr5); break;
-	      case 3: fldd(stack - slot, fr7); break;
+	      حالت 1: fldd(پشته - slot, fr5); بشکن;
+	      حالت 3: fldd(پشته - slot, fr7); بشکن;
 	    }
-	  break;
+	  بشکن;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	حالت FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are passed in the same manner as structures
 	     larger than 8 bytes.  */
-	  *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
+	  *(UINT32 *)(پشته - slot) = (UINT32)(*p_argv);
+	  بشکن;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_STRUCT:
 
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
 
 	  len = (*p_arg)->size;
-	  if (len <= 4)
+	  اگر (len <= 4)
 	    {
-	      dest_cpy = (char *)(stack - slot) + 4 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      dest_cpy = (نویسه *)(پشته - slot) + 4 - len;
+	      memcpy(dest_cpy, (نویسه *)*p_argv, len);
 	    }
-	  else if (len <= 8)
+	  وگرنه اگر (len <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
-	      dest_cpy = (char *)(stack - slot) + 8 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      dest_cpy = (نویسه *)(پشته - slot) + 8 - len;
+	      memcpy(dest_cpy, (نویسه *)*p_argv, len);
 	    }
-	  else
-	    *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
+	  وگرنه
+	    *(UINT32 *)(پشته - slot) = (UINT32)(*p_argv);
+	  بشکن;
 
-	default:
+	پیشفرض:
 	  FFI_ASSERT(0);
 	}
 
@@ -244,47 +244,47 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 
   /* Make sure we didn't mess up and scribble on the stack.  */
   {
-    unsigned int n;
+    unsigned صحیح n;
 
     debug(5, "Stack setup:\n");
-    for (n = 0; n < (bytes + 3) / 4; n++)
+    برای (n = 0; n < (bytes + 3) / 4; n++)
       {
-	if ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned int)(stack - n)); }
-	debug(5, "%08x ", *(stack - n));
+	اگر ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned صحیح)(پشته - n)); }
+	debug(5, "%08x ", *(پشته - n));
       }
     debug(5, "\n");
   }
 
   FFI_ASSERT(slot * 4 <= bytes);
 
-  return;
+  بازگشت;
 }
 
-static void ffi_size_stack_pa32(ffi_cif *cif)
+ایستا تهی ffi_size_پشته_pa32(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  صحیح i;
+  صحیح z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  برای (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
+      صحیح type = (*ptr)->type;
 
-      switch (type)
+      انتخاب (type)
 	{
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	حالت FFI_TYPE_DOUBLE:
+	حالت FFI_TYPE_UINT64:
+	حالت FFI_TYPE_SINT64:
 	  z += 2 + (z & 1); /* must start on even regs, so we may waste one */
-	  break;
+	  بشکن;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	حالت FFI_TYPE_LONGDOUBLE:
 	  z += 1; /* passed by pointer, like a large struct */
-	  break;
+	  بشکن;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_STRUCT:
 	  /* This must mirror the slot accounting in ffi_prep_args_pa32:
 	     structs of 1-4 bytes occupy one slot, structs of 5-8 bytes are
 	     passed inline in two even-aligned slots (exactly like a 64-bit
@@ -293,24 +293,24 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 	     so (z & 1) tracks the same alignment the marshaller applies.  */
 	  {
 	    size_t len = (*ptr)->size;
-	    if (len <= 4 || len > 8)
+	    اگر (len <= 4 || len > 8)
 	      z += 1;
-	    else
+	    وگرنه
 	      z += 2 + (z & 1);
 	  }
-	  break;
+	  بشکن;
 
-	default: /* <= 32-bit values */
+	پیشفرض: /* <= 32-bit values */
 	  z++;
 	}
     }
 
   /* We can fit up to 6 args in the default 64-byte stack frame,
      if we need more, we need more stack.  */
-  if (z <= 6)
-    cif->bytes = MIN_STACK_SIZE; /* min stack size */
-  else
-    cif->bytes = 64 + ROUND_UP((z - 6) * sizeof(UINT32), MIN_STACK_SIZE);
+  اگر (z <= 6)
+    cif->bytes = MIN_پشته_SIZE; /* min stack size */
+  وگرنه
+    cif->bytes = 64 + ROUND_UP((z - 6) * اندازه(UINT32), MIN_پشته_SIZE);
 
   debug(3, "Calculated stack size is %u bytes\n", cif->bytes);
 }
@@ -319,83 +319,83 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
+    حالت FFI_TYPE_VOID:
+    حالت FFI_TYPE_FLOAT:
+    حالت FFI_TYPE_DOUBLE:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      بشکن;
 
 #ifdef PA_HPUX
-    case FFI_TYPE_LONGDOUBLE:
+    حالت FFI_TYPE_LONGDOUBLE:
       /* Long doubles are treated like a structure.  */
       cif->flags = FFI_TYPE_STRUCT;
-      break;
+      بشکن;
 #endif
 
-    case FFI_TYPE_STRUCT:
+    حالت FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 4 bytes, the result is given back
 	 in one register. If the size is smaller or equal 8 bytes than we
 	 return the result in two registers. But if the size is bigger than
 	 8 bytes, we work with pointers.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      بشکن;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
+    حالت FFI_TYPE_SINT64:
       cif->flags = FFI_TYPE_UINT64;
-      break;
+      بشکن;
 
-    default:
+    پیشفرض:
       cif->flags = FFI_TYPE_INT;
-      break;
+      بشکن;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
-  switch (cif->abi)
+  انتخاب (cif->abi)
     {
-    case FFI_PA32:
-      ffi_size_stack_pa32(cif);
-      break;
+    حالت FFI_PA32:
+      ffi_size_پشته_pa32(cif);
+      بشکن;
 
-    default:
+    پیشفرض:
       FFI_ASSERT(0);
-      break;
+      بشکن;
     }
 
-  return FFI_OK;
+  بازگشت FFI_OK;
 }
 
-extern void ffi_call_pa32(void (*)(UINT32 *, extended_cif *, unsigned),
+بیرونی تهی ffi_call_pa32(تهی (*)(UINT32 *, extended_cif *, unsigned),
 			  extended_cif *, unsigned, unsigned, unsigned *,
-			  void (*fn)(void));
+			  تهی (*fn)(تهی));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+تهی ffi_call(ffi_cif *cif, تهی (*fn)(تهی), تهی *rvalue, تهی **avalue)
 {
   extended_cif ecif;
   size_t i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  تهی **avalue_copy = پوچ;
 
   ecif.cif = cif;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  برای (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 8)
+      صحیح size = at->size;
+      اگر (at->type == FFI_TYPE_STRUCT && size > 8)
 	{
-	  char *argcopy = alloca (size);
-	  if (avalue_copy == NULL)
+	  نویسه *argcopy = alloca (size);
+	  اگر (avalue_copy == پوچ)
 	    {
-	      avalue_copy = alloca (nargs * sizeof (void *));
-	      memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+	      avalue_copy = alloca (nargs * اندازه (تهی *));
+	      memcpy (avalue_copy, avalue, nargs * اندازه (تهی *));
 	      avalue = avalue_copy;
 	    }
 	  memcpy (argcopy, avalue[i], size);
@@ -407,88 +407,88 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  اگر (rvalue == پوچ
 #ifdef PA_HPUX
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_LONGDOUBLE))
-#else
+#وگرنه
       && cif->rtype->type == FFI_TYPE_STRUCT)
 #endif
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  وگرنه
     ecif.rvalue = rvalue;
 
 
-  switch (cif->abi)
+  انتخاب (cif->abi)
     {
-    case FFI_PA32:
-      debug(3, "Calling ffi_call_pa32: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
+    حالت FFI_PA32:
+      debug(3, "Calling ffi_call_pa32: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (تهی *)fn);
       ffi_call_pa32(ffi_prep_args_pa32, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      بشکن;
 
-    default:
+    پیشفرض:
       FFI_ASSERT(0);
-      break;
+      بشکن;
     }
 }
 
-#if FFI_CLOSURES
+#اگر FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
+ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *پشته)
 {
   ffi_cif *cif;
-  void **avalue;
-  void *rvalue;
+  تهی **avalue;
+  تهی *rvalue;
   /* Functions can return up to 64-bits in registers.  Return address
      must be double word aligned.  */
-  union { double rd; UINT32 ret[2]; } u;
+  اجتماع { دوگانه rd; UINT32 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT32 r28 __asm__("r28");
+  نویسه *tmp;
+  صحیح i, avn;
+  unsigned صحیح slot = FIRST_ARG_SLOT;
+  ثبات UINT32 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
-    rvalue = (void *)r28;
-  else
+  اگر (cif->flags == FFI_TYPE_STRUCT)
+    rvalue = (تهی *)r28;
+  وگرنه
     rvalue = &u;
 
-  avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
+  avalue = (تهی **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  برای (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      صحیح type = (*p_arg)->type;
 
-      switch (type)
+      انتخاب (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_POINTER:
-	  avalue[i] = (char *)(stack - slot) + sizeof(UINT32) - (*p_arg)->size;
-	  break;
+	حالت FFI_TYPE_SINT8:
+	حالت FFI_TYPE_UINT8:
+	حالت FFI_TYPE_SINT16:
+	حالت FFI_TYPE_UINT16:
+	حالت FFI_TYPE_SINT32:
+	حالت FFI_TYPE_UINT32:
+	حالت FFI_TYPE_POINTER:
+	  avalue[i] = (نویسه *)(پشته - slot) + اندازه(UINT32) - (*p_arg)->size;
+	  بشکن;
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	حالت FFI_TYPE_SINT64:
+	حالت FFI_TYPE_UINT64:
 	  slot += (slot & 1) ? 1 : 2;
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  avalue[i] = (تهی *)(پشته - slot);
+	  بشکن;
 
-	case FFI_TYPE_FLOAT:
+	حالت FFI_TYPE_FLOAT:
 #ifdef PA_LINUX
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
@@ -496,57 +496,57 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
 	     registers.  So, we need to replace what was previously
 	     stored in the current slot with the value in the
 	     corresponding floating point register.  */
-	  switch (slot - FIRST_ARG_SLOT)
+	  انتخاب (slot - FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack - slot)); break;
-	    case 1: fstw(fr5, (void *)(stack - slot)); break;
-	    case 2: fstw(fr6, (void *)(stack - slot)); break;
-	    case 3: fstw(fr7, (void *)(stack - slot)); break;
+	    حالت 0: fstw(fr4, (تهی *)(پشته - slot)); بشکن;
+	    حالت 1: fstw(fr5, (تهی *)(پشته - slot)); بشکن;
+	    حالت 2: fstw(fr6, (تهی *)(پشته - slot)); بشکن;
+	    حالت 3: fstw(fr7, (تهی *)(پشته - slot)); بشکن;
 	    }
 #endif
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  avalue[i] = (تهی *)(پشته - slot);
+	  بشکن;
 
-	case FFI_TYPE_DOUBLE:
+	حالت FFI_TYPE_DOUBLE:
 	  slot += (slot & 1) ? 1 : 2;
 #ifdef PA_LINUX
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
-	  switch (slot - FIRST_ARG_SLOT)
+	  انتخاب (slot - FIRST_ARG_SLOT)
 	    {
-	    case 1: fstd(fr5, (void *)(stack - slot)); break;
-	    case 3: fstd(fr7, (void *)(stack - slot)); break;
+	    حالت 1: fstd(fr5, (تهی *)(پشته - slot)); بشکن;
+	    حالت 3: fstd(fr7, (تهی *)(پشته - slot)); بشکن;
 	    }
 #endif
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  avalue[i] = (تهی *)(پشته - slot);
+	  بشکن;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	حالت FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
-	  avalue[i] = (void *) *(stack - slot);
-	  break;
+	  avalue[i] = (تهی *) *(پشته - slot);
+	  بشکن;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_STRUCT:
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
-	  if((*p_arg)->size <= 4)
+	  اگر((*p_arg)->size <= 4)
 	    {
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT32) -
+	      avalue[i] = (تهی *)(پشته - slot) + اندازه(UINT32) -
 		(*p_arg)->size;
 	    }
-	  else if ((*p_arg)->size <= 8)
+	  وگرنه اگر ((*p_arg)->size <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT64) -
+	      avalue[i] = (تهی *)(پشته - slot) + اندازه(UINT64) -
 		(*p_arg)->size;
 	    }
-	  else
-	    avalue[i] = (void *) *(stack - slot);
-	  break;
+	  وگرنه
+	    avalue[i] = (تهی *) *(پشته - slot);
+	  بشکن;
 
-	default:
+	پیشفرض:
 	  FFI_ASSERT(0);
 	}
 
@@ -561,128 +561,128 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
 	u.ret[1]);
 
   /* Store the result using the lower 2 bytes of the flags.  */
-  switch (cif->flags)
+  انتخاب (cif->flags)
     {
-    case FFI_TYPE_UINT8:
-      *(stack - FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
-      *(stack - FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
-      *(stack - FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
-      *(stack - FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      *(stack - FIRST_ARG_SLOT - 1) = u.ret[1];
-      break;
+    حالت FFI_TYPE_UINT8:
+      *(پشته - FIRST_ARG_SLOT) = (UINT8)u.ret[0];
+      بشکن;
+    حالت FFI_TYPE_SINT8:
+      *(پشته - FIRST_ARG_SLOT) = (SINT8)u.ret[0];
+      بشکن;
+    حالت FFI_TYPE_UINT16:
+      *(پشته - FIRST_ARG_SLOT) = (UINT16)u.ret[0];
+      بشکن;
+    حالت FFI_TYPE_SINT16:
+      *(پشته - FIRST_ARG_SLOT) = (SINT16)u.ret[0];
+      بشکن;
+    حالت FFI_TYPE_INT:
+    حالت FFI_TYPE_SINT32:
+    حالت FFI_TYPE_UINT32:
+      *(پشته - FIRST_ARG_SLOT) = u.ret[0];
+      بشکن;
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
+      *(پشته - FIRST_ARG_SLOT) = u.ret[0];
+      *(پشته - FIRST_ARG_SLOT - 1) = u.ret[1];
+      بشکن;
 
-    case FFI_TYPE_DOUBLE:
+    حالت FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      بشکن;
 
-    case FFI_TYPE_FLOAT:
+    حالت FFI_TYPE_FLOAT:
       fldw(rvalue, fr4);
-      break;
+      بشکن;
 
-    case FFI_TYPE_STRUCT:
+    حالت FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      بشکن;
 
-    case FFI_TYPE_SMALL_STRUCT1:
-    case FFI_TYPE_SMALL_STRUCT2:
-    case FFI_TYPE_SMALL_STRUCT3:
-    case FFI_TYPE_SMALL_STRUCT4:
-      tmp = (void*)(stack -  FIRST_ARG_SLOT);
+    حالت FFI_TYPE_SMALL_STRUCT1:
+    حالت FFI_TYPE_SMALL_STRUCT2:
+    حالت FFI_TYPE_SMALL_STRUCT3:
+    حالت FFI_TYPE_SMALL_STRUCT4:
+      tmp = (تهی*)(پشته -  FIRST_ARG_SLOT);
       tmp += 4 - cif->rtype->size;
-      memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+      memcpy((تهی*)tmp, &u, cif->rtype->size);
+      بشکن;
 
-    case FFI_TYPE_SMALL_STRUCT5:
-    case FFI_TYPE_SMALL_STRUCT6:
-    case FFI_TYPE_SMALL_STRUCT7:
-    case FFI_TYPE_SMALL_STRUCT8:
+    حالت FFI_TYPE_SMALL_STRUCT5:
+    حالت FFI_TYPE_SMALL_STRUCT6:
+    حالت FFI_TYPE_SMALL_STRUCT7:
+    حالت FFI_TYPE_SMALL_STRUCT8:
       {
-	unsigned int ret2[2];
-	int off;
+	unsigned صحیح ret2[2];
+	صحیح off;
 
 	/* Right justify ret[0] and ret[1] */
-	switch (cif->flags)
+	انتخاب (cif->flags)
 	  {
-	    case FFI_TYPE_SMALL_STRUCT5: off = 3; break;
-	    case FFI_TYPE_SMALL_STRUCT6: off = 2; break;
-	    case FFI_TYPE_SMALL_STRUCT7: off = 1; break;
-	    default: off = 0; break;
+	    حالت FFI_TYPE_SMALL_STRUCT5: off = 3; بشکن;
+	    حالت FFI_TYPE_SMALL_STRUCT6: off = 2; بشکن;
+	    حالت FFI_TYPE_SMALL_STRUCT7: off = 1; بشکن;
+	    پیشفرض: off = 0; بشکن;
 	  }
 
-	memset (ret2, 0, sizeof (ret2));
-	memcpy ((char *)ret2 + off, &u, 8 - off);
+	memset (ret2, 0, اندازه (ret2));
+	memcpy ((نویسه *)ret2 + off, &u, 8 - off);
 
-	*(stack - FIRST_ARG_SLOT) = ret2[0];
-	*(stack - FIRST_ARG_SLOT - 1) = ret2[1];
+	*(پشته - FIRST_ARG_SLOT) = ret2[0];
+	*(پشته - FIRST_ARG_SLOT - 1) = ret2[1];
       }
-      break;
+      بشکن;
 
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_VOID:
-      break;
+    حالت FFI_TYPE_POINTER:
+    حالت FFI_TYPE_VOID:
+      بشکن;
 
-    default:
+    پیشفرض:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      بشکن;
     }
-  return FFI_OK;
+  بازگشت FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
    cif specifies the argument and result types for fun.
    The cif must already be prep'ed.  */
 
-extern void ffi_closure_pa32(void);
+بیرونی تهی ffi_closure_pa32(تهی);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      تهی (*fun)(ffi_cif*,تهی*,تهی**,تهی*),
+		      تهی *user_data,
+		      تهی *codeloc)
 {
   /* The layout of a function descriptor.  A function pointer with the PLABEL
      bit set points to a function descriptor.  */
-  struct pa32_fd
+  ساختار pa32_fd
   {
     UINT32 code_pointer;
     UINT32 gp;
   };
 
-  struct ffi_pa32_trampoline_struct
+  ساختار ffi_pa32_trampoline_struct
   {
      UINT32 code_pointer;        /* Pointer to ffi_closure_unix.  */
      UINT32 fake_gp;             /* Pointer to closure, installed as gp.  */
      UINT32 real_gp;             /* Real gp value.  */
   };
 
-  struct ffi_pa32_trampoline_struct *tramp;
-  struct pa32_fd *fd;
+  ساختار ffi_pa32_trampoline_struct *tramp;
+  ساختار pa32_fd *fd;
 
-  if (cif->abi != FFI_PA32)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_PA32)
+    بازگشت FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa32.  */
-  fd = (struct pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
+  fd = (ساختار pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa32_trampoline_struct *)closure->tramp;
+  tramp = (ساختار ffi_pa32_trampoline_struct *)closure->tramp;
   tramp->code_pointer = fd->code_pointer;
   tramp->fake_gp = (UINT32)codeloc & ~3;
   tramp->real_gp = fd->gp;
@@ -691,6 +691,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  بازگشت FFI_OK;
 }
 #endif

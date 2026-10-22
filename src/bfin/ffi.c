@@ -24,11 +24,11 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#شامل <stdlib.h>
+#شامل <stdio.h>
 
 /* Maximum number of GPRs available for argument passing.  */
 #define MAX_GPRARGS 3
@@ -45,14 +45,14 @@
 /*====================================================================*/
 /*                          PROTOTYPE          *
  /*====================================================================*/
-void ffi_prep_args(unsigned char *, extended_cif *);
+تهی ffi_prep_args(unsigned نویسه *, extended_cif *);
 
 /*====================================================================*/
 /*                          Externals                                 */
 /*                          (Assembly)                                */
 /*====================================================================*/
 
-extern void ffi_call_SYSV(unsigned, extended_cif *, void(*)(unsigned char *, extended_cif *), unsigned, void *, void(*fn)(void));
+بیرونی تهی ffi_call_SYSV(unsigned, extended_cif *, تهی(*)(unsigned نویسه *, extended_cif *), unsigned, تهی *, تهی(*fn)(تهی));
 
 /*====================================================================*/
 /*                          Implementation                            */
@@ -69,45 +69,45 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
    /* --------------------------------------*
     *   Return handling                *
     * --------------------------------------*/
-   switch (cif->rtype->type) {
-      case FFI_TYPE_VOID:
+   انتخاب (cif->rtype->type) {
+      حالت FFI_TYPE_VOID:
          cif->flags = FFIBFIN_RET_VOID;
-         break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+         بشکن;
+      حالت FFI_TYPE_UINT16:
+      حالت FFI_TYPE_SINT16:
          cif->flags = FFIBFIN_RET_HALFWORD;
-         break;
-      case FFI_TYPE_UINT8:
+         بشکن;
+      حالت FFI_TYPE_UINT8:
          cif->flags = FFIBFIN_RET_BYTE;
-         break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_SINT8:
+         بشکن;
+      حالت FFI_TYPE_INT:
+      حالت FFI_TYPE_UINT32:
+      حالت FFI_TYPE_SINT32:
+      حالت FFI_TYPE_FLOAT:
+      حالت FFI_TYPE_POINTER:
+      حالت FFI_TYPE_SINT8:
          cif->flags = FFIBFIN_RET_INT32;
-         break;
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_DOUBLE:
+         بشکن;
+      حالت FFI_TYPE_SINT64:
+      حالت FFI_TYPE_UINT64:
+      حالت FFI_TYPE_DOUBLE:
           cif->flags = FFIBFIN_RET_INT64;
-          break;
-      case FFI_TYPE_STRUCT:
-         if (cif->rtype->size <= 4){
+          بشکن;
+      حالت FFI_TYPE_STRUCT:
+         اگر (cif->rtype->size <= 4){
         	 cif->flags = FFIBFIN_RET_INT32;
-         }else if (cif->rtype->size == 8){
+         }وگرنه اگر (cif->rtype->size == 8){
         	 cif->flags = FFIBFIN_RET_INT64;
-         }else{
+         }وگرنه{
         	 //it will return via a hidden pointer in P0
         	 cif->flags = FFIBFIN_RET_VOID;
          }
-         break;
-      default:
+         بشکن;
+      پیشفرض:
          FFI_ASSERT(0);
-         break;
+         بشکن;
    }
-   return FFI_OK;
+   بازگشت FFI_OK;
 }
 
 /*
@@ -117,21 +117,21 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
  * rvalue = the return value
  * avalue = the arguments
  */
-void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
+تهی ffi_call(ffi_cif *cif, تهی(*fn)(تهی), تهی *rvalue, تهی **avalue)
 {
-   int ret_type = cif->flags;
+   صحیح ret_type = cif->flags;
    extended_cif ecif;
    ecif.cif = cif;
    ecif.avalue = avalue;
    ecif.rvalue = rvalue;
 
-   switch (cif->abi) {
-      case FFI_SYSV:
+   انتخاب (cif->abi) {
+      حالت FFI_SYSV:
          ffi_call_SYSV(cif->bytes, &ecif, ffi_prep_args, ret_type, ecif.rvalue, fn);
-         break;
-      default:
+         بشکن;
+      پیشفرض:
          FFI_ASSERT(0);
-         break;
+         بشکن;
    }
 }
 
@@ -141,50 +141,50 @@ void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 *  to call the function (ffi_prep_args is called by the assembly routine in file
 *  sysv.S, which also calls the actual function)
 */
-void ffi_prep_args(unsigned char *stack, extended_cif *ecif)
+تهی ffi_prep_args(unsigned نویسه *پشته, extended_cif *ecif)
 {
-   register unsigned int i = 0;
-   void **p_argv;
-   unsigned char *argp;
+   ثبات unsigned صحیح i = 0;
+   تهی **p_argv;
+   unsigned نویسه *argp;
    ffi_type **p_arg;
-   argp = stack;
+   argp = پشته;
    p_argv = ecif->avalue;
-   for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+   برای (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
         (i != 0);
         i--, p_arg++) {
       size_t z;
       z = (*p_arg)->size;
-      if (z < sizeof(int)) {
-         z = sizeof(int);
-         switch ((*p_arg)->type) {
-            case FFI_TYPE_SINT8: {
-                  signed char v = *(SINT8 *)(* p_argv);
-                  signed int t = v;
-                  *(signed int *) argp = t;
+      اگر (z < اندازه(صحیح)) {
+         z = اندازه(صحیح);
+         انتخاب ((*p_arg)->type) {
+            حالت FFI_TYPE_SINT8: {
+                  signed نویسه v = *(SINT8 *)(* p_argv);
+                  signed صحیح t = v;
+                  *(signed صحیح *) argp = t;
                }
-               break;
-            case FFI_TYPE_UINT8: {
-                  unsigned char v = *(UINT8 *)(* p_argv);
-                  unsigned int t = v;
-                  *(unsigned int *) argp = t;
+               بشکن;
+            حالت FFI_TYPE_UINT8: {
+                  unsigned نویسه v = *(UINT8 *)(* p_argv);
+                  unsigned صحیح t = v;
+                  *(unsigned صحیح *) argp = t;
                }
-               break;
-            case FFI_TYPE_SINT16:
-               *(signed int *) argp = (signed int) * (SINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_UINT16:
-               *(unsigned int *) argp = (unsigned int) * (UINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_STRUCT:
+               بشکن;
+            حالت FFI_TYPE_SINT16:
+               *(signed صحیح *) argp = (signed صحیح) * (SINT16 *)(* p_argv);
+               بشکن;
+            حالت FFI_TYPE_UINT16:
+               *(unsigned صحیح *) argp = (unsigned صحیح) * (UINT16 *)(* p_argv);
+               بشکن;
+            حالت FFI_TYPE_STRUCT:
                memcpy(argp, *p_argv, (*p_arg)->size);
-               break;
-            default:
+               بشکن;
+            پیشفرض:
                FFI_ASSERT(0);
-               break;
+               بشکن;
          }
-      } else if (z == sizeof(int)) {
-         *(unsigned int *) argp = (unsigned int) * (UINT32 *)(* p_argv);
-      } else {
+      } وگرنه اگر (z == اندازه(صحیح)) {
+         *(unsigned صحیح *) argp = (unsigned صحیح) * (UINT32 *)(* p_argv);
+      } وگرنه {
          memcpy(argp, *p_argv, z);
       }
       p_argv++;
