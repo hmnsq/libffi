@@ -28,32 +28,32 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include <tramp.h>
-#include <stdlib.h>
+#ضمن "ffi.h"
+#ضمن <tramp.h>
+#ضمن <stdlib.h>
 
 #ifndef POWERPC64
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
+#ضمن "ffi_common.h"
+#ضمن "ffi_powerpc.h"
 
 
 /* About the SYSV ABI.  */
 #define ASM_NEEDS_REGISTERS 6
-#define NUM_GPR_ARG_REGISTERS 8
-#define NUM_FPR_ARG_REGISTERS 8
+#define ژمارە_GPR_ARG_REGISTERS 8
+#define ژمارە_FPR_ARG_REGISTERS 8
 
 
-#if HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#إذا HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 /* Adjust size of ffi_type_longdouble.  */
-void FFI_HIDDEN
+فراغ FFI_HIDDEN
 ffi_prep_types_sysv (ffi_abi abi)
 {
-  if ((abi & (FFI_SYSV | FFI_SYSV_LONG_DOUBLE_128)) == FFI_SYSV)
+  إذا ((abi & (FFI_SYSV | FFI_SYSV_LONG_DOUBLE_128)) == FFI_SYSV)
     {
       ffi_type_longdouble.size = 8;
       ffi_type_longdouble.alignment = 8;
     }
-  else
+  وإلا
     {
       ffi_type_longdouble.size = 16;
       ffi_type_longdouble.alignment = 16;
@@ -62,40 +62,40 @@ ffi_prep_types_sysv (ffi_abi abi)
 #endif
 
 /* Transform long double, double and float to other types as per abi.  */
-static int
-translate_float (int abi, int type)
+ساكن صحيح
+translate_float (صحيح abi, صحيح type)
 {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-  if (type == FFI_TYPE_LONGDOUBLE
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+  إذا (type == FFI_TYPE_LONGDOUBLE
       && (abi & FFI_SYSV_LONG_DOUBLE_128) == 0)
     type = FFI_TYPE_DOUBLE;
 #endif
-  if ((abi & FFI_SYSV_SOFT_FLOAT) != 0)
+  إذا ((abi & FFI_SYSV_SOFT_FLOAT) != 0)
     {
-      if (type == FFI_TYPE_FLOAT)
+      إذا (type == FFI_TYPE_FLOAT)
 	type = FFI_TYPE_UINT32;
-      else if (type == FFI_TYPE_DOUBLE)
+      وإلا إذا (type == FFI_TYPE_DOUBLE)
 	type = FFI_TYPE_UINT64;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      else if (type == FFI_TYPE_LONGDOUBLE)
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      وإلا إذا (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_UINT128;
     }
-  else if ((abi & FFI_SYSV_IBM_LONG_DOUBLE) == 0)
+  وإلا إذا ((abi & FFI_SYSV_IBM_LONG_DOUBLE) == 0)
     {
-      if (type == FFI_TYPE_LONGDOUBLE)
+      إذا (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_STRUCT;
 #endif
     }
-  return type;
+  أرجع type;
 }
 
 /* Perform machine dependent cif processing */
-static ffi_status
+ساكن ffi_status
 ffi_prep_cif_sysv_core (ffi_cif *cif)
 {
   ffi_type **ptr;
   unsigned bytes;
-  unsigned i, fpr_count = 0, gpr_count = 0, stack_count = 0;
+  unsigned i, fpr_ژماردن = 0, gpr_ژماردن = 0, کەڵەکە_ژماردن = 0;
   unsigned flags = cif->flags;
   unsigned struct_copy_size = 0;
   unsigned type = cif->rtype->type;
@@ -105,10 +105,10 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
      for us.  Redo the calculation.  */
 
   /* Space for the frame pointer, callee's LR, and the asm's temp regs.  */
-  bytes = (2 + ASM_NEEDS_REGISTERS) * sizeof (int);
+  bytes = (2 + ASM_NEEDS_REGISTERS) * حجم (صحيح);
 
   /* Space for the GPR registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS * sizeof (int);
+  bytes += ژمارە_GPR_ARG_REGISTERS * حجم (صحيح);
 
   /* Return value handling.  The rules for SYSV are as follows:
      - 32-bit (or less) integer values are returned in gpr3;
@@ -123,50 +123,50 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 
   type = translate_float (cif->abi, type);
 
-  switch (type)
+  بدل (type)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    حالة FFI_TYPE_LONGDOUBLE:
       flags |= FLAG_RETURNS_128BITS;
       /* Fall through.  */
 #endif
-    case FFI_TYPE_DOUBLE:
+    حالة FFI_TYPE_DOUBLE:
       flags |= FLAG_RETURNS_64BITS;
       /* Fall through.  */
-    case FFI_TYPE_FLOAT:
+    حالة FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
 #ifdef __NO_FPRS__
-      return FFI_BAD_ABI;
+      أرجع FFI_BAD_ABI;
 #endif
-      break;
+      اكسر;
 
-    case FFI_TYPE_UINT128:
+    حالة FFI_TYPE_UINT128:
       flags |= FLAG_RETURNS_128BITS;
       /* Fall through.  */
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
       flags |= FLAG_RETURNS_64BITS;
-      break;
+      اكسر;
 
-    case FFI_TYPE_STRUCT:
+    حالة FFI_TYPE_STRUCT:
       /* The final SYSV ABI says that structures smaller or equal 8 bytes
 	 are returned in r3/r4.  A draft ABI used by linux instead
 	 returns them in memory.  */
-      if ((cif->abi & FFI_SYSV_STRUCT_RET) != 0 && size <= 8)
+      إذا ((cif->abi & FFI_SYSV_STRUCT_RET) != 0 && size <= 8)
 	{
 	  flags |= FLAG_RETURNS_SMST;
-	  break;
+	  اكسر;
 	}
-      gpr_count++;
+      gpr_ژماردن++;
       flags |= FLAG_RETVAL_REFERENCE;
       /* Fall through.  */
-    case FFI_TYPE_VOID:
+    حالة FFI_TYPE_VOID:
       flags |= FLAG_RETURNS_NOTHING;
-      break;
+      اكسر;
 
-    default:
+    افتراضي:
       /* Returns 32-bit integer, or similar.  Nothing to do here.  */
-      break;
+      اكسر;
     }
 
   /* The first NUM_GPR_ARG_REGISTERS words of integer arguments, and the
@@ -174,70 +174,70 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
      goes on the stack.  Structures and long doubles (if not equivalent
      to double) are passed as a pointer to a copy of the structure.
      Stuff on the stack needs to keep proper alignment.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  لكل (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
       unsigned short typenum = (*ptr)->type;
 
       typenum = translate_float (cif->abi, typenum);
 
-      switch (typenum)
+      بدل (typenum)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS - 1)
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	حالة FFI_TYPE_LONGDOUBLE:
+	  إذا (fpr_ژماردن >= ژمارە_FPR_ARG_REGISTERS - 1)
 	    {
-	      fpr_count = NUM_FPR_ARG_REGISTERS;
+	      fpr_ژماردن = ژمارە_FPR_ARG_REGISTERS;
 	      /* 8-byte align long doubles.  */
-	      stack_count += stack_count & 1;
-	      stack_count += 4;
+	      کەڵەکە_ژماردن += کەڵەکە_ژماردن & 1;
+	      کەڵەکە_ژماردن += 4;
 	    }
-	  else
-	    fpr_count += 2;
+	  وإلا
+	    fpr_ژماردن += 2;
 #ifdef __NO_FPRS__
-	  return FFI_BAD_ABI;
+	  أرجع FFI_BAD_ABI;
 #endif
-	  break;
+	  اكسر;
 #endif
 
-	case FFI_TYPE_DOUBLE:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS)
+	حالة FFI_TYPE_DOUBLE:
+	  إذا (fpr_ژماردن >= ژمارە_FPR_ARG_REGISTERS)
 	    {
 	      /* 8-byte align doubles.  */
-	      stack_count += stack_count & 1;
-	      stack_count += 2;
+	      کەڵەکە_ژماردن += کەڵەکە_ژماردن & 1;
+	      کەڵەکە_ژماردن += 2;
 	    }
-	  else
-	    fpr_count += 1;
+	  وإلا
+	    fpr_ژماردن += 1;
 #ifdef __NO_FPRS__
-	  return FFI_BAD_ABI;
+	  أرجع FFI_BAD_ABI;
 #endif
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_FLOAT:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS)
+	حالة FFI_TYPE_FLOAT:
+	  إذا (fpr_ژماردن >= ژمارە_FPR_ARG_REGISTERS)
 	    /* Yes, we don't follow the ABI, but neither does gcc.  */
-	    stack_count += 1;
-	  else
-	    fpr_count += 1;
+	    کەڵەکە_ژماردن += 1;
+	  وإلا
+	    fpr_ژماردن += 1;
 #ifdef __NO_FPRS__
-	  return FFI_BAD_ABI;
+	  أرجع FFI_BAD_ABI;
 #endif
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_UINT128:
+	حالة FFI_TYPE_UINT128:
 	  /* A long double in FFI_LINUX_SOFT_FLOAT can use only a set
 	     of four consecutive gprs. If we do not have enough, we
 	     have to adjust the gpr_count value.  */
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS - 3)
-	    gpr_count = NUM_GPR_ARG_REGISTERS;
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
-	    stack_count += 4;
-	  else
-	    gpr_count += 4;
-	  break;
+	  إذا (gpr_ژماردن >= ژمارە_GPR_ARG_REGISTERS - 3)
+	    gpr_ژماردن = ژمارە_GPR_ARG_REGISTERS;
+	  إذا (gpr_ژماردن >= ژمارە_GPR_ARG_REGISTERS)
+	    کەڵەکە_ژماردن += 4;
+	  وإلا
+	    gpr_ژماردن += 4;
+	  اكسر;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_SINT64:
 	  /* 'long long' arguments are passed as two words, but
 	     either both words must fit in registers or both go
 	     on the stack.  If they go on the stack, they must
@@ -246,17 +246,17 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	     Also, only certain register pairs can be used for
 	     passing long long int -- specifically (r3,r4), (r5,r6),
 	     (r7,r8), (r9,r10).  */
-	  gpr_count += gpr_count & 1;
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
+	  gpr_ژماردن += gpr_ژماردن & 1;
+	  إذا (gpr_ژماردن >= ژمارە_GPR_ARG_REGISTERS)
 	    {
-	      stack_count += stack_count & 1;
-	      stack_count += 2;
+	      کەڵەکە_ژماردن += کەڵەکە_ژماردن & 1;
+	      کەڵەکە_ژماردن += 2;
 	    }
-	  else
-	    gpr_count += 2;
-	  break;
+	  وإلا
+	    gpr_ژماردن += 2;
+	  اكسر;
 
-	case FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_STRUCT:
 	  /* We must allocate space for a copy of these to enforce
 	     pass-by-value.  Pad the space up to a multiple of 16
 	     bytes (the maximum alignment required for anything under
@@ -264,40 +264,40 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	  struct_copy_size += ((*ptr)->size + 15) & ~0xF;
 	  /* Fall through (allocate space for the pointer).  */
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
+	حالة FFI_TYPE_POINTER:
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT16:
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT8:
+	حالة FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 4-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
-	    stack_count += 1;
-	  else
-	    gpr_count += 1;
-	  break;
+	  إذا (gpr_ژماردن >= ژمارە_GPR_ARG_REGISTERS)
+	    کەڵەکە_ژماردن += 1;
+	  وإلا
+	    gpr_ژماردن += 1;
+	  اكسر;
 
-	default:
+	افتراضي:
 	  FFI_ASSERT (0);
 	}
     }
 
-  if (fpr_count != 0)
+  إذا (fpr_ژماردن != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (gpr_count > 4)
+  إذا (gpr_ژماردن > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
-  if (struct_copy_size != 0)
+  إذا (struct_copy_size != 0)
     flags |= FLAG_ARG_NEEDS_COPY;
 
   /* Space for the FPR registers, if needed.  */
-  if (fpr_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS * sizeof (double);
+  إذا (fpr_ژماردن != 0)
+    bytes += ژمارە_FPR_ARG_REGISTERS * حجم (مزدوج);
 
   /* Stack space.  */
-  bytes += stack_count * sizeof (int);
+  bytes += کەڵەکە_ژماردن * حجم (صحيح);
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
   bytes = (bytes + 15) & ~0xF;
@@ -308,41 +308,41 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
   cif->flags = flags;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_sysv (ffi_cif *cif)
 {
-  if ((cif->abi & FFI_SYSV) == 0)
+  إذا ((cif->abi & FFI_SYSV) == 0)
     {
       /* This call is from old code.  Translate to new ABI values.  */
       cif->flags |= FLAG_COMPAT;
-      switch (cif->abi)
+      بدل (cif->abi)
 	{
-	default:
-	  return FFI_BAD_ABI;
+	افتراضي:
+	  أرجع FFI_BAD_ABI;
 
-	case FFI_COMPAT_SYSV:
+	حالة FFI_COMPAT_SYSV:
 	  cif->abi = FFI_SYSV | FFI_SYSV_STRUCT_RET | FFI_SYSV_LONG_DOUBLE_128;
-	  break;
+	  اكسر;
 
-	case FFI_COMPAT_GCC_SYSV:
+	حالة FFI_COMPAT_GCC_SYSV:
 	  cif->abi = FFI_SYSV | FFI_SYSV_LONG_DOUBLE_128;
-	  break;
+	  اكسر;
 
-	case FFI_COMPAT_LINUX:
+	حالة FFI_COMPAT_LINUX:
 	  cif->abi = (FFI_SYSV | FFI_SYSV_IBM_LONG_DOUBLE
 		      | FFI_SYSV_LONG_DOUBLE_128);
-	  break;
+	  اكسر;
 
-	case FFI_COMPAT_LINUX_SOFT_FLOAT:
+	حالة FFI_COMPAT_LINUX_SOFT_FLOAT:
 	  cif->abi = (FFI_SYSV | FFI_SYSV_SOFT_FLOAT | FFI_SYSV_IBM_LONG_DOUBLE
 		      | FFI_SYSV_LONG_DOUBLE_128);
-	  break;
+	  اكسر;
 	}
     }
-  return ffi_prep_cif_sysv_core (cif);
+  أرجع ffi_prep_cif_sysv_core (cif);
 }
 
 /* ffi_prep_args_SYSV is called by the assembly routine once stack space
@@ -371,19 +371,19 @@ ffi_prep_cif_sysv (ffi_cif *cif)
 
 */
 
-void FFI_HIDDEN
-ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
+فراغ FFI_HIDDEN
+ffi_prep_args_SYSV (extended_cif *ecif, unsigned *ثابت کەڵەکە)
 {
-  const unsigned bytes = ecif->cif->bytes;
-  const unsigned flags = ecif->cif->flags;
+  ثابت unsigned bytes = ecif->cif->bytes;
+  ثابت unsigned flags = ecif->cif->flags;
 
-  typedef union
+  تعريفنوع اتحاد
   {
-    char *c;
+    حرف *c;
     unsigned *u;
     long long *ll;
-    float *f;
-    double *d;
+    عائم *f;
+    مزدوج *d;
   } valp;
 
   /* 'stacktop' points at the previous backchain pointer.  */
@@ -408,72 +408,72 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
   /* 'next_arg' grows up as we put parameters in it.  */
   valp next_arg;
 
-  int i;
+  صحيح i;
   ffi_type **ptr;
 #ifndef __NO_FPRS__
-  double double_tmp;
+  مزدوج double_tmp;
 #endif
-  union
+  اتحاد
   {
-    void **v;
-    char **c;
-    signed char **sc;
-    unsigned char **uc;
+    فراغ **v;
+    حرف **c;
+    signed حرف **sc;
+    unsigned حرف **uc;
     signed short **ss;
     unsigned short **us;
-    unsigned int **ui;
+    unsigned صحيح **ui;
     long long **ll;
-    float **f;
-    double **d;
+    عائم **f;
+    مزدوج **d;
   } p_argv;
   size_t struct_copy_size;
   unsigned gprvalue;
 
-  stacktop.c = (char *) stack + bytes;
+  stacktop.c = (حرف *) کەڵەکە + bytes;
   gpr_end.u = stacktop.u - ASM_NEEDS_REGISTERS;
-  gpr_base.u = gpr_end.u - NUM_GPR_ARG_REGISTERS;
+  gpr_base.u = gpr_end.u - ژمارە_GPR_ARG_REGISTERS;
 #ifndef __NO_FPRS__
   fpr_end.d = gpr_base.d;
-  fpr_base.d = fpr_end.d - NUM_FPR_ARG_REGISTERS;
+  fpr_base.d = fpr_end.d - ژمارە_FPR_ARG_REGISTERS;
   copy_space.c = ((flags & FLAG_FP_ARGUMENTS) ? fpr_base.c : gpr_base.c);
-#else
+#وإلا
   copy_space.c = gpr_base.c;
 #endif
-  next_arg.u = stack + 2;
+  next_arg.u = کەڵەکە + 2;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT (((unsigned long) (char *) stack & 0xF) == 0);
+  FFI_ASSERT (((unsigned long) (حرف *) کەڵەکە & 0xF) == 0);
   FFI_ASSERT (((unsigned long) copy_space.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) stacktop.c & 0xF) == 0);
   FFI_ASSERT ((bytes & 0xF) == 0);
   FFI_ASSERT (copy_space.c >= next_arg.c);
 
   /* Deal with return values that are actually pass-by-reference.  */
-  if (flags & FLAG_RETVAL_REFERENCE)
-    *gpr_base.u++ = (unsigned) (char *) ecif->rvalue;
+  إذا (flags & FLAG_RETVAL_REFERENCE)
+    *gpr_base.u++ = (unsigned) (حرف *) ecif->rvalue;
 
   /* Now for the arguments.  */
   p_argv.v = ecif->avalue;
-  for (ptr = ecif->cif->arg_types, i = ecif->cif->nargs;
+  لكل (ptr = ecif->cif->arg_types, i = ecif->cif->nargs;
        i > 0;
        i--, ptr++, p_argv.v++)
     {
-      unsigned int typenum = (*ptr)->type;
+      unsigned صحيح typenum = (*ptr)->type;
 
       typenum = translate_float (ecif->cif->abi, typenum);
 
       /* Now test the translated value */
-      switch (typenum)
+      بدل (typenum)
 	{
 #ifndef __NO_FPRS__
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
+# إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	حالة FFI_TYPE_LONGDOUBLE:
 	  double_tmp = (*p_argv.d)[0];
 
-	  if (fpr_base.d >= fpr_end.d - 1)
+	  إذا (fpr_base.d >= fpr_end.d - 1)
 	    {
 	      fpr_base.d = fpr_end.d;
-	      if (((next_arg.u - stack) & 1) != 0)
+	      إذا (((next_arg.u - کەڵەکە) & 1) != 0)
 		next_arg.u += 1;
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
@@ -481,93 +481,93 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
 	    }
-	  else
+	  وإلا
 	    {
 	      *fpr_base.d++ = double_tmp;
 	      double_tmp = (*p_argv.d)[1];
 	      *fpr_base.d++ = double_tmp;
 	    }
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  اكسر;
 # endif
-	case FFI_TYPE_DOUBLE:
+	حالة FFI_TYPE_DOUBLE:
 	  double_tmp = **p_argv.d;
 
-	  if (fpr_base.d >= fpr_end.d)
+	  إذا (fpr_base.d >= fpr_end.d)
 	    {
-	      if (((next_arg.u - stack) & 1) != 0)
+	      إذا (((next_arg.u - کەڵەکە) & 1) != 0)
 		next_arg.u += 1;
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
 	    }
-	  else
+	  وإلا
 	    *fpr_base.d++ = double_tmp;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_FLOAT:
+	حالة FFI_TYPE_FLOAT:
 	  double_tmp = **p_argv.f;
-	  if (fpr_base.d >= fpr_end.d)
+	  إذا (fpr_base.d >= fpr_end.d)
 	    {
-	      *next_arg.f = (float) double_tmp;
+	      *next_arg.f = (عائم) double_tmp;
 	      next_arg.u += 1;
 	    }
-	  else
+	  وإلا
 	    *fpr_base.d++ = double_tmp;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  اكسر;
 #endif /* have FPRs */
 
-	case FFI_TYPE_UINT128:
+	حالة FFI_TYPE_UINT128:
 	  /* The soft float ABI for long doubles works like this, a long double
 	     is passed in four consecutive GPRs if available.  A maximum of 2
 	     long doubles can be passed in gprs.  If we do not have 4 GPRs
 	     left, the long double is passed on the stack, 4-byte aligned.  */
-	  if (gpr_base.u >= gpr_end.u - 3)
+	  إذا (gpr_base.u >= gpr_end.u - 3)
 	    {
-	      unsigned int ii;
+	      unsigned صحيح ii;
 	      gpr_base.u = gpr_end.u;
-	      for (ii = 0; ii < 4; ii++)
+	      لكل (ii = 0; ii < 4; ii++)
 		{
-		  unsigned int int_tmp = (*p_argv.ui)[ii];
+		  unsigned صحيح int_tmp = (*p_argv.ui)[ii];
 		  *next_arg.u++ = int_tmp;
 		}
 	    }
-	  else
+	  وإلا
 	    {
-	      unsigned int ii;
-	      for (ii = 0; ii < 4; ii++)
+	      unsigned صحيح ii;
+	      لكل (ii = 0; ii < 4; ii++)
 		{
-		  unsigned int int_tmp = (*p_argv.ui)[ii];
+		  unsigned صحيح int_tmp = (*p_argv.ui)[ii];
 		  *gpr_base.u++ = int_tmp;
 		}
 	    }
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	  if (gpr_base.u >= gpr_end.u - 1)
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_SINT64:
+	  إذا (gpr_base.u >= gpr_end.u - 1)
 	    {
 	      gpr_base.u = gpr_end.u;
-	      if (((next_arg.u - stack) & 1) != 0)
+	      إذا (((next_arg.u - کەڵەکە) & 1) != 0)
 		next_arg.u++;
 	      *next_arg.ll = **p_argv.ll;
 	      next_arg.u += 2;
 	    }
-	  else
+	  وإلا
 	    {
 	      /* The abi states only certain register pairs can be
 		 used for passing long long int specifically (r3,r4),
 		 (r5,r6), (r7,r8), (r9,r10).  If next arg is long long
 		 but not correct starting register of pair then skip
 		 until the proper starting register.  */
-	      if (((gpr_end.u - gpr_base.u) & 1) != 0)
+	      إذا (((gpr_end.u - gpr_base.u) & 1) != 0)
 		gpr_base.u++;
 	      *gpr_base.ll++ = **p_argv.ll;
 	    }
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_STRUCT:
 	  struct_copy_size = ((*ptr)->size + 15) & ~0xF;
 	  copy_space.c -= struct_copy_size;
 	  memcpy (copy_space.c, *p_argv.c, (*ptr)->size);
@@ -576,34 +576,34 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 
 	  FFI_ASSERT (copy_space.c > next_arg.c);
 	  FFI_ASSERT (flags & FLAG_ARG_NEEDS_COPY);
-	  goto putgpr;
+	  اذهب putgpr;
 
-	case FFI_TYPE_UINT8:
+	حالة FFI_TYPE_UINT8:
 	  gprvalue = **p_argv.uc;
-	  goto putgpr;
-	case FFI_TYPE_SINT8:
+	  اذهب putgpr;
+	حالة FFI_TYPE_SINT8:
 	  gprvalue = **p_argv.sc;
-	  goto putgpr;
-	case FFI_TYPE_UINT16:
+	  اذهب putgpr;
+	حالة FFI_TYPE_UINT16:
 	  gprvalue = **p_argv.us;
-	  goto putgpr;
-	case FFI_TYPE_SINT16:
+	  اذهب putgpr;
+	حالة FFI_TYPE_SINT16:
 	  gprvalue = **p_argv.ss;
-	  goto putgpr;
+	  اذهب putgpr;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_POINTER:
 
 	  gprvalue = **p_argv.ui;
 
 	putgpr:
-	  if (gpr_base.u >= gpr_end.u)
+	  إذا (gpr_base.u >= gpr_end.u)
 	    *next_arg.u++ = gprvalue;
-	  else
+	  وإلا
 	    *gpr_base.u++ = gprvalue;
-	  break;
+	  اكسر;
 	}
     }
 
@@ -617,16 +617,16 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	      == (gpr_end.u - gpr_base.u < 4));
 }
 
-#define MIN_CACHE_LINE_SIZE 8
+#define MIN_CACHE_هێڵ_SIZE 8
 
-static void
-flush_icache (char *wraddr, char *xaddr, int size)
+ساكن فراغ
+flush_icache (حرف *wraddr, حرف *xaddr, صحيح size)
 {
-  int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
-    __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
+  صحيح i;
+  لكل (i = 0; i < size; i += MIN_CACHE_هێڵ_SIZE)
+    __asm__ متطاير ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
-  __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
+  __asm__ متطاير ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
 		    : : "r"(xaddr + size - 1), "r"(wraddr + size - 1)
 		    : "memory");
 }
@@ -634,24 +634,24 @@ flush_icache (char *wraddr, char *xaddr, int size)
 ffi_status FFI_HIDDEN
 ffi_prep_closure_loc_sysv (ffi_closure *closure,
 			   ffi_cif *cif,
-			   void (*fun) (ffi_cif *, void *, void **, void *),
-			   void *user_data,
-			   void *codeloc)
+			   فراغ (*fun) (ffi_cif *, فراغ *, فراغ **, فراغ *),
+			   فراغ *user_data,
+			   فراغ *codeloc)
 {
-  if (cif->abi < FFI_SYSV || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  إذا (cif->abi < FFI_SYSV || cif->abi >= FFI_LAST_ABI)
+    أرجع FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present(closure))
+  إذا (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_SYSV;
+      فراغ (*dest)(فراغ) = ffi_closure_SYSV;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  وإلا
 #endif
     {
-      unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+      unsigned صحيح *tramp = (unsigned صحيح *) &closure->tramp[0];
       tramp[0] = 0x7c0802a6;  /*   mflr    r0 */
       tramp[1] = 0x429f0005;  /*   bcl     20,31,.+4 */
       tramp[2] = 0x7d6802a6;  /*   mflr    r11 */
@@ -660,18 +660,18 @@ ffi_prep_closure_loc_sysv (ffi_closure *closure,
       tramp[5] = 0x816b001c;  /*   lwz     r11,28(r11) */
       tramp[6] = 0x7c0903a6;  /*   mtctr   r0 */
       tramp[7] = 0x4e800420;  /*   bctr */
-      *(void **) &tramp[8] = (void *) ffi_closure_SYSV; /* function */
-      *(void **) &tramp[9] = codeloc;			/* context */
+      *(فراغ **) &tramp[8] = (فراغ *) ffi_closure_SYSV; /* function */
+      *(فراغ **) &tramp[9] = codeloc;			/* context */
 
       /* Flush the icache.  */
-      flush_icache ((char *)tramp, (char *)codeloc, 8 * 4);
+      flush_icache ((حرف *)tramp, (حرف *)codeloc, 8 * 4);
     }
 
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on
@@ -681,11 +681,11 @@ ffi_prep_closure_loc_sysv (ffi_closure *closure,
    up space for a return value, ffi_closure_SYSV invokes the
    following helper function to do most of the work.  */
 
-int
+صحيح
 ffi_closure_helper_SYSV (ffi_cif *cif,
-			 void (*fun) (ffi_cif *, void *, void **, void *),
-			 void *user_data,
-			 void *rvalue,
+			 فراغ (*fun) (ffi_cif *, فراغ *, فراغ **, فراغ *),
+			 فراغ *user_data,
+			 فراغ *rvalue,
 			 unsigned long *pgr,
 			 ffi_dblfl *pfr,
 			 unsigned long *pst)
@@ -695,7 +695,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   /* pfr is the pointer to where f1-f8 are stored in ffi_closure_SYSV  */
   /* pst is the pointer to outgoing parameter stack in original caller */
 
-  void **          avalue;
+  فراغ **          avalue;
   ffi_type **      arg_types;
   long             i, avn;
 #ifndef __NO_FPRS__
@@ -706,7 +706,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   unsigned       size     = cif->rtype->size;
   unsigned short rtypenum = cif->rtype->type;
 
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * حجم (فراغ *));
 
   /* First translate for softfloat/nonlinux */
   rtypenum = translate_float (cif->abi, rtypenum);
@@ -715,10 +715,10 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
      returns the data directly to the caller.
      For FFI_SYSV the result is passed in r3/r4 if the struct size is less
      or equal 8 bytes.  */
-  if (rtypenum == FFI_TYPE_STRUCT
+  إذا (rtypenum == FFI_TYPE_STRUCT
       && !((cif->abi & FFI_SYSV_STRUCT_RET) != 0 && size <= 8))
     {
-      rvalue = (void *) *pgr;
+      rvalue = (فراغ *) *pgr;
       ng++;
       pgr++;
     }
@@ -728,159 +728,159 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn) {
+  طالما (i < avn) {
     unsigned short typenum = arg_types[i]->type;
 
     /* We may need to handle some values depending on ABI.  */
     typenum = translate_float (cif->abi, typenum);
 
-    switch (typenum)
+    بدل (typenum)
       {
 #ifndef __NO_FPRS__
-      case FFI_TYPE_FLOAT:
+      حالة FFI_TYPE_FLOAT:
 	/* Unfortunately float values are stored as doubles
 	   in the ffi_closure_SYSV code (since we don't check
 	   the type in that routine).  */
-	if (nf < NUM_FPR_ARG_REGISTERS)
+	إذا (nf < ژمارە_FPR_ARG_REGISTERS)
 	  {
 	    /* FIXME? here we are really changing the values
 	       stored in the original calling routines outgoing
 	       parameter stack.  This is probably a really
 	       naughty thing to do but...  */
-	    double temp = pfr->d;
-	    pfr->f = (float) temp;
+	    مزدوج temp = pfr->d;
+	    pfr->f = (عائم) temp;
 	    avalue[i] = pfr;
 	    nf++;
 	    pfr++;
 	  }
-	else
+	وإلا
 	  {
 	    avalue[i] = pst;
 	    pst += 1;
 	  }
-	break;
+	اكسر;
 
-      case FFI_TYPE_DOUBLE:
-	if (nf < NUM_FPR_ARG_REGISTERS)
+      حالة FFI_TYPE_DOUBLE:
+	إذا (nf < ژمارە_FPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = pfr;
 	    nf++;
 	    pfr++;
 	  }
-	else
+	وإلا
 	  {
-	    if (((long) pst) & 4)
+	    إذا (((long) pst) & 4)
 	      pst++;
 	    avalue[i] = pst;
 	    pst += 2;
 	  }
-	break;
+	اكسر;
 
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      case FFI_TYPE_LONGDOUBLE:
-	if (nf < NUM_FPR_ARG_REGISTERS - 1)
+# إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      حالة FFI_TYPE_LONGDOUBLE:
+	إذا (nf < ژمارە_FPR_ARG_REGISTERS - 1)
 	  {
 	    avalue[i] = pfr;
 	    pfr += 2;
 	    nf += 2;
 	  }
-	else
+	وإلا
 	  {
-	    if (((long) pst) & 4)
+	    إذا (((long) pst) & 4)
 	      pst++;
 	    avalue[i] = pst;
 	    pst += 4;
 	    nf = 8;
 	  }
-	break;
+	اكسر;
 # endif
 #endif
 
-      case FFI_TYPE_UINT128:
+      حالة FFI_TYPE_UINT128:
 	/* Test if for the whole long double, 4 gprs are available.
 	   otherwise the stuff ends up on the stack.  */
-	if (ng < NUM_GPR_ARG_REGISTERS - 3)
+	إذا (ng < ژمارە_GPR_ARG_REGISTERS - 3)
 	  {
 	    avalue[i] = pgr;
 	    pgr += 4;
 	    ng += 4;
 	  }
-	else
+	وإلا
 	  {
 	    avalue[i] = pst;
 	    pst += 4;
 	    ng = 8+4;
 	  }
-	break;
+	اكسر;
 
-      case FFI_TYPE_SINT8:
-      case FFI_TYPE_UINT8:
+      حالة FFI_TYPE_SINT8:
+      حالة FFI_TYPE_UINT8:
 #ifndef __LITTLE_ENDIAN__
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	إذا (ng < ژمارە_GPR_ARG_REGISTERS)
 	  {
-	    avalue[i] = (char *) pgr + 3;
+	    avalue[i] = (حرف *) pgr + 3;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	وإلا
 	  {
-	    avalue[i] = (char *) pst + 3;
+	    avalue[i] = (حرف *) pst + 3;
 	    pst++;
 	  }
-	break;
+	اكسر;
 #endif
 
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_UINT16:
+      حالة FFI_TYPE_SINT16:
+      حالة FFI_TYPE_UINT16:
 #ifndef __LITTLE_ENDIAN__
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	إذا (ng < ژمارە_GPR_ARG_REGISTERS)
 	  {
-	    avalue[i] = (char *) pgr + 2;
+	    avalue[i] = (حرف *) pgr + 2;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	وإلا
 	  {
-	    avalue[i] = (char *) pst + 2;
+	    avalue[i] = (حرف *) pst + 2;
 	    pst++;
 	  }
-	break;
+	اكسر;
 #endif
 
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_POINTER:
-	if (ng < NUM_GPR_ARG_REGISTERS)
+      حالة FFI_TYPE_SINT32:
+      حالة FFI_TYPE_UINT32:
+      حالة FFI_TYPE_POINTER:
+	إذا (ng < ژمارە_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = pgr;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	وإلا
 	  {
 	    avalue[i] = pst;
 	    pst++;
 	  }
-	break;
+	اكسر;
 
-      case FFI_TYPE_STRUCT:
+      حالة FFI_TYPE_STRUCT:
 	/* Structs are passed by reference. The address will appear in a
 	   gpr if it is one of the first 8 arguments.  */
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	إذا (ng < ژمارە_GPR_ARG_REGISTERS)
 	  {
-	    avalue[i] = (void *) *pgr;
+	    avalue[i] = (فراغ *) *pgr;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	وإلا
 	  {
-	    avalue[i] = (void *) *pst;
+	    avalue[i] = (فراغ *) *pst;
 	    pst++;
 	  }
-	break;
+	اكسر;
 
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_UINT64:
+      حالة FFI_TYPE_SINT64:
+      حالة FFI_TYPE_UINT64:
 	/* Passing long long ints are complex, they must
 	   be passed in suitable register pairs such as
 	   (r3,r4) or (r5,r6) or (r6,r7), or (r7,r8) or (r9,r10)
@@ -889,9 +889,9 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	   must will be kept.  So we must either look in pgr
 	   or pst to find the correct address for this type
 	   of parameter.  */
-	if (ng < NUM_GPR_ARG_REGISTERS - 1)
+	إذا (ng < ژمارە_GPR_ARG_REGISTERS - 1)
 	  {
-	    if (ng & 1)
+	    إذا (ng & 1)
 	      {
 		/* skip r4, r6, r8 as starting points */
 		ng++;
@@ -901,17 +901,17 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	    ng += 2;
 	    pgr += 2;
 	  }
-	else
+	وإلا
 	  {
-	    if (((long) pst) & 4)
+	    إذا (((long) pst) & 4)
 	      pst++;
 	    avalue[i] = pst;
 	    pst += 2;
-	    ng = NUM_GPR_ARG_REGISTERS;
+	    ng = ژمارە_GPR_ARG_REGISTERS;
 	  }
-	break;
+	اكسر;
 
-      default:
+      افتراضي:
 	FFI_ASSERT (0);
       }
 
@@ -923,61 +923,61 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   /* Tell ffi_closure_SYSV how to perform return type promotions.
      Because the FFI_SYSV ABI returns the structures <= 8 bytes in
      r3/r4 we have to tell ffi_closure_SYSV how to treat them. */
-  switch (rtypenum)
+  بدل (rtypenum)
     {
-    case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
-    case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
-    case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      return PPC_LD_F128;
+    حالة FFI_TYPE_VOID:
+      أرجع PPC_LD_NONE;
+    حالة FFI_TYPE_FLOAT:
+      أرجع PPC_LD_F32;
+    حالة FFI_TYPE_DOUBLE:
+      أرجع PPC_LD_F64;
+#إذا FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+    حالة FFI_TYPE_LONGDOUBLE:
+      أرجع PPC_LD_F128;
 #endif
-    case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
-    case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
-    case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
-    case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
-    case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
-    case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
-    case FFI_TYPE_UINT128:
-      return PPC32_LD_R3R6;
-    case FFI_TYPE_STRUCT:
-      if (cif->abi & FFI_SYSV_STRUCT_RET)
-	switch (size)
+    حالة FFI_TYPE_UINT8:
+      أرجع PPC_LD_U8;
+    حالة FFI_TYPE_SINT8:
+      أرجع PPC_LD_S8;
+    حالة FFI_TYPE_UINT16:
+      أرجع PPC_LD_U16;
+    حالة FFI_TYPE_SINT16:
+      أرجع PPC_LD_S16;
+    حالة FFI_TYPE_UINT32:
+      أرجع PPC_LD_U32;
+    حالة FFI_TYPE_INT:
+    حالة FFI_TYPE_SINT32:
+      أرجع PPC_LD_S32;
+    حالة FFI_TYPE_POINTER:
+      أرجع PPC_LD_PTR;
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
+      أرجع PPC_LD_I64;
+    حالة FFI_TYPE_UINT128:
+      أرجع PPC32_LD_R3R6;
+    حالة FFI_TYPE_STRUCT:
+      إذا (cif->abi & FFI_SYSV_STRUCT_RET)
+	بدل (size)
 	  {
-	  case 1:
-	    return PPC_LD_U8;
-	  case 2:
-	    return PPC_LD_U16;
-	  case 3:
-	    return PPC32_SYSV_LD_STRUCT_3;
-	  case 4:
-	    return PPC_LD_U32;
-	  case 5:
-	    return PPC32_SYSV_LD_STRUCT_5;
-	  case 6:
-	    return PPC32_SYSV_LD_STRUCT_6;
-	  case 7:
-	    return PPC32_SYSV_LD_STRUCT_7;
-	  case 8:
-	    return PPC_LD_I64;
+	  حالة 1:
+	    أرجع PPC_LD_U8;
+	  حالة 2:
+	    أرجع PPC_LD_U16;
+	  حالة 3:
+	    أرجع PPC32_SYSV_LD_STRUCT_3;
+	  حالة 4:
+	    أرجع PPC_LD_U32;
+	  حالة 5:
+	    أرجع PPC32_SYSV_LD_STRUCT_5;
+	  حالة 6:
+	    أرجع PPC32_SYSV_LD_STRUCT_6;
+	  حالة 7:
+	    أرجع PPC32_SYSV_LD_STRUCT_7;
+	  حالة 8:
+	    أرجع PPC_LD_I64;
 	  }
-      return PPC_LD_NONE;
-    default:
+      أرجع PPC_LD_NONE;
+    افتراضي:
       abort();
     }
 }

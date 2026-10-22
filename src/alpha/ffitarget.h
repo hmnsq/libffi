@@ -33,10 +33,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+تعريفنوع unsigned long          ffi_arg;
+تعريفنوع signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+تعريفنوع تعداد ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_OSF,
   FFI_LAST_ABI,
@@ -44,7 +44,7 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#define FFI_TARGET_SPECIFIC_کەڵەکە_SPACE_ALLOCATION
 #define FFI_TARGET_HAS_COMPLEX_TYPE
 #define FFI_TARGET_HAS_INT128
 
