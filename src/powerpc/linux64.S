@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS அல்லது IMPLIED, INCLUDING BUT இல்லை LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE மற்றும்
+   NONINFRINGEMENT.  உள் NO EVENT SHALL THE AUTHORS அல்லது COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES அல்லது OTHER LIABILITY,
+   WHETHER உள் AN ACTION OF CONTRACT, TORT அல்லது OTHERWISE, ARISING FROM,
+   OUT OF அல்லது உள் CONNECTION WITH THE SOFTWARE அல்லது THE USE அல்லது OTHER
+   DEALINGS உள் THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -82,8 +82,8 @@ ffi_call_LINUX64:
 	mr	%r31, %r6	/* flags, */
 	mr	%r30, %r5	/* rvalue, */
 	mr	%r29, %r4	/* function address.  */
-/* Save toc pointer, not for the ffi_prep_args64 call, but for the later
-   bctrl function call.  */
+/* Save toc pointer, not for the ffi_prep_args64 அழை, but for the later
+   bctrl function அழை.  */
 # if _CALL_ELF == 2
 	std	%r2, 24(%r1)
 # else
@@ -110,11 +110,11 @@ ffi_call_LINUX64:
 	ld	%r12, 0(%r29)
 	ld	%r2, 8(%r29)
 # endif
-	/* Now do the call.  */
+	/* Now do the அழை.  */
 	/* Set up cr1 with bits 3-7 of the flags.  */
 	mtcrf	0xc0, %r31
 
-	/* Get the address to call into CTR.  */
+	/* Get the address to அழை into CTR.  */
 	mtctr	%r12
 	/* Load all those argument registers.  */
 	addi	%r29, %r28, -32-(8*8)
@@ -175,11 +175,11 @@ ffi_call_LINUX64:
 	lvx	%v2,  0, %r29
 3:
 
-	/* Make the call.  */
+	/* Make the அழை.  */
 	ld	%r11, 8(%r28)
 	bctrl
 
-	/* This must follow the call immediately, the unwinder
+	/* This must follow the அழை immediately, the unwinder
 	   uses this to find out if r2 has been saved or not.  */
 # if _CALL_ELF == 2
 	ld	%r2, 24(%r1)

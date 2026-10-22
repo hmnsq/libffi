@@ -22,14 +22,14 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdio.h>
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ <ffi_common.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <stdio.h>
 
 /* General debugging routines */
 
-void ffi_stop_here(void)
+வெறுமை ffi_stop_here(வெறுமை)
 {
   /* This function is only useful for debugging purposes.
      Place a breakpoint on ffi_stop_here to be notified of
@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN வெறுமை ffi_assert(மாறிலி எழுத்து *கோவை, மாறிலி எழுத்து *file, முழு வரி)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
+  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", கோவை, file, வரி);
   ffi_stop_here();
   abort();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+வெறுமை ffi_type_test(ffi_type *a, மாறிலி எழுத்து *file, முழு வரி)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != வெற்று, file, வரி);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, வரி);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, வரி);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, வரி);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
 		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		|| a->elements != வெற்று, file, வரி);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
-		|| (a->elements != NULL
-		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		|| (a->elements != வெற்று
+		    && a->elements[0] != வெற்று && a->elements[1] == வெற்று),
+		file, வரி);
 
 }

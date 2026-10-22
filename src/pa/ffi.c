@@ -28,30 +28,30 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <stdio.h>
 
 #define ROUND_UP(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
 
-#define MIN_STACK_SIZE  64
+#define MIN_அடுக்கு_SIZE  64
 #define FIRST_ARG_SLOT  9
 #define DEBUG_LEVEL   0
 
 #define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+  __asm__ நிலையற்ற ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
 #define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ நிலையற்ற ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
 #define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
+  __asm__ நிலையற்ற ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
 #define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ நிலையற்ற ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) செய் { எனில் (lvl <= DEBUG_LEVEL) { printf(x); } } போது (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+நிலையான உள்வரி முழு ffi_struct_type(ffi_type *t)
 {
   size_t sz = t->size;
 
@@ -60,10 +60,10 @@ static inline int ffi_struct_type(ffi_type *t)
      structures differ from the corresponding integer
      types in that they have different alignment requirements.  */
 
-  if (sz <= 8)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
+  எனில் (sz <= 8)
+    திரும்பு -sz;
+  இல்லையெனில்
+    திரும்பு FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
 }
 
 /* PA has a downward growing stack, which looks like this:
@@ -124,116 +124,116 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
+வெறுமை ffi_prep_args_pa32(UINT32 *அடுக்கு, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
-  char *dest_cpy;
+  பதிவு unsigned முழு i;
+  பதிவு ffi_type **p_arg;
+  பதிவு வெறுமை **p_argv;
+  unsigned முழு slot = FIRST_ARG_SLOT;
+  எழுத்து *dest_cpy;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, அடுக்கு,
 	ecif, bytes);
 
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  க்கு (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      முழு type = (*p_arg)->type;
 
-      switch (type)
+      தேர்வு (type)
 	{
-	case FFI_TYPE_SINT8:
-	  *(SINT32 *)(stack - slot) = *(SINT8 *)(*p_argv);
-	  break;
+	நிலை FFI_TYPE_SINT8:
+	  *(SINT32 *)(அடுக்கு - slot) = *(SINT8 *)(*p_argv);
+	  நிறுத்து;
 
-	case FFI_TYPE_UINT8:
-	  *(UINT32 *)(stack - slot) = *(UINT8 *)(*p_argv);
-	  break;
+	நிலை FFI_TYPE_UINT8:
+	  *(UINT32 *)(அடுக்கு - slot) = *(UINT8 *)(*p_argv);
+	  நிறுத்து;
 
-	case FFI_TYPE_SINT16:
-	  *(SINT32 *)(stack - slot) = *(SINT16 *)(*p_argv);
-	  break;
+	நிலை FFI_TYPE_SINT16:
+	  *(SINT32 *)(அடுக்கு - slot) = *(SINT16 *)(*p_argv);
+	  நிறுத்து;
 
-	case FFI_TYPE_UINT16:
-	  *(UINT32 *)(stack - slot) = *(UINT16 *)(*p_argv);
-	  break;
+	நிலை FFI_TYPE_UINT16:
+	  *(UINT32 *)(அடுக்கு - slot) = *(UINT16 *)(*p_argv);
+	  நிறுத்து;
 
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
+	நிலை FFI_TYPE_UINT32:
+	நிலை FFI_TYPE_SINT32:
+	நிலை FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT32 %u in slot %u\n", *(UINT32 *)(*p_argv),
 		slot);
-	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
-	  break;
+	  *(UINT32 *)(அடுக்கு - slot) = *(UINT32 *)(*p_argv);
+	  நிறுத்து;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	நிலை FFI_TYPE_UINT64:
+	நிலை FFI_TYPE_SINT64:
 	  /* Align slot for 64-bit type.  */
 	  slot += (slot & 1) ? 1 : 2;
-	  *(UINT64 *)(stack - slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  *(UINT64 *)(அடுக்கு - slot) = *(UINT64 *)(*p_argv);
+	  நிறுத்து;
 
-	case FFI_TYPE_FLOAT:
+	நிலை FFI_TYPE_FLOAT:
 	  /* First 4 args go in fr4L - fr7L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT32 *)(அடுக்கு - slot) = *(UINT32 *)(*p_argv);
+	  தேர்வு (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack - slot, fr4); break;
-	    case 1: fldw(stack - slot, fr5); break;
-	    case 2: fldw(stack - slot, fr6); break;
-	    case 3: fldw(stack - slot, fr7); break;
+	    நிலை 0: fldw(அடுக்கு - slot, fr4); நிறுத்து;
+	    நிலை 1: fldw(அடுக்கு - slot, fr5); நிறுத்து;
+	    நிலை 2: fldw(அடுக்கு - slot, fr6); நிறுத்து;
+	    நிலை 3: fldw(அடுக்கு - slot, fr7); நிறுத்து;
 	    }
-	  break;
+	  நிறுத்து;
 
-	case FFI_TYPE_DOUBLE:
+	நிலை FFI_TYPE_DOUBLE:
 	  /* Align slot for 64-bit type.  */
 	  slot += (slot & 1) ? 1 : 2;
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack - slot) = *(UINT64 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(அடுக்கு - slot) = *(UINT64 *)(*p_argv);
+	  தேர்வு (slot - FIRST_ARG_SLOT)
 	    {
 	      /* First 2 args go in fr5, fr7.  */
-	      case 1: fldd(stack - slot, fr5); break;
-	      case 3: fldd(stack - slot, fr7); break;
+	      நிலை 1: fldd(அடுக்கு - slot, fr5); நிறுத்து;
+	      நிலை 3: fldd(அடுக்கு - slot, fr7); நிறுத்து;
 	    }
-	  break;
+	  நிறுத்து;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	நிலை FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are passed in the same manner as structures
 	     larger than 8 bytes.  */
-	  *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
+	  *(UINT32 *)(அடுக்கு - slot) = (UINT32)(*p_argv);
+	  நிறுத்து;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	நிலை FFI_TYPE_STRUCT:
 
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
 
 	  len = (*p_arg)->size;
-	  if (len <= 4)
+	  எனில் (len <= 4)
 	    {
-	      dest_cpy = (char *)(stack - slot) + 4 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      dest_cpy = (எழுத்து *)(அடுக்கு - slot) + 4 - len;
+	      memcpy(dest_cpy, (எழுத்து *)*p_argv, len);
 	    }
-	  else if (len <= 8)
+	  இல்லையெனில் எனில் (len <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
-	      dest_cpy = (char *)(stack - slot) + 8 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      dest_cpy = (எழுத்து *)(அடுக்கு - slot) + 8 - len;
+	      memcpy(dest_cpy, (எழுத்து *)*p_argv, len);
 	    }
-	  else
-	    *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
+	  இல்லையெனில்
+	    *(UINT32 *)(அடுக்கு - slot) = (UINT32)(*p_argv);
+	  நிறுத்து;
 
-	default:
+	இயல்பு:
 	  FFI_ASSERT(0);
 	}
 
@@ -244,47 +244,47 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 
   /* Make sure we didn't mess up and scribble on the stack.  */
   {
-    unsigned int n;
+    unsigned முழு n;
 
     debug(5, "Stack setup:\n");
-    for (n = 0; n < (bytes + 3) / 4; n++)
+    க்கு (n = 0; n < (bytes + 3) / 4; n++)
       {
-	if ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned int)(stack - n)); }
-	debug(5, "%08x ", *(stack - n));
+	எனில் ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned முழு)(அடுக்கு - n)); }
+	debug(5, "%08x ", *(அடுக்கு - n));
       }
     debug(5, "\n");
   }
 
   FFI_ASSERT(slot * 4 <= bytes);
 
-  return;
+  திரும்பு;
 }
 
-static void ffi_size_stack_pa32(ffi_cif *cif)
+நிலையான வெறுமை ffi_size_அடுக்கு_pa32(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  முழு i;
+  முழு z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  க்கு (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
+      முழு type = (*ptr)->type;
 
-      switch (type)
+      தேர்வு (type)
 	{
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	நிலை FFI_TYPE_DOUBLE:
+	நிலை FFI_TYPE_UINT64:
+	நிலை FFI_TYPE_SINT64:
 	  z += 2 + (z & 1); /* must start on even regs, so we may waste one */
-	  break;
+	  நிறுத்து;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	நிலை FFI_TYPE_LONGDOUBLE:
 	  z += 1; /* passed by pointer, like a large struct */
-	  break;
+	  நிறுத்து;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	நிலை FFI_TYPE_STRUCT:
 	  /* This must mirror the slot accounting in ffi_prep_args_pa32:
 	     structs of 1-4 bytes occupy one slot, structs of 5-8 bytes are
 	     passed inline in two even-aligned slots (exactly like a 64-bit
@@ -293,24 +293,24 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 	     so (z & 1) tracks the same alignment the marshaller applies.  */
 	  {
 	    size_t len = (*ptr)->size;
-	    if (len <= 4 || len > 8)
+	    எனில் (len <= 4 || len > 8)
 	      z += 1;
-	    else
+	    இல்லையெனில்
 	      z += 2 + (z & 1);
 	  }
-	  break;
+	  நிறுத்து;
 
-	default: /* <= 32-bit values */
+	இயல்பு: /* <= 32-bit values */
 	  z++;
 	}
     }
 
   /* We can fit up to 6 args in the default 64-byte stack frame,
      if we need more, we need more stack.  */
-  if (z <= 6)
-    cif->bytes = MIN_STACK_SIZE; /* min stack size */
-  else
-    cif->bytes = 64 + ROUND_UP((z - 6) * sizeof(UINT32), MIN_STACK_SIZE);
+  எனில் (z <= 6)
+    cif->bytes = MIN_அடுக்கு_SIZE; /* min stack size */
+  இல்லையெனில்
+    cif->bytes = 64 + ROUND_UP((z - 6) * அளவு(UINT32), MIN_அடுக்கு_SIZE);
 
   debug(3, "Calculated stack size is %u bytes\n", cif->bytes);
 }
@@ -319,83 +319,83 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  தேர்வு (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
+    நிலை FFI_TYPE_VOID:
+    நிலை FFI_TYPE_FLOAT:
+    நிலை FFI_TYPE_DOUBLE:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      நிறுத்து;
 
 #ifdef PA_HPUX
-    case FFI_TYPE_LONGDOUBLE:
+    நிலை FFI_TYPE_LONGDOUBLE:
       /* Long doubles are treated like a structure.  */
       cif->flags = FFI_TYPE_STRUCT;
-      break;
+      நிறுத்து;
 #endif
 
-    case FFI_TYPE_STRUCT:
+    நிலை FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 4 bytes, the result is given back
 	 in one register. If the size is smaller or equal 8 bytes than we
 	 return the result in two registers. But if the size is bigger than
 	 8 bytes, we work with pointers.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    நிலை FFI_TYPE_UINT64:
+    நிலை FFI_TYPE_SINT64:
       cif->flags = FFI_TYPE_UINT64;
-      break;
+      நிறுத்து;
 
-    default:
+    இயல்பு:
       cif->flags = FFI_TYPE_INT;
-      break;
+      நிறுத்து;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
-  switch (cif->abi)
+  தேர்வு (cif->abi)
     {
-    case FFI_PA32:
-      ffi_size_stack_pa32(cif);
-      break;
+    நிலை FFI_PA32:
+      ffi_size_அடுக்கு_pa32(cif);
+      நிறுத்து;
 
-    default:
+    இயல்பு:
       FFI_ASSERT(0);
-      break;
+      நிறுத்து;
     }
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
-extern void ffi_call_pa32(void (*)(UINT32 *, extended_cif *, unsigned),
+வெளி வெறுமை ffi_call_pa32(வெறுமை (*)(UINT32 *, extended_cif *, unsigned),
 			  extended_cif *, unsigned, unsigned, unsigned *,
-			  void (*fn)(void));
+			  வெறுமை (*fn)(வெறுமை));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+வெறுமை ffi_call(ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue, வெறுமை **avalue)
 {
   extended_cif ecif;
   size_t i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  வெறுமை **avalue_copy = வெற்று;
 
   ecif.cif = cif;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  க்கு (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 8)
+      முழு size = at->size;
+      எனில் (at->type == FFI_TYPE_STRUCT && size > 8)
 	{
-	  char *argcopy = alloca (size);
-	  if (avalue_copy == NULL)
+	  எழுத்து *argcopy = alloca (size);
+	  எனில் (avalue_copy == வெற்று)
 	    {
-	      avalue_copy = alloca (nargs * sizeof (void *));
-	      memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+	      avalue_copy = alloca (nargs * அளவு (வெறுமை *));
+	      memcpy (avalue_copy, avalue, nargs * அளவு (வெறுமை *));
 	      avalue = avalue_copy;
 	    }
 	  memcpy (argcopy, avalue[i], size);
@@ -407,88 +407,88 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  எனில் (rvalue == வெற்று
 #ifdef PA_HPUX
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_LONGDOUBLE))
-#else
+#இல்லையெனில்
       && cif->rtype->type == FFI_TYPE_STRUCT)
 #endif
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  இல்லையெனில்
     ecif.rvalue = rvalue;
 
 
-  switch (cif->abi)
+  தேர்வு (cif->abi)
     {
-    case FFI_PA32:
-      debug(3, "Calling ffi_call_pa32: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
+    நிலை FFI_PA32:
+      debug(3, "Calling ffi_call_pa32: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (வெறுமை *)fn);
       ffi_call_pa32(ffi_prep_args_pa32, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      நிறுத்து;
 
-    default:
+    இயல்பு:
       FFI_ASSERT(0);
-      break;
+      நிறுத்து;
     }
 }
 
-#if FFI_CLOSURES
+#எனில் FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
+ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *அடுக்கு)
 {
   ffi_cif *cif;
-  void **avalue;
-  void *rvalue;
+  வெறுமை **avalue;
+  வெறுமை *rvalue;
   /* Functions can return up to 64-bits in registers.  Return address
      must be double word aligned.  */
-  union { double rd; UINT32 ret[2]; } u;
+  ஒன்றிப்பு { இரட்டை rd; UINT32 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT32 r28 __asm__("r28");
+  எழுத்து *tmp;
+  முழு i, avn;
+  unsigned முழு slot = FIRST_ARG_SLOT;
+  பதிவு UINT32 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
-    rvalue = (void *)r28;
-  else
+  எனில் (cif->flags == FFI_TYPE_STRUCT)
+    rvalue = (வெறுமை *)r28;
+  இல்லையெனில்
     rvalue = &u;
 
-  avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
+  avalue = (வெறுமை **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  க்கு (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      முழு type = (*p_arg)->type;
 
-      switch (type)
+      தேர்வு (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_POINTER:
-	  avalue[i] = (char *)(stack - slot) + sizeof(UINT32) - (*p_arg)->size;
-	  break;
+	நிலை FFI_TYPE_SINT8:
+	நிலை FFI_TYPE_UINT8:
+	நிலை FFI_TYPE_SINT16:
+	நிலை FFI_TYPE_UINT16:
+	நிலை FFI_TYPE_SINT32:
+	நிலை FFI_TYPE_UINT32:
+	நிலை FFI_TYPE_POINTER:
+	  avalue[i] = (எழுத்து *)(அடுக்கு - slot) + அளவு(UINT32) - (*p_arg)->size;
+	  நிறுத்து;
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	நிலை FFI_TYPE_SINT64:
+	நிலை FFI_TYPE_UINT64:
 	  slot += (slot & 1) ? 1 : 2;
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  avalue[i] = (வெறுமை *)(அடுக்கு - slot);
+	  நிறுத்து;
 
-	case FFI_TYPE_FLOAT:
+	நிலை FFI_TYPE_FLOAT:
 #ifdef PA_LINUX
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
@@ -496,57 +496,57 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
 	     registers.  So, we need to replace what was previously
 	     stored in the current slot with the value in the
 	     corresponding floating point register.  */
-	  switch (slot - FIRST_ARG_SLOT)
+	  தேர்வு (slot - FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack - slot)); break;
-	    case 1: fstw(fr5, (void *)(stack - slot)); break;
-	    case 2: fstw(fr6, (void *)(stack - slot)); break;
-	    case 3: fstw(fr7, (void *)(stack - slot)); break;
+	    நிலை 0: fstw(fr4, (வெறுமை *)(அடுக்கு - slot)); நிறுத்து;
+	    நிலை 1: fstw(fr5, (வெறுமை *)(அடுக்கு - slot)); நிறுத்து;
+	    நிலை 2: fstw(fr6, (வெறுமை *)(அடுக்கு - slot)); நிறுத்து;
+	    நிலை 3: fstw(fr7, (வெறுமை *)(அடுக்கு - slot)); நிறுத்து;
 	    }
 #endif
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  avalue[i] = (வெறுமை *)(அடுக்கு - slot);
+	  நிறுத்து;
 
-	case FFI_TYPE_DOUBLE:
+	நிலை FFI_TYPE_DOUBLE:
 	  slot += (slot & 1) ? 1 : 2;
 #ifdef PA_LINUX
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
-	  switch (slot - FIRST_ARG_SLOT)
+	  தேர்வு (slot - FIRST_ARG_SLOT)
 	    {
-	    case 1: fstd(fr5, (void *)(stack - slot)); break;
-	    case 3: fstd(fr7, (void *)(stack - slot)); break;
+	    நிலை 1: fstd(fr5, (வெறுமை *)(அடுக்கு - slot)); நிறுத்து;
+	    நிலை 3: fstd(fr7, (வெறுமை *)(அடுக்கு - slot)); நிறுத்து;
 	    }
 #endif
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  avalue[i] = (வெறுமை *)(அடுக்கு - slot);
+	  நிறுத்து;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	நிலை FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
-	  avalue[i] = (void *) *(stack - slot);
-	  break;
+	  avalue[i] = (வெறுமை *) *(அடுக்கு - slot);
+	  நிறுத்து;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	நிலை FFI_TYPE_STRUCT:
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
-	  if((*p_arg)->size <= 4)
+	  எனில்((*p_arg)->size <= 4)
 	    {
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT32) -
+	      avalue[i] = (வெறுமை *)(அடுக்கு - slot) + அளவு(UINT32) -
 		(*p_arg)->size;
 	    }
-	  else if ((*p_arg)->size <= 8)
+	  இல்லையெனில் எனில் ((*p_arg)->size <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT64) -
+	      avalue[i] = (வெறுமை *)(அடுக்கு - slot) + அளவு(UINT64) -
 		(*p_arg)->size;
 	    }
-	  else
-	    avalue[i] = (void *) *(stack - slot);
-	  break;
+	  இல்லையெனில்
+	    avalue[i] = (வெறுமை *) *(அடுக்கு - slot);
+	  நிறுத்து;
 
-	default:
+	இயல்பு:
 	  FFI_ASSERT(0);
 	}
 
@@ -561,128 +561,128 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
 	u.ret[1]);
 
   /* Store the result using the lower 2 bytes of the flags.  */
-  switch (cif->flags)
+  தேர்வு (cif->flags)
     {
-    case FFI_TYPE_UINT8:
-      *(stack - FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
-      *(stack - FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
-      *(stack - FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
-      *(stack - FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      *(stack - FIRST_ARG_SLOT - 1) = u.ret[1];
-      break;
+    நிலை FFI_TYPE_UINT8:
+      *(அடுக்கு - FIRST_ARG_SLOT) = (UINT8)u.ret[0];
+      நிறுத்து;
+    நிலை FFI_TYPE_SINT8:
+      *(அடுக்கு - FIRST_ARG_SLOT) = (SINT8)u.ret[0];
+      நிறுத்து;
+    நிலை FFI_TYPE_UINT16:
+      *(அடுக்கு - FIRST_ARG_SLOT) = (UINT16)u.ret[0];
+      நிறுத்து;
+    நிலை FFI_TYPE_SINT16:
+      *(அடுக்கு - FIRST_ARG_SLOT) = (SINT16)u.ret[0];
+      நிறுத்து;
+    நிலை FFI_TYPE_INT:
+    நிலை FFI_TYPE_SINT32:
+    நிலை FFI_TYPE_UINT32:
+      *(அடுக்கு - FIRST_ARG_SLOT) = u.ret[0];
+      நிறுத்து;
+    நிலை FFI_TYPE_SINT64:
+    நிலை FFI_TYPE_UINT64:
+      *(அடுக்கு - FIRST_ARG_SLOT) = u.ret[0];
+      *(அடுக்கு - FIRST_ARG_SLOT - 1) = u.ret[1];
+      நிறுத்து;
 
-    case FFI_TYPE_DOUBLE:
+    நிலை FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_FLOAT:
+    நிலை FFI_TYPE_FLOAT:
       fldw(rvalue, fr4);
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_STRUCT:
+    நிலை FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_SMALL_STRUCT1:
-    case FFI_TYPE_SMALL_STRUCT2:
-    case FFI_TYPE_SMALL_STRUCT3:
-    case FFI_TYPE_SMALL_STRUCT4:
-      tmp = (void*)(stack -  FIRST_ARG_SLOT);
+    நிலை FFI_TYPE_SMALL_STRUCT1:
+    நிலை FFI_TYPE_SMALL_STRUCT2:
+    நிலை FFI_TYPE_SMALL_STRUCT3:
+    நிலை FFI_TYPE_SMALL_STRUCT4:
+      tmp = (வெறுமை*)(அடுக்கு -  FIRST_ARG_SLOT);
       tmp += 4 - cif->rtype->size;
-      memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+      memcpy((வெறுமை*)tmp, &u, cif->rtype->size);
+      நிறுத்து;
 
-    case FFI_TYPE_SMALL_STRUCT5:
-    case FFI_TYPE_SMALL_STRUCT6:
-    case FFI_TYPE_SMALL_STRUCT7:
-    case FFI_TYPE_SMALL_STRUCT8:
+    நிலை FFI_TYPE_SMALL_STRUCT5:
+    நிலை FFI_TYPE_SMALL_STRUCT6:
+    நிலை FFI_TYPE_SMALL_STRUCT7:
+    நிலை FFI_TYPE_SMALL_STRUCT8:
       {
-	unsigned int ret2[2];
-	int off;
+	unsigned முழு ret2[2];
+	முழு off;
 
 	/* Right justify ret[0] and ret[1] */
-	switch (cif->flags)
+	தேர்வு (cif->flags)
 	  {
-	    case FFI_TYPE_SMALL_STRUCT5: off = 3; break;
-	    case FFI_TYPE_SMALL_STRUCT6: off = 2; break;
-	    case FFI_TYPE_SMALL_STRUCT7: off = 1; break;
-	    default: off = 0; break;
+	    நிலை FFI_TYPE_SMALL_STRUCT5: off = 3; நிறுத்து;
+	    நிலை FFI_TYPE_SMALL_STRUCT6: off = 2; நிறுத்து;
+	    நிலை FFI_TYPE_SMALL_STRUCT7: off = 1; நிறுத்து;
+	    இயல்பு: off = 0; நிறுத்து;
 	  }
 
-	memset (ret2, 0, sizeof (ret2));
-	memcpy ((char *)ret2 + off, &u, 8 - off);
+	memset (ret2, 0, அளவு (ret2));
+	memcpy ((எழுத்து *)ret2 + off, &u, 8 - off);
 
-	*(stack - FIRST_ARG_SLOT) = ret2[0];
-	*(stack - FIRST_ARG_SLOT - 1) = ret2[1];
+	*(அடுக்கு - FIRST_ARG_SLOT) = ret2[0];
+	*(அடுக்கு - FIRST_ARG_SLOT - 1) = ret2[1];
       }
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_VOID:
-      break;
+    நிலை FFI_TYPE_POINTER:
+    நிலை FFI_TYPE_VOID:
+      நிறுத்து;
 
-    default:
+    இயல்பு:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      நிறுத்து;
     }
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
    cif specifies the argument and result types for fun.
    The cif must already be prep'ed.  */
 
-extern void ffi_closure_pa32(void);
+வெளி வெறுமை ffi_closure_pa32(வெறுமை);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      வெறுமை (*fun)(ffi_cif*,வெறுமை*,வெறுமை**,வெறுமை*),
+		      வெறுமை *user_data,
+		      வெறுமை *codeloc)
 {
   /* The layout of a function descriptor.  A function pointer with the PLABEL
      bit set points to a function descriptor.  */
-  struct pa32_fd
+  கட்டமைப்பு pa32_fd
   {
     UINT32 code_pointer;
     UINT32 gp;
   };
 
-  struct ffi_pa32_trampoline_struct
+  கட்டமைப்பு ffi_pa32_trampoline_struct
   {
      UINT32 code_pointer;        /* Pointer to ffi_closure_unix.  */
      UINT32 fake_gp;             /* Pointer to closure, installed as gp.  */
      UINT32 real_gp;             /* Real gp value.  */
   };
 
-  struct ffi_pa32_trampoline_struct *tramp;
-  struct pa32_fd *fd;
+  கட்டமைப்பு ffi_pa32_trampoline_struct *tramp;
+  கட்டமைப்பு pa32_fd *fd;
 
-  if (cif->abi != FFI_PA32)
-    return FFI_BAD_ABI;
+  எனில் (cif->abi != FFI_PA32)
+    திரும்பு FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa32.  */
-  fd = (struct pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
+  fd = (கட்டமைப்பு pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa32_trampoline_struct *)closure->tramp;
+  tramp = (கட்டமைப்பு ffi_pa32_trampoline_struct *)closure->tramp;
   tramp->code_pointer = fd->code_pointer;
   tramp->fake_gp = (UINT32)codeloc & ~3;
   tramp->real_gp = fd->gp;
@@ -691,6 +691,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 #endif

@@ -27,52 +27,52 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
+#எனில் (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
 #define _GNU_SOURCE 1
 #endif
 
 #ifndef __EMSCRIPTEN__
 
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include <tramp.h>
+#அந்தர்பாவ <fficonfig.h>
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ <ffi_common.h>
+#அந்தர்பாவ <tramp.h>
 
 #ifdef __NetBSD__
-#include <sys/param.h>
+#அந்தர்பாவ <sys/param.h>
 #endif
 
-#if __NetBSD_Version__ - 0 >= 799007200
+#எனில் __NetBSD_Version__ - 0 >= 799007200
 /* NetBSD with PROT_MPROTECT */
-#include <sys/mman.h>
+#அந்தர்பாவ <sys/mman.h>
 
-#include <stddef.h>
-#include <unistd.h>
+#அந்தர்பாவ <stddef.h>
+#அந்தர்பாவ <unistd.h>
 #ifdef  HAVE_SYS_MEMFD_H
-#include <sys/memfd.h>
+#அந்தர்பாவ <sys/memfd.h>
 #endif
 
-static const size_t overhead =
-  (sizeof(max_align_t) > sizeof(void *) + sizeof(size_t)) ?
-    sizeof(max_align_t)
-    : sizeof(void *) + sizeof(size_t);
+நிலையான மாறிலி size_t overhead =
+  (அளவு(max_align_t) > அளவு(வெறுமை *) + அளவு(size_t)) ?
+    அளவு(max_align_t)
+    : அளவு(வெறுமை *) + அளவு(size_t);
 
-#define ADD_TO_POINTER(p, d) ((void *)((uintptr_t)(p) + (d)))
+#define ADD_TO_POINTER(p, d) ((வெறுமை *)((uintptr_t)(p) + (d)))
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+வெறுமை *
+ffi_closure_alloc (size_t size, வெறுமை **code)
 {
-  static size_t page_size;
+  நிலையான size_t page_size;
   size_t rounded_size;
-  void *codeseg, *dataseg;
-  int prot;
+  வெறுமை *codeseg, *dataseg;
+  முழு prot;
 
   /* Expect that PAX mprotect is active and a separate code mapping is necessary. */
-  if (!code)
-    return NULL;
+  எனில் (!code)
+    திரும்பு வெற்று;
 
   /* Obtain system page size. */
-  if (!page_size)
+  எனில் (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
 
   /* Round allocation size up to the next page, keeping in mind the size field and pointer to code map. */
@@ -80,51 +80,51 @@ ffi_closure_alloc (size_t size, void **code)
 
   /* Primary mapping is RW, but request permission to switch to PROT_EXEC later. */
   prot = PROT_READ | PROT_WRITE | PROT_MPROTECT(PROT_EXEC);
-  dataseg = mmap(NULL, rounded_size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
-  if (dataseg == MAP_FAILED)
-    return NULL;
+  dataseg = mmap(வெற்று, rounded_size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
+  எனில் (dataseg == MAP_FAILED)
+    திரும்பு வெற்று;
 
   /* Create secondary mapping and switch it to RX. */
-  codeseg = mremap(dataseg, rounded_size, NULL, rounded_size, MAP_REMAPDUP);
-  if (codeseg == MAP_FAILED) {
+  codeseg = mremap(dataseg, rounded_size, வெற்று, rounded_size, MAP_REMAPDUP);
+  எனில் (codeseg == MAP_FAILED) {
     munmap(dataseg, rounded_size);
-    return NULL;
+    திரும்பு வெற்று;
   }
-  if (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
+  எனில் (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
     munmap(codeseg, rounded_size);
     munmap(dataseg, rounded_size);
-    return NULL;
+    திரும்பு வெற்று;
   }
 
   /* Remember allocation size and location of the secondary mapping for ffi_closure_free. */
-  memcpy(dataseg, &rounded_size, sizeof(rounded_size));
-  memcpy(ADD_TO_POINTER(dataseg, sizeof(size_t)), &codeseg, sizeof(void *));
+  memcpy(dataseg, &rounded_size, அளவு(rounded_size));
+  memcpy(ADD_TO_POINTER(dataseg, அளவு(size_t)), &codeseg, அளவு(வெறுமை *));
   *code = ADD_TO_POINTER(codeseg, overhead);
-  return ADD_TO_POINTER(dataseg, overhead);
+  திரும்பு ADD_TO_POINTER(dataseg, overhead);
 }
 
-void
-ffi_closure_free (void *ptr)
+வெறுமை
+ffi_closure_free (வெறுமை *ptr)
 {
-  void *codeseg, *dataseg;
+  வெறுமை *codeseg, *dataseg;
   size_t rounded_size;
 
   dataseg = ADD_TO_POINTER(ptr, -overhead);
-  memcpy(&rounded_size, dataseg, sizeof(rounded_size));
-  memcpy(&codeseg, ADD_TO_POINTER(dataseg, sizeof(size_t)), sizeof(void *));
+  memcpy(&rounded_size, dataseg, அளவு(rounded_size));
+  memcpy(&codeseg, ADD_TO_POINTER(dataseg, அளவு(size_t)), அளவு(வெறுமை *));
   munmap(dataseg, rounded_size);
   munmap(codeseg, rounded_size);
 }
 
-int
-ffi_tramp_is_present (__attribute__((unused)) void *ptr)
+முழு
+ffi_tramp_is_present (__attribute__((unused)) வெறுமை *ptr)
 {
-  return 0;
+  திரும்பு 0;
 }
-#else /* !NetBSD with PROT_MPROTECT */
+#இல்லையெனில் /* !NetBSD with PROT_MPROTECT */
 
-#if !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
-# if __linux__ && !defined(__ANDROID__)
+#எனில் !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
+# எனில் __linux__ && !defined(__ANDROID__)
 /* This macro indicates it may be forbidden to map anonymous memory
    with both write and execute permission.  Code compiled when this
    option is defined will attempt to map such pages once, but if it
@@ -135,7 +135,7 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 #  define FFI_MMAP_EXEC_WRIT 1
 #  define HAVE_MNTENT 1
 # endif
-# if defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
+# எனில் defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
 /* Windows systems may have Data Execution Protection (DEP) enabled,
    which requires the use of VirtualMalloc/VirtualFree to alloc/free
    executable memory. */
@@ -143,45 +143,45 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 # endif
 #endif
 
-#if FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
-# if !defined FFI_MMAP_EXEC_SELINUX
+#எனில் FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
+# எனில் !defined FFI_MMAP_EXEC_SELINUX
 /* When defined to 1 check for SELinux and if SELinux is active,
    don't attempt PROT_EXEC|PROT_WRITE mapping at all, as that
    might cause audit messages.  */
 #  define FFI_MMAP_EXEC_SELINUX 1
 # endif /* !defined FFI_MMAP_EXEC_SELINUX */
-# if !defined FFI_MMAP_PAX
+# எனில் !defined FFI_MMAP_PAX
 /* Also check for PaX MPROTECT */
 #  define FFI_MMAP_PAX 1
 # endif /* !defined FFI_MMAP_PAX */
 #endif /* FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__) */
 
-#if FFI_CLOSURES
+#எனில் FFI_CLOSURES
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#எனில் FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 
-#include <mach/mach.h>
-#include <pthread.h>
+#அந்தர்பாவ <mach/mach.h>
+#அந்தர்பாவ <pthread.h>
 #ifdef HAVE_ARM64E_PTRAUTH
-#include <ptrauth.h>
+#அந்தர்பாவ <ptrauth.h>
 #endif
-#include <stdio.h>
-#include <stdlib.h>
+#அந்தர்பாவ <stdio.h>
+#அந்தர்பாவ <stdlib.h>
 
-extern void *ffi_closure_trampoline_table_page;
+வெளி வெறுமை *ffi_closure_trampoline_table_page;
 
-typedef struct ffi_trampoline_table ffi_trampoline_table;
-typedef struct ffi_trampoline_table_entry ffi_trampoline_table_entry;
+வகைவரை கட்டமைப்பு ffi_trampoline_table ffi_trampoline_table;
+வகைவரை கட்டமைப்பு ffi_trampoline_table_entry ffi_trampoline_table_entry;
 
-struct ffi_trampoline_table
+கட்டமைப்பு ffi_trampoline_table
 {
   /* contiguous writable and executable pages */
   vm_address_t config_page;
 
   /* free list tracking */
-  uint16_t free_count;
+  uint16_t free_மொத்தம்;
   ffi_trampoline_table_entry *free_list;
   ffi_trampoline_table_entry *free_list_pool;
 
@@ -189,20 +189,20 @@ struct ffi_trampoline_table
   ffi_trampoline_table *next;
 };
 
-struct ffi_trampoline_table_entry
+கட்டமைப்பு ffi_trampoline_table_entry
 {
-  void *(*trampoline) (void);
+  வெறுமை *(*trampoline) (வெறுமை);
   ffi_trampoline_table_entry *next;
 };
 
 /* Total number of trampolines that fit in one trampoline table */
-#define FFI_TRAMPOLINE_COUNT (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
+#define FFI_TRAMPOLINE_மொத்தம் (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
 
-static pthread_mutex_t ffi_trampoline_lock = PTHREAD_MUTEX_INITIALIZER;
-static ffi_trampoline_table *ffi_trampoline_tables = NULL;
+நிலையான pthread_mutex_t ffi_trampoline_lock = PTHREAD_MUTEX_INITIALIZER;
+நிலையான ffi_trampoline_table *ffi_trampoline_tables = வெற்று;
 
-static ffi_trampoline_table *
-ffi_trampoline_table_alloc (void)
+நிலையான ffi_trampoline_table *
+ffi_trampoline_table_alloc (வெறுமை)
 {
   ffi_trampoline_table *table;
   vm_address_t config_page;
@@ -217,15 +217,15 @@ ffi_trampoline_table_alloc (void)
   config_page = 0x0;
   kt = vm_allocate (mach_task_self (), &config_page, PAGE_MAX_SIZE * 2,
 		    VM_FLAGS_ANYWHERE);
-  if (kt != KERN_SUCCESS)
-    return NULL;
+  எனில் (kt != KERN_SUCCESS)
+    திரும்பு வெற்று;
 
   /* Remap the trampoline table on top of the placeholder page */
   trampoline_page = config_page + PAGE_MAX_SIZE;
 
 #ifdef HAVE_ARM64E_PTRAUTH
-  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((void *)&ffi_closure_trampoline_table_page, ptrauth_key_function_pointer, 0);
-#else
+  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((வெறுமை *)&ffi_closure_trampoline_table_page, ptrauth_சாவி_function_pointer, 0);
+#இல்லையெனில்
   trampoline_page_template = (vm_address_t)&ffi_closure_trampoline_table_page;
 #endif
 
@@ -236,105 +236,105 @@ ffi_trampoline_table_alloc (void)
   kt = vm_remap (mach_task_self (), &trampoline_page, PAGE_MAX_SIZE, 0x0,
 		 VM_FLAGS_OVERWRITE, mach_task_self (), trampoline_page_template,
 		 FALSE, &cur_prot, &max_prot, VM_INHERIT_SHARE);
-  if (kt != KERN_SUCCESS)
+  எனில் (kt != KERN_SUCCESS)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      திரும்பு வெற்று;
     }
 
-  if (!(cur_prot & VM_PROT_EXECUTE))
+  எனில் (!(cur_prot & VM_PROT_EXECUTE))
     {
       /* If VM_PROT_EXECUTE isn't set on the remapped trampoline page, set it */
       kt = vm_protect (mach_task_self (), trampoline_page, PAGE_MAX_SIZE,
          FALSE, cur_prot | VM_PROT_EXECUTE);
-      if (kt != KERN_SUCCESS)
+      எனில் (kt != KERN_SUCCESS)
         {
           vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-          return NULL;
+          திரும்பு வெற்று;
         }
     }
 
   /* We have valid trampoline and config pages */
-  table = calloc (1, sizeof (ffi_trampoline_table));
-  if (table == NULL)
+  table = calloc (1, அளவு (ffi_trampoline_table));
+  எனில் (table == வெற்று)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      திரும்பு வெற்று;
     }
-  table->free_count = FFI_TRAMPOLINE_COUNT;
+  table->free_மொத்தம் = FFI_TRAMPOLINE_மொத்தம்;
   table->config_page = config_page;
 
   /* Create and initialize the free list */
   table->free_list_pool =
-    calloc (FFI_TRAMPOLINE_COUNT, sizeof (ffi_trampoline_table_entry));
-  if (table->free_list_pool == NULL)
+    calloc (FFI_TRAMPOLINE_மொத்தம், அளவு (ffi_trampoline_table_entry));
+  எனில் (table->free_list_pool == வெற்று)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      free (table);
-      return NULL;
+      விடுவி (table);
+      திரும்பு வெற்று;
     }
 
-  for (i = 0; i < table->free_count; i++)
+  க்கு (i = 0; i < table->free_மொத்தம்; i++)
     {
       ffi_trampoline_table_entry *entry = &table->free_list_pool[i];
       entry->trampoline =
-	(void *) (trampoline_page + (i * FFI_TRAMPOLINE_SIZE));
+	(வெறுமை *) (trampoline_page + (i * FFI_TRAMPOLINE_SIZE));
 #ifdef HAVE_ARM64E_PTRAUTH
-      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_key_function_pointer, 0);
+      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_சாவி_function_pointer, 0);
 #endif
 
-      if (i < table->free_count - 1)
+      எனில் (i < table->free_மொத்தம் - 1)
 	entry->next = &table->free_list_pool[i + 1];
     }
 
   table->free_list = table->free_list_pool;
 
-  return table;
+  திரும்பு table;
 }
 
-static void
+நிலையான வெறுமை
 ffi_trampoline_table_free (ffi_trampoline_table *table)
 {
   /* Remove from the list */
-  if (table->prev != NULL)
+  எனில் (table->prev != வெற்று)
     table->prev->next = table->next;
 
-  if (table->next != NULL)
+  எனில் (table->next != வெற்று)
     table->next->prev = table->prev;
 
   /* Deallocate pages */
   vm_deallocate (mach_task_self (), table->config_page, PAGE_MAX_SIZE * 2);
 
   /* Deallocate free list */
-  free (table->free_list_pool);
-  free (table);
+  விடுவி (table->free_list_pool);
+  விடுவி (table);
 }
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+வெறுமை *
+ffi_closure_alloc (size_t size, வெறுமை **code)
 {
   /* Create the closure */
   ffi_closure *closure = malloc (size);
-  if (closure == NULL)
-    return NULL;
+  எனில் (closure == வெற்று)
+    திரும்பு வெற்று;
 
   pthread_mutex_lock (&ffi_trampoline_lock);
 
   /* Check for an active trampoline table with available entries. */
   ffi_trampoline_table *table = ffi_trampoline_tables;
-  if (table == NULL || table->free_list == NULL)
+  எனில் (table == வெற்று || table->free_list == வெற்று)
     {
       table = ffi_trampoline_table_alloc ();
-      if (table == NULL)
+      எனில் (table == வெற்று)
 	{
 	  pthread_mutex_unlock (&ffi_trampoline_lock);
-	  free (closure);
-	  return NULL;
+	  விடுவி (closure);
+	  திரும்பு வெற்று;
 	}
 
       /* Insert the new table at the top of the list */
       table->next = ffi_trampoline_tables;
-      if (table->next != NULL)
+      எனில் (table->next != வெற்று)
 	table->next->prev = table;
 
       ffi_trampoline_tables = table;
@@ -343,8 +343,8 @@ ffi_closure_alloc (size_t size, void **code)
   /* Claim the free entry */
   ffi_trampoline_table_entry *entry = ffi_trampoline_tables->free_list;
   ffi_trampoline_tables->free_list = entry->next;
-  ffi_trampoline_tables->free_count--;
-  entry->next = NULL;
+  ffi_trampoline_tables->free_மொத்தம்--;
+  entry->next = வெற்று;
 
   pthread_mutex_unlock (&ffi_trampoline_lock);
 
@@ -353,11 +353,11 @@ ffi_closure_alloc (size_t size, void **code)
   closure->trampoline_table = table;
   closure->trampoline_table_entry = entry;
 
-  return closure;
+  திரும்பு closure;
 }
 
-void
-ffi_closure_free (void *ptr)
+வெறுமை
+ffi_closure_free (வெறுமை *ptr)
 {
   ffi_closure *closure = ptr;
 
@@ -370,21 +370,21 @@ ffi_closure_free (void *ptr)
   /* Return the entry to the free list */
   entry->next = table->free_list;
   table->free_list = entry;
-  table->free_count++;
+  table->free_மொத்தம்++;
 
   /* If all trampolines within this table are free, and at least one other table exists, deallocate
    * the table */
-  if (table->free_count == FFI_TRAMPOLINE_COUNT
+  எனில் (table->free_மொத்தம் == FFI_TRAMPOLINE_மொத்தம்
       && ffi_trampoline_tables != table)
     {
       ffi_trampoline_table_free (table);
     }
-  else if (ffi_trampoline_tables != table)
+  இல்லையெனில் எனில் (ffi_trampoline_tables != table)
     {
       /* Otherwise, bump this table to the top of the list */
-      table->prev = NULL;
+      table->prev = வெற்று;
       table->next = ffi_trampoline_tables;
-      if (ffi_trampoline_tables != NULL)
+      எனில் (ffi_trampoline_tables != வெற்று)
 	ffi_trampoline_tables->prev = table;
 
       ffi_trampoline_tables = table;
@@ -393,14 +393,14 @@ ffi_closure_free (void *ptr)
   pthread_mutex_unlock (&ffi_trampoline_lock);
 
   /* Free the closure */
-  free (closure);
+  விடுவி (closure);
 }
 
 #endif
 
 // Per-target implementation; It's unclear what can reasonable be shared between two OS/architecture implementations.
 
-#elif FFI_MMAP_EXEC_WRIT /* !FFI_EXEC_TRAMPOLINE_TABLE */
+#அல்லதெனில் FFI_MMAP_EXEC_WRIT /* !FFI_EXEC_TRAMPOLINE_TABLE */
 
 #define USE_LOCKS 1
 #define USE_DL_PREFIX 1
@@ -424,110 +424,110 @@ ffi_closure_free (void *ptr)
 /* Don't allocate more than a page unless needed.  */
 #define DEFAULT_GRANULARITY ((size_t)malloc_getpagesize)
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
+#அந்தர்பாவ <sys/types.h>
+#அந்தர்பாவ <sys/stat.h>
+#அந்தர்பாவ <fcntl.h>
+#அந்தர்பாவ <errno.h>
 #ifndef _MSC_VER
-#include <unistd.h>
+#அந்தர்பாவ <unistd.h>
 #endif
-#include <string.h>
-#include <stdio.h>
-#if !defined(_WIN32)
+#அந்தர்பாவ <string.h>
+#அந்தர்பாவ <stdio.h>
+#எனில் !defined(_WIN32)
 #ifdef HAVE_MNTENT
-#include <mntent.h>
+#அந்தர்பாவ <mntent.h>
 #endif /* HAVE_MNTENT */
-#include <sys/param.h>
-#include <pthread.h>
+#அந்தர்பாவ <sys/param.h>
+#அந்தர்பாவ <pthread.h>
 
 /* We don't want sys/mman.h to be included after we redefine mmap and
    dlmunmap.  */
-#include <sys/mman.h>
+#அந்தர்பாவ <sys/mman.h>
 #define LACKS_SYS_MMAN_H 1
 
-#if FFI_MMAP_EXEC_SELINUX
-#include <sys/statfs.h>
-#include <stdlib.h>
+#எனில் FFI_MMAP_EXEC_SELINUX
+#அந்தர்பாவ <sys/statfs.h>
+#அந்தர்பாவ <stdlib.h>
 
-static int selinux_enabled = -1;
+நிலையான முழு selinux_enabled = -1;
 
-static int
-selinux_enabled_check (void)
+நிலையான முழு
+selinux_enabled_check (வெறுமை)
 {
-  struct statfs sfs;
+  கட்டமைப்பு statfs sfs;
   FILE *f;
-  char *buf = NULL;
+  எழுத்து *buf = வெற்று;
   size_t len = 0;
 
-  if (statfs ("/selinux", &sfs) >= 0
-      && (unsigned int) sfs.f_type == 0xf97cff8cU)
-    return 1;
+  எனில் (statfs ("/selinux", &sfs) >= 0
+      && (unsigned முழு) sfs.f_type == 0xf97cff8cU)
+    திரும்பு 1;
   f = fopen ("/proc/mounts", "r");
-  if (f == NULL)
-    return 0;
-  while (getline (&buf, &len, f) >= 0)
+  எனில் (f == வெற்று)
+    திரும்பு 0;
+  போது (getline (&buf, &len, f) >= 0)
     {
-      char *p = strchr (buf, ' ');
-      if (p == NULL)
-        break;
+      எழுத்து *p = strchr (buf, ' ');
+      எனில் (p == வெற்று)
+        நிறுத்து;
       p = strchr (p + 1, ' ');
-      if (p == NULL)
-        break;
-      if (strncmp (p + 1, "selinuxfs ", 10) == 0)
+      எனில் (p == வெற்று)
+        நிறுத்து;
+      எனில் (strncmp (p + 1, "selinuxfs ", 10) == 0)
         {
-          free (buf);
+          விடுவி (buf);
           fclose (f);
-          return 1;
+          திரும்பு 1;
         }
     }
-  free (buf);
+  விடுவி (buf);
   fclose (f);
-  return 0;
+  திரும்பு 0;
 }
 
 #define is_selinux_enabled() (selinux_enabled >= 0 ? selinux_enabled \
 			      : (selinux_enabled = selinux_enabled_check ()))
 
-#else
+#இல்லையெனில்
 
 #define is_selinux_enabled() 0
 
 #endif /* !FFI_MMAP_EXEC_SELINUX */
 
 /* On PaX enable kernels that have MPROTECT enabled we can't use PROT_EXEC. */
-#if defined FFI_MMAP_PAX
-#include <stdlib.h>
+#எனில் defined FFI_MMAP_PAX
+#அந்தர்பாவ <stdlib.h>
 
-enum {
+எண்ணிக்கை {
   PAX_MPROTECT = (1 << 0),
   PAX_EMUTRAMP = (1 << 1),
 };
-static int cached_pax_flags = -1;
+நிலையான முழு cached_pax_flags = -1;
 
-static int
-pax_flags_check (void)
+நிலையான முழு
+pax_flags_check (வெறுமை)
 {
-  char *buf = NULL;
+  எழுத்து *buf = வெற்று;
   size_t len = 0;
   FILE *f;
-  int ret;
+  முழு ret;
   f = fopen ("/proc/self/status", "r");
-  if (f == NULL)
-    return 0;
+  எனில் (f == வெற்று)
+    திரும்பு 0;
   ret = 0;
 
-  while (getline (&buf, &len, f) != -1)
-    if (!strncmp (buf, "PaX:", 4))
+  போது (getline (&buf, &len, f) != -1)
+    எனில் (!strncmp (buf, "PaX:", 4))
       {
-        if (NULL != strchr (buf + 4, 'M'))
+        எனில் (வெற்று != strchr (buf + 4, 'M'))
           ret |= PAX_MPROTECT;
-        if (NULL != strchr (buf + 4, 'E'))
+        எனில் (வெற்று != strchr (buf + 4, 'E'))
           ret |= PAX_EMUTRAMP;
-        break;
+        நிறுத்து;
       }
-  free (buf);
+  விடுவி (buf);
   fclose (f);
-  return ret;
+  திரும்பு ret;
 }
 
 #define get_pax_flags() (cached_pax_flags >= 0 ? cached_pax_flags \
@@ -538,142 +538,142 @@ pax_flags_check (void)
 
 #endif /* defined FFI_MMAP_PAX */
 
-#elif defined (__CYGWIN__) || defined(__INTERIX)
+#அல்லதெனில் defined (__CYGWIN__) || defined(__INTERIX)
 
-#include <sys/mman.h>
+#அந்தர்பாவ <sys/mman.h>
 
 /* Cygwin is Linux-like, but not quite that Linux-like.  */
 #define is_selinux_enabled() 0
 
 #endif /* !defined(X86_WIN32) && !defined(X86_WIN64) */
 
-#if !defined FFI_MMAP_PAX
+#எனில் !defined FFI_MMAP_PAX
 # define is_mprotect_enabled() 0
 # define is_emutramp_enabled() 0
 #endif /* !defined FFI_MMAP_PAX */
 
 /* Declare all functions defined in dlmalloc.c as static.  */
-static void *dlmalloc(size_t);
-static void dlfree(void*);
-static void *dlcalloc(size_t, size_t) MAYBE_UNUSED;
-static void *dlrealloc(void *, size_t) MAYBE_UNUSED;
-static void *dlmemalign(size_t, size_t) MAYBE_UNUSED;
-static void *dlvalloc(size_t) MAYBE_UNUSED;
-static int dlmallopt(int, int) MAYBE_UNUSED;
-static size_t dlmalloc_footprint(void) MAYBE_UNUSED;
-static size_t dlmalloc_max_footprint(void) MAYBE_UNUSED;
-static void** dlindependent_calloc(size_t, size_t, void**) MAYBE_UNUSED;
-static void** dlindependent_comalloc(size_t, size_t*, void**) MAYBE_UNUSED;
-static void *dlpvalloc(size_t) MAYBE_UNUSED;
-static int dlmalloc_trim(size_t) MAYBE_UNUSED;
-static size_t dlmalloc_usable_size(void*) MAYBE_UNUSED;
-static void dlmalloc_stats(void) MAYBE_UNUSED;
+நிலையான வெறுமை *dlmalloc(size_t);
+நிலையான வெறுமை dlfree(வெறுமை*);
+நிலையான வெறுமை *dlcalloc(size_t, size_t) MAYBE_UNUSED;
+நிலையான வெறுமை *dlrealloc(வெறுமை *, size_t) MAYBE_UNUSED;
+நிலையான வெறுமை *dlmemalign(size_t, size_t) MAYBE_UNUSED;
+நிலையான வெறுமை *dlvalloc(size_t) MAYBE_UNUSED;
+நிலையான முழு dlmallopt(முழு, முழு) MAYBE_UNUSED;
+நிலையான size_t dlmalloc_footprint(வெறுமை) MAYBE_UNUSED;
+நிலையான size_t dlmalloc_max_footprint(வெறுமை) MAYBE_UNUSED;
+நிலையான வெறுமை** dlindependent_calloc(size_t, size_t, வெறுமை**) MAYBE_UNUSED;
+நிலையான வெறுமை** dlindependent_comalloc(size_t, size_t*, வெறுமை**) MAYBE_UNUSED;
+நிலையான வெறுமை *dlpvalloc(size_t) MAYBE_UNUSED;
+நிலையான முழு dlmalloc_trim(size_t) MAYBE_UNUSED;
+நிலையான size_t dlmalloc_usable_size(வெறுமை*) MAYBE_UNUSED;
+நிலையான வெறுமை dlmalloc_stats(வெறுமை) MAYBE_UNUSED;
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#எனில் !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 /* Use these for mmap and munmap within dlmalloc.c.  */
-static void *dlmmap(void *, size_t, int, int, int, off_t);
-static int dlmunmap(void *, size_t);
+நிலையான வெறுமை *dlmmap(வெறுமை *, size_t, முழு, முழு, முழு, off_t);
+நிலையான முழு dlmunmap(வெறுமை *, size_t);
 #endif /* !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
 
 #define mmap dlmmap
 #define munmap dlmunmap
 
-#include "dlmalloc.c"
+#அந்தர்பாவ "dlmalloc.c"
 
 #undef mmap
 #undef munmap
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#எனில் !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 
 /* A mutex used to synchronize access to *exec* variables in this file.  */
-static pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
+நிலையான pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* A file descriptor of a temporary file from which we'll map
    executable pages.  */
-static int execfd = -1;
+நிலையான முழு execfd = -1;
 
 /* The amount of space already allocated from the temporary file.  */
-static size_t execsize = 0;
+நிலையான size_t execsize = 0;
 
 #ifdef HAVE_MEMFD_CREATE
 /* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_memfd (const char *name)
+நிலையான முழு
+open_temp_exec_file_memfd (மாறிலி எழுத்து *name)
 {
-  int fd;
+  முழு fd;
   fd = memfd_create (name, MFD_CLOEXEC);
-  return fd;
+  திரும்பு fd;
 }
 #endif
 
 /* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_name (char *name, int flags MAYBE_UNUSED)
+நிலையான முழு
+open_temp_exec_file_name (எழுத்து *name, முழு flags MAYBE_UNUSED)
 {
-  int fd;
+  முழு fd;
 
 #ifdef HAVE_MKOSTEMP
   fd = mkostemp (name, flags);
-#else
+#இல்லையெனில்
   fd = mkstemp (name);
 #endif
 
-  if (fd != -1)
+  எனில் (fd != -1)
     unlink (name);
 
-  return fd;
+  திரும்பு fd;
 }
 
 /* Open a temporary file in the named directory.  */
-static int
-open_temp_exec_file_dir (const char *dir)
+நிலையான முழு
+open_temp_exec_file_dir (மாறிலி எழுத்து *dir)
 {
-  static const char suffix[] = "/ffiXXXXXX";
-  int lendir, flags;
-  char *tempname;
+  நிலையான மாறிலி எழுத்து suffix[] = "/ffiXXXXXX";
+  முழு lendir, flags;
+  எழுத்து *tempname;
 #ifdef O_TMPFILE
-  int fd;
+  முழு fd;
 #endif
 
 #ifdef O_CLOEXEC
   flags = O_CLOEXEC;
-#else
+#இல்லையெனில்
   flags = 0;
 #endif
 
 #ifdef O_TMPFILE
   fd = open (dir, flags | O_RDWR | O_EXCL | O_TMPFILE, 0700);
   /* If the running system does not support the O_TMPFILE flag then retry without it. */
-  if (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
-    return fd;
-  } else {
+  எனில் (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
+    திரும்பு fd;
+  } இல்லையெனில் {
     errno = 0;
   }
 #endif
 
-  lendir = (int) strlen (dir);
-  tempname = __builtin_alloca (lendir + sizeof (suffix));
+  lendir = (முழு) strlen (dir);
+  tempname = __builtin_alloca (lendir + அளவு (suffix));
 
-  if (!tempname)
-    return -1;
+  எனில் (!tempname)
+    திரும்பு -1;
 
   memcpy (tempname, dir, lendir);
-  memcpy (tempname + lendir, suffix, sizeof (suffix));
+  memcpy (tempname + lendir, suffix, அளவு (suffix));
 
-  return open_temp_exec_file_name (tempname, flags);
+  திரும்பு open_temp_exec_file_name (tempname, flags);
 }
 
 /* Open a temporary file in the directory in the named environment
    variable.  */
-static int
-open_temp_exec_file_env (const char *envvar)
+நிலையான முழு
+open_temp_exec_file_env (மாறிலி எழுத்து *envvar)
 {
-  const char *value = getenv (envvar);
+  மாறிலி எழுத்து *மதிப்பு = getenv (envvar);
 
-  if (!value)
-    return -1;
+  எனில் (!மதிப்பு)
+    திரும்பு -1;
 
-  return open_temp_exec_file_dir (value);
+  திரும்பு open_temp_exec_file_dir (மதிப்பு);
 }
 
 #ifdef HAVE_MNTENT
@@ -681,57 +681,57 @@ open_temp_exec_file_env (const char *envvar)
    listed in the mounts file.  Subsequent calls with the same mounts
    keep searching for mount points in the same file.  Providing NULL
    as the mounts file closes the file.  */
-static int
-open_temp_exec_file_mnt (const char *mounts)
+நிலையான முழு
+open_temp_exec_file_mnt (மாறிலி எழுத்து *mounts)
 {
-  static const char *last_mounts;
-  static FILE *last_mntent;
+  நிலையான மாறிலி எழுத்து *last_mounts;
+  நிலையான FILE *last_mntent;
 
-  if (mounts != last_mounts)
+  எனில் (mounts != last_mounts)
     {
-      if (last_mntent)
+      எனில் (last_mntent)
 	endmntent (last_mntent);
 
       last_mounts = mounts;
 
-      if (mounts)
+      எனில் (mounts)
 	last_mntent = setmntent (mounts, "r");
-      else
-	last_mntent = NULL;
+      இல்லையெனில்
+	last_mntent = வெற்று;
     }
 
-  if (!last_mntent)
-    return -1;
+  எனில் (!last_mntent)
+    திரும்பு -1;
 
-  for (;;)
+  க்கு (;;)
     {
-      int fd;
-      struct mntent mnt;
-      char buf[MAXPATHLEN * 3];
+      முழு fd;
+      கட்டமைப்பு mntent mnt;
+      எழுத்து buf[MAXPATHLEN * 3];
 
-      if (getmntent_r (last_mntent, &mnt, buf, sizeof (buf)) == NULL)
-	return -1;
+      எனில் (getmntent_r (last_mntent, &mnt, buf, அளவு (buf)) == வெற்று)
+	திரும்பு -1;
 
-      if (hasmntopt (&mnt, "ro")
+      எனில் (hasmntopt (&mnt, "ro")
 	  || hasmntopt (&mnt, "noexec")
 	  || access (mnt.mnt_dir, W_OK))
-	continue;
+	தொடர்;
 
       fd = open_temp_exec_file_dir (mnt.mnt_dir);
 
-      if (fd != -1)
-	return fd;
+      எனில் (fd != -1)
+	திரும்பு fd;
     }
 }
 #endif /* HAVE_MNTENT */
 
 /* Instructions to look for a location to hold a temporary file that
    can be mapped in for execution.  */
-static struct
+நிலையான கட்டமைப்பு
 {
-  int (*func)(const char *);
-  const char *arg;
-  int repeat;
+  முழு (*func)(மாறிலி எழுத்து *);
+  மாறிலி எழுத்து *arg;
+  முழு repeat;
 } open_temp_exec_file_opts[] = {
 #ifdef HAVE_MEMFD_CREATE
   { open_temp_exec_file_memfd, "libffi", 0 },
@@ -749,51 +749,51 @@ static struct
 };
 
 /* Current index into open_temp_exec_file_opts.  */
-static int open_temp_exec_file_opts_idx = 0;
+நிலையான முழு open_temp_exec_file_opts_idx = 0;
 
 /* Reset a current multi-call func, then advances to the next entry.
    If we're at the last, go back to the first and return nonzero,
    otherwise return zero.  */
-static int
-open_temp_exec_file_opts_next (void)
+நிலையான முழு
+open_temp_exec_file_opts_next (வெறுமை)
 {
-  if (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
-    open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func (NULL);
+  எனில் (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
+    open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func (வெற்று);
 
   open_temp_exec_file_opts_idx++;
-  if (open_temp_exec_file_opts_idx
-      == (sizeof (open_temp_exec_file_opts)
-	  / sizeof (*open_temp_exec_file_opts)))
+  எனில் (open_temp_exec_file_opts_idx
+      == (அளவு (open_temp_exec_file_opts)
+	  / அளவு (*open_temp_exec_file_opts)))
     {
       open_temp_exec_file_opts_idx = 0;
-      return 1;
+      திரும்பு 1;
     }
 
-  return 0;
+  திரும்பு 0;
 }
 
 /* Return a file descriptor of a temporary zero-sized file in a
    writable and executable filesystem.  */
-int
-open_temp_exec_file (void)
+முழு
+open_temp_exec_file (வெறுமை)
 {
-  int fd;
+  முழு fd;
 
-  do
+  செய்
     {
       fd = open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func
 	(open_temp_exec_file_opts[open_temp_exec_file_opts_idx].arg);
 
-      if (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
+      எனில் (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
 	  || fd == -1)
 	{
-	  if (open_temp_exec_file_opts_next ())
-	    break;
+	  எனில் (open_temp_exec_file_opts_next ())
+	    நிறுத்து;
 	}
     }
-  while (fd == -1);
+  போது (fd == -1);
 
-  return fd;
+  திரும்பு fd;
 }
 
 /* We need to allocate space in a file that will be backing a writable
@@ -803,29 +803,29 @@ open_temp_exec_file (void)
    - ftruncate() does not allocate space on filesystems with sparse files
    Failure to allocate the space will cause SIGBUS to be thrown when
    the mapping is subsequently written to.  */
-static int
-allocate_space (int fd, off_t len)
+நிலையான முழு
+allocate_space (முழு fd, off_t len)
 {
-  static long page_size;
+  நிலையான long page_size;
 
   /* Obtain system page size. */
-  if (!page_size)
+  எனில் (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
-  if (page_size <= 0)
-    return -1;
+  எனில் (page_size <= 0)
+    திரும்பு -1;
 
-  unsigned char buf[page_size];
+  unsigned எழுத்து buf[page_size];
   memset (buf, 0, page_size);
 
-  while (len > 0)
+  போது (len > 0)
     {
       off_t to_write = (len < page_size) ? len : page_size;
-      if (write (fd, buf, to_write) < to_write)
-        return -1;
+      எனில் (லிக (fd, buf, to_write) < to_write)
+        திரும்பு -1;
       len -= to_write;
     }
 
-  return 0;
+  திரும்பு 0;
 }
 
 /* Map in a chunk of memory from the temporary exec file into separate
@@ -833,113 +833,113 @@ allocate_space (int fd, off_t len)
    executable.  Returns the address of the writable portion, after
    storing an offset to the corresponding executable portion at the
    last word of the requested chunk.  */
-static void *
-dlmmap_locked (void *start, size_t length, int prot, int flags, off_t offset)
+நிலையான வெறுமை *
+dlmmap_locked (வெறுமை *start, size_t length, முழு prot, முழு flags, off_t offset)
 {
-  void *ptr;
+  வெறுமை *ptr;
 
-  if (execfd == -1)
+  எனில் (execfd == -1)
     {
       open_temp_exec_file_opts_idx = 0;
     retry_open:
       execfd = open_temp_exec_file ();
-      if (execfd == -1)
-	return MFAIL;
+      எனில் (execfd == -1)
+	திரும்பு MFAIL;
     }
 
   offset = execsize;
 
-  if (allocate_space (execfd, length))
-    return MFAIL;
+  எனில் (allocate_space (execfd, length))
+    திரும்பு MFAIL;
 
   flags &= ~(MAP_PRIVATE | MAP_ANONYMOUS);
   flags |= MAP_SHARED;
 
-  ptr = mmap (NULL, length, (prot & ~PROT_WRITE) | PROT_EXEC,
+  ptr = mmap (வெற்று, length, (prot & ~PROT_WRITE) | PROT_EXEC,
 	      flags, execfd, offset);
-  if (ptr == MFAIL)
+  எனில் (ptr == MFAIL)
     {
-      if (!offset)
+      எனில் (!offset)
 	{
 	  close (execfd);
-	  goto retry_open;
+	  செல் retry_open;
 	}
-      if (ftruncate (execfd, offset) != 0)
+      எனில் (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
 
-      return MFAIL;
+      திரும்பு MFAIL;
     }
-  else if (!offset
+  இல்லையெனில் எனில் (!offset
 	   && open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
     open_temp_exec_file_opts_next ();
 
   start = mmap (start, length, prot, flags, execfd, offset);
 
-  if (start == MFAIL)
+  எனில் (start == MFAIL)
     {
       munmap (ptr, length);
-      if (ftruncate (execfd, offset) != 0)
+      எனில் (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
-      return start;
+      திரும்பு start;
     }
 
-  mmap_exec_offset ((char *)start, length) = (char*)ptr - (char*)start;
+  mmap_exec_offset ((எழுத்து *)start, length) = (எழுத்து*)ptr - (எழுத்து*)start;
 
   execsize += length;
 
-  return start;
+  திரும்பு start;
 }
 
 /* Map in a writable and executable chunk of memory if possible.
    Failing that, fall back to dlmmap_locked.  */
-static void *
-dlmmap (void *start, size_t length, int prot,
-	int flags, int fd, off_t offset)
+நிலையான வெறுமை *
+dlmmap (வெறுமை *start, size_t length, முழு prot,
+	முழு flags, முழு fd, off_t offset)
 {
-  void *ptr;
+  வெறுமை *ptr;
 
-  assert (start == NULL && length % malloc_getpagesize == 0
+  ப்ரதிஜ்ஞா (start == வெற்று && length % malloc_getpagesize == 0
 	  && prot == (PROT_READ | PROT_WRITE)
 	  && flags == (MAP_PRIVATE | MAP_ANONYMOUS)
 	  && fd == -1 && offset == 0);
 
-  if (execfd == -1 && ffi_tramp_is_supported ())
+  எனில் (execfd == -1 && ffi_tramp_is_supported ())
     {
       ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-      return ptr;
+      திரும்பு ptr;
     }
 
   /* -1 != execfd hints that we already decided to use dlmmap_locked
      last time.  */
-  if (execfd == -1 && is_mprotect_enabled ())
+  எனில் (execfd == -1 && is_mprotect_enabled ())
     {
 #ifdef FFI_MMAP_EXEC_EMUTRAMP_PAX
-      if (is_emutramp_enabled ())
+      எனில் (is_emutramp_enabled ())
         {
           /* emutramp requires the kernel recognizing the trampoline pattern
              generated by ffi_prep_closure_loc; there is no way to test
              in advance whether this will work, so this is experimental.  */
           ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-          return ptr;
+          திரும்பு ptr;
         }
 #endif
       /* fallback to dlmmap_locked.  */
     }
-  else if (execfd == -1 && !is_selinux_enabled ())
+  இல்லையெனில் எனில் (execfd == -1 && !is_selinux_enabled ())
     {
       ptr = mmap (start, length, prot | PROT_EXEC, flags, fd, offset);
 
-      if (ptr != MFAIL || (errno != EPERM && errno != EACCES))
+      எனில் (ptr != MFAIL || (errno != EPERM && errno != EACCES))
 	/* Cool, no need to mess with separate segments.  */
-	return ptr;
+	திரும்பு ptr;
 
       /* If MREMAP_DUP is ever introduced and implemented, try mmap
 	 with ((prot & ~PROT_WRITE) | PROT_EXEC) and mremap with
@@ -950,13 +950,13 @@ dlmmap (void *start, size_t length, int prot,
   ptr = dlmmap_locked (start, length, prot, flags, offset);
   pthread_mutex_unlock (&open_temp_exec_file_mutex);
 
-  return ptr;
+  திரும்பு ptr;
 }
 
 /* Release memory at the given address, as well as the corresponding
    executable page if it's separate.  */
-static int
-dlmunmap (void *start, size_t length)
+நிலையான முழு
+dlmunmap (வெறுமை *start, size_t length)
 {
   /* We don't bother decreasing execsize or truncating the file, since
      we can't quite tell whether we're unmapping the end of the file.
@@ -965,30 +965,30 @@ dlmunmap (void *start, size_t length)
      deallocated and checking that the file contents change.
      Yuck.  */
   msegmentptr seg = segment_holding (gm, start);
-  void *code;
+  வெறுமை *code;
 
-  if (seg && (code = add_segment_exec_offset (start, seg)) != start)
+  எனில் (seg && (code = add_segment_exec_offset (start, seg)) != start)
     {
-      int ret = munmap (code, length);
-      if (ret)
-	return ret;
+      முழு ret = munmap (code, length);
+      எனில் (ret)
+	திரும்பு ret;
     }
 
-  return munmap (start, length);
+  திரும்பு munmap (start, length);
 }
 
-#if FFI_CLOSURE_FREE_CODE
+#எனில் FFI_CLOSURE_FREE_CODE
 /* Return segment holding given code address.  */
-static msegmentptr
-segment_holding_code (mstate m, char* addr)
+நிலையான msegmentptr
+segment_holding_code (mstate m, எழுத்து* addr)
 {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if (addr >= add_segment_exec_offset (sp->base, sp)
+  க்கு (;;) {
+    எனில் (addr >= add_segment_exec_offset (sp->base, sp)
 	&& addr < add_segment_exec_offset (sp->base, sp) + sp->size)
-      return sp;
-    if ((sp = sp->next) == 0)
-      return 0;
+      திரும்பு sp;
+    எனில் ((sp = sp->next) == 0)
+      திரும்பு 0;
   }
 }
 #endif
@@ -998,117 +998,117 @@ segment_holding_code (mstate m, char* addr)
 /* Allocate a chunk of memory with the given size.  Returns a pointer
    to the writable address, and sets *CODE to the executable
    corresponding virtual address.  */
-void *
-ffi_closure_alloc (size_t size, void **code)
+வெறுமை *
+ffi_closure_alloc (size_t size, வெறுமை **code)
 {
-  void *ptr, *ftramp;
+  வெறுமை *ptr, *ftramp;
 
-  if (!code)
-    return NULL;
+  எனில் (!code)
+    திரும்பு வெற்று;
 
   ptr = dlmalloc (size);
 
-  if (ptr)
+  எனில் (ptr)
     {
       msegmentptr seg = segment_holding (gm, ptr);
 
       *code = FFI_FN (add_segment_exec_offset (ptr, seg));
-      if (!ffi_tramp_is_supported ())
-        return ptr;
+      எனில் (!ffi_tramp_is_supported ())
+        திரும்பு ptr;
 
       ftramp = ffi_tramp_alloc (0);
-      if (ftramp == NULL)
+      எனில் (ftramp == வெற்று)
       {
         dlfree (ptr);
-        return NULL;
+        திரும்பு வெற்று;
       }
       *code = FFI_FN (ffi_tramp_get_addr (ftramp));
       ((ffi_closure *) ptr)->ftramp = ftramp;
     }
 
-  return ptr;
+  திரும்பு ptr;
 }
 
-void *
-ffi_data_to_code_pointer (void *data)
+வெறுமை *
+ffi_data_to_code_pointer (வெறுமை *data)
 {
   msegmentptr seg = segment_holding (gm, data);
   /* We expect closures to be allocated with ffi_closure_alloc(), in
      which case seg will be non-NULL.  However, some users take on the
      burden of managing this memory themselves, in which case this
      we'll just return data. */
-  if (seg)
+  எனில் (seg)
     {
-      if (!ffi_tramp_is_supported ())
-        return add_segment_exec_offset (data, seg);
-      return ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
+      எனில் (!ffi_tramp_is_supported ())
+        திரும்பு add_segment_exec_offset (data, seg);
+      திரும்பு ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
     }
-  else
-    return data;
+  இல்லையெனில்
+    திரும்பு data;
 }
 
 /* Release a chunk of memory allocated with ffi_closure_alloc.  If
    FFI_CLOSURE_FREE_CODE is nonzero, the given address can be the
    writable or the executable address given.  Otherwise, only the
    writable address can be provided here.  */
-void
-ffi_closure_free (void *ptr)
+வெறுமை
+ffi_closure_free (வெறுமை *ptr)
 {
-#if FFI_CLOSURE_FREE_CODE
+#எனில் FFI_CLOSURE_FREE_CODE
   msegmentptr seg = segment_holding_code (gm, ptr);
 
-  if (seg)
+  எனில் (seg)
     ptr = sub_segment_exec_offset (ptr, seg);
 #endif
-  if (ffi_tramp_is_supported ())
+  எனில் (ffi_tramp_is_supported ())
     ffi_tramp_free (((ffi_closure *) ptr)->ftramp);
 
   dlfree (ptr);
 }
 
-int
-ffi_tramp_is_present (void *ptr)
+முழு
+ffi_tramp_is_present (வெறுமை *ptr)
 {
   msegmentptr seg = segment_holding (gm, ptr);
-  return seg != NULL && ffi_tramp_is_supported();
+  திரும்பு seg != வெற்று && ffi_tramp_is_supported();
 }
 
-# else /* ! FFI_MMAP_EXEC_WRIT */
+# இல்லையெனில் /* ! FFI_MMAP_EXEC_WRIT */
 
 /* On many systems, memory returned by malloc is writable and
    executable, so just use it.  */
 
-#include <stdlib.h>
+#அந்தர்பாவ <stdlib.h>
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+வெறுமை *
+ffi_closure_alloc (size_t size, வெறுமை **code)
 {
-  void *c;
+  வெறுமை *c;
 
-  if (!code)
-    return NULL;
+  எனில் (!code)
+    திரும்பு வெற்று;
 
   c = malloc (size);
   *code = FFI_FN (c);
-  return c;
+  திரும்பு c;
 }
 
-void
-ffi_closure_free (void *ptr)
+வெறுமை
+ffi_closure_free (வெறுமை *ptr)
 {
-  free (ptr);
+  விடுவி (ptr);
 }
 
-void *
-ffi_data_to_code_pointer (void *data)
+வெறுமை *
+ffi_data_to_code_pointer (வெறுமை *data)
 {
-  return data;
+  திரும்பு data;
 }
 
-int
-ffi_tramp_is_present (__attribute__((unused)) void *ptr)
+முழு
+ffi_tramp_is_present (__attribute__((unused)) வெறுமை *ptr)
 {
-  return 0;
+  திரும்பு 0;
 }
 
 # endif /* ! FFI_MMAP_EXEC_WRIT */

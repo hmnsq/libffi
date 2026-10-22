@@ -34,21 +34,21 @@
 /* ---- Generic type definitions ----------------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+வகைவரை unsigned long ffi_arg;
+வகைவரை signed long ffi_sarg;
 
-typedef enum ffi_abi
+வகைவரை எண்ணிக்கை ffi_abi
 {
   FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 8
+#எனில் __SIZEOF_POINTER__ == 8
   FFI_ARC64,
-#else
+#இல்லையெனில்
   FFI_ARCOMPACT,
 #endif
   FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 8
+#எனில் __SIZEOF_POINTER__ == 8
   FFI_DEFAULT_ABI = FFI_ARC64
-#else
+#இல்லையெனில்
   FFI_DEFAULT_ABI = FFI_ARCOMPACT
 #endif
 } ffi_abi;
@@ -56,9 +56,9 @@ typedef enum ffi_abi
 
 #define FFI_CLOSURES 		1
 #define FFI_GO_CLOSURES 1
-#if __SIZEOF_POINTER__ == 8
+#எனில் __SIZEOF_POINTER__ == 8
 #define FFI_TRAMPOLINE_SIZE	24
-#else
+#இல்லையெனில்
 #define FFI_TRAMPOLINE_SIZE	12
 #endif
 

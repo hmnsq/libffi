@@ -25,21 +25,21 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__x86_64__) || defined(_M_AMD64)
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <tramp.h>
+#எனில் defined(__x86_64__) || defined(_M_AMD64)
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ <ffi_common.h>
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <stdint.h>
+#அந்தர்பாவ <stdbool.h>
+#அந்தர்பாவ <tramp.h>
 
 #ifdef X86_WIN64
 #define EFI64(name) name
-#else
+#இல்லையெனில்
 #define EFI64(name) FFI_HIDDEN name##_efi64
 #endif
 
-struct win64_call_frame
+கட்டமைப்பு win64_call_frame
 {
   UINT64 rbp;		/* 0 */
   UINT64 retaddr;	/* 8 */
@@ -48,53 +48,53 @@ struct win64_call_frame
   UINT64 rvalue;	/* 32 */
 };
 
-extern void ffi_call_win64 (void *stack, struct win64_call_frame *,
-			    void *closure) FFI_HIDDEN;
+வெளி வெறுமை ffi_call_win64 (வெறுமை *அடுக்கு, கட்டமைப்பு win64_call_frame *,
+			    வெறுமை *closure) FFI_HIDDEN;
 
 ffi_status FFI_HIDDEN
 EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
 {
-  int flags, n;
+  முழு flags, n;
 
-  switch (cif->abi)
+  தேர்வு (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    நிலை FFI_WIN64:
+    நிலை FFI_GNUW64:
+      நிறுத்து;
+    இயல்பு:
+      திரும்பு FFI_BAD_ABI;
     }
 
   flags = cif->rtype->type;
-  switch (flags)
+  தேர்வு (flags)
     {
-    default:
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+    இயல்பு:
+      நிறுத்து;
+    நிலை FFI_TYPE_LONGDOUBLE:
       /* GCC returns long double values by reference, like a struct */
-      if (cif->abi == FFI_GNUW64)
+      எனில் (cif->abi == FFI_GNUW64)
 	flags = FFI_TYPE_STRUCT;
-      break;
-    case FFI_TYPE_COMPLEX:
+      நிறுத்து;
+    நிலை FFI_TYPE_COMPLEX:
       flags = FFI_TYPE_STRUCT;
       /* FALLTHRU */
-    case FFI_TYPE_STRUCT:
-      switch (cif->rtype->size)
+    நிலை FFI_TYPE_STRUCT:
+      தேர்வு (cif->rtype->size)
 	{
-	case 8:
+	நிலை 8:
 	  flags = FFI_TYPE_UINT64;
-	  break;
-	case 4:
+	  நிறுத்து;
+	நிலை 4:
 	  flags = FFI_TYPE_SMALL_STRUCT_4B;
-	  break;
-	case 2:
+	  நிறுத்து;
+	நிலை 2:
 	  flags = FFI_TYPE_SMALL_STRUCT_2B;
-	  break;
-	case 1:
+	  நிறுத்து;
+	நிலை 1:
 	  flags = FFI_TYPE_SMALL_STRUCT_1B;
-	  break;
+	  நிறுத்து;
 	}
-      break;
+      நிறுத்து;
     }
   cif->flags = flags;
 
@@ -102,32 +102,32 @@ EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
      passed by reference with the pointer in the 8 byte slot.  */
   n = cif->nargs;
   n += (flags == FFI_TYPE_STRUCT);
-  if (n < 4)
+  எனில் (n < 4)
     n = 4;
   cif->bytes = n * 8;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 /* We perform some black magic here to use some of the parent's stack frame in
  * ffi_call_win64() that breaks with the MSVC compiler with the /RTCs or /GZ
  * flags.  Disable the 'Stack frame run time error checking' for this function
  * so we don't hit weird exceptions in debug builds. */
-#if defined(_MSC_VER)
+#எனில் defined(_MSC_VER)
 #pragma runtime_checks("s", off)
 #endif
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+நிலையான வெறுமை
+ffi_call_int (ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue,
+	      வெறுமை **avalue, வெறுமை *closure)
 {
-  int i, j, n, flags;
-  UINT64 *stack;
+  முழு i, j, n, flags;
+  UINT64 *அடுக்கு;
   size_t rsize;
-  struct win64_call_frame *frame;
+  கட்டமைப்பு win64_call_frame *frame;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int nargs = cif->nargs;
+  வெறுமை **avalue_copy = வெற்று;
+  முழு nargs = cif->nargs;
 
   FFI_ASSERT(cif->abi == FFI_GNUW64 || cif->abi == FFI_WIN64);
 
@@ -135,37 +135,37 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
      make a copy so we are passing by value.  The pointer array is cloned
      first: the caller owns avalue[] and may reuse it for another call,
      so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  க்கு (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
+      முழு size = at->size;
       bool needcopy = false;
 
-      switch (at->type)
+      தேர்வு (at->type)
 	{
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
+	நிலை FFI_TYPE_UINT128:
+	நிலை FFI_TYPE_SINT128:
 	  needcopy = true;
-	  break;
-	case FFI_TYPE_STRUCT:
-	  switch (size)
+	  நிறுத்து;
+	நிலை FFI_TYPE_STRUCT:
+	  தேர்வு (size)
 	    {
-	    case 1:
-	    case 2:
-	    case 4:
-	    case 8:
-	      break;
-	    default:
+	    நிலை 1:
+	    நிலை 2:
+	    நிலை 4:
+	    நிலை 8:
+	      நிறுத்து;
+	    இயல்பு:
 	      needcopy = true;
 	    }
 	}
-      if (needcopy)
+      எனில் (needcopy)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          எழுத்து *argcopy = alloca (size);
+          எனில் (avalue_copy == வெற்று)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * அளவு (வெறுமை *));
+              memcpy (avalue_copy, avalue, nargs * அளவு (வெறுமை *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -178,17 +178,17 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If we have no return value for a structure, we need to create one.
      Otherwise we can ignore the return type entirely.  */
-  if (rvalue == NULL)
+  எனில் (rvalue == வெற்று)
     {
-      if (flags == FFI_TYPE_STRUCT)
+      எனில் (flags == FFI_TYPE_STRUCT)
 	rsize = cif->rtype->size;
-      else
+      இல்லையெனில்
 	flags = FFI_TYPE_VOID;
     }
 
-  stack = alloca(cif->bytes + sizeof(struct win64_call_frame) + rsize);
-  frame = (struct win64_call_frame *)((char *)stack + cif->bytes);
-  if (rsize)
+  அடுக்கு = alloca(cif->bytes + அளவு(கட்டமைப்பு win64_call_frame) + rsize);
+  frame = (கட்டமைப்பு win64_call_frame *)((எழுத்து *)அடுக்கு + cif->bytes);
+  எனில் (rsize)
     rvalue = frame + 1;
 
   frame->fn = (uintptr_t)fn;
@@ -196,71 +196,71 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   frame->rvalue = (uintptr_t)rvalue;
 
   j = 0;
-  if (flags == FFI_TYPE_STRUCT)
+  எனில் (flags == FFI_TYPE_STRUCT)
     {
-      stack[0] = (uintptr_t)rvalue;
+      அடுக்கு[0] = (uintptr_t)rvalue;
       j = 1;
     }
 
-  for (i = 0, n = cif->nargs; i < n; ++i, ++j)
+  க்கு (i = 0, n = cif->nargs; i < n; ++i, ++j)
     {
-      switch (cif->arg_types[i]->size)
+      தேர்வு (cif->arg_types[i]->size)
 	{
-	case 8:
-	  stack[j] = *(UINT64 *)avalue[i];
-	  break;
-	case 4:
-	  stack[j] = *(UINT32 *)avalue[i];
-	  break;
-	case 2:
-	  stack[j] = *(UINT16 *)avalue[i];
-	  break;
-	case 1:
-	  stack[j] = *(UINT8 *)avalue[i];
-	  break;
-	default:
-	  stack[j] = (uintptr_t)avalue[i];
-	  break;
+	நிலை 8:
+	  அடுக்கு[j] = *(UINT64 *)avalue[i];
+	  நிறுத்து;
+	நிலை 4:
+	  அடுக்கு[j] = *(UINT32 *)avalue[i];
+	  நிறுத்து;
+	நிலை 2:
+	  அடுக்கு[j] = *(UINT16 *)avalue[i];
+	  நிறுத்து;
+	நிலை 1:
+	  அடுக்கு[j] = *(UINT8 *)avalue[i];
+	  நிறுத்து;
+	இயல்பு:
+	  அடுக்கு[j] = (uintptr_t)avalue[i];
+	  நிறுத்து;
 	}
     }
 
-  ffi_call_win64 (stack, frame, closure);
+  ffi_call_win64 (அடுக்கு, frame, closure);
 }
-#if defined(_MSC_VER)
+#எனில் defined(_MSC_VER)
 #pragma runtime_checks("s", restore)
 #endif
 
-void
-EFI64(ffi_call)(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+வெறுமை
+EFI64(ffi_call)(ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue, வெறுமை **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, வெற்று);
 }
 
-void
-EFI64(ffi_call_go)(ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+வெறுமை
+EFI64(ffi_call_go)(ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue,
+	     வெறுமை **avalue, வெறுமை *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
 
 
-extern void ffi_closure_win64(void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-extern void ffi_closure_win64_alt(void) FFI_HIDDEN;
+வெளி வெறுமை ffi_closure_win64(வெறுமை) FFI_HIDDEN;
+#எனில் defined(FFI_EXEC_STATIC_TRAMP)
+வெளி வெறுமை ffi_closure_win64_alt(வெறுமை) FFI_HIDDEN;
 #endif
 
 #ifdef FFI_GO_CLOSURES
-extern void ffi_go_closure_win64(void) FFI_HIDDEN;
+வெளி வெறுமை ffi_go_closure_win64(வெறுமை) FFI_HIDDEN;
 #endif
 
 ffi_status
 EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc MAYBE_UNUSED)
+		      வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*),
+		      வெறுமை *user_data,
+		      வெறுமை *codeloc MAYBE_UNUSED)
 {
-  static const unsigned char trampoline[FFI_TRAMPOLINE_SIZE - 8] = {
+  நிலையான மாறிலி unsigned எழுத்து trampoline[FFI_TRAMPOLINE_SIZE - 8] = {
     /* endbr64 */
     0xf3, 0x0f, 0x1e, 0xfa,
     /* leaq  -0xb(%rip),%r10   # 0x0  */
@@ -270,63 +270,63 @@ EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
     /* nopl  0(%rax) */
     0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00
   };
-  char *tramp = closure->tramp;
+  எழுத்து *tramp = closure->tramp;
 
-  switch (cif->abi)
+  தேர்வு (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    நிலை FFI_WIN64:
+    நிலை FFI_GNUW64:
+      நிறுத்து;
+    இயல்பு:
+      திரும்பு FFI_BAD_ABI;
     }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#எனில் defined(FFI_EXEC_STATIC_TRAMP)
+  எனில் (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
       ffi_tramp_set_parms (closure->ftramp, ffi_closure_win64_alt, closure);
-      goto out;
+      செல் out;
     }
 #endif
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
-  *(UINT64 *)(tramp + sizeof (trampoline)) = (uintptr_t)ffi_closure_win64;
+  memcpy (tramp, trampoline, அளவு(trampoline));
+  *(UINT64 *)(tramp + அளவு (trampoline)) = (uintptr_t)ffi_closure_win64;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#எனில் defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 #ifdef FFI_GO_CLOSURES
 ffi_status
 EFI64(ffi_prep_go_closure)(ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*))
 {
-  switch (cif->abi)
+  தேர்வு (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    நிலை FFI_WIN64:
+    நிலை FFI_GNUW64:
+      நிறுத்து;
+    இயல்பு:
+      திரும்பு FFI_BAD_ABI;
     }
 
   closure->tramp = ffi_go_closure_win64;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 #endif
 
-struct win64_closure_frame
+கட்டமைப்பு win64_closure_frame
 {
   UINT64 rvalue[2];
   UINT64 fargs[4];
@@ -338,17 +338,17 @@ struct win64_closure_frame
    this is a nop.  When compiling on unix, this simplifies the assembly,
    and places the burden of saving the extra call-saved registers on
    the compiler.  */
-int FFI_HIDDEN __attribute__((ms_abi))
+முழு FFI_HIDDEN __attribute__((ms_abi))
 ffi_closure_win64_inner(ffi_cif *cif,
-			void (*fun)(ffi_cif*, void*, void**, void*),
-			void *user_data,
-			struct win64_closure_frame *frame)
+			வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*),
+			வெறுமை *user_data,
+			கட்டமைப்பு win64_closure_frame *frame)
 {
-  void **avalue;
-  void *rvalue;
-  int i, n, nreg, flags;
+  வெறுமை **avalue;
+  வெறுமை *rvalue;
+  முழு i, n, nreg, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * அளவு(வெறுமை *));
   rvalue = frame->rvalue;
   nreg = 0;
 
@@ -356,37 +356,37 @@ ffi_closure_win64_inner(ffi_cif *cif,
      We must also be prepared to return the same address in eax, so
      install that address in the frame and pretend we return a pointer.  */
   flags = cif->flags;
-  if (flags == FFI_TYPE_STRUCT)
+  எனில் (flags == FFI_TYPE_STRUCT)
     {
-      rvalue = (void *)(uintptr_t)frame->args[0];
+      rvalue = (வெறுமை *)(uintptr_t)frame->args[0];
       frame->rvalue[0] = frame->args[0];
       nreg = 1;
     }
 
-  for (i = 0, n = cif->nargs; i < n; ++i, ++nreg)
+  க்கு (i = 0, n = cif->nargs; i < n; ++i, ++nreg)
     {
       size_t size = cif->arg_types[i]->size;
       size_t type = cif->arg_types[i]->type;
-      void *a;
+      வெறுமை *a;
 
-      if (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
+      எனில் (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
 	{
-	  if (nreg < 4)
+	  எனில் (nreg < 4)
 	    a = &frame->fargs[nreg];
-	  else
+	  இல்லையெனில்
 	    a = &frame->args[nreg];
 	}
-      else if (size == 1 || size == 2 || size == 4 || size == 8)
+      இல்லையெனில் எனில் (size == 1 || size == 2 || size == 4 || size == 8)
 	a = &frame->args[nreg];
-      else
-	a = (void *)(uintptr_t)frame->args[nreg];
+      இல்லையெனில்
+	a = (வெறுமை *)(uintptr_t)frame->args[nreg];
 
       avalue[i] = a;
     }
 
   /* Invoke the closure.  */
   fun (cif, rvalue, avalue, user_data);
-  return flags;
+  திரும்பு flags;
 }
 
 #endif /* __x86_64__ */

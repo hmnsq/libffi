@@ -34,22 +34,22 @@
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
+#எனில் defined(__arch64__) || defined(__sparcv9)
 #ifndef SPARC64
 #define SPARC64
 #endif
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+வகைவரை unsigned long          ffi_arg;
+வகைவரை signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+வகைவரை எண்ணிக்கை ffi_abi {
   FFI_FIRST_ABI = 0,
 #ifdef SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#இல்லையெனில்
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
 #endif
@@ -57,12 +57,12 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
+#define FFI_TARGET_SPECIFIC_அடுக்கு_SPACE_ALLOCATION 1
 #define FFI_TARGET_HAS_COMPLEX_TYPE 1
 
 #ifdef SPARC64
 # define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+# define FFI_EXTRA_CIF_FIELDS  unsigned முழு nfixedargs
 #endif
 
 /* ---- Definitions for closures ----------------------------------------- */
@@ -73,7 +73,7 @@ typedef enum ffi_abi {
 
 #ifdef SPARC64
 #define FFI_TRAMPOLINE_SIZE 24
-#else
+#இல்லையெனில்
 #define FFI_TRAMPOLINE_SIZE 16
 #endif
 

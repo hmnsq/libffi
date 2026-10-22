@@ -27,52 +27,52 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include <tramp.h>
-#include "internal64.h"
+#அந்தர்பாவ <stdlib.h>
+#அந்தர்பாவ <stdarg.h>
+#அந்தர்பாவ <stdint.h>
+#அந்தர்பாவ <stddef.h>
+#அந்தர்பாவ <string.h>
+#அந்தர்பாவ <tramp.h>
+#அந்தர்பாவ "internal64.h"
 
 #ifdef __x86_64__
 
 #define MAX_GPR_REGS 6
 #define MAX_SSE_REGS 8
 
-#if defined(__INTEL_COMPILER)
-#include "xmmintrin.h"
+#எனில் defined(__INTEL_COMPILER)
+#அந்தர்பாவ "xmmintrin.h"
 #define UINT128 __m128
-#else
-#if defined(__SUNPRO_C)
-#include <sunmedia_types.h>
+#இல்லையெனில்
+#எனில் defined(__SUNPRO_C)
+#அந்தர்பாவ <sunmedia_types.h>
 #define UINT128 __m128i
-#else
+#இல்லையெனில்
 #define UINT128 __int128_t
 #endif
 #endif
 
-union big_int_union
+ஒன்றிப்பு big_int_union
 {
   UINT32 i32;
   UINT64 i64;
   UINT128 i128;
 };
 
-struct register_args
+கட்டமைப்பு register_args
 {
   /* Registers for argument passing.  */
   UINT64 gpr[MAX_GPR_REGS];
-  union big_int_union sse[MAX_SSE_REGS];
+  ஒன்றிப்பு big_int_union sse[MAX_SSE_REGS];
   UINT64 rax;	/* ssecount */
   UINT64 r10;	/* static chain */
 };
 
-extern void ffi_call_unix64 (void *args, unsigned long bytes, unsigned flags,
-			     void *raddr, void (*fnaddr)(void)) FFI_HIDDEN;
+வெளி வெறுமை ffi_call_unix64 (வெறுமை *args, unsigned long bytes, unsigned flags,
+			     வெறுமை *raddr, வெறுமை (*fnaddr)(வெறுமை)) FFI_HIDDEN;
 
 /* All reference to register classes here is identical to the code in
    gcc/config/i386/i386.c. Do *not* change one without the other.  */
@@ -85,7 +85,7 @@ extern void ffi_call_unix64 (void *args, unsigned long bytes, unsigned flags,
 
    Similary we play games with INTEGERSI_CLASS to use cheaper SImode moves
    whenever possible (upper half does contain padding).  */
-enum x86_64_reg_class
+எண்ணிக்கை x86_64_reg_class
   {
     X86_64_NO_CLASS,
     X86_64_INTEGER_CLASS,
@@ -111,10 +111,10 @@ enum x86_64_reg_class
    registers exactly like __float128 (class SSE/SSEUP -> one %xmm register).
    Detect that at compile time and classify long double accordingly.  A mantissa
    of 113 bits uniquely identifies binary128 (x87 extended is 64).  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE \
+#எனில் FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE \
     && defined(__LDBL_MANT_DIG__) && __LDBL_MANT_DIG__ == 113
 # define FFI_LONGDOUBLE_BINARY128 1
-#else
+#இல்லையெனில்
 # define FFI_LONGDOUBLE_BINARY128 0
 #endif
 
@@ -125,44 +125,44 @@ enum x86_64_reg_class
 /* Return the union class of CLASS1 and CLASS2.
    See the x86-64 PS ABI for details.  */
 
-static enum x86_64_reg_class
-merge_classes (enum x86_64_reg_class class1, enum x86_64_reg_class class2)
+நிலையான எண்ணிக்கை x86_64_reg_class
+merge_classes (எண்ணிக்கை x86_64_reg_class class1, எண்ணிக்கை x86_64_reg_class class2)
 {
   /* Rule #1: If both classes are equal, this is the resulting class.  */
-  if (class1 == class2)
-    return class1;
+  எனில் (class1 == class2)
+    திரும்பு class1;
 
   /* Rule #2: If one of the classes is NO_CLASS, the resulting class is
      the other class.  */
-  if (class1 == X86_64_NO_CLASS)
-    return class2;
-  if (class2 == X86_64_NO_CLASS)
-    return class1;
+  எனில் (class1 == X86_64_NO_CLASS)
+    திரும்பு class2;
+  எனில் (class2 == X86_64_NO_CLASS)
+    திரும்பு class1;
 
   /* Rule #3: If one of the classes is MEMORY, the result is MEMORY.  */
-  if (class1 == X86_64_MEMORY_CLASS || class2 == X86_64_MEMORY_CLASS)
-    return X86_64_MEMORY_CLASS;
+  எனில் (class1 == X86_64_MEMORY_CLASS || class2 == X86_64_MEMORY_CLASS)
+    திரும்பு X86_64_MEMORY_CLASS;
 
   /* Rule #4: If one of the classes is INTEGER, the result is INTEGER.  */
-  if ((class1 == X86_64_INTEGERSI_CLASS && class2 == X86_64_SSESF_CLASS)
+  எனில் ((class1 == X86_64_INTEGERSI_CLASS && class2 == X86_64_SSESF_CLASS)
       || (class2 == X86_64_INTEGERSI_CLASS && class1 == X86_64_SSESF_CLASS))
-    return X86_64_INTEGERSI_CLASS;
-  if (class1 == X86_64_INTEGER_CLASS || class1 == X86_64_INTEGERSI_CLASS
+    திரும்பு X86_64_INTEGERSI_CLASS;
+  எனில் (class1 == X86_64_INTEGER_CLASS || class1 == X86_64_INTEGERSI_CLASS
       || class2 == X86_64_INTEGER_CLASS || class2 == X86_64_INTEGERSI_CLASS)
-    return X86_64_INTEGER_CLASS;
+    திரும்பு X86_64_INTEGER_CLASS;
 
   /* Rule #5: If one of the classes is X87, X87UP, or COMPLEX_X87 class,
      MEMORY is used.  */
-  if (class1 == X86_64_X87_CLASS
+  எனில் (class1 == X86_64_X87_CLASS
       || class1 == X86_64_X87UP_CLASS
       || class1 == X86_64_COMPLEX_X87_CLASS
       || class2 == X86_64_X87_CLASS
       || class2 == X86_64_X87UP_CLASS
       || class2 == X86_64_COMPLEX_X87_CLASS)
-    return X86_64_MEMORY_CLASS;
+    திரும்பு X86_64_MEMORY_CLASS;
 
   /* Rule #6: Otherwise class SSE is used.  */
-  return X86_64_SSE_CLASS;
+  திரும்பு X86_64_SSE_CLASS;
 }
 
 /* Classify the argument of type TYPE and mode MODE.
@@ -173,109 +173,109 @@ merge_classes (enum x86_64_reg_class class1, enum x86_64_reg_class class2)
 
    See the x86-64 PS ABI for details.
 */
-static size_t
-classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
+நிலையான size_t
+classify_argument (ffi_type *type, எண்ணிக்கை x86_64_reg_class classes[],
 		   size_t byte_offset)
 {
-  switch (type->type)
+  தேர்வு (type->type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_SINT128:
-    case FFI_TYPE_POINTER:
+    நிலை FFI_TYPE_UINT8:
+    நிலை FFI_TYPE_SINT8:
+    நிலை FFI_TYPE_UINT16:
+    நிலை FFI_TYPE_SINT16:
+    நிலை FFI_TYPE_UINT32:
+    நிலை FFI_TYPE_SINT32:
+    நிலை FFI_TYPE_UINT64:
+    நிலை FFI_TYPE_SINT64:
+    நிலை FFI_TYPE_UINT128:
+    நிலை FFI_TYPE_SINT128:
+    நிலை FFI_TYPE_POINTER:
     do_integer:
       {
 	size_t size = byte_offset + type->size;
 
-	if (size <= 4)
+	எனில் (size <= 4)
 	  {
 	    classes[0] = X86_64_INTEGERSI_CLASS;
-	    return 1;
+	    திரும்பு 1;
 	  }
-	else if (size <= 8)
+	இல்லையெனில் எனில் (size <= 8)
 	  {
 	    classes[0] = X86_64_INTEGER_CLASS;
-	    return 1;
+	    திரும்பு 1;
 	  }
-	else if (size <= 12)
+	இல்லையெனில் எனில் (size <= 12)
 	  {
 	    classes[0] = X86_64_INTEGER_CLASS;
 	    classes[1] = X86_64_INTEGERSI_CLASS;
-	    return 2;
+	    திரும்பு 2;
 	  }
-	else if (size <= 16)
+	இல்லையெனில் எனில் (size <= 16)
 	  {
 	    classes[0] = classes[1] = X86_64_INTEGER_CLASS;
-	    return 2;
+	    திரும்பு 2;
 	  }
-	else
+	இல்லையெனில்
 	  FFI_ASSERT (0);
       }
-    case FFI_TYPE_FLOAT:
-      if (!(byte_offset % 8))
+    நிலை FFI_TYPE_FLOAT:
+      எனில் (!(byte_offset % 8))
 	classes[0] = X86_64_SSESF_CLASS;
-      else
+      இல்லையெனில்
 	classes[0] = X86_64_SSE_CLASS;
-      return 1;
-    case FFI_TYPE_DOUBLE:
+      திரும்பு 1;
+    நிலை FFI_TYPE_DOUBLE:
       classes[0] = X86_64_SSEDF_CLASS;
-      return 1;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+      திரும்பு 1;
+#எனில் FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    நிலை FFI_TYPE_LONGDOUBLE:
+#எனில் FFI_LONGDOUBLE_BINARY128
       /* IEEE binary128: one %xmm register, like __float128.  */
       classes[0] = X86_64_SSE_CLASS;
       classes[1] = X86_64_SSEUP_CLASS;
-#else
+#இல்லையெனில்
       classes[0] = X86_64_X87_CLASS;
       classes[1] = X86_64_X87UP_CLASS;
 #endif
-      return 2;
+      திரும்பு 2;
 #endif
-    case FFI_TYPE_STRUCT:
+    நிலை FFI_TYPE_STRUCT:
       {
-	const size_t UNITS_PER_WORD = 8;
-        size_t words = (type->size + byte_offset + UNITS_PER_WORD - 1)
+	மாறிலி size_t UNITS_PER_WORD = 8;
+        size_t சொற்கள் = (type->size + byte_offset + UNITS_PER_WORD - 1)
                        / UNITS_PER_WORD;
 	ffi_type **ptr;
-	unsigned int i;
-	enum x86_64_reg_class subclasses[MAX_CLASSES];
+	unsigned முழு i;
+	எண்ணிக்கை x86_64_reg_class subclasses[MAX_CLASSES];
 
 	/* If the struct is larger than 32 bytes, pass it on the stack.  */
-	if (type->size > 32)
-	  return 0;
+	எனில் (type->size > 32)
+	  திரும்பு 0;
 
-	for (i = 0; i < words; i++)
+	க்கு (i = 0; i < சொற்கள்; i++)
 	  classes[i] = X86_64_NO_CLASS;
 
 	/* Zero sized arrays or structures are NO_CLASS.  We return 0 to
 	   signalize memory class, so handle it as special case.  */
-	if (!words)
+	எனில் (!சொற்கள்)
 	  {
-    case FFI_TYPE_VOID:
+    நிலை FFI_TYPE_VOID:
 	    classes[0] = X86_64_NO_CLASS;
-	    return 1;
+	    திரும்பு 1;
 	  }
 
 	/* Merge the fields of structure.  */
-	for (ptr = type->elements; *ptr != NULL; ptr++)
+	க்கு (ptr = type->elements; *ptr != வெற்று; ptr++)
 	  {
-	    size_t num, pos;
+	    size_t இலக்கம், pos;
 
 	    byte_offset = FFI_ALIGN (byte_offset, (*ptr)->alignment);
 
-	    num = classify_argument (*ptr, subclasses, byte_offset % 8);
-	    if (num == 0)
-	      return 0;
+	    இலக்கம் = classify_argument (*ptr, subclasses, byte_offset % 8);
+	    எனில் (இலக்கம் == 0)
+	      திரும்பு 0;
             pos = byte_offset / 8;
-            for (i = 0; i < num && (i + pos) < words; i++)
+            க்கு (i = 0; i < இலக்கம் && (i + pos) < சொற்கள்; i++)
 	      {
 		size_t pos = byte_offset / 8;
 		classes[i + pos] =
@@ -285,31 +285,31 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 	    byte_offset += (*ptr)->size;
 	  }
 
-	if (words > 2)
+	எனில் (சொற்கள் > 2)
 	  {
 	    /* When size > 16 bytes, if the first one isn't
 	       X86_64_SSE_CLASS or any other ones aren't
 	       X86_64_SSEUP_CLASS, everything should be passed in
 	       memory.  */
-	    if (classes[0] != X86_64_SSE_CLASS)
-	      return 0;
+	    எனில் (classes[0] != X86_64_SSE_CLASS)
+	      திரும்பு 0;
 
-	    for (i = 1; i < words; i++)
-	      if (classes[i] != X86_64_SSEUP_CLASS)
-		return 0;
+	    க்கு (i = 1; i < சொற்கள்; i++)
+	      எனில் (classes[i] != X86_64_SSEUP_CLASS)
+		திரும்பு 0;
 	  }
 
 	/* Final merger cleanup.  */
-	for (i = 0; i < words; i++)
+	க்கு (i = 0; i < சொற்கள்; i++)
 	  {
 	    /* If one class is MEMORY, everything should be passed in
 	       memory.  */
-	    if (classes[i] == X86_64_MEMORY_CLASS)
-	      return 0;
+	    எனில் (classes[i] == X86_64_MEMORY_CLASS)
+	      திரும்பு 0;
 
 	    /* The X86_64_SSEUP_CLASS should be always preceded by
 	       X86_64_SSE_CLASS or X86_64_SSEUP_CLASS.  */
-	    if (i > 1 && classes[i] == X86_64_SSEUP_CLASS
+	    எனில் (i > 1 && classes[i] == X86_64_SSEUP_CLASS
 		&& classes[i - 1] != X86_64_SSE_CLASS
 		&& classes[i - 1] != X86_64_SSEUP_CLASS)
 	      {
@@ -320,74 +320,74 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 
 	    /*  If X86_64_X87UP_CLASS isn't preceded by X86_64_X87_CLASS,
 		everything should be passed in memory.  */
-	    if (i > 1 && classes[i] == X86_64_X87UP_CLASS
+	    எனில் (i > 1 && classes[i] == X86_64_X87UP_CLASS
 		&& (classes[i - 1] != X86_64_X87_CLASS))
 	      {
 		/* The first one should never be X86_64_X87UP_CLASS.  */
 		FFI_ASSERT (i != 0);
-		return 0;
+		திரும்பு 0;
 	      }
 	  }
-	return words;
+	திரும்பு சொற்கள்;
       }
-    case FFI_TYPE_VECTOR:
+    நிலை FFI_TYPE_VECTOR:
       /* A Short Vector occupies SSE registers: an 8-byte vector is a single
 	 SSE eightbyte; a 16-byte vector is one %xmm register (SSE + SSEUP).
 	 Wider vectors would need %ymm/%zmm handling this port does not
 	 implement; classify them as memory here and reject them outright in
 	 ffi_prep_cif_machdep so the caller gets FFI_BAD_TYPEDEF, not a
 	 silently wrong in-memory pass.  */
-      if (type->size == 8)
+      எனில் (type->size == 8)
 	{
 	  classes[0] = X86_64_SSE_CLASS;
-	  return 1;
+	  திரும்பு 1;
 	}
-      else if (type->size == 16)
+      இல்லையெனில் எனில் (type->size == 16)
 	{
 	  classes[0] = X86_64_SSE_CLASS;
 	  classes[1] = X86_64_SSEUP_CLASS;
-	  return 2;
+	  திரும்பு 2;
 	}
-      return 0;
-    case FFI_TYPE_COMPLEX:
+      திரும்பு 0;
+    நிலை FFI_TYPE_COMPLEX:
       {
 	ffi_type *inner = type->elements[0];
-	switch (inner->type)
+	தேர்வு (inner->type)
 	  {
-	  case FFI_TYPE_INT:
-	  case FFI_TYPE_UINT8:
-	  case FFI_TYPE_SINT8:
-	  case FFI_TYPE_UINT16:
-	  case FFI_TYPE_SINT16:
-	  case FFI_TYPE_UINT32:
-	  case FFI_TYPE_SINT32:
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
-	    goto do_integer;
+	  நிலை FFI_TYPE_INT:
+	  நிலை FFI_TYPE_UINT8:
+	  நிலை FFI_TYPE_SINT8:
+	  நிலை FFI_TYPE_UINT16:
+	  நிலை FFI_TYPE_SINT16:
+	  நிலை FFI_TYPE_UINT32:
+	  நிலை FFI_TYPE_SINT32:
+	  நிலை FFI_TYPE_UINT64:
+	  நிலை FFI_TYPE_SINT64:
+	    செல் do_integer;
 
-	  case FFI_TYPE_SINT128:
-	  case FFI_TYPE_UINT128:
-	    return 0;
+	  நிலை FFI_TYPE_SINT128:
+	  நிலை FFI_TYPE_UINT128:
+	    திரும்பு 0;
 
-	  case FFI_TYPE_FLOAT:
+	  நிலை FFI_TYPE_FLOAT:
 	    classes[0] = X86_64_SSE_CLASS;
-	    if (byte_offset % 8)
+	    எனில் (byte_offset % 8)
 	      {
 		classes[1] = X86_64_SSESF_CLASS;
-		return 2;
+		திரும்பு 2;
 	      }
-	    return 1;
-	  case FFI_TYPE_DOUBLE:
+	    திரும்பு 1;
+	  நிலை FFI_TYPE_DOUBLE:
 	    classes[0] = classes[1] = X86_64_SSEDF_CLASS;
-	    return 2;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	  case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+	    திரும்பு 2;
+#எனில் FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	  நிலை FFI_TYPE_LONGDOUBLE:
+#எனில் FFI_LONGDOUBLE_BINARY128
 	    /* _Complex binary128 is 32 bytes -> passed/returned in memory.  */
-	    return 0;
-#else
+	    திரும்பு 0;
+#இல்லையெனில்
 	    classes[0] = X86_64_COMPLEX_X87_CLASS;
-	    return 1;
+	    திரும்பு 1;
 #endif
 #endif
 	  }
@@ -400,128 +400,128 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
    class.  Return zero iff parameter should be passed in memory, otherwise
    the number of registers.  */
 
-static size_t
-examine_argument (ffi_type *type, enum x86_64_reg_class classes[MAX_CLASSES],
-		  _Bool in_return, int *pngpr, int *pnsse)
+நிலையான size_t
+examine_argument (ffi_type *type, எண்ணிக்கை x86_64_reg_class classes[MAX_CLASSES],
+		  _Bool in_return, முழு *pngpr, முழு *pnsse)
 {
   size_t n;
-  unsigned int i;
-  int ngpr, nsse;
+  unsigned முழு i;
+  முழு ngpr, nsse;
 
   n = classify_argument (type, classes, 0);
-  if (n == 0)
-    return 0;
+  எனில் (n == 0)
+    திரும்பு 0;
 
   ngpr = nsse = 0;
-  for (i = 0; i < n; ++i)
-    switch (classes[i])
+  க்கு (i = 0; i < n; ++i)
+    தேர்வு (classes[i])
       {
-      case X86_64_INTEGER_CLASS:
-      case X86_64_INTEGERSI_CLASS:
+      நிலை X86_64_INTEGER_CLASS:
+      நிலை X86_64_INTEGERSI_CLASS:
 	ngpr++;
-	break;
-      case X86_64_SSE_CLASS:
-      case X86_64_SSESF_CLASS:
-      case X86_64_SSEDF_CLASS:
+	நிறுத்து;
+      நிலை X86_64_SSE_CLASS:
+      நிலை X86_64_SSESF_CLASS:
+      நிலை X86_64_SSEDF_CLASS:
 	nsse++;
-	break;
-      case X86_64_NO_CLASS:
-      case X86_64_SSEUP_CLASS:
-	break;
-      case X86_64_X87_CLASS:
-      case X86_64_X87UP_CLASS:
-      case X86_64_COMPLEX_X87_CLASS:
-	return in_return != 0;
-      default:
+	நிறுத்து;
+      நிலை X86_64_NO_CLASS:
+      நிலை X86_64_SSEUP_CLASS:
+	நிறுத்து;
+      நிலை X86_64_X87_CLASS:
+      நிலை X86_64_X87UP_CLASS:
+      நிலை X86_64_COMPLEX_X87_CLASS:
+	திரும்பு in_return != 0;
+      இயல்பு:
 	abort ();
       }
 
   *pngpr = ngpr;
   *pnsse = nsse;
 
-  return n;
+  திரும்பு n;
 }
 
 /* Perform machine dependent cif processing.  */
 
 #ifndef __ILP32__
-extern ffi_status
+வெளி ffi_status
 ffi_prep_cif_machdep_efi64(ffi_cif *cif);
 #endif
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-  int gprcount, ssecount, i, avn, ngpr, nsse;
+  முழு gprcount, ssecount, i, avn, ngpr, nsse;
   unsigned flags;
-  enum x86_64_reg_class classes[MAX_CLASSES];
+  எண்ணிக்கை x86_64_reg_class classes[MAX_CLASSES];
   size_t bytes, n, rtype_size;
   ffi_type *rtype;
 
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_cif_machdep_efi64(cif);
+  எனில் (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    திரும்பு ffi_prep_cif_machdep_efi64(cif);
 #endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+  எனில் (cif->abi != FFI_UNIX64)
+    திரும்பு FFI_BAD_ABI;
 
   gprcount = ssecount = 0;
 
   rtype = cif->rtype;
   rtype_size = rtype->size;
-  switch (rtype->type)
+  தேர்வு (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    நிலை FFI_TYPE_VOID:
       flags = UNIX64_RET_VOID;
-      break;
-    case FFI_TYPE_UINT8:
+      நிறுத்து;
+    நிலை FFI_TYPE_UINT8:
       flags = UNIX64_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT8:
+      நிறுத்து;
+    நிலை FFI_TYPE_SINT8:
       flags = UNIX64_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT16:
+      நிறுத்து;
+    நிலை FFI_TYPE_UINT16:
       flags = UNIX64_RET_UINT16;
-      break;
-    case FFI_TYPE_SINT16:
+      நிறுத்து;
+    நிலை FFI_TYPE_SINT16:
       flags = UNIX64_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT32:
+      நிறுத்து;
+    நிலை FFI_TYPE_UINT32:
       flags = UNIX64_RET_UINT32;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+      நிறுத்து;
+    நிலை FFI_TYPE_INT:
+    நிலை FFI_TYPE_SINT32:
       flags = UNIX64_RET_SINT32;
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      நிறுத்து;
+    நிலை FFI_TYPE_UINT64:
+    நிலை FFI_TYPE_SINT64:
       flags = UNIX64_RET_INT64;
-      break;
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_SINT128:
+      நிறுத்து;
+    நிலை FFI_TYPE_UINT128:
+    நிலை FFI_TYPE_SINT128:
       flags = UNIX64_RET_ST_RAX_RDX | (16 << UNIX64_SIZE_SHIFT);
-      break;
-    case FFI_TYPE_POINTER:
-      flags = (sizeof(void *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
-      break;
-    case FFI_TYPE_FLOAT:
+      நிறுத்து;
+    நிலை FFI_TYPE_POINTER:
+      flags = (அளவு(வெறுமை *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
+      நிறுத்து;
+    நிலை FFI_TYPE_FLOAT:
       flags = UNIX64_RET_XMM32;
-      break;
-    case FFI_TYPE_DOUBLE:
+      நிறுத்து;
+    நிலை FFI_TYPE_DOUBLE:
       flags = UNIX64_RET_XMM64;
-      break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+      நிறுத்து;
+#எனில் FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    நிலை FFI_TYPE_LONGDOUBLE:
+#எனில் FFI_LONGDOUBLE_BINARY128
       flags = UNIX64_RET_XMM128;	/* returned in %xmm0 (16 bytes) */
-#else
+#இல்லையெனில்
       flags = UNIX64_RET_X87;
 #endif
-      break;
+      நிறுத்து;
 #endif
-    case FFI_TYPE_STRUCT:
+    நிலை FFI_TYPE_STRUCT:
       n = examine_argument (cif->rtype, classes, 1, &ngpr, &nsse);
-      if (n == 0)
+      எனில் (n == 0)
 	{
 	  /* The return value is passed in memory.  A pointer to that
 	     memory is the first argument.  Allocate a register for it.  */
@@ -529,136 +529,136 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	  /* We don't have to do anything in asm for the return.  */
 	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
 	}
-      else
+      இல்லையெனில்
 	{
 	  _Bool sse0 = SSE_CLASS_P (classes[0]);
 
-	  if (rtype_size == 4 && sse0)
+	  எனில் (rtype_size == 4 && sse0)
 	    flags = UNIX64_RET_XMM32;
-	  else if (rtype_size == 8)
+	  இல்லையெனில் எனில் (rtype_size == 8)
 	    flags = sse0 ? UNIX64_RET_XMM64 : UNIX64_RET_INT64;
-	  else
+	  இல்லையெனில்
 	    {
 	      _Bool sse1 = n == 2 && SSE_CLASS_P (classes[1]);
-	      if (sse0 && sse1)
+	      எனில் (sse0 && sse1)
 		flags = UNIX64_RET_ST_XMM0_XMM1;
-	      else if (sse0)
+	      இல்லையெனில் எனில் (sse0)
 		flags = UNIX64_RET_ST_XMM0_RAX;
-	      else if (sse1)
+	      இல்லையெனில் எனில் (sse1)
 		flags = UNIX64_RET_ST_RAX_XMM0;
-	      else
+	      இல்லையெனில்
 		flags = UNIX64_RET_ST_RAX_RDX;
 	      flags |= rtype_size << UNIX64_SIZE_SHIFT;
 	    }
 	}
-      break;
-    case FFI_TYPE_VECTOR:
+      நிறுத்து;
+    நிலை FFI_TYPE_VECTOR:
       /* An 8-byte vector returns in the low half of %xmm0; a 16-byte vector
 	 fills %xmm0 (SSE + SSEUP).  Wider vectors are unsupported here.  */
-      if (rtype_size == 8)
+      எனில் (rtype_size == 8)
 	flags = UNIX64_RET_XMM64;
-      else if (rtype_size == 16)
+      இல்லையெனில் எனில் (rtype_size == 16)
 	flags = UNIX64_RET_XMM128;
-      else
-	return FFI_BAD_TYPEDEF;
-      break;
-    case FFI_TYPE_COMPLEX:
-      switch (rtype->elements[0]->type)
+      இல்லையெனில்
+	திரும்பு FFI_BAD_TYPEDEF;
+      நிறுத்து;
+    நிலை FFI_TYPE_COMPLEX:
+      தேர்வு (rtype->elements[0]->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	நிலை FFI_TYPE_UINT8:
+	நிலை FFI_TYPE_SINT8:
+	நிலை FFI_TYPE_UINT16:
+	நிலை FFI_TYPE_SINT16:
+	நிலை FFI_TYPE_INT:
+	நிலை FFI_TYPE_UINT32:
+	நிலை FFI_TYPE_SINT32:
+	நிலை FFI_TYPE_UINT64:
+	நிலை FFI_TYPE_SINT64:
 	  flags = UNIX64_RET_ST_RAX_RDX | ((unsigned) rtype_size << UNIX64_SIZE_SHIFT);
-	  break;
-	case FFI_TYPE_FLOAT:
+	  நிறுத்து;
+	நிலை FFI_TYPE_FLOAT:
 	  flags = UNIX64_RET_XMM64;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  நிறுத்து;
+	நிலை FFI_TYPE_DOUBLE:
 	  flags = UNIX64_RET_ST_XMM0_XMM1 | (16 << UNIX64_SIZE_SHIFT);
-	  break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+	  நிறுத்து;
+#எனில் FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	நிலை FFI_TYPE_LONGDOUBLE:
+#எனில் FFI_LONGDOUBLE_BINARY128
 	  /* _Complex binary128 (32 bytes) is returned in memory.  */
 	  gprcount++;
 	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
-#else
+#இல்லையெனில்
 	  flags = UNIX64_RET_X87_2;
 #endif
-	  break;
+	  நிறுத்து;
 #endif
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
+	நிலை FFI_TYPE_SINT128:
+	நிலை FFI_TYPE_UINT128:
 	  gprcount++;
 	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
-	  break;
-	default:
-	  return FFI_BAD_TYPEDEF;
+	  நிறுத்து;
+	இயல்பு:
+	  திரும்பு FFI_BAD_TYPEDEF;
 	}
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+      நிறுத்து;
+    இயல்பு:
+      திரும்பு FFI_BAD_TYPEDEF;
     }
 
   /* Reject vectors wider than 16 bytes as arguments: correct %ymm/%zmm
      passing needs unix64.S register-save changes that are out of scope for
      this port, and classify_argument would otherwise silently treat them as
      an in-memory aggregate.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
-    if (cif->arg_types[i]->type == FFI_TYPE_VECTOR
+  க்கு (i = 0, avn = cif->nargs; i < avn; i++)
+    எனில் (cif->arg_types[i]->type == FFI_TYPE_VECTOR
 	&& cif->arg_types[i]->size > 16)
-      return FFI_BAD_TYPEDEF;
+      திரும்பு FFI_BAD_TYPEDEF;
 
   /* Go over all arguments and determine the way they should be passed.
      If it's in a register and there is space for it, let that be so. If
      not, add it's size to the stack byte count.  */
-  for (bytes = 0, i = 0, avn = cif->nargs; i < avn; i++)
+  க்கு (bytes = 0, i = 0, avn = cif->nargs; i < avn; i++)
     {
-      if (examine_argument (cif->arg_types[i], classes, 0, &ngpr, &nsse) == 0
+      எனில் (examine_argument (cif->arg_types[i], classes, 0, &ngpr, &nsse) == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = cif->arg_types[i]->alignment;
 
-	  if (align < 8)
+	  எனில் (align < 8)
 	    align = 8;
 
 	  bytes = FFI_ALIGN (bytes, align);
 	  bytes += cif->arg_types[i]->size;
 	}
-      else
+      இல்லையெனில்
 	{
 	  gprcount += ngpr;
 	  ssecount += nsse;
 	}
     }
-  if (ssecount)
+  எனில் (ssecount)
     flags |= UNIX64_FLAG_XMM_ARGS;
 
   cif->flags = flags;
   cif->bytes = (unsigned) FFI_ALIGN (bytes, 8);
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 /* n.b. ffi_call_unix64 will steal the alloca'd `stack` variable here for use
    _as its own stack_ - so we need to compile this function without ASAN */
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+நிலையான வெறுமை
+ffi_call_int (ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue,
+	      வெறுமை **avalue, வெறுமை *closure)
 {
-  enum x86_64_reg_class classes[MAX_CLASSES];
-  char *stack, *argp;
+  எண்ணிக்கை x86_64_reg_class classes[MAX_CLASSES];
+  எழுத்து *அடுக்கு, *argp;
   ffi_type **arg_types;
-  int gprcount, ssecount, ngpr, nsse, i, avn, flags;
-  struct register_args *reg_args;
+  முழு gprcount, ssecount, ngpr, nsse, i, avn, flags;
+  கட்டமைப்பு register_args *reg_args;
 
   /* Can't call 32-bit mode from 64-bit mode.  */
   FFI_ASSERT (cif->abi == FFI_UNIX64);
@@ -666,11 +666,11 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  Otherwise we can ignore it.  */
   flags = cif->flags;
-  if (rvalue == NULL)
+  எனில் (rvalue == வெற்று)
     {
-      if (flags & UNIX64_FLAG_RET_IN_MEM)
+      எனில் (flags & UNIX64_FLAG_RET_IN_MEM)
 	rvalue = alloca (cif->rtype->size);
-      else
+      இல்லையெனில்
 	flags = UNIX64_RET_VOID;
     }
 
@@ -678,9 +678,9 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   avn = cif->nargs;
 
   /* Allocate the space for the arguments, plus 4 words of temp space.  */
-  stack = alloca (sizeof (struct register_args) + cif->bytes + 4*8);
-  reg_args = (struct register_args *) stack;
-  argp = stack + sizeof (struct register_args);
+  அடுக்கு = alloca (அளவு (கட்டமைப்பு register_args) + cif->bytes + 4*8);
+  reg_args = (கட்டமைப்பு register_args *) அடுக்கு;
+  argp = அடுக்கு + அளவு (கட்டமைப்பு register_args);
 
   reg_args->r10 = (uintptr_t) closure;
 
@@ -688,80 +688,80 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If the return value is passed in memory, add the pointer as the
      first integer argument.  */
-  if (flags & UNIX64_FLAG_RET_IN_MEM)
+  எனில் (flags & UNIX64_FLAG_RET_IN_MEM)
     reg_args->gpr[gprcount++] = (unsigned long) rvalue;
 
-  for (i = 0; i < avn; ++i)
+  க்கு (i = 0; i < avn; ++i)
     {
       size_t n, size = arg_types[i]->size;
 
       n = examine_argument (arg_types[i], classes, 0, &ngpr, &nsse);
-      if (n == 0
+      எனில் (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = arg_types[i]->alignment;
 
 	  /* Stack arguments are *always* at least 8 byte aligned.  */
-	  if (align < 8)
+	  எனில் (align < 8)
 	    align = 8;
 
           /* Pass this argument in memory.  */
-          argp = (void *) FFI_ALIGN (argp, align);
+          argp = (வெறுமை *) FFI_ALIGN (argp, align);
           memcpy (argp, avalue[i], size);
 
           argp += size;
         }
-      else
+      இல்லையெனில்
 	{
 	  /* The argument is passed entirely in registers.  */
-	  char *a = (char *) avalue[i];
-	  unsigned int j;
+	  எழுத்து *a = (எழுத்து *) avalue[i];
+	  unsigned முழு j;
 
-	  for (j = 0; j < n; j++, a += 8, size -= 8)
+	  க்கு (j = 0; j < n; j++, a += 8, size -= 8)
 	    {
-	      switch (classes[j])
+	      தேர்வு (classes[j])
 		{
-		case X86_64_NO_CLASS:
-		  break;
-		case X86_64_SSEUP_CLASS:
+		நிலை X86_64_NO_CLASS:
+		  நிறுத்து;
+		நிலை X86_64_SSEUP_CLASS:
 		  /* The upper 8 bytes of the same %xmm register written by
 		     the preceding SSE class (e.g. the high half of a
 		     binary128 long double).  */
-		  memcpy ((char *) &reg_args->sse[ssecount - 1] + 8, a,
+		  memcpy ((எழுத்து *) &reg_args->sse[ssecount - 1] + 8, a,
 			  size < 8 ? size : 8);
-		  break;
-		case X86_64_INTEGER_CLASS:
-		case X86_64_INTEGERSI_CLASS:
+		  நிறுத்து;
+		நிலை X86_64_INTEGER_CLASS:
+		நிலை X86_64_INTEGERSI_CLASS:
 		  /* Sign-extend integer arguments passed in general
 		     purpose registers, to cope with the fact that
 		     LLVM incorrectly assumes that this will be done
 		     (the x86-64 PS ABI does not specify this). */
-		  switch (arg_types[i]->type)
+		  தேர்வு (arg_types[i]->type)
 		    {
-		    case FFI_TYPE_SINT8:
+		    நிலை FFI_TYPE_SINT8:
 		      reg_args->gpr[gprcount] = (SINT64) *((SINT8 *) a);
-		      break;
-		    case FFI_TYPE_SINT16:
+		      நிறுத்து;
+		    நிலை FFI_TYPE_SINT16:
 		      reg_args->gpr[gprcount] = (SINT64) *((SINT16 *) a);
-		      break;
-		    case FFI_TYPE_SINT32:
+		      நிறுத்து;
+		    நிலை FFI_TYPE_SINT32:
 		      reg_args->gpr[gprcount] = (SINT64) *((SINT32 *) a);
-		      break;
-		    default:
+		      நிறுத்து;
+		    இயல்பு:
 		      reg_args->gpr[gprcount] = 0;
 		      memcpy (&reg_args->gpr[gprcount], a, size <= 8 ? size : 8);
 		    }
 		  gprcount++;
-		  break;
-		case X86_64_SSE_CLASS:
-		case X86_64_SSEDF_CLASS:
-		  memcpy (&reg_args->sse[ssecount++].i64, a, sizeof(UINT64));
-		  break;
-		case X86_64_SSESF_CLASS:
-		  memcpy (&reg_args->sse[ssecount++].i32, a, sizeof(UINT32));
-		  break;
-		default:
+		  நிறுத்து;
+		நிலை X86_64_SSE_CLASS:
+		நிலை X86_64_SSEDF_CLASS:
+		  memcpy (&reg_args->sse[ssecount++].i64, a, அளவு(UINT64));
+		  நிறுத்து;
+		நிலை X86_64_SSESF_CLASS:
+		  memcpy (&reg_args->sse[ssecount++].i32, a, அளவு(UINT32));
+		  நிறுத்து;
+		இயல்பு:
 		  abort();
 		}
 	    }
@@ -769,7 +769,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
     }
   reg_args->rax = ssecount;
 
-  ffi_call_unix64 (stack, cif->bytes + sizeof (struct register_args),
+  ffi_call_unix64 (அடுக்கு, cif->bytes + அளவு (கட்டமைப்பு register_args),
 		   flags, rvalue, fn);
 }
 
@@ -792,25 +792,25 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
    complex, or x87 long double argument has no plan, so the caller's invoke
    falls back to ffi_call. */
 
-enum ffi_move_op
+எண்ணிக்கை ffi_move_op
 {
   FFI_MOVE_SE8, FFI_MOVE_SE16, FFI_MOVE_SE32,  /* sign-extend N bytes -> gpr   */
   FFI_MOVE_GP64,                               /* copy a full 8-byte word -> gpr */
   FFI_MOVE_GP,                                 /* zero gpr, copy len(<8) bytes  */
   FFI_MOVE_SSE64, FFI_MOVE_SSE32,              /* copy 8/4 bytes -> sse slot    */
-  FFI_MOVE_STACK                               /* copy len bytes -> stack       */
+  FFI_MOVE_அடுக்கு                               /* copy len bytes -> stack       */
 };
 
-typedef struct
+வகைவரை கட்டமைப்பு
 {
   unsigned src_idx;     /* avalue[] index                                  */
   unsigned src_off;     /* byte offset within avalue[src_idx] (chunk * 8)  */
   unsigned dst_off;     /* byte offset within the register_args+stack buf  */
   unsigned len;         /* bytes for FFI_MOVE_GP / FFI_MOVE_STACK          */
-  unsigned char op;
+  unsigned எழுத்து op;
 } ffi_move;
 
-typedef struct
+வகைவரை கட்டமைப்பு
 {
   unsigned nmoves;
   unsigned ssecount;    /* -> reg_args->rax                                */
@@ -819,158 +819,158 @@ typedef struct
   unsigned ret_in_mem;  /* nonzero -> reg_args->gpr[0] = rvalue            */
   unsigned fast;        /* nonzero -> lean trampoline eligible             */
   unsigned retcode;     /* UNIX64_RET_* (low byte of flags) for the store  */
-  int      thunk_n;     /* >=0 -> ffi_gp_thunks[thunk_n], else -1          */
+  முழு      thunk_n;     /* >=0 -> ffi_gp_thunks[thunk_n], else -1          */
   unsigned alloc_bytes; /* malloc'd size, reported by ffi_call_plan_size   */
   ffi_move moves[];
 } ffi_plan;
 
 /* Return of the lean trampoline / direct thunks: callee's rax in .i, xmm0 in .d. */
-struct ffi_ret2 { UINT64 i; double d; };
-extern struct ffi_ret2 ffi_plan_fast_call (struct register_args *img,
-					   void (*fn) (void)) FFI_HIDDEN;
+கட்டமைப்பு ffi_ret2 { UINT64 i; இரட்டை d; };
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_fast_call (கட்டமைப்பு register_args *img,
+					   வெறுமை (*fn) (வெறுமை)) FFI_HIDDEN;
 
 /* Count-based direct thunks: load avalue[0..N-1] into arg registers, call. */
-extern struct ffi_ret2 ffi_plan_gp0 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp1 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp2 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp3 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp4 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp5 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp6 (void **, void (*)(void)) FFI_HIDDEN;
-static struct ffi_ret2 (*const ffi_gp_thunks[7]) (void **, void (*)(void)) =
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_gp0 (வெறுமை **, வெறுமை (*)(வெறுமை)) FFI_HIDDEN;
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_gp1 (வெறுமை **, வெறுமை (*)(வெறுமை)) FFI_HIDDEN;
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_gp2 (வெறுமை **, வெறுமை (*)(வெறுமை)) FFI_HIDDEN;
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_gp3 (வெறுமை **, வெறுமை (*)(வெறுமை)) FFI_HIDDEN;
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_gp4 (வெறுமை **, வெறுமை (*)(வெறுமை)) FFI_HIDDEN;
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_gp5 (வெறுமை **, வெறுமை (*)(வெறுமை)) FFI_HIDDEN;
+வெளி கட்டமைப்பு ffi_ret2 ffi_plan_gp6 (வெறுமை **, வெறுமை (*)(வெறுமை)) FFI_HIDDEN;
+நிலையான கட்டமைப்பு ffi_ret2 (*மாறிலி ffi_gp_thunks[7]) (வெறுமை **, வெறுமை (*)(வெறுமை)) =
   { ffi_plan_gp0, ffi_plan_gp1, ffi_plan_gp2, ffi_plan_gp3,
     ffi_plan_gp4, ffi_plan_gp5, ffi_plan_gp6 };
 
 /* Store the callee return value, replicating the unix64.S store_table widths. */
-static inline void
-store_ret (void *rvalue, unsigned retcode, struct ffi_ret2 r)
+நிலையான உள்வரி வெறுமை
+store_ret (வெறுமை *rvalue, unsigned retcode, கட்டமைப்பு ffi_ret2 r)
 {
-  switch (retcode)
+  தேர்வு (retcode)
     {
-    case UNIX64_RET_VOID:   break;
-    case UNIX64_RET_UINT8:  *(UINT64 *) rvalue = (UINT8)  r.i; break;
-    case UNIX64_RET_UINT16: *(UINT64 *) rvalue = (UINT16) r.i; break;
-    case UNIX64_RET_UINT32: *(UINT64 *) rvalue = (UINT32) r.i; break;
-    case UNIX64_RET_SINT8:  *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT8)  r.i; break;
-    case UNIX64_RET_SINT16: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT16) r.i; break;
-    case UNIX64_RET_SINT32: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT32) r.i; break;
-    case UNIX64_RET_INT64:  *(UINT64 *) rvalue = r.i; break;
-    case UNIX64_RET_XMM32:  memcpy (rvalue, &r.d, 4); break;
-    case UNIX64_RET_XMM64:  memcpy (rvalue, &r.d, 8); break;
+    நிலை UNIX64_RET_VOID:   நிறுத்து;
+    நிலை UNIX64_RET_UINT8:  *(UINT64 *) rvalue = (UINT8)  r.i; நிறுத்து;
+    நிலை UNIX64_RET_UINT16: *(UINT64 *) rvalue = (UINT16) r.i; நிறுத்து;
+    நிலை UNIX64_RET_UINT32: *(UINT64 *) rvalue = (UINT32) r.i; நிறுத்து;
+    நிலை UNIX64_RET_SINT8:  *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT8)  r.i; நிறுத்து;
+    நிலை UNIX64_RET_SINT16: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT16) r.i; நிறுத்து;
+    நிலை UNIX64_RET_SINT32: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT32) r.i; நிறுத்து;
+    நிலை UNIX64_RET_INT64:  *(UINT64 *) rvalue = r.i; நிறுத்து;
+    நிலை UNIX64_RET_XMM32:  memcpy (rvalue, &r.d, 4); நிறுத்து;
+    நிலை UNIX64_RET_XMM64:  memcpy (rvalue, &r.d, 8); நிறுத்து;
     }
 }
 
 /* Build the move-list for CIF, or NULL if not plan-able (caller falls back). */
-static ffi_plan *
+நிலையான ffi_plan *
 build_plan (ffi_cif *cif)
 {
   unsigned i, avn = cif->nargs;
-  enum x86_64_reg_class classes[MAX_CLASSES];
+  எண்ணிக்கை x86_64_reg_class classes[MAX_CLASSES];
   unsigned nm, gprcount, ssecount;
   size_t argp_off, nbytes;
   ffi_plan *plan;
-  int all_gp64 = 1;	/* every arg is exactly one 64-bit GP move? */
+  முழு all_gp64 = 1;	/* every arg is exactly one 64-bit GP move? */
 
-  if (cif->abi != FFI_UNIX64)
-    return NULL;
+  எனில் (cif->abi != FFI_UNIX64)
+    திரும்பு வெற்று;
 
   /* Reject arg types this cut doesn't encode; returns are handled by flags. */
-  for (i = 0; i < avn; i++)
+  க்கு (i = 0; i < avn; i++)
     {
-      int t = cif->arg_types[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
-	return NULL;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      if (t == FFI_TYPE_LONGDOUBLE)
-	return NULL;
+      முழு t = cif->arg_types[i]->type;
+      எனில் (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+	திரும்பு வெற்று;
+#எனில் FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      எனில் (t == FFI_TYPE_LONGDOUBLE)
+	திரும்பு வெற்று;
 #endif
     }
 
   /* One self-contained allocation: header + moves, released with plain free(). */
-  nbytes = sizeof (ffi_plan) + sizeof (ffi_move) * (2 * avn + 1);
+  nbytes = அளவு (ffi_plan) + அளவு (ffi_move) * (2 * avn + 1);
   plan = malloc (nbytes);
-  if (plan == NULL)
-    return NULL;
+  எனில் (plan == வெற்று)
+    திரும்பு வெற்று;
   plan->alloc_bytes = (unsigned) nbytes;
 
   nm = gprcount = ssecount = 0;
   argp_off = 0;
   plan->ret_in_mem = (cif->flags & UNIX64_FLAG_RET_IN_MEM) ? 1 : 0;
-  if (plan->ret_in_mem)
+  எனில் (plan->ret_in_mem)
     gprcount++;				/* sret pointer occupies gpr[0] */
 
-  for (i = 0; i < avn; i++)
+  க்கு (i = 0; i < avn; i++)
     {
       ffi_type *at = cif->arg_types[i];
       size_t size = at->size, n, rem;
-      int ngpr, nsse;
+      முழு ngpr, nsse;
       unsigned j;
 
       n = examine_argument (at, classes, 0, &ngpr, &nsse);
-      if (n == 0
+      எனில் (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = at->alignment;
 	  ffi_move *m = &plan->moves[nm++];
 	  all_gp64 = 0;
-	  if (align < 8)
+	  எனில் (align < 8)
 	    align = 8;
 	  argp_off = FFI_ALIGN (argp_off, align);
-	  m->op = FFI_MOVE_STACK;
+	  m->op = FFI_MOVE_அடுக்கு;
 	  m->src_idx = i;
 	  m->src_off = 0;
-	  m->dst_off = (unsigned) (sizeof (struct register_args) + argp_off);
+	  m->dst_off = (unsigned) (அளவு (கட்டமைப்பு register_args) + argp_off);
 	  m->len = (unsigned) size;
 	  argp_off += size;
-	  continue;
+	  தொடர்;
 	}
 
-      for (j = 0, rem = size; j < n; j++, rem -= 8)
+      க்கு (j = 0, rem = size; j < n; j++, rem -= 8)
 	{
 	  ffi_move m;
 	  m.src_idx = i;
 	  m.src_off = j * 8;
-	  switch (classes[j])
+	  தேர்வு (classes[j])
 	    {
-	    case X86_64_NO_CLASS:
-	    case X86_64_SSEUP_CLASS:
-	      continue;			/* nothing placed for this 8-byte */
-	    case X86_64_INTEGER_CLASS:
-	    case X86_64_INTEGERSI_CLASS:
+	    நிலை X86_64_NO_CLASS:
+	    நிலை X86_64_SSEUP_CLASS:
+	      தொடர்;			/* nothing placed for this 8-byte */
+	    நிலை X86_64_INTEGER_CLASS:
+	    நிலை X86_64_INTEGERSI_CLASS:
 	      m.dst_off = gprcount * 8;	/* offsetof(register_args,gpr) == 0 */
-	      switch (at->type)
+	      தேர்வு (at->type)
 		{
-		case FFI_TYPE_SINT8:  m.op = FFI_MOVE_SE8;  all_gp64 = 0; break;
-		case FFI_TYPE_SINT16: m.op = FFI_MOVE_SE16; all_gp64 = 0; break;
-		case FFI_TYPE_SINT32: m.op = FFI_MOVE_SE32; all_gp64 = 0; break;
-		default:
-		  if (rem >= 8)
+		நிலை FFI_TYPE_SINT8:  m.op = FFI_MOVE_SE8;  all_gp64 = 0; நிறுத்து;
+		நிலை FFI_TYPE_SINT16: m.op = FFI_MOVE_SE16; all_gp64 = 0; நிறுத்து;
+		நிலை FFI_TYPE_SINT32: m.op = FFI_MOVE_SE32; all_gp64 = 0; நிறுத்து;
+		இயல்பு:
+		  எனில் (rem >= 8)
 		    m.op = FFI_MOVE_GP64;
-		  else
+		  இல்லையெனில்
 		    { m.op = FFI_MOVE_GP; m.len = (unsigned) rem; all_gp64 = 0; }
-		  break;
+		  நிறுத்து;
 		}
 	      gprcount++;
-	      break;
-	    case X86_64_SSE_CLASS:
-	    case X86_64_SSEDF_CLASS:
-	      m.dst_off = (unsigned) (offsetof (struct register_args, sse)
-				      + ssecount * sizeof (union big_int_union));
+	      நிறுத்து;
+	    நிலை X86_64_SSE_CLASS:
+	    நிலை X86_64_SSEDF_CLASS:
+	      m.dst_off = (unsigned) (offsetof (கட்டமைப்பு register_args, sse)
+				      + ssecount * அளவு (ஒன்றிப்பு big_int_union));
 	      m.op = FFI_MOVE_SSE64;
 	      ssecount++;
 	      all_gp64 = 0;
-	      break;
-	    case X86_64_SSESF_CLASS:
-	      m.dst_off = (unsigned) (offsetof (struct register_args, sse)
-				      + ssecount * sizeof (union big_int_union));
+	      நிறுத்து;
+	    நிலை X86_64_SSESF_CLASS:
+	      m.dst_off = (unsigned) (offsetof (கட்டமைப்பு register_args, sse)
+				      + ssecount * அளவு (ஒன்றிப்பு big_int_union));
 	      m.op = FFI_MOVE_SSE32;
 	      ssecount++;
 	      all_gp64 = 0;
-	      break;
-	    default:
-	      free (plan);		/* X87 etc. in registers: bail */
-	      return NULL;
+	      நிறுத்து;
+	    இயல்பு:
+	      விடுவி (plan);		/* X87 etc. in registers: bail */
+	      திரும்பு வெற்று;
 	    }
 	  plan->moves[nm++] = m;
 	}
@@ -991,81 +991,81 @@ build_plan (ffi_cif *cif)
   plan->thunk_n =
     (all_gp64 && !plan->ret_in_mem && nm == avn && avn <= MAX_GPR_REGS
      && plan->fast)
-    ? (int) avn : -1;
-  return plan;
+    ? (முழு) avn : -1;
+  திரும்பு plan;
 }
 
 /* Execute PLAN: rebuild register_args + stack buffer, then ffi_call_unix64. */
 FFI_ASAN_NO_SANITIZE
-static inline __attribute__ ((always_inline)) void
-plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
-	   void *rvalue, void **avalue)
+நிலையான உள்வரி __attribute__ ((always_inline)) வெறுமை
+plan_exec (ffi_cif *cif, ffi_plan *plan, வெறுமை (*fn) (வெறுமை),
+	   வெறுமை *rvalue, வெறுமை **avalue)
 {
   unsigned flags = plan->flags;
-  struct register_args local __attribute__ ((aligned (16)));
-  char *stack = NULL;
-  struct register_args *reg_args;
+  கட்டமைப்பு register_args local __attribute__ ((aligned (16)));
+  எழுத்து *அடுக்கு = வெற்று;
+  கட்டமைப்பு register_args *reg_args;
   unsigned k;
 
-  if (rvalue == NULL)
+  எனில் (rvalue == வெற்று)
     {
-      if (flags & UNIX64_FLAG_RET_IN_MEM)
+      எனில் (flags & UNIX64_FLAG_RET_IN_MEM)
 	rvalue = alloca (cif->rtype->size);
-      else
+      இல்லையெனில்
 	flags = UNIX64_RET_VOID;
     }
 
-  if (plan->thunk_n >= 0)
+  எனில் (plan->thunk_n >= 0)
     {
       /* Pure-GP64: load avalue straight into arg regs, no image at all. */
-      struct ffi_ret2 r = ffi_gp_thunks[plan->thunk_n] (avalue, fn);
-      if (rvalue != NULL)
+      கட்டமைப்பு ffi_ret2 r = ffi_gp_thunks[plan->thunk_n] (avalue, fn);
+      எனில் (rvalue != வெற்று)
 	store_ret (rvalue, plan->retcode, r);
-      return;
+      திரும்பு;
     }
 
-  if (plan->fast)
+  எனில் (plan->fast)
     reg_args = &local;			/* no stack args: fixed local image */
-  else
+  இல்லையெனில்
     {
-      stack = alloca (sizeof (struct register_args) + plan->bytes + 4 * 8);
-      reg_args = (struct register_args *) stack;
+      அடுக்கு = alloca (அளவு (கட்டமைப்பு register_args) + plan->bytes + 4 * 8);
+      reg_args = (கட்டமைப்பு register_args *) அடுக்கு;
     }
   reg_args->r10 = 0;			/* closure (none for ffi_call) */
-  if (plan->ret_in_mem)
+  எனில் (plan->ret_in_mem)
     reg_args->gpr[0] = (UINT64) (uintptr_t) rvalue;
 
-  for (k = 0; k < plan->nmoves; k++)
+  க்கு (k = 0; k < plan->nmoves; k++)
     {
       ffi_move *m = &plan->moves[k];
-      char *src = (char *) avalue[m->src_idx] + m->src_off;
-      char *dst = (char *) reg_args + m->dst_off;
-      switch (m->op)
+      எழுத்து *src = (எழுத்து *) avalue[m->src_idx] + m->src_off;
+      எழுத்து *dst = (எழுத்து *) reg_args + m->dst_off;
+      தேர்வு (m->op)
 	{
 	/* x86-64: unaligned scalar loads from avalue[] are fine. */
-	case FFI_MOVE_SE8:   *(UINT64 *) dst = (UINT64) (SINT64) *(SINT8 *)  src; break;
-	case FFI_MOVE_SE16:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT16 *) src; break;
-	case FFI_MOVE_SE32:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT32 *) src; break;
-	case FFI_MOVE_GP64:  *(UINT64 *) dst = *(UINT64 *) src;                   break;
-	case FFI_MOVE_GP:    *(UINT64 *) dst = 0; memcpy (dst, src, m->len);     break;
-	case FFI_MOVE_SSE64: *(UINT64 *) dst = *(UINT64 *) src;                   break;
-	case FFI_MOVE_SSE32: *(UINT32 *) dst = *(UINT32 *) src;                   break;
-	case FFI_MOVE_STACK: memcpy (dst, src, m->len);                          break;
+	நிலை FFI_MOVE_SE8:   *(UINT64 *) dst = (UINT64) (SINT64) *(SINT8 *)  src; நிறுத்து;
+	நிலை FFI_MOVE_SE16:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT16 *) src; நிறுத்து;
+	நிலை FFI_MOVE_SE32:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT32 *) src; நிறுத்து;
+	நிலை FFI_MOVE_GP64:  *(UINT64 *) dst = *(UINT64 *) src;                   நிறுத்து;
+	நிலை FFI_MOVE_GP:    *(UINT64 *) dst = 0; memcpy (dst, src, m->len);     நிறுத்து;
+	நிலை FFI_MOVE_SSE64: *(UINT64 *) dst = *(UINT64 *) src;                   நிறுத்து;
+	நிலை FFI_MOVE_SSE32: *(UINT32 *) dst = *(UINT32 *) src;                   நிறுத்து;
+	நிலை FFI_MOVE_அடுக்கு: memcpy (dst, src, m->len);                          நிறுத்து;
 	}
     }
   reg_args->rax = plan->ssecount;
 
-  if (plan->fast)
+  எனில் (plan->fast)
     {
       /* No stack args; lean trampoline + return store replicating the
 	 unix64.S store_table widths.  ret_in_mem already wrote gpr[0]. */
-      struct ffi_ret2 r = ffi_plan_fast_call (reg_args, fn);
-      if (rvalue != NULL)
+      கட்டமைப்பு ffi_ret2 r = ffi_plan_fast_call (reg_args, fn);
+      எனில் (rvalue != வெற்று)
 	store_ret (rvalue, plan->retcode, r);
-      return;
+      திரும்பு;
     }
 
-  ffi_call_unix64 (stack, plan->bytes + sizeof (struct register_args),
+  ffi_call_unix64 (அடுக்கு, plan->bytes + அளவு (கட்டமைப்பு register_args),
 		   flags, rvalue, fn);
 }
 
@@ -1074,7 +1074,7 @@ plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
    classification ffi_call does every time.  Signatures with no fast path
    (FAST is NULL) fall back to ffi_call.  The plan is immutable after alloc, so
    it carries no per-thread state and can be invoked from any thread.  */
-struct ffi_call_plan
+கட்டமைப்பு ffi_call_plan
 {
   ffi_cif  *cif;
   ffi_plan *fast;		/* prebuilt plan, or NULL -> fall back to ffi_call */
@@ -1083,71 +1083,71 @@ struct ffi_call_plan
 ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
-  ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan == NULL)
-    return NULL;
+  ffi_call_plan *plan = malloc (அளவு (கட்டமைப்பு ffi_call_plan));
+  எனில் (plan == வெற்று)
+    திரும்பு வெற்று;
   plan->cif  = cif;
   plan->fast = build_plan (cif);	/* NULL if this signature has no fast path */
-  return plan;
+  திரும்பு plan;
 }
 
-void
-ffi_call_plan_invoke (ffi_call_plan *plan, void (*fn) (void),
-		      void *rvalue, void **avalue)
+வெறுமை
+ffi_call_plan_invoke (ffi_call_plan *plan, வெறுமை (*fn) (வெறுமை),
+		      வெறுமை *rvalue, வெறுமை **avalue)
 {
-  if (plan->fast != NULL)
+  எனில் (plan->fast != வெற்று)
     plan_exec (plan->cif, plan->fast, fn, rvalue, avalue);
-  else
+  இல்லையெனில்
     ffi_call (plan->cif, fn, rvalue, avalue);
 }
 
-void
+வெறுமை
 ffi_call_plan_free (ffi_call_plan *plan)
 {
-  if (plan != NULL)
+  எனில் (plan != வெற்று)
     {
-      free (plan->fast);
-      free (plan);
+      விடுவி (plan->fast);
+      விடுவி (plan);
     }
 }
 
 size_t
 ffi_call_plan_size (ffi_call_plan *plan)
 {
-  if (plan == NULL)
-    return 0;
+  எனில் (plan == வெற்று)
+    திரும்பு 0;
   /* The move-list carries its own size; a signature with no fast path owns
      nothing beyond the handle.  */
-  return sizeof (struct ffi_call_plan)
-	 + (plan->fast != NULL ? plan->fast->alloc_bytes : 0);
+  திரும்பு அளவு (கட்டமைப்பு ffi_call_plan)
+	 + (plan->fast != வெற்று ? plan->fast->alloc_bytes : 0);
 }
 
-extern void
-ffi_call_efi64(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue);
+வெளி வெறுமை
+ffi_call_efi64(ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue, வெறுமை **avalue);
 #endif
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+வெறுமை
+ffi_call (ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue, வெறுமை **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
-  const int max_reg_struct_size = cif->abi == FFI_GNUW64 ? 8 : 16;
+  வெறுமை **avalue_copy = வெற்று;
+  முழு i, nargs = cif->nargs;
+  மாறிலி முழு max_reg_struct_size = cif->abi == FFI_GNUW64 ? 8 : 16;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  க்கு (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > max_reg_struct_size)
+      முழு size = at->size;
+      எனில் (at->type == FFI_TYPE_STRUCT && size > max_reg_struct_size)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          எழுத்து *argcopy = alloca (size);
+          எனில் (avalue_copy == வெற்று)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * அளவு (வெறுமை *));
+              memcpy (avalue_copy, avalue, nargs * அளவு (வெறுமை *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -1156,32 +1156,32 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+  எனில் (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
     {
       ffi_call_efi64(cif, fn, rvalue, avalue);
-      return;
+      திரும்பு;
     }
 #endif
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, வெற்று);
 }
 
 #ifdef FFI_GO_CLOSURES
 
 #ifndef __ILP32__
-extern void
-ffi_call_go_efi64(ffi_cif *cif, void (*fn)(void), void *rvalue,
-		  void **avalue, void *closure);
+வெளி வெறுமை
+ffi_call_go_efi64(ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue,
+		  வெறுமை **avalue, வெறுமை *closure);
 #endif
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+வெறுமை
+ffi_call_go (ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue,
+	     வெறுமை **avalue, வெறுமை *closure)
 {
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+  எனில் (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
     {
       ffi_call_go_efi64(cif, fn, rvalue, avalue, closure);
-      return;
+      திரும்பு;
     }
 #endif
   ffi_call_int (cif, fn, rvalue, avalue, closure);
@@ -1189,30 +1189,30 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
 #endif /* FFI_GO_CLOSURES */
 
-extern void ffi_closure_unix64(void) FFI_HIDDEN;
-extern void ffi_closure_unix64_sse(void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-extern void ffi_closure_unix64_alt(void) FFI_HIDDEN;
-extern void ffi_closure_unix64_sse_alt(void) FFI_HIDDEN;
+வெளி வெறுமை ffi_closure_unix64(வெறுமை) FFI_HIDDEN;
+வெளி வெறுமை ffi_closure_unix64_sse(வெறுமை) FFI_HIDDEN;
+#எனில் defined(FFI_EXEC_STATIC_TRAMP)
+வெளி வெறுமை ffi_closure_unix64_alt(வெறுமை) FFI_HIDDEN;
+வெளி வெறுமை ffi_closure_unix64_sse_alt(வெறுமை) FFI_HIDDEN;
 #endif
 
 #ifndef __ILP32__
-extern ffi_status
+வெளி ffi_status
 ffi_prep_closure_loc_efi64(ffi_closure* closure,
 			   ffi_cif* cif,
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data,
-			   void *codeloc);
+			   வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*),
+			   வெறுமை *user_data,
+			   வெறுமை *codeloc);
 #endif
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*),
+		      வெறுமை *user_data,
+		      வெறுமை *codeloc)
 {
-  static const unsigned char trampoline[24] = {
+  நிலையான மாறிலி unsigned எழுத்து trampoline[24] = {
     /* endbr64 */
     0xf3, 0x0f, 0x1e, 0xfa,
     /* leaq  -0xb(%rip),%r10   # 0x0  */
@@ -1222,135 +1222,135 @@ ffi_prep_closure_loc (ffi_closure* closure,
     /* nopl  0(%rax) */
     0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00
   };
-  void (*dest)(void);
-  char *tramp = closure->tramp;
+  வெறுமை (*dest)(வெறுமை);
+  எழுத்து *tramp = closure->tramp;
 
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_closure_loc_efi64(closure, cif, fun, user_data, codeloc);
+  எனில் (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    திரும்பு ffi_prep_closure_loc_efi64(closure, cif, fun, user_data, codeloc);
 #endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+  எனில் (cif->abi != FFI_UNIX64)
+    திரும்பு FFI_BAD_ABI;
 
-  if (cif->flags & UNIX64_FLAG_XMM_ARGS)
+  எனில் (cif->flags & UNIX64_FLAG_XMM_ARGS)
     dest = ffi_closure_unix64_sse;
-  else
+  இல்லையெனில்
     dest = ffi_closure_unix64;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#எனில் defined(FFI_EXEC_STATIC_TRAMP)
+  எனில் (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      if (dest == ffi_closure_unix64_sse)
+      எனில் (dest == ffi_closure_unix64_sse)
         dest = ffi_closure_unix64_sse_alt;
-      else
+      இல்லையெனில்
         dest = ffi_closure_unix64_alt;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
-      goto out;
+      செல் out;
     }
 #endif
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
-  *(UINT64 *)(tramp + sizeof (trampoline)) = (uintptr_t)dest;
+  memcpy (tramp, trampoline, அளவு(trampoline));
+  *(UINT64 *)(tramp + அளவு (trampoline)) = (uintptr_t)dest;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#எனில் defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
-int FFI_HIDDEN
+முழு FFI_HIDDEN
 ffi_closure_unix64_inner(ffi_cif *cif,
-			 void (*fun)(ffi_cif*, void*, void**, void*),
-			 void *user_data,
-			 void *rvalue,
-			 struct register_args *reg_args,
-			 char *argp)
+			 வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*),
+			 வெறுமை *user_data,
+			 வெறுமை *rvalue,
+			 கட்டமைப்பு register_args *reg_args,
+			 எழுத்து *argp)
 {
-  void **avalue;
+  வெறுமை **avalue;
   ffi_type **arg_types;
   long i, avn;
-  int gprcount, ssecount, ngpr, nsse;
-  int flags;
+  முழு gprcount, ssecount, ngpr, nsse;
+  முழு flags;
 
   avn = cif->nargs;
   flags = cif->flags;
 
-  avalue = alloca(avn * sizeof(void *));
+  avalue = alloca(avn * அளவு(வெறுமை *));
   gprcount = ssecount = 0;
 
-  if (flags & UNIX64_FLAG_RET_IN_MEM)
+  எனில் (flags & UNIX64_FLAG_RET_IN_MEM)
     {
       /* On return, %rax will contain the address that was passed
 	 by the caller in %rdi.  */
-      void *r = (void *)(uintptr_t)reg_args->gpr[gprcount++];
-      *(void **)rvalue = r;
+      வெறுமை *r = (வெறுமை *)(uintptr_t)reg_args->gpr[gprcount++];
+      *(வெறுமை **)rvalue = r;
       rvalue = r;
-      flags = (sizeof(void *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
+      flags = (அளவு(வெறுமை *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
     }
 
   arg_types = cif->arg_types;
-  for (i = 0; i < avn; ++i)
+  க்கு (i = 0; i < avn; ++i)
     {
-      enum x86_64_reg_class classes[MAX_CLASSES];
+      எண்ணிக்கை x86_64_reg_class classes[MAX_CLASSES];
       size_t n;
 
       n = examine_argument (arg_types[i], classes, 0, &ngpr, &nsse);
-      if (n == 0
+      எனில் (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = arg_types[i]->alignment;
 
 	  /* Stack arguments are *always* at least 8 byte aligned.  */
-	  if (align < 8)
+	  எனில் (align < 8)
 	    align = 8;
 
 	  /* Pass this argument in memory.  */
-	  argp = (void *) FFI_ALIGN (argp, align);
+	  argp = (வெறுமை *) FFI_ALIGN (argp, align);
 	  avalue[i] = argp;
 	  argp += arg_types[i]->size;
 	}
       /* If the argument is in a single register, or two consecutive
 	 integer registers, then we can use that address directly.  */
-      else if (n == 1
+      இல்லையெனில் எனில் (n == 1
 	       || (n == 2 && !(SSE_CLASS_P (classes[0])
 			       || SSE_CLASS_P (classes[1]))))
 	{
 	  /* The argument is in a single register.  */
-	  if (SSE_CLASS_P (classes[0]))
+	  எனில் (SSE_CLASS_P (classes[0]))
 	    {
 	      avalue[i] = &reg_args->sse[ssecount];
 	      ssecount += n;
 	    }
-	  else
+	  இல்லையெனில்
 	    {
 	      avalue[i] = &reg_args->gpr[gprcount];
 	      gprcount += n;
 	    }
 	}
       /* Otherwise, allocate space to make them consecutive.  */
-      else
+      இல்லையெனில்
 	{
-	  char *a = alloca (n * 8);
-	  unsigned int j;
+	  எழுத்து *a = alloca (n * 8);
+	  unsigned முழு j;
 
 	  avalue[i] = a;
-	  for (j = 0; j < n; j++, a += 8)
+	  க்கு (j = 0; j < n; j++, a += 8)
 	    {
-	      if (classes[j] == X86_64_SSEUP_CLASS)
+	      எனில் (classes[j] == X86_64_SSEUP_CLASS)
 		/* The high half of the same %xmm register as the preceding
 		   SSE class (e.g. the upper bits of a binary128 long double);
 		   it does not consume another register.  */
-		memcpy (a, (char *) &reg_args->sse[ssecount - 1] + 8, 8);
-	      else if (SSE_CLASS_P (classes[j]))
+		memcpy (a, (எழுத்து *) &reg_args->sse[ssecount - 1] + 8, 8);
+	      இல்லையெனில் எனில் (SSE_CLASS_P (classes[j]))
 		memcpy (a, &reg_args->sse[ssecount++], 8);
-	      else
+	      இல்லையெனில்
 		memcpy (a, &reg_args->gpr[gprcount++], 8);
 	    }
 	}
@@ -1360,30 +1360,30 @@ ffi_closure_unix64_inner(ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell assembly how to perform return type promotions.  */
-  return flags;
+  திரும்பு flags;
 }
 
 #ifdef FFI_GO_CLOSURES
 
-extern void ffi_go_closure_unix64(void) FFI_HIDDEN;
-extern void ffi_go_closure_unix64_sse(void) FFI_HIDDEN;
+வெளி வெறுமை ffi_go_closure_unix64(வெறுமை) FFI_HIDDEN;
+வெளி வெறுமை ffi_go_closure_unix64_sse(வெறுமை) FFI_HIDDEN;
 
 #ifndef __ILP32__
-extern ffi_status
+வெளி ffi_status
 ffi_prep_go_closure_efi64(ffi_go_closure* closure, ffi_cif* cif,
-			  void (*fun)(ffi_cif*, void*, void**, void*));
+			  வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*));
 #endif
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*))
 {
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_go_closure_efi64(closure, cif, fun);
+  எனில் (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    திரும்பு ffi_prep_go_closure_efi64(closure, cif, fun);
 #endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+  எனில் (cif->abi != FFI_UNIX64)
+    திரும்பு FFI_BAD_ABI;
 
   closure->tramp = (cif->flags & UNIX64_FLAG_XMM_ARGS
 		    ? ffi_go_closure_unix64_sse
@@ -1391,20 +1391,20 @@ ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 #endif /* FFI_GO_CLOSURES */
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
+#எனில் defined(FFI_EXEC_STATIC_TRAMP)
+வெறுமை *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  வெளி வெறுமை *trampoline_code_table;
 
   *map_size = UNIX64_TRAMP_MAP_SIZE;
   *tramp_size = UNIX64_TRAMP_SIZE;
-  return &trampoline_code_table;
+  திரும்பு &trampoline_code_table;
 }
 #endif
 

@@ -25,233 +25,233 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ <ffi_common.h>
 
-#include <stdlib.h>
+#அந்தர்பாவ <stdlib.h>
 
 #define NGREGARG 8
 #define NFREGARG 12
 
-static int
+நிலையான முழு
 return_type (ffi_type *arg)
 {
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  எனில் (arg->type != FFI_TYPE_STRUCT)
+    திரும்பு arg->type;
 
   /* gcc uses r2 if the result can be packed in on register.  */
-  if (arg->size <= sizeof (UINT8))
-    return FFI_TYPE_UINT8;
-  else if (arg->size <= sizeof (UINT16))
-    return FFI_TYPE_UINT16;
-  else if (arg->size <= sizeof (UINT32))
-    return FFI_TYPE_UINT32;
-  else if (arg->size <= sizeof (UINT64))
-    return FFI_TYPE_UINT64;
+  எனில் (arg->size <= அளவு (UINT8))
+    திரும்பு FFI_TYPE_UINT8;
+  இல்லையெனில் எனில் (arg->size <= அளவு (UINT16))
+    திரும்பு FFI_TYPE_UINT16;
+  இல்லையெனில் எனில் (arg->size <= அளவு (UINT32))
+    திரும்பு FFI_TYPE_UINT32;
+  இல்லையெனில் எனில் (arg->size <= அளவு (UINT64))
+    திரும்பு FFI_TYPE_UINT64;
 
-  return FFI_TYPE_STRUCT;
+  திரும்பு FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+வெறுமை ffi_prep_args(எழுத்து *அடுக்கு, extended_cif *ecif)
 {
-  register unsigned int i;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
+  பதிவு unsigned முழு i;
+  பதிவு unsigned முழு avn;
+  பதிவு வெறுமை **p_argv;
+  பதிவு எழுத்து *argp;
+  பதிவு ffi_type **p_arg;
 
-  argp = stack;
+  argp = அடுக்கு;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  எனில் (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
-      *(void **) argp = ecif->rvalue;
-      argp += sizeof (UINT64);
+      *(வெறுமை **) argp = ecif->rvalue;
+      argp += அளவு (UINT64);
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  க்கு (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
-      int align;
+      முழு align;
 
       z = (*p_arg)->size;
       align = (*p_arg)->alignment;
-      if (z < sizeof (UINT32))
+      எனில் (z < அளவு (UINT32))
 	{
-	  switch ((*p_arg)->type)
+	  தேர்வு ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
+	    நிலை FFI_TYPE_SINT8:
 	      *(SINT64 *) argp = (SINT64) *(SINT8 *)(*p_argv);
-	      break;
+	      நிறுத்து;
   
-	    case FFI_TYPE_UINT8:
+	    நிலை FFI_TYPE_UINT8:
 	      *(UINT64 *) argp = (UINT64) *(UINT8 *)(*p_argv);
-	      break;
+	      நிறுத்து;
   
-	    case FFI_TYPE_SINT16:
+	    நிலை FFI_TYPE_SINT16:
 	      *(SINT64 *) argp = (SINT64) *(SINT16 *)(*p_argv);
-	      break;
+	      நிறுத்து;
   
-	    case FFI_TYPE_UINT16:
+	    நிலை FFI_TYPE_UINT16:
 	      *(UINT64 *) argp = (UINT64) *(UINT16 *)(*p_argv);
-	      break;
+	      நிறுத்து;
   
-	    case FFI_TYPE_STRUCT:
+	    நிலை FFI_TYPE_STRUCT:
 	      memcpy (argp, *p_argv, z);
-	      break;
+	      நிறுத்து;
 
-	    default:
+	    இயல்பு:
 	      FFI_ASSERT(0);
 	    }
-	  argp += sizeof (UINT64);
+	  argp += அளவு (UINT64);
 	}
-      else if (z == sizeof (UINT32) && align == sizeof (UINT32))
+      இல்லையெனில் எனில் (z == அளவு (UINT32) && align == அளவு (UINT32))
 	{
-	  switch ((*p_arg)->type)
+	  தேர்வு ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT32:
+	    நிலை FFI_TYPE_INT:
+	    நிலை FFI_TYPE_SINT32:
 	      *(SINT64 *) argp = (SINT64) *(SINT32 *) (*p_argv);
-	      break;
+	      நிறுத்து;
 
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_POINTER:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_STRUCT:
+	    நிலை FFI_TYPE_FLOAT:
+	    நிலை FFI_TYPE_POINTER:
+	    நிலை FFI_TYPE_UINT32:
+	    நிலை FFI_TYPE_STRUCT:
 	      *(UINT64 *) argp = (UINT64) *(UINT32 *) (*p_argv);
-	      break;
+	      நிறுத்து;
 
-	    default:
+	    இயல்பு:
 	      FFI_ASSERT(0);
-	      break;
+	      நிறுத்து;
 	    }
-	  argp += sizeof (UINT64);
+	  argp += அளவு (UINT64);
 	}
-      else if (z == sizeof (UINT64)
-	       && align == sizeof (UINT64)
-	       && ((int) *p_argv & (sizeof (UINT64) - 1)) == 0)
+      இல்லையெனில் எனில் (z == அளவு (UINT64)
+	       && align == அளவு (UINT64)
+	       && ((முழு) *p_argv & (அளவு (UINT64) - 1)) == 0)
 	{
 	  *(UINT64 *) argp = *(UINT64 *) (*p_argv);
-	  argp += sizeof (UINT64);
+	  argp += அளவு (UINT64);
 	}
-      else
+      இல்லையெனில்
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  முழு n = (z + அளவு (UINT64) - 1) / அளவு (UINT64);
 
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (UINT64);
+	  argp += n * அளவு (UINT64);
 	}
     }
 
-  return;
+  திரும்பு;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-  int freg;
-  int fpair = -1;
+  முழு i, j;
+  முழு size, type;
+  முழு n, m;
+  முழு greg;
+  முழு freg;
+  முழு fpair = -1;
 
   greg = (return_type (cif->rtype) == FFI_TYPE_STRUCT ? 1 : 0);
   freg = 0;
   cif->flags2 = 0;
 
-  for (i = j = 0; i < cif->nargs; i++)
+  க்கு (i = j = 0; i < cif->nargs; i++)
     {
       type = (cif->arg_types)[i]->type;
-      switch (type)
+      தேர்வு (type)
 	{
-	case FFI_TYPE_FLOAT:
+	நிலை FFI_TYPE_FLOAT:
 	  greg++;
-	  cif->bytes += sizeof (UINT64) - sizeof (float);
-	  if (freg >= NFREGARG - 1)
-	    continue;
-	  if (fpair < 0)
+	  cif->bytes += அளவு (UINT64) - அளவு (தசம);
+	  எனில் (freg >= NFREGARG - 1)
+	    தொடர்;
+	  எனில் (fpair < 0)
 	    {
 	      fpair = freg;
 	      freg += 2;
 	    }
-	  else
+	  இல்லையெனில்
 	    fpair = -1;
 	  cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
-	  break;
+	  நிறுத்து;
 
-	case FFI_TYPE_DOUBLE:
-	  if (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
-	    continue;
-	  if ((freg + 1) < NFREGARG)
+	நிலை FFI_TYPE_DOUBLE:
+	  எனில் (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
+	    தொடர்;
+	  எனில் ((freg + 1) < NFREGARG)
 	    {
 	      freg += 2;
 	      cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
 	    }
-	  else
+	  இல்லையெனில்
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  நிறுத்து;
 	      
-	default:
+	இயல்பு:
 	  size = (cif->arg_types)[i]->size;
-	  if (size < sizeof (UINT64))
-	    cif->bytes += sizeof (UINT64) - size;
-	  n = (size + sizeof (UINT64) - 1) / sizeof (UINT64);
-	  if (greg >= NGREGARG)
-	    continue;
-	  else if (greg + n - 1 >= NGREGARG)
+	  எனில் (size < அளவு (UINT64))
+	    cif->bytes += அளவு (UINT64) - size;
+	  n = (size + அளவு (UINT64) - 1) / அளவு (UINT64);
+	  எனில் (greg >= NGREGARG)
+	    தொடர்;
+	  இல்லையெனில் எனில் (greg + n - 1 >= NGREGARG)
 	    greg = NGREGARG;
-	  else
+	  இல்லையெனில்
 	    greg += n;
-	  for (m = 0; m < n; m++)
+	  க்கு (m = 0; m < n; m++)
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  நிறுத்து;
 	}
     }
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  தேர்வு (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
+    நிலை FFI_TYPE_STRUCT:
       cif->flags = return_type (cif->rtype);
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    நிலை FFI_TYPE_VOID:
+    நிலை FFI_TYPE_FLOAT:
+    நிலை FFI_TYPE_DOUBLE:
+    நிலை FFI_TYPE_SINT64:
+    நிலை FFI_TYPE_UINT64:
       cif->flags = cif->rtype->type;
-      break;
+      நிறுத்து;
 
-    default:
+    இயல்பு:
       cif->flags = FFI_TYPE_INT;
-      break;
+      நிறுத்து;
     }
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 /*@-declundef@*/
 /*@-exportheader@*/
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), 
+வெளி வெறுமை ffi_call_SYSV(வெறுமை (*)(எழுத்து *, extended_cif *), 
 			  /*@out@*/ extended_cif *, 
 			  unsigned, unsigned, long long,
 			  /*@out@*/ unsigned *, 
-			  void (*fn)(void));
+			  வெறுமை (*fn)(வெறுமை));
 /*@=declundef@*/
 /*@=exportheader@*/
 
-void ffi_call(/*@dependent@*/ ffi_cif *cif, 
-	      void (*fn)(void), 
-	      /*@out@*/ void *rvalue, 
-	      /*@dependent@*/ void **avalue)
+வெறுமை ffi_call(/*@dependent@*/ ffi_cif *cif, 
+	      வெறுமை (*fn)(வெறுமை), 
+	      /*@out@*/ வெறுமை *rvalue, 
+	      /*@dependent@*/ வெறுமை **avalue)
 {
   extended_cif ecif;
   UINT64 trvalue;
@@ -262,50 +262,50 @@ void ffi_call(/*@dependent@*/ ffi_cif *cif,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  எனில் (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  இல்லையெனில் எனில் ((rvalue == வெற்று) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  இல்லையெனில்
     ecif.rvalue = rvalue;
 
-  switch (cif->abi) 
+  தேர்வு (cif->abi) 
     {
-    case FFI_SYSV:
+    நிலை FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, cif->flags2,
 		    ecif.rvalue, fn);
-      break;
-    default:
+      நிறுத்து;
+    இயல்பு:
       FFI_ASSERT(0);
-      break;
+      நிறுத்து;
     }
 
-  if (rvalue
+  எனில் (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     memcpy (rvalue, &trvalue, cif->rtype->size);
 }
 
-extern void ffi_closure_SYSV (void);
-extern void __ic_invalidate (void *line);
+வெளி வெறுமை ffi_closure_SYSV (வெறுமை);
+வெளி வெறுமை __ic_invalidate (வெறுமை *வரி);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      வெறுமை (*fun)(ffi_cif*, வெறுமை*, வெறுமை**, வெறுமை*),
+		      வெறுமை *user_data,
+		      வெறுமை *codeloc)
 {
-  unsigned int *tramp;
+  unsigned முழு *tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  எனில் (cif->abi != FFI_SYSV)
+    திரும்பு FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned முழு *) &closure->tramp[0];
   /* Since ffi_closure is an aligned object, the ffi trampoline is
      called as an SHcompact code.  Sigh.
      SHcompact part:
@@ -316,7 +316,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0x7001c701;
   tramp[1] = 0x0009402b;
-#else
+#இல்லையெனில்
   tramp[0] = 0xc7017001;
   tramp[1] = 0x402b0009;
 #endif
@@ -332,10 +332,10 @@ ffi_prep_closure_loc (ffi_closure *closure,
   closure->user_data = user_data;
 
   /* Flush the icache.  */
-  __asm__ volatile ("ocbwb %0,0; synco; icbi %1,0; synci" : : "r" (tramp),
+  __asm__ நிலையற்ற ("ocbwb %0,0; synco; icbi %1,0; synci" : : "r" (tramp),
 		"r"(codeloc));
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -346,28 +346,28 @@ ffi_prep_closure_loc (ffi_closure *closure,
  * following helper function to do most of the work.
  */
 
-int
+முழு
 ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue, 
 			 UINT64 *pgr, UINT64 *pfr, UINT64 *pst)
 {
-  void **avalue;
+  வெறுமை **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int greg, freg;
+  முழு i, avn;
+  முழு greg, freg;
   ffi_cif *cif;
-  int fpair = -1;
+  முழு fpair = -1;
 
   cif = closure->cif;
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * அளவு (வெறுமை *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (return_type (cif->rtype) == FFI_TYPE_STRUCT)
+  எனில் (return_type (cif->rtype) == FFI_TYPE_STRUCT)
     {
       rvalue = (UINT64 *) *pgr;
       greg = 1;
     }
-  else
+  இல்லையெனில்
     greg = 0;
 
   freg = 0;
@@ -375,86 +375,86 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  க்கு (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
-      void *p;
+      வெறுமை *p;
 
       z = (*p_arg)->size;
-      if (z < sizeof (UINT32))
+      எனில் (z < அளவு (UINT32))
 	{
 	  p = pgr + greg++;
 
-	  switch ((*p_arg)->type)
+	  தேர்வு ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_STRUCT:
+	    நிலை FFI_TYPE_SINT8:
+	    நிலை FFI_TYPE_UINT8:
+	    நிலை FFI_TYPE_SINT16:
+	    நிலை FFI_TYPE_UINT16:
+	    நிலை FFI_TYPE_STRUCT:
 #ifdef __LITTLE_ENDIAN__
 	      avalue[i] = p;
-#else
-	      avalue[i] = ((char *) p) + sizeof (UINT32) - z;
+#இல்லையெனில்
+	      avalue[i] = ((எழுத்து *) p) + அளவு (UINT32) - z;
 #endif
-	      break;
+	      நிறுத்து;
 
-	    default:
+	    இயல்பு:
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof (UINT32))
+      இல்லையெனில் எனில் (z == அளவு (UINT32))
 	{
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+	  எனில் ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg < NFREGARG - 1)
+	      எனில் (freg < NFREGARG - 1)
 		{
-		  if (fpair >= 0)
+		  எனில் (fpair >= 0)
 		    {
 		      avalue[i] = (UINT32 *) pfr + fpair;
 		      fpair = -1;
 		    }
-		  else
+		  இல்லையெனில்
 		    {
 #ifdef __LITTLE_ENDIAN__
 		      fpair = freg;
 		      avalue[i] = (UINT32 *) pfr + (1 ^ freg);
-#else
+#இல்லையெனில்
 		      fpair = 1 ^ freg;
 		      avalue[i] = (UINT32 *) pfr + freg;
 #endif
 		      freg += 2;
 		    }
 		}
-	      else
+	      இல்லையெனில்
 #ifdef __LITTLE_ENDIAN__
 		avalue[i] = pgr + greg;
-#else
+#இல்லையெனில்
 		avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	    }
-	  else
+	  இல்லையெனில்
 #ifdef __LITTLE_ENDIAN__
 	    avalue[i] = pgr + greg;
-#else
+#இல்லையெனில்
 	    avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	  greg++;
 	}
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+      இல்லையெனில் எனில் ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
+	  எனில் (freg + 1 >= NFREGARG)
 	    avalue[i] = pgr + greg;
-	  else
+	  இல்லையெனில்
 	    {
 	      avalue[i] = pfr + (freg >> 1);
 	      freg += 2;
 	    }
 	  greg++;
 	}
-      else
+      இல்லையெனில்
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  முழு n = (z + அளவு (UINT64) - 1) / அளவு (UINT64);
 
 	  avalue[i] = pgr + greg;
 	  greg += n;
@@ -464,6 +464,6 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   (closure->fun) (cif, rvalue, avalue, closure->user_data);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  திரும்பு return_type (cif->rtype);
 }
 

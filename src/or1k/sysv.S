@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS அல்லது IMPLIED, INCLUDING BUT இல்லை LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE மற்றும்
+   NONINFRINGEMENT.  உள் NO EVENT SHALL THE AUTHORS அல்லது COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES அல்லது OTHER LIABILITY,
+   WHETHER உள் AN ACTION OF CONTRACT, TORT அல்லது OTHERWISE, ARISING FROM,
+   OUT OF அல்லது உள் CONNECTION WITH THE SOFTWARE அல்லது THE USE அல்லது OTHER
+   DEALINGS உள் THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -36,7 +36,7 @@
   r4: extended cif structure
   r5: function pointer ffi_prep_args
   r6: ret address
-  r7: function to call
+  r7: function to அழை
   r8: flag for return type
 */
 
@@ -63,7 +63,7 @@ ffi_call_SYSV:
 	l.jalr r5
 	l.nop
 
-	/* Load register arguments and call*/
+	/* Load register arguments and அழை*/
 
 	l.lwz r3, 0(r1)
 	l.lwz r4, 4(r1)

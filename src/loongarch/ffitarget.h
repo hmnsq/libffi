@@ -41,10 +41,10 @@
 
 #ifndef LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+வகைவரை unsigned long ffi_arg;
+வகைவரை signed long ffi_sarg;
 
-typedef enum ffi_abi
+வகைவரை எண்ணிக்கை ffi_abi
 {
   FFI_FIRST_ABI = 0,
   FFI_LP64S,
@@ -55,27 +55,27 @@ typedef enum ffi_abi
   FFI_ILP32D,
   FFI_LAST_ABI,
 
-#if __loongarch_grlen == 64
-  #if defined(__loongarch_soft_float)
+#எனில் __loongarch_grlen == 64
+  #எனில் defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_LP64S
-  #elif defined(__loongarch_single_float)
+  #அல்லதெனில் defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_LP64F
-  #elif defined(__loongarch_double_float)
+  #அல்லதெனில் defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_LP64D
-  #else
+  #இல்லையெனில்
     #error unsupported LoongArch floating-point ABI
   #endif
-#elif __loongarch_grlen == 32
-  #if defined(__loongarch_soft_float)
+#அல்லதெனில் __loongarch_grlen == 32
+  #எனில் defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_ILP32S
-  #elif defined(__loongarch_single_float)
+  #அல்லதெனில் defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_ILP32F
-  #elif defined(__loongarch_double_float)
+  #அல்லதெனில் defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_ILP32D
-  #else
+  #இல்லையெனில்
     #error unsupported LoongArch floating-point ABI
   #endif
-#else
+#இல்லையெனில்
   #error unsupported LoongArch base architecture
 #endif
 } ffi_abi;

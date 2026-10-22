@@ -25,104 +25,104 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ <ffi_common.h>
 
-#include <stdlib.h>
+#அந்தர்பாவ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+வெறுமை ffi_prep_args(எழுத்து *அடுக்கு, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  unsigned முழு i;
+  முழு tmp;
+  unsigned முழு avn;
+  வெறுமை **p_argv;
+  எழுத்து *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = அடுக்கு;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  எனில் (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(வெறுமை **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  க்கு (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      எனில் (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (எழுத்து *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      எனில் (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  எனில் (z < அளவு (முழு))
 	    {
-	      z = sizeof (int);
+	      z = அளவு (முழு);
 
-	      switch ((*p_arg)->type)
+	      தேர்வு ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		நிலை FFI_TYPE_SINT8:
+		  *(signed முழு *) argp = (signed முழு)*(SINT8 *)(* p_argv);
+		  நிறுத்து;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		நிலை FFI_TYPE_UINT8:
+		  *(unsigned முழு *) argp = (unsigned முழு)*(UINT8 *)(* p_argv);
+		  நிறுத்து;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		நிலை FFI_TYPE_SINT16:
+		  *(signed முழு *) argp = (signed முழு)*(SINT16 *)(* p_argv);
+		  நிறுத்து;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		நிலை FFI_TYPE_UINT16:
+		  *(unsigned முழு *) argp = (unsigned முழு)*(UINT16 *)(* p_argv);
+		  நிறுத்து;
 
-		case FFI_TYPE_STRUCT:
+		நிலை FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  எனில் ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  இல்லையெனில்
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = அளவு (முழு);
+		  நிறுத்து;
 
-		default:
+		இயல்பு:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  இல்லையெனில் எனில் (z == அளவு (முழு))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned முழு *) argp = (unsigned முழு)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  இல்லையெனில்
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      எனில் ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  எனில் (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned முழு *) argp = (unsigned முழு)(வெறுமை *)(* p_argv);
+		      z = அளவு(வெறுமை *);
 		    }
-		  else
+		  இல்லையெனில்
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      இல்லையெனில்
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  திரும்பு;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -141,74 +141,74 @@ ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  தேர்வு (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    நிலை FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    நிலை FFI_TYPE_STRUCT:
+      எனில் (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      இல்லையெனில் எனில் (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      இல்லையெனில்
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    நிலை FFI_TYPE_SINT64:
+    நிலை FFI_TYPE_UINT64:
+    நிலை FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      நிறுத்து;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    நிலை FFI_TYPE_FLOAT:
+    இயல்பு:
       cif->flags = FFI_TYPE_INT;
-      break;
+      நிறுத்து;
     }
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+வெளி வெறுமை ffi_call_SYSV(வெறுமை (*)(எழுத்து *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, வெறுமை (*fn)(வெறுமை));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+வெறுமை ffi_call(ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue, வெறுமை **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  வெறுமை **avalue_copy = வெற்று;
+  முழு i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  எனில் ((rvalue == வெற்று) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  இல்லையெனில்
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  க்கு (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      முழு size = at->size;
+      எனில் (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          எழுத்து *argcopy = alloca (size);
+          எனில் (avalue_copy == வெற்று)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * அளவு (வெறுமை *));
+              memcpy (avalue_copy, avalue, nargs * அளவு (வெறுமை *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -217,41 +217,41 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  தேர்வு (cif->abi)
     {
-    case FFI_SYSV:
+    நிலை FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      எனில் (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  முழு size = cif->rtype->size;
+	  முழு align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  எனில் (size < 4)
 	    {
-	      if (align == 1)
+	      எனில் (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  இல்லையெனில் எனில் (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      எனில் (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      இல்லையெனில் எனில் (align == 2)
 		{
-		  if (size & 1)
+		  எனில் (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  எனில் (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      நிறுத்து;
 
-    default:
+    இயல்பு:
       FFI_ASSERT(0);
-      break;
+      நிறுத்து;
     }
 }

@@ -24,115 +24,115 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include "ffi_common.h"
+#அந்தர்பாவ <ffi.h>
+#அந்தர்பாவ "ffi_common.h"
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void* ffi_prep_args(char *stack, extended_cif *ecif)
+வெறுமை* ffi_prep_args(எழுத்து *அடுக்கு, extended_cif *ecif)
 {
-  char *stacktemp = stack;
-  int i, s;
+  எழுத்து *stacktemp = அடுக்கு;
+  முழு i, s;
   ffi_type **arg;
-  int count = 0;
-  int nfixedargs;
+  முழு மொத்தம் = 0;
+  முழு nfixedargs;
 
   nfixedargs = ecif->cif->nfixedargs;
   arg = ecif->cif->arg_types;
-  void **argv = ecif->avalue;
+  வெறுமை **argv = ecif->avalue;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
+  எனில் (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
     {
-      *(void **) stack = ecif->rvalue;
-      stack += 4;
-      count = 4;
+      *(வெறுமை **) அடுக்கு = ecif->rvalue;
+      அடுக்கு += 4;
+      மொத்தம் = 4;
     }
-  for(i=0; i<ecif->cif->nargs; i++)
+  க்கு(i=0; i<ecif->cif->nargs; i++)
   {
 
     /* variadic args are saved on stack */
-    if ((nfixedargs == 0) && (count < 24))
+    எனில் ((nfixedargs == 0) && (மொத்தம் < 24))
       {
-        count = 24;
-        stack = stacktemp + 24;
+        மொத்தம் = 24;
+        அடுக்கு = stacktemp + 24;
       }
     nfixedargs--;
 
     s = 4;
-    switch((*arg)->type)
+    தேர்வு((*arg)->type)
       {
-      case FFI_TYPE_STRUCT:
-        *(void **)stack = *argv;
-        break;
+      நிலை FFI_TYPE_STRUCT:
+        *(வெறுமை **)அடுக்கு = *argv;
+        நிறுத்து;
 
-      case FFI_TYPE_SINT8:
-        *(signed int *) stack = (signed int)*(SINT8 *)(* argv);
-        break;
+      நிலை FFI_TYPE_SINT8:
+        *(signed முழு *) அடுக்கு = (signed முழு)*(SINT8 *)(* argv);
+        நிறுத்து;
 
-      case FFI_TYPE_UINT8:
-        *(unsigned int *) stack = (unsigned int)*(UINT8 *)(* argv);
-        break;
+      நிலை FFI_TYPE_UINT8:
+        *(unsigned முழு *) அடுக்கு = (unsigned முழு)*(UINT8 *)(* argv);
+        நிறுத்து;
 
-      case FFI_TYPE_SINT16:
-        *(signed int *) stack = (signed int)*(SINT16 *)(* argv);
-        break;
+      நிலை FFI_TYPE_SINT16:
+        *(signed முழு *) அடுக்கு = (signed முழு)*(SINT16 *)(* argv);
+        நிறுத்து;
 
-      case FFI_TYPE_UINT16:
-        *(unsigned int *) stack = (unsigned int)*(UINT16 *)(* argv);
-        break;
+      நிலை FFI_TYPE_UINT16:
+        *(unsigned முழு *) அடுக்கு = (unsigned முழு)*(UINT16 *)(* argv);
+        நிறுத்து;
 
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_POINTER:
-        *(int *)stack = *(int*)(*argv);
-        break;
+      நிலை FFI_TYPE_SINT32:
+      நிலை FFI_TYPE_UINT32:
+      நிலை FFI_TYPE_FLOAT:
+      நிலை FFI_TYPE_POINTER:
+        *(முழு *)அடுக்கு = *(முழு*)(*argv);
+        நிறுத்து;
 
-      default: /* 8 byte types */
-        if (count == 20) /* never split arguments */
+      இயல்பு: /* 8 byte types */
+        எனில் (மொத்தம் == 20) /* never split arguments */
           {
-            stack += 4;
-            count += 4;
+            அடுக்கு += 4;
+            மொத்தம் += 4;
           }
         s = (*arg)->size;
-        memcpy(stack, *argv, s);
-        break;
+        memcpy(அடுக்கு, *argv, s);
+        நிறுத்து;
       }
 
-    stack += s;
-    count += s;
+    அடுக்கு += s;
+    மொத்தம் += s;
     argv++;
     arg++;
   }
-  return stacktemp + ((count>24)?24:0);
+  திரும்பு stacktemp + ((மொத்தம்>24)?24:0);
 }
 
-extern void ffi_call_SYSV(unsigned,
+வெளி வெறுமை ffi_call_SYSV(unsigned,
                           extended_cif *,
-                          void *(*)(char *, extended_cif *),
+                          வெறுமை *(*)(எழுத்து *, extended_cif *),
                           unsigned *,
-                          void (*fn)(void),
+                          வெறுமை (*fn)(வெறுமை),
                           unsigned);
 
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+வெறுமை ffi_call(ffi_cif *cif, வெறுமை (*fn)(வெறுமை), வெறுமை *rvalue, வெறுமை **avalue)
 {
-  int i;
-  int size;
+  முழு i;
+  முழு size;
   ffi_type **arg;
-  void **avalue_copy = NULL;
+  வெறுமை **avalue_copy = வெற்று;
 
   /* Calculate size to allocate on stack */
 
-  for(i = 0, arg = cif->arg_types, size=0; i < cif->nargs; i++, arg++)
+  க்கு(i = 0, arg = cif->arg_types, size=0; i < cif->nargs; i++, arg++)
     {
-      if ((*arg)->type == FFI_TYPE_STRUCT)
+      எனில் ((*arg)->type == FFI_TYPE_STRUCT)
         size += 4;
-      else
-      if ((*arg)->size <= 4)
+      இல்லையெனில்
+      எனில் ((*arg)->size <= 4)
         size += 4;
-      else
+      இல்லையெனில்
         size += 8;
 
       /* If we have any large structure arguments, make a copy so we are passing
@@ -141,14 +141,14 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
          modified.  */
       {
         ffi_type *at = cif->arg_types[i];
-        int size = at->size;
-        if (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
+        முழு size = at->size;
+        எனில் (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
           {
-            char *argcopy = alloca (size);
-            if (avalue_copy == NULL)
+            எழுத்து *argcopy = alloca (size);
+            எனில் (avalue_copy == வெற்று)
               {
-                avalue_copy = alloca (cif->nargs * sizeof (void *));
-                memcpy (avalue_copy, avalue, cif->nargs * sizeof (void *));
+                avalue_copy = alloca (cif->nargs * அளவு (வெறுமை *));
+                memcpy (avalue_copy, avalue, cif->nargs * அளவு (வெறுமை *));
                 avalue = avalue_copy;
               }
             memcpy (argcopy, avalue[i], size);
@@ -158,10 +158,10 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 
   /* for variadic functions more space is needed on the stack */
-  if (cif->nargs != cif->nfixedargs)
+  எனில் (cif->nargs != cif->nfixedargs)
     size += 24;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  எனில் (cif->rtype->type == FFI_TYPE_STRUCT)
     size += 4;
 
 
@@ -170,114 +170,114 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ecif.avalue = avalue;
   ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  தேர்வு (cif->abi)
   {
-    case FFI_SYSV:
+    நிலை FFI_SYSV:
       ffi_call_SYSV(size, &ecif, ffi_prep_args, rvalue, fn, cif->flags);
-      break;
-    default:
+      நிறுத்து;
+    இயல்பு:
       FFI_ASSERT(0);
-      break;
+      நிறுத்து;
   }
 }
 
 
-void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
+வெறுமை ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
                       unsigned long r6, unsigned long r7, unsigned long r8)
 {
-  register int *sp __asm__ ("r17");
-  register int *r13 __asm__ ("r13");
+  பதிவு முழு *sp __asm__ ("r17");
+  பதிவு முழு *r13 __asm__ ("r13");
 
   ffi_closure* closure = (ffi_closure*) r13;
-  char *stack_args = (char*) sp;
+  எழுத்து *அடுக்கு_args = (எழுத்து*) sp;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
   unsigned register_args[6] =
     { r3, r4, r5, r6, r7, r8 };
 
   /* Pointer to a struct return value.  */
-  void *struct_rvalue = (void *) r3;
+  வெறுமை *struct_rvalue = (வெறுமை *) r3;
 
   ffi_cif *cif = closure->cif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
-  int count = 0;
-  int nfixedargs = cif->nfixedargs;
-  int i;
+  வெறுமை **avalue = alloca (cif->nargs * அளவு(வெறுமை *));
+  எழுத்து *ptr = (எழுத்து *) register_args;
+  முழு மொத்தம் = 0;
+  முழு nfixedargs = cif->nfixedargs;
+  முழு i;
 
   /* preserve struct type return pointer passing */
 
-  if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
+  எனில் ((cif->rtype != வெற்று) && (cif->rtype->type == FFI_TYPE_STRUCT))
   {
     ptr += 4;
-    count = 4;
+    மொத்தம் = 4;
   }
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  க்கு (i = 0; i < cif->nargs; i++)
     {
 
       /* variadic args are saved on stack */
-      if ((nfixedargs == 0) && (count < 24))
+      எனில் ((nfixedargs == 0) && (மொத்தம் < 24))
         {
-          ptr = stack_args;
-          count = 24;
+          ptr = அடுக்கு_args;
+          மொத்தம் = 24;
         }
       nfixedargs--;
 
-      switch (arg_types[i]->type)
+      தேர்வு (arg_types[i]->type)
         {
-        case FFI_TYPE_SINT8:
-        case FFI_TYPE_UINT8:
+        நிலை FFI_TYPE_SINT8:
+        நிலை FFI_TYPE_UINT8:
           avalue[i] = ptr + 3;
-          break;
+          நிறுத்து;
 
-        case FFI_TYPE_SINT16:
-        case FFI_TYPE_UINT16:
+        நிலை FFI_TYPE_SINT16:
+        நிலை FFI_TYPE_UINT16:
           avalue[i] = ptr + 2;
-          break;
+          நிறுத்து;
 
-        case FFI_TYPE_SINT32:
-        case FFI_TYPE_UINT32:
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_POINTER:
+        நிலை FFI_TYPE_SINT32:
+        நிலை FFI_TYPE_UINT32:
+        நிலை FFI_TYPE_FLOAT:
+        நிலை FFI_TYPE_POINTER:
           avalue[i] = ptr;
-          break;
+          நிறுத்து;
 
-        case FFI_TYPE_STRUCT:
-          avalue[i] = *(void**)ptr;
-          break;
+        நிலை FFI_TYPE_STRUCT:
+          avalue[i] = *(வெறுமை**)ptr;
+          நிறுத்து;
 
-        default:
+        இயல்பு:
           /* 8-byte values  */
 
           /* arguments are never splitted */
-          if (ptr == &register_args[5])
-            ptr = stack_args;
+          எனில் (ptr == &register_args[5])
+            ptr = அடுக்கு_args;
           avalue[i] = ptr;
           ptr += 4;
-          count += 4;
-          break;
+          மொத்தம் += 4;
+          நிறுத்து;
         }
       ptr += 4;
-      count += 4;
+      மொத்தம் += 4;
 
       /* If we've handled more arguments than fit in registers,
          start looking at the those passed on the stack.  */
 
-      if (count == 24)
-        ptr = stack_args;
+      எனில் (மொத்தம் == 24)
+        ptr = அடுக்கு_args;
     }
 
-  if (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
+  எனில் (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       (closure->fun) (cif, struct_rvalue, avalue, closure->user_data);
-    } else
+    } இல்லையெனில்
     {
       long long rvalue;
       (closure->fun) (cif, &rvalue, avalue, closure->user_data);
-      if (cif->rtype)
+      எனில் (cif->rtype)
         __asm__ ("l.ori r12, %0, 0x0\n l.lwz r11, 0(r12)\n l.lwz r12, 4(r12)" : : "r" (&rvalue));
     }
 }
@@ -286,16 +286,16 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      வெறுமை (*fun)(ffi_cif*,வெறுமை*,வெறுமை**,வெறுமை*),
+                      வெறுமை *user_data,
+                      வெறுமை *codeloc)
 {
   unsigned short *tramp = (unsigned short *) closure->tramp;
   unsigned long fn = (unsigned long) ffi_closure_SYSV;
   unsigned long cls = (unsigned long) codeloc;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  எனில் (cif->abi != FFI_SYSV)
+    திரும்பு FFI_BAD_ABI;
 
   closure->cif = cif;
   closure->user_data = user_data;
@@ -318,7 +318,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
   tramp[10] = (0x2a << 10) | (17 << 5) | 1; /* l.ori r17, r1, ... */
   tramp[11] = 0x0;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 
@@ -327,24 +327,24 @@ ffi_status ffi_prep_cif_machdep (ffi_cif *cif)
   cif->flags = 0;
 
   /* structures are returned as pointers */
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  எனில் (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = FFI_TYPE_STRUCT;
-  else
-  if (cif->rtype->size > 4)
+  இல்லையெனில்
+  எனில் (cif->rtype->size > 4)
     cif->flags = FFI_TYPE_UINT64;
 
   cif->nfixedargs = cif->nargs;
 
-  return FFI_OK;
+  திரும்பு FFI_OK;
 }
 
 
 ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-         unsigned int nfixedargs, unsigned int ntotalargs)
+         unsigned முழு nfixedargs, unsigned முழு ntotalargs)
 {
   ffi_status status;
 
   status = ffi_prep_cif_machdep (cif);
   cif->nfixedargs = nfixedargs;
-  return status;
+  திரும்பு status;
 }
