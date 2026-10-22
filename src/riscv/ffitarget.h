@@ -38,12 +38,12 @@
 
 #ifndef LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef   signed long ffi_sarg;
+प्रकारनिर्देश unsigned long ffi_arg;
+प्रकारनिर्देश   signed long ffi_sarg;
 
 /* FFI_UNUSED_NN and riscv_unused are to maintain ABI compatibility with a
    distributed Berkeley patch from 2014, and can be removed at SONAME bump */
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
     FFI_FIRST_ABI = 0,
     FFI_SYSV,
     FFI_UNUSED_1,
