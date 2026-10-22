@@ -26,174 +26,174 @@
 
 /* This file defines generic functions for use with the raw api. */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#إذا !FFI_NO_RAW_API
 
 size_t
 ffi_raw_size (ffi_cif *cif)
 {
   size_t result = 0;
-  int i;
+  صحيح i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  لكل (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
+#إذا !FFI_NO_STRUCTS
+      إذا ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
+	result += FFI_ALIGN (حجم (فراغ*), FFI_SIZEOF_ARG);
+      وإلا
 #endif
 	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  إرجاع result;
 }
 
 
-void
-ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
+فراغ
+ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, فراغ **args)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#إذا كلمات_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  لكل (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-      switch ((*tp)->type)
+      بدل ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	حالة FFI_TYPE_UINT8:
+	حالة FFI_TYPE_SINT8:
+	  *args = (فراغ*) ((حرف*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  اكسر;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	حالة FFI_TYPE_UINT16:
+	حالة FFI_TYPE_SINT16:
+	  *args = (فراغ*) ((حرف*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  اكسر;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
+#إذا FFI_SIZEOF_ARG >= 4	  
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT32:
+	  *args = (فراغ*) ((حرف*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  اكسر;
 #endif
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#إذا !FFI_NO_STRUCTS
+	حالة FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_VECTOR:
 	  *args = (raw++)->ptr;
-	  break;
+	  اكسر;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	حالة FFI_TYPE_COMPLEX:
 	  *args = (raw++)->ptr;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	حالة FFI_TYPE_POINTER:
+	  *args = (فراغ*) &(raw++)->ptr;
+	  اكسر;
 	  
-	default:
+	افتراضي:
 	  *args = raw;
 	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#وإلا /* WORDS_BIGENDIAN */
 
-#if !PDP
+#إذا !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  لكل (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#إذا !FFI_NO_STRUCTS
+      إذا ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      وإلا
 #endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      إذا ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      وإلا
 	{
-	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  *args = (فراغ*) raw;
+	  raw += FFI_ALIGN ((*tp)->size, حجم (فراغ*)) / حجم (فراغ*);
 	}
     }
 
-#else
+#وإلا
 #error "pdp endian not supported"
 #endif /* ! PDP */
 
 #endif /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
+فراغ
+ffi_ptrarray_to_raw (ffi_cif *cif, فراغ **args, ffi_raw *raw)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  لكل (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-      switch ((*tp)->type)
+      بدل ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
+	حالة FFI_TYPE_UINT8:
 	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_SINT8:
+	حالة FFI_TYPE_SINT8:
 	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_UINT16:
+	حالة FFI_TYPE_UINT16:
 	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_SINT16:
+	حالة FFI_TYPE_SINT16:
 	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	  اكسر;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
+#إذا FFI_SIZEOF_ARG >= 4
+	حالة FFI_TYPE_UINT32:
 	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_SINT32:
+	حالة FFI_TYPE_SINT32:
 	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
+	  اكسر;
 #endif
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#إذا !FFI_NO_STRUCTS
+	حالة FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_VECTOR:
 	  (raw++)->ptr = *args;
-	  break;
+	  اكسر;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	حالة FFI_TYPE_COMPLEX:
 	  (raw++)->ptr = *args;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	حالة FFI_TYPE_POINTER:
+	  (raw++)->ptr = **(فراغ***) args;
+	  اكسر;
 
-	default:
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
+	افتراضي:
+	  memcpy ((فراغ*) raw->data, (فراغ*)*args, (*tp)->size);
 	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#إذا !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -203,18 +203,18 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
+فراغ ffi_raw_call (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
+  فراغ **avalue = (فراغ**) alloca (cif->nargs * حجم (فراغ*));
   ffi_raw_to_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#إذا FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+ساكن فراغ
+ffi_translate_args (ffi_cif *cif, فراغ *rvalue,
+		    فراغ **avalue, فراغ *user_data)
 {
   ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_size (cif));
   ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
@@ -226,9 +226,9 @@ ffi_translate_args (ffi_cif *cif, void *rvalue,
 ffi_status
 ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 			  ffi_cif *cif,
-			  void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-			  void *user_data,
-			  void *codeloc)
+			  فراغ (*fun)(ffi_cif*,فراغ*,ffi_raw*,فراغ*),
+			  فراغ *user_data,
+			  فراغ *codeloc)
 {
   ffi_status status;
 
@@ -237,19 +237,19 @@ ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 				 &ffi_translate_args,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  إذا (status == FFI_OK)
     {
       cl->fun       = fun;
       cl->user_data = user_data;
     }
 
-  return status;
+  إرجاع status;
 }
 
 #endif /* FFI_CLOSURES */
 #endif /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#إذا FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
@@ -258,10 +258,10 @@ ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 ffi_status
 ffi_prep_raw_closure (ffi_raw_closure* cl,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-		      void *user_data)
+		      فراغ (*fun)(ffi_cif*,فراغ*,ffi_raw*,فراغ*),
+		      فراغ *user_data)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  إرجاع ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
 }
 
 #endif /* FFI_CLOSURES */
