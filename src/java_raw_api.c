@@ -35,271 +35,271 @@
 /* stack slots (longs, doubles) occupy 128 bits, but only the first	*/
 /* 64 bits are actually used.						*/
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
+#अन्तर्भाव <stdlib.h>
 
-#if !defined(NO_JAVA_RAW_API)
+#जर !defined(NO_JAVA_RAW_API)
 
-size_t
+माप_प्रकार
 ffi_java_raw_size (ffi_cif *cif)
 {
-  size_t result = 0;
-  int i;
+  माप_प्रकार result = 0;
+  पूर्णांक i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  साठी (i = cif->nargs-1; i >= 0; i--, at++)
     {
-      switch((*at) -> type) {
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
+      निवड((*at) -> type) {
+	स्थिती FFI_TYPE_UINT64:
+	स्थिती FFI_TYPE_SINT64:
+	स्थिती FFI_TYPE_DOUBLE:
 	  result += 2 * FFI_SIZEOF_JAVA_RAW;
-	  break;
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+	  थांबा;
+	स्थिती FFI_TYPE_STRUCT:
+	स्थिती FFI_TYPE_VECTOR:
 	  /* No structure or vector parameters in Java.	*/
-	  abort();
-	case FFI_TYPE_COMPLEX:
+	  पात();
+	स्थिती FFI_TYPE_COMPLEX:
 	  /* Not supported yet.  */
-	  abort();
-	default:
+	  पात();
+	पूर्वनिर्धारित:
 	  result += FFI_SIZEOF_JAVA_RAW;
       }
     }
 
-  return result;
+  परत result;
 }
 
 
-void
-ffi_java_raw_to_ptrarray (ffi_cif *cif, ffi_java_raw *raw, void **args)
+शून्य
+ffi_java_raw_to_ptrarray (ffi_cif *cif, ffi_java_raw *raw, शून्य **args)
 {
-  unsigned i;
+  अचिन्हित i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#जर शब्द_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  साठी (i = 0; i < cif->nargs; i++, tp++, args++)
     {
-      switch ((*tp)->type)
+      निवड ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + 3);
-	  break;
+	स्थिती FFI_TYPE_UINT8:
+	स्थिती FFI_TYPE_SINT8:
+	  *args = (शून्य*) ((अक्षर*)(raw++) + 3);
+	  थांबा;
 
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + 2);
-	  break;
+	स्थिती FFI_TYPE_UINT16:
+	स्थिती FFI_TYPE_SINT16:
+	  *args = (शून्य*) ((अक्षर*)(raw++) + 2);
+	  थांबा;
 
-#if FFI_SIZEOF_JAVA_RAW == 8
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
-	  *args = (void *)raw;
+#जर FFI_SIZEOF_JAVA_RAW == 8
+	स्थिती FFI_TYPE_UINT64:
+	स्थिती FFI_TYPE_SINT64:
+	स्थिती FFI_TYPE_DOUBLE:
+	  *args = (शून्य *)raw;
 	  raw += 2;
-	  break;
+	  थांबा;
 #endif
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	स्थिती FFI_TYPE_POINTER:
+	  *args = (शून्य*) &(raw++)->ptr;
+	  थांबा;
 
-	case FFI_TYPE_COMPLEX:
+	स्थिती FFI_TYPE_COMPLEX:
 	  /* Not supported yet.  */
-	  abort();
+	  पात();
 
-	default:
+	पूर्वनिर्धारित:
 	  *args = raw;
 	  raw +=
-	    FFI_ALIGN ((*tp)->size, sizeof(ffi_java_raw)) / sizeof(ffi_java_raw);
+	    FFI_ALIGN ((*tp)->size, आकार(ffi_java_raw)) / आकार(ffi_java_raw);
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#अन्यथा /* WORDS_BIGENDIAN */
 
-#if !PDP
+#जर !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  साठी (i = 0; i < cif->nargs; i++, tp++, args++)
     {
-#if FFI_SIZEOF_JAVA_RAW == 8
-      switch((*tp)->type) {
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
-	  *args = (void*) raw;
+#जर FFI_SIZEOF_JAVA_RAW == 8
+      निवड((*tp)->type) {
+	स्थिती FFI_TYPE_UINT64:
+	स्थिती FFI_TYPE_SINT64:
+	स्थिती FFI_TYPE_DOUBLE:
+	  *args = (शून्य*) raw;
 	  raw += 2;
-	  break;
-	case FFI_TYPE_COMPLEX:
+	  थांबा;
+	स्थिती FFI_TYPE_COMPLEX:
 	  /* Not supported yet.  */
-	  abort();
-	default:
-	  *args = (void*) raw++;
+	  पात();
+	पूर्वनिर्धारित:
+	  *args = (शून्य*) raw++;
       }
-#else /* FFI_SIZEOF_JAVA_RAW != 8 */
-	*args = (void*) raw;
+#अन्यथा /* FFI_SIZEOF_JAVA_RAW != 8 */
+	*args = (शून्य*) raw;
 	raw +=
-	  FFI_ALIGN ((*tp)->size, sizeof(ffi_java_raw)) / sizeof(ffi_java_raw);
+	  FFI_ALIGN ((*tp)->size, आकार(ffi_java_raw)) / आकार(ffi_java_raw);
 #endif /* FFI_SIZEOF_JAVA_RAW == 8 */
     }
 
-#else
+#अन्यथा
 #error "pdp endian not supported"
 #endif /* ! PDP */
 
 #endif /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_java_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_java_raw *raw)
+शून्य
+ffi_java_ptrarray_to_raw (ffi_cif *cif, शून्य **args, ffi_java_raw *raw)
 {
-  unsigned i;
+  अचिन्हित i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  साठी (i = 0; i < cif->nargs; i++, tp++, args++)
     {
-      switch ((*tp)->type)
+      निवड ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-#if WORDS_BIGENDIAN
+	स्थिती FFI_TYPE_UINT8:
+#जर शब्द_BIGENDIAN
 	  *(UINT32*)(raw++) = *(UINT8*) (*args);
-#else
+#अन्यथा
 	  (raw++)->uint = *(UINT8*) (*args);
 #endif
-	  break;
+	  थांबा;
 
-	case FFI_TYPE_SINT8:
-#if WORDS_BIGENDIAN
+	स्थिती FFI_TYPE_SINT8:
+#जर शब्द_BIGENDIAN
 	  *(SINT32*)(raw++) = *(SINT8*) (*args);
-#else
+#अन्यथा
 	  (raw++)->sint = *(SINT8*) (*args);
 #endif
-	  break;
+	  थांबा;
 
-	case FFI_TYPE_UINT16:
-#if WORDS_BIGENDIAN
+	स्थिती FFI_TYPE_UINT16:
+#जर शब्द_BIGENDIAN
 	  *(UINT32*)(raw++) = *(UINT16*) (*args);
-#else
+#अन्यथा
 	  (raw++)->uint = *(UINT16*) (*args);
 #endif
-	  break;
+	  थांबा;
 
-	case FFI_TYPE_SINT16:
-#if WORDS_BIGENDIAN
+	स्थिती FFI_TYPE_SINT16:
+#जर शब्द_BIGENDIAN
 	  *(SINT32*)(raw++) = *(SINT16*) (*args);
-#else
+#अन्यथा
 	  (raw++)->sint = *(SINT16*) (*args);
 #endif
-	  break;
+	  थांबा;
 
-	case FFI_TYPE_UINT32:
-#if WORDS_BIGENDIAN
+	स्थिती FFI_TYPE_UINT32:
+#जर शब्द_BIGENDIAN
 	  *(UINT32*)(raw++) = *(UINT32*) (*args);
-#else
+#अन्यथा
 	  (raw++)->uint = *(UINT32*) (*args);
 #endif
-	  break;
+	  थांबा;
 
-	case FFI_TYPE_SINT32:
-#if WORDS_BIGENDIAN
+	स्थिती FFI_TYPE_SINT32:
+#जर शब्द_BIGENDIAN
 	  *(SINT32*)(raw++) = *(SINT32*) (*args);
-#else
+#अन्यथा
 	  (raw++)->sint = *(SINT32*) (*args);
 #endif
-	  break;
+	  थांबा;
 
-	case FFI_TYPE_FLOAT:
+	स्थिती FFI_TYPE_FLOAT:
 	  (raw++)->flt = *(FLOAT32*) (*args);
-	  break;
+	  थांबा;
 
-#if FFI_SIZEOF_JAVA_RAW == 8
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_DOUBLE:
+#जर FFI_SIZEOF_JAVA_RAW == 8
+	स्थिती FFI_TYPE_UINT64:
+	स्थिती FFI_TYPE_SINT64:
+	स्थिती FFI_TYPE_DOUBLE:
 	  raw->uint = *(UINT64*) (*args);
 	  raw += 2;
-	  break;
+	  थांबा;
 #endif
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	स्थिती FFI_TYPE_POINTER:
+	  (raw++)->ptr = **(शून्य***) args;
+	  थांबा;
 
-	default:
-#if FFI_SIZEOF_JAVA_RAW == 8
+	पूर्वनिर्धारित:
+#जर FFI_SIZEOF_JAVA_RAW == 8
 	  FFI_ASSERT(0);	/* Should have covered all cases */
-#else
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
+#अन्यथा
+	  स_नकल ((शून्य*) raw->data, (शून्य*)*args, (*tp)->size);
 	  raw +=
-	    FFI_ALIGN ((*tp)->size, sizeof(ffi_java_raw)) / sizeof(ffi_java_raw);
+	    FFI_ALIGN ((*tp)->size, आकार(ffi_java_raw)) / आकार(ffi_java_raw);
 #endif
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#जर !FFI_NATIVE_RAW_API
 
-static void
-ffi_java_rvalue_to_raw (ffi_cif *cif, void *rvalue)
+स्थिर शून्य
+ffi_java_rvalue_to_raw (ffi_cif *cif, शून्य *rvalue)
 {
-#if WORDS_BIGENDIAN && FFI_SIZEOF_ARG == 8
-  switch (cif->rtype->type)
+#जर शब्द_BIGENDIAN && FFI_SIZEOF_ARG == 8
+  निवड (cif->rtype->type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_UINT32:
+    स्थिती FFI_TYPE_UINT8:
+    स्थिती FFI_TYPE_UINT16:
+    स्थिती FFI_TYPE_UINT32:
       *(UINT64 *)rvalue <<= 32;
-      break;
+      थांबा;
 
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_INT:
-#if FFI_SIZEOF_JAVA_RAW == 4
-    case FFI_TYPE_POINTER:
+    स्थिती FFI_TYPE_SINT8:
+    स्थिती FFI_TYPE_SINT16:
+    स्थिती FFI_TYPE_SINT32:
+    स्थिती FFI_TYPE_INT:
+#जर FFI_SIZEOF_JAVA_RAW == 4
+    स्थिती FFI_TYPE_POINTER:
 #endif
       *(SINT64 *)rvalue <<= 32;
-      break;
+      थांबा;
 
-    case FFI_TYPE_COMPLEX:
+    स्थिती FFI_TYPE_COMPLEX:
       /* Not supported yet.  */
-      abort();
+      पात();
 
-    default:
-      break;
+    पूर्वनिर्धारित:
+      थांबा;
     }
 #endif
 }
 
-static void
-ffi_java_raw_to_rvalue (ffi_cif *cif, void *rvalue)
+स्थिर शून्य
+ffi_java_raw_to_rvalue (ffi_cif *cif, शून्य *rvalue)
 {
-#if WORDS_BIGENDIAN && FFI_SIZEOF_ARG == 8
-  switch (cif->rtype->type)
+#जर शब्द_BIGENDIAN && FFI_SIZEOF_ARG == 8
+  निवड (cif->rtype->type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_UINT32:
+    स्थिती FFI_TYPE_UINT8:
+    स्थिती FFI_TYPE_UINT16:
+    स्थिती FFI_TYPE_UINT32:
       *(UINT64 *)rvalue >>= 32;
-      break;
+      थांबा;
 
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_INT:
+    स्थिती FFI_TYPE_SINT8:
+    स्थिती FFI_TYPE_SINT16:
+    स्थिती FFI_TYPE_SINT32:
+    स्थिती FFI_TYPE_INT:
       *(SINT64 *)rvalue >>= 32;
-      break;
+      थांबा;
 
-    case FFI_TYPE_COMPLEX:
+    स्थिती FFI_TYPE_COMPLEX:
       /* Not supported yet.  */
-      abort();
+      पात();
 
-    default:
-      break;
+    पूर्वनिर्धारित:
+      थांबा;
     }
 #endif
 }
@@ -311,20 +311,20 @@ ffi_java_raw_to_rvalue (ffi_cif *cif, void *rvalue)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_java_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue,
+शून्य ffi_java_raw_call (ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue,
 			ffi_java_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
+  शून्य **avalue = (शून्य**) alloca (cif->nargs * आकार (शून्य*));
   ffi_java_raw_to_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
   ffi_java_rvalue_to_raw (cif, rvalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#जर FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_java_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+स्थिर शून्य
+ffi_java_translate_args (ffi_cif *cif, शून्य *rvalue,
+		    शून्य **avalue, शून्य *user_data)
 {
   ffi_java_raw *raw = (ffi_java_raw*)alloca (ffi_java_raw_size (cif));
   ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
@@ -337,9 +337,9 @@ ffi_java_translate_args (ffi_cif *cif, void *rvalue,
 ffi_status
 ffi_prep_java_raw_closure_loc (ffi_java_raw_closure* cl,
 			       ffi_cif *cif,
-			       void (*fun)(ffi_cif*,void*,ffi_java_raw*,void*),
-			       void *user_data,
-			       void *codeloc)
+			       शून्य (*fun)(ffi_cif*,शून्य*,ffi_java_raw*,शून्य*),
+			       शून्य *user_data,
+			       शून्य *codeloc)
 {
   ffi_status status;
 
@@ -348,13 +348,13 @@ ffi_prep_java_raw_closure_loc (ffi_java_raw_closure* cl,
 				 &ffi_java_translate_args,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  जर (status == FFI_OK)
     {
       cl->fun       = fun;
       cl->user_data = user_data;
     }
 
-  return status;
+  परत status;
 }
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
@@ -364,10 +364,10 @@ ffi_prep_java_raw_closure_loc (ffi_java_raw_closure* cl,
 ffi_status
 ffi_prep_java_raw_closure (ffi_java_raw_closure* cl,
 			   ffi_cif *cif,
-			   void (*fun)(ffi_cif*,void*,ffi_java_raw*,void*),
-			   void *user_data)
+			   शून्य (*fun)(ffi_cif*,शून्य*,ffi_java_raw*,शून्य*),
+			   शून्य *user_data)
 {
-  return ffi_prep_java_raw_closure_loc (cl, cif, fun, user_data, cl);
+  परत ffi_prep_java_raw_closure_loc (cl, cif, fun, user_data, cl);
 }
 
 #endif /* FFI_CLOSURES */

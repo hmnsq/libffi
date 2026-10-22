@@ -26,11 +26,11 @@
 #define ASM_GLOBAL_DIRECTIVE .globl
 
 
-#define C_SYMBOL_NAME(name) name
+#define C_चिन्ह_NAME(name) name
 /* Macro for a label.  */
 #ifdef	__STDC__
 #define C_LABEL(name)		name##:
-#else
+#अन्यथा
 #define C_LABEL(name)		name/**/:
 #endif
 
@@ -50,7 +50,7 @@
   .pushsection;								      \
   .section ".data";							      \
   .align ALIGNARG(2);							      \
-0:.long 0;								      \
+0:.दीर्घ 0;								      \
   .previous;								      \
   mflr  %r0;								      \
   stw   %r0,4(%r1);							      \
@@ -58,11 +58,11 @@
   mflr  %r11;								      \
   lwz   %r0,0b@got(%r11);						      \
   bl    JUMPTARGET(_mcount);
-#else  /* PIC */
+#अन्यथा  /* PIC */
 #define CALL_MCOUNT							      \
   .section ".data";							      \
   .align ALIGNARG(2);							      \
-0:.long 0;								      \
+0:.दीर्घ 0;								      \
   .previous;								      \
   mflr  %r0;								      \
   lis   %r11,0b@ha;							      \
@@ -70,13 +70,13 @@
   addi  %r0,%r11,0b@l;							      \
   bl    JUMPTARGET(_mcount);
 #endif /* PIC */
-#else  /* PROF */
+#अन्यथा  /* PROF */
 #define CALL_MCOUNT		/* Do nothing.  */
 #endif /* PROF */
 
 #define	ENTRY(name)							      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+  ASM_GLOBAL_DIRECTIVE C_चिन्ह_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_चिन्ह_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT
@@ -93,9 +93,9 @@
 /* EALIGN is like ENTRY, but does alignment to 'words'*4 bytes
    past a 2^align boundary.  */
 #ifdef PROF
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#define EFFI_ALIGN(name, alignt, शब्द)					      \
+  ASM_GLOBAL_DIRECTIVE C_चिन्ह_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_चिन्ह_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT								      \
@@ -103,10 +103,10 @@
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   0:
-#else /* PROF */
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#अन्यथा /* PROF */
+#define EFFI_ALIGN(name, alignt, शब्द)					      \
+  ASM_GLOBAL_DIRECTIVE C_चिन्ह_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_चिन्ह_NAME(name),@function)			      \
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   C_LABEL(name)
@@ -117,7 +117,7 @@
 
 #ifdef PIC
 #define JUMPTARGET(name) name##@plt
-#else
+#अन्यथा
 #define JUMPTARGET(name) name
 #endif
 

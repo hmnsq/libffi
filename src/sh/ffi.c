@@ -25,112 +25,112 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
-#include <stdlib.h>
+#अन्तर्भाव <stdlib.h>
 
 #define NGREGARG 4
-#if defined(__SH4__)
+#जर defined(__SH4__)
 #define NFREGARG 8
 #endif
 
-#if defined(__HITACHI__)
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 1
-#else
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 0
+#जर defined(__HITACHI__)
+#define STRUCT_मूल्य_ADDRESS_WITH_ARG 1
+#अन्यथा
+#define STRUCT_मूल्य_ADDRESS_WITH_ARG 0
 #endif
 
 /* If the structure has essentially an unique element, return its type.  */
-static int
+स्थिर पूर्णांक
 simple_type (ffi_type *arg)
 {
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
-  else if (arg->elements[1])
-    return FFI_TYPE_STRUCT;
+  जर (arg->type != FFI_TYPE_STRUCT)
+    परत arg->type;
+  अन्यथा जर (arg->elements[1])
+    परत FFI_TYPE_STRUCT;
 
-  return simple_type (arg->elements[0]);
+  परत simple_type (arg->elements[0]);
 }
 
-static int
+स्थिर पूर्णांक
 return_type (ffi_type *arg)
 {
-  unsigned short type;
+  अचिन्हित लघु type;
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  जर (arg->type != FFI_TYPE_STRUCT)
+    परत arg->type;
 
   type = simple_type (arg->elements[0]);
-  if (! arg->elements[1])
+  जर (! arg->elements[1])
     {
-      switch (type)
+      निवड (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  return FFI_TYPE_INT;
+	स्थिती FFI_TYPE_SINT8:
+	स्थिती FFI_TYPE_UINT8:
+	स्थिती FFI_TYPE_SINT16:
+	स्थिती FFI_TYPE_UINT16:
+	स्थिती FFI_TYPE_SINT32:
+	स्थिती FFI_TYPE_UINT32:
+	  परत FFI_TYPE_INT;
 
-	default:
-	  return type;
+	पूर्वनिर्धारित:
+	  परत type;
 	}
     }
 
   /* gcc uses r0/r1 pair for some kind of structures.  */
-  if (arg->size <= 2 * sizeof (int))
+  जर (arg->size <= 2 * आकार (पूर्णांक))
     {
-      int i = 0;
+      पूर्णांक i = 0;
       ffi_type *e;
 
-      while ((e = arg->elements[i++]))
+      पर्यंत ((e = arg->elements[i++]))
 	{
 	  type = simple_type (e);
-	  switch (type)
+	  निवड (type)
 	    {
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_FLOAT:
-	      return FFI_TYPE_UINT64;
+	    स्थिती FFI_TYPE_SINT32:
+	    स्थिती FFI_TYPE_UINT32:
+	    स्थिती FFI_TYPE_INT:
+	    स्थिती FFI_TYPE_FLOAT:
+	      परत FFI_TYPE_UINT64;
 
-	    default:
-	      break;
+	    पूर्वनिर्धारित:
+	      थांबा;
 	    }
 	}
     }
 
-  return FFI_TYPE_STRUCT;
+  परत FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+शून्य ffi_prep_args(अक्षर *चळत, extended_cif *ecif)
 {
-  register unsigned int i;
-  register int tmp;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
-  int greg, ireg;
-#if defined(__SH4__)
-  int freg = 0;
+  नोंदणी अचिन्हित पूर्णांक i;
+  नोंदणी पूर्णांक tmp;
+  नोंदणी अचिन्हित पूर्णांक avn;
+  नोंदणी शून्य **p_argv;
+  नोंदणी अक्षर *argp;
+  नोंदणी ffi_type **p_arg;
+  पूर्णांक greg, ireg;
+#जर defined(__SH4__)
+  पूर्णांक freg = 0;
 #endif
 
   tmp = 0;
-  argp = stack;
+  argp = चळत;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  जर (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
-      *(void **) argp = ecif->rvalue;
+      *(शून्य **) argp = ecif->rvalue;
       argp += 4;
-      ireg = STRUCT_VALUE_ADDRESS_WITH_ARG ? 1 : 0;
+      ireg = STRUCT_मूल्य_ADDRESS_WITH_ARG ? 1 : 0;
     }
-  else
+  अन्यथा
     ireg = 0;
 
   /* Set arguments for registers.  */
@@ -138,278 +138,278 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  साठी (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
-      size_t z;
+      माप_प्रकार z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      जर (z < आकार(पूर्णांक))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  जर (greg++ >= NGREGARG)
+	    सुरूठेवा;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = आकार(पूर्णांक);
+	  निवड ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_SINT8:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक)*(SINT8 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_UINT8:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT8 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_SINT16:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक)*(SINT16 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_UINT16:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT16 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_STRUCT:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT32 *)(* p_argv);
+	      थांबा;
 
-	    default:
+	    पूर्वनिर्धारित:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      अन्यथा जर (z == आकार(पूर्णांक))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#जर defined(__SH4__)
+	  जर ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      जर (freg++ >= NFREGARG)
+		सुरूठेवा;
 	    }
-	  else
+	  अन्यथा
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      जर (greg++ >= NGREGARG)
+		सुरूठेवा;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#जर defined(__SH4__)
+      अन्यथा जर ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
+	  जर (freg + 1 >= NFREGARG)
+	    सुरूठेवा;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
-	  memcpy (argp, *p_argv, z);
+	  स_नकल (argp, *p_argv, z);
 	  argp += z;
 	}
 #endif
-      else
+      अन्यथा
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
+	  पूर्णांक n = (z + आकार (पूर्णांक) - 1) / आकार (पूर्णांक);
+#जर defined(__SH4__)
+	  जर (greg + n - 1 >= NGREGARG)
+	    सुरूठेवा;
+#अन्यथा
+	  जर (greg >= NGREGARG)
+	    सुरूठेवा;
 #endif
 	  greg += n;
-	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  स_नकल (argp, *p_argv, z);
+	  argp += n * आकार (पूर्णांक);
 	}
     }
 
   /* Set arguments on stack.  */
   greg = ireg;
-#if defined(__SH4__)
+#जर defined(__SH4__)
   freg = 0;
 #endif
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  साठी (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
-      size_t z;
+      माप_प्रकार z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      जर (z < आकार(पूर्णांक))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  जर (greg++ < NGREGARG)
+	    सुरूठेवा;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = आकार(पूर्णांक);
+	  निवड ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_SINT8:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक)*(SINT8 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_UINT8:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT8 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_SINT16:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक)*(SINT16 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_UINT16:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT16 *)(* p_argv);
+	      थांबा;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    स्थिती FFI_TYPE_STRUCT:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT32 *)(* p_argv);
+	      थांबा;
 
-	    default:
+	    पूर्वनिर्धारित:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      अन्यथा जर (z == आकार(पूर्णांक))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#जर defined(__SH4__)
+	  जर ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      जर (freg++ < NFREGARG)
+		सुरूठेवा;
 	    }
-	  else
+	  अन्यथा
 #endif
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      जर (greg++ < NGREGARG)
+		सुरूठेवा;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#जर defined(__SH4__)
+      अन्यथा जर ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  जर (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      सुरूठेवा;
 	    }
-	  memcpy (argp, *p_argv, z);
+	  स_नकल (argp, *p_argv, z);
 	  argp += z;
 	}
 #endif
-      else
+      अन्यथा
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  पूर्णांक n = (z + आकार (पूर्णांक) - 1) / आकार (पूर्णांक);
+	  जर (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      सुरूठेवा;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#जर (! defined(__SH4__))
+	  अन्यथा जर (greg < NGREGARG)
 	    {
 	      greg = NGREGARG;
-	      continue;
+	      सुरूठेवा;
 	    }
 #endif
-	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  स_नकल (argp, *p_argv, z);
+	  argp += n * आकार (पूर्णांक);
 	}
     }
 
-  return;
+  परत;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-#if defined(__SH4__)
-  int freg = 0;
+  पूर्णांक i, j;
+  पूर्णांक size, type;
+  पूर्णांक n, m;
+  पूर्णांक greg;
+#जर defined(__SH4__)
+  पूर्णांक freg = 0;
 #endif
 
   cif->flags = 0;
 
   greg = ((return_type (cif->rtype) == FFI_TYPE_STRUCT) &&
-	  STRUCT_VALUE_ADDRESS_WITH_ARG) ? 1 : 0;
+	  STRUCT_मूल्य_ADDRESS_WITH_ARG) ? 1 : 0;
 
-#if defined(__SH4__)
-  for (i = j = 0; i < cif->nargs && j < 12; i++)
+#जर defined(__SH4__)
+  साठी (i = j = 0; i < cif->nargs && j < 12; i++)
     {
       type = (cif->arg_types)[i]->type;
-      switch (type)
+      निवड (type)
 	{
-	case FFI_TYPE_FLOAT:
-	  if (freg >= NFREGARG)
-	    continue;
+	स्थिती FFI_TYPE_FLOAT:
+	  जर (freg >= NFREGARG)
+	    सुरूठेवा;
 	  freg++;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  थांबा;
 
-	case FFI_TYPE_DOUBLE:
-	  if ((freg + 1) >= NFREGARG)
-	    continue;
+	स्थिती FFI_TYPE_DOUBLE:
+	  जर ((freg + 1) >= NFREGARG)
+	    सुरूठेवा;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  थांबा;
 	      
-	default:
+	पूर्वनिर्धारित:
 	  size = (cif->arg_types)[i]->size;
-	  n = (size + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 >= NGREGARG)
-		continue;
+	  n = (size + आकार (पूर्णांक) - 1) / आकार (पूर्णांक);
+	  जर (greg + n - 1 >= NGREGARG)
+		सुरूठेवा;
 	  greg += n;
-	  for (m = 0; m < n; m++)
+	  साठी (m = 0; m < n; m++)
 	    cif->flags += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  थांबा;
 	}
     }
-#else
-  for (i = j = 0; i < cif->nargs && j < 4; i++)
+#अन्यथा
+  साठी (i = j = 0; i < cif->nargs && j < 4; i++)
     {
       size = (cif->arg_types)[i]->size;
-      n = (size + sizeof (int) - 1) / sizeof (int);
-      if (greg >= NGREGARG)
-	continue;
-      else if (greg + n - 1 >= NGREGARG)
+      n = (size + आकार (पूर्णांक) - 1) / आकार (पूर्णांक);
+      जर (greg >= NGREGARG)
+	सुरूठेवा;
+      अन्यथा जर (greg + n - 1 >= NGREGARG)
 	n = NGREGARG - greg;
       greg += n;
-      for (m = 0; m < n; m++)
+      साठी (m = 0; m < n; m++)
         cif->flags += FFI_TYPE_INT << (2 * j++);
     }
 #endif
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  निवड (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
-      cif->flags += (unsigned) (return_type (cif->rtype)) << 24;
-      break;
+    स्थिती FFI_TYPE_STRUCT:
+      cif->flags += (अचिन्हित) (return_type (cif->rtype)) << 24;
+      थांबा;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      cif->flags += (unsigned) cif->rtype->type << 24;
-      break;
+    स्थिती FFI_TYPE_VOID:
+    स्थिती FFI_TYPE_FLOAT:
+    स्थिती FFI_TYPE_DOUBLE:
+    स्थिती FFI_TYPE_SINT64:
+    स्थिती FFI_TYPE_UINT64:
+      cif->flags += (अचिन्हित) cif->rtype->type << 24;
+      थांबा;
 
-    default:
+    पूर्वनिर्धारित:
       cif->flags += FFI_TYPE_INT << 24;
-      break;
+      थांबा;
     }
 
-  return FFI_OK;
+  परत FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+बाह्य शून्य ffi_call_SYSV(शून्य (*)(अक्षर *, extended_cif *), extended_cif *,
+			  अचिन्हित, अचिन्हित, अचिन्हित *, शून्य (*fn)(शून्य));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+शून्य ffi_call(ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue, शून्य **avalue)
 {
   extended_cif ecif;
   UINT64 trvalue;
@@ -420,53 +420,53 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  जर (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  अन्यथा जर ((rvalue == रिक्त) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  अन्यथा
     ecif.rvalue = rvalue;
 
-  switch (cif->abi) 
+  निवड (cif->abi) 
     {
-    case FFI_SYSV:
+    स्थिती FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, ecif.rvalue,
 		    fn);
-      break;
-    default:
+      थांबा;
+    पूर्वनिर्धारित:
       FFI_ASSERT(0);
-      break;
+      थांबा;
     }
 
-  if (rvalue
+  जर (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
-    memcpy (rvalue, &trvalue, cif->rtype->size);
+    स_नकल (rvalue, &trvalue, cif->rtype->size);
 }
 
-extern void ffi_closure_SYSV (void);
-#if defined(__SH4__)
-extern void __ic_invalidate (void *line);
+बाह्य शून्य ffi_closure_SYSV (शून्य);
+#जर defined(__SH4__)
+बाह्य शून्य __ic_invalidate (शून्य *ओळ);
 #endif
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      शून्य (*fun)(ffi_cif*, शून्य*, शून्य**, शून्य*),
+		      शून्य *user_data,
+		      शून्य *codeloc)
 {
-  unsigned int *tramp;
-  unsigned int insn;
+  अचिन्हित पूर्णांक *tramp;
+  अचिन्हित पूर्णांक insn;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  जर (cif->abi != FFI_SYSV)
+    परत FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (अचिन्हित पूर्णांक *) &closure->tramp[0];
   /* Set T bit if the function returns a struct pointed with R2.  */
   insn = (return_type (cif->rtype) == FFI_TYPE_STRUCT
 	  ? 0x0018 /* sett */
@@ -475,23 +475,23 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0xd301d102;
   tramp[1] = 0x0000412b | (insn << 16);
-#else
+#अन्यथा
   tramp[0] = 0xd102d301;
   tramp[1] = 0x412b0000 | insn;
 #endif
-  *(void **) &tramp[2] = (void *)codeloc;          /* ctx */
-  *(void **) &tramp[3] = (void *)ffi_closure_SYSV; /* funaddr */
+  *(शून्य **) &tramp[2] = (शून्य *)codeloc;          /* ctx */
+  *(शून्य **) &tramp[3] = (शून्य *)ffi_closure_SYSV; /* funaddr */
 
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-#if defined(__SH4__)
+#जर defined(__SH4__)
   /* Flush the icache.  */
   __ic_invalidate(codeloc);
 #endif
 
-  return FFI_OK;
+  परत FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -505,36 +505,36 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
 #define OFS_INT8	0
 #define OFS_INT16	0
-#else
+#अन्यथा
 #define OFS_INT8	3
 #define OFS_INT16	2
 #endif
 
-int
-ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue, 
-			 unsigned long *pgr, unsigned long *pfr, 
-			 unsigned long *pst)
+पूर्णांक
+ffi_closure_helper_SYSV (ffi_closure *closure, शून्य *rvalue, 
+			 अचिन्हित दीर्घ *pgr, अचिन्हित दीर्घ *pfr, 
+			 अचिन्हित दीर्घ *pst)
 {
-  void **avalue;
+  शून्य **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int ireg, greg = 0;
-#if defined(__SH4__)
-  int freg = 0;
+  पूर्णांक i, avn;
+  पूर्णांक ireg, greg = 0;
+#जर defined(__SH4__)
+  पूर्णांक freg = 0;
 #endif
   ffi_cif *cif; 
 
   cif = closure->cif;
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * आकार(शून्य *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_VALUE_ADDRESS_WITH_ARG)
+  जर (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_मूल्य_ADDRESS_WITH_ARG)
     {
-      rvalue = (void *) *pgr++;
+      rvalue = (शून्य *) *pgr++;
       ireg = 1;
     }
-  else
+  अन्यथा
     ireg = 0;
 
   cif = closure->cif;
@@ -542,63 +542,63 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  साठी (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      size_t z;
+      माप_प्रकार z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      जर (z < आकार(पूर्णांक))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  जर (greg++ >= NGREGARG)
+	    सुरूठेवा;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = आकार(पूर्णांक);
+	  निवड ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pgr) + OFS_INT8);
-	      break;
+	    स्थिती FFI_TYPE_SINT8:
+	    स्थिती FFI_TYPE_UINT8:
+	      avalue[i] = (((अक्षर *)pgr) + OFS_INT8);
+	      थांबा;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pgr) + OFS_INT16);
-	      break;
+	    स्थिती FFI_TYPE_SINT16:
+	    स्थिती FFI_TYPE_UINT16:
+	      avalue[i] = (((अक्षर *)pgr) + OFS_INT16);
+	      थांबा;
   
-	    case FFI_TYPE_STRUCT:
+	    स्थिती FFI_TYPE_STRUCT:
 	      avalue[i] = pgr;
-	      break;
+	      थांबा;
 
-	    default:
+	    पूर्वनिर्धारित:
 	      FFI_ASSERT(0);
 	    }
 	  pgr++;
 	}
-      else if (z == sizeof(int))
+      अन्यथा जर (z == आकार(पूर्णांक))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#जर defined(__SH4__)
+	  जर ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      जर (freg++ >= NFREGARG)
+		सुरूठेवा;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  अन्यथा
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      जर (greg++ >= NGREGARG)
+		सुरूठेवा;
 	      avalue[i] = pgr;
 	      pgr++;
 	    }
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#जर defined(__SH4__)
+      अन्यथा जर ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
-	  if (freg & 1)
+	  जर (freg + 1 >= NFREGARG)
+	    सुरूठेवा;
+	  जर (freg & 1)
 	    pfr++;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
@@ -606,15 +606,15 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
 	  pfr += 2;
 	}
 #endif
-      else
+      अन्यथा
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
+	  पूर्णांक n = (z + आकार (पूर्णांक) - 1) / आकार (पूर्णांक);
+#जर defined(__SH4__)
+	  जर (greg + n - 1 >= NGREGARG)
+	    सुरूठेवा;
+#अन्यथा
+	  जर (greg >= NGREGARG)
+	    सुरूठेवा;
 #endif
 	  greg += n;
 	  avalue[i] = pgr;
@@ -623,86 +623,86 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
     }
 
   greg = ireg;
-#if defined(__SH4__)
+#जर defined(__SH4__)
   freg = 0;
 #endif
 
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  साठी (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      size_t z;
+      माप_प्रकार z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      जर (z < आकार(पूर्णांक))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  जर (greg++ < NGREGARG)
+	    सुरूठेवा;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = आकार(पूर्णांक);
+	  निवड ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pst) + OFS_INT8);
-	      break;
+	    स्थिती FFI_TYPE_SINT8:
+	    स्थिती FFI_TYPE_UINT8:
+	      avalue[i] = (((अक्षर *)pst) + OFS_INT8);
+	      थांबा;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pst) + OFS_INT16);
-	      break;
+	    स्थिती FFI_TYPE_SINT16:
+	    स्थिती FFI_TYPE_UINT16:
+	      avalue[i] = (((अक्षर *)pst) + OFS_INT16);
+	      थांबा;
   
-	    case FFI_TYPE_STRUCT:
+	    स्थिती FFI_TYPE_STRUCT:
 	      avalue[i] = pst;
-	      break;
+	      थांबा;
 
-	    default:
+	    पूर्वनिर्धारित:
 	      FFI_ASSERT(0);
 	    }
 	  pst++;
 	}
-      else if (z == sizeof(int))
+      अन्यथा जर (z == आकार(पूर्णांक))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#जर defined(__SH4__)
+	  जर ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      जर (freg++ < NFREGARG)
+		सुरूठेवा;
 	    }
-	  else
+	  अन्यथा
 #endif
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      जर (greg++ < NGREGARG)
+		सुरूठेवा;
 	    }
 	  avalue[i] = pst;
 	  pst++;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#जर defined(__SH4__)
+      अन्यथा जर ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  जर (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      सुरूठेवा;
 	    }
 	  avalue[i] = pst;
 	  pst += 2;
 	}
 #endif
-      else
+      अन्यथा
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  पूर्णांक n = (z + आकार (पूर्णांक) - 1) / आकार (पूर्णांक);
+	  जर (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      सुरूठेवा;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#जर (! defined(__SH4__))
+	  अन्यथा जर (greg < NGREGARG)
 	    {
 	      greg += n;
 	      pst += greg - NGREGARG;
-	      continue;
+	      सुरूठेवा;
 	    }
 #endif
 	  avalue[i] = pst;
@@ -713,5 +713,5 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
   (closure->fun) (cif, rvalue, avalue, closure->user_data);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  परत return_type (cif->rtype);
 }

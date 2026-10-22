@@ -23,47 +23,47 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <stdint.h>
 
-#include <sys/cachectl.h>
+#अन्तर्भाव <sys/cachectl.h>
 
 #define NARGREG 8
 #define STKALIGN 4
-#define MAXCOPYARG (2 * sizeof(double))
+#define MAXCOPYARG (2 * आकार(द्विगुण))
 
-typedef struct call_context
+प्रकारव्याख्या संरचना call_context
 {
-  size_t r[8];
+  माप_प्रकार r[8];
   /* used by the assembly code to in-place construct its own stack frame */
-  char frame[16];
+  अक्षर frame[16];
 } call_context;
 
-typedef struct call_builder
+प्रकारव्याख्या संरचना call_builder
 {
   call_context *aregs;
-  int used_integer;
+  पूर्णांक used_integer;
   //int used_float;
-  size_t *used_stack;
-  void *struct_stack;
+  माप_प्रकार *used_चळत;
+  शून्य *struct_चळत;
 } call_builder;
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if defined(__ARC64_ARCH64__)
+#जर defined(__ARC64_ARCH64__)
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#अन्यथा
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
 #endif
 
 /* for little endian ARC, the code is in fact stored as mixed endian for
    performance reasons */
-#if __BIG_ENDIAN__
+#जर __BIG_ENDIAN__
 #define CODE_ENDIAN(x) (x)
-#else
+#अन्यथा
 #define CODE_ENDIAN(x) ( (((uint32_t) (x)) << 16) | (((uint32_t) (x)) >> 16))
 #endif
 
@@ -72,211 +72,211 @@ ffi_status
 ffi_prep_cif_machdep (ffi_cif * cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  निवड (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    स्थिती FFI_TYPE_VOID:
+      cif->flags = (अचिन्हित) cif->rtype->type;
+      थांबा;
 
-    case FFI_TYPE_STRUCT:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    स्थिती FFI_TYPE_STRUCT:
+      cif->flags = (अचिन्हित) cif->rtype->type;
+      थांबा;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    स्थिती FFI_TYPE_SINT64:
+    स्थिती FFI_TYPE_UINT64:
+    स्थिती FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      थांबा;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    स्थिती FFI_TYPE_FLOAT:
+    पूर्वनिर्धारित:
       cif->flags = FFI_TYPE_INT;
-      break;
+      थांबा;
     }
 
-  return FFI_OK;
+  परत FFI_OK;
 }
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
-  size_t value = 0;
-  switch (type) {
-    case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
-    case FFI_TYPE_SINT8: value = *(int8_t *)data; break;
-    case FFI_TYPE_UINT16: value = *(uint16_t *)data; break;
-    case FFI_TYPE_SINT16: value = *(int16_t *)data; break;
+स्थिर शून्य marshal_atom(call_builder *cb, पूर्णांक type, शून्य *data) {
+  माप_प्रकार मूल्य = 0;
+  निवड (type) {
+    स्थिती FFI_TYPE_UINT8: मूल्य = *(uint8_t *)data; थांबा;
+    स्थिती FFI_TYPE_SINT8: मूल्य = *(int8_t *)data; थांबा;
+    स्थिती FFI_TYPE_UINT16: मूल्य = *(uint16_t *)data; थांबा;
+    स्थिती FFI_TYPE_SINT16: मूल्य = *(int16_t *)data; थांबा;
     /* 32-bit quantities are always sign-extended in the ABI */
-    case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
-    case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if defined(__ARC64_ARCH64__)
-    case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
-    case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
+    स्थिती FFI_TYPE_UINT32: मूल्य = *(int32_t *)data; थांबा;
+    स्थिती FFI_TYPE_SINT32: मूल्य = *(int32_t *)data; थांबा;
+#जर defined(__ARC64_ARCH64__)
+    स्थिती FFI_TYPE_UINT64: मूल्य = *(uint64_t *)data; थांबा;
+    स्थिती FFI_TYPE_SINT64: मूल्य = *(int64_t *)data; थांबा;
 #endif
-    case FFI_TYPE_POINTER: value = *(size_t *)data; break;
-    default: FFI_ASSERT(0); break;
+    स्थिती FFI_TYPE_POINTER: मूल्य = *(माप_प्रकार *)data; थांबा;
+    पूर्वनिर्धारित: FFI_ASSERT(0); थांबा;
   }
 
-  if (cb->used_integer == NARGREG) {
-    *cb->used_stack++ = value;
-  } else {
-    cb->aregs->r[cb->used_integer++] = value;
+  जर (cb->used_integer == NARGREG) {
+    *cb->used_चळत++ = मूल्य;
+  } अन्यथा {
+    cb->aregs->r[cb->used_integer++] = मूल्य;
   }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
-  size_t realign[2];
+स्थिर शून्य marshal(call_builder *cb, ffi_type *type, पूर्णांक var, शून्य *data) {
+  माप_प्रकार realign[2];
 
-#if (defined(__ARC64_ARCH64__) || defined(__ARC64_ARCH32__))
-  if (type->size > 2 * __SIZEOF_POINTER__) {
-    if (var) {
+#जर (defined(__ARC64_ARCH64__) || defined(__ARC64_ARCH32__))
+  जर (type->size > 2 * __SIZEOF_POINTER__) {
+    जर (var) {
       marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else {
+    } अन्यथा {
       /* copy to stack and pass by reference */
-      data = memcpy (cb->struct_stack, data, type->size);
-      cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
+      data = स_नकल (cb->struct_चळत, data, type->size);
+      cb->struct_चळत = (माप_प्रकार *) FFI_ALIGN ((अक्षर *) cb->struct_चळत + type->size, __SIZEOF_POINTER__);
       marshal_atom(cb, FFI_TYPE_POINTER, &data);
     }
   }
-#else
-  if (type->type == FFI_TYPE_STRUCT) {
-    if (var) {
-      if (type->size > 0)
+#अन्यथा
+  जर (type->type == FFI_TYPE_STRUCT) {
+    जर (var) {
+      जर (type->size > 0)
         marshal_atom(cb, FFI_TYPE_POINTER, data);
-    } else {
-      int i;
+    } अन्यथा {
+      पूर्णांक i;
       
-      for (i = 0; i < type->size; i += sizeof(size_t)) {
+      साठी (i = 0; i < type->size; i += आकार(माप_प्रकार)) {
         marshal_atom(cb, FFI_TYPE_POINTER, data);
-        data += sizeof(size_t);
+        data += आकार(माप_प्रकार);
       }
     }
   }
 #endif
-  else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+  अन्यथा जर (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
     marshal_atom(cb, type->type, data);
-  } else {
-      memcpy(realign, data, type->size);
-      if (type->size > 0)
+  } अन्यथा {
+      स_नकल(realign, data, type->size);
+      जर (type->size > 0)
         marshal_atom(cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
+      जर (type->size > __SIZEOF_POINTER__)
         marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
   }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
-  size_t value;
+स्थिर शून्य unmarshal_atom(call_builder *cb, पूर्णांक type, शून्य *data) {
+  माप_प्रकार मूल्य;
 
-  if (cb->used_integer == NARGREG) {
-    value = *cb->used_stack++;
-  } else {
-    value = cb->aregs->r[cb->used_integer++];
+  जर (cb->used_integer == NARGREG) {
+    मूल्य = *cb->used_चळत++;
+  } अन्यथा {
+    मूल्य = cb->aregs->r[cb->used_integer++];
   }
 
-  switch (type) {
-    case FFI_TYPE_UINT8: *(uint8_t *)data = value; break;
-    case FFI_TYPE_SINT8: *(uint8_t *)data = value; break;
-    case FFI_TYPE_UINT16: *(uint16_t *)data = value; break;
-    case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
-    case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
-    case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if defined(__ARC64_ARCH64__)
-    case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
-    case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
+  निवड (type) {
+    स्थिती FFI_TYPE_UINT8: *(uint8_t *)data = मूल्य; थांबा;
+    स्थिती FFI_TYPE_SINT8: *(uint8_t *)data = मूल्य; थांबा;
+    स्थिती FFI_TYPE_UINT16: *(uint16_t *)data = मूल्य; थांबा;
+    स्थिती FFI_TYPE_SINT16: *(uint16_t *)data = मूल्य; थांबा;
+    स्थिती FFI_TYPE_UINT32: *(uint32_t *)data = मूल्य; थांबा;
+    स्थिती FFI_TYPE_SINT32: *(uint32_t *)data = मूल्य; थांबा;
+#जर defined(__ARC64_ARCH64__)
+    स्थिती FFI_TYPE_UINT64: *(uint64_t *)data = मूल्य; थांबा;
+    स्थिती FFI_TYPE_SINT64: *(uint64_t *)data = मूल्य; थांबा;
 #endif
-    case FFI_TYPE_POINTER: *(size_t *)data = value; break;
-    default: FFI_ASSERT(0); break;
+    स्थिती FFI_TYPE_POINTER: *(माप_प्रकार *)data = मूल्य; थांबा;
+    पूर्वनिर्धारित: FFI_ASSERT(0); थांबा;
   }
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
-  size_t realign[2];
+स्थिर शून्य *unmarshal(call_builder *cb, ffi_type *type, पूर्णांक var, शून्य *data) {
+  माप_प्रकार realign[2];
 
-#if defined(__ARC64_ARCH64__)
-  void *pointer;
+#जर defined(__ARC64_ARCH64__)
+  शून्य *pointer;
 
-  if (type->size > 2 * __SIZEOF_POINTER__) {
+  जर (type->size > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
-        unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
+        unmarshal_atom(cb, FFI_TYPE_POINTER, (अक्षर*)&pointer);
+        परत pointer;
     }
-#elif defined(__ARC64_ARCH32__)
-  if (type->type == FFI_TYPE_STRUCT) {
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+#किंवाजर defined(__ARC64_ARCH32__)
+  जर (type->type == FFI_TYPE_STRUCT) {
+    जर (type->size > 2 * __SIZEOF_POINTER__) {
       unmarshal_atom(cb, FFI_TYPE_POINTER, &realign[0]);
-      memcpy(data, (const void*)realign[0], type->size);
-      return data;
-    } else {
-      int i;
-      void *pdata = data;
+      स_नकल(data, (स्थिरांक शून्य*)realign[0], type->size);
+      परत data;
+    } अन्यथा {
+      पूर्णांक i;
+      शून्य *pdata = data;
 
-      for (i = 0; i < type->size; i += sizeof(size_t)) {
+      साठी (i = 0; i < type->size; i += आकार(माप_प्रकार)) {
         unmarshal_atom(cb, FFI_TYPE_POINTER, pdata);
-        pdata += sizeof(size_t);
+        pdata += आकार(माप_प्रकार);
       }
-      return data;
+      परत data;
     }
   }
-#else
-  if (type->type == FFI_TYPE_STRUCT) {
+#अन्यथा
+  जर (type->type == FFI_TYPE_STRUCT) {
 
-      if (var) {
-        int i;
-        void *pdata = data;
+      जर (var) {
+        पूर्णांक i;
+        शून्य *pdata = data;
 
-        for (i = 0; i < type->size; i += sizeof(size_t)) {
+        साठी (i = 0; i < type->size; i += आकार(माप_प्रकार)) {
           unmarshal_atom(cb, FFI_TYPE_POINTER, pdata);
-          pdata += sizeof(size_t);
+          pdata += आकार(माप_प्रकार);
         }
-        return data;
-      } else {
-        if (type->size > 0)
+        परत data;
+      } अन्यथा {
+        जर (type->size > 0)
           unmarshal_atom(cb, FFI_TYPE_POINTER, &realign[0]);
-        memcpy(data, (const void*)realign[0], type->size);
-        return data;
+        स_नकल(data, (स्थिरांक शून्य*)realign[0], type->size);
+        परत data;
       }
   }
 #endif
-  else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+  अन्यथा जर (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
     unmarshal_atom(cb, type->type, data);
-    return data;
-  } else {
-      if (type->size > 0)
+    परत data;
+  } अन्यथा {
+      जर (type->size > 0)
         unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
+      जर (type->size > __SIZEOF_POINTER__)
         unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
-      memcpy(data, realign, type->size);
-      return data;
+      स_नकल(data, realign, type->size);
+      परत data;
   }
 }
 
-static int passed_by_ref(ffi_type *type, int var) {
-  if (type->type == FFI_TYPE_STRUCT)
-	  return 1;
+स्थिर पूर्णांक passed_by_ref(ffi_type *type, पूर्णांक var) {
+  जर (type->type == FFI_TYPE_STRUCT)
+	  परत 1;
   
-  return type->size > 2 * __SIZEOF_POINTER__;
+  परत type->size > 2 * __SIZEOF_POINTER__;
 }
 
 /* Low level routine for calling functions */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+बाह्य शून्य ffi_call_asm (शून्य *चळत, संरचना call_context *regs,
+			  शून्य (*fn) (शून्य), शून्य *closure) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+स्थिर शून्य
+ffi_call_int (ffi_cif *cif, शून्य (*fn) (शून्य), शून्य *rvalue, शून्य **avalue,
+	      शून्य *closure)
 {
-  int return_by_ref = passed_by_ref(cif->rtype, 0);
+  पूर्णांक return_by_ref = passed_by_ref(cif->rtype, 0);
 
   /* Allocate space for stack arg parameters.  */
-  size_t arg_bytes = FFI_ALIGN(2 * sizeof(size_t) * cif->nargs, STKALIGN);
+  माप_प्रकार arg_bytes = FFI_ALIGN(2 * आकार(माप_प्रकार) * cif->nargs, STKALIGN);
   /* Allocate space for copies of big structures.  */
-  size_t struct_bytes = FFI_ALIGN(cif->bytes, STKALIGN);
+  माप_प्रकार struct_bytes = FFI_ALIGN(cif->bytes, STKALIGN);
   // size_t rval_bytes = 0;
   // if (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
   //   rval_bytes = FFI_ALIGN(cif->rtype->size, STKALIGN);
-  size_t alloc_size = arg_bytes + /*rval_bytes +*/ struct_bytes + sizeof(call_context);
-  size_t alloc_base = (size_t)alloca(alloc_size);
+  माप_प्रकार alloc_size = arg_bytes + /*rval_bytes +*/ struct_bytes + आकार(call_context);
+  माप_प्रकार alloc_base = (माप_प्रकार)alloca(alloc_size);
 
   // if (rval_bytes)
   //   rvalue = (void*)(alloc_base + arg_bytes);
@@ -284,80 +284,80 @@ ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
   call_builder cb;
   cb.used_integer = 0;
   cb.aregs = (call_context*)(alloc_base + arg_bytes /*+ rval_bytes*/ + struct_bytes);
-  cb.used_stack = (void*)alloc_base;
-  cb.struct_stack = (void *)(alloc_base + arg_bytes /*+ rval_bytes*/);
+  cb.used_चळत = (शून्य*)alloc_base;
+  cb.struct_चळत = (शून्य *)(alloc_base + arg_bytes /*+ rval_bytes*/);
 
   // if (cif->rtype->type == FFI_TYPE_STRUCT)
   //   marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-  if (return_by_ref)
+  जर (return_by_ref)
 	  marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-  int i;
-  for (i = 0; i < cif->nargs; i++)
+  पूर्णांक i;
+  साठी (i = 0; i < cif->nargs; i++)
     marshal(&cb, cif->arg_types[i], 0, avalue[i]);
 
-  ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+  ffi_call_asm ((शून्य *) alloc_base, cb.aregs, fn, closure);
 
   cb.used_integer = 0;
-  if (!return_by_ref && rvalue)
+  जर (!return_by_ref && rvalue)
     {
-	    if (IS_INT(cif->rtype->type)
-	        && cif->rtype->size < sizeof (ffi_arg))
+	    जर (IS_INT(cif->rtype->type)
+	        && cif->rtype->size < आकार (ffi_arg))
 	    {
         /* Integer types smaller than ffi_arg need to be extended.  */
-	    switch (cif->rtype->type) {
-	      case FFI_TYPE_SINT8:
-	      case FFI_TYPE_SINT16:
-	      case FFI_TYPE_SINT32:
-		      unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+	    निवड (cif->rtype->type) {
+	      स्थिती FFI_TYPE_SINT8:
+	      स्थिती FFI_TYPE_SINT16:
+	      स्थिती FFI_TYPE_SINT32:
+		      unmarshal_atom (&cb, (आकार (ffi_arg) > 4
                           ? FFI_TYPE_SINT64 : FFI_TYPE_SINT32),
 				                  rvalue);
-		      break;
-	      case FFI_TYPE_UINT8:
-	      case FFI_TYPE_UINT16:
-	      case FFI_TYPE_UINT32:
-		      unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+		      थांबा;
+	      स्थिती FFI_TYPE_UINT8:
+	      स्थिती FFI_TYPE_UINT16:
+	      स्थिती FFI_TYPE_UINT32:
+		      unmarshal_atom (&cb, (आकार (ffi_arg) > 4
 				                  ? FFI_TYPE_UINT64 : FFI_TYPE_UINT32),
 				                  rvalue);
-		      break;
+		      थांबा;
 	      }
 	    }
-	    else
+	    अन्यथा
 	      unmarshal(&cb, cif->rtype, 0, rvalue);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+शून्य
+ffi_call (ffi_cif *cif, शून्य (*fn) (शून्य), शून्य *rvalue, शून्य **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, रिक्त);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+शून्य
+ffi_call_go (ffi_cif *cif, शून्य (*fn) (शून्य), शून्य *rvalue,
+	     शून्य **avalue, शून्य *closure)
 {
   ffi_call_int(cif, fn, rvalue, avalue, closure);
 }
 
-extern void ffi_closure_asm(void) FFI_HIDDEN;
+बाह्य शून्य ffi_closure_asm(शून्य) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      शून्य (*fun) (ffi_cif *, शून्य *, शून्य **, शून्य *),
+		      शून्य *user_data, शून्य *codeloc)
 {
   uint32_t *tramp = (uint32_t *) & (closure->tramp[0]);
 
-#if defined(__ARC64_ARCH64__)
-  size_t address_ffi_closure = (size_t) ffi_closure_asm;
+#जर defined(__ARC64_ARCH64__)
+  माप_प्रकार address_ffi_closure = (माप_प्रकार) ffi_closure_asm;
 #endif
 
-  switch (cif->abi)
+  निवड (cif->abi)
     {
-#if defined(__ARC64_ARCH64__)
-    case FFI_ARC64:
+#जर defined(__ARC64_ARCH64__)
+    स्थिती FFI_ARC64:
       FFI_ASSERT (tramp == codeloc);
       tramp[0] = CODE_ENDIAN (0x580a1fc0);	/* movl r8, pcl  */
       tramp[1] = CODE_ENDIAN (0x5c0b1f80);	/* movhl r12, limm */
@@ -365,18 +365,18 @@ ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
       tramp[3] = CODE_ENDIAN (0x5c051f8c);	/* orl r12, r12, limm */
       tramp[4] = CODE_ENDIAN ((uint32_t)(address_ffi_closure & 0xffffffff));
       tramp[5] = CODE_ENDIAN (0x20200300);	/* j [r12] */
-      break;
-#else
-    case FFI_ARCOMPACT:
+      थांबा;
+#अन्यथा
+    स्थिती FFI_ARCOMPACT:
       FFI_ASSERT (tramp == codeloc);
       tramp[0] = CODE_ENDIAN (0x200a1fc0);	/* mov r8, pcl  */
       tramp[1] = CODE_ENDIAN (0x20200f80);	/* j [long imm] */
       tramp[2] = CODE_ENDIAN ((uint32_t) ffi_closure_asm);
-      break;
+      थांबा;
 #endif
 
-    default:
-      return FFI_BAD_ABI;
+    पूर्वनिर्धारित:
+      परत FFI_BAD_ABI;
     }
 
   closure->cif = cif;
@@ -384,63 +384,63 @@ ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
   closure->user_data = user_data;
   cacheflush (codeloc, FFI_TRAMPOLINE_SIZE, BCACHE);
 
-  return FFI_OK;
+  परत FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+बाह्य शून्य ffi_go_closure_asm (शून्य) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     शून्य (*fun) (ffi_cif *, शून्य *, शून्य **, शून्य *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  जर (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    परत FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
+  closure->tramp = (शून्य *) ffi_go_closure_asm;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  परत FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs. */
-void FFI_HIDDEN
+शून्य FFI_HIDDEN
 ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data,
-		   size_t *stack, call_context *aregs)
+		   शून्य (*fun) (ffi_cif *, शून्य *, शून्य **, शून्य *),
+		   शून्य *user_data,
+		   माप_प्रकार *चळत, call_context *aregs)
 {
-    void **avalue = alloca(cif->nargs * sizeof(void*));
+    शून्य **avalue = alloca(cif->nargs * आकार(शून्य*));
     /* storage for arguments which will be copied by unmarshal().  We could
        theoretically avoid the copies in many cases and use at most 128 bytes
        of memory, but allocating disjoint storage for each argument is
        simpler. */
-    char *astorage = alloca(cif->bytes);
-    char *ptr = astorage;
-    void *rvalue;
+    अक्षर *astorage = alloca(cif->bytes);
+    अक्षर *ptr = astorage;
+    शून्य *rvalue;
     call_builder cb;
-    int i;
+    पूर्णांक i;
 
     cb.aregs = aregs;
     cb.used_integer = 0;
-    cb.used_stack = stack;
+    cb.used_चळत = चळत;
     
     /* handle hidden argument */
-    if (cif->flags == FFI_TYPE_STRUCT)
+    जर (cif->flags == FFI_TYPE_STRUCT)
       unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
+    अन्यथा
       rvalue = alloca(cif->rtype->size);
 
-    for (i = 0; i < cif->nargs; i++) {
+    साठी (i = 0; i < cif->nargs; i++) {
       avalue[i] = unmarshal(&cb, cif->arg_types[i], 1, ptr);
       ptr += cif->arg_types[i]->size;
     }
 
     fun (cif, rvalue, avalue, user_data);
 
-    if (cif->rtype->type != FFI_TYPE_VOID) {
+    जर (cif->rtype->type != FFI_TYPE_VOID) {
         cb.used_integer = 0;
         marshal(&cb, cif->rtype, 1, rvalue);
     }

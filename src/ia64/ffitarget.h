@@ -33,10 +33,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long long          ffi_arg;
-typedef signed long long            ffi_sarg;
+प्रकारव्याख्या अचिन्हित दीर्घ दीर्घ          ffi_arg;
+प्रकारव्याख्या चिन्हित दीर्घ दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारव्याख्या गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_UNIX,   	/* Linux and all Unix variants use the same conventions	*/
   FFI_LAST_ABI,
@@ -51,6 +51,6 @@ typedef enum ffi_abi {
 				/* can be interpreted as a C function	*/
 				/* descriptor:				*/
 #define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
+#define FFI_EXTRA_CIF_FIELDS अचिन्हित nfixedargs
 
 #endif

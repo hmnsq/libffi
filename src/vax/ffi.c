@@ -28,11 +28,11 @@
  * be implemented in C.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <unistd.h>
 
 #define CIF_FLAGS_CHAR		1	/* for struct only */
 #define CIF_FLAGS_SHORT		2	/* for struct only */
@@ -43,124 +43,124 @@
  * Foreign Function Interface API
  */
 
-void ffi_call_elfbsd (extended_cif *, unsigned, unsigned, void *,
-		       void (*) ());
-void *ffi_prep_args (extended_cif *ecif, void *stack);
+शून्य ffi_call_elfbsd (extended_cif *, अचिन्हित, अचिन्हित, शून्य *,
+		       शून्य (*) ());
+शून्य *ffi_prep_args (extended_cif *ecif, शून्य *चळत);
 
-void *
-ffi_prep_args (extended_cif *ecif, void *stack)
+शून्य *
+ffi_prep_args (extended_cif *ecif, शून्य *चळत)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  अचिन्हित पूर्णांक i;
+  शून्य **p_argv;
+  अक्षर *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  शून्य *struct_मूल्य_ptr;
 
-  argp = stack;
+  argp = चळत;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  जर (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_मूल्य_ptr = ecif->rvalue;
+  अन्यथा
+    struct_मूल्य_ptr = रिक्त;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  साठी (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
-      size_t z;
+      माप_प्रकार z;
 
       z = (*p_arg)->size;
-      if (z < sizeof (int))
+      जर (z < आकार (पूर्णांक))
 	{
-	  switch ((*p_arg)->type)
+	  निवड ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    स्थिती FFI_TYPE_SINT8:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक) *(SINT8 *) *p_argv;
+	      थांबा;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    स्थिती FFI_TYPE_UINT8:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक) *(UINT8 *) *p_argv;
+	      थांबा;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    स्थिती FFI_TYPE_SINT16:
+	      *(चिन्हित पूर्णांक *) argp = (चिन्हित पूर्णांक) *(SINT16 *) *p_argv;
+	      थांबा;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    स्थिती FFI_TYPE_UINT16:
+	      *(अचिन्हित पूर्णांक *) argp = (अचिन्हित पूर्णांक) *(UINT16 *) *p_argv;
+	      थांबा;
 
-	    case FFI_TYPE_STRUCT:
-	      memcpy (argp, *p_argv, z);
-	      break;
+	    स्थिती FFI_TYPE_STRUCT:
+	      स_नकल (argp, *p_argv, z);
+	      थांबा;
 
-	    default:
+	    पूर्वनिर्धारित:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = आकार (पूर्णांक);
 	}
-      else
+      अन्यथा
 	{
-	  memcpy (argp, *p_argv, z);
+	  स_नकल (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  जर ((आकार(पूर्णांक) - 1) & z)
+	    z = FFI_ALIGN(z, आकार(पूर्णांक));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  परत struct_मूल्य_ptr;
 }
 
 ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  निवड (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    स्थिती FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      थांबा;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    स्थिती FFI_TYPE_STRUCT:
+      जर (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
 	  cif->rtype->elements[1])
 	{
 	  cif->flags = 0;
-	  break;
+	  थांबा;
 	}
 
-      if (cif->rtype->size == sizeof (char))
+      जर (cif->rtype->size == आकार (अक्षर))
 	cif->flags = CIF_FLAGS_CHAR;
-      else if (cif->rtype->size == sizeof (short))
+      अन्यथा जर (cif->rtype->size == आकार (लघु))
 	cif->flags = CIF_FLAGS_SHORT;
-      else if (cif->rtype->size == sizeof (int))
+      अन्यथा जर (cif->rtype->size == आकार (पूर्णांक))
 	cif->flags = CIF_FLAGS_INT;
-      else if (cif->rtype->size == 2 * sizeof (int))
+      अन्यथा जर (cif->rtype->size == 2 * आकार (पूर्णांक))
 	cif->flags = CIF_FLAGS_DINT;
-      else
+      अन्यथा
 	cif->flags = 0;
-      break;
+      थांबा;
 
-    default:
-      if (cif->rtype->size <= sizeof (int))
+    पूर्वनिर्धारित:
+      जर (cif->rtype->size <= आकार (पूर्णांक))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      अन्यथा
 	cif->flags = CIF_FLAGS_DINT;
-      break;
+      थांबा;
     }
 
-  return FFI_OK;
+  परत FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+शून्य
+ffi_call (ffi_cif *cif, शून्य (*fn) (), शून्य *rvalue, शून्य **avalue)
 {
   extended_cif ecif;
 
@@ -170,22 +170,22 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  जर (rvalue == रिक्त
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->flags == 0)
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  अन्यथा
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  निवड (cif->abi)
     {
-    case FFI_ELFBSD:
+    स्थिती FFI_ELFBSD:
       ffi_call_elfbsd (&ecif, cif->bytes, cif->flags, ecif.rvalue, fn);
-      break;
+      थांबा;
 
-    default:
+    पूर्वनिर्धारित:
       FFI_ASSERT (0);
-      break;
+      थांबा;
     }
 }
 
@@ -193,84 +193,84 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-void ffi_closure_elfbsd (void);
-void ffi_closure_struct_elfbsd (void);
-unsigned int ffi_closure_elfbsd_inner (ffi_closure *, void *, char *);
+शून्य ffi_closure_elfbsd (शून्य);
+शून्य ffi_closure_struct_elfbsd (शून्य);
+अचिन्हित पूर्णांक ffi_closure_elfbsd_inner (ffi_closure *, शून्य *, अक्षर *);
 
-static void
-ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
+स्थिर शून्य
+ffi_prep_closure_elfbsd (ffi_cif *cif, शून्य **avalue, अक्षर *stackp)
 {
-  unsigned int i;
-  void **p_argv;
+  अचिन्हित पूर्णांक i;
+  शून्य **p_argv;
   ffi_type **p_arg;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  साठी (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
-      size_t z;
+      माप_प्रकार z;
 
       z = (*p_arg)->size;
       *p_argv = stackp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      जर ((आकार (पूर्णांक) - 1) & z)
+	z = FFI_ALIGN(z, आकार (पूर्णांक));
 
       p_argv++;
       stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+अचिन्हित पूर्णांक
+ffi_closure_elfbsd_inner (ffi_closure *closure, शून्य *resp, अक्षर *चळत)
 {
   ffi_cif *cif;
-  void **arg_area;
+  शून्य **arg_area;
 
   cif = closure->cif;
-  arg_area = (void **) alloca (cif->nargs * sizeof (void *));
+  arg_area = (शून्य **) alloca (cif->nargs * आकार (शून्य *));
 
-  ffi_prep_closure_elfbsd (cif, arg_area, stack);
+  ffi_prep_closure_elfbsd (cif, arg_area, चळत);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  परत cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun)(ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      शून्य (*fun)(ffi_cif *, शून्य *, शून्य **, शून्य *),
+		      शून्य *user_data, शून्य *codeloc)
 {
-  char *tramp = (char *) codeloc;
-  void *fn;
+  अक्षर *tramp = (अक्षर *) codeloc;
+  शून्य *fn;
 
   FFI_ASSERT (cif->abi == FFI_ELFBSD);
 
   /* entry mask */
-  *(unsigned short *)(tramp + 0) = 0x0000;
+  *(अचिन्हित लघु *)(tramp + 0) = 0x0000;
   /* movl #closure, r0 */
   tramp[2] = 0xd0;
   tramp[3] = 0x8f;
-  *(unsigned int *)(tramp + 4) = (unsigned int) closure;
+  *(अचिन्हित पूर्णांक *)(tramp + 4) = (अचिन्हित पूर्णांक) closure;
   tramp[8] = 0x50;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  जर (cif->rtype->type == FFI_TYPE_STRUCT
       && !cif->flags)
     fn = &ffi_closure_struct_elfbsd;
-  else
+  अन्यथा
     fn = &ffi_closure_elfbsd;
 
   /* jmpl #fn */
   tramp[9] = 0x17;
   tramp[10] = 0xef;
-  *(unsigned int *)(tramp + 11) = (unsigned int)fn + 2 -
-				  (unsigned int)tramp - 9 - 6;
+  *(अचिन्हित पूर्णांक *)(tramp + 11) = (अचिन्हित पूर्णांक)fn + 2 -
+				  (अचिन्हित पूर्णांक)tramp - 9 - 6;
 
   closure->cif = cif;
   closure->user_data = user_data;
   closure->fun = fun;
 
-  return FFI_OK;
+  परत FFI_OK;
 }

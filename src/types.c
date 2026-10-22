@@ -28,83 +28,83 @@
    can redefine them here as "const".  */
 #define LIBFFI_HIDE_BASIC_TYPES
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
 /* Return a version string. */
-const char *ffi_get_version (void)
+स्थिरांक अक्षर *ffi_get_version (शून्य)
 {
-  return FFI_VERSION_STRING;
+  परत FFI_VERSION_STRING;
 }
 
 /* Return the version as an unsigned long value: (x * 10000 + y * 100 + z) */
-unsigned long ffi_get_version_number (void)
+अचिन्हित दीर्घ ffi_get_version_संख्या (शून्य)
 {
-  return FFI_VERSION_NUMBER;
+  परत FFI_VERSION_संख्या;
 }
 
-unsigned int ffi_get_default_abi (void)
+अचिन्हित पूर्णांक ffi_get_default_abi (शून्य)
 {
-  return FFI_DEFAULT_ABI;
+  परत FFI_DEFAULT_ABI;
 }
 
-size_t ffi_get_closure_size (void)
+माप_प्रकार ffi_get_closure_size (शून्य)
 {
-  return sizeof(ffi_closure);
+  परत आकार(ffi_closure);
 }
 
 /* Type definitions */
 
 #define FFI_TYPEDEF(name, type, id, maybe_const)\
-struct struct_align_##name {			\
-  char c;					\
+संरचना struct_align_##name {			\
+  अक्षर c;					\
   type x;					\
 };						\
 FFI_EXTERN					\
 maybe_const ffi_type ffi_type_##name = {	\
-  sizeof(type),					\
-  offsetof(struct struct_align_##name, x),	\
-  id, NULL					\
+  आकार(type),					\
+  दुरत्व(संरचना struct_align_##name, x),	\
+  id, रिक्त					\
 }
 
 #define FFI_COMPLEX_TYPEDEF(name, type, maybe_const)	\
-static ffi_type *ffi_elements_complex_##name [2] = {	\
-	(ffi_type *)(&ffi_type_##name), NULL		\
+स्थिर ffi_type *ffi_elements_complex_##name [2] = {	\
+	(ffi_type *)(&ffi_type_##name), रिक्त		\
 };							\
-struct struct_align_complex_##name {			\
-  char c;						\
+संरचना struct_align_complex_##name {			\
+  अक्षर c;						\
   _Complex type x;					\
 };							\
 FFI_EXTERN						\
 maybe_const ffi_type ffi_type_complex_##name = {	\
-  sizeof(_Complex type),				\
-  offsetof(struct struct_align_complex_##name, x),	\
+  आकार(_Complex type),				\
+  दुरत्व(संरचना struct_align_complex_##name, x),	\
   FFI_TYPE_COMPLEX,					\
   (ffi_type **)ffi_elements_complex_##name		\
 }
 
 /* Size and alignment are fake here. They must not be 0. */
-FFI_EXTERN const ffi_type ffi_type_void = {
-  1, 1, FFI_TYPE_VOID, NULL
+FFI_EXTERN स्थिरांक ffi_type ffi_type_void = {
+  1, 1, FFI_TYPE_VOID, रिक्त
 };
 
-FFI_TYPEDEF(uint8, UINT8, FFI_TYPE_UINT8, const);
-FFI_TYPEDEF(sint8, SINT8, FFI_TYPE_SINT8, const);
-FFI_TYPEDEF(uint16, UINT16, FFI_TYPE_UINT16, const);
-FFI_TYPEDEF(sint16, SINT16, FFI_TYPE_SINT16, const);
-FFI_TYPEDEF(uint32, UINT32, FFI_TYPE_UINT32, const);
-FFI_TYPEDEF(sint32, SINT32, FFI_TYPE_SINT32, const);
-FFI_TYPEDEF(uint64, UINT64, FFI_TYPE_UINT64, const);
-FFI_TYPEDEF(sint64, SINT64, FFI_TYPE_SINT64, const);
+FFI_TYPEDEF(uint8, UINT8, FFI_TYPE_UINT8, स्थिरांक);
+FFI_TYPEDEF(sint8, SINT8, FFI_TYPE_SINT8, स्थिरांक);
+FFI_TYPEDEF(uint16, UINT16, FFI_TYPE_UINT16, स्थिरांक);
+FFI_TYPEDEF(sint16, SINT16, FFI_TYPE_SINT16, स्थिरांक);
+FFI_TYPEDEF(uint32, UINT32, FFI_TYPE_UINT32, स्थिरांक);
+FFI_TYPEDEF(sint32, SINT32, FFI_TYPE_SINT32, स्थिरांक);
+FFI_TYPEDEF(uint64, UINT64, FFI_TYPE_UINT64, स्थिरांक);
+FFI_TYPEDEF(sint64, SINT64, FFI_TYPE_SINT64, स्थिरांक);
 
-FFI_TYPEDEF(pointer, void*, FFI_TYPE_POINTER, const);
+FFI_TYPEDEF(pointer, शून्य*, FFI_TYPE_POINTER, स्थिरांक);
 
-FFI_TYPEDEF(float, float, FFI_TYPE_FLOAT, const);
-FFI_TYPEDEF(double, double, FFI_TYPE_DOUBLE, const);
+FFI_TYPEDEF(दशांश, दशांश, FFI_TYPE_FLOAT, स्थिरांक);
+FFI_TYPEDEF(द्विगुण, द्विगुण, FFI_TYPE_DOUBLE, स्थिरांक);
 
-#if !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
-#define FFI_LDBL_CONST const
-#else
+#जर !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
+#define FFI_LDBL_CONST स्थिरांक
+#अन्यथा
 #define FFI_LDBL_CONST
 #endif
 
@@ -113,29 +113,29 @@ FFI_TYPEDEF(double, double, FFI_TYPE_DOUBLE, const);
    maintain binary compatibility, as -mlong-double-128 can be used
    at any time.  */
 /* Validate the hard-coded number below.  */
-# if defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
+# जर defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-const ffi_type ffi_type_longdouble = { 16, 16, 4, NULL };
-#else
-FFI_TYPEDEF(longdouble, long double, FFI_TYPE_LONGDOUBLE, FFI_LDBL_CONST);
+स्थिरांक ffi_type ffi_type_longdouble = { 16, 16, 4, रिक्त };
+#अन्यथा
+FFI_TYPEDEF(longdouble, दीर्घ द्विगुण, FFI_TYPE_LONGDOUBLE, FFI_LDBL_CONST);
 #endif
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-FFI_COMPLEX_TYPEDEF(float, float, const);
-FFI_COMPLEX_TYPEDEF(double, double, const);
-FFI_COMPLEX_TYPEDEF(longdouble, long double, FFI_LDBL_CONST);
+FFI_COMPLEX_TYPEDEF(दशांश, दशांश, स्थिरांक);
+FFI_COMPLEX_TYPEDEF(द्विगुण, द्विगुण, स्थिरांक);
+FFI_COMPLEX_TYPEDEF(longdouble, दीर्घ द्विगुण, FFI_LDBL_CONST);
 #endif
 
 #ifdef FFI_TARGET_HAS_INT128
 # ifdef HAVE_INT128
-FFI_TYPEDEF(uint128, __uint128_t, FFI_TYPE_UINT128, const);
-FFI_TYPEDEF(sint128, __int128_t, FFI_TYPE_SINT128, const);
-# else
+FFI_TYPEDEF(uint128, __uint128_t, FFI_TYPE_UINT128, स्थिरांक);
+FFI_TYPEDEF(sint128, __int128_t, FFI_TYPE_SINT128, स्थिरांक);
+# अन्यथा
 /* We don't actually need compiler support for __int128_t, as we don't
    use the type itself within libffi.  Obviously the size is 16; make
    the conservative assumption that the alignment must also be 16. */
-const ffi_type ffi_type_uint128 = { 16, 16, FFI_TYPE_UINT128, NULL };
-const ffi_type ffi_type_sint128 = { 16, 16, FFI_TYPE_SINT128, NULL };
+स्थिरांक ffi_type ffi_type_uint128 = { 16, 16, FFI_TYPE_UINT128, रिक्त };
+स्थिरांक ffi_type ffi_type_sint128 = { 16, 16, FFI_TYPE_SINT128, रिक्त };
 # endif
 #endif /* FFI_TARGET_HAS_INT128 */

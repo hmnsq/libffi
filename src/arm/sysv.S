@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS किंवा IMPLIED, INCLUDING BUT नाही LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE आणि
+   NONINFRINGEMENT.  मध्ये NO EVENT SHALL THE AUTHORS किंवा COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES किंवा OTHER LIABILITY,
+   WHETHER मध्ये AN ACTION OF CONTRACT, TORT किंवा OTHERWISE, ARISING FROM,
+   OUT OF किंवा मध्ये CONNECTION WITH THE SOFTWARE किंवा THE USE किंवा OTHER
+   DEALINGS मध्ये THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __arm__
@@ -73,15 +73,15 @@
 #endif
 #ifdef __ELF__
 # define SIZE(X)	.size CNAME(X), . - CNAME(X)
-# define TYPE(X, Y)	.type CNAME(X), Y
+# define प्रकार(X, Y)	.type CNAME(X), Y
 #else
 # define SIZE(X)
-# define TYPE(X, Y)
+# define प्रकार(X, Y)
 #endif
 
 #define ARM_FUNC_START_LOCAL(name)	\
 	.align	3;			\
-	TYPE(CNAME(name), %function);	\
+	प्रकार(CNAME(name), %function);	\
 	CNAME(name):
 
 #define ARM_FUNC_START(name)		\
@@ -164,7 +164,7 @@ ARM_FUNC_START(ffi_call_SYSV)
 	mov	lr, r2		@ move the fn pointer out of the way
 	ldr	ip, [fp, #16]	@ install the static chain
 	ldmia	sp!, {r0-r3}	@ move first 4 parameters in registers.
-	blx	lr		@ call fn
+	blx	lr		@ बोलवा fn
 
 	@ Load r2 with the pointer to storage for the return value
 	@ Load r3 with the return type code
@@ -250,7 +250,7 @@ ARM_FUNC_START(ffi_closure_SYSV)
 	cfi_adjust_cfa_offset(64+32)
 	stmdb	sp!, {ip,lr}
 
-	/* Remember that EABI unwind info only applies at call sites.
+	/* Remember that EABI unwind info only applies at बोलवा sites.
 	   We need do nothing except note the save of the stack pointer
 	   and the link registers.  */
 	UNWIND(.save {sp,lr})
