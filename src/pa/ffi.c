@@ -41,17 +41,17 @@
 #define DEBUG_LEVEL   0
 
 #define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+  __asm__ ca_ncala ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
 #define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ ca_ncala ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
 #define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
+  __asm__ ca_ncala ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
 #define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ ca_ncala ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) do { ຖ້າ (lvl <= DEBUG_LEVEL) { printf(x); } } ໃນຂະນະທີ່ (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+static anta_hstha ຈຳນວນເຕັມ ffi_struct_type(ffi_type *t)
 {
   size_t sz = t->size;
 
@@ -60,10 +60,10 @@ static inline int ffi_struct_type(ffi_type *t)
      structures differ from the corresponding integer
      types in that they have different alignment requirements.  */
 
-  if (sz <= 8)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
+  ຖ້າ (sz <= 8)
+    ສົ່ງຄືນ -sz;
+  ບໍ່ດັ່ງນັ້ນ
+    ສົ່ງຄືນ FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
 }
 
 /* PA has a downward growing stack, which looks like this:
@@ -126,11 +126,11 @@ static inline int ffi_struct_type(ffi_type *t)
 
 void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
-  char *dest_cpy;
+  pa_njikaa unsigned ຈຳນວນເຕັມ i;
+  pa_njikaa ffi_type **p_arg;
+  pa_njikaa void **p_argv;
+  unsigned ຈຳນວນເຕັມ slot = FIRST_ARG_SLOT;
+  var_na *dest_cpy;
   size_t len;
 
   debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
@@ -139,58 +139,58 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  ສຳລັບ (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      ຈຳນວນເຕັມ type = (*p_arg)->type;
 
       switch (type)
 	{
-	case FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_SINT8:
 	  *(SINT32 *)(stack - slot) = *(SINT8 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_UINT8:
 	  *(UINT32 *)(stack - slot) = *(UINT8 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_SINT16:
 	  *(SINT32 *)(stack - slot) = *(SINT16 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_UINT16:
 	  *(UINT32 *)(stack - slot) = *(UINT16 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT32 %u in slot %u\n", *(UINT32 *)(*p_argv),
 		slot);
 	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
 	  /* Align slot for 64-bit type.  */
 	  slot += (slot & 1) ? 1 : 2;
 	  *(UINT64 *)(stack - slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 	  /* First 4 args go in fr4L - fr7L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
 	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack - slot, fr4); break;
-	    case 1: fldw(stack - slot, fr5); break;
-	    case 2: fldw(stack - slot, fr6); break;
-	    case 3: fldw(stack - slot, fr7); break;
+	    pak_sa 0: fldw(stack - slot, fr4); bha_nga;
+	    pak_sa 1: fldw(stack - slot, fr5); bha_nga;
+	    pak_sa 2: fldw(stack - slot, fr6); bha_nga;
+	    pak_sa 3: fldw(stack - slot, fr7); bha_nga;
 	    }
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_DOUBLE:
 	  /* Align slot for 64-bit type.  */
 	  slot += (slot & 1) ? 1 : 2;
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
@@ -198,40 +198,40 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
 	      /* First 2 args go in fr5, fr7.  */
-	      case 1: fldd(stack - slot, fr5); break;
-	      case 3: fldd(stack - slot, fr7); break;
+	      pak_sa 1: fldd(stack - slot, fr5); bha_nga;
+	      pak_sa 3: fldd(stack - slot, fr7); bha_nga;
 	    }
-	  break;
+	  bha_nga;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are passed in the same manner as structures
 	     larger than 8 bytes.  */
 	  *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
 
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
 
 	  len = (*p_arg)->size;
-	  if (len <= 4)
+	  ຖ້າ (len <= 4)
 	    {
-	      dest_cpy = (char *)(stack - slot) + 4 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      dest_cpy = (var_na *)(stack - slot) + 4 - len;
+	      memcpy(dest_cpy, (var_na *)*p_argv, len);
 	    }
-	  else if (len <= 8)
+	  ບໍ່ດັ່ງນັ້ນ ຖ້າ (len <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
-	      dest_cpy = (char *)(stack - slot) + 8 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      dest_cpy = (var_na *)(stack - slot) + 8 - len;
+	      memcpy(dest_cpy, (var_na *)*p_argv, len);
 	    }
-	  else
+	  ບໍ່ດັ່ງນັ້ນ
 	    *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
+	  bha_nga;
 
 	default:
 	  FFI_ASSERT(0);
@@ -244,12 +244,12 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 
   /* Make sure we didn't mess up and scribble on the stack.  */
   {
-    unsigned int n;
+    unsigned ຈຳນວນເຕັມ n;
 
     debug(5, "Stack setup:\n");
-    for (n = 0; n < (bytes + 3) / 4; n++)
+    ສຳລັບ (n = 0; n < (bytes + 3) / 4; n++)
       {
-	if ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned int)(stack - n)); }
+	ຖ້າ ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned ຈຳນວນເຕັມ)(stack - n)); }
 	debug(5, "%08x ", *(stack - n));
       }
     debug(5, "\n");
@@ -257,34 +257,34 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 
   FFI_ASSERT(slot * 4 <= bytes);
 
-  return;
+  ສົ່ງຄືນ;
 }
 
 static void ffi_size_stack_pa32(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  ຈຳນວນເຕັມ i;
+  ຈຳນວນເຕັມ z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  ສຳລັບ (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
+      ຈຳນວນເຕັມ type = (*ptr)->type;
 
       switch (type)
 	{
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
 	  z += 2 + (z & 1); /* must start on even regs, so we may waste one */
-	  break;
+	  bha_nga;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  z += 1; /* passed by pointer, like a large struct */
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
 	  /* This must mirror the slot accounting in ffi_prep_args_pa32:
 	     structs of 1-4 bytes occupy one slot, structs of 5-8 bytes are
 	     passed inline in two even-aligned slots (exactly like a 64-bit
@@ -293,12 +293,12 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 	     so (z & 1) tracks the same alignment the marshaller applies.  */
 	  {
 	    size_t len = (*ptr)->size;
-	    if (len <= 4 || len > 8)
+	    ຖ້າ (len <= 4 || len > 8)
 	      z += 1;
-	    else
+	    ບໍ່ດັ່ງນັ້ນ
 	      z += 2 + (z & 1);
 	  }
-	  break;
+	  bha_nga;
 
 	default: /* <= 32-bit values */
 	  z++;
@@ -307,10 +307,10 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 
   /* We can fit up to 6 args in the default 64-byte stack frame,
      if we need more, we need more stack.  */
-  if (z <= 6)
+  ຖ້າ (z <= 6)
     cif->bytes = MIN_STACK_SIZE; /* min stack size */
-  else
-    cif->bytes = 64 + ROUND_UP((z - 6) * sizeof(UINT32), MIN_STACK_SIZE);
+  ບໍ່ດັ່ງນັ້ນ
+    cif->bytes = 64 + ROUND_UP((z - 6) * parimaa_na(UINT32), MIN_STACK_SIZE);
 
   debug(3, "Calculated stack size is %u bytes\n", cif->bytes);
 }
@@ -321,52 +321,52 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
   /* Set the return type flag */
   switch (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_DOUBLE:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      bha_nga;
 
 #ifdef PA_HPUX
-    case FFI_TYPE_LONGDOUBLE:
+    pak_sa FFI_TYPE_LONGDOUBLE:
       /* Long doubles are treated like a structure.  */
       cif->flags = FFI_TYPE_STRUCT;
-      break;
+      bha_nga;
 #endif
 
-    case FFI_TYPE_STRUCT:
+    pak_sa FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 4 bytes, the result is given back
 	 in one register. If the size is smaller or equal 8 bytes than we
 	 return the result in two registers. But if the size is bigger than
 	 8 bytes, we work with pointers.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      bha_nga;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_SINT64:
       cif->flags = FFI_TYPE_UINT64;
-      break;
+      bha_nga;
 
     default:
       cif->flags = FFI_TYPE_INT;
-      break;
+      bha_nga;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
   switch (cif->abi)
     {
-    case FFI_PA32:
+    pak_sa FFI_PA32:
       ffi_size_stack_pa32(cif);
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
 
-  return FFI_OK;
+  ສົ່ງຄືນ FFI_OK;
 }
 
 extern void ffi_call_pa32(void (*)(UINT32 *, extended_cif *, unsigned),
@@ -385,17 +385,17 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ສຳລັບ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 8)
+      ຈຳນວນເຕັມ size = at->size;
+      ຖ້າ (at->type == FFI_TYPE_STRUCT && size > 8)
 	{
-	  char *argcopy = alloca (size);
-	  if (avalue_copy == NULL)
+	  var_na *argcopy = alloca (size);
+	  ຖ້າ (avalue_copy == NULL)
 	    {
-	      avalue_copy = alloca (nargs * sizeof (void *));
-	      memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+	      avalue_copy = alloca (nargs * parimaa_na (void *));
+	      memcpy (avalue_copy, avalue, nargs * parimaa_na (void *));
 	      avalue = avalue_copy;
 	    }
 	  memcpy (argcopy, avalue[i], size);
@@ -407,35 +407,35 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  ຖ້າ (rvalue == NULL
 #ifdef PA_HPUX
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_LONGDOUBLE))
-#else
+#ບໍ່ດັ່ງນັ້ນ
       && cif->rtype->type == FFI_TYPE_STRUCT)
 #endif
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  ບໍ່ດັ່ງນັ້ນ
     ecif.rvalue = rvalue;
 
 
   switch (cif->abi)
     {
-    case FFI_PA32:
+    pak_sa FFI_PA32:
       debug(3, "Calling ffi_call_pa32: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
       ffi_call_pa32(ffi_prep_args_pa32, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
 }
 
-#if FFI_CLOSURES
+#ຖ້າ FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
@@ -447,48 +447,48 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
   void *rvalue;
   /* Functions can return up to 64-bits in registers.  Return address
      must be double word aligned.  */
-  union { double rd; UINT32 ret[2]; } u;
+  sa_ngha { dviguu_na rd; UINT32 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT32 r28 __asm__("r28");
+  var_na *tmp;
+  ຈຳນວນເຕັມ i, avn;
+  unsigned ຈຳນວນເຕັມ slot = FIRST_ARG_SLOT;
+  pa_njikaa UINT32 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ຖ້າ (cif->flags == FFI_TYPE_STRUCT)
     rvalue = (void *)r28;
-  else
+  ບໍ່ດັ່ງນັ້ນ
     rvalue = &u;
 
   avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  ສຳລັບ (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      ຈຳນວນເຕັມ type = (*p_arg)->type;
 
       switch (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_POINTER:
-	  avalue[i] = (char *)(stack - slot) + sizeof(UINT32) - (*p_arg)->size;
-	  break;
+	pak_sa FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_POINTER:
+	  avalue[i] = (var_na *)(stack - slot) + parimaa_na(UINT32) - (*p_arg)->size;
+	  bha_nga;
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
 	  slot += (slot & 1) ? 1 : 2;
 	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 #ifdef PA_LINUX
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
@@ -498,53 +498,53 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
 	     corresponding floating point register.  */
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack - slot)); break;
-	    case 1: fstw(fr5, (void *)(stack - slot)); break;
-	    case 2: fstw(fr6, (void *)(stack - slot)); break;
-	    case 3: fstw(fr7, (void *)(stack - slot)); break;
+	    pak_sa 0: fstw(fr4, (void *)(stack - slot)); bha_nga;
+	    pak_sa 1: fstw(fr5, (void *)(stack - slot)); bha_nga;
+	    pak_sa 2: fstw(fr6, (void *)(stack - slot)); bha_nga;
+	    pak_sa 3: fstw(fr7, (void *)(stack - slot)); bha_nga;
 	    }
 #endif
 	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_DOUBLE:
 	  slot += (slot & 1) ? 1 : 2;
 #ifdef PA_LINUX
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
-	    case 1: fstd(fr5, (void *)(stack - slot)); break;
-	    case 3: fstd(fr7, (void *)(stack - slot)); break;
+	    pak_sa 1: fstd(fr5, (void *)(stack - slot)); bha_nga;
+	    pak_sa 3: fstd(fr7, (void *)(stack - slot)); bha_nga;
 	    }
 #endif
 	  avalue[i] = (void *)(stack - slot);
-	  break;
+	  bha_nga;
 
 #ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
 	  avalue[i] = (void *) *(stack - slot);
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
-	  if((*p_arg)->size <= 4)
+	  ຖ້າ((*p_arg)->size <= 4)
 	    {
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT32) -
+	      avalue[i] = (void *)(stack - slot) + parimaa_na(UINT32) -
 		(*p_arg)->size;
 	    }
-	  else if ((*p_arg)->size <= 8)
+	  ບໍ່ດັ່ງນັ້ນ ຖ້າ ((*p_arg)->size <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT64) -
+	      avalue[i] = (void *)(stack - slot) + parimaa_na(UINT64) -
 		(*p_arg)->size;
 	    }
-	  else
+	  ບໍ່ດັ່ງນັ້ນ
 	    avalue[i] = (void *) *(stack - slot);
-	  break;
+	  bha_nga;
 
 	default:
 	  FFI_ASSERT(0);
@@ -563,85 +563,85 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
   /* Store the result using the lower 2 bytes of the flags.  */
   switch (cif->flags)
     {
-    case FFI_TYPE_UINT8:
+    pak_sa FFI_TYPE_UINT8:
       *(stack - FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT8:
       *(stack - FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT16:
       *(stack - FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT16:
       *(stack - FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+      bha_nga;
+    pak_sa FFI_TYPE_INT:
+    pak_sa FFI_TYPE_SINT32:
+    pak_sa FFI_TYPE_UINT32:
       *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
       *(stack - FIRST_ARG_SLOT) = u.ret[0];
       *(stack - FIRST_ARG_SLOT - 1) = u.ret[1];
-      break;
+      bha_nga;
 
-    case FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      bha_nga;
 
-    case FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_FLOAT:
       fldw(rvalue, fr4);
-      break;
+      bha_nga;
 
-    case FFI_TYPE_STRUCT:
+    pak_sa FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      bha_nga;
 
-    case FFI_TYPE_SMALL_STRUCT1:
-    case FFI_TYPE_SMALL_STRUCT2:
-    case FFI_TYPE_SMALL_STRUCT3:
-    case FFI_TYPE_SMALL_STRUCT4:
+    pak_sa FFI_TYPE_SMALL_STRUCT1:
+    pak_sa FFI_TYPE_SMALL_STRUCT2:
+    pak_sa FFI_TYPE_SMALL_STRUCT3:
+    pak_sa FFI_TYPE_SMALL_STRUCT4:
       tmp = (void*)(stack -  FIRST_ARG_SLOT);
       tmp += 4 - cif->rtype->size;
       memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+      bha_nga;
 
-    case FFI_TYPE_SMALL_STRUCT5:
-    case FFI_TYPE_SMALL_STRUCT6:
-    case FFI_TYPE_SMALL_STRUCT7:
-    case FFI_TYPE_SMALL_STRUCT8:
+    pak_sa FFI_TYPE_SMALL_STRUCT5:
+    pak_sa FFI_TYPE_SMALL_STRUCT6:
+    pak_sa FFI_TYPE_SMALL_STRUCT7:
+    pak_sa FFI_TYPE_SMALL_STRUCT8:
       {
-	unsigned int ret2[2];
-	int off;
+	unsigned ຈຳນວນເຕັມ ret2[2];
+	ຈຳນວນເຕັມ off;
 
 	/* Right justify ret[0] and ret[1] */
 	switch (cif->flags)
 	  {
-	    case FFI_TYPE_SMALL_STRUCT5: off = 3; break;
-	    case FFI_TYPE_SMALL_STRUCT6: off = 2; break;
-	    case FFI_TYPE_SMALL_STRUCT7: off = 1; break;
-	    default: off = 0; break;
+	    pak_sa FFI_TYPE_SMALL_STRUCT5: off = 3; bha_nga;
+	    pak_sa FFI_TYPE_SMALL_STRUCT6: off = 2; bha_nga;
+	    pak_sa FFI_TYPE_SMALL_STRUCT7: off = 1; bha_nga;
+	    default: off = 0; bha_nga;
 	  }
 
-	memset (ret2, 0, sizeof (ret2));
-	memcpy ((char *)ret2 + off, &u, 8 - off);
+	memset (ret2, 0, parimaa_na (ret2));
+	memcpy ((var_na *)ret2 + off, &u, 8 - off);
 
 	*(stack - FIRST_ARG_SLOT) = ret2[0];
 	*(stack - FIRST_ARG_SLOT - 1) = ret2[1];
       }
-      break;
+      bha_nga;
 
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_VOID:
-      break;
+    pak_sa FFI_TYPE_POINTER:
+    pak_sa FFI_TYPE_VOID:
+      bha_nga;
 
     default:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
-  return FFI_OK;
+  ສົ່ງຄືນ FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
@@ -659,30 +659,30 @@ ffi_prep_closure_loc (ffi_closure* closure,
 {
   /* The layout of a function descriptor.  A function pointer with the PLABEL
      bit set points to a function descriptor.  */
-  struct pa32_fd
+  sa_nracanaa pa32_fd
   {
     UINT32 code_pointer;
     UINT32 gp;
   };
 
-  struct ffi_pa32_trampoline_struct
+  sa_nracanaa ffi_pa32_trampoline_struct
   {
      UINT32 code_pointer;        /* Pointer to ffi_closure_unix.  */
      UINT32 fake_gp;             /* Pointer to closure, installed as gp.  */
      UINT32 real_gp;             /* Real gp value.  */
   };
 
-  struct ffi_pa32_trampoline_struct *tramp;
-  struct pa32_fd *fd;
+  sa_nracanaa ffi_pa32_trampoline_struct *tramp;
+  sa_nracanaa pa32_fd *fd;
 
-  if (cif->abi != FFI_PA32)
-    return FFI_BAD_ABI;
+  ຖ້າ (cif->abi != FFI_PA32)
+    ສົ່ງຄືນ FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa32.  */
-  fd = (struct pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
+  fd = (sa_nracanaa pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa32_trampoline_struct *)closure->tramp;
+  tramp = (sa_nracanaa ffi_pa32_trampoline_struct *)closure->tramp;
   tramp->code_pointer = fd->code_pointer;
   tramp->fake_gp = (UINT32)codeloc & ~3;
   tramp->real_gp = fd->gp;
@@ -691,6 +691,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  ສົ່ງຄືນ FFI_OK;
 }
 #endif

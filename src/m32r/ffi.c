@@ -33,19 +33,19 @@
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_args(var_na *stack, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
+  unsigned ຈຳນວນເຕັມ i;
+  ຈຳນວນເຕັມ tmp;
+  unsigned ຈຳນວນເຕັມ avn;
   void **p_argv;
-  char *argp;
+  var_na *argp;
   ffi_type **p_arg;
 
   tmp = 0;
   argp = stack;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  ຖ້າ (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
       *(void **) argp = ecif->rvalue;
       argp += 4;
@@ -54,75 +54,75 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  ສຳລັບ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      ຖ້າ (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (var_na *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      ຖ້າ (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  ຖ້າ (z < parimaa_na (ຈຳນວນເຕັມ))
 	    {
-	      z = sizeof (int);
+	      z = parimaa_na (ຈຳນວນເຕັມ);
 
 	      switch ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_SINT8:
+		  *(signed ຈຳນວນເຕັມ *) argp = (signed ຈຳນວນເຕັມ)*(SINT8 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_UINT8:
+		  *(unsigned ຈຳນວນເຕັມ *) argp = (unsigned ຈຳນວນເຕັມ)*(UINT8 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_SINT16:
+		  *(signed ຈຳນວນເຕັມ *) argp = (signed ຈຳນວນເຕັມ)*(SINT16 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_UINT16:
+		  *(unsigned ຈຳນວນເຕັມ *) argp = (unsigned ຈຳນວນເຕັມ)*(UINT16 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_STRUCT:
+		pak_sa FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  ຖ້າ ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  ບໍ່ດັ່ງນັ້ນ
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = parimaa_na (ຈຳນວນເຕັມ);
+		  bha_nga;
 
 		default:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  ບໍ່ດັ່ງນັ້ນ ຖ້າ (z == parimaa_na (ຈຳນວນເຕັມ))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned ຈຳນວນເຕັມ *) argp = (unsigned ຈຳນວນເຕັມ)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  ບໍ່ດັ່ງນັ້ນ
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      ຖ້າ ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  ຖ້າ (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned ຈຳນວນເຕັມ *) argp = (unsigned ຈຳນວນເຕັມ)(void *)(* p_argv);
+		      z = parimaa_na(void *);
 		    }
-		  else
+		  ບໍ່ດັ່ງນັ້ນ
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      ບໍ່ດັ່ງນັ້ນ
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  ສົ່ງຄືນ;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -143,37 +143,37 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   /* Set the return type flag.  */
   switch (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    pak_sa FFI_TYPE_STRUCT:
+      ຖ້າ (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      ບໍ່ດັ່ງນັ້ນ ຖ້າ (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      ບໍ່ດັ່ງນັ້ນ
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_FLOAT:
     default:
       cif->flags = FFI_TYPE_INT;
-      break;
+      bha_nga;
     }
 
-  return FFI_OK;
+  ສົ່ງຄືນ FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
+extern void ffi_call_SYSV(void (*)(var_na *, extended_cif *), extended_cif *,
 			  unsigned, unsigned, unsigned *, void (*fn)(void));
 
 void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
@@ -181,34 +181,34 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  ຈຳນວນເຕັມ i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  ຖ້າ ((rvalue == NULL) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  ບໍ່ດັ່ງນັ້ນ
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ສຳລັບ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      ຈຳນວນເຕັມ size = at->size;
+      ຖ້າ (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          var_na *argcopy = alloca (size);
+          ຖ້າ (avalue_copy == NULL)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * parimaa_na (void *));
+              memcpy (avalue_copy, avalue, nargs * parimaa_na (void *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -219,39 +219,39 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 
   switch (cif->abi)
     {
-    case FFI_SYSV:
+    pak_sa FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      ຖ້າ (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  ຈຳນວນເຕັມ size = cif->rtype->size;
+	  ຈຳນວນເຕັມ align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  ຖ້າ (size < 4)
 	    {
-	      if (align == 1)
+	      ຖ້າ (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  ບໍ່ດັ່ງນັ້ນ ຖ້າ (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      ຖ້າ (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      ບໍ່ດັ່ງນັ້ນ ຖ້າ (align == 2)
 		{
-		  if (size & 1)
+		  ຖ້າ (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  ຖ້າ (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
 }
