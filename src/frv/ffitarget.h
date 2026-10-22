@@ -35,10 +35,10 @@
 /* ---- System specific configurations ----------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା unsigned long          ffi_arg;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ଗଣନା ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_EABI,
   FFI_LAST_ABI,
@@ -54,7 +54,7 @@ typedef enum ffi_abi {
 #ifdef __FRV_FDPIC__
 /* Trampolines are 8 4-byte instructions long.  */
 #define FFI_TRAMPOLINE_SIZE (8*4)
-#else
+#ଅନ୍ୟଥା
 /* Trampolines are 5 4-byte instructions long.  */
 #define FFI_TRAMPOLINE_SIZE (5*4)
 #endif

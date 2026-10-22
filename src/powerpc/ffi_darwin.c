@@ -28,16 +28,16 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ଅନ୍ତର୍ଭାଵ <ffi.h>
+#ଅନ୍ତର୍ଭାଵ <ffi_common.h>
 
-#include <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
 
 
-struct ffi_aix_trampoline_struct {
-    void * code_pointer;	/* Pointer to ffi_closure_ASM */
-    void * toc;			/* TOC */
-    void * static_chain;	/* Pointer to closure */
+ସଂରଚନା ffi_aix_trampoline_struct {
+    ଶୂନ୍ୟ * code_pointer;	/* Pointer to ffi_closure_ASM */
+    ଶୂନ୍ୟ * toc;			/* TOC */
+    ଶୂନ୍ୟ * static_chain;	/* Pointer to closure */
 };
 
 /* Closure jump table indexes returned by ffi_closure_helper_common and
@@ -61,7 +61,7 @@ struct ffi_aix_trampoline_struct {
 # define PPC_LD_PTR		PPC_LD_R3
 # define PPC_LD_I64		PPC_LD_R3R4
 # define PPC_LD_STRUCT		10
-#else
+#ଅନ୍ୟଥା
 # define PPC_LD_U32		10
 # define PPC_LD_S32		11
 # define PPC_LD_PTR		PPC_LD_R3
@@ -69,13 +69,13 @@ struct ffi_aix_trampoline_struct {
 # define PPC_LD_STRUCT		12
 #endif
 
-extern void ffi_closure_ASM (void);
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_closure_ASM (ଶୂନ୍ୟ);
 
-#if defined (FFI_GO_CLOSURES)
-extern void ffi_go_closure_ASM (void);
+#ଯଦି defined (FFI_GO_CLOSURES)
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_go_closure_ASM (ଶୂନ୍ୟ);
 #endif
 
-enum {
+ଗଣନା {
   /* The assembly depends on these exact flags.  
      For Darwin64 (when FLAG_RETURNS_STRUCT is set):
        FLAG_RETURNS_FP indicates that the structure embeds FP data.
@@ -95,13 +95,13 @@ enum {
 };
 
 /* About the DARWIN ABI.  */
-enum {
-  NUM_GPR_ARG_REGISTERS = 8,
-  NUM_FPR_ARG_REGISTERS = 13,
+ଗଣନା {
+  ଅଙ୍କ_GPR_ARG_REGISTERS = 8,
+  ଅଙ୍କ_FPR_ARG_REGISTERS = 13,
   LINKAGE_AREA_GPRS = 6
 };
 
-enum { ASM_NEEDS_REGISTERS = 4 }; /* r28-r31 */
+ଗଣନା { ASM_NEEDS_REGISTERS = 4 }; /* r28-r31 */
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments.
@@ -135,210 +135,210 @@ enum { ASM_NEEDS_REGISTERS = 4 }; /* r28-r31 */
 
    */
 
-#if defined(POWERPC_DARWIN64)
-static void
-darwin64_pass_struct_by_value 
-  (ffi_type *, char *, unsigned, unsigned *, double **, unsigned long **);
+#ଯଦି defined(POWERPC_DARWIN64)
+ସ୍ଥିର ଶୂନ୍ୟ
+darwin64_pass_struct_by_ମୂଲ୍ୟ 
+  (ffi_type *, ଅକ୍ଷର *, unsigned, unsigned *, ଦ୍ୱିଗୁଣ **, unsigned long **);
 #endif
 
 /* This depends on GPR_SIZE = sizeof (unsigned long) */
 
-void
-ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
+ଶୂନ୍ୟ
+ffi_prep_args (extended_cif *ecif, unsigned long *ଅଚଳ ଗଦା)
 {
-  const unsigned bytes = ecif->cif->bytes;
-  const unsigned flags = ecif->cif->flags;
-  const unsigned nargs = ecif->cif->nargs;
-#if !defined(POWERPC_DARWIN64) 
-  const ffi_abi abi = ecif->cif->abi;
+  ଅଚଳ unsigned bytes = ecif->cif->bytes;
+  ଅଚଳ unsigned flags = ecif->cif->flags;
+  ଅଚଳ unsigned nargs = ecif->cif->nargs;
+#ଯଦି !defined(POWERPC_DARWIN64) 
+  ଅଚଳ ffi_abi abi = ecif->cif->abi;
 #endif
 
   /* 'stacktop' points at the previous backchain pointer.  */
-  unsigned long *const stacktop = stack + (bytes / sizeof(unsigned long));
+  unsigned long *ଅଚଳ stacktop = ଗଦା + (bytes / ଆକାର(unsigned long));
 
   /* 'fpr_base' points at the space for fpr1, and grows upwards as
      we use FPR registers.  */
-  double *fpr_base = (double *) (stacktop - ASM_NEEDS_REGISTERS) - NUM_FPR_ARG_REGISTERS;
-  int gp_count = 0, fparg_count = 0;
+  ଦ୍ୱିଗୁଣ *fpr_base = (ଦ୍ୱିଗୁଣ *) (stacktop - ASM_NEEDS_REGISTERS) - ଅଙ୍କ_FPR_ARG_REGISTERS;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା gp_ଗଣନା = 0, fparg_ଗଣନା = 0;
 
   /* 'next_arg' grows up as we put parameters in it.  */
-  unsigned long *next_arg = stack + LINKAGE_AREA_GPRS; /* 6 reserved positions.  */
+  unsigned long *next_arg = ଗଦା + LINKAGE_AREA_GPRS; /* 6 reserved positions.  */
 
-  int i;
-  double double_tmp;
-  void **p_argv = ecif->avalue;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ଦ୍ୱିଗୁଣ double_tmp;
+  ଶୂନ୍ୟ **p_argv = ecif->avalue;
   unsigned long gprvalue;
   ffi_type** ptr = ecif->cif->arg_types;
-#if !defined(POWERPC_DARWIN64) 
-  char *dest_cpy;
+#ଯଦି !defined(POWERPC_DARWIN64) 
+  ଅକ୍ଷର *dest_cpy;
 #endif
   unsigned size_al = 0;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT(((unsigned) (char *) stack & 0xF) == 0);
-  FFI_ASSERT(((unsigned) (char *) stacktop & 0xF) == 0);
+  FFI_ASSERT(((unsigned) (ଅକ୍ଷର *) ଗଦା & 0xF) == 0);
+  FFI_ASSERT(((unsigned) (ଅକ୍ଷର *) stacktop & 0xF) == 0);
   FFI_ASSERT((bytes & 0xF) == 0);
 
   /* Deal with return values that are actually pass-by-reference.
      Rule:
      Return values are referenced by r3, so r4 is the first parameter.  */
 
-  if (flags & FLAG_RETVAL_REFERENCE)
-    *next_arg++ = (unsigned long) (char *) ecif->rvalue;
+  ଯଦି (flags & FLAG_RETVAL_REFERENCE)
+    *next_arg++ = (unsigned long) (ଅକ୍ଷର *) ecif->rvalue;
 
   /* Now for the arguments.  */
-  for (i = nargs; i > 0; i--, ptr++, p_argv++)
+  ପାଇଁ (i = nargs; i > 0; i--, ptr++, p_argv++)
     {
-      switch ((*ptr)->type)
+      ବାଛ ((*ptr)->type)
 	{
 	/* If a floating-point parameter appears before all of the general-
 	   purpose registers are filled, the corresponding GPRs that match
 	   the size of the floating-point parameter are skipped.  */
-	case FFI_TYPE_FLOAT:
-	  double_tmp = *(float *) *p_argv;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	ସ୍ଥିତି FFI_TYPE_FLOAT:
+	  double_tmp = *(ଦଶମିକ *) *p_argv;
+	  ଯଦି (fparg_ଗଣନା < ଅଙ୍କ_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-#if defined(POWERPC_DARWIN)
-	  *(float *)next_arg = *(float *) *p_argv;
-#else
-	  *(double *)next_arg = double_tmp;
+#ଯଦି defined(POWERPC_DARWIN)
+	  *(ଦଶମିକ *)next_arg = *(ଦଶମିକ *) *p_argv;
+#ଅନ୍ୟଥା
+	  *(ଦ୍ୱିଗୁଣ *)next_arg = double_tmp;
 #endif
 	  next_arg++;
-	  gp_count++;
-	  fparg_count++;
+	  gp_ଗଣନା++;
+	  fparg_ଗଣନା++;
 	  FFI_ASSERT(flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_DOUBLE:
-	  double_tmp = *(double *) *p_argv;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	ସ୍ଥିତି FFI_TYPE_DOUBLE:
+	  double_tmp = *(ଦ୍ୱିଗୁଣ *) *p_argv;
+	  ଯଦି (fparg_ଗଣନା < ଅଙ୍କ_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-	  *(double *)next_arg = double_tmp;
+	  *(ଦ୍ୱିଗୁଣ *)next_arg = double_tmp;
 #ifdef POWERPC64
 	  next_arg++;
-	  gp_count++;
-#else
+	  gp_ଗଣନା++;
+#ଅନ୍ୟଥା
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_ଗଣନା += 2;
 #endif
-	  fparg_count++;
+	  fparg_ଗଣନା++;
 	  FFI_ASSERT(flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  ଭାଙ୍ଗ;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ଯଦି FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 
-	case FFI_TYPE_LONGDOUBLE:
-#  if defined(POWERPC64) && !defined(POWERPC_DARWIN64)
+	ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
+#  ଯଦି defined(POWERPC64) && !defined(POWERPC_DARWIN64)
 	  /* ??? This will exceed the regs count when the value starts at fp13
 	     and it will not put the extra bit on the stack.  */
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
-	    *(long double *) fpr_base++ = *(long double *) *p_argv;
-	  else
-	    *(long double *) next_arg = *(long double *) *p_argv;
+	  ଯଦି (fparg_ଗଣନା < ଅଙ୍କ_FPR_ARG_REGISTERS)
+	    *(long ଦ୍ୱିଗୁଣ *) fpr_base++ = *(long ଦ୍ୱିଗୁଣ *) *p_argv;
+	  ଅନ୍ୟଥା
+	    *(long ଦ୍ୱିଗୁଣ *) next_arg = *(long ଦ୍ୱିଗୁଣ *) *p_argv;
 	  next_arg += 2;
-	  fparg_count += 2;
-#  else
-	  double_tmp = ((double *) *p_argv)[0];
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  fparg_ଗଣନା += 2;
+#  ଅନ୍ୟଥା
+	  double_tmp = ((ଦ୍ୱିଗୁଣ *) *p_argv)[0];
+	  ଯଦି (fparg_ଗଣନା < ଅଙ୍କ_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-	  *(double *) next_arg = double_tmp;
-#    if defined(POWERPC_DARWIN64)
+	  *(ଦ୍ୱିଗୁଣ *) next_arg = double_tmp;
+#    ଯଦି defined(POWERPC_DARWIN64)
 	  next_arg++;
-	  gp_count++;
-#    else
+	  gp_ଗଣନା++;
+#    ଅନ୍ୟଥା
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_ଗଣନା += 2;
 #    endif
-	  fparg_count++;
-	  double_tmp = ((double *) *p_argv)[1];
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS)
+	  fparg_ଗଣନା++;
+	  double_tmp = ((ଦ୍ୱିଗୁଣ *) *p_argv)[1];
+	  ଯଦି (fparg_ଗଣନା < ଅଙ୍କ_FPR_ARG_REGISTERS)
 	    *fpr_base++ = double_tmp;
-	  *(double *) next_arg = double_tmp;
-#    if defined(POWERPC_DARWIN64)
+	  *(ଦ୍ୱିଗୁଣ *) next_arg = double_tmp;
+#    ଯଦି defined(POWERPC_DARWIN64)
 	  next_arg++;
-	  gp_count++;
-#    else
+	  gp_ଗଣନା++;
+#    ଅନ୍ୟଥା
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_ଗଣନା += 2;
 #    endif
-	  fparg_count++;
+	  fparg_ଗଣନା++;
 #  endif
 	  FFI_ASSERT(flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  ଭାଙ୍ଗ;
 #endif
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	ସ୍ଥିତି FFI_TYPE_UINT64:
+	ସ୍ଥିତି FFI_TYPE_SINT64:
 #ifdef POWERPC64
 	  gprvalue = *(long long *) *p_argv;
-	  goto putgpr;
-#else
+	  ଯାଅ putgpr;
+#ଅନ୍ୟଥା
 	  *(long long *) next_arg = *(long long *) *p_argv;
 	  next_arg += 2;
-	  gp_count += 2;
+	  gp_ଗଣନା += 2;
 #endif
-	  break;
-	case FFI_TYPE_POINTER:
+	  ଭାଙ୍ଗ;
+	ସ୍ଥିତି FFI_TYPE_POINTER:
 	  gprvalue = *(unsigned long *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_UINT8:
-	  gprvalue = *(unsigned char *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_SINT8:
-	  gprvalue = *(signed char *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_UINT16:
+	  ଯାଅ putgpr;
+	ସ୍ଥିତି FFI_TYPE_UINT8:
+	  gprvalue = *(unsigned ଅକ୍ଷର *) *p_argv;
+	  ଯାଅ putgpr;
+	ସ୍ଥିତି FFI_TYPE_SINT8:
+	  gprvalue = *(signed ଅକ୍ଷର *) *p_argv;
+	  ଯାଅ putgpr;
+	ସ୍ଥିତି FFI_TYPE_UINT16:
 	  gprvalue = *(unsigned short *) *p_argv;
-	  goto putgpr;
-	case FFI_TYPE_SINT16:
+	  ଯାଅ putgpr;
+	ସ୍ଥିତି FFI_TYPE_SINT16:
 	  gprvalue = *(signed short *) *p_argv;
-	  goto putgpr;
+	  ଯାଅ putgpr;
 
-	case FFI_TYPE_STRUCT:
+	ସ୍ଥିତି FFI_TYPE_STRUCT:
 	  size_al = (*ptr)->size;
-#if defined(POWERPC_DARWIN64)
-	  next_arg = (unsigned long *)FFI_ALIGN((char *)next_arg, (*ptr)->alignment);
-	  darwin64_pass_struct_by_value (*ptr, (char *) *p_argv, 
+#ଯଦି defined(POWERPC_DARWIN64)
+	  next_arg = (unsigned long *)FFI_ALIGN((ଅକ୍ଷର *)next_arg, (*ptr)->alignment);
+	  darwin64_pass_struct_by_ମୂଲ୍ୟ (*ptr, (ଅକ୍ଷର *) *p_argv, 
 					 (unsigned) size_al,
-					 (unsigned int *) &fparg_count,
+					 (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) &fparg_ଗଣନା,
 					 &fpr_base, &next_arg);
-#else
-	  dest_cpy = (char *) next_arg;
+#ଅନ୍ୟଥା
+	  dest_cpy = (ଅକ୍ଷର *) next_arg;
 
 	  /* If the first member of the struct is a double, then include enough
 	     padding in the struct size to align it to double-word.  */
-	  if ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
+	  ଯଦି ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN((*ptr)->size, 8);
 
-#  if defined(POWERPC64) 
+#  ଯଦି defined(POWERPC64) 
 	  FFI_ASSERT (abi != FFI_DARWIN);
-	  memcpy ((char *) dest_cpy, (char *) *p_argv, size_al);
+	  memcpy ((ଅକ୍ଷର *) dest_cpy, (ଅକ୍ଷର *) *p_argv, size_al);
 	  next_arg += (size_al + 7) / 8;
-#  else
+#  ଅନ୍ୟଥା
 	  /* Structures that match the basic modes (QI 1 byte, HI 2 bytes,
 	     SI 4 bytes) are aligned as if they were those modes.
 	     Structures with 3 byte in size are padded upwards.  */
-	  if (size_al < 3 && abi == FFI_DARWIN)
+	  ଯଦି (size_al < 3 && abi == FFI_DARWIN)
 	    dest_cpy += 4 - size_al;
 
-	  memcpy((char *) dest_cpy, (char *) *p_argv, size_al);
+	  memcpy((ଅକ୍ଷର *) dest_cpy, (ଅକ୍ଷର *) *p_argv, size_al);
 	  next_arg += (size_al + 3) / 4;
 #  endif
 #endif
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	  gprvalue = *(signed int *) *p_argv;
-	  goto putgpr;
+	ସ୍ଥିତି FFI_TYPE_INT:
+	ସ୍ଥିତି FFI_TYPE_SINT32:
+	  gprvalue = *(signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) *p_argv;
+	  ଯାଅ putgpr;
 
-	case FFI_TYPE_UINT32:
-	  gprvalue = *(unsigned int *) *p_argv;
+	ସ୍ଥିତି FFI_TYPE_UINT32:
+	  gprvalue = *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) *p_argv;
 	putgpr:
 	  *next_arg++ = gprvalue;
-	  gp_count++;
-	  break;
-	default:
-	  break;
+	  gp_ଗଣନା++;
+	  ଭାଙ୍ଗ;
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+	  ଭାଙ୍ଗ;
 	}
     }
 
@@ -349,161 +349,161 @@ ffi_prep_args (extended_cif *ecif, unsigned long *const stack)
      FFI_ASSERT(flags & FLAG_4_GPR_ARGUMENTS || intarg_count <= 4);  */
 }
 
-#if defined(POWERPC_DARWIN64)
+#ଯଦି defined(POWERPC_DARWIN64)
 
 /* See if we can put some of the struct into fprs.
    This should not be called for structures of size 16 bytes, since these are not
    broken out this way.  */
-static void
+ସ୍ଥିର ଶୂନ୍ୟ
 darwin64_scan_struct_for_floats (ffi_type *s, unsigned *nfpr)
 {
-  int i;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
 
   FFI_ASSERT (s->type == FFI_TYPE_STRUCT)
 
-  for (i = 0; s->elements[i] != NULL; i++)
+  ପାଇଁ (i = 0; s->elements[i] != ଖାଲି; i++)
     {
       ffi_type *p = s->elements[i];
-      switch (p->type)
+      ବାଛ (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
+	  ସ୍ଥିତି FFI_TYPE_STRUCT:
 	    darwin64_scan_struct_for_floats (p, nfpr);
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
 	    (*nfpr) += 2;
-	    break;
-	  case FFI_TYPE_DOUBLE:
-	  case FFI_TYPE_FLOAT:
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_DOUBLE:
+	  ସ୍ଥିତି FFI_TYPE_FLOAT:
 	    (*nfpr) += 1;
-	    break;
-	  default:
-	    break;    
+	    ଭାଙ୍ଗ;
+	  ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+	    ଭାଙ୍ଗ;    
 	}
     }
 }
 
-static int
-darwin64_struct_size_exceeds_gprs_p (ffi_type *s, char *src, unsigned *nfpr)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+darwin64_struct_size_exceeds_gprs_p (ffi_type *s, ଅକ୍ଷର *src, unsigned *nfpr)
 {
   unsigned struct_offset=0, i;
 
-  for (i = 0; s->elements[i] != NULL; i++)
+  ପାଇଁ (i = 0; s->elements[i] != ଖାଲି; i++)
     {
-      char *item_base;
+      ଅକ୍ଷର *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      ଯଦି (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
 
       item_base = src + struct_offset;
 
-      switch (p->type)
+      ବାଛ (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
-	    if (darwin64_struct_size_exceeds_gprs_p (p, item_base, nfpr))
-	      return 1;
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	  ସ୍ଥିତି FFI_TYPE_STRUCT:
+	    ଯଦି (darwin64_struct_size_exceeds_gprs_p (p, item_base, nfpr))
+	      ଫେରନ୍ତୁ 1;
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
+	    ଯଦି (*nfpr >= ଅଙ୍କ_FPR_ARG_REGISTERS)
+	      ଫେରନ୍ତୁ 1;
 	    (*nfpr) += 1;
 	    item_base += 8;
 	  /* FALL THROUGH */
-	  case FFI_TYPE_DOUBLE:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	  ସ୍ଥିତି FFI_TYPE_DOUBLE:
+	    ଯଦି (*nfpr >= ଅଙ୍କ_FPR_ARG_REGISTERS)
+	      ଫେରନ୍ତୁ 1;
 	    (*nfpr) += 1;
-	    break;
-	  case FFI_TYPE_FLOAT:
-	    if (*nfpr >= NUM_FPR_ARG_REGISTERS)
-	      return 1;
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_FLOAT:
+	    ଯଦି (*nfpr >= ଅଙ୍କ_FPR_ARG_REGISTERS)
+	      ଫେରନ୍ତୁ 1;
 	    (*nfpr) += 1;
-	    break;
-	  default:
+	    ଭାଙ୍ଗ;
+	  ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	    /* If we try and place any item, that is non-float, once we've
 	       exceeded the 8 GPR mark, then we can't fit the struct.  */
-	    if ((unsigned long)item_base >= 8*8) 
-	      return 1;
-	    break;    
+	    ଯଦି ((unsigned long)item_base >= 8*8) 
+	      ଫେରନ୍ତୁ 1;
+	    ଭାଙ୍ଗ;    
 	}
       /* now count the size of what we just used.  */
       struct_offset += p->size;
     }
-  return 0;
+  ଫେରନ୍ତୁ 0;
 }
 
 /* Can this struct be returned by value?  */
-int 
-darwin64_struct_ret_by_value_p (ffi_type *s)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା 
+darwin64_struct_ret_by_ମୂଲ୍ୟ_p (ffi_type *s)
 {
   unsigned nfp = 0;
 
   FFI_ASSERT (s && s->type == FFI_TYPE_STRUCT);
   
   /* The largest structure we can return is 8long + 13 doubles.  */
-  if (s->size > 168)
-    return 0;
+  ଯଦି (s->size > 168)
+    ଫେରନ୍ତୁ 0;
   
   /* We can't pass more than 13 floats.  */
   darwin64_scan_struct_for_floats (s, &nfp);
-  if (nfp > 13)
-    return 0;
+  ଯଦି (nfp > 13)
+    ଫେରନ୍ତୁ 0;
   
   /* If there are not too many floats, and the struct is
      small enough to accommodate in the GPRs, then it must be OK.  */
-  if (s->size <= 64)
-    return 1;
+  ଯଦି (s->size <= 64)
+    ଫେରନ୍ତୁ 1;
   
   /* Well, we have to look harder.  */
   nfp = 0;
-  if (darwin64_struct_size_exceeds_gprs_p (s, NULL, &nfp))
-    return 0;
+  ଯଦି (darwin64_struct_size_exceeds_gprs_p (s, ଖାଲି, &nfp))
+    ଫେରନ୍ତୁ 0;
   
-  return 1;
+  ଫେରନ୍ତୁ 1;
 }
 
-void
-darwin64_pass_struct_floats (ffi_type *s, char *src, 
-			     unsigned *nfpr, double **fprs)
+ଶୂନ୍ୟ
+darwin64_pass_struct_floats (ffi_type *s, ଅକ୍ଷର *src, 
+			     unsigned *nfpr, ଦ୍ୱିଗୁଣ **fprs)
 {
-  int i;
-  double *fpr_base = *fprs;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ଦ୍ୱିଗୁଣ *fpr_base = *fprs;
   unsigned struct_offset = 0;
 
   /* We don't assume anything about the alignment of the source.  */
-  for (i = 0; s->elements[i] != NULL; i++)
+  ପାଇଁ (i = 0; s->elements[i] != ଖାଲି; i++)
     {
-      char *item_base;
+      ଅକ୍ଷର *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      ଯଦି (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
       item_base = src + struct_offset;
 
-      switch (p->type)
+      ବାଛ (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
+	  ସ୍ଥିତି FFI_TYPE_STRUCT:
 	    darwin64_pass_struct_floats (p, item_base, nfpr,
 					   &fpr_base);
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
-	      *fpr_base++ = *(double *)item_base;
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
+	    ଯଦି (*nfpr < ଅଙ୍କ_FPR_ARG_REGISTERS)
+	      *fpr_base++ = *(ଦ୍ୱିଗୁଣ *)item_base;
 	    (*nfpr) += 1;
 	    item_base += 8;
 	  /* FALL THROUGH */
-	  case FFI_TYPE_DOUBLE:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
-	      *fpr_base++ = *(double *)item_base;
+	  ସ୍ଥିତି FFI_TYPE_DOUBLE:
+	    ଯଦି (*nfpr < ଅଙ୍କ_FPR_ARG_REGISTERS)
+	      *fpr_base++ = *(ଦ୍ୱିଗୁଣ *)item_base;
 	    (*nfpr) += 1;
-	    break;
-	  case FFI_TYPE_FLOAT:
-	    if (*nfpr < NUM_FPR_ARG_REGISTERS)
-	      *fpr_base++ = (double) *(float *)item_base;
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_FLOAT:
+	    ଯଦି (*nfpr < ଅଙ୍କ_FPR_ARG_REGISTERS)
+	      *fpr_base++ = (ଦ୍ୱିଗୁଣ) *(ଦଶମିକ *)item_base;
 	    (*nfpr) += 1;
-	    break;
-	  default:
-	    break;    
+	    ଭାଙ୍ଗ;
+	  ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+	    ଭାଙ୍ଗ;    
 	}
       /* now count the size of what we just used.  */
       struct_offset += p->size;
@@ -514,20 +514,20 @@ darwin64_pass_struct_floats (ffi_type *s, char *src,
 
 /* Darwin64 special rules.
    Break out a struct into params and float registers.  */
-static void
-darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
-			       unsigned *nfpr, double **fprs, unsigned long **arg)
+ସ୍ଥିର ଶୂନ୍ୟ
+darwin64_pass_struct_by_ମୂଲ୍ୟ (ffi_type *s, ଅକ୍ଷର *src, unsigned size,
+			       unsigned *nfpr, ଦ୍ୱିଗୁଣ **fprs, unsigned long **arg)
 {
   unsigned long *next_arg = *arg;
-  char *dest_cpy = (char *)next_arg;
+  ଅକ୍ଷର *dest_cpy = (ଅକ୍ଷର *)next_arg;
 
   FFI_ASSERT (s->type == FFI_TYPE_STRUCT)
 
-  if (!size)
-    return;
+  ଯଦି (!size)
+    ଫେରନ୍ତୁ;
 
   /* First... special cases.  */
-  if (size < 3
+  ଯଦି (size < 3
       || (size == 4 
 	  && s->elements[0] 
 	  && s->elements[0]->type != FFI_TYPE_FLOAT))
@@ -536,18 +536,18 @@ darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
 	 let's make it zero.  */
       *next_arg = 0UL; 
       dest_cpy += 8 - size;
-      memcpy ((char *) dest_cpy, src, size);
+      memcpy ((ଅକ୍ଷର *) dest_cpy, src, size);
       next_arg++;
     }
-  else if (size == 16)
+  ଅନ୍ୟଥା ଯଦି (size == 16)
     {
-      memcpy ((char *) dest_cpy, src, size);
+      memcpy ((ଅକ୍ଷର *) dest_cpy, src, size);
       next_arg += 2;
     }
-  else
+  ଅନ୍ୟଥା
     {
       /* now the general case, we consider embedded floats.  */
-      memcpy ((char *) dest_cpy, src, size);
+      memcpy ((ଅକ୍ଷର *) dest_cpy, src, size);
       darwin64_pass_struct_floats (s, src, nfpr, fprs);
       next_arg += (size+7)/8;
     }
@@ -555,56 +555,56 @@ darwin64_pass_struct_by_value (ffi_type *s, char *src, unsigned size,
   *arg = next_arg;
 }
 
-double *
-darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *nf)
+ଦ୍ୱିଗୁଣ *
+darwin64_struct_floats_to_mem (ffi_type *s, ଅକ୍ଷର *dest, ଦ୍ୱିଗୁଣ *fprs, unsigned *nf)
 {
-  int i;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
   unsigned struct_offset = 0;
 
   /* We don't assume anything about the alignment of the source.  */
-  for (i = 0; s->elements[i] != NULL; i++)
+  ପାଇଁ (i = 0; s->elements[i] != ଖାଲି; i++)
     {
-      char *item_base;
+      ଅକ୍ଷର *item_base;
       ffi_type *p = s->elements[i];
       /* Find the start of this item (0 for the first one).  */
-      if (i > 0)
+      ଯଦି (i > 0)
         struct_offset = FFI_ALIGN(struct_offset, p->alignment);
       item_base = dest + struct_offset;
 
-      switch (p->type)
+      ବାଛ (p->type)
 	{
-	  case FFI_TYPE_STRUCT:
+	  ସ୍ଥିତି FFI_TYPE_STRUCT:
 	    fprs = darwin64_struct_floats_to_mem (p, item_base, fprs, nf);
-	    break;
-	  case FFI_TYPE_LONGDOUBLE:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
+	    ଯଦି (*nf < ଅଙ୍କ_FPR_ARG_REGISTERS)
 	      {
-		*(double *)item_base = *fprs++ ;
+		*(ଦ୍ୱିଗୁଣ *)item_base = *fprs++ ;
 		(*nf) += 1;
 	      }
 	    item_base += 8;
 	  /* FALL THROUGH */
-	  case FFI_TYPE_DOUBLE:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	  ସ୍ଥିତି FFI_TYPE_DOUBLE:
+	    ଯଦି (*nf < ଅଙ୍କ_FPR_ARG_REGISTERS)
 	      {
-		*(double *)item_base = *fprs++ ;
+		*(ଦ୍ୱିଗୁଣ *)item_base = *fprs++ ;
 		(*nf) += 1;
 	      }
-	    break;
-	  case FFI_TYPE_FLOAT:
-	    if (*nf < NUM_FPR_ARG_REGISTERS)
+	    ଭାଙ୍ଗ;
+	  ସ୍ଥିତି FFI_TYPE_FLOAT:
+	    ଯଦି (*nf < ଅଙ୍କ_FPR_ARG_REGISTERS)
 	      {
-		*(float *)item_base = (float) *fprs++ ;
+		*(ଦଶମିକ *)item_base = (ଦଶମିକ) *fprs++ ;
 		(*nf) += 1;
 	      }
-	    break;
-	  default:
-	    break;    
+	    ଭାଙ୍ଗ;
+	  ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+	    ଭାଙ୍ଗ;    
 	}
       /* now count the size of what we just used.  */
       struct_offset += p->size;
     }
-  return fprs;
+  ଫେରନ୍ତୁ fprs;
 }
 
 #endif
@@ -613,34 +613,34 @@ darwin64_struct_floats_to_mem (ffi_type *s, char *dest, double *fprs, unsigned *
    On Darwin m32, the first field of a structure has natural alignment.  
    On Darwin m64, all fields have natural alignment.  */
 
-static void
+ସ୍ଥିର ଶୂନ୍ୟ
 darwin_adjust_aggregate_sizes (ffi_type *s)
 {
-  int i;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
 
-  if (s->type != FFI_TYPE_STRUCT)
-    return;
+  ଯଦି (s->type != FFI_TYPE_STRUCT)
+    ଫେରନ୍ତୁ;
 
   s->size = 0;
-  for (i = 0; s->elements[i] != NULL; i++)
+  ପାଇଁ (i = 0; s->elements[i] != ଖାଲି; i++)
     {
       ffi_type *p;
-      int align;
+      ପୂର୍ଣ୍ଣସଂଖ୍ୟା align;
       
       p = s->elements[i];
-      if (p->type == FFI_TYPE_STRUCT)
+      ଯଦି (p->type == FFI_TYPE_STRUCT)
 	darwin_adjust_aggregate_sizes (p);
-#if defined(POWERPC_DARWIN64)
+#ଯଦି defined(POWERPC_DARWIN64)
       /* Natural alignment for all items.  */
       align = p->alignment;
-#else
+#ଅନ୍ୟଥା
       /* Natural alignment for the first item... */
-      if (i == 0)
+      ଯଦି (i == 0)
 	align = p->alignment;
-      else if (p->alignment == 16 || p->alignment < 4)
+      ଅନ୍ୟଥା ଯଦି (p->alignment == 16 || p->alignment < 4)
 	/* .. subsequent items with vector or align < 4 have natural align.  */
 	align = p->alignment;
-      else
+      ଅନ୍ୟଥା
 	/* .. or align is 4.  */
 	align = 4;
 #endif
@@ -651,7 +651,7 @@ darwin_adjust_aggregate_sizes (ffi_type *s)
   s->size = FFI_ALIGN(s->size, s->alignment);
   
   /* This should not be necessary on m64, but harmless.  */
-  if (s->elements[0]->type == FFI_TYPE_UINT64
+  ଯଦି (s->elements[0]->type == FFI_TYPE_UINT64
       || s->elements[0]->type == FFI_TYPE_SINT64
       || s->elements[0]->type == FFI_TYPE_DOUBLE
       || s->elements[0]->alignment == 8)
@@ -663,34 +663,34 @@ darwin_adjust_aggregate_sizes (ffi_type *s)
    Word-align double unless it is the first member of a structure recursively.
    Return non-zero if we found a recursive first member aggregate of interest. */
 
-static int
-aix_adjust_aggregate_sizes (ffi_type *s, int outer_most_type_or_first_member)
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+aix_adjust_aggregate_sizes (ffi_type *s, ପୂର୍ଣ୍ଣସଂଖ୍ୟା outer_most_type_or_first_member)
 {
-  int i, nested_first_member=0, final_align, rc=0;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i, nested_first_member=0, final_align, rc=0;
 
-  if (s->type != FFI_TYPE_STRUCT)
-    return 0;
+  ଯଦି (s->type != FFI_TYPE_STRUCT)
+    ଫେରନ୍ତୁ 0;
 
   s->size = 0;
-  for (i = 0; s->elements[i] != NULL; i++)
+  ପାଇଁ (i = 0; s->elements[i] != ଖାଲି; i++)
     {
       ffi_type p;
-      int align;
+      ପୂର୍ଣ୍ଣସଂଖ୍ୟା align;
 
       /* nested aggregates layout differently on AIX, so take a copy of the type */
       p = *(s->elements[i]);
-      if (i == 0)
+      ଯଦି (i == 0)
         nested_first_member = aix_adjust_aggregate_sizes(&p, outer_most_type_or_first_member);
-      else
+      ଅନ୍ୟଥା
         aix_adjust_aggregate_sizes(&p, 0);
       align = p.alignment;
-      if (i != 0 && p.type == FFI_TYPE_DOUBLE)
+      ଯଦି (i != 0 && p.type == FFI_TYPE_DOUBLE)
         align = 4;
       s->size = FFI_ALIGN(s->size, align) + p.size;
     }
 
   final_align=s->alignment;
-  if ((s->elements[0]->type == FFI_TYPE_UINT64
+  ଯଦି ((s->elements[0]->type == FFI_TYPE_UINT64
           || s->elements[0]->type == FFI_TYPE_SINT64
           || s->elements[0]->type == FFI_TYPE_DOUBLE
           || s->elements[0]->alignment == 8 || nested_first_member)) {
@@ -698,12 +698,12 @@ aix_adjust_aggregate_sizes (ffi_type *s, int outer_most_type_or_first_member)
       rc=1;
       /* still use the adjusted alignment to calculate tail padding, but don't adjust the types alignment if
          we aren't in the recursive first position */
-      if (outer_most_type_or_first_member)
+      ଯଦି (outer_most_type_or_first_member)
         s->alignment=final_align;
   }
 
   s->size = FFI_ALIGN(s->size, final_align);
-  return rc;
+  ଫେରନ୍ତୁ rc;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -714,7 +714,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   unsigned i;
   ffi_type **ptr;
   unsigned bytes;
-  unsigned fparg_count = 0, intarg_count = 0;
+  unsigned fparg_ଗଣନା = 0, intarg_ଗଣନା = 0;
   unsigned flags = 0;
   unsigned size_al = 0;
 
@@ -722,24 +722,24 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      All the calculation of structure sizes will also be wrong.
      Redo the calculation for DARWIN.  */
 
-  if (cif->abi == FFI_DARWIN)
+  ଯଦି (cif->abi == FFI_DARWIN)
     {
       darwin_adjust_aggregate_sizes (cif->rtype);
-      for (i = 0; i < cif->nargs; i++)
+      ପାଇଁ (i = 0; i < cif->nargs; i++)
 	darwin_adjust_aggregate_sizes (cif->arg_types[i]);
     }
 
-  if (cif->abi == FFI_AIX)
+  ଯଦି (cif->abi == FFI_AIX)
     {
       aix_adjust_aggregate_sizes (cif->rtype, 1);
-      for (i = 0; i < cif->nargs; i++)
+      ପାଇଁ (i = 0; i < cif->nargs; i++)
 	aix_adjust_aggregate_sizes (cif->arg_types[i], 1);
     }
 
   /* Space for the frame pointer, callee's LR, CR, etc, and for
      the asm's temp regs.  */
 
-  bytes = (LINKAGE_AREA_GPRS + ASM_NEEDS_REGISTERS) * sizeof(unsigned long);
+  bytes = (LINKAGE_AREA_GPRS + ASM_NEEDS_REGISTERS) * ଆକାର(unsigned long);
 
   /* Return value handling.  
     The rules m32 are as follows:
@@ -760,76 +760,76 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      m32/m64 structures otherwise:
      - Larger structures values are allocated space and a pointer is passed
        as the first argument.  */
-  switch (cif->rtype->type)
+  ବାଛ (cif->rtype->type)
     {
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
+#ଯଦି FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
       flags |= FLAG_RETURNS_128BITS;
       flags |= FLAG_RETURNS_FP;
-      break;
+      ଭାଙ୍ଗ;
 #endif
 
-    case FFI_TYPE_DOUBLE:
+    ସ୍ଥିତି FFI_TYPE_DOUBLE:
       flags |= FLAG_RETURNS_64BITS;
       /* Fall through.  */
-    case FFI_TYPE_FLOAT:
+    ସ୍ଥିତି FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
-      break;
+      ଭାଙ୍ଗ;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    ସ୍ଥିତି FFI_TYPE_UINT64:
+    ସ୍ଥିତି FFI_TYPE_SINT64:
 #ifdef POWERPC64
-    case FFI_TYPE_POINTER:
+    ସ୍ଥିତି FFI_TYPE_POINTER:
 #endif
       flags |= FLAG_RETURNS_64BITS;
-      break;
+      ଭାଙ୍ଗ;
 
-    case FFI_TYPE_STRUCT:
-#if defined(POWERPC_DARWIN64)
+    ସ୍ଥିତି FFI_TYPE_STRUCT:
+#ଯଦି defined(POWERPC_DARWIN64)
       {
 	/* Can we fit the struct into regs?  */
-	if (darwin64_struct_ret_by_value_p (cif->rtype))
+	ଯଦି (darwin64_struct_ret_by_ମୂଲ୍ୟ_p (cif->rtype))
 	  {
 	    unsigned nfpr = 0;
 	    flags |= FLAG_RETURNS_STRUCT;
-	    if (cif->rtype->size != 16)
+	    ଯଦି (cif->rtype->size != 16)
 	      darwin64_scan_struct_for_floats (cif->rtype, &nfpr) ;
-	    else
+	    ଅନ୍ୟଥା
 	      flags |= FLAG_RETURNS_128BITS;
 	    /* Will be 0 for 16byte struct.  */
-	    if (nfpr)
+	    ଯଦି (nfpr)
 	      flags |= FLAG_RETURNS_FP;
 	  }
-	else /* By ref. */
+	ଅନ୍ୟଥା /* By ref. */
 	  {
 	    flags |= FLAG_RETVAL_REFERENCE;
 	    flags |= FLAG_RETURNS_NOTHING;
-	    intarg_count++;
+	    intarg_ଗଣନା++;
 	  }
       }
-#elif defined(DARWIN_PPC)
-      if (cif->rtype->size <= 4)
+#ନଚେତଯଦି defined(DARWIN_PPC)
+      ଯଦି (cif->rtype->size <= 4)
 	flags |= FLAG_RETURNS_STRUCT;
-      else /* else by reference.  */
+      ଅନ୍ୟଥା /* else by reference.  */
 	{
 	  flags |= FLAG_RETVAL_REFERENCE;
 	  flags |= FLAG_RETURNS_NOTHING;
-	  intarg_count++;
+	  intarg_ଗଣନା++;
 	}
-#else /* assume we pass by ref.  */
+#ଅନ୍ୟଥା /* assume we pass by ref.  */
       flags |= FLAG_RETVAL_REFERENCE;
       flags |= FLAG_RETURNS_NOTHING;
-      intarg_count++;
+      intarg_ଗଣନା++;
 #endif
-      break;
-    case FFI_TYPE_VOID:
+      ଭାଙ୍ଗ;
+    ସ୍ଥିତି FFI_TYPE_VOID:
       flags |= FLAG_RETURNS_NOTHING;
-      break;
+      ଭାଙ୍ଗ;
 
-    default:
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       /* Returns 32-bit integer, or similar.  Nothing to do here.  */
-      break;
+      ଭାଙ୍ଗ;
     }
 
   /* The first NUM_GPR_ARG_REGISTERS words of integer arguments, and the
@@ -838,116 +838,116 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      ??? Structures are passed as a pointer to a copy of the structure. 
      Stuff on the stack needs to keep proper alignment.  
      For m64 the count is effectively of half-GPRs.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  ପାଇଁ (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      unsigned align_words;
-      switch ((*ptr)->type)
+      unsigned align_ଶବ୍ଦଗୁଡ଼ିକ;
+      ବାଛ ((*ptr)->type)
 	{
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	  fparg_count++;
-#if !defined(POWERPC_DARWIN64)
+	ସ୍ଥିତି FFI_TYPE_FLOAT:
+	ସ୍ଥିତି FFI_TYPE_DOUBLE:
+	  fparg_ଗଣନା++;
+#ଯଦି !defined(POWERPC_DARWIN64)
 	  /* If this FP arg is going on the stack, it must be
 	     8-byte-aligned.  */
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS
-	      && (intarg_count & 0x01) != 0)
-	    intarg_count++;
+	  ଯଦି (fparg_ଗଣନା > ଅଙ୍କ_FPR_ARG_REGISTERS
+	      && (intarg_ଗଣନା & 0x01) != 0)
+	    intarg_ଗଣନା++;
 #endif
-	  break;
+	  ଭାଙ୍ଗ;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-	  fparg_count += 2;
+#ଯଦି FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
+	  fparg_ଗଣନା += 2;
 	  /* If this FP arg is going on the stack, it must be
 	     16-byte-aligned.  */
-	  if (fparg_count >= NUM_FPR_ARG_REGISTERS)
-#if defined (POWERPC64)
-	    intarg_count = FFI_ALIGN(intarg_count, 2);
-#else
-	    intarg_count = FFI_ALIGN(intarg_count, 4);
+	  ଯଦି (fparg_ଗଣନା >= ଅଙ୍କ_FPR_ARG_REGISTERS)
+#ଯଦି defined (POWERPC64)
+	    intarg_ଗଣନା = FFI_ALIGN(intarg_ଗଣନା, 2);
+#ଅନ୍ୟଥା
+	    intarg_ଗଣନା = FFI_ALIGN(intarg_ଗଣନା, 4);
 #endif
-	  break;
+	  ଭାଙ୍ଗ;
 #endif
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-#if defined(POWERPC64)
-	  intarg_count++;
-#else
+	ସ୍ଥିତି FFI_TYPE_UINT64:
+	ସ୍ଥିତି FFI_TYPE_SINT64:
+#ଯଦି defined(POWERPC64)
+	  intarg_ଗଣନା++;
+#ଅନ୍ୟଥା
 	  /* 'long long' arguments are passed as two words, but
 	     either both words must fit in registers or both go
 	     on the stack.  If they go on the stack, they must
 	     be 8-byte-aligned.  */
-	  if (intarg_count == NUM_GPR_ARG_REGISTERS-1
-	      || (intarg_count >= NUM_GPR_ARG_REGISTERS 
-	          && (intarg_count & 0x01) != 0))
-	    intarg_count++;
-	  intarg_count += 2;
+	  ଯଦି (intarg_ଗଣନା == ଅଙ୍କ_GPR_ARG_REGISTERS-1
+	      || (intarg_ଗଣନା >= ଅଙ୍କ_GPR_ARG_REGISTERS 
+	          && (intarg_ଗଣନା & 0x01) != 0))
+	    intarg_ଗଣନା++;
+	  intarg_ଗଣନା += 2;
 #endif
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_STRUCT:
+	ସ୍ଥିତି FFI_TYPE_STRUCT:
 	  size_al = (*ptr)->size;
-#if defined(POWERPC_DARWIN64)
-	  align_words = (*ptr)->alignment >> 3;
-	  if (align_words)
-	    intarg_count = FFI_ALIGN(intarg_count, align_words);
+#ଯଦି defined(POWERPC_DARWIN64)
+	  align_ଶବ୍ଦଗୁଡ଼ିକ = (*ptr)->alignment >> 3;
+	  ଯଦି (align_ଶବ୍ଦଗୁଡ଼ିକ)
+	    intarg_ଗଣନା = FFI_ALIGN(intarg_ଗଣନା, align_ଶବ୍ଦଗୁଡ଼ିକ);
 	  /* Base size of the struct.  */
-	  intarg_count += (size_al + 7) / 8;
+	  intarg_ଗଣନା += (size_al + 7) / 8;
 	  /* If 16 bytes then don't worry about floats.  */
-	  if (size_al != 16)
+	  ଯଦି (size_al != 16)
 	    /* Scan through for floats to be placed in regs.  */
-	    darwin64_scan_struct_for_floats (*ptr, &fparg_count) ;
-#else
-	  align_words = (*ptr)->alignment >> 2;
-	  if (align_words)
-	    intarg_count = FFI_ALIGN(intarg_count, align_words);
+	    darwin64_scan_struct_for_floats (*ptr, &fparg_ଗଣନା) ;
+#ଅନ୍ୟଥା
+	  align_ଶବ୍ଦଗୁଡ଼ିକ = (*ptr)->alignment >> 2;
+	  ଯଦି (align_ଶବ୍ଦଗୁଡ଼ିକ)
+	    intarg_ଗଣନା = FFI_ALIGN(intarg_ଗଣନା, align_ଶବ୍ଦଗୁଡ଼ିକ);
 	  /* If the first member of the struct is a double, then align
 	     the struct to double-word. 
 	  if ((*ptr)->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN((*ptr)->size, 8); */
 #  ifdef POWERPC64
-	  intarg_count += (size_al + 7) / 8;
-#  else
-	  intarg_count += (size_al + 3) / 4;
+	  intarg_ଗଣନା += (size_al + 7) / 8;
+#  ଅନ୍ୟଥା
+	  intarg_ଗଣନା += (size_al + 3) / 4;
 #  endif
 #endif
-	  break;
+	  ଭାଙ୍ଗ;
 
-	default:
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	  /* Everything else is passed as a 4-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  intarg_count++;
-	  break;
+	  intarg_ଗଣନା++;
+	  ଭାଙ୍ଗ;
 	}
     }
 
-  if (fparg_count != 0)
+  ଯଦି (fparg_ଗଣନା != 0)
     flags |= FLAG_FP_ARGUMENTS;
 
-#if defined(POWERPC_DARWIN64)
+#ଯଦି defined(POWERPC_DARWIN64)
   /* Space to image the FPR registers, if needed - which includes when they might be
      used in a struct return.  */
-  if (fparg_count != 0 
+  ଯଦି (fparg_ଗଣନା != 0 
       || ((flags & FLAG_RETURNS_STRUCT)
 	   && (flags & FLAG_RETURNS_FP)))
-    bytes += NUM_FPR_ARG_REGISTERS * sizeof(double);
-#else
+    bytes += ଅଙ୍କ_FPR_ARG_REGISTERS * ଆକାର(ଦ୍ୱିଗୁଣ);
+#ଅନ୍ୟଥା
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS * sizeof(double);
+  ଯଦି (fparg_ଗଣନା != 0)
+    bytes += ଅଙ୍କ_FPR_ARG_REGISTERS * ଆକାର(ଦ୍ୱିଗୁଣ);
 #endif
 
   /* Stack space.  */
 #ifdef POWERPC64
-  if ((intarg_count + fparg_count) > NUM_GPR_ARG_REGISTERS)
-    bytes += (intarg_count + fparg_count) * sizeof(long);
-#else
-  if ((intarg_count + 2 * fparg_count) > NUM_GPR_ARG_REGISTERS)
-    bytes += (intarg_count + 2 * fparg_count) * sizeof(long);
+  ଯଦି ((intarg_ଗଣନା + fparg_ଗଣନା) > ଅଙ୍କ_GPR_ARG_REGISTERS)
+    bytes += (intarg_ଗଣନା + fparg_ଗଣନା) * ଆକାର(long);
+#ଅନ୍ୟଥା
+  ଯଦି ((intarg_ଗଣନା + 2 * fparg_ଗଣନା) > ଅଙ୍କ_GPR_ARG_REGISTERS)
+    bytes += (intarg_ଗଣନା + 2 * fparg_ଗଣନା) * ଆକାର(long);
 #endif
-  else
-    bytes += NUM_GPR_ARG_REGISTERS * sizeof(long);
+  ଅନ୍ୟଥା
+    bytes += ଅଙ୍କ_GPR_ARG_REGISTERS * ଆକାର(long);
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
   bytes = FFI_ALIGN(bytes, 16) ;
@@ -955,22 +955,22 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   cif->flags = flags;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }
 
-extern void ffi_call_AIX(extended_cif *, long, unsigned, unsigned *,
-			 void (*fn)(void), void (*fn2)(void));
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_call_AIX(extended_cif *, long, unsigned, unsigned *,
+			 ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ), ଶୂନ୍ୟ (*fn2)(ଶୂନ୍ୟ));
 
-#if defined (FFI_GO_CLOSURES)
-extern void ffi_call_go_AIX(extended_cif *, long, unsigned, unsigned *,
-			    void (*fn)(void), void (*fn2)(void), void *closure);
+#ଯଦି defined (FFI_GO_CLOSURES)
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_call_go_AIX(extended_cif *, long, unsigned, unsigned *,
+			    ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ), ଶୂନ୍ୟ (*fn2)(ଶୂନ୍ୟ), ଶୂନ୍ୟ *closure);
 #endif
 
-extern void ffi_call_DARWIN(extended_cif *, long, unsigned, unsigned *,
-			    void (*fn)(void), void (*fn2)(void), ffi_type*);
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_call_DARWIN(extended_cif *, long, unsigned, unsigned *,
+			    ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ), ଶୂନ୍ୟ (*fn2)(ଶୂନ୍ୟ), ffi_type*);
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ଶୂନ୍ୟ
+ffi_call (ffi_cif *cif, ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ), ଶୂନ୍ୟ *rvalue, ଶୂନ୍ୟ **avalue)
 {
   extended_cif ecif;
 
@@ -980,34 +980,34 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if ((rvalue == NULL) &&
+  ଯଦି ((rvalue == ଖାଲି) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  ଅନ୍ୟଥା
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ବାଛ (cif->abi)
     {
-    case FFI_AIX:
+    ସ୍ଥିତି FFI_AIX:
       ffi_call_AIX(&ecif, -(long)cif->bytes, cif->flags, ecif.rvalue, fn,
 		   FFI_FN(ffi_prep_args));
-      break;
-    case FFI_DARWIN:
+      ଭାଙ୍ଗ;
+    ସ୍ଥିତି FFI_DARWIN:
       ffi_call_DARWIN(&ecif, -(long)cif->bytes, cif->flags, ecif.rvalue, fn,
 		      FFI_FN(ffi_prep_args), cif->rtype);
-      break;
-    default:
+      ଭାଙ୍ଗ;
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       FFI_ASSERT(0);
-      break;
+      ଭାଙ୍ଗ;
     }
 }
 
-#if defined (FFI_GO_CLOSURES)
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+#ଯଦି defined (FFI_GO_CLOSURES)
+ଶୂନ୍ୟ
+ffi_call_go (ffi_cif *cif, ଶୂନ୍ୟ (*fn) (ଶୂନ୍ୟ), ଶୂନ୍ୟ *rvalue, ଶୂନ୍ୟ **avalue,
+	     ଶୂନ୍ୟ *closure)
 {
   extended_cif ecif;
 
@@ -1017,36 +1017,36 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if ((rvalue == NULL) &&
+  ଯଦି ((rvalue == ଖାଲି) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  ଅନ୍ୟଥା
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ବାଛ (cif->abi)
     {
-    case FFI_AIX:
+    ସ୍ଥିତି FFI_AIX:
       ffi_call_go_AIX(&ecif, -(long)cif->bytes, cif->flags, ecif.rvalue, fn,
 		      FFI_FN(ffi_prep_args), closure);
-      break;
-    default:
+      ଭାଙ୍ଗ;
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       FFI_ASSERT(0);
-      break;
+      ଭାଙ୍ଗ;
     }
 }
 #endif
 
-static void flush_icache(char *);
-static void flush_range(char *, int);
+ସ୍ଥିର ଶୂନ୍ୟ flush_icache(ଅକ୍ଷର *);
+ସ୍ଥିର ଶୂନ୍ୟ flush_range(ଅକ୍ଷର *, ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
 
 /* The layout of a function descriptor.  A C function pointer really
    points to one of these.  */
 
-typedef struct aix_fd_struct {
-  void *code_pointer;
-  void *toc;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ସଂରଚନା aix_fd_struct {
+  ଶୂନ୍ୟ *code_pointer;
+  ଶୂନ୍ୟ *toc;
 } aix_fd;
 
 /* here I'd like to add the stack frame layout we use in darwin_closure.S
@@ -1095,22 +1095,22 @@ typedef struct aix_fd_struct {
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ଶୂନ୍ୟ (*fun)(ffi_cif*, ଶୂନ୍ୟ*, ଶୂନ୍ୟ**, ଶୂନ୍ୟ*),
+		      ଶୂନ୍ୟ *user_data,
+		      ଶୂନ୍ୟ *codeloc)
 {
-  unsigned int *tramp;
-  struct ffi_aix_trampoline_struct *tramp_aix;
+  unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *tramp;
+  ସଂରଚନା ffi_aix_trampoline_struct *tramp_aix;
   aix_fd *fd;
 
-  switch (cif->abi)
+  ବାଛ (cif->abi)
     {
-      case FFI_DARWIN:
+      ସ୍ଥିତି FFI_DARWIN:
 
 	FFI_ASSERT (cif->abi == FFI_DARWIN);
 
-	tramp = (unsigned int *) &closure->tramp[0];
-#if defined(POWERPC_DARWIN64)
+	tramp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) &closure->tramp[0];
+#ଯଦି defined(POWERPC_DARWIN64)
 	tramp[0] = 0x7c0802a6;  /*   mflr    r0  */
 	tramp[1] = 0x429f0015;  /*   bcl-    20,4*cr7+so,  +0x18 (L1)  */
 	/* We put the addresses here.  */
@@ -1123,7 +1123,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
 	*((unsigned long *)&tramp[2]) = (unsigned long) ffi_closure_ASM; /* function  */
 	*((unsigned long *)&tramp[4]) = (unsigned long) codeloc; /* context  */
-#else
+#ଅନ୍ୟଥା
 	tramp[0] = 0x7c0802a6;  /*   mflr    r0  */
 	tramp[1] = 0x429f000d;  /*   bcl-    20,4*cr7+so,0x10  */
 	tramp[4] = 0x7d6802a6;  /*   mflr    r11  */
@@ -1142,12 +1142,12 @@ ffi_prep_closure_loc (ffi_closure* closure,
 	/* Flush the icache. Only necessary on Darwin.  */
 	flush_range(codeloc, FFI_TRAMPOLINE_SIZE);
 
-	break;
+	ଭାଙ୍ଗ;
 
-    case FFI_AIX:
+    ସ୍ଥିତି FFI_AIX:
 
-      tramp_aix = (struct ffi_aix_trampoline_struct *) (closure->tramp);
-      fd = (aix_fd *)(void *)ffi_closure_ASM;
+      tramp_aix = (ସଂରଚନା ffi_aix_trampoline_struct *) (closure->tramp);
+      fd = (aix_fd *)(ଶୂନ୍ୟ *)ffi_closure_ASM;
 
       FFI_ASSERT (cif->abi == FFI_AIX);
 
@@ -1157,46 +1157,46 @@ ffi_prep_closure_loc (ffi_closure* closure,
       closure->cif = cif;
       closure->fun = fun;
       closure->user_data = user_data;
-      break;
+      ଭାଙ୍ଗ;
 
-    default:
-      return FFI_BAD_ABI;
-      break;
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+      ଫେରନ୍ତୁ FFI_BAD_ABI;
+      ଭାଙ୍ଗ;
     }
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }
 
-#if defined (FFI_GO_CLOSURES)
+#ଯଦି defined (FFI_GO_CLOSURES)
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure,
 		     ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     ଶୂନ୍ୟ (*fun)(ffi_cif*, ଶୂନ୍ୟ*, ଶୂନ୍ୟ**, ଶୂନ୍ୟ*))
 {
-  switch (cif->abi)
+  ବାଛ (cif->abi)
     {
-      case FFI_AIX:
+      ସ୍ଥିତି FFI_AIX:
 
         FFI_ASSERT (cif->abi == FFI_AIX);
 
-        closure->tramp = (void *)ffi_go_closure_ASM;
+        closure->tramp = (ଶୂନ୍ୟ *)ffi_go_closure_ASM;
         closure->cif = cif;
         closure->fun = fun;
-        return FFI_OK;
+        ଫେରନ୍ତୁ FFI_OK;
       
       // For now, ffi_prep_go_closure is only implemented for AIX, not for Darwin
-      default:
-        return FFI_BAD_ABI;
-        break;
+      ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+        ଫେରନ୍ତୁ FFI_BAD_ABI;
+        ଭାଙ୍ଗ;
     }
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }
 #endif
 
-static void
-flush_icache(char *addr)
+ସ୍ଥିର ଶୂନ୍ୟ
+flush_icache(ଅକ୍ଷର *addr)
 {
 #ifndef _AIX
-  __asm__ volatile (
+  __asm__ ଅସ୍ଥିର (
 		"dcbf 0,%0\n"
 		"\tsync\n"
 		"\ticbi 0,%0\n"
@@ -1206,29 +1206,29 @@ flush_icache(char *addr)
 #endif
 }
 
-static void
-flush_range(char * addr1, int size)
+ସ୍ଥିର ଶୂନ୍ୟ
+flush_range(ଅକ୍ଷର * addr1, ପୂର୍ଣ୍ଣସଂଖ୍ୟା size)
 {
-#define MIN_LINE_SIZE 32
-  int i;
-  for (i = 0; i < size; i += MIN_LINE_SIZE)
+#define MIN_ଧାଡ଼ି_SIZE 32
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ପାଇଁ (i = 0; i < size; i += MIN_ଧାଡ଼ି_SIZE)
     flush_icache(addr1+i);
   flush_icache(addr1+size-1);
 }
 
-typedef union
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ସଂଘ
 {
-  float f;
-  double d;
+  ଦଶମିକ f;
+  ଦ୍ୱିଗୁଣ d;
 } ffi_dblfl;
 
-int
-ffi_closure_helper_DARWIN (ffi_closure *, void *,
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ffi_closure_helper_DARWIN (ffi_closure *, ଶୂନ୍ୟ *,
 			   unsigned long *, ffi_dblfl *);
 
-#if defined (FFI_GO_CLOSURES)
-int
-ffi_go_closure_helper_DARWIN (ffi_go_closure*, void *,
+#ଯଦି defined (FFI_GO_CLOSURES)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ffi_go_closure_helper_DARWIN (ffi_go_closure*, ଶୂନ୍ୟ *,
 			      unsigned long *, ffi_dblfl *);
 #endif
 
@@ -1239,63 +1239,63 @@ ffi_go_closure_helper_DARWIN (ffi_go_closure*, void *,
    up space for a return value, ffi_closure_ASM invokes the
    following helper function to do most of the work.  */
 
-static int
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 ffi_closure_helper_common (ffi_cif* cif,
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data, void *rvalue,
+			   ଶୂନ୍ୟ (*fun)(ffi_cif*, ଶୂନ୍ୟ*, ଶୂନ୍ୟ**, ଶୂନ୍ୟ*),
+			   ଶୂନ୍ୟ *user_data, ଶୂନ୍ୟ *rvalue,
 			   unsigned long *pgr, ffi_dblfl *pfr)
 {
   /* rvalue is the pointer to space for return value in closure assembly
      pgr is the pointer to where r3-r10 are stored in ffi_closure_ASM
      pfr is the pointer to where f1-f13 are stored in ffi_closure_ASM.  */
 
-  typedef double ldbits[2];
+  ପ୍ରକାରବ୍ୟାଖ୍ୟା ଦ୍ୱିଗୁଣ ldbits[2];
 
-  union ldu
+  ସଂଘ ldu
   {
     ldbits lb;
-    long double ld;
+    long ଦ୍ୱିଗୁଣ ld;
   };
 
-  void **          avalue;
+  ଶୂନ୍ୟ **          avalue;
   ffi_type **      arg_types;
   long             i, avn;
-  ffi_dblfl *      end_pfr = pfr + NUM_FPR_ARG_REGISTERS;
+  ffi_dblfl *      end_pfr = pfr + ଅଙ୍କ_FPR_ARG_REGISTERS;
   unsigned         size_al;
-  int              struct_ret_by_value = 0;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା              struct_ret_by_ମୂଲ୍ୟ = 0;
   /* When a struct is returned by value, ffi_closure_ASM's jump-table
      dispatch carries only a small integer return code (see PPC_LD_* above),
      with no room for cif->rtype.  We hand cif->rtype back in the first
      parameter-save slot -- which is dead by the time we return -- for the
      PPC_LD_STRUCT fragment in darwin_closure.S to recover.  */
   unsigned long *  pgr0 = pgr;
-#if defined(POWERPC_DARWIN64)
+#ଯଦି defined(POWERPC_DARWIN64)
   unsigned 	   fpsused = 0;
 #endif
 
-  avalue = alloca (cif->nargs * sizeof(void *));
+  avalue = alloca (cif->nargs * ଆକାର(ଶୂନ୍ୟ *));
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  ଯଦି (cif->rtype->type == FFI_TYPE_STRUCT)
     {
-#if defined(POWERPC_DARWIN64)
-      if (!darwin64_struct_ret_by_value_p (cif->rtype))
+#ଯଦି defined(POWERPC_DARWIN64)
+      ଯଦି (!darwin64_struct_ret_by_ମୂଲ୍ୟ_p (cif->rtype))
 	{
     	  /* Won't fit into the regs - return by ref.  */
-	  rvalue = (void *) *pgr;
+	  rvalue = (ଶୂନ୍ୟ *) *pgr;
 	  pgr++;
 	}
-      else
-	struct_ret_by_value = 1;
-#elif defined(DARWIN_PPC)
-      if (cif->rtype->size > 4)
+      ଅନ୍ୟଥା
+	struct_ret_by_ମୂଲ୍ୟ = 1;
+#ନଚେତଯଦି defined(DARWIN_PPC)
+      ଯଦି (cif->rtype->size > 4)
 	{
-	  rvalue = (void *) *pgr;
+	  rvalue = (ଶୂନ୍ୟ *) *pgr;
 	  pgr++;
 	}
-      else
-	struct_ret_by_value = 1;
-#else /* assume we return by ref.  */
-      rvalue = (void *) *pgr;
+      ଅନ୍ୟଥା
+	struct_ret_by_ମୂଲ୍ୟ = 1;
+#ଅନ୍ୟଥା /* assume we return by ref.  */
+      rvalue = (ଶୂନ୍ୟ *) *pgr;
       pgr++;
 #endif
     }
@@ -1305,148 +1305,148 @@ ffi_closure_helper_common (ffi_cif* cif,
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn)
+  ଯେତେବେଳେ (i < avn)
     {
-      switch (arg_types[i]->type)
+      ବାଛ (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-#if  defined(POWERPC64)
-	  avalue[i] = (char *) pgr + 7;
-#else
-	  avalue[i] = (char *) pgr + 3;
+	ସ୍ଥିତି FFI_TYPE_SINT8:
+	ସ୍ଥିତି FFI_TYPE_UINT8:
+#ଯଦି  defined(POWERPC64)
+	  avalue[i] = (ଅକ୍ଷର *) pgr + 7;
+#ଅନ୍ୟଥା
+	  avalue[i] = (ଅକ୍ଷର *) pgr + 3;
 #endif
 	  pgr++;
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-#if  defined(POWERPC64)
-	  avalue[i] = (char *) pgr + 6;
-#else
-	  avalue[i] = (char *) pgr + 2;
+	ସ୍ଥିତି FFI_TYPE_SINT16:
+	ସ୍ଥିତି FFI_TYPE_UINT16:
+#ଯଦି  defined(POWERPC64)
+	  avalue[i] = (ଅକ୍ଷର *) pgr + 6;
+#ଅନ୍ୟଥା
+	  avalue[i] = (ଅକ୍ଷର *) pgr + 2;
 #endif
 	  pgr++;
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-#if  defined(POWERPC64)
-	  avalue[i] = (char *) pgr + 4;
-#else
-	case FFI_TYPE_POINTER:
+	ସ୍ଥିତି FFI_TYPE_SINT32:
+	ସ୍ଥିତି FFI_TYPE_UINT32:
+#ଯଦି  defined(POWERPC64)
+	  avalue[i] = (ଅକ୍ଷର *) pgr + 4;
+#ଅନ୍ୟଥା
+	ସ୍ଥିତି FFI_TYPE_POINTER:
 	  avalue[i] = pgr;
 #endif
 	  pgr++;
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_STRUCT:
+	ସ୍ଥିତି FFI_TYPE_STRUCT:
 	  size_al = arg_types[i]->size;
-#if defined(POWERPC_DARWIN64)
-	  pgr = (unsigned long *)FFI_ALIGN((char *)pgr, arg_types[i]->alignment);
-	  if (size_al < 3 || size_al == 4)
+#ଯଦି defined(POWERPC_DARWIN64)
+	  pgr = (unsigned long *)FFI_ALIGN((ଅକ୍ଷର *)pgr, arg_types[i]->alignment);
+	  ଯଦି (size_al < 3 || size_al == 4)
 	    {
-	      avalue[i] = ((char *)pgr)+8-size_al;
-	      if (arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT
-		  && fpsused < NUM_FPR_ARG_REGISTERS)
+	      avalue[i] = ((ଅକ୍ଷର *)pgr)+8-size_al;
+	      ଯଦି (arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT
+		  && fpsused < ଅଙ୍କ_FPR_ARG_REGISTERS)
 		{
-		  *(float *)pgr = (float) *(double *)pfr;
+		  *(ଦଶମିକ *)pgr = (ଦଶମିକ) *(ଦ୍ୱିଗୁଣ *)pfr;
 		  pfr++;
 		  fpsused++;
 		}
 	    }
-	  else 
+	  ଅନ୍ୟଥା 
 	    {
-	      if (size_al != 16)
+	      ଯଦି (size_al != 16)
 		pfr = (ffi_dblfl *) 
-		    darwin64_struct_floats_to_mem (arg_types[i], (char *)pgr,
-						   (double *)pfr, &fpsused);
+		    darwin64_struct_floats_to_mem (arg_types[i], (ଅକ୍ଷର *)pgr,
+						   (ଦ୍ୱିଗୁଣ *)pfr, &fpsused);
 	      avalue[i] = pgr;
 	    }
 	  pgr += (size_al + 7) / 8;
-#else
+#ଅନ୍ୟଥା
 	  /* If the first member of the struct is a double, then align
 	     the struct to double-word.  */
-	  if (arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
+	  ଯଦି (arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
 	    size_al = FFI_ALIGN(arg_types[i]->size, 8);
-#  if defined(POWERPC64)
+#  ଯଦି defined(POWERPC64)
 	  FFI_ASSERT (cif->abi != FFI_DARWIN);
 	  avalue[i] = pgr;
 	  pgr += (size_al + 7) / 8;
-#  else
+#  ଅନ୍ୟଥା
 	  /* Structures that match the basic modes (QI 1 byte, HI 2 bytes,
 	     SI 4 bytes) are aligned as if they were those modes.  */
-	  if (size_al < 3 && cif->abi == FFI_DARWIN)
-	    avalue[i] = (char*) pgr + 4 - size_al;
-	  else
+	  ଯଦି (size_al < 3 && cif->abi == FFI_DARWIN)
+	    avalue[i] = (ଅକ୍ଷର*) pgr + 4 - size_al;
+	  ଅନ୍ୟଥା
 	    avalue[i] = pgr;
 	  pgr += (size_al + 3) / 4;
 #  endif
 #endif
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-#if  defined(POWERPC64)
-	case FFI_TYPE_POINTER:
+	ସ୍ଥିତି FFI_TYPE_SINT64:
+	ସ୍ଥିତି FFI_TYPE_UINT64:
+#ଯଦି  defined(POWERPC64)
+	ସ୍ଥିତି FFI_TYPE_POINTER:
 	  avalue[i] = pgr;
 	  pgr++;
-	  break;
-#else
+	  ଭାଙ୍ଗ;
+#ଅନ୍ୟଥା
 	  /* Long long ints are passed in two gpr's.  */
 	  avalue[i] = pgr;
 	  pgr += 2;
-	  break;
+	  ଭାଙ୍ଗ;
 #endif
 
-	case FFI_TYPE_FLOAT:
+	ସ୍ଥିତି FFI_TYPE_FLOAT:
 	  /* A float value consumes a GPR.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr < end_pfr)
+	  ଯଦି (pfr < end_pfr)
 	    {
-	      double temp = pfr->d;
-	      pfr->f = (float) temp;
+	      ଦ୍ୱିଗୁଣ temp = pfr->d;
+	      pfr->f = (ଦଶମିକ) temp;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  ଅନ୍ୟଥା
 	    {
 	      avalue[i] = pgr;
 	    }
 	  pgr++;
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_DOUBLE:
+	ସ୍ଥିତି FFI_TYPE_DOUBLE:
 	  /* A double value consumes two GPRs.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr < end_pfr)
+	  ଯଦି (pfr < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  ଅନ୍ୟଥା
 	    {
 	      avalue[i] = pgr;
 	    }
 #ifdef POWERPC64
 	  pgr++;
-#else
+#ଅନ୍ୟଥା
 	  pgr += 2;
 #endif
-	  break;
+	  ଭାଙ୍ଗ;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ଯଦି FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 
-	case FFI_TYPE_LONGDOUBLE:
+	ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
 #ifdef POWERPC64
-	  if (pfr + 1 < end_pfr)
+	  ଯଦି (pfr + 1 < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr += 2;
 	    }
-	  else
+	  ଅନ୍ୟଥା
 	    {
-	      if (pfr < end_pfr)
+	      ଯଦି (pfr < end_pfr)
 		{
 		  *pgr = *(unsigned long *) pfr;
 		  pfr++;
@@ -1454,10 +1454,10 @@ ffi_closure_helper_common (ffi_cif* cif,
 	      avalue[i] = pgr;
 	    }
 	  pgr += 2;
-#else  /* POWERPC64 */
+#ଅନ୍ୟଥା  /* POWERPC64 */
 	  /* A long double value consumes four GPRs and two FPRs.
 	     There are 13 64bit floating point registers.  */
-	  if (pfr + 1 < end_pfr)
+	  ଯଦି (pfr + 1 < end_pfr)
 	    {
 	      avalue[i] = pfr;
 	      pfr += 2;
@@ -1465,23 +1465,23 @@ ffi_closure_helper_common (ffi_cif* cif,
 	  /* Here we have the situation where one part of the long double
 	     is stored in fpr13 and the other part is already on the stack.
 	     We use a union to pass the long double to avalue[i].  */
-	  else if (pfr + 1 == end_pfr)
+	  ଅନ୍ୟଥା ଯଦି (pfr + 1 == end_pfr)
 	    {
-	      union ldu temp_ld;
-	      memcpy (&temp_ld.lb[0], pfr, sizeof(ldbits));
-	      memcpy (&temp_ld.lb[1], pgr + 2, sizeof(ldbits));
+	      ସଂଘ ldu temp_ld;
+	      memcpy (&temp_ld.lb[0], pfr, ଆକାର(ldbits));
+	      memcpy (&temp_ld.lb[1], pgr + 2, ଆକାର(ldbits));
 	      avalue[i] = &temp_ld.ld;
 	      pfr++;
 	    }
-	  else
+	  ଅନ୍ୟଥା
 	    {
 	      avalue[i] = pgr;
 	    }
 	  pgr += 4;
 #endif  /* POWERPC64 */
-	  break;
+	  ଭାଙ୍ଗ;
 #endif
-	default:
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	  FFI_ASSERT(0);
 	}
       i++;
@@ -1490,66 +1490,66 @@ ffi_closure_helper_common (ffi_cif* cif,
   (fun) (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_ASM to perform return type promotions.  */
-  switch (cif->rtype->type)
+  ବାଛ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
-    case FFI_TYPE_STRUCT:
+    ସ୍ଥିତି FFI_TYPE_VOID:
+      ଫେରନ୍ତୁ PPC_LD_NONE;
+    ସ୍ଥିତି FFI_TYPE_STRUCT:
       /* A by-reference struct return needs nothing further here: the result
 	 was written straight to the caller's buffer.  A by-value struct
 	 return is loaded into registers by darwin_closure.S, which needs
 	 cif->rtype -- hand it back in the first parameter-save slot.  */
-      if (struct_ret_by_value)
+      ଯଦି (struct_ret_by_ମୂଲ୍ୟ)
 	{
 	  *pgr0 = (unsigned long) cif->rtype;
-	  return PPC_LD_STRUCT;
+	  ଫେରନ୍ତୁ PPC_LD_STRUCT;
 	}
-      return PPC_LD_NONE;
-    case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
-    case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      return PPC_LD_F128;
+      ଫେରନ୍ତୁ PPC_LD_NONE;
+    ସ୍ଥିତି FFI_TYPE_FLOAT:
+      ଫେରନ୍ତୁ PPC_LD_F32;
+    ସ୍ଥିତି FFI_TYPE_DOUBLE:
+      ଫେରନ୍ତୁ PPC_LD_F64;
+#ଯଦି FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+    ସ୍ଥିତି FFI_TYPE_LONGDOUBLE:
+      ଫେରନ୍ତୁ PPC_LD_F128;
 #endif
-    case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
-    case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
-    case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
-    case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
-    case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
-    case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
-    default:
+    ସ୍ଥିତି FFI_TYPE_UINT8:
+      ଫେରନ୍ତୁ PPC_LD_U8;
+    ସ୍ଥିତି FFI_TYPE_SINT8:
+      ଫେରନ୍ତୁ PPC_LD_S8;
+    ସ୍ଥିତି FFI_TYPE_UINT16:
+      ଫେରନ୍ତୁ PPC_LD_U16;
+    ସ୍ଥିତି FFI_TYPE_SINT16:
+      ଫେରନ୍ତୁ PPC_LD_S16;
+    ସ୍ଥିତି FFI_TYPE_UINT32:
+      ଫେରନ୍ତୁ PPC_LD_U32;
+    ସ୍ଥିତି FFI_TYPE_INT:
+    ସ୍ଥିତି FFI_TYPE_SINT32:
+      ଫେରନ୍ତୁ PPC_LD_S32;
+    ସ୍ଥିତି FFI_TYPE_POINTER:
+      ଫେରନ୍ତୁ PPC_LD_PTR;
+    ସ୍ଥିତି FFI_TYPE_UINT64:
+    ସ୍ଥିତି FFI_TYPE_SINT64:
+      ଫେରନ୍ତୁ PPC_LD_I64;
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       abort();
     }
 }
 
-int
-ffi_closure_helper_DARWIN (ffi_closure *closure, void *rvalue,
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ffi_closure_helper_DARWIN (ffi_closure *closure, ଶୂନ୍ୟ *rvalue,
 			   unsigned long *pgr, ffi_dblfl *pfr)
 {
-  return ffi_closure_helper_common (closure->cif, closure->fun,
+  ଫେରନ୍ତୁ ffi_closure_helper_common (closure->cif, closure->fun,
 				    closure->user_data, rvalue, pgr, pfr);
 }
 
-#if defined (FFI_GO_CLOSURES)
-int
-ffi_go_closure_helper_DARWIN (ffi_go_closure *closure, void *rvalue,
+#ଯଦି defined (FFI_GO_CLOSURES)
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ffi_go_closure_helper_DARWIN (ffi_go_closure *closure, ଶୂନ୍ୟ *rvalue,
 			      unsigned long *pgr, ffi_dblfl *pfr)
 {
-  return ffi_closure_helper_common (closure->cif, closure->fun,
+  ଫେରନ୍ତୁ ffi_closure_helper_common (closure->cif, closure->fun,
 				    closure, rvalue, pgr, pfr);
 }
 #endif

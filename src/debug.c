@@ -22,14 +22,14 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdio.h>
+#ଅନ୍ତର୍ଭାଵ <ffi.h>
+#ଅନ୍ତର୍ଭାଵ <ffi_common.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <stdio.h>
 
 /* General debugging routines */
 
-void ffi_stop_here(void)
+ଶୂନ୍ୟ ffi_stop_here(ଶୂନ୍ୟ)
 {
   /* This function is only useful for debugging purposes.
      Place a breakpoint on ffi_stop_here to be notified of
@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN ଶୂନ୍ୟ ffi_assert(ଅଚଳ ଅକ୍ଷର *ପଦସମଷ୍ଟି, ଅଚଳ ଅକ୍ଷର *file, ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଧାଡ଼ି)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
+  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", ପଦସମଷ୍ଟି, file, ଧାଡ଼ି);
   ffi_stop_here();
   abort();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+ଶୂନ୍ୟ ffi_type_test(ffi_type *a, ଅଚଳ ଅକ୍ଷର *file, ପୂର୍ଣ୍ଣସଂଖ୍ୟା ଧାଡ଼ି)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != ଖାଲି, file, ଧାଡ଼ି);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, ଧାଡ଼ି);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, ଧାଡ଼ି);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, ଧାଡ଼ି);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
 		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		|| a->elements != ଖାଲି, file, ଧାଡ଼ି);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
-		|| (a->elements != NULL
-		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		|| (a->elements != ଖାଲି
+		    && a->elements[0] != ଖାଲି && a->elements[1] == ଖାଲି),
+		file, ଧାଡ଼ି);
 
 }

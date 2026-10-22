@@ -25,104 +25,104 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ଅନ୍ତର୍ଭାଵ <ffi.h>
+#ଅନ୍ତର୍ଭାଵ <ffi_common.h>
 
-#include <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+ଶୂନ୍ୟ ffi_prep_args(ଅକ୍ଷର *ଗଦା, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା tmp;
+  unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା avn;
+  ଶୂନ୍ୟ **p_argv;
+  ଅକ୍ଷର *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = ଗଦା;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  ଯଦି (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(ଶୂନ୍ୟ **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  ପାଇଁ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      ଯଦି (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (ଅକ୍ଷର *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      ଯଦି (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  ଯଦି (z < ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା))
 	    {
-	      z = sizeof (int);
+	      z = ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
 
-	      switch ((*p_arg)->type)
+	      ବାଛ ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		ସ୍ଥିତି FFI_TYPE_SINT8:
+		  *(signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା)*(SINT8 *)(* p_argv);
+		  ଭାଙ୍ଗ;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		ସ୍ଥିତି FFI_TYPE_UINT8:
+		  *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)*(UINT8 *)(* p_argv);
+		  ଭାଙ୍ଗ;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		ସ୍ଥିତି FFI_TYPE_SINT16:
+		  *(signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା)*(SINT16 *)(* p_argv);
+		  ଭାଙ୍ଗ;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		ସ୍ଥିତି FFI_TYPE_UINT16:
+		  *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)*(UINT16 *)(* p_argv);
+		  ଭାଙ୍ଗ;
 
-		case FFI_TYPE_STRUCT:
+		ସ୍ଥିତି FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  ଯଦି ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  ଅନ୍ୟଥା
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
+		  ଭାଙ୍ଗ;
 
-		default:
+		ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  ଅନ୍ୟଥା ଯଦି (z == ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  ଅନ୍ୟଥା
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      ଯଦି ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  ଯଦି (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)(ଶୂନ୍ୟ *)(* p_argv);
+		      z = ଆକାର(ଶୂନ୍ୟ *);
 		    }
-		  else
+		  ଅନ୍ୟଥା
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      ଅନ୍ୟଥା
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  ଫେରନ୍ତୁ;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -141,74 +141,74 @@ ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  ବାଛ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ସ୍ଥିତି FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      ଭାଙ୍ଗ;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    ସ୍ଥିତି FFI_TYPE_STRUCT:
+      ଯଦି (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      ଅନ୍ୟଥା ଯଦି (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      ଅନ୍ୟଥା
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      ଭାଙ୍ଗ;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    ସ୍ଥିତି FFI_TYPE_SINT64:
+    ସ୍ଥିତି FFI_TYPE_UINT64:
+    ସ୍ଥିତି FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      ଭାଙ୍ଗ;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    ସ୍ଥିତି FFI_TYPE_FLOAT:
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ଭାଙ୍ଗ;
     }
 
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_call_SYSV(ଶୂନ୍ୟ (*)(ଅକ୍ଷର *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ଶୂନ୍ୟ ffi_call(ffi_cif *cif, ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ), ଶୂନ୍ୟ *rvalue, ଶୂନ୍ୟ **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  ଶୂନ୍ୟ **avalue_copy = ଖାଲି;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  ଯଦି ((rvalue == ଖାଲି) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  ଅନ୍ୟଥା
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ପାଇଁ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      ପୂର୍ଣ୍ଣସଂଖ୍ୟା size = at->size;
+      ଯଦି (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ଅକ୍ଷର *argcopy = alloca (size);
+          ଯଦି (avalue_copy == ଖାଲି)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * ଆକାର (ଶୂନ୍ୟ *));
+              memcpy (avalue_copy, avalue, nargs * ଆକାର (ଶୂନ୍ୟ *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -217,41 +217,41 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  ବାଛ (cif->abi)
     {
-    case FFI_SYSV:
+    ସ୍ଥିତି FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      ଯଦି (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  ପୂର୍ଣ୍ଣସଂଖ୍ୟା size = cif->rtype->size;
+	  ପୂର୍ଣ୍ଣସଂଖ୍ୟା align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  ଯଦି (size < 4)
 	    {
-	      if (align == 1)
+	      ଯଦି (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  ଅନ୍ୟଥା ଯଦି (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      ଯଦି (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      ଅନ୍ୟଥା ଯଦି (align == 2)
 		{
-		  if (size & 1)
+		  ଯଦି (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  ଯଦି (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      ଭାଙ୍ଗ;
 
-    default:
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       FFI_ASSERT(0);
-      break;
+      ଭାଙ୍ଗ;
     }
 }

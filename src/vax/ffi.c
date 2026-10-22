@@ -28,11 +28,11 @@
  * be implemented in C.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ଅନ୍ତର୍ଭାଵ <ffi.h>
+#ଅନ୍ତର୍ଭାଵ <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <unistd.h>
 
 #define CIF_FLAGS_CHAR		1	/* for struct only */
 #define CIF_FLAGS_SHORT		2	/* for struct only */
@@ -43,124 +43,124 @@
  * Foreign Function Interface API
  */
 
-void ffi_call_elfbsd (extended_cif *, unsigned, unsigned, void *,
-		       void (*) ());
-void *ffi_prep_args (extended_cif *ecif, void *stack);
+ଶୂନ୍ୟ ffi_call_elfbsd (extended_cif *, unsigned, unsigned, ଶୂନ୍ୟ *,
+		       ଶୂନ୍ୟ (*) ());
+ଶୂନ୍ୟ *ffi_prep_args (extended_cif *ecif, ଶୂନ୍ୟ *ଗଦା);
 
-void *
-ffi_prep_args (extended_cif *ecif, void *stack)
+ଶୂନ୍ୟ *
+ffi_prep_args (extended_cif *ecif, ଶୂନ୍ୟ *ଗଦା)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ଶୂନ୍ୟ **p_argv;
+  ଅକ୍ଷର *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  ଶୂନ୍ୟ *struct_ମୂଲ୍ୟ_ptr;
 
-  argp = stack;
+  argp = ଗଦା;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  ଯଦି (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_ମୂଲ୍ୟ_ptr = ecif->rvalue;
+  ଅନ୍ୟଥା
+    struct_ମୂଲ୍ୟ_ptr = ଖାଲି;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  ପାଇଁ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof (int))
+      ଯଦି (z < ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା))
 	{
-	  switch ((*p_arg)->type)
+	  ବାଛ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    ସ୍ଥିତି FFI_TYPE_SINT8:
+	      *(signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା) *(SINT8 *) *p_argv;
+	      ଭାଙ୍ଗ;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    ସ୍ଥିତି FFI_TYPE_UINT8:
+	      *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା) *(UINT8 *) *p_argv;
+	      ଭାଙ୍ଗ;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    ସ୍ଥିତି FFI_TYPE_SINT16:
+	      *(signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (signed ପୂର୍ଣ୍ଣସଂଖ୍ୟା) *(SINT16 *) *p_argv;
+	      ଭାଙ୍ଗ;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    ସ୍ଥିତି FFI_TYPE_UINT16:
+	      *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) argp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା) *(UINT16 *) *p_argv;
+	      ଭାଙ୍ଗ;
 
-	    case FFI_TYPE_STRUCT:
+	    ସ୍ଥିତି FFI_TYPE_STRUCT:
 	      memcpy (argp, *p_argv, z);
-	      break;
+	      ଭାଙ୍ଗ;
 
-	    default:
+	    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା);
 	}
-      else
+      ଅନ୍ୟଥା
 	{
 	  memcpy (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  ଯଦି ((ଆକାର(ପୂର୍ଣ୍ଣସଂଖ୍ୟା) - 1) & z)
+	    z = FFI_ALIGN(z, ଆକାର(ପୂର୍ଣ୍ଣସଂଖ୍ୟା));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  ଫେରନ୍ତୁ struct_ମୂଲ୍ୟ_ptr;
 }
 
 ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ବାଛ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ସ୍ଥିତି FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      ଭାଙ୍ଗ;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    ସ୍ଥିତି FFI_TYPE_STRUCT:
+      ଯଦି (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
 	  cif->rtype->elements[1])
 	{
 	  cif->flags = 0;
-	  break;
+	  ଭାଙ୍ଗ;
 	}
 
-      if (cif->rtype->size == sizeof (char))
+      ଯଦି (cif->rtype->size == ଆକାର (ଅକ୍ଷର))
 	cif->flags = CIF_FLAGS_CHAR;
-      else if (cif->rtype->size == sizeof (short))
+      ଅନ୍ୟଥା ଯଦି (cif->rtype->size == ଆକାର (short))
 	cif->flags = CIF_FLAGS_SHORT;
-      else if (cif->rtype->size == sizeof (int))
+      ଅନ୍ୟଥା ଯଦି (cif->rtype->size == ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା))
 	cif->flags = CIF_FLAGS_INT;
-      else if (cif->rtype->size == 2 * sizeof (int))
+      ଅନ୍ୟଥା ଯଦି (cif->rtype->size == 2 * ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା))
 	cif->flags = CIF_FLAGS_DINT;
-      else
+      ଅନ୍ୟଥା
 	cif->flags = 0;
-      break;
+      ଭାଙ୍ଗ;
 
-    default:
-      if (cif->rtype->size <= sizeof (int))
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
+      ଯଦି (cif->rtype->size <= ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      ଅନ୍ୟଥା
 	cif->flags = CIF_FLAGS_DINT;
-      break;
+      ଭାଙ୍ଗ;
     }
 
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+ଶୂନ୍ୟ
+ffi_call (ffi_cif *cif, ଶୂନ୍ୟ (*fn) (), ଶୂନ୍ୟ *rvalue, ଶୂନ୍ୟ **avalue)
 {
   extended_cif ecif;
 
@@ -170,22 +170,22 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  ଯଦି (rvalue == ଖାଲି
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->flags == 0)
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  ଅନ୍ୟଥା
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ବାଛ (cif->abi)
     {
-    case FFI_ELFBSD:
+    ସ୍ଥିତି FFI_ELFBSD:
       ffi_call_elfbsd (&ecif, cif->bytes, cif->flags, ecif.rvalue, fn);
-      break;
+      ଭାଙ୍ଗ;
 
-    default:
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       FFI_ASSERT (0);
-      break;
+      ଭାଙ୍ଗ;
     }
 }
 
@@ -193,20 +193,20 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-void ffi_closure_elfbsd (void);
-void ffi_closure_struct_elfbsd (void);
-unsigned int ffi_closure_elfbsd_inner (ffi_closure *, void *, char *);
+ଶୂନ୍ୟ ffi_closure_elfbsd (ଶୂନ୍ୟ);
+ଶୂନ୍ୟ ffi_closure_struct_elfbsd (ଶୂନ୍ୟ);
+unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା ffi_closure_elfbsd_inner (ffi_closure *, ଶୂନ୍ୟ *, ଅକ୍ଷର *);
 
-static void
-ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
+ସ୍ଥିର ଶୂନ୍ୟ
+ffi_prep_closure_elfbsd (ffi_cif *cif, ଶୂନ୍ୟ **avalue, ଅକ୍ଷର *stackp)
 {
-  unsigned int i;
-  void **p_argv;
+  unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ଶୂନ୍ୟ **p_argv;
   ffi_type **p_arg;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  ପାଇଁ (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
 
@@ -214,37 +214,37 @@ ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
       *p_argv = stackp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      ଯଦି ((ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା) - 1) & z)
+	z = FFI_ALIGN(z, ଆକାର (ପୂର୍ଣ୍ଣସଂଖ୍ୟା));
 
       p_argv++;
       stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା
+ffi_closure_elfbsd_inner (ffi_closure *closure, ଶୂନ୍ୟ *resp, ଅକ୍ଷର *ଗଦା)
 {
   ffi_cif *cif;
-  void **arg_area;
+  ଶୂନ୍ୟ **arg_area;
 
   cif = closure->cif;
-  arg_area = (void **) alloca (cif->nargs * sizeof (void *));
+  arg_area = (ଶୂନ୍ୟ **) alloca (cif->nargs * ଆକାର (ଶୂନ୍ୟ *));
 
-  ffi_prep_closure_elfbsd (cif, arg_area, stack);
+  ffi_prep_closure_elfbsd (cif, arg_area, ଗଦା);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  ଫେରନ୍ତୁ cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun)(ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      ଶୂନ୍ୟ (*fun)(ffi_cif *, ଶୂନ୍ୟ *, ଶୂନ୍ୟ **, ଶୂନ୍ୟ *),
+		      ଶୂନ୍ୟ *user_data, ଶୂନ୍ୟ *codeloc)
 {
-  char *tramp = (char *) codeloc;
-  void *fn;
+  ଅକ୍ଷର *tramp = (ଅକ୍ଷର *) codeloc;
+  ଶୂନ୍ୟ *fn;
 
   FFI_ASSERT (cif->abi == FFI_ELFBSD);
 
@@ -253,24 +253,24 @@ ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
   /* movl #closure, r0 */
   tramp[2] = 0xd0;
   tramp[3] = 0x8f;
-  *(unsigned int *)(tramp + 4) = (unsigned int) closure;
+  *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *)(tramp + 4) = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା) closure;
   tramp[8] = 0x50;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  ଯଦି (cif->rtype->type == FFI_TYPE_STRUCT
       && !cif->flags)
     fn = &ffi_closure_struct_elfbsd;
-  else
+  ଅନ୍ୟଥା
     fn = &ffi_closure_elfbsd;
 
   /* jmpl #fn */
   tramp[9] = 0x17;
   tramp[10] = 0xef;
-  *(unsigned int *)(tramp + 11) = (unsigned int)fn + 2 -
-				  (unsigned int)tramp - 9 - 6;
+  *(unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *)(tramp + 11) = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)fn + 2 -
+				  (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା)tramp - 9 - 6;
 
   closure->cif = cif;
   closure->user_data = user_data;
   closure->fun = fun;
 
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }

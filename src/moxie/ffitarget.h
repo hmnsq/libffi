@@ -30,10 +30,10 @@
 /* ---- System specific configurations ----------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା unsigned long          ffi_arg;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ଗଣନା ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_EABI,
   FFI_DEFAULT_ABI = FFI_EABI,

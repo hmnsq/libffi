@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS କିମ୍ବା IMPLIED, INCLUDING BUT ନୁହେଁ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ଏବଂ
+   NONINFRINGEMENT.  ଭିତରେ NO EVENT SHALL THE AUTHORS କିମ୍ବା COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES କିମ୍ବା OTHER LIABILITY,
+   WHETHER ଭିତରେ AN ACTION OF CONTRACT, TORT କିମ୍ବା OTHERWISE, ARISING FROM,
+   OUT OF କିମ୍ବା ଭିତରେ CONNECTION WITH THE SOFTWARE କିମ୍ବା THE USE କିମ୍ବା OTHER
+   DEALINGS ଭିତରେ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -65,7 +65,7 @@ ffi_call_osf:
 
 	stq	$18, 16($17)		# save flags into frame
 	stq	$19, 24($17)		# save rvalue into frame
-	mov	$20, $27		# fn into place for call
+	mov	$20, $27		# fn into place for ଡାକ
 	mov	$21, $1			# closure into static chain
 
 	# Load up all of the (potential) argument registers.

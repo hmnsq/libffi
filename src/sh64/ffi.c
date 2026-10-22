@@ -25,233 +25,233 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ଅନ୍ତର୍ଭାଵ <ffi.h>
+#ଅନ୍ତର୍ଭାଵ <ffi_common.h>
 
-#include <stdlib.h>
+#ଅନ୍ତର୍ଭାଵ <stdlib.h>
 
 #define NGREGARG 8
 #define NFREGARG 12
 
-static int
+ସ୍ଥିର ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 return_type (ffi_type *arg)
 {
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  ଯଦି (arg->type != FFI_TYPE_STRUCT)
+    ଫେରନ୍ତୁ arg->type;
 
   /* gcc uses r2 if the result can be packed in on register.  */
-  if (arg->size <= sizeof (UINT8))
-    return FFI_TYPE_UINT8;
-  else if (arg->size <= sizeof (UINT16))
-    return FFI_TYPE_UINT16;
-  else if (arg->size <= sizeof (UINT32))
-    return FFI_TYPE_UINT32;
-  else if (arg->size <= sizeof (UINT64))
-    return FFI_TYPE_UINT64;
+  ଯଦି (arg->size <= ଆକାର (UINT8))
+    ଫେରନ୍ତୁ FFI_TYPE_UINT8;
+  ଅନ୍ୟଥା ଯଦି (arg->size <= ଆକାର (UINT16))
+    ଫେରନ୍ତୁ FFI_TYPE_UINT16;
+  ଅନ୍ୟଥା ଯଦି (arg->size <= ଆକାର (UINT32))
+    ଫେରନ୍ତୁ FFI_TYPE_UINT32;
+  ଅନ୍ୟଥା ଯଦି (arg->size <= ଆକାର (UINT64))
+    ଫେରନ୍ତୁ FFI_TYPE_UINT64;
 
-  return FFI_TYPE_STRUCT;
+  ଫେରନ୍ତୁ FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+ଶୂନ୍ୟ ffi_prep_args(ଅକ୍ଷର *ଗଦା, extended_cif *ecif)
 {
-  register unsigned int i;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
+  ପଞ୍ଜିକରଣ unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା i;
+  ପଞ୍ଜିକରଣ unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା avn;
+  ପଞ୍ଜିକରଣ ଶୂନ୍ୟ **p_argv;
+  ପଞ୍ଜିକରଣ ଅକ୍ଷର *argp;
+  ପଞ୍ଜିକରଣ ffi_type **p_arg;
 
-  argp = stack;
+  argp = ଗଦା;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  ଯଦି (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
-      *(void **) argp = ecif->rvalue;
-      argp += sizeof (UINT64);
+      *(ଶୂନ୍ୟ **) argp = ecif->rvalue;
+      argp += ଆକାର (UINT64);
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  ପାଇଁ (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
-      int align;
+      ପୂର୍ଣ୍ଣସଂଖ୍ୟା align;
 
       z = (*p_arg)->size;
       align = (*p_arg)->alignment;
-      if (z < sizeof (UINT32))
+      ଯଦି (z < ଆକାର (UINT32))
 	{
-	  switch ((*p_arg)->type)
+	  ବାଛ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
+	    ସ୍ଥିତି FFI_TYPE_SINT8:
 	      *(SINT64 *) argp = (SINT64) *(SINT8 *)(*p_argv);
-	      break;
+	      ଭାଙ୍ଗ;
   
-	    case FFI_TYPE_UINT8:
+	    ସ୍ଥିତି FFI_TYPE_UINT8:
 	      *(UINT64 *) argp = (UINT64) *(UINT8 *)(*p_argv);
-	      break;
+	      ଭାଙ୍ଗ;
   
-	    case FFI_TYPE_SINT16:
+	    ସ୍ଥିତି FFI_TYPE_SINT16:
 	      *(SINT64 *) argp = (SINT64) *(SINT16 *)(*p_argv);
-	      break;
+	      ଭାଙ୍ଗ;
   
-	    case FFI_TYPE_UINT16:
+	    ସ୍ଥିତି FFI_TYPE_UINT16:
 	      *(UINT64 *) argp = (UINT64) *(UINT16 *)(*p_argv);
-	      break;
+	      ଭାଙ୍ଗ;
   
-	    case FFI_TYPE_STRUCT:
+	    ସ୍ଥିତି FFI_TYPE_STRUCT:
 	      memcpy (argp, *p_argv, z);
-	      break;
+	      ଭାଙ୍ଗ;
 
-	    default:
+	    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	      FFI_ASSERT(0);
 	    }
-	  argp += sizeof (UINT64);
+	  argp += ଆକାର (UINT64);
 	}
-      else if (z == sizeof (UINT32) && align == sizeof (UINT32))
+      ଅନ୍ୟଥା ଯଦି (z == ଆକାର (UINT32) && align == ଆକାର (UINT32))
 	{
-	  switch ((*p_arg)->type)
+	  ବାଛ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT32:
+	    ସ୍ଥିତି FFI_TYPE_INT:
+	    ସ୍ଥିତି FFI_TYPE_SINT32:
 	      *(SINT64 *) argp = (SINT64) *(SINT32 *) (*p_argv);
-	      break;
+	      ଭାଙ୍ଗ;
 
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_POINTER:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_STRUCT:
+	    ସ୍ଥିତି FFI_TYPE_FLOAT:
+	    ସ୍ଥିତି FFI_TYPE_POINTER:
+	    ସ୍ଥିତି FFI_TYPE_UINT32:
+	    ସ୍ଥିତି FFI_TYPE_STRUCT:
 	      *(UINT64 *) argp = (UINT64) *(UINT32 *) (*p_argv);
-	      break;
+	      ଭାଙ୍ଗ;
 
-	    default:
+	    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	      FFI_ASSERT(0);
-	      break;
+	      ଭାଙ୍ଗ;
 	    }
-	  argp += sizeof (UINT64);
+	  argp += ଆକାର (UINT64);
 	}
-      else if (z == sizeof (UINT64)
-	       && align == sizeof (UINT64)
-	       && ((int) *p_argv & (sizeof (UINT64) - 1)) == 0)
+      ଅନ୍ୟଥା ଯଦି (z == ଆକାର (UINT64)
+	       && align == ଆକାର (UINT64)
+	       && ((ପୂର୍ଣ୍ଣସଂଖ୍ୟା) *p_argv & (ଆକାର (UINT64) - 1)) == 0)
 	{
 	  *(UINT64 *) argp = *(UINT64 *) (*p_argv);
-	  argp += sizeof (UINT64);
+	  argp += ଆକାର (UINT64);
 	}
-      else
+      ଅନ୍ୟଥା
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  ପୂର୍ଣ୍ଣସଂଖ୍ୟା n = (z + ଆକାର (UINT64) - 1) / ଆକାର (UINT64);
 
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (UINT64);
+	  argp += n * ଆକାର (UINT64);
 	}
     }
 
-  return;
+  ଫେରନ୍ତୁ;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-  int freg;
-  int fpair = -1;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i, j;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା size, type;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା n, m;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା greg;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା freg;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା fpair = -1;
 
   greg = (return_type (cif->rtype) == FFI_TYPE_STRUCT ? 1 : 0);
   freg = 0;
   cif->flags2 = 0;
 
-  for (i = j = 0; i < cif->nargs; i++)
+  ପାଇଁ (i = j = 0; i < cif->nargs; i++)
     {
       type = (cif->arg_types)[i]->type;
-      switch (type)
+      ବାଛ (type)
 	{
-	case FFI_TYPE_FLOAT:
+	ସ୍ଥିତି FFI_TYPE_FLOAT:
 	  greg++;
-	  cif->bytes += sizeof (UINT64) - sizeof (float);
-	  if (freg >= NFREGARG - 1)
-	    continue;
-	  if (fpair < 0)
+	  cif->bytes += ଆକାର (UINT64) - ଆକାର (ଦଶମିକ);
+	  ଯଦି (freg >= NFREGARG - 1)
+	    ଜାରି;
+	  ଯଦି (fpair < 0)
 	    {
 	      fpair = freg;
 	      freg += 2;
 	    }
-	  else
+	  ଅନ୍ୟଥା
 	    fpair = -1;
 	  cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
-	  break;
+	  ଭାଙ୍ଗ;
 
-	case FFI_TYPE_DOUBLE:
-	  if (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
-	    continue;
-	  if ((freg + 1) < NFREGARG)
+	ସ୍ଥିତି FFI_TYPE_DOUBLE:
+	  ଯଦି (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
+	    ଜାରି;
+	  ଯଦି ((freg + 1) < NFREGARG)
 	    {
 	      freg += 2;
 	      cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
 	    }
-	  else
+	  ଅନ୍ୟଥା
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  ଭାଙ୍ଗ;
 	      
-	default:
+	ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	  size = (cif->arg_types)[i]->size;
-	  if (size < sizeof (UINT64))
-	    cif->bytes += sizeof (UINT64) - size;
-	  n = (size + sizeof (UINT64) - 1) / sizeof (UINT64);
-	  if (greg >= NGREGARG)
-	    continue;
-	  else if (greg + n - 1 >= NGREGARG)
+	  ଯଦି (size < ଆକାର (UINT64))
+	    cif->bytes += ଆକାର (UINT64) - size;
+	  n = (size + ଆକାର (UINT64) - 1) / ଆକାର (UINT64);
+	  ଯଦି (greg >= NGREGARG)
+	    ଜାରି;
+	  ଅନ୍ୟଥା ଯଦି (greg + n - 1 >= NGREGARG)
 	    greg = NGREGARG;
-	  else
+	  ଅନ୍ୟଥା
 	    greg += n;
-	  for (m = 0; m < n; m++)
+	  ପାଇଁ (m = 0; m < n; m++)
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  ଭାଙ୍ଗ;
 	}
     }
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ବାଛ (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
+    ସ୍ଥିତି FFI_TYPE_STRUCT:
       cif->flags = return_type (cif->rtype);
-      break;
+      ଭାଙ୍ଗ;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    ସ୍ଥିତି FFI_TYPE_VOID:
+    ସ୍ଥିତି FFI_TYPE_FLOAT:
+    ସ୍ଥିତି FFI_TYPE_DOUBLE:
+    ସ୍ଥିତି FFI_TYPE_SINT64:
+    ସ୍ଥିତି FFI_TYPE_UINT64:
       cif->flags = cif->rtype->type;
-      break;
+      ଭାଙ୍ଗ;
 
-    default:
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ଭାଙ୍ଗ;
     }
 
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }
 
 /*@-declundef@*/
 /*@-exportheader@*/
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), 
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_call_SYSV(ଶୂନ୍ୟ (*)(ଅକ୍ଷର *, extended_cif *), 
 			  /*@out@*/ extended_cif *, 
 			  unsigned, unsigned, long long,
 			  /*@out@*/ unsigned *, 
-			  void (*fn)(void));
+			  ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ));
 /*@=declundef@*/
 /*@=exportheader@*/
 
-void ffi_call(/*@dependent@*/ ffi_cif *cif, 
-	      void (*fn)(void), 
-	      /*@out@*/ void *rvalue, 
-	      /*@dependent@*/ void **avalue)
+ଶୂନ୍ୟ ffi_call(/*@dependent@*/ ffi_cif *cif, 
+	      ଶୂନ୍ୟ (*fn)(ଶୂନ୍ୟ), 
+	      /*@out@*/ ଶୂନ୍ୟ *rvalue, 
+	      /*@dependent@*/ ଶୂନ୍ୟ **avalue)
 {
   extended_cif ecif;
   UINT64 trvalue;
@@ -262,50 +262,50 @@ void ffi_call(/*@dependent@*/ ffi_cif *cif,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  ଯଦି (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  ଅନ୍ୟଥା ଯଦି ((rvalue == ଖାଲି) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  ଅନ୍ୟଥା
     ecif.rvalue = rvalue;
 
-  switch (cif->abi) 
+  ବାଛ (cif->abi) 
     {
-    case FFI_SYSV:
+    ସ୍ଥିତି FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, cif->flags2,
 		    ecif.rvalue, fn);
-      break;
-    default:
+      ଭାଙ୍ଗ;
+    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
       FFI_ASSERT(0);
-      break;
+      ଭାଙ୍ଗ;
     }
 
-  if (rvalue
+  ଯଦି (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     memcpy (rvalue, &trvalue, cif->rtype->size);
 }
 
-extern void ffi_closure_SYSV (void);
-extern void __ic_invalidate (void *line);
+ବାହ୍ୟ ଶୂନ୍ୟ ffi_closure_SYSV (ଶୂନ୍ୟ);
+ବାହ୍ୟ ଶୂନ୍ୟ __ic_invalidate (ଶୂନ୍ୟ *ଧାଡ଼ି);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ଶୂନ୍ୟ (*fun)(ffi_cif*, ଶୂନ୍ୟ*, ଶୂନ୍ୟ**, ଶୂନ୍ୟ*),
+		      ଶୂନ୍ୟ *user_data,
+		      ଶୂନ୍ୟ *codeloc)
 {
-  unsigned int *tramp;
+  unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ଯଦି (cif->abi != FFI_SYSV)
+    ଫେରନ୍ତୁ FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned ପୂର୍ଣ୍ଣସଂଖ୍ୟା *) &closure->tramp[0];
   /* Since ffi_closure is an aligned object, the ffi trampoline is
      called as an SHcompact code.  Sigh.
      SHcompact part:
@@ -316,7 +316,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0x7001c701;
   tramp[1] = 0x0009402b;
-#else
+#ଅନ୍ୟଥା
   tramp[0] = 0xc7017001;
   tramp[1] = 0x402b0009;
 #endif
@@ -332,10 +332,10 @@ ffi_prep_closure_loc (ffi_closure *closure,
   closure->user_data = user_data;
 
   /* Flush the icache.  */
-  __asm__ volatile ("ocbwb %0,0; synco; icbi %1,0; synci" : : "r" (tramp),
+  __asm__ ଅସ୍ଥିର ("ocbwb %0,0; synco; icbi %1,0; synci" : : "r" (tramp),
 		"r"(codeloc));
 
-  return FFI_OK;
+  ଫେରନ୍ତୁ FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -346,28 +346,28 @@ ffi_prep_closure_loc (ffi_closure *closure,
  * following helper function to do most of the work.
  */
 
-int
+ପୂର୍ଣ୍ଣସଂଖ୍ୟା
 ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue, 
 			 UINT64 *pgr, UINT64 *pfr, UINT64 *pst)
 {
-  void **avalue;
+  ଶୂନ୍ୟ **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int greg, freg;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା i, avn;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା greg, freg;
   ffi_cif *cif;
-  int fpair = -1;
+  ପୂର୍ଣ୍ଣସଂଖ୍ୟା fpair = -1;
 
   cif = closure->cif;
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * ଆକାର (ଶୂନ୍ୟ *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (return_type (cif->rtype) == FFI_TYPE_STRUCT)
+  ଯଦି (return_type (cif->rtype) == FFI_TYPE_STRUCT)
     {
       rvalue = (UINT64 *) *pgr;
       greg = 1;
     }
-  else
+  ଅନ୍ୟଥା
     greg = 0;
 
   freg = 0;
@@ -375,86 +375,86 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  ପାଇଁ (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
-      void *p;
+      ଶୂନ୍ୟ *p;
 
       z = (*p_arg)->size;
-      if (z < sizeof (UINT32))
+      ଯଦି (z < ଆକାର (UINT32))
 	{
 	  p = pgr + greg++;
 
-	  switch ((*p_arg)->type)
+	  ବାଛ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_STRUCT:
+	    ସ୍ଥିତି FFI_TYPE_SINT8:
+	    ସ୍ଥିତି FFI_TYPE_UINT8:
+	    ସ୍ଥିତି FFI_TYPE_SINT16:
+	    ସ୍ଥିତି FFI_TYPE_UINT16:
+	    ସ୍ଥିତି FFI_TYPE_STRUCT:
 #ifdef __LITTLE_ENDIAN__
 	      avalue[i] = p;
-#else
-	      avalue[i] = ((char *) p) + sizeof (UINT32) - z;
+#ଅନ୍ୟଥା
+	      avalue[i] = ((ଅକ୍ଷର *) p) + ଆକାର (UINT32) - z;
 #endif
-	      break;
+	      ଭାଙ୍ଗ;
 
-	    default:
+	    ପୂର୍ବନିର୍ଦ୍ଧାରିତ:
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof (UINT32))
+      ଅନ୍ୟଥା ଯଦି (z == ଆକାର (UINT32))
 	{
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+	  ଯଦି ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg < NFREGARG - 1)
+	      ଯଦି (freg < NFREGARG - 1)
 		{
-		  if (fpair >= 0)
+		  ଯଦି (fpair >= 0)
 		    {
 		      avalue[i] = (UINT32 *) pfr + fpair;
 		      fpair = -1;
 		    }
-		  else
+		  ଅନ୍ୟଥା
 		    {
 #ifdef __LITTLE_ENDIAN__
 		      fpair = freg;
 		      avalue[i] = (UINT32 *) pfr + (1 ^ freg);
-#else
+#ଅନ୍ୟଥା
 		      fpair = 1 ^ freg;
 		      avalue[i] = (UINT32 *) pfr + freg;
 #endif
 		      freg += 2;
 		    }
 		}
-	      else
+	      ଅନ୍ୟଥା
 #ifdef __LITTLE_ENDIAN__
 		avalue[i] = pgr + greg;
-#else
+#ଅନ୍ୟଥା
 		avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	    }
-	  else
+	  ଅନ୍ୟଥା
 #ifdef __LITTLE_ENDIAN__
 	    avalue[i] = pgr + greg;
-#else
+#ଅନ୍ୟଥା
 	    avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	  greg++;
 	}
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+      ଅନ୍ୟଥା ଯଦି ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
+	  ଯଦି (freg + 1 >= NFREGARG)
 	    avalue[i] = pgr + greg;
-	  else
+	  ଅନ୍ୟଥା
 	    {
 	      avalue[i] = pfr + (freg >> 1);
 	      freg += 2;
 	    }
 	  greg++;
 	}
-      else
+      ଅନ୍ୟଥା
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  ପୂର୍ଣ୍ଣସଂଖ୍ୟା n = (z + ଆକାର (UINT64) - 1) / ଆକାର (UINT64);
 
 	  avalue[i] = pgr + greg;
 	  greg += n;
@@ -464,6 +464,6 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   (closure->fun) (cif, rvalue, avalue, closure->user_data);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  ଫେରନ୍ତୁ return_type (cif->rtype);
 }
 

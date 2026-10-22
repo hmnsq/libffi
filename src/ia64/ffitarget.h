@@ -33,10 +33,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long long          ffi_arg;
-typedef signed long long            ffi_sarg;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା unsigned long long          ffi_arg;
+ପ୍ରକାରବ୍ୟାଖ୍ୟା signed long long            ffi_sarg;
 
-typedef enum ffi_abi {
+ପ୍ରକାରବ୍ୟାଖ୍ୟା ଗଣନା ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_UNIX,   	/* Linux and all Unix variants use the same conventions	*/
   FFI_LAST_ABI,
