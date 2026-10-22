@@ -25,46 +25,46 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ਨਿਸ਼ਾਨਾ_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LIBFFI_ਨਿਸ਼ਾਨਾ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_H
+#ਗਲਤੀ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ਜੇ_ਅੰਤ
 
-#ifndef __riscv
-#error "libffi was configured for a RISC-V target but this does not appear to be a RISC-V compiler."
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __riscv
+#ਗਲਤੀ "libffi was configured for a RISC-V target but this does not appear to be a RISC-V compiler."
+#ਜੇ_ਅੰਤ
 
-#ifndef LIBFFI_ASM
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef   signed long ffi_sarg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ   ਨਿਸ਼ਾਨੀਵਾਲਾ ਲੰਮਾ ffi_sarg;
 
 /* FFI_UNUSED_NN and riscv_unused are to maintain ABI compatibility with a
    distributed Berkeley patch from 2014, and can be removed at SONAME bump */
-typedef enum ffi_abi {
-    FFI_FIRST_ABI = 0,
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਗਿਣਤੀ ffi_abi {
+    FFI_ਪਹਿਲਾ_ABI = 0,
     FFI_SYSV,
-    FFI_UNUSED_1,
-    FFI_UNUSED_2,
-    FFI_UNUSED_3,
-    FFI_LAST_ABI,
+    FFI_ਅਣਵਰਤਿਆ_1,
+    FFI_ਅਣਵਰਤਿਆ_2,
+    FFI_ਅਣਵਰਤਿਆ_3,
+    FFI_ਆਖਰੀ_ABI,
 
     FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
-#endif /* LIBFFI_ASM */
+#ਜੇ_ਅੰਤ /* LIBFFI_ASM */
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
-#define FFI_EXTRA_CIF_FIELDS unsigned riscv_nfixedargs; unsigned riscv_unused
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#define FFI_TARGET_HAS_INT128
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_CLOSURES 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_GO_CLOSURES 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TRAMPOLINE_ਮਾਪ 24
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_NATIVE_RAW_API 0
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_EXTRA_CIF_FIELDS ਬਿਨਾਨਿਸ਼ਾਨੀ riscv_nfixedargs; ਬਿਨਾਨਿਸ਼ਾਨੀ riscv_ਅਣਵਰਤਿਆ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਨਿਸ਼ਾਨਾ_SPECIFIC_VARIADIC
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਨਿਸ਼ਾਨਾ_HAS_INT128
 
-#endif
+#ਜੇ_ਅੰਤ
 

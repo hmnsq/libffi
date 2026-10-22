@@ -25,21 +25,21 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__x86_64__) || defined(_M_AMD64)
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <tramp.h>
+#ਜੇ defined(__x86_64__) || defined(_M_AMD64)
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdbool.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <tramp.h>
 
-#ifdef X86_WIN64
-#define EFI64(name) name
-#else
-#define EFI64(name) FFI_HIDDEN name##_efi64
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ X86_WIN64
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EFI64(name) name
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EFI64(name) FFI_HIDDEN name##_efi64
+#ਜੇ_ਅੰਤ
 
-struct win64_call_frame
+ਬਣਤਰ win64_call_ਚੌਖਟਾ
 {
   UINT64 rbp;		/* 0 */
   UINT64 retaddr;	/* 8 */
@@ -48,53 +48,53 @@ struct win64_call_frame
   UINT64 rvalue;	/* 32 */
 };
 
-extern void ffi_call_win64 (void *stack, struct win64_call_frame *,
-			    void *closure) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_win64 (ਖਾਲੀ *ਢੇਰ, ਬਣਤਰ win64_call_ਚੌਖਟਾ *,
+			    ਖਾਲੀ *ਘੇਰਾ) FFI_HIDDEN;
 
-ffi_status FFI_HIDDEN
+ffi_ਸਥਿਤੀ FFI_HIDDEN
 EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
 {
-  int flags, n;
+  ਪੂਰਨ flags, n;
 
-  switch (cif->abi)
+  ਚੋਣ (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    ਹਾਲਤ FFI_WIN64:
+    ਹਾਲਤ FFI_GNUW64:
+      ਰੋਕੋ;
+    ਮੂਲ:
+      ਵਾਪਸ FFI_BAD_ABI;
     }
 
   flags = cif->rtype->type;
-  switch (flags)
+  ਚੋਣ (flags)
     {
-    default:
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+    ਮੂਲ:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
       /* GCC returns long double values by reference, like a struct */
-      if (cif->abi == FFI_GNUW64)
+      ਜੇ (cif->abi == FFI_GNUW64)
 	flags = FFI_TYPE_STRUCT;
-      break;
-    case FFI_TYPE_COMPLEX:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_COMPLEX:
       flags = FFI_TYPE_STRUCT;
       /* FALLTHRU */
-    case FFI_TYPE_STRUCT:
-      switch (cif->rtype->size)
+    ਹਾਲਤ FFI_TYPE_STRUCT:
+      ਚੋਣ (cif->rtype->ਮਾਪ)
 	{
-	case 8:
+	ਹਾਲਤ 8:
 	  flags = FFI_TYPE_UINT64;
-	  break;
-	case 4:
+	  ਰੋਕੋ;
+	ਹਾਲਤ 4:
 	  flags = FFI_TYPE_SMALL_STRUCT_4B;
-	  break;
-	case 2:
+	  ਰੋਕੋ;
+	ਹਾਲਤ 2:
 	  flags = FFI_TYPE_SMALL_STRUCT_2B;
-	  break;
-	case 1:
+	  ਰੋਕੋ;
+	ਹਾਲਤ 1:
 	  flags = FFI_TYPE_SMALL_STRUCT_1B;
-	  break;
+	  ਰੋਕੋ;
 	}
-      break;
+      ਰੋਕੋ;
     }
   cif->flags = flags;
 
@@ -102,32 +102,32 @@ EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
      passed by reference with the pointer in the 8 byte slot.  */
   n = cif->nargs;
   n += (flags == FFI_TYPE_STRUCT);
-  if (n < 4)
+  ਜੇ (n < 4)
     n = 4;
-  cif->bytes = n * 8;
+  cif->ਬਾਈਟਾਂ = n * 8;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
 /* We perform some black magic here to use some of the parent's stack frame in
  * ffi_call_win64() that breaks with the MSVC compiler with the /RTCs or /GZ
  * flags.  Disable the 'Stack frame run time error checking' for this function
  * so we don't hit weird exceptions in debug builds. */
-#if defined(_MSC_VER)
-#pragma runtime_checks("s", off)
-#endif
+#ਜੇ defined(_MSC_VER)
+#ਹਦਾਇਤ runtime_checks("s", off)
+#ਜੇ_ਅੰਤ
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ਸਥਿਰ ਖਾਲੀ
+ffi_call_int (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+	      ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
-  int i, j, n, flags;
-  UINT64 *stack;
+  ਪੂਰਨ i, j, n, flags;
+  UINT64 *ਢੇਰ;
   size_t rsize;
-  struct win64_call_frame *frame;
+  ਬਣਤਰ win64_call_ਚੌਖਟਾ *ਚੌਖਟਾ;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int nargs = cif->nargs;
+  ਖਾਲੀ **avalue_copy = ਨਿਰਾ;
+  ਪੂਰਨ nargs = cif->nargs;
 
   FFI_ASSERT(cif->abi == FFI_GNUW64 || cif->abi == FFI_WIN64);
 
@@ -135,40 +135,40 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
      make a copy so we are passing by value.  The pointer array is cloned
      first: the caller owns avalue[] and may reuse it for another call,
      so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ਲਈ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
+      ਪੂਰਨ ਮਾਪ = at->ਮਾਪ;
       bool needcopy = false;
 
-      switch (at->type)
+      ਚੋਣ (at->type)
 	{
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
+	ਹਾਲਤ FFI_TYPE_UINT128:
+	ਹਾਲਤ FFI_TYPE_SINT128:
 	  needcopy = true;
-	  break;
-	case FFI_TYPE_STRUCT:
-	  switch (size)
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_STRUCT:
+	  ਚੋਣ (ਮਾਪ)
 	    {
-	    case 1:
-	    case 2:
-	    case 4:
-	    case 8:
-	      break;
-	    default:
+	    ਹਾਲਤ 1:
+	    ਹਾਲਤ 2:
+	    ਹਾਲਤ 4:
+	    ਹਾਲਤ 8:
+	      ਰੋਕੋ;
+	    ਮੂਲ:
 	      needcopy = true;
 	    }
 	}
-      if (needcopy)
+      ਜੇ (needcopy)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ਅੱਖਰ *argcopy = alloca (ਮਾਪ);
+          ਜੇ (avalue_copy == ਨਿਰਾ)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * ਆਕਾਰ (ਖਾਲੀ *));
+              ਸਮ੍ਰਿਤੀ_ਨਕਲ (avalue_copy, avalue, nargs * ਆਕਾਰ (ਖਾਲੀ *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ (argcopy, avalue[i], ਮਾਪ);
           avalue[i] = argcopy;
         }
     }
@@ -178,89 +178,89 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If we have no return value for a structure, we need to create one.
      Otherwise we can ignore the return type entirely.  */
-  if (rvalue == NULL)
+  ਜੇ (rvalue == ਨਿਰਾ)
     {
-      if (flags == FFI_TYPE_STRUCT)
-	rsize = cif->rtype->size;
-      else
+      ਜੇ (flags == FFI_TYPE_STRUCT)
+	rsize = cif->rtype->ਮਾਪ;
+      ਨਹੀਂਤਾਂ
 	flags = FFI_TYPE_VOID;
     }
 
-  stack = alloca(cif->bytes + sizeof(struct win64_call_frame) + rsize);
-  frame = (struct win64_call_frame *)((char *)stack + cif->bytes);
-  if (rsize)
-    rvalue = frame + 1;
+  ਢੇਰ = alloca(cif->ਬਾਈਟਾਂ + ਆਕਾਰ(ਬਣਤਰ win64_call_ਚੌਖਟਾ) + rsize);
+  ਚੌਖਟਾ = (ਬਣਤਰ win64_call_ਚੌਖਟਾ *)((ਅੱਖਰ *)ਢੇਰ + cif->ਬਾਈਟਾਂ);
+  ਜੇ (rsize)
+    rvalue = ਚੌਖਟਾ + 1;
 
-  frame->fn = (uintptr_t)fn;
-  frame->flags = flags;
-  frame->rvalue = (uintptr_t)rvalue;
+  ਚੌਖਟਾ->fn = (uintptr_t)fn;
+  ਚੌਖਟਾ->flags = flags;
+  ਚੌਖਟਾ->rvalue = (uintptr_t)rvalue;
 
   j = 0;
-  if (flags == FFI_TYPE_STRUCT)
+  ਜੇ (flags == FFI_TYPE_STRUCT)
     {
-      stack[0] = (uintptr_t)rvalue;
+      ਢੇਰ[0] = (uintptr_t)rvalue;
       j = 1;
     }
 
-  for (i = 0, n = cif->nargs; i < n; ++i, ++j)
+  ਲਈ (i = 0, n = cif->nargs; i < n; ++i, ++j)
     {
-      switch (cif->arg_types[i]->size)
+      ਚੋਣ (cif->arg_types[i]->ਮਾਪ)
 	{
-	case 8:
-	  stack[j] = *(UINT64 *)avalue[i];
-	  break;
-	case 4:
-	  stack[j] = *(UINT32 *)avalue[i];
-	  break;
-	case 2:
-	  stack[j] = *(UINT16 *)avalue[i];
-	  break;
-	case 1:
-	  stack[j] = *(UINT8 *)avalue[i];
-	  break;
-	default:
-	  stack[j] = (uintptr_t)avalue[i];
-	  break;
+	ਹਾਲਤ 8:
+	  ਢੇਰ[j] = *(UINT64 *)avalue[i];
+	  ਰੋਕੋ;
+	ਹਾਲਤ 4:
+	  ਢੇਰ[j] = *(UINT32 *)avalue[i];
+	  ਰੋਕੋ;
+	ਹਾਲਤ 2:
+	  ਢੇਰ[j] = *(UINT16 *)avalue[i];
+	  ਰੋਕੋ;
+	ਹਾਲਤ 1:
+	  ਢੇਰ[j] = *(UINT8 *)avalue[i];
+	  ਰੋਕੋ;
+	ਮੂਲ:
+	  ਢੇਰ[j] = (uintptr_t)avalue[i];
+	  ਰੋਕੋ;
 	}
     }
 
-  ffi_call_win64 (stack, frame, closure);
+  ffi_call_win64 (ਢੇਰ, ਚੌਖਟਾ, ਘੇਰਾ);
 }
-#if defined(_MSC_VER)
-#pragma runtime_checks("s", restore)
-#endif
+#ਜੇ defined(_MSC_VER)
+#ਹਦਾਇਤ runtime_checks("s", restore)
+#ਜੇ_ਅੰਤ
 
-void
-EFI64(ffi_call)(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ
+EFI64(ffi_call)(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ਨਿਰਾ);
 }
 
-void
-EFI64(ffi_call_go)(ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+ਖਾਲੀ
+EFI64(ffi_call_go)(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+	     ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, ਘੇਰਾ);
 }
 
 
-extern void ffi_closure_win64(void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-extern void ffi_closure_win64_alt(void) FFI_HIDDEN;
-#endif
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_win64(ਖਾਲੀ) FFI_HIDDEN;
+#ਜੇ defined(FFI_EXEC_STATIC_TRAMP)
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_win64_alt(ਖਾਲੀ) FFI_HIDDEN;
+#ਜੇ_ਅੰਤ
 
-#ifdef FFI_GO_CLOSURES
-extern void ffi_go_closure_win64(void) FFI_HIDDEN;
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_GO_CLOSURES
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_win64(ਖਾਲੀ) FFI_HIDDEN;
+#ਜੇ_ਅੰਤ
 
-ffi_status
-EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
+ffi_ਸਥਿਤੀ
+EFI64(ffi_prep_ਘੇਰਾ_loc)(ffi_ਘੇਰਾ* ਘੇਰਾ,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc MAYBE_UNUSED)
+		      ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ,
+		      ਖਾਲੀ *codeloc MAYBE_ਅਣਵਰਤਿਆ)
 {
-  static const unsigned char trampoline[FFI_TRAMPOLINE_SIZE - 8] = {
+  ਸਥਿਰ ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ trampoline[FFI_TRAMPOLINE_ਮਾਪ - 8] = {
     /* endbr64 */
     0xf3, 0x0f, 0x1e, 0xfa,
     /* leaq  -0xb(%rip),%r10   # 0x0  */
@@ -270,123 +270,123 @@ EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
     /* nopl  0(%rax) */
     0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00
   };
-  char *tramp = closure->tramp;
+  ਅੱਖਰ *tramp = ਘੇਰਾ->tramp;
 
-  switch (cif->abi)
+  ਚੋਣ (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    ਹਾਲਤ FFI_WIN64:
+    ਹਾਲਤ FFI_GNUW64:
+      ਰੋਕੋ;
+    ਮੂਲ:
+      ਵਾਪਸ FFI_BAD_ABI;
     }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ਜੇ defined(FFI_EXEC_STATIC_TRAMP)
+  ਜੇ (ffi_tramp_is_present(ਘੇਰਾ))
     {
       /* Initialize the static trampoline's parameters. */
-      ffi_tramp_set_parms (closure->ftramp, ffi_closure_win64_alt, closure);
-      goto out;
+      ffi_tramp_ਸੈੱਟ_parms (ਘੇਰਾ->ftramp, ffi_ਘੇਰਾ_win64_alt, ਘੇਰਾ);
+      ਜਾਓ ਬਾਹਰਲਾ;
     }
-#endif
+#ਜੇ_ਅੰਤ
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
-  *(UINT64 *)(tramp + sizeof (trampoline)) = (uintptr_t)ffi_closure_win64;
+  ਸਮ੍ਰਿਤੀ_ਨਕਲ (tramp, trampoline, ਆਕਾਰ(trampoline));
+  *(UINT64 *)(tramp + ਆਕਾਰ (trampoline)) = (uintptr_t)ffi_ਘੇਰਾ_win64;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-out:
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+#ਜੇ defined(FFI_EXEC_STATIC_TRAMP)
+ਬਾਹਰਲਾ:
+#ਜੇ_ਅੰਤ
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-#ifdef FFI_GO_CLOSURES
-ffi_status
-EFI64(ffi_prep_go_closure)(ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_GO_CLOSURES
+ffi_ਸਥਿਤੀ
+EFI64(ffi_prep_go_ਘੇਰਾ)(ffi_go_ਘੇਰਾ* ਘੇਰਾ, ffi_cif* cif,
+		     ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*))
 {
-  switch (cif->abi)
+  ਚੋਣ (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    ਹਾਲਤ FFI_WIN64:
+    ਹਾਲਤ FFI_GNUW64:
+      ਰੋਕੋ;
+    ਮੂਲ:
+      ਵਾਪਸ FFI_BAD_ABI;
     }
 
-  closure->tramp = ffi_go_closure_win64;
-  closure->cif = cif;
-  closure->fun = fun;
+  ਘੇਰਾ->tramp = ffi_go_ਘੇਰਾ_win64;
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
-#endif
+#ਜੇ_ਅੰਤ
 
-struct win64_closure_frame
+ਬਣਤਰ win64_ਘੇਰਾ_ਚੌਖਟਾ
 {
   UINT64 rvalue[2];
   UINT64 fargs[4];
   UINT64 retaddr;
-  UINT64 args[];
+  UINT64 ਦਲੀਲਾਂ[];
 };
 
 /* Force the inner function to use the MS ABI.  When compiling on win64
    this is a nop.  When compiling on unix, this simplifies the assembly,
    and places the burden of saving the extra call-saved registers on
    the compiler.  */
-int FFI_HIDDEN __attribute__((ms_abi))
-ffi_closure_win64_inner(ffi_cif *cif,
-			void (*fun)(ffi_cif*, void*, void**, void*),
-			void *user_data,
-			struct win64_closure_frame *frame)
+ਪੂਰਨ FFI_HIDDEN __attribute__((ms_abi))
+ffi_ਘੇਰਾ_win64_inner(ffi_cif *cif,
+			ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+			ਖਾਲੀ *user_ਅੰਕੜੇ,
+			ਬਣਤਰ win64_ਘੇਰਾ_ਚੌਖਟਾ *ਚੌਖਟਾ)
 {
-  void **avalue;
-  void *rvalue;
-  int i, n, nreg, flags;
+  ਖਾਲੀ **avalue;
+  ਖਾਲੀ *rvalue;
+  ਪੂਰਨ i, n, nreg, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
-  rvalue = frame->rvalue;
+  avalue = alloca(cif->nargs * ਆਕਾਰ(ਖਾਲੀ *));
+  rvalue = ਚੌਖਟਾ->rvalue;
   nreg = 0;
 
   /* When returning a structure, the address is in the first argument.
      We must also be prepared to return the same address in eax, so
      install that address in the frame and pretend we return a pointer.  */
   flags = cif->flags;
-  if (flags == FFI_TYPE_STRUCT)
+  ਜੇ (flags == FFI_TYPE_STRUCT)
     {
-      rvalue = (void *)(uintptr_t)frame->args[0];
-      frame->rvalue[0] = frame->args[0];
+      rvalue = (ਖਾਲੀ *)(uintptr_t)ਚੌਖਟਾ->ਦਲੀਲਾਂ[0];
+      ਚੌਖਟਾ->rvalue[0] = ਚੌਖਟਾ->ਦਲੀਲਾਂ[0];
       nreg = 1;
     }
 
-  for (i = 0, n = cif->nargs; i < n; ++i, ++nreg)
+  ਲਈ (i = 0, n = cif->nargs; i < n; ++i, ++nreg)
     {
-      size_t size = cif->arg_types[i]->size;
+      size_t ਮਾਪ = cif->arg_types[i]->ਮਾਪ;
       size_t type = cif->arg_types[i]->type;
-      void *a;
+      ਖਾਲੀ *a;
 
-      if (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
+      ਜੇ (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
 	{
-	  if (nreg < 4)
-	    a = &frame->fargs[nreg];
-	  else
-	    a = &frame->args[nreg];
+	  ਜੇ (nreg < 4)
+	    a = &ਚੌਖਟਾ->fargs[nreg];
+	  ਨਹੀਂਤਾਂ
+	    a = &ਚੌਖਟਾ->ਦਲੀਲਾਂ[nreg];
 	}
-      else if (size == 1 || size == 2 || size == 4 || size == 8)
-	a = &frame->args[nreg];
-      else
-	a = (void *)(uintptr_t)frame->args[nreg];
+      ਨਹੀਂਤਾਂ ਜੇ (ਮਾਪ == 1 || ਮਾਪ == 2 || ਮਾਪ == 4 || ਮਾਪ == 8)
+	a = &ਚੌਖਟਾ->ਦਲੀਲਾਂ[nreg];
+      ਨਹੀਂਤਾਂ
+	a = (ਖਾਲੀ *)(uintptr_t)ਚੌਖਟਾ->ਦਲੀਲਾਂ[nreg];
 
       avalue[i] = a;
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
-  return flags;
+  fun (cif, rvalue, avalue, user_ਅੰਕੜੇ);
+  ਵਾਪਸ flags;
 }
 
-#endif /* __x86_64__ */
+#ਜੇ_ਅੰਤ /* __x86_64__ */

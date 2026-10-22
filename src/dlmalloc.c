@@ -522,211 +522,211 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 */
 
 /* Version identifier to allow people to support multiple versions */
-#ifndef DLMALLOC_VERSION
-#define DLMALLOC_VERSION 20806
-#endif /* DLMALLOC_VERSION */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ DLMALLOC_ਸੰਸਕਰਣ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DLMALLOC_ਸੰਸਕਰਣ 20806
+#ਜੇ_ਅੰਤ /* DLMALLOC_VERSION */
 
-#ifndef DLMALLOC_EXPORT
-#define DLMALLOC_EXPORT extern
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ DLMALLOC_EXPORT
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DLMALLOC_EXPORT ਬਾਹਰੀ
+#ਜੇ_ਅੰਤ
 
-#if defined __linux__ && !defined _GNU_SOURCE
+#ਜੇ defined __linux__ && !defined GNU_ਸਰੋਤ
 /* mremap() on Linux requires this via sys/mman.h */
-#define _GNU_SOURCE 1
-#endif
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GNU_ਸਰੋਤ 1
+#ਜੇ_ਅੰਤ
 
-#ifndef WIN32
-#ifdef _WIN32
-#define WIN32 1
-#endif  /* _WIN32 */
-#ifdef _WIN32_WCE
-#define LACKS_FCNTL_H
-#define WIN32 1
-#endif /* _WIN32_WCE */
-#endif  /* WIN32 */
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <tchar.h>
-#define HAVE_MMAP 1
-#define HAVE_MORECORE 0
-#define LACKS_UNISTD_H
-#define LACKS_SYS_PARAM_H
-#define LACKS_SYS_MMAN_H
-#define LACKS_STRING_H
-#define LACKS_STRINGS_H
-#define LACKS_SYS_TYPES_H
-#define LACKS_ERRNO_H
-#define LACKS_SCHED_H
-#ifndef MALLOC_FAILURE_ACTION
-#define MALLOC_FAILURE_ACTION
-#endif /* MALLOC_FAILURE_ACTION */
-#ifndef MMAP_CLEARS
-#ifdef _WIN32_WCE /* WINCE reportedly does not clear */
-#define MMAP_CLEARS 0
-#else
-#define MMAP_CLEARS 1
-#endif /* _WIN32_WCE */
-#endif /*MMAP_CLEARS */
-#endif  /* WIN32 */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ WIN32
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ _WIN32
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ WIN32 1
+#ਜੇ_ਅੰਤ  /* _WIN32 */
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ _WIN32_WCE
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_FCNTL_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ WIN32 1
+#ਜੇ_ਅੰਤ /* _WIN32_WCE */
+#ਜੇ_ਅੰਤ  /* WIN32 */
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ WIN32
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ WIN32_LEAN_AND_ਔਸਤ
+#ਅਨ੍ਤਰ੍ਭਾਵ <windows.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <tchar.h>
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MMAP 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MORECORE 0
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_UNISTD_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_SYS_PARAM_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_SYS_MMAN_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_STRING_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_ਲੜੀਆਂ_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_SYS_TYPES_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_ERRNO_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_SCHED_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MALLOC_FAILURE_ACTION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MALLOC_FAILURE_ACTION
+#ਜੇ_ਅੰਤ /* MALLOC_FAILURE_ACTION */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MMAP_CLEARS
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ _WIN32_WCE /* WINCE reportedly does not clear */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_CLEARS 0
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_CLEARS 1
+#ਜੇ_ਅੰਤ /* _WIN32_WCE */
+#ਜੇ_ਅੰਤ /*MMAP_CLEARS */
+#ਜੇ_ਅੰਤ  /* WIN32 */
 
-#ifdef __OS2__
-#define INCL_DOS
-#include <os2.h>
-#define HAVE_MMAP 1
-#define HAVE_MORECORE 0
-#define LACKS_SYS_MMAN_H
-#endif  /* __OS2__ */
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __OS2__
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INCL_DOS
+#ਅਨ੍ਤਰ੍ਭਾਵ <os2.h>
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MMAP 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MORECORE 0
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LACKS_SYS_MMAN_H
+#ਜੇ_ਅੰਤ  /* __OS2__ */
 
-#if defined(DARWIN) || defined(_DARWIN)
+#ਜੇ defined(DARWIN) || defined(_DARWIN)
 /* Mac OSX docs advise not to use sbrk; it seems better to use mmap */
-#ifndef HAVE_MORECORE
-#define HAVE_MORECORE 0
-#define HAVE_MMAP 1
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ HAVE_MORECORE
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MORECORE 0
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MMAP 1
 /* OSX allocators provide 16 byte alignment */
-#ifndef MALLOC_ALIGNMENT
-#define MALLOC_ALIGNMENT ((size_t)16U)
-#endif
-#endif  /* HAVE_MORECORE */
-#endif  /* DARWIN */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MALLOC_ALIGNMENT
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MALLOC_ALIGNMENT ((size_t)16U)
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ  /* HAVE_MORECORE */
+#ਜੇ_ਅੰਤ  /* DARWIN */
 
-#ifndef LACKS_SYS_TYPES_H
-#include <sys/types.h>  /* For size_t */
-#endif  /* LACKS_SYS_TYPES_H */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_SYS_TYPES_H
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/types.h>  /* For size_t */
+#ਜੇ_ਅੰਤ  /* LACKS_SYS_TYPES_H */
 
 /* The maximum possible size_t value has all bits set */
-#define MAX_SIZE_T           (~(size_t)0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_ਮਾਪ_T           (~(size_t)0)
 
-#ifndef USE_LOCKS /* ensure true if spin or recursive locks set */
-#define USE_LOCKS  ((defined(USE_SPIN_LOCKS) && USE_SPIN_LOCKS != 0) || \
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ USE_LOCKS /* ensure true if spin or recursive locks set */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_LOCKS  ((defined(USE_SPIN_LOCKS) && USE_SPIN_LOCKS != 0) || \
                     (defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0))
-#endif /* USE_LOCKS */
+#ਜੇ_ਅੰਤ /* USE_LOCKS */
 
-#if USE_LOCKS /* Spin locks for gcc >= 4.1, older gcc on x86, MSC >= 1310 */
-#if ((defined(__GNUC__) &&                                              \
+#ਜੇ USE_LOCKS /* Spin locks for gcc >= 4.1, older gcc on x86, MSC >= 1310 */
+#ਜੇ ((defined(__GNUC__) &&                                              \
       ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1)) ||      \
        defined(__i386__) || defined(__x86_64__))) ||                    \
      (defined(_MSC_VER) && _MSC_VER>=1310))
-#ifndef USE_SPIN_LOCKS
-#define USE_SPIN_LOCKS 1
-#endif /* USE_SPIN_LOCKS */
-#elif USE_SPIN_LOCKS
-#error "USE_SPIN_LOCKS defined without implementation"
-#endif /* ... locks available... */
-#elif !defined(USE_SPIN_LOCKS)
-#define USE_SPIN_LOCKS 0
-#endif /* USE_LOCKS */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ USE_SPIN_LOCKS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_SPIN_LOCKS 1
+#ਜੇ_ਅੰਤ /* USE_SPIN_LOCKS */
+#ਜਾਂਜੇ USE_SPIN_LOCKS
+#ਗਲਤੀ "USE_SPIN_LOCKS defined without implementation"
+#ਜੇ_ਅੰਤ /* ... locks available... */
+#ਜਾਂਜੇ !defined(USE_SPIN_LOCKS)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_SPIN_LOCKS 0
+#ਜੇ_ਅੰਤ /* USE_LOCKS */
 
-#ifndef ONLY_MSPACES
-#define ONLY_MSPACES 0
-#endif  /* ONLY_MSPACES */
-#ifndef MSPACES
-#if ONLY_MSPACES
-#define MSPACES 1
-#else   /* ONLY_MSPACES */
-#define MSPACES 0
-#endif  /* ONLY_MSPACES */
-#endif  /* MSPACES */
-#ifndef MALLOC_ALIGNMENT
-#define MALLOC_ALIGNMENT ((size_t)(2 * sizeof(void *)))
-#endif  /* MALLOC_ALIGNMENT */
-#ifndef FOOTERS
-#define FOOTERS 0
-#endif  /* FOOTERS */
-#ifndef ABORT
-#define ABORT  abort()
-#endif  /* ABORT */
-#ifndef ABORT_ON_ASSERT_FAILURE
-#define ABORT_ON_ASSERT_FAILURE 1
-#endif  /* ABORT_ON_ASSERT_FAILURE */
-#ifndef PROCEED_ON_ERROR
-#define PROCEED_ON_ERROR 0
-#endif  /* PROCEED_ON_ERROR */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ONLY_MSPACES
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ONLY_MSPACES 0
+#ਜੇ_ਅੰਤ  /* ONLY_MSPACES */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MSPACES
+#ਜੇ ONLY_MSPACES
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MSPACES 1
+#ਨਹੀਂਤਾਂ   /* ONLY_MSPACES */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MSPACES 0
+#ਜੇ_ਅੰਤ  /* ONLY_MSPACES */
+#ਜੇ_ਅੰਤ  /* MSPACES */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MALLOC_ALIGNMENT
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MALLOC_ALIGNMENT ((size_t)(2 * ਆਕਾਰ(ਖਾਲੀ *)))
+#ਜੇ_ਅੰਤ  /* MALLOC_ALIGNMENT */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ FOOTERS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FOOTERS 0
+#ਜੇ_ਅੰਤ  /* FOOTERS */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ABORT
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ABORT  abort()
+#ਜੇ_ਅੰਤ  /* ABORT */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ABORT_ON_ASSERT_FAILURE
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ABORT_ON_ASSERT_FAILURE 1
+#ਜੇ_ਅੰਤ  /* ABORT_ON_ASSERT_FAILURE */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ PROCEED_ON_ERROR
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PROCEED_ON_ERROR 0
+#ਜੇ_ਅੰਤ  /* PROCEED_ON_ERROR */
 
-#ifndef INSECURE
-#define INSECURE 0
-#endif  /* INSECURE */
-#ifndef MALLOC_INSPECT_ALL
-#define MALLOC_INSPECT_ALL 0
-#endif  /* MALLOC_INSPECT_ALL */
-#ifndef HAVE_MMAP
-#define HAVE_MMAP 1
-#endif  /* HAVE_MMAP */
-#ifndef MMAP_CLEARS
-#define MMAP_CLEARS 1
-#endif  /* MMAP_CLEARS */
-#ifndef HAVE_MREMAP
-#ifdef linux
-#define HAVE_MREMAP 1
-#define _GNU_SOURCE /* Turns on mremap() definition */
-#else   /* linux */
-#define HAVE_MREMAP 0
-#endif  /* linux */
-#endif  /* HAVE_MREMAP */
-#ifndef MALLOC_FAILURE_ACTION
-#define MALLOC_FAILURE_ACTION  errno = ENOMEM;
-#endif  /* MALLOC_FAILURE_ACTION */
-#ifndef HAVE_MORECORE
-#if ONLY_MSPACES
-#define HAVE_MORECORE 0
-#else   /* ONLY_MSPACES */
-#define HAVE_MORECORE 1
-#endif  /* ONLY_MSPACES */
-#endif  /* HAVE_MORECORE */
-#if !HAVE_MORECORE
-#define MORECORE_CONTIGUOUS 0
-#else   /* !HAVE_MORECORE */
-#define MORECORE_DEFAULT sbrk
-#ifndef MORECORE_CONTIGUOUS
-#define MORECORE_CONTIGUOUS 1
-#endif  /* MORECORE_CONTIGUOUS */
-#endif  /* HAVE_MORECORE */
-#ifndef DEFAULT_GRANULARITY
-#if (MORECORE_CONTIGUOUS || defined(WIN32))
-#define DEFAULT_GRANULARITY (0)  /* 0 means to compute in init_mparams */
-#else   /* MORECORE_CONTIGUOUS */
-#define DEFAULT_GRANULARITY ((size_t)64U * (size_t)1024U)
-#endif  /* MORECORE_CONTIGUOUS */
-#endif  /* DEFAULT_GRANULARITY */
-#ifndef DEFAULT_TRIM_THRESHOLD
-#ifndef MORECORE_CANNOT_TRIM
-#define DEFAULT_TRIM_THRESHOLD ((size_t)2U * (size_t)1024U * (size_t)1024U)
-#else   /* MORECORE_CANNOT_TRIM */
-#define DEFAULT_TRIM_THRESHOLD MAX_SIZE_T
-#endif  /* MORECORE_CANNOT_TRIM */
-#endif  /* DEFAULT_TRIM_THRESHOLD */
-#ifndef DEFAULT_MMAP_THRESHOLD
-#if HAVE_MMAP
-#define DEFAULT_MMAP_THRESHOLD ((size_t)256U * (size_t)1024U)
-#else   /* HAVE_MMAP */
-#define DEFAULT_MMAP_THRESHOLD MAX_SIZE_T
-#endif  /* HAVE_MMAP */
-#endif  /* DEFAULT_MMAP_THRESHOLD */
-#ifndef MAX_RELEASE_CHECK_RATE
-#if HAVE_MMAP
-#define MAX_RELEASE_CHECK_RATE 4095
-#else
-#define MAX_RELEASE_CHECK_RATE MAX_SIZE_T
-#endif /* HAVE_MMAP */
-#endif /* MAX_RELEASE_CHECK_RATE */
-#ifndef USE_BUILTIN_FFS
-#define USE_BUILTIN_FFS 0
-#endif  /* USE_BUILTIN_FFS */
-#ifndef USE_DEV_RANDOM
-#define USE_DEV_RANDOM 0
-#endif  /* USE_DEV_RANDOM */
-#ifndef NO_MALLINFO
-#define NO_MALLINFO 0
-#endif  /* NO_MALLINFO */
-#ifndef MALLINFO_FIELD_TYPE
-#define MALLINFO_FIELD_TYPE size_t
-#endif  /* MALLINFO_FIELD_TYPE */
-#ifndef NO_MALLOC_STATS
-#define NO_MALLOC_STATS 0
-#endif  /* NO_MALLOC_STATS */
-#ifndef NO_SEGMENT_TRAVERSAL
-#define NO_SEGMENT_TRAVERSAL 0
-#endif /* NO_SEGMENT_TRAVERSAL */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ INSECURE
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INSECURE 0
+#ਜੇ_ਅੰਤ  /* INSECURE */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MALLOC_INSPECT_ALL
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MALLOC_INSPECT_ALL 0
+#ਜੇ_ਅੰਤ  /* MALLOC_INSPECT_ALL */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ HAVE_MMAP
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MMAP 1
+#ਜੇ_ਅੰਤ  /* HAVE_MMAP */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MMAP_CLEARS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_CLEARS 1
+#ਜੇ_ਅੰਤ  /* MMAP_CLEARS */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ HAVE_MREMAP
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ linux
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MREMAP 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ GNU_ਸਰੋਤ /* Turns on mremap() definition */
+#ਨਹੀਂਤਾਂ   /* linux */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MREMAP 0
+#ਜੇ_ਅੰਤ  /* linux */
+#ਜੇ_ਅੰਤ  /* HAVE_MREMAP */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MALLOC_FAILURE_ACTION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MALLOC_FAILURE_ACTION  errno = ENOMEM;
+#ਜੇ_ਅੰਤ  /* MALLOC_FAILURE_ACTION */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ HAVE_MORECORE
+#ਜੇ ONLY_MSPACES
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MORECORE 0
+#ਨਹੀਂਤਾਂ   /* ONLY_MSPACES */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HAVE_MORECORE 1
+#ਜੇ_ਅੰਤ  /* ONLY_MSPACES */
+#ਜੇ_ਅੰਤ  /* HAVE_MORECORE */
+#ਜੇ !HAVE_MORECORE
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MORECORE_CONTIGUOUS 0
+#ਨਹੀਂਤਾਂ   /* !HAVE_MORECORE */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MORECORE_DEFAULT sbrk
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MORECORE_CONTIGUOUS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MORECORE_CONTIGUOUS 1
+#ਜੇ_ਅੰਤ  /* MORECORE_CONTIGUOUS */
+#ਜੇ_ਅੰਤ  /* HAVE_MORECORE */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ DEFAULT_GRANULARITY
+#ਜੇ (MORECORE_CONTIGUOUS || defined(WIN32))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEFAULT_GRANULARITY (0)  /* 0 means to compute in init_mparams */
+#ਨਹੀਂਤਾਂ   /* MORECORE_CONTIGUOUS */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEFAULT_GRANULARITY ((size_t)64U * (size_t)1024U)
+#ਜੇ_ਅੰਤ  /* MORECORE_CONTIGUOUS */
+#ਜੇ_ਅੰਤ  /* DEFAULT_GRANULARITY */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ DEFAULT_TRIM_ਹੱਦ
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MORECORE_CANNOT_TRIM
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEFAULT_TRIM_ਹੱਦ ((size_t)2U * (size_t)1024U * (size_t)1024U)
+#ਨਹੀਂਤਾਂ   /* MORECORE_CANNOT_TRIM */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEFAULT_TRIM_ਹੱਦ MAX_ਮਾਪ_T
+#ਜੇ_ਅੰਤ  /* MORECORE_CANNOT_TRIM */
+#ਜੇ_ਅੰਤ  /* DEFAULT_TRIM_THRESHOLD */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ DEFAULT_MMAP_ਹੱਦ
+#ਜੇ HAVE_MMAP
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEFAULT_MMAP_ਹੱਦ ((size_t)256U * (size_t)1024U)
+#ਨਹੀਂਤਾਂ   /* HAVE_MMAP */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEFAULT_MMAP_ਹੱਦ MAX_ਮਾਪ_T
+#ਜੇ_ਅੰਤ  /* HAVE_MMAP */
+#ਜੇ_ਅੰਤ  /* DEFAULT_MMAP_THRESHOLD */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MAX_RELEASE_CHECK_ਦਰ
+#ਜੇ HAVE_MMAP
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_RELEASE_CHECK_ਦਰ 4095
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_RELEASE_CHECK_ਦਰ MAX_ਮਾਪ_T
+#ਜੇ_ਅੰਤ /* HAVE_MMAP */
+#ਜੇ_ਅੰਤ /* MAX_RELEASE_CHECK_RATE */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ USE_BUILTIN_FFS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_BUILTIN_FFS 0
+#ਜੇ_ਅੰਤ  /* USE_BUILTIN_FFS */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ USE_DEV_RANDOM
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_DEV_RANDOM 0
+#ਜੇ_ਅੰਤ  /* USE_DEV_RANDOM */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ NO_MALLINFO
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NO_MALLINFO 0
+#ਜੇ_ਅੰਤ  /* NO_MALLINFO */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MALLINFO_ਖੇਤਰ_TYPE
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MALLINFO_ਖੇਤਰ_TYPE size_t
+#ਜੇ_ਅੰਤ  /* MALLINFO_FIELD_TYPE */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ NO_MALLOC_STATS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NO_MALLOC_STATS 0
+#ਜੇ_ਅੰਤ  /* NO_MALLOC_STATS */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ NO_SEGMENT_TRAVERSAL
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NO_SEGMENT_TRAVERSAL 0
+#ਜੇ_ਅੰਤ /* NO_SEGMENT_TRAVERSAL */
 
 /*
   mallopt tuning options.  SVID/XPG defines four standard parameter
@@ -736,17 +736,17 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 */
 
 /* The system's malloc.h may have conflicting defines. */
-#undef M_TRIM_THRESHOLD
-#undef M_GRANULARITY
-#undef M_MMAP_THRESHOLD
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ M_TRIM_ਹੱਦ
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ M_GRANULARITY
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ M_MMAP_ਹੱਦ
 
-#define M_TRIM_THRESHOLD     (-1)
-#define M_GRANULARITY        (-2)
-#define M_MMAP_THRESHOLD     (-3)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ M_TRIM_ਹੱਦ     (-1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ M_GRANULARITY        (-2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ M_MMAP_ਹੱਦ     (-3)
 
 /* ------------------------ Mallinfo declarations ------------------------ */
 
-#if !NO_MALLINFO
+#ਜੇ !NO_MALLINFO
 /*
   This version of malloc supports the standard SVID/XPG mallinfo
   routine that returns a struct containing usage properties and
@@ -771,89 +771,89 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 
 /* #define HAVE_USR_INCLUDE_MALLOC_H */
 
-#ifdef HAVE_USR_INCLUDE_MALLOC_H
-#include "/usr/include/malloc.h"
-#else /* HAVE_USR_INCLUDE_MALLOC_H */
-#ifndef STRUCT_MALLINFO_DECLARED
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ HAVE_USR_INCLUDE_MALLOC_H
+#ਅਨ੍ਤਰ੍ਭਾਵ "/usr/include/malloc.h"
+#ਨਹੀਂਤਾਂ /* HAVE_USR_INCLUDE_MALLOC_H */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ STRUCT_MALLINFO_DECLARED
 /* HP-UX (and others?) redefines mallinfo unless _STRUCT_MALLINFO is defined */
-#define _STRUCT_MALLINFO
-#define STRUCT_MALLINFO_DECLARED 1
-struct mallinfo {
-  MALLINFO_FIELD_TYPE arena;    /* non-mmapped space allocated from system */
-  MALLINFO_FIELD_TYPE ordblks;  /* number of free chunks */
-  MALLINFO_FIELD_TYPE smblks;   /* always 0 */
-  MALLINFO_FIELD_TYPE hblks;    /* always 0 */
-  MALLINFO_FIELD_TYPE hblkhd;   /* space in mmapped regions */
-  MALLINFO_FIELD_TYPE usmblks;  /* maximum total allocated space */
-  MALLINFO_FIELD_TYPE fsmblks;  /* always 0 */
-  MALLINFO_FIELD_TYPE uordblks; /* total allocated space */
-  MALLINFO_FIELD_TYPE fordblks; /* total free space */
-  MALLINFO_FIELD_TYPE keepcost; /* releasable (via malloc_trim) space */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ _STRUCT_MALLINFO
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ STRUCT_MALLINFO_DECLARED 1
+ਬਣਤਰ mallinfo {
+  MALLINFO_ਖੇਤਰ_TYPE arena;    /* non-mmapped space allocated from system */
+  MALLINFO_ਖੇਤਰ_TYPE ordblks;  /* number of free chunks */
+  MALLINFO_ਖੇਤਰ_TYPE smblks;   /* always 0 */
+  MALLINFO_ਖੇਤਰ_TYPE hblks;    /* always 0 */
+  MALLINFO_ਖੇਤਰ_TYPE hblkhd;   /* space in mmapped regions */
+  MALLINFO_ਖੇਤਰ_TYPE usmblks;  /* maximum total allocated space */
+  MALLINFO_ਖੇਤਰ_TYPE fsmblks;  /* always 0 */
+  MALLINFO_ਖੇਤਰ_TYPE uordblks; /* total allocated space */
+  MALLINFO_ਖੇਤਰ_TYPE fordblks; /* total free space */
+  MALLINFO_ਖੇਤਰ_TYPE keepcost; /* releasable (via malloc_trim) space */
 };
-#endif /* STRUCT_MALLINFO_DECLARED */
-#endif /* HAVE_USR_INCLUDE_MALLOC_H */
-#endif /* NO_MALLINFO */
+#ਜੇ_ਅੰਤ /* STRUCT_MALLINFO_DECLARED */
+#ਜੇ_ਅੰਤ /* HAVE_USR_INCLUDE_MALLOC_H */
+#ਜੇ_ਅੰਤ /* NO_MALLINFO */
 
 /*
   Try to persuade compilers to inline. The most critical functions for
   inlining are defined as macros, so these aren't used for them.
 */
 
-#ifndef FORCEINLINE
-  #if defined(__GNUC__)
-#define FORCEINLINE __inline __attribute__ ((always_inline))
-  #elif defined(_MSC_VER)
-    #define FORCEINLINE __forceinline
-  #endif
-#endif
-#ifndef NOINLINE
-  #if defined(__GNUC__)
-    #define NOINLINE __attribute__ ((noinline))
-  #elif defined(_MSC_VER)
-    #define NOINLINE __declspec(noinline)
-  #else
-    #define NOINLINE
-  #endif
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ FORCEINLINE
+  #ਜੇ defined(__GNUC__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FORCEINLINE __inline __attribute__ ((always_inline))
+  #ਜਾਂਜੇ defined(_MSC_VER)
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FORCEINLINE __forceinline
+  #ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ NOINLINE
+  #ਜੇ defined(__GNUC__)
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NOINLINE __attribute__ ((noinline))
+  #ਜਾਂਜੇ defined(_MSC_VER)
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NOINLINE __declspec(noinline)
+  #ਨਹੀਂਤਾਂ
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NOINLINE
+  #ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ
 
-#ifdef __cplusplus
-extern "C" {
-#ifndef FORCEINLINE
- #define FORCEINLINE inline
-#endif
-#endif /* __cplusplus */
-#ifndef FORCEINLINE
- #define FORCEINLINE
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __cplusplus
+ਬਾਹਰੀ "C" {
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ FORCEINLINE
+ #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FORCEINLINE ਸਤਰਅੰਦਰ
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ /* __cplusplus */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ FORCEINLINE
+ #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FORCEINLINE
+#ਜੇ_ਅੰਤ
 
-#if !ONLY_MSPACES
+#ਜੇ !ONLY_MSPACES
 
 /* ------------------- Declarations of public routines ------------------- */
 
-#ifndef USE_DL_PREFIX
-#define dlcalloc               calloc
-#define dlfree                 free
-#define dlmalloc               malloc
-#define dlmemalign             memalign
-#define dlposix_memalign       posix_memalign
-#define dlrealloc              realloc
-#define dlrealloc_in_place     realloc_in_place
-#define dlvalloc               valloc
-#define dlpvalloc              pvalloc
-#define dlmallinfo             mallinfo
-#define dlmallopt              mallopt
-#define dlmalloc_trim          malloc_trim
-#define dlmalloc_stats         malloc_stats
-#define dlmalloc_usable_size   malloc_usable_size
-#define dlmalloc_footprint     malloc_footprint
-#define dlmalloc_max_footprint malloc_max_footprint
-#define dlmalloc_footprint_limit malloc_footprint_limit
-#define dlmalloc_set_footprint_limit malloc_set_footprint_limit
-#define dlmalloc_inspect_all   malloc_inspect_all
-#define dlindependent_calloc   independent_calloc
-#define dlindependent_comalloc independent_comalloc
-#define dlbulk_free            bulk_free
-#endif /* USE_DL_PREFIX */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ USE_DL_ਅਗੇਤਰ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlcalloc               ਸਿਫਰ_ਸਮ੍ਰਿਤੀ_ਦਿਓ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlfree                 ਮੁਕਤ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc               ਸਮ੍ਰਿਤੀ_ਦਿਓ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmemalign             memalign
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlposix_memalign       posix_memalign
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlrealloc              realloc
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlrealloc_ਵਿੱਚ_ਰੱਖੋ     realloc_ਵਿੱਚ_ਰੱਖੋ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlvalloc               valloc
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlpvalloc              pvalloc
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmallinfo             mallinfo
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmallopt              mallopt
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_trim          malloc_trim
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_stats         malloc_stats
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_usable_ਮਾਪ   malloc_usable_ਮਾਪ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_footprint     malloc_footprint
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_max_footprint malloc_max_footprint
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_footprint_ਹੱਦਬੰਦੀ malloc_footprint_ਹੱਦਬੰਦੀ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_ਸੈੱਟ_footprint_ਹੱਦਬੰਦੀ malloc_ਸੈੱਟ_footprint_ਹੱਦਬੰਦੀ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlmalloc_inspect_all   malloc_inspect_all
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlindependent_calloc   independent_calloc
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlindependent_comalloc independent_comalloc
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ dlbulk_free            bulk_free
+#ਜੇ_ਅੰਤ /* USE_DL_PREFIX */
 
 /*
   malloc(size_t n)
@@ -869,7 +869,7 @@ extern "C" {
   maximum supported value of n differs across systems, but is in all
   cases less than the maximum representable value of a size_t.
 */
-DLMALLOC_EXPORT void* dlmalloc(size_t);
+DLMALLOC_EXPORT ਖਾਲੀ* dlmalloc(size_t);
 
 /*
   free(void* p)
@@ -878,14 +878,14 @@ DLMALLOC_EXPORT void* dlmalloc(size_t);
   It has no effect if p is null. If p was not malloced or already
   freed, free(p) will by default cause the current program to abort.
 */
-DLMALLOC_EXPORT void  dlfree(void*);
+DLMALLOC_EXPORT ਖਾਲੀ  dlfree(ਖਾਲੀ*);
 
 /*
   calloc(size_t n_elements, size_t element_size);
   Returns a pointer to n_elements * element_size bytes, with all locations
   set to zero.
 */
-DLMALLOC_EXPORT void* dlcalloc(size_t, size_t);
+DLMALLOC_EXPORT ਖਾਲੀ* dlcalloc(size_t, size_t);
 
 /*
   realloc(void* p, size_t n)
@@ -909,7 +909,7 @@ DLMALLOC_EXPORT void* dlcalloc(size_t, size_t);
   The old unix realloc convention of allowing the last-free'd chunk
   to be used as an argument to realloc is not supported.
 */
-DLMALLOC_EXPORT void* dlrealloc(void*, size_t);
+DLMALLOC_EXPORT ਖਾਲੀ* dlrealloc(ਖਾਲੀ*, size_t);
 
 /*
   realloc_in_place(void* p, size_t n)
@@ -924,7 +924,7 @@ DLMALLOC_EXPORT void* dlrealloc(void*, size_t);
 
   Returns p if successful; otherwise null.
 */
-DLMALLOC_EXPORT void* dlrealloc_in_place(void*, size_t);
+DLMALLOC_EXPORT ਖਾਲੀ* dlrealloc_ਵਿੱਚ_ਰੱਖੋ(ਖਾਲੀ*, size_t);
 
 /*
   memalign(size_t alignment, size_t n);
@@ -938,7 +938,7 @@ DLMALLOC_EXPORT void* dlrealloc_in_place(void*, size_t);
 
   Overreliance on memalign is a sure way to fragment space.
 */
-DLMALLOC_EXPORT void* dlmemalign(size_t, size_t);
+DLMALLOC_EXPORT ਖਾਲੀ* dlmemalign(size_t, size_t);
 
 /*
   int posix_memalign(void** pp, size_t alignment, size_t n);
@@ -948,14 +948,14 @@ DLMALLOC_EXPORT void* dlmemalign(size_t, size_t);
   returns EINVAL if the alignment is not a power of two (3) fails and
   returns ENOMEM if memory cannot be allocated.
 */
-DLMALLOC_EXPORT int dlposix_memalign(void**, size_t, size_t);
+DLMALLOC_EXPORT ਪੂਰਨ dlposix_memalign(ਖਾਲੀ**, size_t, size_t);
 
 /*
   valloc(size_t n);
   Equivalent to memalign(pagesize, n), where pagesize is the page
   size of the system. If the pagesize is unknown, 4096 is used.
 */
-DLMALLOC_EXPORT void* dlvalloc(size_t);
+DLMALLOC_EXPORT ਖਾਲੀ* dlvalloc(size_t);
 
 /*
   mallopt(int parameter_number, int parameter_value)
@@ -979,7 +979,7 @@ DLMALLOC_EXPORT void* dlvalloc(size_t);
   M_GRANULARITY        -2     page size   any power of 2 >= page size
   M_MMAP_THRESHOLD     -3      256*1024   any   (or 0 if no MMAP support)
 */
-DLMALLOC_EXPORT int dlmallopt(int, int);
+DLMALLOC_EXPORT ਪੂਰਨ dlmallopt(ਪੂਰਨ, ਪੂਰਨ);
 
 /*
   malloc_footprint();
@@ -990,7 +990,7 @@ DLMALLOC_EXPORT int dlmallopt(int, int);
   Even if locks are otherwise defined, this function does not use them,
   so results might not be up to date.
 */
-DLMALLOC_EXPORT size_t dlmalloc_footprint(void);
+DLMALLOC_EXPORT size_t dlmalloc_footprint(ਖਾਲੀ);
 
 /*
   malloc_max_footprint();
@@ -1003,7 +1003,7 @@ DLMALLOC_EXPORT size_t dlmalloc_footprint(void);
   otherwise defined, this function does not use them, so results might
   not be up to date.
 */
-DLMALLOC_EXPORT size_t dlmalloc_max_footprint(void);
+DLMALLOC_EXPORT size_t dlmalloc_max_footprint(ਖਾਲੀ);
 
 /*
   malloc_footprint_limit();
@@ -1014,7 +1014,7 @@ DLMALLOC_EXPORT size_t dlmalloc_max_footprint(void);
   guarantee that this number of bytes can actually be obtained from
   the system.
 */
-DLMALLOC_EXPORT size_t dlmalloc_footprint_limit();
+DLMALLOC_EXPORT size_t dlmalloc_footprint_ਹੱਦਬੰਦੀ();
 
 /*
   malloc_set_footprint_limit();
@@ -1028,9 +1028,9 @@ DLMALLOC_EXPORT size_t dlmalloc_footprint_limit();
   additional system memory will fail. However, invocation cannot
   retroactively deallocate existing used memory.
 */
-DLMALLOC_EXPORT size_t dlmalloc_set_footprint_limit(size_t bytes);
+DLMALLOC_EXPORT size_t dlmalloc_ਸੈੱਟ_footprint_ਹੱਦਬੰਦੀ(size_t ਬਾਈਟਾਂ);
 
-#if MALLOC_INSPECT_ALL
+#ਜੇ MALLOC_INSPECT_ALL
 /*
   malloc_inspect_all(void(*handler)(void *start,
                                     void *end,
@@ -1059,12 +1059,12 @@ DLMALLOC_EXPORT size_t dlmalloc_set_footprint_limit(size_t bytes);
 
   malloc_inspect_all is compiled only if MALLOC_INSPECT_ALL is defined.
 */
-DLMALLOC_EXPORT void dlmalloc_inspect_all(void(*handler)(void*, void *, size_t, void*),
-                           void* arg);
+DLMALLOC_EXPORT ਖਾਲੀ dlmalloc_inspect_all(ਖਾਲੀ(*handler)(ਖਾਲੀ*, ਖਾਲੀ *, size_t, ਖਾਲੀ*),
+                           ਖਾਲੀ* arg);
 
-#endif /* MALLOC_INSPECT_ALL */
+#ਜੇ_ਅੰਤ /* MALLOC_INSPECT_ALL */
 
-#if !NO_MALLINFO
+#ਜੇ !NO_MALLINFO
 /*
   mallinfo()
   Returns (by copy) a struct containing various summary statistics:
@@ -1087,8 +1087,8 @@ DLMALLOC_EXPORT void dlmalloc_inspect_all(void(*handler)(void*, void *, size_t, 
   be kept as longs, the reported values may wrap around zero and
   thus be inaccurate.
 */
-DLMALLOC_EXPORT struct mallinfo dlmallinfo(void);
-#endif /* NO_MALLINFO */
+DLMALLOC_EXPORT ਬਣਤਰ mallinfo dlmallinfo(ਖਾਲੀ);
+#ਜੇ_ਅੰਤ /* NO_MALLINFO */
 
 /*
   independent_calloc(size_t n_elements, size_t element_size, void* chunks[]);
@@ -1139,7 +1139,7 @@ DLMALLOC_EXPORT struct mallinfo dlmallinfo(void);
     return first;
   }
 */
-DLMALLOC_EXPORT void** dlindependent_calloc(size_t, size_t, void**);
+DLMALLOC_EXPORT ਖਾਲੀ** dlindependent_calloc(size_t, size_t, ਖਾਲੀ**);
 
 /*
   independent_comalloc(size_t n_elements, size_t sizes[], void* chunks[]);
@@ -1197,7 +1197,7 @@ DLMALLOC_EXPORT void** dlindependent_calloc(size_t, size_t, void**);
   since it cannot reuse existing noncontiguous small chunks that
   might be available for some of the elements.
 */
-DLMALLOC_EXPORT void** dlindependent_comalloc(size_t, size_t*, void**);
+DLMALLOC_EXPORT ਖਾਲੀ** dlindependent_comalloc(size_t, size_t*, ਖਾਲੀ**);
 
 /*
   bulk_free(void* array[], size_t n_elements)
@@ -1208,14 +1208,14 @@ DLMALLOC_EXPORT void** dlindependent_comalloc(size_t, size_t*, void**);
   is returned.  For large arrays of pointers with poor locality, it
   may be worthwhile to sort this array before calling bulk_free.
 */
-DLMALLOC_EXPORT size_t  dlbulk_free(void**, size_t n_elements);
+DLMALLOC_EXPORT size_t  dlbulk_free(ਖਾਲੀ**, size_t n_elements);
 
 /*
   pvalloc(size_t n);
   Equivalent to valloc(minimum-page-that-holds(n)), that is,
   round up n to nearest pagesize.
  */
-DLMALLOC_EXPORT void*  dlpvalloc(size_t);
+DLMALLOC_EXPORT ਖਾਲੀ*  dlpvalloc(size_t);
 
 /*
   malloc_trim(size_t pad);
@@ -1238,7 +1238,7 @@ DLMALLOC_EXPORT void*  dlpvalloc(size_t);
 
   Malloc_trim returns 1 if it actually released any memory, else 0.
 */
-DLMALLOC_EXPORT int  dlmalloc_trim(size_t);
+DLMALLOC_EXPORT ਪੂਰਨ  dlmalloc_trim(size_t);
 
 /*
   malloc_stats();
@@ -1259,7 +1259,7 @@ DLMALLOC_EXPORT int  dlmalloc_trim(size_t);
   malloc_stats prints only the most commonly interesting statistics.
   More information can be obtained by calling mallinfo.
 */
-DLMALLOC_EXPORT void  dlmalloc_stats(void);
+DLMALLOC_EXPORT ਖਾਲੀ  dlmalloc_stats(ਖਾਲੀ);
 
 /*
   malloc_usable_size(void* p);
@@ -1275,17 +1275,17 @@ DLMALLOC_EXPORT void  dlmalloc_stats(void);
   p = malloc(n);
   assert(malloc_usable_size(p) >= 256);
 */
-size_t dlmalloc_usable_size(void*);
+size_t dlmalloc_usable_ਮਾਪ(ਖਾਲੀ*);
 
-#endif /* ONLY_MSPACES */
+#ਜੇ_ਅੰਤ /* ONLY_MSPACES */
 
-#if MSPACES
+#ਜੇ MSPACES
 
 /*
   mspace is an opaque type representing an independent
   region of space that supports mspace_malloc, etc.
 */
-typedef void* mspace;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਖਾਲੀ* mspace;
 
 /*
   create_mspace creates and returns a new independent space with the
@@ -1298,7 +1298,7 @@ typedef void* mspace;
   compiling with a different DEFAULT_GRANULARITY or dynamically
   setting with mallopt(M_GRANULARITY, value).
 */
-DLMALLOC_EXPORT mspace create_mspace(size_t capacity, int locked);
+DLMALLOC_EXPORT mspace create_mspace(size_t ਸਮਰੱਥਾ, ਪੂਰਨ locked);
 
 /*
   destroy_mspace destroys the given space, and attempts to return all
@@ -1317,7 +1317,7 @@ DLMALLOC_EXPORT size_t destroy_mspace(mspace msp);
   Destroying this space will deallocate all additionally allocated
   space (if possible) but not the initial base.
 */
-DLMALLOC_EXPORT mspace create_mspace_with_base(void* base, size_t capacity, int locked);
+DLMALLOC_EXPORT mspace create_mspace_with_ਅਧਾਰ(ਖਾਲੀ* ਅਧਾਰ, size_t ਸਮਰੱਥਾ, ਪੂਰਨ locked);
 
 /*
   mspace_track_large_chunks controls whether requests for large chunks
@@ -1330,14 +1330,14 @@ DLMALLOC_EXPORT mspace create_mspace_with_base(void* base, size_t capacity, int 
   allocated using this space.  The function returns the previous
   setting.
 */
-DLMALLOC_EXPORT int mspace_track_large_chunks(mspace msp, int enable);
+DLMALLOC_EXPORT ਪੂਰਨ mspace_track_large_chunks(mspace msp, ਪੂਰਨ enable);
 
 
 /*
   mspace_malloc behaves as malloc, but operates within
   the given space.
 */
-DLMALLOC_EXPORT void* mspace_malloc(mspace msp, size_t bytes);
+DLMALLOC_EXPORT ਖਾਲੀ* mspace_malloc(mspace msp, size_t ਬਾਈਟਾਂ);
 
 /*
   mspace_free behaves as free, but operates within
@@ -1347,7 +1347,7 @@ DLMALLOC_EXPORT void* mspace_malloc(mspace msp, size_t bytes);
   free may be called instead of mspace_free because freed chunks from
   any space are handled by their originating spaces.
 */
-DLMALLOC_EXPORT void mspace_free(mspace msp, void* mem);
+DLMALLOC_EXPORT ਖਾਲੀ mspace_free(mspace msp, ਖਾਲੀ* mem);
 
 /*
   mspace_realloc behaves as realloc, but operates within
@@ -1358,33 +1358,33 @@ DLMALLOC_EXPORT void mspace_free(mspace msp, void* mem);
   realloced chunks from any space are handled by their originating
   spaces.
 */
-DLMALLOC_EXPORT void* mspace_realloc(mspace msp, void* mem, size_t newsize);
+DLMALLOC_EXPORT ਖਾਲੀ* mspace_realloc(mspace msp, ਖਾਲੀ* mem, size_t newsize);
 
 /*
   mspace_calloc behaves as calloc, but operates within
   the given space.
 */
-DLMALLOC_EXPORT void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size);
+DLMALLOC_EXPORT ਖਾਲੀ* mspace_calloc(mspace msp, size_t n_elements, size_t elem_ਮਾਪ);
 
 /*
   mspace_memalign behaves as memalign, but operates within
   the given space.
 */
-DLMALLOC_EXPORT void* mspace_memalign(mspace msp, size_t alignment, size_t bytes);
+DLMALLOC_EXPORT ਖਾਲੀ* mspace_memalign(mspace msp, size_t alignment, size_t ਬਾਈਟਾਂ);
 
 /*
   mspace_independent_calloc behaves as independent_calloc, but
   operates within the given space.
 */
-DLMALLOC_EXPORT void** mspace_independent_calloc(mspace msp, size_t n_elements,
-                                 size_t elem_size, void* chunks[]);
+DLMALLOC_EXPORT ਖਾਲੀ** mspace_independent_calloc(mspace msp, size_t n_elements,
+                                 size_t elem_ਮਾਪ, ਖਾਲੀ* chunks[]);
 
 /*
   mspace_independent_comalloc behaves as independent_comalloc, but
   operates within the given space.
 */
-DLMALLOC_EXPORT void** mspace_independent_comalloc(mspace msp, size_t n_elements,
-                                   size_t sizes[], void* chunks[]);
+DLMALLOC_EXPORT ਖਾਲੀ** mspace_independent_comalloc(mspace msp, size_t n_elements,
+                                   size_t sizes[], ਖਾਲੀ* chunks[]);
 
 /*
   mspace_footprint() returns the number of bytes obtained from the
@@ -1399,41 +1399,41 @@ DLMALLOC_EXPORT size_t mspace_footprint(mspace msp);
 DLMALLOC_EXPORT size_t mspace_max_footprint(mspace msp);
 
 
-#if !NO_MALLINFO
+#ਜੇ !NO_MALLINFO
 /*
   mspace_mallinfo behaves as mallinfo, but reports properties of
   the given space.
 */
-DLMALLOC_EXPORT struct mallinfo mspace_mallinfo(mspace msp);
-#endif /* NO_MALLINFO */
+DLMALLOC_EXPORT ਬਣਤਰ mallinfo mspace_mallinfo(mspace msp);
+#ਜੇ_ਅੰਤ /* NO_MALLINFO */
 
 /*
   malloc_usable_size(void* p) behaves the same as malloc_usable_size;
 */
-DLMALLOC_EXPORT size_t mspace_usable_size(const void* mem);
+DLMALLOC_EXPORT size_t mspace_usable_ਮਾਪ(ਅਚਲ ਖਾਲੀ* mem);
 
 /*
   mspace_malloc_stats behaves as malloc_stats, but reports
   properties of the given space.
 */
-DLMALLOC_EXPORT void mspace_malloc_stats(mspace msp);
+DLMALLOC_EXPORT ਖਾਲੀ mspace_malloc_stats(mspace msp);
 
 /*
   mspace_trim behaves as malloc_trim, but
   operates within the given space.
 */
-DLMALLOC_EXPORT int mspace_trim(mspace msp, size_t pad);
+DLMALLOC_EXPORT ਪੂਰਨ mspace_trim(mspace msp, size_t pad);
 
 /*
   An alias for mallopt.
 */
-DLMALLOC_EXPORT int mspace_mallopt(int, int);
+DLMALLOC_EXPORT ਪੂਰਨ mspace_mallopt(ਪੂਰਨ, ਪੂਰਨ);
 
-#endif /* MSPACES */
+#ਜੇ_ਅੰਤ /* MSPACES */
 
-#ifdef __cplusplus
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __cplusplus
 }  /* end of extern "C" */
-#endif /* __cplusplus */
+#ਜੇ_ਅੰਤ /* __cplusplus */
 
 /*
   ========================================================================
@@ -1447,158 +1447,158 @@ DLMALLOC_EXPORT int mspace_mallopt(int, int);
 
 /*------------------------------ internal #includes ---------------------- */
 
-#ifdef _MSC_VER
-#pragma warning( disable : 4146 ) /* no "unsigned" warnings */
-#endif /* _MSC_VER */
-#if !NO_MALLOC_STATS
-#include <stdio.h>       /* for printing in malloc_stats */
-#endif /* NO_MALLOC_STATS */
-#ifndef LACKS_ERRNO_H
-#include <errno.h>       /* for MALLOC_FAILURE_ACTION */
-#endif /* LACKS_ERRNO_H */
-#ifdef DEBUG
-#if ABORT_ON_ASSERT_FAILURE
-#undef assert
-#define assert(x) if(!(x)) ABORT
-#else /* ABORT_ON_ASSERT_FAILURE */
-#include <assert.h>
-#endif /* ABORT_ON_ASSERT_FAILURE */
-#else  /* DEBUG */
-#ifndef assert
-#define assert(x)
-#endif
-#define DEBUG 0
-#endif /* DEBUG */
-#if !defined(WIN32) && !defined(LACKS_TIME_H)
-#include <time.h>        /* for magic initialization */
-#endif /* WIN32 */
-#ifndef LACKS_STDLIB_H
-#include <stdlib.h>      /* for abort() */
-#endif /* LACKS_STDLIB_H */
-#ifndef LACKS_STRING_H
-#include <string.h>      /* for memset etc */
-#endif  /* LACKS_STRING_H */
-#if USE_BUILTIN_FFS
-#ifndef LACKS_STRINGS_H
-#include <strings.h>     /* for ffs */
-#endif /* LACKS_STRINGS_H */
-#endif /* USE_BUILTIN_FFS */
-#if HAVE_MMAP
-#ifndef LACKS_SYS_MMAN_H
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ _MSC_VER
+#ਹਦਾਇਤ warning( disable : 4146 ) /* no "unsigned" warnings */
+#ਜੇ_ਅੰਤ /* _MSC_VER */
+#ਜੇ !NO_MALLOC_STATS
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdio.h>       /* for printing in malloc_stats */
+#ਜੇ_ਅੰਤ /* NO_MALLOC_STATS */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_ERRNO_H
+#ਅਨ੍ਤਰ੍ਭਾਵ <errno.h>       /* for MALLOC_FAILURE_ACTION */
+#ਜੇ_ਅੰਤ /* LACKS_ERRNO_H */
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ DEBUG
+#ਜੇ ABORT_ON_ASSERT_FAILURE
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ ਪ੍ਰਤਿਜ੍ਞਾ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪ੍ਰਤਿਜ੍ਞਾ(x) ਜੇ(!(x)) ABORT
+#ਨਹੀਂਤਾਂ /* ABORT_ON_ASSERT_FAILURE */
+#ਅਨ੍ਤਰ੍ਭਾਵ <assert.h>
+#ਜੇ_ਅੰਤ /* ABORT_ON_ASSERT_FAILURE */
+#ਨਹੀਂਤਾਂ  /* DEBUG */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ਪ੍ਰਤਿਜ੍ਞਾ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪ੍ਰਤਿਜ੍ਞਾ(x)
+#ਜੇ_ਅੰਤ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEBUG 0
+#ਜੇ_ਅੰਤ /* DEBUG */
+#ਜੇ !defined(WIN32) && !defined(LACKS_ਸਮਾਂ_H)
+#ਅਨ੍ਤਰ੍ਭਾਵ <time.h>        /* for magic initialization */
+#ਜੇ_ਅੰਤ /* WIN32 */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_STDLIB_H
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>      /* for abort() */
+#ਜੇ_ਅੰਤ /* LACKS_STDLIB_H */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_STRING_H
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>      /* for memset etc */
+#ਜੇ_ਅੰਤ  /* LACKS_STRING_H */
+#ਜੇ USE_BUILTIN_FFS
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_ਲੜੀਆਂ_H
+#ਅਨ੍ਤਰ੍ਭਾਵ <strings.h>     /* for ffs */
+#ਜੇ_ਅੰਤ /* LACKS_STRINGS_H */
+#ਜੇ_ਅੰਤ /* USE_BUILTIN_FFS */
+#ਜੇ HAVE_MMAP
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_SYS_MMAN_H
 /* On some versions of linux, mremap decl in mman.h needs __USE_GNU set */
-#if (defined(linux) && !defined(__USE_GNU))
-#define __USE_GNU 1
-#include <sys/mman.h>    /* for mmap */
-#undef __USE_GNU
-#else
-#include <sys/mman.h>    /* for mmap */
-#endif /* linux */
-#endif /* LACKS_SYS_MMAN_H */
-#ifndef LACKS_FCNTL_H
-#include <fcntl.h>
-#endif /* LACKS_FCNTL_H */
-#endif /* HAVE_MMAP */
-#ifndef LACKS_UNISTD_H
-#include <unistd.h>     /* for sbrk, sysconf */
-#else /* LACKS_UNISTD_H */
-#if !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__NetBSD__)
-extern void*     sbrk(ptrdiff_t);
-#endif /* FreeBSD etc */
-#endif /* LACKS_UNISTD_H */
+#ਜੇ (defined(linux) && !defined(__USE_GNU))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ __USE_GNU 1
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/mman.h>    /* for mmap */
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ __USE_GNU
+#ਨਹੀਂਤਾਂ
+#ਅਨ੍ਤਰ੍ਭਾਵ <sys/mman.h>    /* for mmap */
+#ਜੇ_ਅੰਤ /* linux */
+#ਜੇ_ਅੰਤ /* LACKS_SYS_MMAN_H */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_FCNTL_H
+#ਅਨ੍ਤਰ੍ਭਾਵ <fcntl.h>
+#ਜੇ_ਅੰਤ /* LACKS_FCNTL_H */
+#ਜੇ_ਅੰਤ /* HAVE_MMAP */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LACKS_UNISTD_H
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>     /* for sbrk, sysconf */
+#ਨਹੀਂਤਾਂ /* LACKS_UNISTD_H */
+#ਜੇ !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__NetBSD__)
+ਬਾਹਰੀ ਖਾਲੀ*     sbrk(ptrdiff_t);
+#ਜੇ_ਅੰਤ /* FreeBSD etc */
+#ਜੇ_ਅੰਤ /* LACKS_UNISTD_H */
 
 /* Declarations for locking */
-#if USE_LOCKS
-#ifndef WIN32
-#if defined (__SVR4) && defined (__sun)  /* solaris */
-#include <thread.h>
-#elif !defined(LACKS_SCHED_H)
-#include <sched.h>
-#endif /* solaris or LACKS_SCHED_H */
-#if (defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0) || !USE_SPIN_LOCKS
-#include <pthread.h>
-#endif /* USE_RECURSIVE_LOCKS ... */
-#elif defined(_MSC_VER)
-#ifndef _M_AMD64
+#ਜੇ USE_LOCKS
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ WIN32
+#ਜੇ defined (__SVR4) && defined (__sun)  /* solaris */
+#ਅਨ੍ਤਰ੍ਭਾਵ <thread.h>
+#ਜਾਂਜੇ !defined(LACKS_SCHED_H)
+#ਅਨ੍ਤਰ੍ਭਾਵ <sched.h>
+#ਜੇ_ਅੰਤ /* solaris or LACKS_SCHED_H */
+#ਜੇ (defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0) || !USE_SPIN_LOCKS
+#ਅਨ੍ਤਰ੍ਭਾਵ <pthread.h>
+#ਜੇ_ਅੰਤ /* USE_RECURSIVE_LOCKS ... */
+#ਜਾਂਜੇ defined(_MSC_VER)
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ _M_AMD64
 /* These are already defined on AMD64 builds */
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-LONG __cdecl _InterlockedCompareExchange(LONG volatile *Dest, LONG Exchange, LONG Comp);
-LONG __cdecl _InterlockedExchange(LONG volatile *Target, LONG Value);
-#ifdef __cplusplus
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __cplusplus
+ਬਾਹਰੀ "C" {
+#ਜੇ_ਅੰਤ /* __cplusplus */
+LONG __cdecl _InterlockedCompareExchange(LONG ਅਸਥਿਰ *Dest, LONG Exchange, LONG Comp);
+LONG __cdecl _InterlockedExchange(LONG ਅਸਥਿਰ *ਨਿਸ਼ਾਨਾ, LONG ਮੁੱਲ_2);
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __cplusplus
 }
-#endif /* __cplusplus */
-#endif /* _M_AMD64 */
-#pragma intrinsic (_InterlockedCompareExchange)
-#pragma intrinsic (_InterlockedExchange)
-#define interlockedcompareexchange _InterlockedCompareExchange
-#define interlockedexchange _InterlockedExchange
-#elif defined(WIN32) && defined(__GNUC__)
-#define interlockedcompareexchange(a, b, c) __sync_val_compare_and_swap(a, c, b)
-#define interlockedexchange __sync_lock_test_and_set
-#endif /* Win32 */
-#else /* USE_LOCKS */
-#endif /* USE_LOCKS */
+#ਜੇ_ਅੰਤ /* __cplusplus */
+#ਜੇ_ਅੰਤ /* _M_AMD64 */
+#ਹਦਾਇਤ intrinsic (_InterlockedCompareExchange)
+#ਹਦਾਇਤ intrinsic (_InterlockedExchange)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ interlockedcompareexchange _InterlockedCompareExchange
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ interlockedexchange _InterlockedExchange
+#ਜਾਂਜੇ defined(WIN32) && defined(__GNUC__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ interlockedcompareexchange(a, b, c) __sync_val_compare_and_swap(a, c, b)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ interlockedexchange __sync_lock_test_and_set
+#ਜੇ_ਅੰਤ /* Win32 */
+#ਨਹੀਂਤਾਂ /* USE_LOCKS */
+#ਜੇ_ਅੰਤ /* USE_LOCKS */
 
-#ifndef LOCK_AT_FORK
-#define LOCK_AT_FORK 0
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ਤਾਲਾ_AT_FORK
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਤਾਲਾ_AT_FORK 0
+#ਜੇ_ਅੰਤ
 
 /* Declarations for bit scanning on win32 */
-#if defined(_MSC_VER) && _MSC_VER>=1300
-#ifndef BitScanForward /* Try to avoid pulling in WinNT.h */
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-unsigned char _BitScanForward(unsigned long *index, unsigned long mask);
-unsigned char _BitScanReverse(unsigned long *index, unsigned long mask);
-#ifdef __cplusplus
+#ਜੇ defined(_MSC_VER) && _MSC_VER>=1300
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_Forward /* Try to avoid pulling in WinNT.h */
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __cplusplus
+ਬਾਹਰੀ "C" {
+#ਜੇ_ਅੰਤ /* __cplusplus */
+ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_Forward_2(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *ਸੂਚਕਾਂਕ, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਨਕਾਬ);
+ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_ਉਲਟ(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *ਸੂਚਕਾਂਕ, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਨਕਾਬ);
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __cplusplus
 }
-#endif /* __cplusplus */
+#ਜੇ_ਅੰਤ /* __cplusplus */
 
-#define BitScanForward _BitScanForward
-#define BitScanReverse _BitScanReverse
-#pragma intrinsic(_BitScanForward)
-#pragma intrinsic(_BitScanReverse)
-#endif /* BitScanForward */
-#endif /* defined(_MSC_VER) && _MSC_VER>=1300 */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_Forward ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_Forward_2
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_ਉਲਟ_2 ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_ਉਲਟ
+#ਹਦਾਇਤ intrinsic(ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_Forward_2)
+#ਹਦਾਇਤ intrinsic(ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_ਉਲਟ)
+#ਜੇ_ਅੰਤ /* BitScanForward */
+#ਜੇ_ਅੰਤ /* defined(_MSC_VER) && _MSC_VER>=1300 */
 
-#ifndef WIN32
-#ifndef malloc_getpagesize
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ WIN32
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ malloc_getpagesize
 #  ifdef _SC_PAGESIZE         /* some SVR4 systems omit an underscore */
-#    ifndef _SC_PAGE_SIZE
-#      define _SC_PAGE_SIZE _SC_PAGESIZE
+#    ifndef SC_ਪੰਨਾ_ਮਾਪ
+#      define SC_ਪੰਨਾ_ਮਾਪ _SC_PAGESIZE
 #    endif
 #  endif
-#  ifdef _SC_PAGE_SIZE
-#    define malloc_getpagesize sysconf(_SC_PAGE_SIZE)
-#  else
-#    if defined(BSD) || defined(DGUX) || defined(HAVE_GETPAGESIZE)
-       extern size_t getpagesize();
+#  ifdef SC_ਪੰਨਾ_ਮਾਪ
+#    define malloc_getpagesize sysconf(SC_ਪੰਨਾ_ਮਾਪ)
+#  ਨਹੀਂਤਾਂ
+#    ਜੇ defined(BSD) || defined(DGUX) || defined(HAVE_GETPAGESIZE)
+       ਬਾਹਰੀ size_t getpagesize();
 #      define malloc_getpagesize getpagesize()
-#    else
+#    ਨਹੀਂਤਾਂ
 #      ifdef WIN32 /* use supplied emulation of getpagesize */
 #        define malloc_getpagesize getpagesize()
-#      else
+#      ਨਹੀਂਤਾਂ
 #        ifndef LACKS_SYS_PARAM_H
 #          include <sys/param.h>
 #        endif
 #        ifdef EXEC_PAGESIZE
 #          define malloc_getpagesize EXEC_PAGESIZE
-#        else
+#        ਨਹੀਂਤਾਂ
 #          ifdef NBPG
 #            ifndef CLSIZE
 #              define malloc_getpagesize NBPG
-#            else
+#            ਨਹੀਂਤਾਂ
 #              define malloc_getpagesize (NBPG * CLSIZE)
 #            endif
-#          else
+#          ਨਹੀਂਤਾਂ
 #            ifdef NBPC
 #              define malloc_getpagesize NBPC
-#            else
+#            ਨਹੀਂਤਾਂ
 #              ifdef PAGESIZE
 #                define malloc_getpagesize PAGESIZE
-#              else /* just guess */
+#              ਨਹੀਂਤਾਂ /* just guess */
 #                define malloc_getpagesize ((size_t)4096U)
 #              endif
 #            endif
@@ -1607,44 +1607,44 @@ unsigned char _BitScanReverse(unsigned long *index, unsigned long mask);
 #      endif
 #    endif
 #  endif
-#endif
-#endif
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ
 
 /* libffi: the upstream malloc_getpagesize definition above is gated on
    !WIN32 (WIN32 builds use GetSystemInfo in init_mparams instead).  Guarantee
    the symbol is always defined so the !WIN32 init_mparams branch still compiles
    on toolchains where it is not preprocessed out as expected (e.g. MSVC).  */
-#ifndef malloc_getpagesize
-#define malloc_getpagesize ((size_t)4096U)
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ malloc_getpagesize
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ malloc_getpagesize ((size_t)4096U)
+#ਜੇ_ਅੰਤ
 
 /* ------------------- size_t and alignment properties -------------------- */
 
 /* The byte and bit size of a size_t */
-#define SIZE_T_SIZE         (sizeof(size_t))
-#define SIZE_T_BITSIZE      (sizeof(size_t) << 3)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਮਾਪ_T_ਮਾਪ         (ਆਕਾਰ(size_t))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਮਾਪ_T_BITSIZE      (ਆਕਾਰ(size_t) << 3)
 
 /* Some constants coerced to size_t */
 /* Annoying but necessary to avoid errors on some platforms */
-#define SIZE_T_ZERO         ((size_t)0)
-#define SIZE_T_ONE          ((size_t)1)
-#define SIZE_T_TWO          ((size_t)2)
-#define SIZE_T_FOUR         ((size_t)4)
-#define TWO_SIZE_T_SIZES    (SIZE_T_SIZE<<1)
-#define FOUR_SIZE_T_SIZES   (SIZE_T_SIZE<<2)
-#define SIX_SIZE_T_SIZES    (FOUR_SIZE_T_SIZES+TWO_SIZE_T_SIZES)
-#define HALF_MAX_SIZE_T     (MAX_SIZE_T / 2U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਮਾਪ_T_ZERO         ((size_t)0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਮਾਪ_T_ONE          ((size_t)1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਮਾਪ_T_TWO          ((size_t)2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਮਾਪ_T_FOUR         ((size_t)4)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TWO_ਮਾਪ_T_SIZES    (ਮਾਪ_T_ਮਾਪ<<1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FOUR_ਮਾਪ_T_SIZES   (ਮਾਪ_T_ਮਾਪ<<2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SIX_ਮਾਪ_T_SIZES    (FOUR_ਮਾਪ_T_SIZES+TWO_ਮਾਪ_T_SIZES)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ HALF_MAX_ਮਾਪ_T     (MAX_ਮਾਪ_T / 2U)
 
 /* The bit mask value corresponding to MALLOC_ALIGNMENT */
-#define CHUNK_ALIGN_MASK    (MALLOC_ALIGNMENT - SIZE_T_ONE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CHUNK_ALIGN_ਨਕਾਬ    (MALLOC_ALIGNMENT - ਮਾਪ_T_ONE)
 
 /* True if address a has acceptable alignment */
-#define is_aligned(A)       (((size_t)((A)) & (CHUNK_ALIGN_MASK)) == 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_aligned(A)       (((size_t)((A)) & (CHUNK_ALIGN_ਨਕਾਬ)) == 0)
 
 /* the number of bytes to offset an address to align it */
-#define align_offset(A)\
- ((((size_t)(A) & CHUNK_ALIGN_MASK) == 0)? 0 :\
-  ((MALLOC_ALIGNMENT - ((size_t)(A) & CHUNK_ALIGN_MASK)) & CHUNK_ALIGN_MASK))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ align_ਵਿੱਥ(A)\
+ ((((size_t)(A) & CHUNK_ALIGN_ਨਕਾਬ) == 0)? 0 :\
+  ((MALLOC_ALIGNMENT - ((size_t)(A) & CHUNK_ALIGN_ਨਕਾਬ)) & CHUNK_ALIGN_ਨਕਾਬ))
 
 /* -------------------------- MMAP preliminaries ------------------------- */
 
@@ -1656,180 +1656,180 @@ unsigned char _BitScanReverse(unsigned long *index, unsigned long mask);
 
 
 /* MORECORE and MMAP must return MFAIL on failure */
-#define MFAIL                ((void*)(MAX_SIZE_T))
-#define CMFAIL               ((char*)(MFAIL)) /* defined for convenience */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MFAIL                ((ਖਾਲੀ*)(MAX_ਮਾਪ_T))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CMFAIL               ((ਅੱਖਰ*)(MFAIL)) /* defined for convenience */
 
-#if HAVE_MMAP
+#ਜੇ HAVE_MMAP
 
-#if !defined(WIN32) && !defined (__OS2__)
-#define MUNMAP_DEFAULT(a, s)  munmap((a), (s))
-#define MMAP_PROT            (PROT_READ|PROT_WRITE)
-#if !defined(MAP_ANONYMOUS) && defined(MAP_ANON)
-#define MAP_ANONYMOUS        MAP_ANON
-#endif /* MAP_ANON */
-#ifdef MAP_ANONYMOUS
-#define MMAP_FLAGS           (MAP_PRIVATE|MAP_ANONYMOUS)
-#define MMAP_DEFAULT(s)       mmap(0, (s), MMAP_PROT, MMAP_FLAGS, -1, 0)
-#else /* MAP_ANONYMOUS */
+#ਜੇ !defined(WIN32) && !defined (__OS2__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MUNMAP_DEFAULT(a, s)  munmap((a), (s))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_PROT            (PROT_READ|PROT_WRITE)
+#ਜੇ !defined(MAP_ANONYMOUS) && defined(MAP_ANON)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAP_ANONYMOUS        MAP_ANON
+#ਜੇ_ਅੰਤ /* MAP_ANON */
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ MAP_ANONYMOUS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_FLAGS           (MAP_ਨਿੱਜੀ|MAP_ANONYMOUS)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_DEFAULT(s)       mmap(0, (s), MMAP_PROT, MMAP_FLAGS, -1, 0)
+#ਨਹੀਂਤਾਂ /* MAP_ANONYMOUS */
 /*
    Nearly all versions of mmap support MAP_ANONYMOUS, so the following
    is unlikely to be needed, but is supplied just in case.
 */
-#define MMAP_FLAGS           (MAP_PRIVATE)
-static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
-#define MMAP_DEFAULT(s) ((dev_zero_fd < 0) ? \
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_FLAGS           (MAP_ਨਿੱਜੀ)
+ਸਥਿਰ ਪੂਰਨ dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_DEFAULT(s) ((dev_zero_fd < 0) ? \
            (dev_zero_fd = open("/dev/zero", O_RDWR), \
             mmap(0, (s), MMAP_PROT, MMAP_FLAGS, dev_zero_fd, 0)) : \
             mmap(0, (s), MMAP_PROT, MMAP_FLAGS, dev_zero_fd, 0))
-#endif /* MAP_ANONYMOUS */
+#ਜੇ_ਅੰਤ /* MAP_ANONYMOUS */
 
-#define DIRECT_MMAP_DEFAULT(s) MMAP_DEFAULT(s)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸਿੱਧਾ_MMAP_DEFAULT(s) MMAP_DEFAULT(s)
 
-#elif defined(__OS2__)
+#ਜਾਂਜੇ defined(__OS2__)
 
 /* OS/2 MMAP via DosAllocMem */
-static void* os2mmap(size_t size) {
-  void* ptr;
-  if (DosAllocMem(&ptr, size, OBJ_ANY|PAG_COMMIT|PAG_READ|PAG_WRITE) &&
-      DosAllocMem(&ptr, size, PAG_COMMIT|PAG_READ|PAG_WRITE))
-    return MFAIL;
-  return ptr;
+ਸਥਿਰ ਖਾਲੀ* os2mmap(size_t ਮਾਪ) {
+  ਖਾਲੀ* ptr;
+  ਜੇ (DosAllocMem(&ptr, ਮਾਪ, OBJ_ANY|PAG_COMMIT|PAG_READ|PAG_WRITE) &&
+      DosAllocMem(&ptr, ਮਾਪ, PAG_COMMIT|PAG_READ|PAG_WRITE))
+    ਵਾਪਸ MFAIL;
+  ਵਾਪਸ ptr;
 }
 
-#define os2direct_mmap(n)     os2mmap(n)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ os2direct_mmap(n)     os2mmap(n)
 
 /* This function supports releasing coalesed segments */
-static int os2munmap(void* ptr, size_t size) {
-  while (size) {
-    ULONG ulSize = size;
+ਸਥਿਰ ਪੂਰਨ os2munmap(ਖਾਲੀ* ptr, size_t ਮਾਪ) {
+  ਜਦੋਂ (ਮਾਪ) {
+    ULONG ul_ਮਾਪ = ਮਾਪ;
     ULONG ulFlags = 0;
-    if (DosQueryMem(ptr, &ulSize, &ulFlags) != 0)
-      return -1;
-    if ((ulFlags & PAG_BASE) == 0 ||(ulFlags & PAG_COMMIT) == 0 ||
-        ulSize > size)
-      return -1;
-    if (DosFreeMem(ptr) != 0)
-      return -1;
-    ptr = ( void * ) ( ( char * ) ptr + ulSize );
-    size -= ulSize;
+    ਜੇ (DosQueryMem(ptr, &ul_ਮਾਪ, &ulFlags) != 0)
+      ਵਾਪਸ -1;
+    ਜੇ ((ulFlags & PAG_ਅਧਾਰ) == 0 ||(ulFlags & PAG_COMMIT) == 0 ||
+        ul_ਮਾਪ > ਮਾਪ)
+      ਵਾਪਸ -1;
+    ਜੇ (DosFreeMem(ptr) != 0)
+      ਵਾਪਸ -1;
+    ptr = ( ਖਾਲੀ * ) ( ( ਅੱਖਰ * ) ptr + ul_ਮਾਪ );
+    ਮਾਪ -= ul_ਮਾਪ;
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-#define MMAP_DEFAULT(s)         os2mmap(s)
-#define MUNMAP_DEFAULT(a, s)    os2munmap((a), (s))
-#define DIRECT_MMAP_DEFAULT(s)  os2direct_mmap(s)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_DEFAULT(s)         os2mmap(s)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MUNMAP_DEFAULT(a, s)    os2munmap((a), (s))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸਿੱਧਾ_MMAP_DEFAULT(s)  os2direct_mmap(s)
 
-#else /* WIN32 */
+#ਨਹੀਂਤਾਂ /* WIN32 */
 
 /* Win32 MMAP via VirtualAlloc */
 /* libffi: plain static (not FORCEINLINE) -- mingw's <windows.h> defines
    FORCEINLINE with an 'extern' storage class, which clashes with 'static'.  */
-static void* win32mmap(size_t size) {
-  void* ptr = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-  return (ptr != 0)? ptr: MFAIL;
+ਸਥਿਰ ਖਾਲੀ* win32mmap(size_t ਮਾਪ) {
+  ਖਾਲੀ* ptr = VirtualAlloc(0, ਮਾਪ, MEM_RESERVE|MEM_COMMIT, ਪੰਨਾ_EXECUTE_READWRITE);
+  ਵਾਪਸ (ptr != 0)? ptr: MFAIL;
 }
 
 /* For direct MMAP, use MEM_TOP_DOWN to minimize interference */
-static void* win32direct_mmap(size_t size) {
-  void* ptr = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT|MEM_TOP_DOWN,
-                           PAGE_EXECUTE_READWRITE);
-  return (ptr != 0)? ptr: MFAIL;
+ਸਥਿਰ ਖਾਲੀ* win32direct_mmap(size_t ਮਾਪ) {
+  ਖਾਲੀ* ptr = VirtualAlloc(0, ਮਾਪ, MEM_RESERVE|MEM_COMMIT|MEM_ਸਿਖਰ_ਥੱਲੇ,
+                           ਪੰਨਾ_EXECUTE_READWRITE);
+  ਵਾਪਸ (ptr != 0)? ptr: MFAIL;
 }
 
 /* This function supports releasing coalesed segments */
-static int win32munmap(void* ptr, size_t size) {
-  MEMORY_BASIC_INFORMATION minfo;
-  char* cptr = (char*)ptr;
-  while (size) {
-    if (VirtualQuery(cptr, &minfo, sizeof(minfo)) == 0)
-      return -1;
-    if (minfo.BaseAddress != cptr || minfo.AllocationBase != cptr ||
-        minfo.State != MEM_COMMIT || minfo.RegionSize > size)
-      return -1;
-    if (VirtualFree(cptr, 0, MEM_RELEASE) == 0)
-      return -1;
-    cptr += minfo.RegionSize;
-    size -= minfo.RegionSize;
+ਸਥਿਰ ਪੂਰਨ win32munmap(ਖਾਲੀ* ptr, size_t ਮਾਪ) {
+  ਸਮ੍ਰਿਤੀ_BASIC_INFORMATION minfo;
+  ਅੱਖਰ* cptr = (ਅੱਖਰ*)ptr;
+  ਜਦੋਂ (ਮਾਪ) {
+    ਜੇ (VirtualQuery(cptr, &minfo, ਆਕਾਰ(minfo)) == 0)
+      ਵਾਪਸ -1;
+    ਜੇ (minfo.ਅਧਾਰ_ਪਤਾ != cptr || minfo.ਵੰਡ_ਅਧਾਰ != cptr ||
+        minfo.State != MEM_COMMIT || minfo.Region_ਮਾਪ > ਮਾਪ)
+      ਵਾਪਸ -1;
+    ਜੇ (VirtualFree(cptr, 0, MEM_RELEASE) == 0)
+      ਵਾਪਸ -1;
+    cptr += minfo.Region_ਮਾਪ;
+    ਮਾਪ -= minfo.Region_ਮਾਪ;
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-#define MMAP_DEFAULT(s)             win32mmap(s)
-#define MUNMAP_DEFAULT(a, s)        win32munmap((a), (s))
-#define DIRECT_MMAP_DEFAULT(s)      win32direct_mmap(s)
-#endif /* WIN32 */
-#endif /* HAVE_MMAP */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_DEFAULT(s)             win32mmap(s)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MUNMAP_DEFAULT(a, s)        win32munmap((a), (s))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸਿੱਧਾ_MMAP_DEFAULT(s)      win32direct_mmap(s)
+#ਜੇ_ਅੰਤ /* WIN32 */
+#ਜੇ_ਅੰਤ /* HAVE_MMAP */
 
-#if HAVE_MREMAP
-#ifndef WIN32
-#define MREMAP_DEFAULT(addr, osz, nsz, mv) mremap((addr), (osz), (nsz), (mv))
-#endif /* WIN32 */
-#endif /* HAVE_MREMAP */
+#ਜੇ HAVE_MREMAP
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ WIN32
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MREMAP_DEFAULT(addr, osz, nsz, mv) mremap((addr), (osz), (nsz), (mv))
+#ਜੇ_ਅੰਤ /* WIN32 */
+#ਜੇ_ਅੰਤ /* HAVE_MREMAP */
 
 /**
  * Define CALL_MORECORE
  */
-#if HAVE_MORECORE
-    #ifdef MORECORE
-        #define CALL_MORECORE(S)    MORECORE(S)
-    #else  /* MORECORE */
-        #define CALL_MORECORE(S)    MORECORE_DEFAULT(S)
-    #endif /* MORECORE */
-#else  /* HAVE_MORECORE */
-    #define CALL_MORECORE(S)        MFAIL
-#endif /* HAVE_MORECORE */
+#ਜੇ HAVE_MORECORE
+    #ਜੇ_ਪਰਿਭਾਸ਼ਿਤ MORECORE
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MORECORE(S)    MORECORE(S)
+    #ਨਹੀਂਤਾਂ  /* MORECORE */
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MORECORE(S)    MORECORE_DEFAULT(S)
+    #ਜੇ_ਅੰਤ /* MORECORE */
+#ਨਹੀਂਤਾਂ  /* HAVE_MORECORE */
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MORECORE(S)        MFAIL
+#ਜੇ_ਅੰਤ /* HAVE_MORECORE */
 
 /**
  * Define CALL_MMAP/CALL_MUNMAP/CALL_DIRECT_MMAP
  */
-#if HAVE_MMAP
-    #define USE_MMAP_BIT            (SIZE_T_ONE)
+#ਜੇ HAVE_MMAP
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ            (ਮਾਪ_T_ONE)
 
-    #ifdef MMAP
-        #define CALL_MMAP(s)        MMAP(s)
-    #else /* MMAP */
-        #define CALL_MMAP(s)        MMAP_DEFAULT(s)
-    #endif /* MMAP */
-    #ifdef MUNMAP
-        #define CALL_MUNMAP(a, s)   MUNMAP((a), (s))
-    #else /* MUNMAP */
-        #define CALL_MUNMAP(a, s)   MUNMAP_DEFAULT((a), (s))
-    #endif /* MUNMAP */
-    #ifdef DIRECT_MMAP
-        #define CALL_DIRECT_MMAP(s) DIRECT_MMAP(s)
-    #else /* DIRECT_MMAP */
-        #define CALL_DIRECT_MMAP(s) DIRECT_MMAP_DEFAULT(s)
-    #endif /* DIRECT_MMAP */
-#else  /* HAVE_MMAP */
-    #define USE_MMAP_BIT            (SIZE_T_ZERO)
+    #ਜੇ_ਪਰਿਭਾਸ਼ਿਤ MMAP
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MMAP(s)        MMAP(s)
+    #ਨਹੀਂਤਾਂ /* MMAP */
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MMAP(s)        MMAP_DEFAULT(s)
+    #ਜੇ_ਅੰਤ /* MMAP */
+    #ਜੇ_ਪਰਿਭਾਸ਼ਿਤ MUNMAP
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MUNMAP(a, s)   MUNMAP((a), (s))
+    #ਨਹੀਂਤਾਂ /* MUNMAP */
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MUNMAP(a, s)   MUNMAP_DEFAULT((a), (s))
+    #ਜੇ_ਅੰਤ /* MUNMAP */
+    #ਜੇ_ਪਰਿਭਾਸ਼ਿਤ ਸਿੱਧਾ_MMAP
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_ਸਿੱਧਾ_MMAP(s) ਸਿੱਧਾ_MMAP(s)
+    #ਨਹੀਂਤਾਂ /* DIRECT_MMAP */
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_ਸਿੱਧਾ_MMAP(s) ਸਿੱਧਾ_MMAP_DEFAULT(s)
+    #ਜੇ_ਅੰਤ /* DIRECT_MMAP */
+#ਨਹੀਂਤਾਂ  /* HAVE_MMAP */
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ            (ਮਾਪ_T_ZERO)
 
-    #define MMAP(s)                 MFAIL
-    #define MUNMAP(a, s)            (-1)
-    #define DIRECT_MMAP(s)          MFAIL
-    #define CALL_DIRECT_MMAP(s)     DIRECT_MMAP(s)
-    #define CALL_MMAP(s)            MMAP(s)
-    #define CALL_MUNMAP(a, s)       MUNMAP((a), (s))
-#endif /* HAVE_MMAP */
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP(s)                 MFAIL
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MUNMAP(a, s)            (-1)
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸਿੱਧਾ_MMAP(s)          MFAIL
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_ਸਿੱਧਾ_MMAP(s)     ਸਿੱਧਾ_MMAP(s)
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MMAP(s)            MMAP(s)
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MUNMAP(a, s)       MUNMAP((a), (s))
+#ਜੇ_ਅੰਤ /* HAVE_MMAP */
 
 /**
  * Define CALL_MREMAP
  */
-#if HAVE_MMAP && HAVE_MREMAP
-    #ifdef MREMAP
-        #define CALL_MREMAP(addr, osz, nsz, mv) MREMAP((addr), (osz), (nsz), (mv))
-    #else /* MREMAP */
-        #define CALL_MREMAP(addr, osz, nsz, mv) MREMAP_DEFAULT((addr), (osz), (nsz), (mv))
-    #endif /* MREMAP */
-#else  /* HAVE_MMAP && HAVE_MREMAP */
-    #define CALL_MREMAP(addr, osz, nsz, mv)     MFAIL
-#endif /* HAVE_MMAP && HAVE_MREMAP */
+#ਜੇ HAVE_MMAP && HAVE_MREMAP
+    #ਜੇ_ਪਰਿਭਾਸ਼ਿਤ MREMAP
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MREMAP(addr, osz, nsz, mv) MREMAP((addr), (osz), (nsz), (mv))
+    #ਨਹੀਂਤਾਂ /* MREMAP */
+        #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MREMAP(addr, osz, nsz, mv) MREMAP_DEFAULT((addr), (osz), (nsz), (mv))
+    #ਜੇ_ਅੰਤ /* MREMAP */
+#ਨਹੀਂਤਾਂ  /* HAVE_MMAP && HAVE_MREMAP */
+    #ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CALL_MREMAP(addr, osz, nsz, mv)     MFAIL
+#ਜੇ_ਅੰਤ /* HAVE_MMAP && HAVE_MREMAP */
 
 /* mstate bit set if contiguous morecore disabled or failed */
-#define USE_NONCONTIGUOUS_BIT (4U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_NONCONTIGUOUS_ਦੋਆਧਾਰੀ_ਅੰਕ (4U)
 
 /* segment bit set in create_mspace_with_base */
-#define EXTERN_BIT            (8U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EXTERN_ਦੋਆਧਾਰੀ_ਅੰਕ            (8U)
 
 
 /* --------------------------- Lock preliminaries ------------------------ */
@@ -1862,15 +1862,15 @@ static int win32munmap(void* ptr, size_t size) {
 
 */
 
-#if !USE_LOCKS
-#define USE_LOCK_BIT               (0U)
-#define INITIAL_LOCK(l)            (0)
-#define DESTROY_LOCK(l)            (0)
-#define ACQUIRE_MALLOC_GLOBAL_LOCK()
-#define RELEASE_MALLOC_GLOBAL_LOCK()
+#ਜੇ !USE_LOCKS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ               (0U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INITIAL_ਤਾਲਾ(l)            (0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DESTROY_ਤਾਲਾ(l)            (0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ACQUIRE_MALLOC_GLOBAL_ਤਾਲਾ()
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RELEASE_MALLOC_GLOBAL_ਤਾਲਾ()
 
-#else
-#if USE_LOCKS > 1
+#ਨਹੀਂਤਾਂ
+#ਜੇ USE_LOCKS > 1
 /* -----------------------  User-defined locks ------------------------ */
 /* Define your own lock implementation here */
 /* #define INITIAL_LOCK(lk)  ... */
@@ -1880,59 +1880,59 @@ static int win32munmap(void* ptr, size_t size) {
 /* #define TRY_LOCK(lk) ... */
 /* static MLOCK_T malloc_global_mutex = ... */
 
-#elif USE_SPIN_LOCKS
+#ਜਾਂਜੇ USE_SPIN_LOCKS
 
 /* First, define CAS_LOCK and CLEAR_LOCK on ints */
 /* Note CAS_LOCK defined to return 0 on success */
 
-#if defined(__GNUC__)&& (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
-#define CAS_LOCK(sl)     __sync_lock_test_and_set(sl, 1)
-#define CLEAR_LOCK(sl)   __sync_lock_release(sl)
+#ਜੇ defined(__GNUC__)&& (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CAS_ਤਾਲਾ(sl)     __sync_lock_test_and_set(sl, 1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CLEAR_ਤਾਲਾ(sl)   __sync_lock_release(sl)
 
-#elif (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)))
+#ਜਾਂਜੇ (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)))
 /* Custom spin locks for older gcc on x86 */
-static FORCEINLINE int x86_cas_lock(int *sl) {
-  int ret;
-  int val = 1;
-  int cmp = 0;
+ਸਥਿਰ FORCEINLINE ਪੂਰਨ x86_cas_ਤਾਲਾ(ਪੂਰਨ *sl) {
+  ਪੂਰਨ ret;
+  ਪੂਰਨ val = 1;
+  ਪੂਰਨ cmp = 0;
   __asm__ __volatile__  ("lock; cmpxchgl %1, %2"
                          : "=a" (ret)
                          : "r" (val), "m" (*(sl)), "0"(cmp)
                          : "memory", "cc");
-  return ret;
+  ਵਾਪਸ ret;
 }
 
-static FORCEINLINE void x86_clear_lock(int* sl) {
-  assert(*sl != 0);
-  int prev = 0;
-  int ret;
+ਸਥਿਰ FORCEINLINE ਖਾਲੀ x86_clear_ਤਾਲਾ(ਪੂਰਨ* sl) {
+  ਪ੍ਰਤਿਜ੍ਞਾ(*sl != 0);
+  ਪੂਰਨ prev = 0;
+  ਪੂਰਨ ret;
   __asm__ __volatile__ ("lock; xchgl %0, %1"
                         : "=r" (ret)
                         : "m" (*(sl)), "0"(prev)
                         : "memory");
 }
 
-#define CAS_LOCK(sl)     x86_cas_lock(sl)
-#define CLEAR_LOCK(sl)   x86_clear_lock(sl)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CAS_ਤਾਲਾ(sl)     x86_cas_ਤਾਲਾ(sl)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CLEAR_ਤਾਲਾ(sl)   x86_clear_ਤਾਲਾ(sl)
 
-#else /* Win32 MSC */
-#define CAS_LOCK(sl)     interlockedexchange((LONG volatile *)(sl), (LONG)1)
-#define CLEAR_LOCK(sl)   interlockedexchange ((LONG volatile *)(sl), (LONG)0)
+#ਨਹੀਂਤਾਂ /* Win32 MSC */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CAS_ਤਾਲਾ(sl)     interlockedexchange((LONG ਅਸਥਿਰ *)(sl), (LONG)1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CLEAR_ਤਾਲਾ(sl)   interlockedexchange ((LONG ਅਸਥਿਰ *)(sl), (LONG)0)
 
-#endif /* ... gcc spins locks ... */
+#ਜੇ_ਅੰਤ /* ... gcc spins locks ... */
 
 /* How to yield for a spin lock */
-#define SPINS_PER_YIELD       63
-#if defined(_MSC_VER)
-#define SLEEP_EX_DURATION     50 /* delay for yield/sleep */
-#define SPIN_LOCK_YIELD  SleepEx(SLEEP_EX_DURATION, FALSE)
-#elif defined (__SVR4) && defined (__sun) /* solaris */
-#define SPIN_LOCK_YIELD   thr_yield();
-#elif !defined(LACKS_SCHED_H)
-#define SPIN_LOCK_YIELD   sched_yield();
-#else
-#define SPIN_LOCK_YIELD
-#endif /* ... yield ... */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SPINS_ਪ੍ਰਤੀ_YIELD       63
+#ਜੇ defined(_MSC_VER)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SLEEP_EX_DURATION     50 /* delay for yield/sleep */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SPIN_ਤਾਲਾ_YIELD  SleepEx(SLEEP_EX_DURATION, FALSE)
+#ਜਾਂਜੇ defined (__SVR4) && defined (__sun) /* solaris */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SPIN_ਤਾਲਾ_YIELD   thr_yield();
+#ਜਾਂਜੇ !defined(LACKS_SCHED_H)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SPIN_ਤਾਲਾ_YIELD   sched_yield();
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SPIN_ਤਾਲਾ_YIELD
+#ਜੇ_ਅੰਤ /* ... yield ... */
 
 /* libffi: read the spin-lock word with a relaxed atomic load for the lock-free
    "is it held?" peek, so ThreadSanitizer does not flag it as racing with the
@@ -1940,185 +1940,185 @@ static FORCEINLINE void x86_clear_lock(int* sl) {
    peek is only a hint to avoid a costly CAS, and CAS_LOCK still provides the
    acquire ordering on success.  Falls back to the original volatile read when
    atomic builtins are unavailable.  */
-#if defined(__ATOMIC_RELAXED)
+#ਜੇ defined(__ATOMIC_RELAXED)
 # define ffi_spin_peek(sl) __atomic_load_n((sl), __ATOMIC_RELAXED)
-#elif defined(_MSC_VER)
+#ਜਾਂਜੇ defined(_MSC_VER)
 # define ffi_spin_peek(sl) \
-  ((int)_InterlockedCompareExchange((LONG volatile *)(sl), (LONG)0, (LONG)0))
-#else
-# define ffi_spin_peek(sl) (*(volatile int *)(sl))
-#endif
+  ((ਪੂਰਨ)_InterlockedCompareExchange((LONG ਅਸਥਿਰ *)(sl), (LONG)0, (LONG)0))
+#ਨਹੀਂਤਾਂ
+# define ffi_spin_peek(sl) (*(ਅਸਥਿਰ ਪੂਰਨ *)(sl))
+#ਜੇ_ਅੰਤ
 
-#if !defined(USE_RECURSIVE_LOCKS) || USE_RECURSIVE_LOCKS == 0
+#ਜੇ !defined(USE_RECURSIVE_LOCKS) || USE_RECURSIVE_LOCKS == 0
 /* Plain spin locks use single word (embedded in malloc_states) */
-static int spin_acquire_lock(int *sl) {
-  int spins = 0;
-  while (ffi_spin_peek(sl) != 0 || CAS_LOCK(sl)) {
-    if ((++spins & SPINS_PER_YIELD) == 0) {
-      SPIN_LOCK_YIELD;
+ਸਥਿਰ ਪੂਰਨ spin_acquire_ਤਾਲਾ(ਪੂਰਨ *sl) {
+  ਪੂਰਨ spins = 0;
+  ਜਦੋਂ (ffi_spin_peek(sl) != 0 || CAS_ਤਾਲਾ(sl)) {
+    ਜੇ ((++spins & SPINS_ਪ੍ਰਤੀ_YIELD) == 0) {
+      SPIN_ਤਾਲਾ_YIELD;
     }
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-#define MLOCK_T               int
-#define TRY_LOCK(sl)          !CAS_LOCK(sl)
-#define RELEASE_LOCK(sl)      CLEAR_LOCK(sl)
-#define ACQUIRE_LOCK(sl)      (CAS_LOCK(sl)? spin_acquire_lock(sl) : 0)
-#define INITIAL_LOCK(sl)      (*sl = 0)
-#define DESTROY_LOCK(sl)      (0)
-static MLOCK_T malloc_global_mutex = 0;
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MLOCK_T               ਪੂਰਨ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TRY_ਤਾਲਾ(sl)          !CAS_ਤਾਲਾ(sl)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RELEASE_ਤਾਲਾ(sl)      CLEAR_ਤਾਲਾ(sl)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ACQUIRE_ਤਾਲਾ(sl)      (CAS_ਤਾਲਾ(sl)? spin_acquire_ਤਾਲਾ(sl) : 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INITIAL_ਤਾਲਾ(sl)      (*sl = 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DESTROY_ਤਾਲਾ(sl)      (0)
+ਸਥਿਰ MLOCK_T malloc_global_mutex = 0;
 
-#else /* USE_RECURSIVE_LOCKS */
+#ਨਹੀਂਤਾਂ /* USE_RECURSIVE_LOCKS */
 /* types for lock owners */
-#ifdef WIN32
-#define THREAD_ID_T           DWORD
-#define CURRENT_THREAD        GetCurrentThreadId()
-#define EQ_OWNER(X,Y)         ((X) == (Y))
-#else
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ WIN32
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ THREAD_ID_T           DWORD
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CURRENT_THREAD        GetCurrentThreadId()
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EQ_OWNER(X,Y)         ((X) == (Y))
+#ਨਹੀਂਤਾਂ
 /*
   Note: the following assume that pthread_t is a type that can be
   initialized to (casted) zero. If this is not the case, you will need to
   somehow redefine these or not use spin locks.
 */
-#define THREAD_ID_T           pthread_t
-#define CURRENT_THREAD        pthread_self()
-#define EQ_OWNER(X,Y)         pthread_equal(X, Y)
-#endif
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ THREAD_ID_T           pthread_t
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CURRENT_THREAD        pthread_self()
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ EQ_OWNER(X,Y)         pthread_equal(X, Y)
+#ਜੇ_ਅੰਤ
 
-struct malloc_recursive_lock {
-  int sl;
-  unsigned int c;
+ਬਣਤਰ malloc_recursive_ਤਾਲਾ {
+  ਪੂਰਨ sl;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ c;
   THREAD_ID_T threadid;
 };
 
-#define MLOCK_T  struct malloc_recursive_lock
-static MLOCK_T malloc_global_mutex = { 0, 0, (THREAD_ID_T)0};
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MLOCK_T  ਬਣਤਰ malloc_recursive_ਤਾਲਾ
+ਸਥਿਰ MLOCK_T malloc_global_mutex = { 0, 0, (THREAD_ID_T)0};
 
-static FORCEINLINE void recursive_release_lock(MLOCK_T *lk) {
-  assert(lk->sl != 0);
-  if (--lk->c == 0) {
-    CLEAR_LOCK(&lk->sl);
+ਸਥਿਰ FORCEINLINE ਖਾਲੀ recursive_release_ਤਾਲਾ(MLOCK_T *lk) {
+  ਪ੍ਰਤਿਜ੍ਞਾ(lk->sl != 0);
+  ਜੇ (--lk->c == 0) {
+    CLEAR_ਤਾਲਾ(&lk->sl);
   }
 }
 
-static FORCEINLINE int recursive_acquire_lock(MLOCK_T *lk) {
+ਸਥਿਰ FORCEINLINE ਪੂਰਨ recursive_acquire_ਤਾਲਾ(MLOCK_T *lk) {
   THREAD_ID_T mythreadid = CURRENT_THREAD;
-  int spins = 0;
-  for (;;) {
-    if (ffi_spin_peek(&lk->sl) == 0) {
-      if (!CAS_LOCK(&lk->sl)) {
+  ਪੂਰਨ spins = 0;
+  ਲਈ (;;) {
+    ਜੇ (ffi_spin_peek(&lk->sl) == 0) {
+      ਜੇ (!CAS_ਤਾਲਾ(&lk->sl)) {
         lk->threadid = mythreadid;
         lk->c = 1;
-        return 0;
+        ਵਾਪਸ 0;
       }
     }
-    else if (EQ_OWNER(lk->threadid, mythreadid)) {
+    ਨਹੀਂਤਾਂ ਜੇ (EQ_OWNER(lk->threadid, mythreadid)) {
       ++lk->c;
-      return 0;
+      ਵਾਪਸ 0;
     }
-    if ((++spins & SPINS_PER_YIELD) == 0) {
-      SPIN_LOCK_YIELD;
+    ਜੇ ((++spins & SPINS_ਪ੍ਰਤੀ_YIELD) == 0) {
+      SPIN_ਤਾਲਾ_YIELD;
     }
   }
 }
 
-static FORCEINLINE int recursive_try_lock(MLOCK_T *lk) {
+ਸਥਿਰ FORCEINLINE ਪੂਰਨ recursive_try_ਤਾਲਾ(MLOCK_T *lk) {
   THREAD_ID_T mythreadid = CURRENT_THREAD;
-  if (ffi_spin_peek(&lk->sl) == 0) {
-    if (!CAS_LOCK(&lk->sl)) {
+  ਜੇ (ffi_spin_peek(&lk->sl) == 0) {
+    ਜੇ (!CAS_ਤਾਲਾ(&lk->sl)) {
       lk->threadid = mythreadid;
       lk->c = 1;
-      return 1;
+      ਵਾਪਸ 1;
     }
   }
-  else if (EQ_OWNER(lk->threadid, mythreadid)) {
+  ਨਹੀਂਤਾਂ ਜੇ (EQ_OWNER(lk->threadid, mythreadid)) {
     ++lk->c;
-    return 1;
+    ਵਾਪਸ 1;
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-#define RELEASE_LOCK(lk)      recursive_release_lock(lk)
-#define TRY_LOCK(lk)          recursive_try_lock(lk)
-#define ACQUIRE_LOCK(lk)      recursive_acquire_lock(lk)
-#define INITIAL_LOCK(lk)      ((lk)->threadid = (THREAD_ID_T)0, (lk)->sl = 0, (lk)->c = 0)
-#define DESTROY_LOCK(lk)      (0)
-#endif /* USE_RECURSIVE_LOCKS */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RELEASE_ਤਾਲਾ(lk)      recursive_release_ਤਾਲਾ(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TRY_ਤਾਲਾ(lk)          recursive_try_ਤਾਲਾ(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ACQUIRE_ਤਾਲਾ(lk)      recursive_acquire_ਤਾਲਾ(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INITIAL_ਤਾਲਾ(lk)      ((lk)->threadid = (THREAD_ID_T)0, (lk)->sl = 0, (lk)->c = 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DESTROY_ਤਾਲਾ(lk)      (0)
+#ਜੇ_ਅੰਤ /* USE_RECURSIVE_LOCKS */
 
-#elif defined(WIN32) /* Win32 critical sections */
-#define MLOCK_T               CRITICAL_SECTION
-#define ACQUIRE_LOCK(lk)      (EnterCriticalSection(lk), 0)
-#define RELEASE_LOCK(lk)      LeaveCriticalSection(lk)
-#define TRY_LOCK(lk)          TryEnterCriticalSection(lk)
-#define INITIAL_LOCK(lk)      (!InitializeCriticalSectionAndSpinCount((lk), 0x80000000|4000))
-#define DESTROY_LOCK(lk)      (DeleteCriticalSection(lk), 0)
-#define NEED_GLOBAL_LOCK_INIT
+#ਜਾਂਜੇ defined(WIN32) /* Win32 critical sections */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MLOCK_T               CRITICAL_SECTION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ACQUIRE_ਤਾਲਾ(lk)      (EnterCriticalSection(lk), 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RELEASE_ਤਾਲਾ(lk)      LeaveCriticalSection(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TRY_ਤਾਲਾ(lk)          TryEnterCriticalSection(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INITIAL_ਤਾਲਾ(lk)      (!Initialize_Critical_Section_And_Spin_ਗਿਣਤੀ((lk), 0x80000000|4000))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DESTROY_ਤਾਲਾ(lk)      (DeleteCriticalSection(lk), 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NEED_GLOBAL_ਤਾਲਾ_INIT
 
-static MLOCK_T malloc_global_mutex;
-static volatile LONG malloc_global_mutex_status;
+ਸਥਿਰ MLOCK_T malloc_global_mutex;
+ਸਥਿਰ ਅਸਥਿਰ LONG malloc_global_mutex_ਸਥਿਤੀ;
 
 /* Use spin loop to initialize global lock */
-static void init_malloc_global_mutex() {
-  for (;;) {
-    long stat = malloc_global_mutex_status;
-    if (stat > 0)
-      return;
+ਸਥਿਰ ਖਾਲੀ init_malloc_global_mutex() {
+  ਲਈ (;;) {
+    ਲੰਮਾ stat = malloc_global_mutex_ਸਥਿਤੀ;
+    ਜੇ (stat > 0)
+      ਵਾਪਸ;
     /* transition to < 0 while initializing, then to > 0) */
-    if (stat == 0 &&
-        interlockedcompareexchange(&malloc_global_mutex_status, (LONG)-1, (LONG)0) == 0) {
+    ਜੇ (stat == 0 &&
+        interlockedcompareexchange(&malloc_global_mutex_ਸਥਿਤੀ, (LONG)-1, (LONG)0) == 0) {
       InitializeCriticalSection(&malloc_global_mutex);
-      interlockedexchange(&malloc_global_mutex_status, (LONG)1);
-      return;
+      interlockedexchange(&malloc_global_mutex_ਸਥਿਤੀ, (LONG)1);
+      ਵਾਪਸ;
     }
     SleepEx(0, FALSE);
   }
 }
 
-#else /* pthreads-based locks */
-#define MLOCK_T               pthread_mutex_t
-#define ACQUIRE_LOCK(lk)      pthread_mutex_lock(lk)
-#define RELEASE_LOCK(lk)      pthread_mutex_unlock(lk)
-#define TRY_LOCK(lk)          (!pthread_mutex_trylock(lk))
-#define INITIAL_LOCK(lk)      pthread_init_lock(lk)
-#define DESTROY_LOCK(lk)      pthread_mutex_destroy(lk)
+#ਨਹੀਂਤਾਂ /* pthreads-based locks */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MLOCK_T               pthread_mutex_t
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ACQUIRE_ਤਾਲਾ(lk)      pthread_mutex_ਤਾਲਾ(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RELEASE_ਤਾਲਾ(lk)      pthread_mutex_unlock(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TRY_ਤਾਲਾ(lk)          (!pthread_mutex_trylock(lk))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INITIAL_ਤਾਲਾ(lk)      pthread_init_ਤਾਲਾ(lk)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DESTROY_ਤਾਲਾ(lk)      pthread_mutex_destroy(lk)
 
-#if defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0 && defined(linux) && !defined(PTHREAD_MUTEX_RECURSIVE)
+#ਜੇ defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0 && defined(linux) && !defined(PTHREAD_MUTEX_RECURSIVE)
 /* Cope with old-style linux recursive lock initialization by adding */
 /* skipped internal declaration from pthread.h */
-extern int pthread_mutexattr_setkind_np __P ((pthread_mutexattr_t *__attr,
-                                              int __kind));
-#define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
-#define pthread_mutexattr_settype(x,y) pthread_mutexattr_setkind_np(x,y)
-#endif /* USE_RECURSIVE_LOCKS ... */
+ਬਾਹਰੀ ਪੂਰਨ pthread_mutexattr_setkind_np __P ((pthread_mutexattr_t *__attr,
+                                              ਪੂਰਨ __kind));
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ pthread_mutexattr_settype(x,y) pthread_mutexattr_setkind_np(x,y)
+#ਜੇ_ਅੰਤ /* USE_RECURSIVE_LOCKS ... */
 
-static MLOCK_T malloc_global_mutex = PTHREAD_MUTEX_INITIALIZER;
+ਸਥਿਰ MLOCK_T malloc_global_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static int pthread_init_lock (MLOCK_T *lk) {
+ਸਥਿਰ ਪੂਰਨ pthread_init_ਤਾਲਾ (MLOCK_T *lk) {
   pthread_mutexattr_t attr;
-  if (pthread_mutexattr_init(&attr)) return 1;
-#if defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0
-  if (pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)) return 1;
-#endif
-  if (pthread_mutex_init(lk, &attr)) return 1;
-  if (pthread_mutexattr_destroy(&attr)) return 1;
-  return 0;
+  ਜੇ (pthread_mutexattr_init(&attr)) ਵਾਪਸ 1;
+#ਜੇ defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0
+  ਜੇ (pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)) ਵਾਪਸ 1;
+#ਜੇ_ਅੰਤ
+  ਜੇ (pthread_mutex_init(lk, &attr)) ਵਾਪਸ 1;
+  ਜੇ (pthread_mutexattr_destroy(&attr)) ਵਾਪਸ 1;
+  ਵਾਪਸ 0;
 }
 
-#endif /* ... lock types ... */
+#ਜੇ_ਅੰਤ /* ... lock types ... */
 
 /* Common code for all lock types */
-#define USE_LOCK_BIT               (2U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ               (2U)
 
-#ifndef ACQUIRE_MALLOC_GLOBAL_LOCK
-#define ACQUIRE_MALLOC_GLOBAL_LOCK()  ACQUIRE_LOCK(&malloc_global_mutex);
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ACQUIRE_MALLOC_GLOBAL_ਤਾਲਾ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ACQUIRE_MALLOC_GLOBAL_ਤਾਲਾ()  ACQUIRE_ਤਾਲਾ(&malloc_global_mutex);
+#ਜੇ_ਅੰਤ
 
-#ifndef RELEASE_MALLOC_GLOBAL_LOCK
-#define RELEASE_MALLOC_GLOBAL_LOCK()  RELEASE_LOCK(&malloc_global_mutex);
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ RELEASE_MALLOC_GLOBAL_ਤਾਲਾ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RELEASE_MALLOC_GLOBAL_ਤਾਲਾ()  RELEASE_ਤਾਲਾ(&malloc_global_mutex);
+#ਜੇ_ਅੰਤ
 
-#endif /* USE_LOCKS */
+#ਜੇ_ਅੰਤ /* USE_LOCKS */
 
 /* -----------------------  Chunk representations ------------------------ */
 
@@ -2257,56 +2257,56 @@ static int pthread_init_lock (MLOCK_T *lk) {
 
 */
 
-struct malloc_chunk {
+ਬਣਤਰ malloc_chunk {
   size_t               prev_foot;  /* Size of previous chunk (if free).  */
-  size_t               head;       /* Size and inuse bits. */
-  struct malloc_chunk* fd;         /* double links -- used only if free. */
-  struct malloc_chunk* bk;
+  size_t               ਸਿਰ;       /* Size and inuse bits. */
+  ਬਣਤਰ malloc_chunk* fd;         /* double links -- used only if free. */
+  ਬਣਤਰ malloc_chunk* bk;
 };
 
-typedef struct malloc_chunk  mchunk;
-typedef struct malloc_chunk* mchunkptr;
-typedef struct malloc_chunk* sbinptr;  /* The type of bins of chunks */
-typedef unsigned int bindex_t;         /* Described below */
-typedef unsigned int binmap_t;         /* Described below */
-typedef unsigned int flag_t;           /* The type of various bit flag sets */
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_chunk  mchunk;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_chunk* mchunkptr;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_chunk* sbinptr;  /* The type of bins of chunks */
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ bindex_t;         /* Described below */
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ binmap_t;         /* Described below */
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ flag_t;           /* The type of various bit flag sets */
 
 /* ------------------- Chunks sizes and alignments ----------------------- */
 
-#define MCHUNK_SIZE         (sizeof(mchunk))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MCHUNK_ਮਾਪ         (ਆਕਾਰ(mchunk))
 
-#if FOOTERS
-#define CHUNK_OVERHEAD      (TWO_SIZE_T_SIZES)
-#else /* FOOTERS */
-#define CHUNK_OVERHEAD      (SIZE_T_SIZE)
-#endif /* FOOTERS */
+#ਜੇ FOOTERS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CHUNK_OVERHEAD      (TWO_ਮਾਪ_T_SIZES)
+#ਨਹੀਂਤਾਂ /* FOOTERS */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CHUNK_OVERHEAD      (ਮਾਪ_T_ਮਾਪ)
+#ਜੇ_ਅੰਤ /* FOOTERS */
 
 /* MMapped chunks need a second word of overhead ... */
-#define MMAP_CHUNK_OVERHEAD (TWO_SIZE_T_SIZES)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_CHUNK_OVERHEAD (TWO_ਮਾਪ_T_SIZES)
 /* ... and additional padding for fake next-chunk at foot */
-#define MMAP_FOOT_PAD       (FOUR_SIZE_T_SIZES)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MMAP_FOOT_PAD       (FOUR_ਮਾਪ_T_SIZES)
 
 /* The smallest size we can malloc is an aligned minimal chunk */
-#define MIN_CHUNK_SIZE\
-  ((MCHUNK_SIZE + CHUNK_ALIGN_MASK) & ~CHUNK_ALIGN_MASK)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MIN_CHUNK_ਮਾਪ\
+  ((MCHUNK_ਮਾਪ + CHUNK_ALIGN_ਨਕਾਬ) & ~CHUNK_ALIGN_ਨਕਾਬ)
 
 /* conversion from malloc headers to user pointers, and back */
-#define chunk2mem(p)        ((void*)((char*)(p)       + TWO_SIZE_T_SIZES))
-#define mem2chunk(mem)      ((mchunkptr)((char*)(mem) - TWO_SIZE_T_SIZES))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ chunk2mem(p)        ((ਖਾਲੀ*)((ਅੱਖਰ*)(p)       + TWO_ਮਾਪ_T_SIZES))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ mem2chunk(mem)      ((mchunkptr)((ਅੱਖਰ*)(mem) - TWO_ਮਾਪ_T_SIZES))
 /* chunk associated with aligned address A */
-#define align_as_chunk(A)   (mchunkptr)((A) + align_offset(chunk2mem(A)))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ align_as_chunk(A)   (mchunkptr)((A) + align_ਵਿੱਥ(chunk2mem(A)))
 
 /* Bounds on request (not chunk) sizes. */
-#define MAX_REQUEST         ((-MIN_CHUNK_SIZE) << 2)
-#define MIN_REQUEST         (MIN_CHUNK_SIZE - CHUNK_OVERHEAD - SIZE_T_ONE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_REQUEST         ((-MIN_CHUNK_ਮਾਪ) << 2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MIN_REQUEST         (MIN_CHUNK_ਮਾਪ - CHUNK_OVERHEAD - ਮਾਪ_T_ONE)
 
 /* pad request bytes into a usable size */
-#define pad_request(req) \
-   (((req) + CHUNK_OVERHEAD + CHUNK_ALIGN_MASK) & ~CHUNK_ALIGN_MASK)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ pad_request(req) \
+   (((req) + CHUNK_OVERHEAD + CHUNK_ALIGN_ਨਕਾਬ) & ~CHUNK_ALIGN_ਨਕਾਬ)
 
 /* pad request, checking for minimum (but not maximum) */
-#define request2size(req) \
-  (((req) < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(req))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ request2size(req) \
+  (((req) < MIN_REQUEST)? MIN_CHUNK_ਮਾਪ : pad_request(req))
 
 
 /* ------------------ Operations on head and foot fields ----------------- */
@@ -2319,61 +2319,61 @@ typedef unsigned int flag_t;           /* The type of various bit flag sets */
   FLAG4_BIT is not used by this malloc, but might be useful in extensions.
 */
 
-#define PINUSE_BIT          (SIZE_T_ONE)
-#define CINUSE_BIT          (SIZE_T_TWO)
-#define FLAG4_BIT           (SIZE_T_FOUR)
-#define INUSE_BITS          (PINUSE_BIT|CINUSE_BIT)
-#define FLAG_BITS           (PINUSE_BIT|CINUSE_BIT|FLAG4_BIT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ          (ਮਾਪ_T_ONE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ          (ਮਾਪ_T_TWO)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FLAG4_ਦੋਆਧਾਰੀ_ਅੰਕ           (ਮਾਪ_T_FOUR)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ INUSE_ਬਿੱਟ          (PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FLAG_ਬਿੱਟ           (PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ|FLAG4_ਦੋਆਧਾਰੀ_ਅੰਕ)
 
 /* Head value for fenceposts */
-#define FENCEPOST_HEAD      (INUSE_BITS|SIZE_T_SIZE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FENCEPOST_ਸਿਰ      (INUSE_ਬਿੱਟ|ਮਾਪ_T_ਮਾਪ)
 
 /* extraction of fields from head words */
-#define cinuse(p)           ((p)->head & CINUSE_BIT)
-#define pinuse(p)           ((p)->head & PINUSE_BIT)
-#define flag4inuse(p)       ((p)->head & FLAG4_BIT)
-#define is_inuse(p)         (((p)->head & INUSE_BITS) != PINUSE_BIT)
-#define is_mmapped(p)       (((p)->head & INUSE_BITS) == 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ cinuse(p)           ((p)->ਸਿਰ & CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ pinuse(p)           ((p)->ਸਿਰ & PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ flag4inuse(p)       ((p)->ਸਿਰ & FLAG4_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_inuse(p)         (((p)->ਸਿਰ & INUSE_ਬਿੱਟ) != PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_mmapped(p)       (((p)->ਸਿਰ & INUSE_ਬਿੱਟ) == 0)
 
-#define chunksize(p)        ((p)->head & ~(FLAG_BITS))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ chunksize(p)        ((p)->ਸਿਰ & ~(FLAG_ਬਿੱਟ))
 
-#define clear_pinuse(p)     ((p)->head &= ~PINUSE_BIT)
-#define set_flag4(p)        ((p)->head |= FLAG4_BIT)
-#define clear_flag4(p)      ((p)->head &= ~FLAG4_BIT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ clear_pinuse(p)     ((p)->ਸਿਰ &= ~PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_flag4(p)        ((p)->ਸਿਰ |= FLAG4_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ clear_flag4(p)      ((p)->ਸਿਰ &= ~FLAG4_ਦੋਆਧਾਰੀ_ਅੰਕ)
 
 /* Treat space at ptr +/- offset as a chunk */
-#define chunk_plus_offset(p, s)  ((mchunkptr)(((char*)(p)) + (s)))
-#define chunk_minus_offset(p, s) ((mchunkptr)(((char*)(p)) - (s)))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ chunk_plus_ਵਿੱਥ(p, s)  ((mchunkptr)(((ਅੱਖਰ*)(p)) + (s)))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ chunk_minus_ਵਿੱਥ(p, s) ((mchunkptr)(((ਅੱਖਰ*)(p)) - (s)))
 
 /* Ptr to next or previous physical malloc_chunk. */
-#define next_chunk(p) ((mchunkptr)( ((char*)(p)) + ((p)->head & ~FLAG_BITS)))
-#define prev_chunk(p) ((mchunkptr)( ((char*)(p)) - ((p)->prev_foot) ))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅਗਲਾ_chunk(p) ((mchunkptr)( ((ਅੱਖਰ*)(p)) + ((p)->ਸਿਰ & ~FLAG_ਬਿੱਟ)))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ prev_chunk(p) ((mchunkptr)( ((ਅੱਖਰ*)(p)) - ((p)->prev_foot) ))
 
 /* extract next chunk's pinuse bit */
-#define next_pinuse(p)  ((next_chunk(p)->head) & PINUSE_BIT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅਗਲਾ_pinuse(p)  ((ਅਗਲਾ_chunk(p)->ਸਿਰ) & PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
 
 /* Get/set size at footer */
-#define get_foot(p, s)  (((mchunkptr)((char*)(p) + (s)))->prev_foot)
-#define set_foot(p, s)  (((mchunkptr)((char*)(p) + (s)))->prev_foot = (s))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ get_foot(p, s)  (((mchunkptr)((ਅੱਖਰ*)(p) + (s)))->prev_foot)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_foot(p, s)  (((mchunkptr)((ਅੱਖਰ*)(p) + (s)))->prev_foot = (s))
 
 /* Set size, pinuse bit, and foot */
-#define set_size_and_pinuse_of_free_chunk(p, s)\
-  ((p)->head = (s|PINUSE_BIT), set_foot(p, s))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, s)\
+  ((p)->ਸਿਰ = (s|PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ), ਸੈੱਟ_foot(p, s))
 
 /* Set size, pinuse bit, foot, and clear next pinuse */
-#define set_free_with_pinuse(p, s, n)\
-  (clear_pinuse(n), set_size_and_pinuse_of_free_chunk(p, s))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_free_with_pinuse(p, s, n)\
+  (clear_pinuse(n), ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, s))
 
 /* Get the internal overhead associated with chunk p */
-#define overhead_for(p)\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ overhead_for(p)\
  (is_mmapped(p)? MMAP_CHUNK_OVERHEAD : CHUNK_OVERHEAD)
 
 /* Return true if malloced space is not necessarily cleared */
-#if MMAP_CLEARS
-#define calloc_must_clear(p) (!is_mmapped(p))
-#else /* MMAP_CLEARS */
-#define calloc_must_clear(p) (1)
-#endif /* MMAP_CLEARS */
+#ਜੇ MMAP_CLEARS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ calloc_must_clear(p) (!is_mmapped(p))
+#ਨਹੀਂਤਾਂ /* MMAP_CLEARS */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ calloc_must_clear(p) (1)
+#ਜੇ_ਅੰਤ /* MMAP_CLEARS */
 
 /* ---------------------- Overlaid data structures ----------------------- */
 
@@ -2466,24 +2466,24 @@ nextchunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   is of course much better.
 */
 
-struct malloc_tree_chunk {
+ਬਣਤਰ malloc_ਰੁੱਖ_chunk {
   /* The first four fields must be compatible with malloc_chunk */
   size_t                    prev_foot;
-  size_t                    head;
-  struct malloc_tree_chunk* fd;
-  struct malloc_tree_chunk* bk;
+  size_t                    ਸਿਰ;
+  ਬਣਤਰ malloc_ਰੁੱਖ_chunk* fd;
+  ਬਣਤਰ malloc_ਰੁੱਖ_chunk* bk;
 
-  struct malloc_tree_chunk* child[2];
-  struct malloc_tree_chunk* parent;
-  bindex_t                  index;
+  ਬਣਤਰ malloc_ਰੁੱਖ_chunk* ਬੱਚਾ[2];
+  ਬਣਤਰ malloc_ਰੁੱਖ_chunk* ਮਾਪਾ;
+  bindex_t                  ਸੂਚਕਾਂਕ;
 };
 
-typedef struct malloc_tree_chunk  tchunk;
-typedef struct malloc_tree_chunk* tchunkptr;
-typedef struct malloc_tree_chunk* tbinptr; /* The type of bins of trees */
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_ਰੁੱਖ_chunk  tchunk;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_ਰੁੱਖ_chunk* tchunkptr;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_ਰੁੱਖ_chunk* tbinptr; /* The type of bins of trees */
 
 /* A little helper macro for trees */
-#define leftmost_child(t) ((t)->child[0] != 0? (t)->child[0] : (t)->child[1])
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ leftmost_ਬੱਚਾ(t) ((t)->ਬੱਚਾ[0] != 0? (t)->ਬੱਚਾ[0] : (t)->ਬੱਚਾ[1])
 
 /* ----------------------------- Segments -------------------------------- */
 
@@ -2542,54 +2542,54 @@ typedef struct malloc_tree_chunk* tbinptr; /* The type of bins of trees */
     and deallocated/trimmed using MORECORE with negative arguments.
 */
 
-struct malloc_segment {
-  char*        base;             /* base address */
-  size_t       size;             /* allocated size */
-  struct malloc_segment* next;   /* ptr to next segment */
-#if FFI_MMAP_EXEC_WRIT
+ਬਣਤਰ malloc_segment {
+  ਅੱਖਰ*        ਅਧਾਰ;             /* base address */
+  size_t       ਮਾਪ;             /* allocated size */
+  ਬਣਤਰ malloc_segment* ਅਗਲਾ;   /* ptr to next segment */
+#ਜੇ FFI_MMAP_EXEC_WRIT
   /* The mmap magic is supposed to store the address of the executable
      segment at the very end of the requested block.  */
 
-# define mmap_exec_offset(b,s) (*(ptrdiff_t*)((b)+(s)-sizeof(ptrdiff_t)))
+# define mmap_exec_ਵਿੱਥ(b,s) (*(ptrdiff_t*)((b)+(s)-ਆਕਾਰ(ptrdiff_t)))
 
   /* We can only merge segments if their corresponding executable
      segments are at identical offsets.  */
-# define check_segment_merge(S,b,s) \
-  (mmap_exec_offset((b),(s)) == (S)->exec_offset)
+# define check_segment_ਮਿਲਾਓ(S,b,s) \
+  (mmap_exec_ਵਿੱਥ((b),(s)) == (S)->exec_ਵਿੱਥ)
 
-# define add_segment_exec_offset(p,S) ((char*)(p) + (S)->exec_offset)
-# define sub_segment_exec_offset(p,S) ((char*)(p) - (S)->exec_offset)
+# define ਜੋੜੋ_segment_exec_ਵਿੱਥ(p,S) ((ਅੱਖਰ*)(p) + (S)->exec_ਵਿੱਥ)
+# define sub_segment_exec_ਵਿੱਥ(p,S) ((ਅੱਖਰ*)(p) - (S)->exec_ਵਿੱਥ)
 
   /* The removal of sflags only works with HAVE_MORECORE == 0.  */
 
-# define get_segment_flags(S)   (USE_MMAP_BIT)
-# define set_segment_flags(S,v) \
-  (((v) != USE_MMAP_BIT) ? (ABORT, (v)) :				\
-   (((S)->exec_offset =							\
-     mmap_exec_offset((S)->base, (S)->size)),				\
-    (mmap_exec_offset((S)->base + (S)->exec_offset, (S)->size) !=	\
-     (S)->exec_offset) ? (ABORT, (v)) :					\
-   (mmap_exec_offset((S)->base, (S)->size) = 0), (v)))
+# define get_segment_flags(S)   (USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ)
+# define ਸੈੱਟ_segment_flags(S,v) \
+  (((v) != USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ) ? (ABORT, (v)) :				\
+   (((S)->exec_ਵਿੱਥ =							\
+     mmap_exec_ਵਿੱਥ((S)->ਅਧਾਰ, (S)->ਮਾਪ)),				\
+    (mmap_exec_ਵਿੱਥ((S)->ਅਧਾਰ + (S)->exec_ਵਿੱਥ, (S)->ਮਾਪ) !=	\
+     (S)->exec_ਵਿੱਥ) ? (ABORT, (v)) :					\
+   (mmap_exec_ਵਿੱਥ((S)->ਅਧਾਰ, (S)->ਮਾਪ) = 0), (v)))
 
   /* We use an offset here, instead of a pointer, because then, when
      base changes, we don't have to modify this.  On architectures
      with segmented addresses, this might not work.  */
-  ptrdiff_t    exec_offset;
-#else
+  ptrdiff_t    exec_ਵਿੱਥ;
+#ਨਹੀਂਤਾਂ
 
 # define get_segment_flags(S)   ((S)->sflags)
-# define set_segment_flags(S,v) ((S)->sflags = (v))
-# define check_segment_merge(S,b,s) (1)
+# define ਸੈੱਟ_segment_flags(S,v) ((S)->sflags = (v))
+# define check_segment_ਮਿਲਾਓ(S,b,s) (1)
 
   flag_t       sflags;           /* mmap and extern flag */
-#endif
+#ਜੇ_ਅੰਤ
 };
 
-#define is_mmapped_segment(S)  (get_segment_flags(S) & USE_MMAP_BIT)
-#define is_extern_segment(S)   (get_segment_flags(S) & EXTERN_BIT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_mmapped_segment(S)  (get_segment_flags(S) & USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_extern_segment(S)   (get_segment_flags(S) & EXTERN_ਦੋਆਧਾਰੀ_ਅੰਕ)
 
-typedef struct malloc_segment  msegment;
-typedef struct malloc_segment* msegmentptr;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_segment  msegment;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_segment* msegmentptr;
 
 /* ---------------------------- malloc_state ----------------------------- */
 
@@ -2597,7 +2597,7 @@ typedef struct malloc_segment* msegmentptr;
    A malloc_state holds all of the bookkeeping for a space.
    The main fields are:
 
-  Top
+ਸਿਖਰ
     The topmost chunk of the currently active segment. Its size is
     cached in topsize.  The actual size of topmost space is
     topsize+TOP_FOOT_SIZE, which includes space reserved for adding
@@ -2679,23 +2679,23 @@ typedef struct malloc_segment* msegmentptr;
 */
 
 /* Bin types, widths and sizes */
-#define NSMALLBINS        (32U)
-#define NTREEBINS         (32U)
-#define SMALLBIN_SHIFT    (3U)
-#define SMALLBIN_WIDTH    (SIZE_T_ONE << SMALLBIN_SHIFT)
-#define TREEBIN_SHIFT     (8U)
-#define MIN_LARGE_SIZE    (SIZE_T_ONE << TREEBIN_SHIFT)
-#define MAX_SMALL_SIZE    (MIN_LARGE_SIZE - SIZE_T_ONE)
-#define MAX_SMALL_REQUEST (MAX_SMALL_SIZE - CHUNK_ALIGN_MASK - CHUNK_OVERHEAD)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NSMALLBINS        (32U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ NTREEBINS         (32U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SMALLBIN_ਖਿਸਕਾਓ    (3U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SMALLBIN_ਚੌੜਾਈ    (ਮਾਪ_T_ONE << SMALLBIN_ਖਿਸਕਾਓ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TREEBIN_ਖਿਸਕਾਓ     (8U)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MIN_LARGE_ਮਾਪ    (ਮਾਪ_T_ONE << TREEBIN_ਖਿਸਕਾਓ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_SMALL_ਮਾਪ    (MIN_LARGE_ਮਾਪ - ਮਾਪ_T_ONE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_SMALL_REQUEST (MAX_SMALL_ਮਾਪ - CHUNK_ALIGN_ਨਕਾਬ - CHUNK_OVERHEAD)
 
-struct malloc_state {
+ਬਣਤਰ malloc_state {
   binmap_t   smallmap;
   binmap_t   treemap;
   size_t     dvsize;
   size_t     topsize;
-  char*      least_addr;
+  ਅੱਖਰ*      ਘੱਟ_ਤੋਂ_ਘੱਟ_addr;
   mchunkptr  dv;
-  mchunkptr  top;
+  mchunkptr  ਸਿਖਰ;
   size_t     trim_check;
   size_t     release_checks;
   size_t     magic;
@@ -2703,17 +2703,17 @@ struct malloc_state {
   tbinptr    treebins[NTREEBINS];
   size_t     footprint;
   size_t     max_footprint;
-  size_t     footprint_limit; /* zero means no limit */
+  size_t     footprint_ਹੱਦਬੰਦੀ; /* zero means no limit */
   flag_t     mflags;
-#if USE_LOCKS
+#ਜੇ USE_LOCKS
   MLOCK_T    mutex;     /* locate lock among fields that rarely change */
-#endif /* USE_LOCKS */
+#ਜੇ_ਅੰਤ /* USE_LOCKS */
   msegment   seg;
-  void*      extp;      /* Unused but available for extensions */
+  ਖਾਲੀ*      extp;      /* Unused but available for extensions */
   size_t     exts;
 };
 
-typedef struct malloc_state*    mstate;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ malloc_state*    mstate;
 
 /* ------------- Global malloc_state and malloc_params ------------------- */
 
@@ -2724,16 +2724,16 @@ typedef struct malloc_state*    mstate;
   also serves as an initialization flag.
 */
 
-struct malloc_params {
+ਬਣਤਰ malloc_params {
   size_t magic;
-  size_t page_size;
+  size_t ਪੰਨਾ_ਮਾਪ;
   size_t granularity;
-  size_t mmap_threshold;
-  size_t trim_threshold;
+  size_t mmap_ਹੱਦ;
+  size_t trim_ਹੱਦ;
   flag_t default_mflags;
 };
 
-static struct malloc_params mparams;
+ਸਥਿਰ ਬਣਤਰ malloc_params mparams;
 
 /* libffi: mparams is initialized exactly once (under the malloc global lock),
    but mparams.magic is read on every allocation's fast path WITHOUT a lock to
@@ -2745,135 +2745,135 @@ static struct malloc_params mparams;
    guaranteed to see all the other initialization writes (page_size, mflags,
    ...) performed before the release store.  Fall back to the original volatile
    access when no supported compiler atomic operations are available.  */
-#if USE_LOCKS && defined(__ATOMIC_ACQUIRE)
-# define ffi_mparams_magic_load()   __atomic_load_n(&mparams.magic, __ATOMIC_ACQUIRE)
+#ਜੇ USE_LOCKS && defined(__ATOMIC_ACQUIRE)
+# define ffi_mparams_magic_ਲੱਦੋ()   __atomic_load_n(&mparams.magic, __ATOMIC_ACQUIRE)
 # define ffi_mparams_magic_store(v) __atomic_store_n(&mparams.magic, (size_t)(v), __ATOMIC_RELEASE)
-#elif USE_LOCKS && defined(_MSC_VER)
-# if defined(_WIN64)
-#  define ffi_mparams_magic_load() \
-  ((size_t)_InterlockedCompareExchange64((__int64 volatile *)&mparams.magic, \
+#ਜਾਂਜੇ USE_LOCKS && defined(_MSC_VER)
+# ਜੇ defined(_WIN64)
+#  define ffi_mparams_magic_ਲੱਦੋ() \
+  ((size_t)_InterlockedCompareExchange64((__int64 ਅਸਥਿਰ *)&mparams.magic, \
                                          (__int64)0, (__int64)0))
 #  define ffi_mparams_magic_store(v) \
-  ((void)_InterlockedExchange64((__int64 volatile *)&mparams.magic, \
+  ((ਖਾਲੀ)_InterlockedExchange64((__int64 ਅਸਥਿਰ *)&mparams.magic, \
                                 (__int64)(v)))
-# else
-#  define ffi_mparams_magic_load() \
-  ((size_t)_InterlockedCompareExchange((LONG volatile *)&mparams.magic, \
+# ਨਹੀਂਤਾਂ
+#  define ffi_mparams_magic_ਲੱਦੋ() \
+  ((size_t)_InterlockedCompareExchange((LONG ਅਸਥਿਰ *)&mparams.magic, \
                                        (LONG)0, (LONG)0))
 #  define ffi_mparams_magic_store(v) \
-  ((void)_InterlockedExchange((LONG volatile *)&mparams.magic, (LONG)(v)))
+  ((ਖਾਲੀ)_InterlockedExchange((LONG ਅਸਥਿਰ *)&mparams.magic, (LONG)(v)))
 # endif
-#else
-# define ffi_mparams_magic_load()   (mparams.magic)
-# define ffi_mparams_magic_store(v) (*(volatile size_t *)(&(mparams.magic)) = (size_t)(v))
-#endif
+#ਨਹੀਂਤਾਂ
+# define ffi_mparams_magic_ਲੱਦੋ()   (mparams.magic)
+# define ffi_mparams_magic_store(v) (*(ਅਸਥਿਰ size_t *)(&(mparams.magic)) = (size_t)(v))
+#ਜੇ_ਅੰਤ
 
 /* Ensure mparams initialized */
-#define ensure_initialization() (void)(ffi_mparams_magic_load() != 0 || init_mparams())
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ensure_initialization() (ਖਾਲੀ)(ffi_mparams_magic_ਲੱਦੋ() != 0 || init_mparams())
 
-#if !ONLY_MSPACES
+#ਜੇ !ONLY_MSPACES
 
 /* The global malloc_state used for all non-"mspace" calls */
-static struct malloc_state _gm_;
-#define gm                 (&_gm_)
-#define is_global(M)       ((M) == &_gm_)
+ਸਥਿਰ ਬਣਤਰ malloc_state _gm_;
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ gm                 (&_gm_)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_global(M)       ((M) == &_gm_)
 
-#endif /* !ONLY_MSPACES */
+#ਜੇ_ਅੰਤ /* !ONLY_MSPACES */
 
-#define is_initialized(M)  ((M)->top != 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_initialized(M)  ((M)->ਸਿਖਰ != 0)
 
 /* -------------------------- system alloc setup ------------------------- */
 
 /* Operations on mflags */
 
-#define use_lock(M)           ((M)->mflags &   USE_LOCK_BIT)
-#define enable_lock(M)        ((M)->mflags |=  USE_LOCK_BIT)
-#if USE_LOCKS
-#define disable_lock(M)       ((M)->mflags &= ~USE_LOCK_BIT)
-#else
-#define disable_lock(M)
-#endif
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ use_ਤਾਲਾ(M)           ((M)->mflags &   USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ enable_ਤਾਲਾ(M)        ((M)->mflags |=  USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਜੇ USE_LOCKS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ disable_ਤਾਲਾ(M)       ((M)->mflags &= ~USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ disable_ਤਾਲਾ(M)
+#ਜੇ_ਅੰਤ
 
-#define use_mmap(M)           ((M)->mflags &   USE_MMAP_BIT)
-#define enable_mmap(M)        ((M)->mflags |=  USE_MMAP_BIT)
-#if HAVE_MMAP
-#define disable_mmap(M)       ((M)->mflags &= ~USE_MMAP_BIT)
-#else
-#define disable_mmap(M)
-#endif
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ use_mmap(M)           ((M)->mflags &   USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ enable_mmap(M)        ((M)->mflags |=  USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਜੇ HAVE_MMAP
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ disable_mmap(M)       ((M)->mflags &= ~USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ disable_mmap(M)
+#ਜੇ_ਅੰਤ
 
-#define use_noncontiguous(M)  ((M)->mflags &   USE_NONCONTIGUOUS_BIT)
-#define disable_contiguous(M) ((M)->mflags |=  USE_NONCONTIGUOUS_BIT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ use_noncontiguous(M)  ((M)->mflags &   USE_NONCONTIGUOUS_ਦੋਆਧਾਰੀ_ਅੰਕ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ disable_contiguous(M) ((M)->mflags |=  USE_NONCONTIGUOUS_ਦੋਆਧਾਰੀ_ਅੰਕ)
 
-#define set_lock(M,L)\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_ਤਾਲਾ(M,L)\
  ((M)->mflags = (L)?\
-  ((M)->mflags | USE_LOCK_BIT) :\
-  ((M)->mflags & ~USE_LOCK_BIT))
+  ((M)->mflags | USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ) :\
+  ((M)->mflags & ~USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ))
 
 /* page-align a size */
-#define page_align(S)\
- (((S) + (mparams.page_size - SIZE_T_ONE)) & ~(mparams.page_size - SIZE_T_ONE))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪੰਨਾ_align(S)\
+ (((S) + (mparams.ਪੰਨਾ_ਮਾਪ - ਮਾਪ_T_ONE)) & ~(mparams.ਪੰਨਾ_ਮਾਪ - ਮਾਪ_T_ONE))
 
 /* granularity-align a size */
-#define granularity_align(S)\
-  (((S) + (mparams.granularity - SIZE_T_ONE))\
-   & ~(mparams.granularity - SIZE_T_ONE))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ granularity_align(S)\
+  (((S) + (mparams.granularity - ਮਾਪ_T_ONE))\
+   & ~(mparams.granularity - ਮਾਪ_T_ONE))
 
 
 /* For mmap, use granularity alignment on windows, else page-align */
-#ifdef WIN32
-#define mmap_align(S) granularity_align(S)
-#else
-#define mmap_align(S) page_align(S)
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ WIN32
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ mmap_align(S) granularity_align(S)
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ mmap_align(S) ਪੰਨਾ_align(S)
+#ਜੇ_ਅੰਤ
 
 /* For sys_alloc, enough padding to ensure can malloc request on success */
-#define SYS_ALLOC_PADDING (TOP_FOOT_SIZE + MALLOC_ALIGNMENT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SYS_ALLOC_PADDING (ਸਿਖਰ_FOOT_ਮਾਪ + MALLOC_ALIGNMENT)
 
-#define is_page_aligned(S)\
-   (((size_t)(S) & (mparams.page_size - SIZE_T_ONE)) == 0)
-#define is_granularity_aligned(S)\
-   (((size_t)(S) & (mparams.granularity - SIZE_T_ONE)) == 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_ਪੰਨਾ_aligned(S)\
+   (((size_t)(S) & (mparams.ਪੰਨਾ_ਮਾਪ - ਮਾਪ_T_ONE)) == 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_granularity_aligned(S)\
+   (((size_t)(S) & (mparams.granularity - ਮਾਪ_T_ONE)) == 0)
 
 /*  True if segment S holds address A */
-#define segment_holds(S, A)\
-  ((char*)(A) >= S->base && (char*)(A) < S->base + S->size)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ segment_holds(S, A)\
+  ((ਅੱਖਰ*)(A) >= S->ਅਧਾਰ && (ਅੱਖਰ*)(A) < S->ਅਧਾਰ + S->ਮਾਪ)
 
 /* Return segment holding given address */
-static msegmentptr segment_holding(mstate m, char* addr) {
+ਸਥਿਰ msegmentptr segment_holding(mstate m, ਅੱਖਰ* addr) {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if (addr >= sp->base && addr < sp->base + sp->size)
-      return sp;
-    if ((sp = sp->next) == 0)
-      return 0;
+  ਲਈ (;;) {
+    ਜੇ (addr >= sp->ਅਧਾਰ && addr < sp->ਅਧਾਰ + sp->ਮਾਪ)
+      ਵਾਪਸ sp;
+    ਜੇ ((sp = sp->ਅਗਲਾ) == 0)
+      ਵਾਪਸ 0;
   }
 }
 
 /* Return true if segment contains a segment link */
-static int has_segment_link(mstate m, msegmentptr ss) {
+ਸਥਿਰ ਪੂਰਨ has_segment_link(mstate m, msegmentptr ss) {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if ((char*)sp >= ss->base && (char*)sp < ss->base + ss->size)
-      return 1;
-    if ((sp = sp->next) == 0)
-      return 0;
+  ਲਈ (;;) {
+    ਜੇ ((ਅੱਖਰ*)sp >= ss->ਅਧਾਰ && (ਅੱਖਰ*)sp < ss->ਅਧਾਰ + ss->ਮਾਪ)
+      ਵਾਪਸ 1;
+    ਜੇ ((sp = sp->ਅਗਲਾ) == 0)
+      ਵਾਪਸ 0;
   }
 }
 
-#ifndef MORECORE_CANNOT_TRIM
-#define should_trim(M,s)  ((s) > (M)->trim_check)
-#else  /* MORECORE_CANNOT_TRIM */
-#define should_trim(M,s)  (0)
-#endif /* MORECORE_CANNOT_TRIM */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ MORECORE_CANNOT_TRIM
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ should_trim(M,s)  ((s) > (M)->trim_check)
+#ਨਹੀਂਤਾਂ  /* MORECORE_CANNOT_TRIM */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ should_trim(M,s)  (0)
+#ਜੇ_ਅੰਤ /* MORECORE_CANNOT_TRIM */
 
 /*
   TOP_FOOT_SIZE is padding at the end of a segment, including space
   that may be needed to place segment records and fenceposts when new
   noncontiguous segments are added.
 */
-#define TOP_FOOT_SIZE\
-  (align_offset(chunk2mem(0))+pad_request(sizeof(struct malloc_segment))+MIN_CHUNK_SIZE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸਿਖਰ_FOOT_ਮਾਪ\
+  (align_ਵਿੱਥ(chunk2mem(0))+pad_request(ਆਕਾਰ(ਬਣਤਰ malloc_segment))+MIN_CHUNK_ਮਾਪ)
 
 
 /* -------------------------------  Hooks -------------------------------- */
@@ -2884,20 +2884,20 @@ static int has_segment_link(mstate m, msegmentptr ss) {
   anything you like.
 */
 
-#if USE_LOCKS
-#define PREACTION(M)  ((use_lock(M))? ACQUIRE_LOCK(&(M)->mutex) : 0)
-#define POSTACTION(M) { if (use_lock(M)) RELEASE_LOCK(&(M)->mutex); }
-#else /* USE_LOCKS */
+#ਜੇ USE_LOCKS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PREACTION(M)  ((use_ਤਾਲਾ(M))? ACQUIRE_ਤਾਲਾ(&(M)->mutex) : 0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ POSTACTION(M) { ਜੇ (use_ਤਾਲਾ(M)) RELEASE_ਤਾਲਾ(&(M)->mutex); }
+#ਨਹੀਂਤਾਂ /* USE_LOCKS */
 
-#ifndef PREACTION
-#define PREACTION(M) (0)
-#endif  /* PREACTION */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ PREACTION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ PREACTION(M) (0)
+#ਜੇ_ਅੰਤ  /* PREACTION */
 
-#ifndef POSTACTION
-#define POSTACTION(M)
-#endif  /* POSTACTION */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ POSTACTION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ POSTACTION(M)
+#ਜੇ_ਅੰਤ  /* POSTACTION */
 
-#endif /* USE_LOCKS */
+#ਜੇ_ਅੰਤ /* USE_LOCKS */
 
 /*
   CORRUPTION_ERROR_ACTION is triggered upon detected bad addresses.
@@ -2907,223 +2907,223 @@ static int has_segment_link(mstate m, msegmentptr ss) {
   useful in custom actions that try to help diagnose errors.
 */
 
-#if PROCEED_ON_ERROR
+#ਜੇ PROCEED_ON_ERROR
 
 /* A count of the number of corruption errors causing resets */
-int malloc_corruption_error_count;
+ਪੂਰਨ malloc_corruption_error_ਗਿਣਤੀ;
 
 /* default corruption action */
-static void reset_on_error(mstate m);
+ਸਥਿਰ ਖਾਲੀ reset_on_error(mstate m);
 
-#define CORRUPTION_ERROR_ACTION(m)  reset_on_error(m)
-#define USAGE_ERROR_ACTION(m, p)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CORRUPTION_ERROR_ACTION(m)  reset_on_error(m)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USAGE_ERROR_ACTION(m, p)
 
-#else /* PROCEED_ON_ERROR */
+#ਨਹੀਂਤਾਂ /* PROCEED_ON_ERROR */
 
-#ifndef CORRUPTION_ERROR_ACTION
-#define CORRUPTION_ERROR_ACTION(m) ABORT
-#endif /* CORRUPTION_ERROR_ACTION */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ CORRUPTION_ERROR_ACTION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CORRUPTION_ERROR_ACTION(m) ABORT
+#ਜੇ_ਅੰਤ /* CORRUPTION_ERROR_ACTION */
 
-#ifndef USAGE_ERROR_ACTION
-#define USAGE_ERROR_ACTION(m,p) ABORT
-#endif /* USAGE_ERROR_ACTION */
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ USAGE_ERROR_ACTION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USAGE_ERROR_ACTION(m,p) ABORT
+#ਜੇ_ਅੰਤ /* USAGE_ERROR_ACTION */
 
-#endif /* PROCEED_ON_ERROR */
+#ਜੇ_ਅੰਤ /* PROCEED_ON_ERROR */
 
 
 /* -------------------------- Debugging setup ---------------------------- */
 
-#if ! DEBUG
+#ਜੇ ! DEBUG
 
-#define check_free_chunk(M,P)
-#define check_inuse_chunk(M,P)
-#define check_malloced_chunk(M,P,N)
-#define check_mmapped_chunk(M,P)
-#define check_malloc_state(M)
-#define check_top_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_free_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_inuse_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_malloced_chunk(M,P,N)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_mmapped_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_malloc_state(M)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_ਸਿਖਰ_chunk(M,P)
 
-#else /* DEBUG */
-#define check_free_chunk(M,P)       do_check_free_chunk(M,P)
-#define check_inuse_chunk(M,P)      do_check_inuse_chunk(M,P)
-#define check_top_chunk(M,P)        do_check_top_chunk(M,P)
-#define check_malloced_chunk(M,P,N) do_check_malloced_chunk(M,P,N)
-#define check_mmapped_chunk(M,P)    do_check_mmapped_chunk(M,P)
-#define check_malloc_state(M)       do_check_malloc_state(M)
+#ਨਹੀਂਤਾਂ /* DEBUG */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_free_chunk(M,P)       do_check_free_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_inuse_chunk(M,P)      do_check_inuse_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_ਸਿਖਰ_chunk(M,P)        do_check_ਸਿਖਰ_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_malloced_chunk(M,P,N) do_check_malloced_chunk(M,P,N)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_mmapped_chunk(M,P)    do_check_mmapped_chunk(M,P)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ check_malloc_state(M)       do_check_malloc_state(M)
 
-static void   do_check_any_chunk(mstate m, mchunkptr p);
-static void   do_check_top_chunk(mstate m, mchunkptr p);
-static void   do_check_mmapped_chunk(mstate m, mchunkptr p);
-static void   do_check_inuse_chunk(mstate m, mchunkptr p);
-static void   do_check_free_chunk(mstate m, mchunkptr p);
-static void   do_check_malloced_chunk(mstate m, void* mem, size_t s);
-static void   do_check_tree(mstate m, tchunkptr t);
-static void   do_check_treebin(mstate m, bindex_t i);
-static void   do_check_smallbin(mstate m, bindex_t i);
-static void   do_check_malloc_state(mstate m);
-static int    bin_find(mstate m, mchunkptr x);
-static size_t traverse_and_check(mstate m);
-#endif /* DEBUG */
+ਸਥਿਰ ਖਾਲੀ   do_check_any_chunk(mstate m, mchunkptr p);
+ਸਥਿਰ ਖਾਲੀ   do_check_ਸਿਖਰ_chunk(mstate m, mchunkptr p);
+ਸਥਿਰ ਖਾਲੀ   do_check_mmapped_chunk(mstate m, mchunkptr p);
+ਸਥਿਰ ਖਾਲੀ   do_check_inuse_chunk(mstate m, mchunkptr p);
+ਸਥਿਰ ਖਾਲੀ   do_check_free_chunk(mstate m, mchunkptr p);
+ਸਥਿਰ ਖਾਲੀ   do_check_malloced_chunk(mstate m, ਖਾਲੀ* mem, size_t s);
+ਸਥਿਰ ਖਾਲੀ   do_check_ਰੁੱਖ(mstate m, tchunkptr t);
+ਸਥਿਰ ਖਾਲੀ   do_check_treebin(mstate m, bindex_t i);
+ਸਥਿਰ ਖਾਲੀ   do_check_smallbin(mstate m, bindex_t i);
+ਸਥਿਰ ਖਾਲੀ   do_check_malloc_state(mstate m);
+ਸਥਿਰ ਪੂਰਨ    bin_ਲੱਭੋ(mstate m, mchunkptr x);
+ਸਥਿਰ size_t traverse_and_check(mstate m);
+#ਜੇ_ਅੰਤ /* DEBUG */
 
 /* ---------------------------- Indexing Bins ---------------------------- */
 
-#define is_small(s)         (((s) >> SMALLBIN_SHIFT) < NSMALLBINS)
-#define small_index(s)      (bindex_t)((s)  >> SMALLBIN_SHIFT)
-#define small_index2size(i) ((i)  << SMALLBIN_SHIFT)
-#define MIN_SMALL_INDEX     (small_index(MIN_CHUNK_SIZE))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ is_small(s)         (((s) >> SMALLBIN_ਖਿਸਕਾਓ) < NSMALLBINS)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ small_ਸੂਚਕਾਂਕ(s)      (bindex_t)((s)  >> SMALLBIN_ਖਿਸਕਾਓ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ small_index2size(i) ((i)  << SMALLBIN_ਖਿਸਕਾਓ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MIN_SMALL_ਸੂਚਕਾਂਕ     (small_ਸੂਚਕਾਂਕ(MIN_CHUNK_ਮਾਪ))
 
 /* addressing by index. See above about smallbin repositioning */
-#define smallbin_at(M, i)   ((sbinptr)((char*)&((M)->smallbins[(i)<<1])))
-#define treebin_at(M,i)     (&((M)->treebins[i]))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ smallbin_at(M, i)   ((sbinptr)((ਅੱਖਰ*)&((M)->smallbins[(i)<<1])))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ treebin_at(M,i)     (&((M)->treebins[i]))
 
 /* assign tree index for size S to variable I.
    libffi: enable the __builtin_clz path on any GNU-compatible compiler, not
    only x86, so the log2 is an intrinsic rather than the generic C idiom that
    the compiler can't always recognize (libffi #754).  */
-#if defined(__GNUC__)
-#define compute_tree_index(S, I)\
+#ਜੇ defined(__GNUC__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(S, I)\
 {\
-  unsigned int X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ X = S >> TREEBIN_ਖਿਸਕਾਓ;\
+  ਜੇ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  ਨਹੀਂਤਾਂ ਜੇ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int K = (unsigned) sizeof(X)*__CHAR_BIT__ - 1 - (unsigned) __builtin_clz(X); \
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
+  ਨਹੀਂਤਾਂ {\
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ K = (ਬਿਨਾਨਿਸ਼ਾਨੀ) ਆਕਾਰ(X)*__CHAR_BIT__ - 1 - (ਬਿਨਾਨਿਸ਼ਾਨੀ) __builtin_clz(X); \
+    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_ਖਿਸਕਾਓ-1)) & 1)));\
   }\
 }
 
-#elif defined (__INTEL_COMPILER)
-#define compute_tree_index(S, I)\
+#ਜਾਂਜੇ defined (__INTEL_COMPILER)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(S, I)\
 {\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  size_t X = S >> TREEBIN_ਖਿਸਕਾਓ;\
+  ਜੇ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  ਨਹੀਂਤਾਂ ਜੇ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int K = _bit_scan_reverse (X); \
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
+  ਨਹੀਂਤਾਂ {\
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ K = ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_ਉਲਟ_3 (X); \
+    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_ਖਿਸਕਾਓ-1)) & 1)));\
   }\
 }
 
-#elif defined(_MSC_VER) && _MSC_VER>=1300
-#define compute_tree_index(S, I)\
+#ਜਾਂਜੇ defined(_MSC_VER) && _MSC_VER>=1300
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(S, I)\
 {\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  size_t X = S >> TREEBIN_ਖਿਸਕਾਓ;\
+  ਜੇ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  ਨਹੀਂਤਾਂ ਜੇ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int K;\
-    _BitScanReverse((DWORD *) &K, (DWORD) X);\
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
+  ਨਹੀਂਤਾਂ {\
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ K;\
+    ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_ਉਲਟ((DWORD *) &K, (DWORD) X);\
+    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_ਖਿਸਕਾਓ-1)) & 1)));\
   }\
 }
 
-#else /* GNUC */
-#define compute_tree_index(S, I)\
+#ਨਹੀਂਤਾਂ /* GNUC */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(S, I)\
 {\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  size_t X = S >> TREEBIN_ਖਿਸਕਾਓ;\
+  ਜੇ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  ਨਹੀਂਤਾਂ ਜੇ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int Y = (unsigned int)X;\
-    unsigned int N = ((Y - 0x100) >> 16) & 8;\
-    unsigned int K = (((Y <<= N) - 0x1000) >> 16) & 4;\
+  ਨਹੀਂਤਾਂ {\
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ Y = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)X;\
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ N = ((Y - 0x100) >> 16) & 8;\
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ K = (((Y <<= N) - 0x1000) >> 16) & 4;\
     N += K;\
     N += K = (((Y <<= K) - 0x4000) >> 16) & 2;\
     K = 14 - N + ((Y <<= K) >> 15);\
-    I = (K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1));\
+    I = (K << 1) + ((S >> (K + (TREEBIN_ਖਿਸਕਾਓ-1)) & 1));\
   }\
 }
-#endif /* GNUC */
+#ਜੇ_ਅੰਤ /* GNUC */
 
 /* Bit representing maximum resolved size in a treebin at i */
-#define bit_for_tree_index(i) \
-   (i == NTREEBINS-1)? (SIZE_T_BITSIZE-1) : (((i) >> 1) + TREEBIN_SHIFT - 2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਦੋਆਧਾਰੀ_ਅੰਕ_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ(i) \
+   (i == NTREEBINS-1)? (ਮਾਪ_T_BITSIZE-1) : (((i) >> 1) + TREEBIN_ਖਿਸਕਾਓ - 2)
 
 /* Shift placing maximum resolved bit in a treebin at i as sign bit */
-#define leftshift_for_tree_index(i) \
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ leftshift_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ(i) \
    ((i == NTREEBINS-1)? 0 : \
-    ((SIZE_T_BITSIZE-SIZE_T_ONE) - (((i) >> 1) + TREEBIN_SHIFT - 2)))
+    ((ਮਾਪ_T_BITSIZE-ਮਾਪ_T_ONE) - (((i) >> 1) + TREEBIN_ਖਿਸਕਾਓ - 2)))
 
 /* The size of the smallest chunk held in bin with index i */
-#define minsize_for_tree_index(i) \
-   ((SIZE_T_ONE << (((i) >> 1) + TREEBIN_SHIFT)) |  \
-   (((size_t)((i) & SIZE_T_ONE)) << (((i) >> 1) + TREEBIN_SHIFT - 1)))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ minsize_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ(i) \
+   ((ਮਾਪ_T_ONE << (((i) >> 1) + TREEBIN_ਖਿਸਕਾਓ)) |  \
+   (((size_t)((i) & ਮਾਪ_T_ONE)) << (((i) >> 1) + TREEBIN_ਖਿਸਕਾਓ - 1)))
 
 
 /* ------------------------ Operations on bin maps ----------------------- */
 
 /* bit corresponding to given index */
-#define idx2bit(i)              ((binmap_t)(1) << (i))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ idx2bit(i)              ((binmap_t)(1) << (i))
 
 /* Mark/Clear bits with given index */
-#define mark_smallmap(M,i)      ((M)->smallmap |=  idx2bit(i))
-#define clear_smallmap(M,i)     ((M)->smallmap &= ~idx2bit(i))
-#define smallmap_is_marked(M,i) ((M)->smallmap &   idx2bit(i))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ mark_smallmap(M,i)      ((M)->smallmap |=  idx2bit(i))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ clear_smallmap(M,i)     ((M)->smallmap &= ~idx2bit(i))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ smallmap_is_marked(M,i) ((M)->smallmap &   idx2bit(i))
 
-#define mark_treemap(M,i)       ((M)->treemap  |=  idx2bit(i))
-#define clear_treemap(M,i)      ((M)->treemap  &= ~idx2bit(i))
-#define treemap_is_marked(M,i)  ((M)->treemap  &   idx2bit(i))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ mark_treemap(M,i)       ((M)->treemap  |=  idx2bit(i))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ clear_treemap(M,i)      ((M)->treemap  &= ~idx2bit(i))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ treemap_is_marked(M,i)  ((M)->treemap  &   idx2bit(i))
 
 /* isolate the least set bit of a bitmap */
-#define least_bit(x)         ((x) & -(x))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਘੱਟ_ਤੋਂ_ਘੱਟ_ਦੋਆਧਾਰੀ_ਅੰਕ(x)         ((x) & -(x))
 
 /* mask with all bits to left of least bit of x on */
-#define left_bits(x)         ((x<<1) | -(x<<1))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਖੱਬਾ_ਬਿੱਟ(x)         ((x<<1) | -(x<<1))
 
 /* mask with all bits to left of or equal to least bit of x on */
-#define same_or_left_bits(x) ((x) | -(x))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ same_or_ਖੱਬਾ_ਬਿੱਟ(x) ((x) | -(x))
 
 /* index corresponding to given bit.
    libffi: use __builtin_ctz on any GNU-compatible compiler, not only x86
    (libffi #754).  */
 
-#if defined(__GNUC__)
-#define compute_bit2idx(X, I)\
+#ਜੇ defined(__GNUC__)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_bit2idx(X, I)\
 {\
-  unsigned int J;\
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ J;\
   J = __builtin_ctz(X); \
   I = (bindex_t)J;\
 }
 
-#elif defined (__INTEL_COMPILER)
-#define compute_bit2idx(X, I)\
+#ਜਾਂਜੇ defined (__INTEL_COMPILER)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_bit2idx(X, I)\
 {\
-  unsigned int J;\
-  J = _bit_scan_forward (X); \
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ J;\
+  J = ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_forward (X); \
   I = (bindex_t)J;\
 }
 
-#elif defined(_MSC_VER) && _MSC_VER>=1300
-#define compute_bit2idx(X, I)\
+#ਜਾਂਜੇ defined(_MSC_VER) && _MSC_VER>=1300
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_bit2idx(X, I)\
 {\
-  unsigned int J;\
-  _BitScanForward((DWORD *) &J, X);\
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ J;\
+  ਦੋਆਧਾਰੀ_ਅੰਕ_ਜਾਂਚ_Forward_2((DWORD *) &J, X);\
   I = (bindex_t)J;\
 }
 
-#elif USE_BUILTIN_FFS
-#define compute_bit2idx(X, I) I = ffs(X)-1
+#ਜਾਂਜੇ USE_BUILTIN_FFS
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_bit2idx(X, I) I = ffs(X)-1
 
-#else
-#define compute_bit2idx(X, I)\
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ compute_bit2idx(X, I)\
 {\
-  unsigned int Y = X - 1;\
-  unsigned int K = Y >> (16-4) & 16;\
-  unsigned int N = K;        Y >>= K;\
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ Y = X - 1;\
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ K = Y >> (16-4) & 16;\
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ N = K;        Y >>= K;\
   N += K = Y >> (8-3) &  8;  Y >>= K;\
   N += K = Y >> (4-2) &  4;  Y >>= K;\
   N += K = Y >> (2-1) &  2;  Y >>= K;\
   N += K = Y >> (1-0) &  1;  Y >>= K;\
   I = (bindex_t)(N + Y);\
 }
-#endif /* GNUC */
+#ਜੇ_ਅੰਤ /* GNUC */
 
 
 /* ----------------------- Runtime Check Support ------------------------- */
@@ -3154,127 +3154,127 @@ static size_t traverse_and_check(mstate m);
   next, etc). This turns out to be cheaper than relying on hashes.
 */
 
-#if !INSECURE
+#ਜੇ !INSECURE
 /* Check if address a is at least as high as any from MORECORE or MMAP */
-#define ok_address(M, a) ((char*)(a) >= (M)->least_addr)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_ਪਤਾ(M, a) ((ਅੱਖਰ*)(a) >= (M)->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr)
 /* Check if address of next chunk n is higher than base chunk p */
-#define ok_next(p, n)    ((char*)(p) < (char*)(n))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_ਅਗਲਾ(p, n)    ((ਅੱਖਰ*)(p) < (ਅੱਖਰ*)(n))
 /* Check if p has inuse status */
-#define ok_inuse(p)     is_inuse(p)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_inuse(p)     is_inuse(p)
 /* Check if p has its pinuse bit on */
-#define ok_pinuse(p)     pinuse(p)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_pinuse(p)     pinuse(p)
 
-#else /* !INSECURE */
-#define ok_address(M, a) (1)
-#define ok_next(b, n)    (1)
-#define ok_inuse(p)      (1)
-#define ok_pinuse(p)     (1)
-#endif /* !INSECURE */
+#ਨਹੀਂਤਾਂ /* !INSECURE */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_ਪਤਾ(M, a) (1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_ਅਗਲਾ(b, n)    (1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_inuse(p)      (1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_pinuse(p)     (1)
+#ਜੇ_ਅੰਤ /* !INSECURE */
 
-#if (FOOTERS && !INSECURE)
+#ਜੇ (FOOTERS && !INSECURE)
 /* Check if (alleged) mstate m has expected magic field */
-#define ok_magic(M)      ((M)->magic == mparams.magic)
-#else  /* (FOOTERS && !INSECURE) */
-#define ok_magic(M)      (1)
-#endif /* (FOOTERS && !INSECURE) */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_magic(M)      ((M)->magic == mparams.magic)
+#ਨਹੀਂਤਾਂ  /* (FOOTERS && !INSECURE) */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ok_magic(M)      (1)
+#ਜੇ_ਅੰਤ /* (FOOTERS && !INSECURE) */
 
 /* In gcc, use __builtin_expect to minimize impact of checks */
-#if !INSECURE
-#if defined(__GNUC__) && __GNUC__ >= 3
-#define RTCHECK(e)  __builtin_expect(e, 1)
-#else /* GNUC */
-#define RTCHECK(e)  (e)
-#endif /* GNUC */
-#else /* !INSECURE */
-#define RTCHECK(e)  (1)
-#endif /* !INSECURE */
+#ਜੇ !INSECURE
+#ਜੇ defined(__GNUC__) && __GNUC__ >= 3
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RTCHECK(e)  __builtin_expect(e, 1)
+#ਨਹੀਂਤਾਂ /* GNUC */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RTCHECK(e)  (e)
+#ਜੇ_ਅੰਤ /* GNUC */
+#ਨਹੀਂਤਾਂ /* !INSECURE */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ RTCHECK(e)  (1)
+#ਜੇ_ਅੰਤ /* !INSECURE */
 
 /* macros to set up inuse chunks with or without footers */
 
-#if !FOOTERS
+#ਜੇ !FOOTERS
 
-#define mark_inuse_foot(M,p,s)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ mark_inuse_foot(M,p,s)
 
 /* Macros for setting head/foot of non-mmapped chunks */
 
 /* Set cinuse bit and pinuse bit of next chunk */
-#define set_inuse(M,p,s)\
-  ((p)->head = (((p)->head & PINUSE_BIT)|s|CINUSE_BIT),\
-  ((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_inuse(M,p,s)\
+  ((p)->ਸਿਰ = (((p)->ਸਿਰ & PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)|s|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ),\
+  ((mchunkptr)(((ਅੱਖਰ*)(p)) + (s)))->ਸਿਰ |= PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
 
 /* Set cinuse and pinuse of this chunk and pinuse of next chunk */
-#define set_inuse_and_pinuse(M,p,s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT),\
-  ((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_inuse_and_pinuse(M,p,s)\
+  ((p)->ਸਿਰ = (s|PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ),\
+  ((mchunkptr)(((ਅੱਖਰ*)(p)) + (s)))->ਸਿਰ |= PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)
 
 /* Set size, cinuse and pinuse bit of this chunk */
-#define set_size_and_pinuse_of_inuse_chunk(M, p, s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(M, p, s)\
+  ((p)->ਸਿਰ = (s|PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ))
 
-#else /* FOOTERS */
+#ਨਹੀਂਤਾਂ /* FOOTERS */
 
 /* Set foot of inuse chunk to be xor of mstate and seed */
-#define mark_inuse_foot(M,p,s)\
-  (((mchunkptr)((char*)(p) + (s)))->prev_foot = ((size_t)(M) ^ mparams.magic))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ mark_inuse_foot(M,p,s)\
+  (((mchunkptr)((ਅੱਖਰ*)(p) + (s)))->prev_foot = ((size_t)(M) ^ mparams.magic))
 
-#define get_mstate_for(p)\
-  ((mstate)(((mchunkptr)((char*)(p) +\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ get_mstate_for(p)\
+  ((mstate)(((mchunkptr)((ਅੱਖਰ*)(p) +\
     (chunksize(p))))->prev_foot ^ mparams.magic))
 
-#define set_inuse(M,p,s)\
-  ((p)->head = (((p)->head & PINUSE_BIT)|s|CINUSE_BIT),\
-  (((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT), \
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_inuse(M,p,s)\
+  ((p)->ਸਿਰ = (((p)->ਸਿਰ & PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ)|s|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ),\
+  (((mchunkptr)(((ਅੱਖਰ*)(p)) + (s)))->ਸਿਰ |= PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ), \
   mark_inuse_foot(M,p,s))
 
-#define set_inuse_and_pinuse(M,p,s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT),\
-  (((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT),\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_inuse_and_pinuse(M,p,s)\
+  ((p)->ਸਿਰ = (s|PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ),\
+  (((mchunkptr)(((ਅੱਖਰ*)(p)) + (s)))->ਸਿਰ |= PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ),\
  mark_inuse_foot(M,p,s))
 
-#define set_size_and_pinuse_of_inuse_chunk(M, p, s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT),\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(M, p, s)\
+  ((p)->ਸਿਰ = (s|PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ|CINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ),\
   mark_inuse_foot(M, p, s))
 
-#endif /* !FOOTERS */
+#ਜੇ_ਅੰਤ /* !FOOTERS */
 
 /* ---------------------------- setting mparams -------------------------- */
 
-#if LOCK_AT_FORK
-static void pre_fork(void)         { ACQUIRE_LOCK(&(gm)->mutex); }
-static void post_fork_parent(void) { RELEASE_LOCK(&(gm)->mutex); }
-static void post_fork_child(void)  { INITIAL_LOCK(&(gm)->mutex); }
-#endif /* LOCK_AT_FORK */
+#ਜੇ ਤਾਲਾ_AT_FORK
+ਸਥਿਰ ਖਾਲੀ pre_fork(ਖਾਲੀ)         { ACQUIRE_ਤਾਲਾ(&(gm)->mutex); }
+ਸਥਿਰ ਖਾਲੀ post_fork_ਮਾਪਾ(ਖਾਲੀ) { RELEASE_ਤਾਲਾ(&(gm)->mutex); }
+ਸਥਿਰ ਖਾਲੀ post_fork_ਬੱਚਾ(ਖਾਲੀ)  { INITIAL_ਤਾਲਾ(&(gm)->mutex); }
+#ਜੇ_ਅੰਤ /* LOCK_AT_FORK */
 
 /* Initialize mparams */
-static int init_mparams(void) {
-#ifdef NEED_GLOBAL_LOCK_INIT
-  if (malloc_global_mutex_status <= 0)
+ਸਥਿਰ ਪੂਰਨ init_mparams(ਖਾਲੀ) {
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ NEED_GLOBAL_ਤਾਲਾ_INIT
+  ਜੇ (malloc_global_mutex_ਸਥਿਤੀ <= 0)
     init_malloc_global_mutex();
-#endif
+#ਜੇ_ਅੰਤ
 
-  ACQUIRE_MALLOC_GLOBAL_LOCK();
-  if (mparams.magic == 0) {
+  ACQUIRE_MALLOC_GLOBAL_ਤਾਲਾ();
+  ਜੇ (mparams.magic == 0) {
     size_t magic;
     size_t psize;
     size_t gsize;
 
-#if !defined(WIN32) && !defined(__OS2__)
+#ਜੇ !defined(WIN32) && !defined(__OS2__)
     psize = malloc_getpagesize;
     gsize = ((DEFAULT_GRANULARITY != 0)? DEFAULT_GRANULARITY : psize);
-#elif defined (__OS2__)
+#ਜਾਂਜੇ defined (__OS2__)
     /* if low-memory is used, os2munmap() would break
        if it were anything other than 64k */
     psize = 4096u;
     gsize = 65536u;
-#else /* WIN32 */
+#ਨਹੀਂਤਾਂ /* WIN32 */
     {
       SYSTEM_INFO system_info;
       GetSystemInfo(&system_info);
-      psize = system_info.dwPageSize;
+      psize = system_info.dw_ਪੰਨਾ_ਮਾਪ;
       gsize = ((DEFAULT_GRANULARITY != 0)?
-               DEFAULT_GRANULARITY : system_info.dwAllocationGranularity);
+               DEFAULT_GRANULARITY : system_info.dw_ਵੰਡ_Granularity);
     }
-#endif /* WIN32 */
+#ਜੇ_ਅੰਤ /* WIN32 */
 
     /* Sanity-check configuration:
        size_t must be unsigned and as wide as pointer type.
@@ -3282,53 +3282,53 @@ static int init_mparams(void) {
        alignment must be at least 8.
        Alignment, min chunk size, and page size must all be powers of 2.
     */
-    if ((sizeof(size_t) != sizeof(char*)) ||
-        (MAX_SIZE_T < MIN_CHUNK_SIZE)  ||
-        (sizeof(int) < 4)  ||
+    ਜੇ ((ਆਕਾਰ(size_t) != ਆਕਾਰ(ਅੱਖਰ*)) ||
+        (MAX_ਮਾਪ_T < MIN_CHUNK_ਮਾਪ)  ||
+        (ਆਕਾਰ(ਪੂਰਨ) < 4)  ||
         (MALLOC_ALIGNMENT < (size_t)8U) ||
-        ((MALLOC_ALIGNMENT & (MALLOC_ALIGNMENT-SIZE_T_ONE)) != 0) ||
-        ((MCHUNK_SIZE      & (MCHUNK_SIZE-SIZE_T_ONE))      != 0) ||
-        ((gsize            & (gsize-SIZE_T_ONE))            != 0) ||
-        ((psize            & (psize-SIZE_T_ONE))            != 0))
+        ((MALLOC_ALIGNMENT & (MALLOC_ALIGNMENT-ਮਾਪ_T_ONE)) != 0) ||
+        ((MCHUNK_ਮਾਪ      & (MCHUNK_ਮਾਪ-ਮਾਪ_T_ONE))      != 0) ||
+        ((gsize            & (gsize-ਮਾਪ_T_ONE))            != 0) ||
+        ((psize            & (psize-ਮਾਪ_T_ONE))            != 0))
       ABORT;
     mparams.granularity = gsize;
-    mparams.page_size = psize;
-    mparams.mmap_threshold = DEFAULT_MMAP_THRESHOLD;
-    mparams.trim_threshold = DEFAULT_TRIM_THRESHOLD;
-#if MORECORE_CONTIGUOUS
-    mparams.default_mflags = USE_LOCK_BIT|USE_MMAP_BIT;
-#else  /* MORECORE_CONTIGUOUS */
-    mparams.default_mflags = USE_LOCK_BIT|USE_MMAP_BIT|USE_NONCONTIGUOUS_BIT;
-#endif /* MORECORE_CONTIGUOUS */
+    mparams.ਪੰਨਾ_ਮਾਪ = psize;
+    mparams.mmap_ਹੱਦ = DEFAULT_MMAP_ਹੱਦ;
+    mparams.trim_ਹੱਦ = DEFAULT_TRIM_ਹੱਦ;
+#ਜੇ MORECORE_CONTIGUOUS
+    mparams.default_mflags = USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ|USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ;
+#ਨਹੀਂਤਾਂ  /* MORECORE_CONTIGUOUS */
+    mparams.default_mflags = USE_ਤਾਲਾ_ਦੋਆਧਾਰੀ_ਅੰਕ|USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ|USE_NONCONTIGUOUS_ਦੋਆਧਾਰੀ_ਅੰਕ;
+#ਜੇ_ਅੰਤ /* MORECORE_CONTIGUOUS */
 
-#if !ONLY_MSPACES
+#ਜੇ !ONLY_MSPACES
     /* Set up lock for main malloc area */
     gm->mflags = mparams.default_mflags;
-    (void)INITIAL_LOCK(&gm->mutex);
-#endif
-#if LOCK_AT_FORK
-    pthread_atfork(&pre_fork, &post_fork_parent, &post_fork_child);
-#endif
+    (ਖਾਲੀ)INITIAL_ਤਾਲਾ(&gm->mutex);
+#ਜੇ_ਅੰਤ
+#ਜੇ ਤਾਲਾ_AT_FORK
+    pthread_atfork(&pre_fork, &post_fork_ਮਾਪਾ, &post_fork_ਬੱਚਾ);
+#ਜੇ_ਅੰਤ
 
     {
-#if USE_DEV_RANDOM
-      int fd;
-      unsigned char buf[sizeof(size_t)];
+#ਜੇ USE_DEV_RANDOM
+      ਪੂਰਨ fd;
+      ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ buf[ਆਕਾਰ(size_t)];
       /* Try to use /dev/urandom, else fall back on using time */
-      if ((fd = open("/dev/urandom", O_RDONLY)) >= 0 &&
-          read(fd, buf, sizeof(buf)) == sizeof(buf)) {
+      ਜੇ ((fd = open("/dev/urandom", O_RDONLY)) >= 0 &&
+          ਪਠ(fd, buf, ਆਕਾਰ(buf)) == ਆਕਾਰ(buf)) {
         magic = *((size_t *) buf);
         close(fd);
       }
-      else
-#endif /* USE_DEV_RANDOM */
-#ifdef WIN32
-      magic = (size_t)(GetTickCount() ^ (size_t)0x55555555U);
-#elif defined(LACKS_TIME_H)
+      ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ /* USE_DEV_RANDOM */
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ WIN32
+      magic = (size_t)(Get_Tick_ਗਿਣਤੀ() ^ (size_t)0x55555555U);
+#ਜਾਂਜੇ defined(LACKS_ਸਮਾਂ_H)
       magic = (size_t)&magic ^ (size_t)0x55555555U;
-#else
+#ਨਹੀਂਤਾਂ
       magic = (size_t)(time(0) ^ (size_t)0x55555555U);
-#endif
+#ਜੇ_ਅੰਤ
       magic |= (size_t)8U;    /* ensure nonzero */
       magic &= ~(size_t)7U;   /* improve chances of fault for bad values */
       /* libffi: release-store so any thread that observes magic via the
@@ -3337,334 +3337,334 @@ static int init_mparams(void) {
     }
   }
 
-  RELEASE_MALLOC_GLOBAL_LOCK();
-  return 1;
+  RELEASE_MALLOC_GLOBAL_ਤਾਲਾ();
+  ਵਾਪਸ 1;
 }
 
 /* support for mallopt */
-static int change_mparam(int param_number, int value) {
+ਸਥਿਰ ਪੂਰਨ change_mparam(ਪੂਰਨ param_ਸੰਖਿਆ, ਪੂਰਨ ਮੁੱਲ) {
   size_t val;
   ensure_initialization();
-  val = (value == -1)? MAX_SIZE_T : (size_t)value;
-  switch(param_number) {
-  case M_TRIM_THRESHOLD:
-    mparams.trim_threshold = val;
-    return 1;
-  case M_GRANULARITY:
-    if (val >= mparams.page_size && ((val & (val-1)) == 0)) {
+  val = (ਮੁੱਲ == -1)? MAX_ਮਾਪ_T : (size_t)ਮੁੱਲ;
+  ਚੋਣ(param_ਸੰਖਿਆ) {
+  ਹਾਲਤ M_TRIM_ਹੱਦ:
+    mparams.trim_ਹੱਦ = val;
+    ਵਾਪਸ 1;
+  ਹਾਲਤ M_GRANULARITY:
+    ਜੇ (val >= mparams.ਪੰਨਾ_ਮਾਪ && ((val & (val-1)) == 0)) {
       mparams.granularity = val;
-      return 1;
+      ਵਾਪਸ 1;
     }
-    else
-      return 0;
-  case M_MMAP_THRESHOLD:
-    mparams.mmap_threshold = val;
-    return 1;
-  default:
-    return 0;
+    ਨਹੀਂਤਾਂ
+      ਵਾਪਸ 0;
+  ਹਾਲਤ M_MMAP_ਹੱਦ:
+    mparams.mmap_ਹੱਦ = val;
+    ਵਾਪਸ 1;
+  ਮੂਲ:
+    ਵਾਪਸ 0;
   }
 }
 
-#if DEBUG
+#ਜੇ DEBUG
 /* ------------------------- Debugging Support --------------------------- */
 
 /* Check properties of any chunk, whether free, inuse, mmapped etc  */
-static void do_check_any_chunk(mstate m, mchunkptr p) {
-  assert((is_aligned(chunk2mem(p))) || (p->head == FENCEPOST_HEAD));
-  assert(ok_address(m, p));
+ਸਥਿਰ ਖਾਲੀ do_check_any_chunk(mstate m, mchunkptr p) {
+  ਪ੍ਰਤਿਜ੍ਞਾ((is_aligned(chunk2mem(p))) || (p->ਸਿਰ == FENCEPOST_ਸਿਰ));
+  ਪ੍ਰਤਿਜ੍ਞਾ(ok_ਪਤਾ(m, p));
 }
 
 /* Check properties of top chunk */
-static void do_check_top_chunk(mstate m, mchunkptr p) {
-  msegmentptr sp = segment_holding(m, (char*)p);
-  size_t  sz = p->head & ~INUSE_BITS; /* third-lowest bit can be set! */
-  assert(sp != 0);
-  assert((is_aligned(chunk2mem(p))) || (p->head == FENCEPOST_HEAD));
-  assert(ok_address(m, p));
-  assert(sz == m->topsize);
-  assert(sz > 0);
-  assert(sz == ((sp->base + sp->size) - (char*)p) - TOP_FOOT_SIZE);
-  assert(pinuse(p));
-  assert(!pinuse(chunk_plus_offset(p, sz)));
+ਸਥਿਰ ਖਾਲੀ do_check_ਸਿਖਰ_chunk(mstate m, mchunkptr p) {
+  msegmentptr sp = segment_holding(m, (ਅੱਖਰ*)p);
+  size_t  sz = p->ਸਿਰ & ~INUSE_ਬਿੱਟ; /* third-lowest bit can be set! */
+  ਪ੍ਰਤਿਜ੍ਞਾ(sp != 0);
+  ਪ੍ਰਤਿਜ੍ਞਾ((is_aligned(chunk2mem(p))) || (p->ਸਿਰ == FENCEPOST_ਸਿਰ));
+  ਪ੍ਰਤਿਜ੍ਞਾ(ok_ਪਤਾ(m, p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(sz == m->topsize);
+  ਪ੍ਰਤਿਜ੍ਞਾ(sz > 0);
+  ਪ੍ਰਤਿਜ੍ਞਾ(sz == ((sp->ਅਧਾਰ + sp->ਮਾਪ) - (ਅੱਖਰ*)p) - ਸਿਖਰ_FOOT_ਮਾਪ);
+  ਪ੍ਰਤਿਜ੍ਞਾ(pinuse(p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(!pinuse(chunk_plus_ਵਿੱਥ(p, sz)));
 }
 
 /* Check properties of (inuse) mmapped chunks */
-static void do_check_mmapped_chunk(mstate m, mchunkptr p) {
+ਸਥਿਰ ਖਾਲੀ do_check_mmapped_chunk(mstate m, mchunkptr p) {
   size_t  sz = chunksize(p);
   size_t len = (sz + (p->prev_foot) + MMAP_FOOT_PAD);
-  assert(is_mmapped(p));
-  assert(use_mmap(m));
-  assert((is_aligned(chunk2mem(p))) || (p->head == FENCEPOST_HEAD));
-  assert(ok_address(m, p));
-  assert(!is_small(sz));
-  assert((len & (mparams.page_size-SIZE_T_ONE)) == 0);
-  assert(chunk_plus_offset(p, sz)->head == FENCEPOST_HEAD);
-  assert(chunk_plus_offset(p, sz+SIZE_T_SIZE)->head == 0);
+  ਪ੍ਰਤਿਜ੍ਞਾ(is_mmapped(p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(use_mmap(m));
+  ਪ੍ਰਤਿਜ੍ਞਾ((is_aligned(chunk2mem(p))) || (p->ਸਿਰ == FENCEPOST_ਸਿਰ));
+  ਪ੍ਰਤਿਜ੍ਞਾ(ok_ਪਤਾ(m, p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(!is_small(sz));
+  ਪ੍ਰਤਿਜ੍ਞਾ((len & (mparams.ਪੰਨਾ_ਮਾਪ-ਮਾਪ_T_ONE)) == 0);
+  ਪ੍ਰਤਿਜ੍ਞਾ(chunk_plus_ਵਿੱਥ(p, sz)->ਸਿਰ == FENCEPOST_ਸਿਰ);
+  ਪ੍ਰਤਿਜ੍ਞਾ(chunk_plus_ਵਿੱਥ(p, sz+ਮਾਪ_T_ਮਾਪ)->ਸਿਰ == 0);
 }
 
 /* Check properties of inuse chunks */
-static void do_check_inuse_chunk(mstate m, mchunkptr p) {
+ਸਥਿਰ ਖਾਲੀ do_check_inuse_chunk(mstate m, mchunkptr p) {
   do_check_any_chunk(m, p);
-  assert(is_inuse(p));
-  assert(next_pinuse(p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(is_inuse(p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(ਅਗਲਾ_pinuse(p));
   /* If not pinuse and not mmapped, previous chunk has OK offset */
-  assert(is_mmapped(p) || pinuse(p) || next_chunk(prev_chunk(p)) == p);
-  if (is_mmapped(p))
+  ਪ੍ਰਤਿਜ੍ਞਾ(is_mmapped(p) || pinuse(p) || ਅਗਲਾ_chunk(prev_chunk(p)) == p);
+  ਜੇ (is_mmapped(p))
     do_check_mmapped_chunk(m, p);
 }
 
 /* Check properties of free chunks */
-static void do_check_free_chunk(mstate m, mchunkptr p) {
+ਸਥਿਰ ਖਾਲੀ do_check_free_chunk(mstate m, mchunkptr p) {
   size_t sz = chunksize(p);
-  mchunkptr next = chunk_plus_offset(p, sz);
+  mchunkptr ਅਗਲਾ = chunk_plus_ਵਿੱਥ(p, sz);
   do_check_any_chunk(m, p);
-  assert(!is_inuse(p));
-  assert(!next_pinuse(p));
-  assert (!is_mmapped(p));
-  if (p != m->dv && p != m->top) {
-    if (sz >= MIN_CHUNK_SIZE) {
-      assert((sz & CHUNK_ALIGN_MASK) == 0);
-      assert(is_aligned(chunk2mem(p)));
-      assert(next->prev_foot == sz);
-      assert(pinuse(p));
-      assert (next == m->top || is_inuse(next));
-      assert(p->fd->bk == p);
-      assert(p->bk->fd == p);
+  ਪ੍ਰਤਿਜ੍ਞਾ(!is_inuse(p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(!ਅਗਲਾ_pinuse(p));
+  ਪ੍ਰਤਿਜ੍ਞਾ (!is_mmapped(p));
+  ਜੇ (p != m->dv && p != m->ਸਿਖਰ) {
+    ਜੇ (sz >= MIN_CHUNK_ਮਾਪ) {
+      ਪ੍ਰਤਿਜ੍ਞਾ((sz & CHUNK_ALIGN_ਨਕਾਬ) == 0);
+      ਪ੍ਰਤਿਜ੍ਞਾ(is_aligned(chunk2mem(p)));
+      ਪ੍ਰਤਿਜ੍ਞਾ(ਅਗਲਾ->prev_foot == sz);
+      ਪ੍ਰਤਿਜ੍ਞਾ(pinuse(p));
+      ਪ੍ਰਤਿਜ੍ਞਾ (ਅਗਲਾ == m->ਸਿਖਰ || is_inuse(ਅਗਲਾ));
+      ਪ੍ਰਤਿਜ੍ਞਾ(p->fd->bk == p);
+      ਪ੍ਰਤਿਜ੍ਞਾ(p->bk->fd == p);
     }
-    else  /* markers are always of size SIZE_T_SIZE */
-      assert(sz == SIZE_T_SIZE);
+    ਨਹੀਂਤਾਂ  /* markers are always of size SIZE_T_SIZE */
+      ਪ੍ਰਤਿਜ੍ਞਾ(sz == ਮਾਪ_T_ਮਾਪ);
   }
 }
 
 /* Check properties of malloced chunks at the point they are malloced */
-static void do_check_malloced_chunk(mstate m, void* mem, size_t s) {
-  if (mem != 0) {
+ਸਥਿਰ ਖਾਲੀ do_check_malloced_chunk(mstate m, ਖਾਲੀ* mem, size_t s) {
+  ਜੇ (mem != 0) {
     mchunkptr p = mem2chunk(mem);
-    size_t sz = p->head & ~INUSE_BITS;
+    size_t sz = p->ਸਿਰ & ~INUSE_ਬਿੱਟ;
     do_check_inuse_chunk(m, p);
-    assert((sz & CHUNK_ALIGN_MASK) == 0);
-    assert(sz >= MIN_CHUNK_SIZE);
-    assert(sz >= s);
+    ਪ੍ਰਤਿਜ੍ਞਾ((sz & CHUNK_ALIGN_ਨਕਾਬ) == 0);
+    ਪ੍ਰਤਿਜ੍ਞਾ(sz >= MIN_CHUNK_ਮਾਪ);
+    ਪ੍ਰਤਿਜ੍ਞਾ(sz >= s);
     /* unless mmapped, size is less than MIN_CHUNK_SIZE more than request */
-    assert(is_mmapped(p) || sz < (s + MIN_CHUNK_SIZE));
+    ਪ੍ਰਤਿਜ੍ਞਾ(is_mmapped(p) || sz < (s + MIN_CHUNK_ਮਾਪ));
   }
 }
 
 /* Check a tree and its subtrees.  */
-static void do_check_tree(mstate m, tchunkptr t) {
-  tchunkptr head = 0;
+ਸਥਿਰ ਖਾਲੀ do_check_ਰੁੱਖ(mstate m, tchunkptr t) {
+  tchunkptr ਸਿਰ = 0;
   tchunkptr u = t;
-  bindex_t tindex = t->index;
+  bindex_t tindex = t->ਸੂਚਕਾਂਕ;
   size_t tsize = chunksize(t);
   bindex_t idx;
-  compute_tree_index(tsize, idx);
-  assert(tindex == idx);
-  assert(tsize >= MIN_LARGE_SIZE);
-  assert(tsize >= minsize_for_tree_index(idx));
-  assert((idx == NTREEBINS-1) || (tsize < minsize_for_tree_index((idx+1))));
+  compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(tsize, idx);
+  ਪ੍ਰਤਿਜ੍ਞਾ(tindex == idx);
+  ਪ੍ਰਤਿਜ੍ਞਾ(tsize >= MIN_LARGE_ਮਾਪ);
+  ਪ੍ਰਤਿਜ੍ਞਾ(tsize >= minsize_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ(idx));
+  ਪ੍ਰਤਿਜ੍ਞਾ((idx == NTREEBINS-1) || (tsize < minsize_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ((idx+1))));
 
-  do { /* traverse through chain of same-sized nodes */
+  ਕਰੋ { /* traverse through chain of same-sized nodes */
     do_check_any_chunk(m, ((mchunkptr)u));
-    assert(u->index == tindex);
-    assert(chunksize(u) == tsize);
-    assert(!is_inuse(u));
-    assert(!next_pinuse(u));
-    assert(u->fd->bk == u);
-    assert(u->bk->fd == u);
-    if (u->parent == 0) {
-      assert(u->child[0] == 0);
-      assert(u->child[1] == 0);
+    ਪ੍ਰਤਿਜ੍ਞਾ(u->ਸੂਚਕਾਂਕ == tindex);
+    ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(u) == tsize);
+    ਪ੍ਰਤਿਜ੍ਞਾ(!is_inuse(u));
+    ਪ੍ਰਤਿਜ੍ਞਾ(!ਅਗਲਾ_pinuse(u));
+    ਪ੍ਰਤਿਜ੍ਞਾ(u->fd->bk == u);
+    ਪ੍ਰਤਿਜ੍ਞਾ(u->bk->fd == u);
+    ਜੇ (u->ਮਾਪਾ == 0) {
+      ਪ੍ਰਤਿਜ੍ਞਾ(u->ਬੱਚਾ[0] == 0);
+      ਪ੍ਰਤਿਜ੍ਞਾ(u->ਬੱਚਾ[1] == 0);
     }
-    else {
-      assert(head == 0); /* only one node on chain has parent */
-      head = u;
-      assert(u->parent != u);
-      assert (u->parent->child[0] == u ||
-              u->parent->child[1] == u ||
-              *((tbinptr*)(u->parent)) == u);
-      if (u->child[0] != 0) {
-        assert(u->child[0]->parent == u);
-        assert(u->child[0] != u);
-        do_check_tree(m, u->child[0]);
+    ਨਹੀਂਤਾਂ {
+      ਪ੍ਰਤਿਜ੍ਞਾ(ਸਿਰ == 0); /* only one node on chain has parent */
+      ਸਿਰ = u;
+      ਪ੍ਰਤਿਜ੍ਞਾ(u->ਮਾਪਾ != u);
+      ਪ੍ਰਤਿਜ੍ਞਾ (u->ਮਾਪਾ->ਬੱਚਾ[0] == u ||
+              u->ਮਾਪਾ->ਬੱਚਾ[1] == u ||
+              *((tbinptr*)(u->ਮਾਪਾ)) == u);
+      ਜੇ (u->ਬੱਚਾ[0] != 0) {
+        ਪ੍ਰਤਿਜ੍ਞਾ(u->ਬੱਚਾ[0]->ਮਾਪਾ == u);
+        ਪ੍ਰਤਿਜ੍ਞਾ(u->ਬੱਚਾ[0] != u);
+        do_check_ਰੁੱਖ(m, u->ਬੱਚਾ[0]);
       }
-      if (u->child[1] != 0) {
-        assert(u->child[1]->parent == u);
-        assert(u->child[1] != u);
-        do_check_tree(m, u->child[1]);
+      ਜੇ (u->ਬੱਚਾ[1] != 0) {
+        ਪ੍ਰਤਿਜ੍ਞਾ(u->ਬੱਚਾ[1]->ਮਾਪਾ == u);
+        ਪ੍ਰਤਿਜ੍ਞਾ(u->ਬੱਚਾ[1] != u);
+        do_check_ਰੁੱਖ(m, u->ਬੱਚਾ[1]);
       }
-      if (u->child[0] != 0 && u->child[1] != 0) {
-        assert(chunksize(u->child[0]) < chunksize(u->child[1]));
+      ਜੇ (u->ਬੱਚਾ[0] != 0 && u->ਬੱਚਾ[1] != 0) {
+        ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(u->ਬੱਚਾ[0]) < chunksize(u->ਬੱਚਾ[1]));
       }
     }
     u = u->fd;
-  } while (u != t);
-  assert(head != 0);
+  } ਜਦੋਂ (u != t);
+  ਪ੍ਰਤਿਜ੍ਞਾ(ਸਿਰ != 0);
 }
 
 /*  Check all the chunks in a treebin.  */
-static void do_check_treebin(mstate m, bindex_t i) {
+ਸਥਿਰ ਖਾਲੀ do_check_treebin(mstate m, bindex_t i) {
   tbinptr* tb = treebin_at(m, i);
   tchunkptr t = *tb;
-  int empty = (m->treemap & (1U << i)) == 0;
-  if (t == 0)
-    assert(empty);
-  if (!empty)
-    do_check_tree(m, t);
+  ਪੂਰਨ ਖਾਲੀ_ਥਾਵਾਂ = (m->treemap & (1U << i)) == 0;
+  ਜੇ (t == 0)
+    ਪ੍ਰਤਿਜ੍ਞਾ(ਖਾਲੀ_ਥਾਵਾਂ);
+  ਜੇ (!ਖਾਲੀ_ਥਾਵਾਂ)
+    do_check_ਰੁੱਖ(m, t);
 }
 
 /*  Check all the chunks in a smallbin.  */
-static void do_check_smallbin(mstate m, bindex_t i) {
+ਸਥਿਰ ਖਾਲੀ do_check_smallbin(mstate m, bindex_t i) {
   sbinptr b = smallbin_at(m, i);
   mchunkptr p = b->bk;
-  unsigned int empty = (m->smallmap & (1U << i)) == 0;
-  if (p == b)
-    assert(empty);
-  if (!empty) {
-    for (; p != b; p = p->bk) {
-      size_t size = chunksize(p);
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ ਖਾਲੀ_ਥਾਵਾਂ = (m->smallmap & (1U << i)) == 0;
+  ਜੇ (p == b)
+    ਪ੍ਰਤਿਜ੍ਞਾ(ਖਾਲੀ_ਥਾਵਾਂ);
+  ਜੇ (!ਖਾਲੀ_ਥਾਵਾਂ) {
+    ਲਈ (; p != b; p = p->bk) {
+      size_t ਮਾਪ = chunksize(p);
       mchunkptr q;
       /* each chunk claims to be free */
       do_check_free_chunk(m, p);
       /* chunk belongs in bin */
-      assert(small_index(size) == i);
-      assert(p->bk == b || chunksize(p->bk) == chunksize(p));
+      ਪ੍ਰਤਿਜ੍ਞਾ(small_ਸੂਚਕਾਂਕ(ਮਾਪ) == i);
+      ਪ੍ਰਤਿਜ੍ਞਾ(p->bk == b || chunksize(p->bk) == chunksize(p));
       /* chunk is followed by an inuse chunk */
-      q = next_chunk(p);
-      if (q->head != FENCEPOST_HEAD)
+      q = ਅਗਲਾ_chunk(p);
+      ਜੇ (q->ਸਿਰ != FENCEPOST_ਸਿਰ)
         do_check_inuse_chunk(m, q);
     }
   }
 }
 
 /* Find x in a bin. Used in other check functions. */
-static int bin_find(mstate m, mchunkptr x) {
-  size_t size = chunksize(x);
-  if (is_small(size)) {
-    bindex_t sidx = small_index(size);
+ਸਥਿਰ ਪੂਰਨ bin_ਲੱਭੋ(mstate m, mchunkptr x) {
+  size_t ਮਾਪ = chunksize(x);
+  ਜੇ (is_small(ਮਾਪ)) {
+    bindex_t sidx = small_ਸੂਚਕਾਂਕ(ਮਾਪ);
     sbinptr b = smallbin_at(m, sidx);
-    if (smallmap_is_marked(m, sidx)) {
+    ਜੇ (smallmap_is_marked(m, sidx)) {
       mchunkptr p = b;
-      do {
-        if (p == x)
-          return 1;
-      } while ((p = p->fd) != b);
+      ਕਰੋ {
+        ਜੇ (p == x)
+          ਵਾਪਸ 1;
+      } ਜਦੋਂ ((p = p->fd) != b);
     }
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     bindex_t tidx;
-    compute_tree_index(size, tidx);
-    if (treemap_is_marked(m, tidx)) {
+    compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(ਮਾਪ, tidx);
+    ਜੇ (treemap_is_marked(m, tidx)) {
       tchunkptr t = *treebin_at(m, tidx);
-      size_t sizebits = size << leftshift_for_tree_index(tidx);
-      while (t != 0 && chunksize(t) != size) {
-        t = t->child[(sizebits >> (SIZE_T_BITSIZE-SIZE_T_ONE)) & 1];
+      size_t sizebits = ਮਾਪ << leftshift_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ(tidx);
+      ਜਦੋਂ (t != 0 && chunksize(t) != ਮਾਪ) {
+        t = t->ਬੱਚਾ[(sizebits >> (ਮਾਪ_T_BITSIZE-ਮਾਪ_T_ONE)) & 1];
         sizebits <<= 1;
       }
-      if (t != 0) {
+      ਜੇ (t != 0) {
         tchunkptr u = t;
-        do {
-          if (u == (tchunkptr)x)
-            return 1;
-        } while ((u = u->fd) != t);
+        ਕਰੋ {
+          ਜੇ (u == (tchunkptr)x)
+            ਵਾਪਸ 1;
+        } ਜਦੋਂ ((u = u->fd) != t);
       }
     }
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 /* Traverse each chunk and check it; return total */
-static size_t traverse_and_check(mstate m) {
-  size_t sum = 0;
-  if (is_initialized(m)) {
+ਸਥਿਰ size_t traverse_and_check(mstate m) {
+  size_t ਜੋੜ = 0;
+  ਜੇ (is_initialized(m)) {
     msegmentptr s = &m->seg;
-    sum += m->topsize + TOP_FOOT_SIZE;
-    while (s != 0) {
-      mchunkptr q = align_as_chunk(s->base);
+    ਜੋੜ += m->topsize + ਸਿਖਰ_FOOT_ਮਾਪ;
+    ਜਦੋਂ (s != 0) {
+      mchunkptr q = align_as_chunk(s->ਅਧਾਰ);
       mchunkptr lastq = 0;
-      assert(pinuse(q));
-      while (segment_holds(s, q) &&
-             q != m->top && q->head != FENCEPOST_HEAD) {
-        sum += chunksize(q);
-        if (is_inuse(q)) {
-          assert(!bin_find(m, q));
+      ਪ੍ਰਤਿਜ੍ਞਾ(pinuse(q));
+      ਜਦੋਂ (segment_holds(s, q) &&
+             q != m->ਸਿਖਰ && q->ਸਿਰ != FENCEPOST_ਸਿਰ) {
+        ਜੋੜ += chunksize(q);
+        ਜੇ (is_inuse(q)) {
+          ਪ੍ਰਤਿਜ੍ਞਾ(!bin_ਲੱਭੋ(m, q));
           do_check_inuse_chunk(m, q);
         }
-        else {
-          assert(q == m->dv || bin_find(m, q));
-          assert(lastq == 0 || is_inuse(lastq)); /* Not 2 consecutive free */
+        ਨਹੀਂਤਾਂ {
+          ਪ੍ਰਤਿਜ੍ਞਾ(q == m->dv || bin_ਲੱਭੋ(m, q));
+          ਪ੍ਰਤਿਜ੍ਞਾ(lastq == 0 || is_inuse(lastq)); /* Not 2 consecutive free */
           do_check_free_chunk(m, q);
         }
         lastq = q;
-        q = next_chunk(q);
+        q = ਅਗਲਾ_chunk(q);
       }
-      s = s->next;
+      s = s->ਅਗਲਾ;
     }
   }
-  return sum;
+  ਵਾਪਸ ਜੋੜ;
 }
 
 
 /* Check all properties of malloc_state. */
-static void do_check_malloc_state(mstate m) {
+ਸਥਿਰ ਖਾਲੀ do_check_malloc_state(mstate m) {
   bindex_t i;
-  size_t total;
+  size_t ਕੁੱਲ;
   /* check bins */
-  for (i = 0; i < NSMALLBINS; ++i)
+  ਲਈ (i = 0; i < NSMALLBINS; ++i)
     do_check_smallbin(m, i);
-  for (i = 0; i < NTREEBINS; ++i)
+  ਲਈ (i = 0; i < NTREEBINS; ++i)
     do_check_treebin(m, i);
 
-  if (m->dvsize != 0) { /* check dv chunk */
+  ਜੇ (m->dvsize != 0) { /* check dv chunk */
     do_check_any_chunk(m, m->dv);
-    assert(m->dvsize == chunksize(m->dv));
-    assert(m->dvsize >= MIN_CHUNK_SIZE);
-    assert(bin_find(m, m->dv) == 0);
+    ਪ੍ਰਤਿਜ੍ਞਾ(m->dvsize == chunksize(m->dv));
+    ਪ੍ਰਤਿਜ੍ਞਾ(m->dvsize >= MIN_CHUNK_ਮਾਪ);
+    ਪ੍ਰਤਿਜ੍ਞਾ(bin_ਲੱਭੋ(m, m->dv) == 0);
   }
 
-  if (m->top != 0) {   /* check top chunk */
-    do_check_top_chunk(m, m->top);
+  ਜੇ (m->ਸਿਖਰ != 0) {   /* check top chunk */
+    do_check_ਸਿਖਰ_chunk(m, m->ਸਿਖਰ);
     /*assert(m->topsize == chunksize(m->top)); redundant */
-    assert(m->topsize > 0);
-    assert(bin_find(m, m->top) == 0);
+    ਪ੍ਰਤਿਜ੍ਞਾ(m->topsize > 0);
+    ਪ੍ਰਤਿਜ੍ਞਾ(bin_ਲੱਭੋ(m, m->ਸਿਖਰ) == 0);
   }
 
-  total = traverse_and_check(m);
-  assert(total <= m->footprint);
-  assert(m->footprint <= m->max_footprint);
+  ਕੁੱਲ = traverse_and_check(m);
+  ਪ੍ਰਤਿਜ੍ਞਾ(ਕੁੱਲ <= m->footprint);
+  ਪ੍ਰਤਿਜ੍ਞਾ(m->footprint <= m->max_footprint);
 }
-#endif /* DEBUG */
+#ਜੇ_ਅੰਤ /* DEBUG */
 
 /* ----------------------------- statistics ------------------------------ */
 
-#if !NO_MALLINFO
-static struct mallinfo internal_mallinfo(mstate m) {
-  struct mallinfo nm = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+#ਜੇ !NO_MALLINFO
+ਸਥਿਰ ਬਣਤਰ mallinfo ਅੰਦਰੂਨੀ_mallinfo(mstate m) {
+  ਬਣਤਰ mallinfo nm = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   ensure_initialization();
-  if (!PREACTION(m)) {
+  ਜੇ (!PREACTION(m)) {
     check_malloc_state(m);
-    if (is_initialized(m)) {
-      size_t nfree = SIZE_T_ONE; /* top always free */
-      size_t mfree = m->topsize + TOP_FOOT_SIZE;
-      size_t sum = mfree;
+    ਜੇ (is_initialized(m)) {
+      size_t nfree = ਮਾਪ_T_ONE; /* top always free */
+      size_t mfree = m->topsize + ਸਿਖਰ_FOOT_ਮਾਪ;
+      size_t ਜੋੜ = mfree;
       msegmentptr s = &m->seg;
-      while (s != 0) {
-        mchunkptr q = align_as_chunk(s->base);
-        while (segment_holds(s, q) &&
-               q != m->top && q->head != FENCEPOST_HEAD) {
+      ਜਦੋਂ (s != 0) {
+        mchunkptr q = align_as_chunk(s->ਅਧਾਰ);
+        ਜਦੋਂ (segment_holds(s, q) &&
+               q != m->ਸਿਖਰ && q->ਸਿਰ != FENCEPOST_ਸਿਰ) {
           size_t sz = chunksize(q);
-          sum += sz;
-          if (!is_inuse(q)) {
+          ਜੋੜ += sz;
+          ਜੇ (!is_inuse(q)) {
             mfree += sz;
             ++nfree;
           }
-          q = next_chunk(q);
+          q = ਅਗਲਾ_chunk(q);
         }
-        s = s->next;
+        s = s->ਅਗਲਾ;
       }
 
-      nm.arena    = sum;
+      nm.arena    = ਜੋੜ;
       nm.ordblks  = nfree;
-      nm.hblkhd   = m->footprint - sum;
+      nm.hblkhd   = m->footprint - ਜੋੜ;
       nm.usmblks  = m->max_footprint;
       nm.uordblks = m->footprint - mfree;
       nm.fordblks = mfree;
@@ -3673,42 +3673,42 @@ static struct mallinfo internal_mallinfo(mstate m) {
 
     POSTACTION(m);
   }
-  return nm;
+  ਵਾਪਸ nm;
 }
-#endif /* !NO_MALLINFO */
+#ਜੇ_ਅੰਤ /* !NO_MALLINFO */
 
-#if !NO_MALLOC_STATS
-static void internal_malloc_stats(mstate m) {
+#ਜੇ !NO_MALLOC_STATS
+ਸਥਿਰ ਖਾਲੀ ਅੰਦਰੂਨੀ_malloc_stats(mstate m) {
   ensure_initialization();
-  if (!PREACTION(m)) {
+  ਜੇ (!PREACTION(m)) {
     size_t maxfp = 0;
     size_t fp = 0;
-    size_t used = 0;
+    size_t ਵਰਤਿਆ = 0;
     check_malloc_state(m);
-    if (is_initialized(m)) {
+    ਜੇ (is_initialized(m)) {
       msegmentptr s = &m->seg;
       maxfp = m->max_footprint;
       fp = m->footprint;
-      used = fp - (m->topsize + TOP_FOOT_SIZE);
+      ਵਰਤਿਆ = fp - (m->topsize + ਸਿਖਰ_FOOT_ਮਾਪ);
 
-      while (s != 0) {
-        mchunkptr q = align_as_chunk(s->base);
-        while (segment_holds(s, q) &&
-               q != m->top && q->head != FENCEPOST_HEAD) {
-          if (!is_inuse(q))
-            used -= chunksize(q);
-          q = next_chunk(q);
+      ਜਦੋਂ (s != 0) {
+        mchunkptr q = align_as_chunk(s->ਅਧਾਰ);
+        ਜਦੋਂ (segment_holds(s, q) &&
+               q != m->ਸਿਖਰ && q->ਸਿਰ != FENCEPOST_ਸਿਰ) {
+          ਜੇ (!is_inuse(q))
+            ਵਰਤਿਆ -= chunksize(q);
+          q = ਅਗਲਾ_chunk(q);
         }
-        s = s->next;
+        s = s->ਅਗਲਾ;
       }
     }
     POSTACTION(m); /* drop lock */
-    fprintf(stderr, "max system bytes = %10lu\n", (unsigned long)(maxfp));
-    fprintf(stderr, "system bytes     = %10lu\n", (unsigned long)(fp));
-    fprintf(stderr, "in use bytes     = %10lu\n", (unsigned long)(used));
+    fprintf(stderr, "max system bytes = %10lu\n", (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)(maxfp));
+    fprintf(stderr, "system bytes     = %10lu\n", (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)(fp));
+    fprintf(stderr, "in use bytes     = %10lu\n", (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)(ਵਰਤਿਆ));
   }
 }
-#endif /* NO_MALLOC_STATS */
+#ਜੇ_ਅੰਤ /* NO_MALLOC_STATS */
 
 /* ----------------------- Operations on smallbins ----------------------- */
 
@@ -3720,16 +3720,16 @@ static void internal_malloc_stats(mstate m) {
 */
 
 /* Link a free chunk into a smallbin  */
-#define insert_small_chunk(M, P, S) {\
-  bindex_t I  = small_index(S);\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪਾਓ_small_chunk(M, P, S) {\
+  bindex_t I  = small_ਸੂਚਕਾਂਕ(S);\
   mchunkptr B = smallbin_at(M, I);\
   mchunkptr F = B;\
-  assert(S >= MIN_CHUNK_SIZE);\
-  if (!smallmap_is_marked(M, I))\
+  ਪ੍ਰਤਿਜ੍ਞਾ(S >= MIN_CHUNK_ਮਾਪ);\
+  ਜੇ (!smallmap_is_marked(M, I))\
     mark_smallmap(M, I);\
-  else if (RTCHECK(ok_address(M, B->fd)))\
+  ਨਹੀਂਤਾਂ ਜੇ (RTCHECK(ok_ਪਤਾ(M, B->fd)))\
     F = B->fd;\
-  else {\
+  ਨਹੀਂਤਾਂ {\
     CORRUPTION_ERROR_ACTION(M);\
   }\
   B->fd = P;\
@@ -3739,57 +3739,57 @@ static void internal_malloc_stats(mstate m) {
 }
 
 /* Unlink a chunk from a smallbin  */
-#define unlink_small_chunk(M, P, S) {\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ unlink_small_chunk(M, P, S) {\
   mchunkptr F = P->fd;\
   mchunkptr B = P->bk;\
-  bindex_t I = small_index(S);\
-  assert(P != B);\
-  assert(P != F);\
-  assert(chunksize(P) == small_index2size(I));\
-  if (RTCHECK(F == smallbin_at(M,I) || (ok_address(M, F) && F->bk == P))) { \
-    if (B == F) {\
+  bindex_t I = small_ਸੂਚਕਾਂਕ(S);\
+  ਪ੍ਰਤਿਜ੍ਞਾ(P != B);\
+  ਪ੍ਰਤਿਜ੍ਞਾ(P != F);\
+  ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(P) == small_index2size(I));\
+  ਜੇ (RTCHECK(F == smallbin_at(M,I) || (ok_ਪਤਾ(M, F) && F->bk == P))) { \
+    ਜੇ (B == F) {\
       clear_smallmap(M, I);\
     }\
-    else if (RTCHECK(B == smallbin_at(M,I) ||\
-                     (ok_address(M, B) && B->fd == P))) {\
+    ਨਹੀਂਤਾਂ ਜੇ (RTCHECK(B == smallbin_at(M,I) ||\
+                     (ok_ਪਤਾ(M, B) && B->fd == P))) {\
       F->bk = B;\
       B->fd = F;\
     }\
-    else {\
+    ਨਹੀਂਤਾਂ {\
       CORRUPTION_ERROR_ACTION(M);\
     }\
   }\
-  else {\
+  ਨਹੀਂਤਾਂ {\
     CORRUPTION_ERROR_ACTION(M);\
   }\
 }
 
 /* Unlink the first chunk from a smallbin */
-#define unlink_first_small_chunk(M, B, P, I) {\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ unlink_ਪਹਿਲਾ_small_chunk(M, B, P, I) {\
   mchunkptr F = P->fd;\
-  assert(P != B);\
-  assert(P != F);\
-  assert(chunksize(P) == small_index2size(I));\
-  if (B == F) {\
+  ਪ੍ਰਤਿਜ੍ਞਾ(P != B);\
+  ਪ੍ਰਤਿਜ੍ਞਾ(P != F);\
+  ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(P) == small_index2size(I));\
+  ਜੇ (B == F) {\
     clear_smallmap(M, I);\
   }\
-  else if (RTCHECK(ok_address(M, F) && F->bk == P)) {\
+  ਨਹੀਂਤਾਂ ਜੇ (RTCHECK(ok_ਪਤਾ(M, F) && F->bk == P)) {\
     F->bk = B;\
     B->fd = F;\
   }\
-  else {\
+  ਨਹੀਂਤਾਂ {\
     CORRUPTION_ERROR_ACTION(M);\
   }\
 }
 
 /* Replace dv node, binning the old one */
 /* Used only when dvsize known to be small */
-#define replace_dv(M, P, S) {\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ replace_dv(M, P, S) {\
   size_t DVS = M->dvsize;\
-  assert(is_small(DVS));\
-  if (DVS != 0) {\
+  ਪ੍ਰਤਿਜ੍ਞਾ(is_small(DVS));\
+  ਜੇ (DVS != 0) {\
     mchunkptr DV = M->dv;\
-    insert_small_chunk(M, DV, DVS);\
+    ਪਾਓ_small_chunk(M, DV, DVS);\
   }\
   M->dvsize = S;\
   M->dv = P;\
@@ -3798,51 +3798,51 @@ static void internal_malloc_stats(mstate m) {
 /* ------------------------- Operations on trees ------------------------- */
 
 /* Insert chunk into tree */
-#define insert_large_chunk(M, X, S) {\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪਾਓ_large_chunk(M, X, S) {\
   tbinptr* H;\
   bindex_t I;\
-  compute_tree_index(S, I);\
+  compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(S, I);\
   H = treebin_at(M, I);\
-  X->index = I;\
-  X->child[0] = X->child[1] = 0;\
-  if (!treemap_is_marked(M, I)) {\
+  X->ਸੂਚਕਾਂਕ = I;\
+  X->ਬੱਚਾ[0] = X->ਬੱਚਾ[1] = 0;\
+  ਜੇ (!treemap_is_marked(M, I)) {\
     mark_treemap(M, I);\
     *H = X;\
-    X->parent = (tchunkptr)H;\
+    X->ਮਾਪਾ = (tchunkptr)H;\
     X->fd = X->bk = X;\
   }\
-  else {\
+  ਨਹੀਂਤਾਂ {\
     tchunkptr T = *H;\
-    size_t K = S << leftshift_for_tree_index(I);\
-    for (;;) {\
-      if (chunksize(T) != S) {\
-        tchunkptr* C = &(T->child[(K >> (SIZE_T_BITSIZE-SIZE_T_ONE)) & 1]);\
+    size_t K = S << leftshift_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ(I);\
+    ਲਈ (;;) {\
+      ਜੇ (chunksize(T) != S) {\
+        tchunkptr* C = &(T->ਬੱਚਾ[(K >> (ਮਾਪ_T_BITSIZE-ਮਾਪ_T_ONE)) & 1]);\
         K <<= 1;\
-        if (*C != 0)\
+        ਜੇ (*C != 0)\
           T = *C;\
-        else if (RTCHECK(ok_address(M, C))) {\
+        ਨਹੀਂਤਾਂ ਜੇ (RTCHECK(ok_ਪਤਾ(M, C))) {\
           *C = X;\
-          X->parent = T;\
+          X->ਮਾਪਾ = T;\
           X->fd = X->bk = X;\
-          break;\
+          ਰੋਕੋ;\
         }\
-        else {\
+        ਨਹੀਂਤਾਂ {\
           CORRUPTION_ERROR_ACTION(M);\
-          break;\
+          ਰੋਕੋ;\
         }\
       }\
-      else {\
+      ਨਹੀਂਤਾਂ {\
         tchunkptr F = T->fd;\
-        if (RTCHECK(ok_address(M, T) && ok_address(M, F))) {\
+        ਜੇ (RTCHECK(ok_ਪਤਾ(M, T) && ok_ਪਤਾ(M, F))) {\
           T->fd = F->bk = X;\
           X->fd = F;\
           X->bk = T;\
-          X->parent = 0;\
-          break;\
+          X->ਮਾਪਾ = 0;\
+          ਰੋਕੋ;\
         }\
-        else {\
+        ਨਹੀਂਤਾਂ {\
           CORRUPTION_ERROR_ACTION(M);\
-          break;\
+          ਰੋਕੋ;\
         }\
       }\
     }\
@@ -3866,72 +3866,72 @@ static void internal_malloc_stats(mstate m) {
      x's parent and children to x's replacement (or null if none).
 */
 
-#define unlink_large_chunk(M, X) {\
-  tchunkptr XP = X->parent;\
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ unlink_large_chunk(M, X) {\
+  tchunkptr XP = X->ਮਾਪਾ;\
   tchunkptr R;\
-  if (X->bk != X) {\
+  ਜੇ (X->bk != X) {\
     tchunkptr F = X->fd;\
     R = X->bk;\
-    if (RTCHECK(ok_address(M, F) && F->bk == X && R->fd == X)) {\
+    ਜੇ (RTCHECK(ok_ਪਤਾ(M, F) && F->bk == X && R->fd == X)) {\
       F->bk = R;\
       R->fd = F;\
     }\
-    else {\
+    ਨਹੀਂਤਾਂ {\
       CORRUPTION_ERROR_ACTION(M);\
     }\
   }\
-  else {\
+  ਨਹੀਂਤਾਂ {\
     tchunkptr* RP;\
-    if (((R = *(RP = &(X->child[1]))) != 0) ||\
-        ((R = *(RP = &(X->child[0]))) != 0)) {\
+    ਜੇ (((R = *(RP = &(X->ਬੱਚਾ[1]))) != 0) ||\
+        ((R = *(RP = &(X->ਬੱਚਾ[0]))) != 0)) {\
       tchunkptr* CP;\
-      while ((*(CP = &(R->child[1])) != 0) ||\
-             (*(CP = &(R->child[0])) != 0)) {\
+      ਜਦੋਂ ((*(CP = &(R->ਬੱਚਾ[1])) != 0) ||\
+             (*(CP = &(R->ਬੱਚਾ[0])) != 0)) {\
         R = *(RP = CP);\
       }\
-      if (RTCHECK(ok_address(M, RP)))\
+      ਜੇ (RTCHECK(ok_ਪਤਾ(M, RP)))\
         *RP = 0;\
-      else {\
+      ਨਹੀਂਤਾਂ {\
         CORRUPTION_ERROR_ACTION(M);\
       }\
     }\
   }\
-  if (XP != 0) {\
-    tbinptr* H = treebin_at(M, X->index);\
-    if (X == *H) {\
-      if ((*H = R) == 0) \
-        clear_treemap(M, X->index);\
+  ਜੇ (XP != 0) {\
+    tbinptr* H = treebin_at(M, X->ਸੂਚਕਾਂਕ);\
+    ਜੇ (X == *H) {\
+      ਜੇ ((*H = R) == 0) \
+        clear_treemap(M, X->ਸੂਚਕਾਂਕ);\
     }\
-    else if (RTCHECK(ok_address(M, XP))) {\
-      if (XP->child[0] == X) \
-        XP->child[0] = R;\
-      else \
-        XP->child[1] = R;\
+    ਨਹੀਂਤਾਂ ਜੇ (RTCHECK(ok_ਪਤਾ(M, XP))) {\
+      ਜੇ (XP->ਬੱਚਾ[0] == X) \
+        XP->ਬੱਚਾ[0] = R;\
+      ਨਹੀਂਤਾਂ \
+        XP->ਬੱਚਾ[1] = R;\
     }\
-    else\
+    ਨਹੀਂਤਾਂ\
       CORRUPTION_ERROR_ACTION(M);\
-    if (R != 0) {\
-      if (RTCHECK(ok_address(M, R))) {\
+    ਜੇ (R != 0) {\
+      ਜੇ (RTCHECK(ok_ਪਤਾ(M, R))) {\
         tchunkptr C0, C1;\
-        R->parent = XP;\
-        if ((C0 = X->child[0]) != 0) {\
-          if (RTCHECK(ok_address(M, C0))) {\
-            R->child[0] = C0;\
-            C0->parent = R;\
+        R->ਮਾਪਾ = XP;\
+        ਜੇ ((C0 = X->ਬੱਚਾ[0]) != 0) {\
+          ਜੇ (RTCHECK(ok_ਪਤਾ(M, C0))) {\
+            R->ਬੱਚਾ[0] = C0;\
+            C0->ਮਾਪਾ = R;\
           }\
-          else\
+          ਨਹੀਂਤਾਂ\
             CORRUPTION_ERROR_ACTION(M);\
         }\
-        if ((C1 = X->child[1]) != 0) {\
-          if (RTCHECK(ok_address(M, C1))) {\
-            R->child[1] = C1;\
-            C1->parent = R;\
+        ਜੇ ((C1 = X->ਬੱਚਾ[1]) != 0) {\
+          ਜੇ (RTCHECK(ok_ਪਤਾ(M, C1))) {\
+            R->ਬੱਚਾ[1] = C1;\
+            C1->ਮਾਪਾ = R;\
           }\
-          else\
+          ਨਹੀਂਤਾਂ\
             CORRUPTION_ERROR_ACTION(M);\
         }\
       }\
-      else\
+      ਨਹੀਂਤਾਂ\
         CORRUPTION_ERROR_ACTION(M);\
     }\
   }\
@@ -3939,31 +3939,31 @@ static void internal_malloc_stats(mstate m) {
 
 /* Relays to large vs small bin operations */
 
-#define insert_chunk(M, P, S)\
-  if (is_small(S)) insert_small_chunk(M, P, S)\
-  else { tchunkptr TP = (tchunkptr)(P); insert_large_chunk(M, TP, S); }
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪਾਓ_chunk(M, P, S)\
+  ਜੇ (is_small(S)) ਪਾਓ_small_chunk(M, P, S)\
+  ਨਹੀਂਤਾਂ { tchunkptr TP = (tchunkptr)(P); ਪਾਓ_large_chunk(M, TP, S); }
 
-#define unlink_chunk(M, P, S)\
-  if (is_small(S)) unlink_small_chunk(M, P, S)\
-  else { tchunkptr TP = (tchunkptr)(P); unlink_large_chunk(M, TP); }
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ unlink_chunk(M, P, S)\
+  ਜੇ (is_small(S)) unlink_small_chunk(M, P, S)\
+  ਨਹੀਂਤਾਂ { tchunkptr TP = (tchunkptr)(P); unlink_large_chunk(M, TP); }
 
 
 /* Relays to internal calls to malloc/free from realloc, memalign etc */
 
-#if ONLY_MSPACES
-#define internal_malloc(m, b) mspace_malloc(m, b)
-#define internal_free(m, mem) mspace_free(m,mem);
-#else /* ONLY_MSPACES */
-#if MSPACES
-#define internal_malloc(m, b)\
+#ਜੇ ONLY_MSPACES
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅੰਦਰੂਨੀ_malloc(m, b) mspace_malloc(m, b)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅੰਦਰੂਨੀ_free(m, mem) mspace_free(m,mem);
+#ਨਹੀਂਤਾਂ /* ONLY_MSPACES */
+#ਜੇ MSPACES
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅੰਦਰੂਨੀ_malloc(m, b)\
   ((m == gm)? dlmalloc(b) : mspace_malloc(m, b))
-#define internal_free(m, mem)\
-   if (m == gm) dlfree(mem); else mspace_free(m,mem);
-#else /* MSPACES */
-#define internal_malloc(m, b) dlmalloc(b)
-#define internal_free(m, mem) dlfree(mem)
-#endif /* MSPACES */
-#endif /* ONLY_MSPACES */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅੰਦਰੂਨੀ_free(m, mem)\
+   ਜੇ (m == gm) dlfree(mem); ਨਹੀਂਤਾਂ mspace_free(m,mem);
+#ਨਹੀਂਤਾਂ /* MSPACES */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅੰਦਰੂਨੀ_malloc(m, b) dlmalloc(b)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅੰਦਰੂਨੀ_free(m, mem) dlfree(mem)
+#ਜੇ_ਅੰਤ /* MSPACES */
+#ਜੇ_ਅੰਤ /* ONLY_MSPACES */
 
 /* -----------------------  Direct-mmapping chunks ----------------------- */
 
@@ -3976,220 +3976,220 @@ static void internal_malloc_stats(mstate m) {
 */
 
 /* Malloc using mmap */
-static void* mmap_alloc(mstate m, size_t nb) {
-  size_t mmsize = mmap_align(nb + SIX_SIZE_T_SIZES + CHUNK_ALIGN_MASK);
-  if (m->footprint_limit != 0) {
+ਸਥਿਰ ਖਾਲੀ* mmap_alloc(mstate m, size_t nb) {
+  size_t mmsize = mmap_align(nb + SIX_ਮਾਪ_T_SIZES + CHUNK_ALIGN_ਨਕਾਬ);
+  ਜੇ (m->footprint_ਹੱਦਬੰਦੀ != 0) {
     size_t fp = m->footprint + mmsize;
-    if (fp <= m->footprint || fp > m->footprint_limit)
-      return 0;
+    ਜੇ (fp <= m->footprint || fp > m->footprint_ਹੱਦਬੰਦੀ)
+      ਵਾਪਸ 0;
   }
-  if (mmsize > nb) {     /* Check for wrap around 0 */
-    char* mm = (char*)(CALL_DIRECT_MMAP(mmsize));
-    if (mm != CMFAIL) {
-      size_t offset = align_offset(chunk2mem(mm));
+  ਜੇ (mmsize > nb) {     /* Check for wrap around 0 */
+    ਅੱਖਰ* mm = (ਅੱਖਰ*)(CALL_ਸਿੱਧਾ_MMAP(mmsize));
+    ਜੇ (mm != CMFAIL) {
+      size_t offset = align_ਵਿੱਥ(chunk2mem(mm));
       size_t psize = mmsize - offset - MMAP_FOOT_PAD;
       mchunkptr p = (mchunkptr)(mm + offset);
       p->prev_foot = offset;
-      p->head = psize;
+      p->ਸਿਰ = psize;
       mark_inuse_foot(m, p, psize);
-      chunk_plus_offset(p, psize)->head = FENCEPOST_HEAD;
-      chunk_plus_offset(p, psize+SIZE_T_SIZE)->head = 0;
+      chunk_plus_ਵਿੱਥ(p, psize)->ਸਿਰ = FENCEPOST_ਸਿਰ;
+      chunk_plus_ਵਿੱਥ(p, psize+ਮਾਪ_T_ਮਾਪ)->ਸਿਰ = 0;
 
-      if (m->least_addr == 0 || mm < m->least_addr)
-        m->least_addr = mm;
-      if ((m->footprint += mmsize) > m->max_footprint)
+      ਜੇ (m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr == 0 || mm < m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr)
+        m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr = mm;
+      ਜੇ ((m->footprint += mmsize) > m->max_footprint)
         m->max_footprint = m->footprint;
-      assert(is_aligned(chunk2mem(p)));
+      ਪ੍ਰਤਿਜ੍ਞਾ(is_aligned(chunk2mem(p)));
       check_mmapped_chunk(m, p);
-      return chunk2mem(p);
+      ਵਾਪਸ chunk2mem(p);
     }
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 /* Realloc using mmap */
-static mchunkptr mmap_resize(mstate m, mchunkptr oldp, size_t nb, int flags) {
+ਸਥਿਰ mchunkptr mmap_resize(mstate m, mchunkptr oldp, size_t nb, ਪੂਰਨ flags) {
   size_t oldsize = chunksize(oldp);
-  (void)flags; /* placate people compiling -Wunused */
-  if (is_small(nb)) /* Can't shrink mmap regions below small size */
-    return 0;
+  (ਖਾਲੀ)flags; /* placate people compiling -Wunused */
+  ਜੇ (is_small(nb)) /* Can't shrink mmap regions below small size */
+    ਵਾਪਸ 0;
   /* Keep old chunk if big enough but not too big */
-  if (oldsize >= nb + SIZE_T_SIZE &&
+  ਜੇ (oldsize >= nb + ਮਾਪ_T_ਮਾਪ &&
       (oldsize - nb) <= (mparams.granularity << 1))
-    return oldp;
-  else {
+    ਵਾਪਸ oldp;
+  ਨਹੀਂਤਾਂ {
     size_t offset = oldp->prev_foot;
     size_t oldmmsize = oldsize + offset + MMAP_FOOT_PAD;
-    size_t newmmsize = mmap_align(nb + SIX_SIZE_T_SIZES + CHUNK_ALIGN_MASK);
-    char* cp = (char*)CALL_MREMAP((char*)oldp - offset,
+    size_t newmmsize = mmap_align(nb + SIX_ਮਾਪ_T_SIZES + CHUNK_ALIGN_ਨਕਾਬ);
+    ਅੱਖਰ* cp = (ਅੱਖਰ*)CALL_MREMAP((ਅੱਖਰ*)oldp - offset,
                                   oldmmsize, newmmsize, flags);
-    if (cp != CMFAIL) {
+    ਜੇ (cp != CMFAIL) {
       mchunkptr newp = (mchunkptr)(cp + offset);
       size_t psize = newmmsize - offset - MMAP_FOOT_PAD;
-      newp->head = psize;
+      newp->ਸਿਰ = psize;
       mark_inuse_foot(m, newp, psize);
-      chunk_plus_offset(newp, psize)->head = FENCEPOST_HEAD;
-      chunk_plus_offset(newp, psize+SIZE_T_SIZE)->head = 0;
+      chunk_plus_ਵਿੱਥ(newp, psize)->ਸਿਰ = FENCEPOST_ਸਿਰ;
+      chunk_plus_ਵਿੱਥ(newp, psize+ਮਾਪ_T_ਮਾਪ)->ਸਿਰ = 0;
 
-      if (cp < m->least_addr)
-        m->least_addr = cp;
-      if ((m->footprint += newmmsize - oldmmsize) > m->max_footprint)
+      ਜੇ (cp < m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr)
+        m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr = cp;
+      ਜੇ ((m->footprint += newmmsize - oldmmsize) > m->max_footprint)
         m->max_footprint = m->footprint;
       check_mmapped_chunk(m, newp);
-      return newp;
+      ਵਾਪਸ newp;
     }
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 
 /* -------------------------- mspace management -------------------------- */
 
 /* Initialize top chunk and its size */
-static void init_top(mstate m, mchunkptr p, size_t psize) {
+ਸਥਿਰ ਖਾਲੀ init_ਸਿਖਰ(mstate m, mchunkptr p, size_t psize) {
   /* Ensure alignment */
-  size_t offset = align_offset(chunk2mem(p));
-  p = (mchunkptr)((char*)p + offset);
+  size_t offset = align_ਵਿੱਥ(chunk2mem(p));
+  p = (mchunkptr)((ਅੱਖਰ*)p + offset);
   psize -= offset;
 
-  m->top = p;
+  m->ਸਿਖਰ = p;
   m->topsize = psize;
-  p->head = psize | PINUSE_BIT;
+  p->ਸਿਰ = psize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
   /* set size of fake trailing chunk holding overhead space only once */
-  chunk_plus_offset(p, psize)->head = TOP_FOOT_SIZE;
-  m->trim_check = mparams.trim_threshold; /* reset on each update */
+  chunk_plus_ਵਿੱਥ(p, psize)->ਸਿਰ = ਸਿਖਰ_FOOT_ਮਾਪ;
+  m->trim_check = mparams.trim_ਹੱਦ; /* reset on each update */
 }
 
 /* Initialize bins for a new mstate that is otherwise zeroed out */
-static void init_bins(mstate m) {
+ਸਥਿਰ ਖਾਲੀ init_bins(mstate m) {
   /* Establish circular links for smallbins */
   bindex_t i;
-  for (i = 0; i < NSMALLBINS; ++i) {
+  ਲਈ (i = 0; i < NSMALLBINS; ++i) {
     sbinptr bin = smallbin_at(m,i);
     bin->fd = bin->bk = bin;
   }
 }
 
-#if PROCEED_ON_ERROR
+#ਜੇ PROCEED_ON_ERROR
 
 /* default corruption action */
-static void reset_on_error(mstate m) {
-  int i;
-  ++malloc_corruption_error_count;
+ਸਥਿਰ ਖਾਲੀ reset_on_error(mstate m) {
+  ਪੂਰਨ i;
+  ++malloc_corruption_error_ਗਿਣਤੀ;
   /* Reinitialize fields to forget about all memory */
   m->smallmap = m->treemap = 0;
   m->dvsize = m->topsize = 0;
-  m->seg.base = 0;
-  m->seg.size = 0;
-  m->seg.next = 0;
-  m->top = m->dv = 0;
-  for (i = 0; i < NTREEBINS; ++i)
+  m->seg.ਅਧਾਰ = 0;
+  m->seg.ਮਾਪ = 0;
+  m->seg.ਅਗਲਾ = 0;
+  m->ਸਿਖਰ = m->dv = 0;
+  ਲਈ (i = 0; i < NTREEBINS; ++i)
     *treebin_at(m, i) = 0;
   init_bins(m);
 }
-#endif /* PROCEED_ON_ERROR */
+#ਜੇ_ਅੰਤ /* PROCEED_ON_ERROR */
 
 /* Allocate chunk and prepend remainder with chunk in successor base. */
-static void* prepend_alloc(mstate m, char* newbase, char* oldbase,
+ਸਥਿਰ ਖਾਲੀ* prepend_alloc(mstate m, ਅੱਖਰ* newbase, ਅੱਖਰ* oldbase,
                            size_t nb) {
   mchunkptr p = align_as_chunk(newbase);
   mchunkptr oldfirst = align_as_chunk(oldbase);
-  size_t psize = (char*)oldfirst - (char*)p;
-  mchunkptr q = chunk_plus_offset(p, nb);
+  size_t psize = (ਅੱਖਰ*)oldfirst - (ਅੱਖਰ*)p;
+  mchunkptr q = chunk_plus_ਵਿੱਥ(p, nb);
   size_t qsize = psize - nb;
-  set_size_and_pinuse_of_inuse_chunk(m, p, nb);
+  ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, p, nb);
 
-  assert((char*)oldfirst > (char*)q);
-  assert(pinuse(oldfirst));
-  assert(qsize >= MIN_CHUNK_SIZE);
+  ਪ੍ਰਤਿਜ੍ਞਾ((ਅੱਖਰ*)oldfirst > (ਅੱਖਰ*)q);
+  ਪ੍ਰਤਿਜ੍ਞਾ(pinuse(oldfirst));
+  ਪ੍ਰਤਿਜ੍ਞਾ(qsize >= MIN_CHUNK_ਮਾਪ);
 
   /* consolidate remainder with first chunk of old base */
-  if (oldfirst == m->top) {
+  ਜੇ (oldfirst == m->ਸਿਖਰ) {
     size_t tsize = m->topsize += qsize;
-    m->top = q;
-    q->head = tsize | PINUSE_BIT;
-    check_top_chunk(m, q);
+    m->ਸਿਖਰ = q;
+    q->ਸਿਰ = tsize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+    check_ਸਿਖਰ_chunk(m, q);
   }
-  else if (oldfirst == m->dv) {
+  ਨਹੀਂਤਾਂ ਜੇ (oldfirst == m->dv) {
     size_t dsize = m->dvsize += qsize;
     m->dv = q;
-    set_size_and_pinuse_of_free_chunk(q, dsize);
+    ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(q, dsize);
   }
-  else {
-    if (!is_inuse(oldfirst)) {
+  ਨਹੀਂਤਾਂ {
+    ਜੇ (!is_inuse(oldfirst)) {
       size_t nsize = chunksize(oldfirst);
       unlink_chunk(m, oldfirst, nsize);
-      oldfirst = chunk_plus_offset(oldfirst, nsize);
+      oldfirst = chunk_plus_ਵਿੱਥ(oldfirst, nsize);
       qsize += nsize;
     }
-    set_free_with_pinuse(q, qsize, oldfirst);
-    insert_chunk(m, q, qsize);
+    ਸੈੱਟ_free_with_pinuse(q, qsize, oldfirst);
+    ਪਾਓ_chunk(m, q, qsize);
     check_free_chunk(m, q);
   }
 
   check_malloced_chunk(m, chunk2mem(p), nb);
-  return chunk2mem(p);
+  ਵਾਪਸ chunk2mem(p);
 }
 
 /* Add a segment to hold a new noncontiguous region */
-static void add_segment(mstate m, char* tbase, size_t tsize, flag_t mmapped) {
+ਸਥਿਰ ਖਾਲੀ ਜੋੜੋ_segment(mstate m, ਅੱਖਰ* tbase, size_t tsize, flag_t mmapped) {
   /* Determine locations and sizes of segment, fenceposts, old top */
-  char* old_top = (char*)m->top;
-  msegmentptr oldsp = segment_holding(m, old_top);
-  char* old_end = oldsp->base + oldsp->size;
-  size_t ssize = pad_request(sizeof(struct malloc_segment));
-  char* rawsp = old_end - (ssize + FOUR_SIZE_T_SIZES + CHUNK_ALIGN_MASK);
-  size_t offset = align_offset(chunk2mem(rawsp));
-  char* asp = rawsp + offset;
-  char* csp = (asp < (old_top + MIN_CHUNK_SIZE))? old_top : asp;
+  ਅੱਖਰ* old_ਸਿਖਰ = (ਅੱਖਰ*)m->ਸਿਖਰ;
+  msegmentptr oldsp = segment_holding(m, old_ਸਿਖਰ);
+  ਅੱਖਰ* old_ਸਿਰਾ = oldsp->ਅਧਾਰ + oldsp->ਮਾਪ;
+  size_t ssize = pad_request(ਆਕਾਰ(ਬਣਤਰ malloc_segment));
+  ਅੱਖਰ* rawsp = old_ਸਿਰਾ - (ssize + FOUR_ਮਾਪ_T_SIZES + CHUNK_ALIGN_ਨਕਾਬ);
+  size_t offset = align_ਵਿੱਥ(chunk2mem(rawsp));
+  ਅੱਖਰ* asp = rawsp + offset;
+  ਅੱਖਰ* csp = (asp < (old_ਸਿਖਰ + MIN_CHUNK_ਮਾਪ))? old_ਸਿਖਰ : asp;
   mchunkptr sp = (mchunkptr)csp;
   msegmentptr ss = (msegmentptr)(chunk2mem(sp));
-  mchunkptr tnext = chunk_plus_offset(sp, ssize);
+  mchunkptr tnext = chunk_plus_ਵਿੱਥ(sp, ssize);
   mchunkptr p = tnext;
-  int nfences = 0;
-  (void)nfences; /* Suppress unused variable warning */
+  ਪੂਰਨ nfences = 0;
+  (ਖਾਲੀ)nfences; /* Suppress unused variable warning */
 
   /* reset top to new space */
-  init_top(m, (mchunkptr)tbase, tsize - TOP_FOOT_SIZE);
+  init_ਸਿਖਰ(m, (mchunkptr)tbase, tsize - ਸਿਖਰ_FOOT_ਮਾਪ);
 
   /* Set up segment record */
-  assert(is_aligned(ss));
-  set_size_and_pinuse_of_inuse_chunk(m, sp, ssize);
+  ਪ੍ਰਤਿਜ੍ਞਾ(is_aligned(ss));
+  ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, sp, ssize);
   *ss = m->seg; /* Push current record */
-  m->seg.base = tbase;
-  m->seg.size = tsize;
-  (void)set_segment_flags(&m->seg, mmapped);
-  m->seg.next = ss;
+  m->seg.ਅਧਾਰ = tbase;
+  m->seg.ਮਾਪ = tsize;
+  (ਖਾਲੀ)ਸੈੱਟ_segment_flags(&m->seg, mmapped);
+  m->seg.ਅਗਲਾ = ss;
 
   /* Insert trailing fenceposts */
-  for (;;) {
-    mchunkptr nextp = chunk_plus_offset(p, SIZE_T_SIZE);
-    p->head = FENCEPOST_HEAD;
+  ਲਈ (;;) {
+    mchunkptr nextp = chunk_plus_ਵਿੱਥ(p, ਮਾਪ_T_ਮਾਪ);
+    p->ਸਿਰ = FENCEPOST_ਸਿਰ;
     ++nfences;
-    if ((char*)(&(nextp->head)) < old_end)
+    ਜੇ ((ਅੱਖਰ*)(&(nextp->ਸਿਰ)) < old_ਸਿਰਾ)
       p = nextp;
-    else
-      break;
+    ਨਹੀਂਤਾਂ
+      ਰੋਕੋ;
   }
-  assert(nfences >= 2);
+  ਪ੍ਰਤਿਜ੍ਞਾ(nfences >= 2);
 
   /* Insert the rest of old top into a bin as an ordinary free chunk */
-  if (csp != old_top) {
-    mchunkptr q = (mchunkptr)old_top;
-    size_t psize = csp - old_top;
-    mchunkptr tn = chunk_plus_offset(q, psize);
-    set_free_with_pinuse(q, psize, tn);
-    insert_chunk(m, q, psize);
+  ਜੇ (csp != old_ਸਿਖਰ) {
+    mchunkptr q = (mchunkptr)old_ਸਿਖਰ;
+    size_t psize = csp - old_ਸਿਖਰ;
+    mchunkptr tn = chunk_plus_ਵਿੱਥ(q, psize);
+    ਸੈੱਟ_free_with_pinuse(q, psize, tn);
+    ਪਾਓ_chunk(m, q, psize);
   }
 
-  check_top_chunk(m, m->top);
+  check_ਸਿਖਰ_chunk(m, m->ਸਿਖਰ);
 }
 
 /* -------------------------- System allocation -------------------------- */
 
 /* Get memory from system using MORECORE or MMAP */
-static void* sys_alloc(mstate m, size_t nb) {
-  char* tbase = CMFAIL;
+ਸਥਿਰ ਖਾਲੀ* sys_alloc(mstate m, size_t nb) {
+  ਅੱਖਰ* tbase = CMFAIL;
   size_t tsize = 0;
   flag_t mmap_flag = 0;
   size_t asize; /* allocation size */
@@ -4197,19 +4197,19 @@ static void* sys_alloc(mstate m, size_t nb) {
   ensure_initialization();
 
   /* Directly map large chunks, but only if already initialized */
-  if (use_mmap(m) && nb >= mparams.mmap_threshold && m->topsize != 0) {
-    void* mem = mmap_alloc(m, nb);
-    if (mem != 0)
-      return mem;
+  ਜੇ (use_mmap(m) && nb >= mparams.mmap_ਹੱਦ && m->topsize != 0) {
+    ਖਾਲੀ* mem = mmap_alloc(m, nb);
+    ਜੇ (mem != 0)
+      ਵਾਪਸ mem;
   }
 
   asize = granularity_align(nb + SYS_ALLOC_PADDING);
-  if (asize <= nb)
-    return 0; /* wraparound */
-  if (m->footprint_limit != 0) {
+  ਜੇ (asize <= nb)
+    ਵਾਪਸ 0; /* wraparound */
+  ਜੇ (m->footprint_ਹੱਦਬੰਦੀ != 0) {
     size_t fp = m->footprint + asize;
-    if (fp <= m->footprint || fp > m->footprint_limit)
-      return 0;
+    ਜੇ (fp <= m->footprint || fp > m->footprint_ਹੱਦਬੰਦੀ)
+      ਵਾਪਸ 0;
   }
 
   /*
@@ -4234,87 +4234,87 @@ static void* sys_alloc(mstate m, size_t nb) {
    not on boundary, and round this up to a granularity unit.
   */
 
-  if (MORECORE_CONTIGUOUS && !use_noncontiguous(m)) {
-    char* br = CMFAIL;
+  ਜੇ (MORECORE_CONTIGUOUS && !use_noncontiguous(m)) {
+    ਅੱਖਰ* br = CMFAIL;
     size_t ssize = asize; /* sbrk call size */
-    msegmentptr ss = (m->top == 0)? 0 : segment_holding(m, (char*)m->top);
-    ACQUIRE_MALLOC_GLOBAL_LOCK();
+    msegmentptr ss = (m->ਸਿਖਰ == 0)? 0 : segment_holding(m, (ਅੱਖਰ*)m->ਸਿਖਰ);
+    ACQUIRE_MALLOC_GLOBAL_ਤਾਲਾ();
 
-    if (ss == 0) {  /* First time through or recovery */
-      char* base = (char*)CALL_MORECORE(0);
-      if (base != CMFAIL) {
+    ਜੇ (ss == 0) {  /* First time through or recovery */
+      ਅੱਖਰ* ਅਧਾਰ = (ਅੱਖਰ*)CALL_MORECORE(0);
+      ਜੇ (ਅਧਾਰ != CMFAIL) {
         size_t fp;
         /* Adjust to end on a page boundary */
-        if (!is_page_aligned(base))
-          ssize += (page_align((size_t)base) - (size_t)base);
+        ਜੇ (!is_ਪੰਨਾ_aligned(ਅਧਾਰ))
+          ssize += (ਪੰਨਾ_align((size_t)ਅਧਾਰ) - (size_t)ਅਧਾਰ);
         fp = m->footprint + ssize; /* recheck limits */
-        if (ssize > nb && ssize < HALF_MAX_SIZE_T &&
-            (m->footprint_limit == 0 ||
-             (fp > m->footprint && fp <= m->footprint_limit)) &&
-            (br = (char*)(CALL_MORECORE(ssize))) == base) {
-          tbase = base;
+        ਜੇ (ssize > nb && ssize < HALF_MAX_ਮਾਪ_T &&
+            (m->footprint_ਹੱਦਬੰਦੀ == 0 ||
+             (fp > m->footprint && fp <= m->footprint_ਹੱਦਬੰਦੀ)) &&
+            (br = (ਅੱਖਰ*)(CALL_MORECORE(ssize))) == ਅਧਾਰ) {
+          tbase = ਅਧਾਰ;
           tsize = ssize;
         }
       }
     }
-    else {
+    ਨਹੀਂਤਾਂ {
       /* Subtract out existing available top space from MORECORE request. */
       ssize = granularity_align(nb - m->topsize + SYS_ALLOC_PADDING);
       /* Use mem here only if it did continuously extend old space */
-      if (ssize < HALF_MAX_SIZE_T &&
-          (br = (char*)(CALL_MORECORE(ssize))) == ss->base+ss->size) {
+      ਜੇ (ssize < HALF_MAX_ਮਾਪ_T &&
+          (br = (ਅੱਖਰ*)(CALL_MORECORE(ssize))) == ss->ਅਧਾਰ+ss->ਮਾਪ) {
         tbase = br;
         tsize = ssize;
       }
     }
 
-    if (tbase == CMFAIL) {    /* Cope with partial failure */
-      if (br != CMFAIL) {    /* Try to use/extend the space we did get */
-        if (ssize < HALF_MAX_SIZE_T &&
+    ਜੇ (tbase == CMFAIL) {    /* Cope with partial failure */
+      ਜੇ (br != CMFAIL) {    /* Try to use/extend the space we did get */
+        ਜੇ (ssize < HALF_MAX_ਮਾਪ_T &&
             ssize < nb + SYS_ALLOC_PADDING) {
           size_t esize = granularity_align(nb + SYS_ALLOC_PADDING - ssize);
-          if (esize < HALF_MAX_SIZE_T) {
-            char* end = (char*)CALL_MORECORE(esize);
-            if (end != CMFAIL)
+          ਜੇ (esize < HALF_MAX_ਮਾਪ_T) {
+            ਅੱਖਰ* ਸਿਰਾ = (ਅੱਖਰ*)CALL_MORECORE(esize);
+            ਜੇ (ਸਿਰਾ != CMFAIL)
               ssize += esize;
-            else {            /* Can't use; try to release */
-              (void) CALL_MORECORE(-ssize);
+            ਨਹੀਂਤਾਂ {            /* Can't use; try to release */
+              (ਖਾਲੀ) CALL_MORECORE(-ssize);
               br = CMFAIL;
             }
           }
         }
       }
-      if (br != CMFAIL) {    /* Use the space we did get */
+      ਜੇ (br != CMFAIL) {    /* Use the space we did get */
         tbase = br;
         tsize = ssize;
       }
-      else
+      ਨਹੀਂਤਾਂ
         disable_contiguous(m); /* Don't try contiguous path in the future */
     }
 
-    RELEASE_MALLOC_GLOBAL_LOCK();
+    RELEASE_MALLOC_GLOBAL_ਤਾਲਾ();
   }
 
-  if (HAVE_MMAP && tbase == CMFAIL) {  /* Try MMAP */
-    char* mp = (char*)(CALL_MMAP(asize));
-    if (mp != CMFAIL) {
+  ਜੇ (HAVE_MMAP && tbase == CMFAIL) {  /* Try MMAP */
+    ਅੱਖਰ* mp = (ਅੱਖਰ*)(CALL_MMAP(asize));
+    ਜੇ (mp != CMFAIL) {
       tbase = mp;
       tsize = asize;
-      mmap_flag = USE_MMAP_BIT;
+      mmap_flag = USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ;
     }
   }
 
-  if (HAVE_MORECORE && tbase == CMFAIL) { /* Try noncontiguous MORECORE */
-    if (asize < HALF_MAX_SIZE_T) {
-      char* br = CMFAIL;
-      char* end = CMFAIL;
-      ACQUIRE_MALLOC_GLOBAL_LOCK();
-      br = (char*)(CALL_MORECORE(asize));
-      end = (char*)(CALL_MORECORE(0));
-      RELEASE_MALLOC_GLOBAL_LOCK();
-      if (br != CMFAIL && end != CMFAIL && br < end) {
-        size_t ssize = end - br;
-        if (ssize > nb + TOP_FOOT_SIZE) {
+  ਜੇ (HAVE_MORECORE && tbase == CMFAIL) { /* Try noncontiguous MORECORE */
+    ਜੇ (asize < HALF_MAX_ਮਾਪ_T) {
+      ਅੱਖਰ* br = CMFAIL;
+      ਅੱਖਰ* ਸਿਰਾ = CMFAIL;
+      ACQUIRE_MALLOC_GLOBAL_ਤਾਲਾ();
+      br = (ਅੱਖਰ*)(CALL_MORECORE(asize));
+      ਸਿਰਾ = (ਅੱਖਰ*)(CALL_MORECORE(0));
+      RELEASE_MALLOC_GLOBAL_ਤਾਲਾ();
+      ਜੇ (br != CMFAIL && ਸਿਰਾ != CMFAIL && br < ਸਿਰਾ) {
+        size_t ssize = ਸਿਰਾ - br;
+        ਜੇ (ssize > nb + ਸਿਖਰ_FOOT_ਮਾਪ) {
           tbase = br;
           tsize = ssize;
         }
@@ -4322,266 +4322,266 @@ static void* sys_alloc(mstate m, size_t nb) {
     }
   }
 
-  if (tbase != CMFAIL) {
+  ਜੇ (tbase != CMFAIL) {
 
-    if ((m->footprint += tsize) > m->max_footprint)
+    ਜੇ ((m->footprint += tsize) > m->max_footprint)
       m->max_footprint = m->footprint;
 
-    if (!is_initialized(m)) { /* first-time initialization */
-      if (m->least_addr == 0 || tbase < m->least_addr)
-        m->least_addr = tbase;
-      m->seg.base = tbase;
-      m->seg.size = tsize;
-      (void)set_segment_flags(&m->seg, mmap_flag);
+    ਜੇ (!is_initialized(m)) { /* first-time initialization */
+      ਜੇ (m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr == 0 || tbase < m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr)
+        m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr = tbase;
+      m->seg.ਅਧਾਰ = tbase;
+      m->seg.ਮਾਪ = tsize;
+      (ਖਾਲੀ)ਸੈੱਟ_segment_flags(&m->seg, mmap_flag);
       m->magic = mparams.magic;
-      m->release_checks = MAX_RELEASE_CHECK_RATE;
+      m->release_checks = MAX_RELEASE_CHECK_ਦਰ;
       init_bins(m);
-#if !ONLY_MSPACES
-      if (is_global(m))
-        init_top(m, (mchunkptr)tbase, tsize - TOP_FOOT_SIZE);
-      else
-#endif
+#ਜੇ !ONLY_MSPACES
+      ਜੇ (is_global(m))
+        init_ਸਿਖਰ(m, (mchunkptr)tbase, tsize - ਸਿਖਰ_FOOT_ਮਾਪ);
+      ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
       {
         /* Offset top by embedded malloc_state */
-        mchunkptr mn = next_chunk(mem2chunk(m));
-        init_top(m, mn, (size_t)((tbase + tsize) - (char*)mn) -TOP_FOOT_SIZE);
+        mchunkptr mn = ਅਗਲਾ_chunk(mem2chunk(m));
+        init_ਸਿਖਰ(m, mn, (size_t)((tbase + tsize) - (ਅੱਖਰ*)mn) -ਸਿਖਰ_FOOT_ਮਾਪ);
       }
     }
 
-    else {
+    ਨਹੀਂਤਾਂ {
       /* Try to merge with an existing segment */
       msegmentptr sp = &m->seg;
       /* Only consider most recent segment if traversal suppressed */
-      while (sp != 0 && tbase != sp->base + sp->size)
-        sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->next;
-      if (sp != 0 &&
+      ਜਦੋਂ (sp != 0 && tbase != sp->ਅਧਾਰ + sp->ਮਾਪ)
+        sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->ਅਗਲਾ;
+      ਜੇ (sp != 0 &&
           !is_extern_segment(sp) &&
-          check_segment_merge(sp, tbase, tsize) &&
-          (get_segment_flags(sp) & USE_MMAP_BIT) == mmap_flag &&
-          segment_holds(sp, m->top)) { /* append */
-        sp->size += tsize;
-        init_top(m, m->top, m->topsize + tsize);
+          check_segment_ਮਿਲਾਓ(sp, tbase, tsize) &&
+          (get_segment_flags(sp) & USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ) == mmap_flag &&
+          segment_holds(sp, m->ਸਿਖਰ)) { /* append */
+        sp->ਮਾਪ += tsize;
+        init_ਸਿਖਰ(m, m->ਸਿਖਰ, m->topsize + tsize);
       }
-      else {
-        if (tbase < m->least_addr)
-          m->least_addr = tbase;
+      ਨਹੀਂਤਾਂ {
+        ਜੇ (tbase < m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr)
+          m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr = tbase;
         sp = &m->seg;
-        while (sp != 0 && sp->base != tbase + tsize)
-          sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->next;
-        if (sp != 0 &&
+        ਜਦੋਂ (sp != 0 && sp->ਅਧਾਰ != tbase + tsize)
+          sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->ਅਗਲਾ;
+        ਜੇ (sp != 0 &&
             !is_extern_segment(sp) &&
-            check_segment_merge(sp, tbase, tsize) &&
-            (get_segment_flags(sp) & USE_MMAP_BIT) == mmap_flag) {
-          char* oldbase = sp->base;
-          sp->base = tbase;
-          sp->size += tsize;
-          return prepend_alloc(m, tbase, oldbase, nb);
+            check_segment_ਮਿਲਾਓ(sp, tbase, tsize) &&
+            (get_segment_flags(sp) & USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ) == mmap_flag) {
+          ਅੱਖਰ* oldbase = sp->ਅਧਾਰ;
+          sp->ਅਧਾਰ = tbase;
+          sp->ਮਾਪ += tsize;
+          ਵਾਪਸ prepend_alloc(m, tbase, oldbase, nb);
         }
-        else
-          add_segment(m, tbase, tsize, mmap_flag);
+        ਨਹੀਂਤਾਂ
+          ਜੋੜੋ_segment(m, tbase, tsize, mmap_flag);
       }
     }
 
-    if (nb < m->topsize) { /* Allocate from new or extended top space */
+    ਜੇ (nb < m->topsize) { /* Allocate from new or extended top space */
       size_t rsize = m->topsize -= nb;
-      mchunkptr p = m->top;
-      mchunkptr r = m->top = chunk_plus_offset(p, nb);
-      r->head = rsize | PINUSE_BIT;
-      set_size_and_pinuse_of_inuse_chunk(m, p, nb);
-      check_top_chunk(m, m->top);
+      mchunkptr p = m->ਸਿਖਰ;
+      mchunkptr r = m->ਸਿਖਰ = chunk_plus_ਵਿੱਥ(p, nb);
+      r->ਸਿਰ = rsize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+      ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, p, nb);
+      check_ਸਿਖਰ_chunk(m, m->ਸਿਖਰ);
       check_malloced_chunk(m, chunk2mem(p), nb);
-      return chunk2mem(p);
+      ਵਾਪਸ chunk2mem(p);
     }
   }
 
   MALLOC_FAILURE_ACTION;
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 /* -----------------------  system deallocation -------------------------- */
 
 /* Unmap and unlink any mmapped segments that don't contain used chunks */
-static size_t release_unused_segments(mstate m) {
+ਸਥਿਰ size_t release_ਅਣਵਰਤਿਆ_segments(mstate m) {
   size_t released = 0;
-  int nsegs = 0;
+  ਪੂਰਨ nsegs = 0;
   msegmentptr pred = &m->seg;
-  msegmentptr sp = pred->next;
-  while (sp != 0) {
-    char* base = sp->base;
-    size_t size = sp->size;
-    msegmentptr next = sp->next;
+  msegmentptr sp = pred->ਅਗਲਾ;
+  ਜਦੋਂ (sp != 0) {
+    ਅੱਖਰ* ਅਧਾਰ = sp->ਅਧਾਰ;
+    size_t ਮਾਪ = sp->ਮਾਪ;
+    msegmentptr ਅਗਲਾ = sp->ਅਗਲਾ;
     ++nsegs;
-    if (is_mmapped_segment(sp) && !is_extern_segment(sp)) {
-      mchunkptr p = align_as_chunk(base);
+    ਜੇ (is_mmapped_segment(sp) && !is_extern_segment(sp)) {
+      mchunkptr p = align_as_chunk(ਅਧਾਰ);
       size_t psize = chunksize(p);
       /* Can unmap if first chunk holds entire segment and not pinned */
-      if (!is_inuse(p) && (char*)p + psize >= base + size - TOP_FOOT_SIZE) {
+      ਜੇ (!is_inuse(p) && (ਅੱਖਰ*)p + psize >= ਅਧਾਰ + ਮਾਪ - ਸਿਖਰ_FOOT_ਮਾਪ) {
         tchunkptr tp = (tchunkptr)p;
-        assert(segment_holds(sp, (char*)sp));
-        if (p == m->dv) {
+        ਪ੍ਰਤਿਜ੍ਞਾ(segment_holds(sp, (ਅੱਖਰ*)sp));
+        ਜੇ (p == m->dv) {
           m->dv = 0;
           m->dvsize = 0;
         }
-        else {
+        ਨਹੀਂਤਾਂ {
           unlink_large_chunk(m, tp);
         }
-        if (CALL_MUNMAP(base, size) == 0) {
-          released += size;
-          m->footprint -= size;
+        ਜੇ (CALL_MUNMAP(ਅਧਾਰ, ਮਾਪ) == 0) {
+          released += ਮਾਪ;
+          m->footprint -= ਮਾਪ;
           /* unlink obsoleted record */
           sp = pred;
-          sp->next = next;
+          sp->ਅਗਲਾ = ਅਗਲਾ;
         }
-        else { /* back out if cannot unmap */
-          insert_large_chunk(m, tp, psize);
+        ਨਹੀਂਤਾਂ { /* back out if cannot unmap */
+          ਪਾਓ_large_chunk(m, tp, psize);
         }
       }
     }
-    if (NO_SEGMENT_TRAVERSAL) /* scan only first segment */
-      break;
+    ਜੇ (NO_SEGMENT_TRAVERSAL) /* scan only first segment */
+      ਰੋਕੋ;
     pred = sp;
-    sp = next;
+    sp = ਅਗਲਾ;
   }
   /* Reset check counter */
-  m->release_checks = (((size_t) nsegs > (size_t) MAX_RELEASE_CHECK_RATE)?
-                       (size_t) nsegs : (size_t) MAX_RELEASE_CHECK_RATE);
-  return released;
+  m->release_checks = (((size_t) nsegs > (size_t) MAX_RELEASE_CHECK_ਦਰ)?
+                       (size_t) nsegs : (size_t) MAX_RELEASE_CHECK_ਦਰ);
+  ਵਾਪਸ released;
 }
 
-static int sys_trim(mstate m, size_t pad) {
+ਸਥਿਰ ਪੂਰਨ sys_trim(mstate m, size_t pad) {
   size_t released = 0;
   ensure_initialization();
-  if (pad < MAX_REQUEST && is_initialized(m)) {
-    pad += TOP_FOOT_SIZE; /* ensure enough room for segment overhead */
+  ਜੇ (pad < MAX_REQUEST && is_initialized(m)) {
+    pad += ਸਿਖਰ_FOOT_ਮਾਪ; /* ensure enough room for segment overhead */
 
-    if (m->topsize > pad) {
+    ਜੇ (m->topsize > pad) {
       /* Shrink top space in granularity-size units, keeping at least one */
       size_t unit = mparams.granularity;
-      size_t extra = ((m->topsize - pad + (unit - SIZE_T_ONE)) / unit -
-                      SIZE_T_ONE) * unit;
-      msegmentptr sp = segment_holding(m, (char*)m->top);
+      size_t extra = ((m->topsize - pad + (unit - ਮਾਪ_T_ONE)) / unit -
+                      ਮਾਪ_T_ONE) * unit;
+      msegmentptr sp = segment_holding(m, (ਅੱਖਰ*)m->ਸਿਖਰ);
 
-      if (sp == 0)
+      ਜੇ (sp == 0)
         CORRUPTION_ERROR_ACTION(m);
-      if (!is_extern_segment(sp)) {
-        if (is_mmapped_segment(sp)) {
-          if (HAVE_MMAP &&
-              sp->size >= extra &&
+      ਜੇ (!is_extern_segment(sp)) {
+        ਜੇ (is_mmapped_segment(sp)) {
+          ਜੇ (HAVE_MMAP &&
+              sp->ਮਾਪ >= extra &&
               !has_segment_link(m, sp)) { /* can't shrink if pinned */
-            size_t newsize = sp->size - extra;
-            (void)newsize; /* placate people compiling -Wunused-variable */
+            size_t newsize = sp->ਮਾਪ - extra;
+            (ਖਾਲੀ)newsize; /* placate people compiling -Wunused-variable */
             /* Prefer mremap, fall back to munmap */
-            if ((CALL_MREMAP(sp->base, sp->size, newsize, 0) != MFAIL) ||
-                (CALL_MUNMAP(sp->base + newsize, extra) == 0)) {
+            ਜੇ ((CALL_MREMAP(sp->ਅਧਾਰ, sp->ਮਾਪ, newsize, 0) != MFAIL) ||
+                (CALL_MUNMAP(sp->ਅਧਾਰ + newsize, extra) == 0)) {
               released = extra;
             }
           }
         }
-        else if (HAVE_MORECORE) {
-          if (extra >= HALF_MAX_SIZE_T) /* Avoid wrapping negative */
-            extra = (HALF_MAX_SIZE_T) + SIZE_T_ONE - unit;
-          ACQUIRE_MALLOC_GLOBAL_LOCK();
+        ਨਹੀਂਤਾਂ ਜੇ (HAVE_MORECORE) {
+          ਜੇ (extra >= HALF_MAX_ਮਾਪ_T) /* Avoid wrapping negative */
+            extra = (HALF_MAX_ਮਾਪ_T) + ਮਾਪ_T_ONE - unit;
+          ACQUIRE_MALLOC_GLOBAL_ਤਾਲਾ();
           {
             /* Make sure end of memory is where we last set it. */
-            char* old_br = (char*)(CALL_MORECORE(0));
-            if (old_br == sp->base + sp->size) {
-              char* rel_br = (char*)(CALL_MORECORE(-extra));
-              char* new_br = (char*)(CALL_MORECORE(0));
-              if (rel_br != CMFAIL && new_br < old_br)
+            ਅੱਖਰ* old_br = (ਅੱਖਰ*)(CALL_MORECORE(0));
+            ਜੇ (old_br == sp->ਅਧਾਰ + sp->ਮਾਪ) {
+              ਅੱਖਰ* rel_br = (ਅੱਖਰ*)(CALL_MORECORE(-extra));
+              ਅੱਖਰ* new_br = (ਅੱਖਰ*)(CALL_MORECORE(0));
+              ਜੇ (rel_br != CMFAIL && new_br < old_br)
                 released = old_br - new_br;
             }
           }
-          RELEASE_MALLOC_GLOBAL_LOCK();
+          RELEASE_MALLOC_GLOBAL_ਤਾਲਾ();
         }
       }
 
-      if (released != 0) {
-        sp->size -= released;
+      ਜੇ (released != 0) {
+        sp->ਮਾਪ -= released;
         m->footprint -= released;
-        init_top(m, m->top, m->topsize - released);
-        check_top_chunk(m, m->top);
+        init_ਸਿਖਰ(m, m->ਸਿਖਰ, m->topsize - released);
+        check_ਸਿਖਰ_chunk(m, m->ਸਿਖਰ);
       }
     }
 
     /* Unmap any unused mmapped segments */
-    if (HAVE_MMAP)
-      released += release_unused_segments(m);
+    ਜੇ (HAVE_MMAP)
+      released += release_ਅਣਵਰਤਿਆ_segments(m);
 
     /* On failure, disable autotrim to avoid repeated failed future calls */
-    if (released == 0 && m->topsize > m->trim_check)
-      m->trim_check = MAX_SIZE_T;
+    ਜੇ (released == 0 && m->topsize > m->trim_check)
+      m->trim_check = MAX_ਮਾਪ_T;
   }
 
-  return (released != 0)? 1 : 0;
+  ਵਾਪਸ (released != 0)? 1 : 0;
 }
 
 /* Consolidate and bin a chunk. Differs from exported versions
    of free mainly in that the chunk need not be marked as inuse.
 */
-static void dispose_chunk(mstate m, mchunkptr p, size_t psize) {
-  mchunkptr next = chunk_plus_offset(p, psize);
-  if (!pinuse(p)) {
+ਸਥਿਰ ਖਾਲੀ dispose_chunk(mstate m, mchunkptr p, size_t psize) {
+  mchunkptr ਅਗਲਾ = chunk_plus_ਵਿੱਥ(p, psize);
+  ਜੇ (!pinuse(p)) {
     mchunkptr prev;
     size_t prevsize = p->prev_foot;
-    if (is_mmapped(p)) {
+    ਜੇ (is_mmapped(p)) {
       psize += prevsize + MMAP_FOOT_PAD;
-      if (CALL_MUNMAP((char*)p - prevsize, psize) == 0)
+      ਜੇ (CALL_MUNMAP((ਅੱਖਰ*)p - prevsize, psize) == 0)
         m->footprint -= psize;
-      return;
+      ਵਾਪਸ;
     }
-    prev = chunk_minus_offset(p, prevsize);
+    prev = chunk_minus_ਵਿੱਥ(p, prevsize);
     psize += prevsize;
     p = prev;
-    if (RTCHECK(ok_address(m, prev))) { /* consolidate backward */
-      if (p != m->dv) {
+    ਜੇ (RTCHECK(ok_ਪਤਾ(m, prev))) { /* consolidate backward */
+      ਜੇ (p != m->dv) {
         unlink_chunk(m, p, prevsize);
       }
-      else if ((next->head & INUSE_BITS) == INUSE_BITS) {
+      ਨਹੀਂਤਾਂ ਜੇ ((ਅਗਲਾ->ਸਿਰ & INUSE_ਬਿੱਟ) == INUSE_ਬਿੱਟ) {
         m->dvsize = psize;
-        set_free_with_pinuse(p, psize, next);
-        return;
+        ਸੈੱਟ_free_with_pinuse(p, psize, ਅਗਲਾ);
+        ਵਾਪਸ;
       }
     }
-    else {
+    ਨਹੀਂਤਾਂ {
       CORRUPTION_ERROR_ACTION(m);
-      return;
+      ਵਾਪਸ;
     }
   }
-  if (RTCHECK(ok_address(m, next))) {
-    if (!cinuse(next)) {  /* consolidate forward */
-      if (next == m->top) {
+  ਜੇ (RTCHECK(ok_ਪਤਾ(m, ਅਗਲਾ))) {
+    ਜੇ (!cinuse(ਅਗਲਾ)) {  /* consolidate forward */
+      ਜੇ (ਅਗਲਾ == m->ਸਿਖਰ) {
         size_t tsize = m->topsize += psize;
-        m->top = p;
-        p->head = tsize | PINUSE_BIT;
-        if (p == m->dv) {
+        m->ਸਿਖਰ = p;
+        p->ਸਿਰ = tsize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+        ਜੇ (p == m->dv) {
           m->dv = 0;
           m->dvsize = 0;
         }
-        return;
+        ਵਾਪਸ;
       }
-      else if (next == m->dv) {
+      ਨਹੀਂਤਾਂ ਜੇ (ਅਗਲਾ == m->dv) {
         size_t dsize = m->dvsize += psize;
         m->dv = p;
-        set_size_and_pinuse_of_free_chunk(p, dsize);
-        return;
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, dsize);
+        ਵਾਪਸ;
       }
-      else {
-        size_t nsize = chunksize(next);
+      ਨਹੀਂਤਾਂ {
+        size_t nsize = chunksize(ਅਗਲਾ);
         psize += nsize;
-        unlink_chunk(m, next, nsize);
-        set_size_and_pinuse_of_free_chunk(p, psize);
-        if (p == m->dv) {
+        unlink_chunk(m, ਅਗਲਾ, nsize);
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, psize);
+        ਜੇ (p == m->dv) {
           m->dvsize = psize;
-          return;
+          ਵਾਪਸ;
         }
       }
     }
-    else {
-      set_free_with_pinuse(p, psize, next);
+    ਨਹੀਂਤਾਂ {
+      ਸੈੱਟ_free_with_pinuse(p, psize, ਅਗਲਾ);
     }
-    insert_chunk(m, p, psize);
+    ਪਾਓ_chunk(m, p, psize);
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     CORRUPTION_ERROR_ACTION(m);
   }
 }
@@ -4589,117 +4589,117 @@ static void dispose_chunk(mstate m, mchunkptr p, size_t psize) {
 /* ---------------------------- malloc --------------------------- */
 
 /* allocate a large request from the best fitting chunk in a treebin */
-static void* tmalloc_large(mstate m, size_t nb) {
+ਸਥਿਰ ਖਾਲੀ* tmalloc_large(mstate m, size_t nb) {
   tchunkptr v = 0;
   size_t rsize = -nb; /* Unsigned negation */
   tchunkptr t;
   bindex_t idx;
-  compute_tree_index(nb, idx);
-  if ((t = *treebin_at(m, idx)) != 0) {
+  compute_ਰੁੱਖ_ਸੂਚਕਾਂਕ(nb, idx);
+  ਜੇ ((t = *treebin_at(m, idx)) != 0) {
     /* Traverse tree for this bin looking for node with size == nb */
-    size_t sizebits = nb << leftshift_for_tree_index(idx);
+    size_t sizebits = nb << leftshift_for_ਰੁੱਖ_ਸੂਚਕਾਂਕ(idx);
     tchunkptr rst = 0;  /* The deepest untaken right subtree */
-    for (;;) {
+    ਲਈ (;;) {
       tchunkptr rt;
       size_t trem = chunksize(t) - nb;
-      if (trem < rsize) {
+      ਜੇ (trem < rsize) {
         v = t;
-        if ((rsize = trem) == 0)
-          break;
+        ਜੇ ((rsize = trem) == 0)
+          ਰੋਕੋ;
       }
-      rt = t->child[1];
-      t = t->child[(sizebits >> (SIZE_T_BITSIZE-SIZE_T_ONE)) & 1];
-      if (rt != 0 && rt != t)
+      rt = t->ਬੱਚਾ[1];
+      t = t->ਬੱਚਾ[(sizebits >> (ਮਾਪ_T_BITSIZE-ਮਾਪ_T_ONE)) & 1];
+      ਜੇ (rt != 0 && rt != t)
         rst = rt;
-      if (t == 0) {
+      ਜੇ (t == 0) {
         t = rst; /* set t to least subtree holding sizes > nb */
-        break;
+        ਰੋਕੋ;
       }
       sizebits <<= 1;
     }
   }
-  if (t == 0 && v == 0) { /* set t to root of next non-empty treebin */
-    binmap_t leftbits = left_bits(idx2bit(idx)) & m->treemap;
-    if (leftbits != 0) {
+  ਜੇ (t == 0 && v == 0) { /* set t to root of next non-empty treebin */
+    binmap_t leftbits = ਖੱਬਾ_ਬਿੱਟ(idx2bit(idx)) & m->treemap;
+    ਜੇ (leftbits != 0) {
       bindex_t i;
-      binmap_t leastbit = least_bit(leftbits);
+      binmap_t leastbit = ਘੱਟ_ਤੋਂ_ਘੱਟ_ਦੋਆਧਾਰੀ_ਅੰਕ(leftbits);
       compute_bit2idx(leastbit, i);
       t = *treebin_at(m, i);
     }
   }
 
-  while (t != 0) { /* find smallest of tree or subtree */
+  ਜਦੋਂ (t != 0) { /* find smallest of tree or subtree */
     size_t trem = chunksize(t) - nb;
-    if (trem < rsize) {
+    ਜੇ (trem < rsize) {
       rsize = trem;
       v = t;
     }
-    t = leftmost_child(t);
+    t = leftmost_ਬੱਚਾ(t);
   }
 
   /*  If dv is a better fit, return 0 so malloc will use it */
-  if (v != 0 && rsize < (size_t)(m->dvsize - nb)) {
-    if (RTCHECK(ok_address(m, v))) { /* split */
-      mchunkptr r = chunk_plus_offset(v, nb);
-      assert(chunksize(v) == rsize + nb);
-      if (RTCHECK(ok_next(v, r))) {
+  ਜੇ (v != 0 && rsize < (size_t)(m->dvsize - nb)) {
+    ਜੇ (RTCHECK(ok_ਪਤਾ(m, v))) { /*ਵੰਡੋ*/
+      mchunkptr r = chunk_plus_ਵਿੱਥ(v, nb);
+      ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(v) == rsize + nb);
+      ਜੇ (RTCHECK(ok_ਅਗਲਾ(v, r))) {
         unlink_large_chunk(m, v);
-        if (rsize < MIN_CHUNK_SIZE)
-          set_inuse_and_pinuse(m, v, (rsize + nb));
-        else {
-          set_size_and_pinuse_of_inuse_chunk(m, v, nb);
-          set_size_and_pinuse_of_free_chunk(r, rsize);
-          insert_chunk(m, r, rsize);
+        ਜੇ (rsize < MIN_CHUNK_ਮਾਪ)
+          ਸੈੱਟ_inuse_and_pinuse(m, v, (rsize + nb));
+        ਨਹੀਂਤਾਂ {
+          ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, v, nb);
+          ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(r, rsize);
+          ਪਾਓ_chunk(m, r, rsize);
         }
-        return chunk2mem(v);
+        ਵਾਪਸ chunk2mem(v);
       }
     }
     CORRUPTION_ERROR_ACTION(m);
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 /* allocate a small request from the best fitting chunk in a treebin */
-static void* tmalloc_small(mstate m, size_t nb) {
+ਸਥਿਰ ਖਾਲੀ* tmalloc_small(mstate m, size_t nb) {
   tchunkptr t, v;
   size_t rsize;
   bindex_t i;
-  binmap_t leastbit = least_bit(m->treemap);
+  binmap_t leastbit = ਘੱਟ_ਤੋਂ_ਘੱਟ_ਦੋਆਧਾਰੀ_ਅੰਕ(m->treemap);
   compute_bit2idx(leastbit, i);
   v = t = *treebin_at(m, i);
   rsize = chunksize(t) - nb;
 
-  while ((t = leftmost_child(t)) != 0) {
+  ਜਦੋਂ ((t = leftmost_ਬੱਚਾ(t)) != 0) {
     size_t trem = chunksize(t) - nb;
-    if (trem < rsize) {
+    ਜੇ (trem < rsize) {
       rsize = trem;
       v = t;
     }
   }
 
-  if (RTCHECK(ok_address(m, v))) {
-    mchunkptr r = chunk_plus_offset(v, nb);
-    assert(chunksize(v) == rsize + nb);
-    if (RTCHECK(ok_next(v, r))) {
+  ਜੇ (RTCHECK(ok_ਪਤਾ(m, v))) {
+    mchunkptr r = chunk_plus_ਵਿੱਥ(v, nb);
+    ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(v) == rsize + nb);
+    ਜੇ (RTCHECK(ok_ਅਗਲਾ(v, r))) {
       unlink_large_chunk(m, v);
-      if (rsize < MIN_CHUNK_SIZE)
-        set_inuse_and_pinuse(m, v, (rsize + nb));
-      else {
-        set_size_and_pinuse_of_inuse_chunk(m, v, nb);
-        set_size_and_pinuse_of_free_chunk(r, rsize);
+      ਜੇ (rsize < MIN_CHUNK_ਮਾਪ)
+        ਸੈੱਟ_inuse_and_pinuse(m, v, (rsize + nb));
+      ਨਹੀਂਤਾਂ {
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, v, nb);
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(r, rsize);
         replace_dv(m, r, rsize);
       }
-      return chunk2mem(v);
+      ਵਾਪਸ chunk2mem(v);
     }
   }
 
   CORRUPTION_ERROR_ACTION(m);
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-#if !ONLY_MSPACES
+#ਜੇ !ONLY_MSPACES
 
-void* dlmalloc(size_t bytes) {
+ਖਾਲੀ* dlmalloc(size_t ਬਾਈਟਾਂ) {
   /*
      Basic algorithm:
      If a small request (< 256 bytes minus per-chunk overhead):
@@ -4723,216 +4723,216 @@ void* dlmalloc(size_t bytes) {
      The ugly goto's here ensure that postaction occurs along all paths.
   */
 
-#if USE_LOCKS
+#ਜੇ USE_LOCKS
   ensure_initialization(); /* initialize in sys_alloc if not using locks */
-#endif
+#ਜੇ_ਅੰਤ
 
-  if (!PREACTION(gm)) {
-    void* mem;
+  ਜੇ (!PREACTION(gm)) {
+    ਖਾਲੀ* mem;
     size_t nb;
-    if (bytes <= MAX_SMALL_REQUEST) {
+    ਜੇ (ਬਾਈਟਾਂ <= MAX_SMALL_REQUEST) {
       bindex_t idx;
       binmap_t smallbits;
-      nb = (bytes < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(bytes);
-      idx = small_index(nb);
+      nb = (ਬਾਈਟਾਂ < MIN_REQUEST)? MIN_CHUNK_ਮਾਪ : pad_request(ਬਾਈਟਾਂ);
+      idx = small_ਸੂਚਕਾਂਕ(nb);
       smallbits = gm->smallmap >> idx;
 
-      if ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
+      ਜੇ ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
         mchunkptr b, p;
         idx += ~smallbits & 1;       /* Uses next bin if idx empty */
         b = smallbin_at(gm, idx);
         p = b->fd;
-        assert(chunksize(p) == small_index2size(idx));
-        unlink_first_small_chunk(gm, b, p, idx);
-        set_inuse_and_pinuse(gm, p, small_index2size(idx));
+        ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(p) == small_index2size(idx));
+        unlink_ਪਹਿਲਾ_small_chunk(gm, b, p, idx);
+        ਸੈੱਟ_inuse_and_pinuse(gm, p, small_index2size(idx));
         mem = chunk2mem(p);
         check_malloced_chunk(gm, mem, nb);
-        goto postaction;
+        ਜਾਓ postaction;
       }
 
-      else if (nb > gm->dvsize) {
-        if (smallbits != 0) { /* Use chunk in next nonempty smallbin */
+      ਨਹੀਂਤਾਂ ਜੇ (nb > gm->dvsize) {
+        ਜੇ (smallbits != 0) { /* Use chunk in next nonempty smallbin */
           mchunkptr b, p, r;
           size_t rsize;
           bindex_t i;
-          binmap_t leftbits = (smallbits << idx) & left_bits(idx2bit(idx));
-          binmap_t leastbit = least_bit(leftbits);
+          binmap_t leftbits = (smallbits << idx) & ਖੱਬਾ_ਬਿੱਟ(idx2bit(idx));
+          binmap_t leastbit = ਘੱਟ_ਤੋਂ_ਘੱਟ_ਦੋਆਧਾਰੀ_ਅੰਕ(leftbits);
           compute_bit2idx(leastbit, i);
           b = smallbin_at(gm, i);
           p = b->fd;
-          assert(chunksize(p) == small_index2size(i));
-          unlink_first_small_chunk(gm, b, p, i);
+          ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(p) == small_index2size(i));
+          unlink_ਪਹਿਲਾ_small_chunk(gm, b, p, i);
           rsize = small_index2size(i) - nb;
           /* Fit here cannot be remainderless if 4byte sizes */
-          if (SIZE_T_SIZE != 4 && rsize < MIN_CHUNK_SIZE)
-            set_inuse_and_pinuse(gm, p, small_index2size(i));
-          else {
-            set_size_and_pinuse_of_inuse_chunk(gm, p, nb);
-            r = chunk_plus_offset(p, nb);
-            set_size_and_pinuse_of_free_chunk(r, rsize);
+          ਜੇ (ਮਾਪ_T_ਮਾਪ != 4 && rsize < MIN_CHUNK_ਮਾਪ)
+            ਸੈੱਟ_inuse_and_pinuse(gm, p, small_index2size(i));
+          ਨਹੀਂਤਾਂ {
+            ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(gm, p, nb);
+            r = chunk_plus_ਵਿੱਥ(p, nb);
+            ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(r, rsize);
             replace_dv(gm, r, rsize);
           }
           mem = chunk2mem(p);
           check_malloced_chunk(gm, mem, nb);
-          goto postaction;
+          ਜਾਓ postaction;
         }
 
-        else if (gm->treemap != 0 && (mem = tmalloc_small(gm, nb)) != 0) {
+        ਨਹੀਂਤਾਂ ਜੇ (gm->treemap != 0 && (mem = tmalloc_small(gm, nb)) != 0) {
           check_malloced_chunk(gm, mem, nb);
-          goto postaction;
+          ਜਾਓ postaction;
         }
       }
     }
-    else if (bytes >= MAX_REQUEST)
-      nb = MAX_SIZE_T; /* Too big to allocate. Force failure (in sys alloc) */
-    else {
-      nb = pad_request(bytes);
-      if (gm->treemap != 0 && (mem = tmalloc_large(gm, nb)) != 0) {
+    ਨਹੀਂਤਾਂ ਜੇ (ਬਾਈਟਾਂ >= MAX_REQUEST)
+      nb = MAX_ਮਾਪ_T; /* Too big to allocate. Force failure (in sys alloc) */
+    ਨਹੀਂਤਾਂ {
+      nb = pad_request(ਬਾਈਟਾਂ);
+      ਜੇ (gm->treemap != 0 && (mem = tmalloc_large(gm, nb)) != 0) {
         check_malloced_chunk(gm, mem, nb);
-        goto postaction;
+        ਜਾਓ postaction;
       }
     }
 
-    if (nb <= gm->dvsize) {
+    ਜੇ (nb <= gm->dvsize) {
       size_t rsize = gm->dvsize - nb;
       mchunkptr p = gm->dv;
-      if (rsize >= MIN_CHUNK_SIZE) { /* split dv */
-        mchunkptr r = gm->dv = chunk_plus_offset(p, nb);
+      ਜੇ (rsize >= MIN_CHUNK_ਮਾਪ) { /* split dv */
+        mchunkptr r = gm->dv = chunk_plus_ਵਿੱਥ(p, nb);
         gm->dvsize = rsize;
-        set_size_and_pinuse_of_free_chunk(r, rsize);
-        set_size_and_pinuse_of_inuse_chunk(gm, p, nb);
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(r, rsize);
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(gm, p, nb);
       }
-      else { /* exhaust dv */
+      ਨਹੀਂਤਾਂ { /* exhaust dv */
         size_t dvs = gm->dvsize;
         gm->dvsize = 0;
         gm->dv = 0;
-        set_inuse_and_pinuse(gm, p, dvs);
+        ਸੈੱਟ_inuse_and_pinuse(gm, p, dvs);
       }
       mem = chunk2mem(p);
       check_malloced_chunk(gm, mem, nb);
-      goto postaction;
+      ਜਾਓ postaction;
     }
 
-    else if (nb < gm->topsize) { /* Split top */
+    ਨਹੀਂਤਾਂ ਜੇ (nb < gm->topsize) { /* Split top */
       size_t rsize = gm->topsize -= nb;
-      mchunkptr p = gm->top;
-      mchunkptr r = gm->top = chunk_plus_offset(p, nb);
-      r->head = rsize | PINUSE_BIT;
-      set_size_and_pinuse_of_inuse_chunk(gm, p, nb);
+      mchunkptr p = gm->ਸਿਖਰ;
+      mchunkptr r = gm->ਸਿਖਰ = chunk_plus_ਵਿੱਥ(p, nb);
+      r->ਸਿਰ = rsize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+      ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(gm, p, nb);
       mem = chunk2mem(p);
-      check_top_chunk(gm, gm->top);
+      check_ਸਿਖਰ_chunk(gm, gm->ਸਿਖਰ);
       check_malloced_chunk(gm, mem, nb);
-      goto postaction;
+      ਜਾਓ postaction;
     }
 
     mem = sys_alloc(gm, nb);
 
   postaction:
     POSTACTION(gm);
-    return mem;
+    ਵਾਪਸ mem;
   }
 
-  return 0;
+  ਵਾਪਸ 0;
 }
 
 /* ---------------------------- free --------------------------- */
 
-void dlfree(void* mem) {
+ਖਾਲੀ dlfree(ਖਾਲੀ* mem) {
   /*
      Consolidate freed chunks with preceding or succeeding bordering
      free chunks, if they exist, and then place in a bin.  Intermixed
      with special cases for top, dv, mmapped chunks, and usage errors.
   */
 
-  if (mem != 0) {
+  ਜੇ (mem != 0) {
     mchunkptr p  = mem2chunk(mem);
-#if FOOTERS
+#ਜੇ FOOTERS
     mstate fm = get_mstate_for(p);
-    if (!ok_magic(fm)) {
+    ਜੇ (!ok_magic(fm)) {
       USAGE_ERROR_ACTION(fm, p);
-      return;
+      ਵਾਪਸ;
     }
-#else /* FOOTERS */
-#define fm gm
-#endif /* FOOTERS */
-    if (!PREACTION(fm)) {
+#ਨਹੀਂਤਾਂ /* FOOTERS */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ fm gm
+#ਜੇ_ਅੰਤ /* FOOTERS */
+    ਜੇ (!PREACTION(fm)) {
       check_inuse_chunk(fm, p);
-      if (RTCHECK(ok_address(fm, p) && ok_inuse(p))) {
+      ਜੇ (RTCHECK(ok_ਪਤਾ(fm, p) && ok_inuse(p))) {
         size_t psize = chunksize(p);
-        mchunkptr next = chunk_plus_offset(p, psize);
-        if (!pinuse(p)) {
+        mchunkptr ਅਗਲਾ = chunk_plus_ਵਿੱਥ(p, psize);
+        ਜੇ (!pinuse(p)) {
           size_t prevsize = p->prev_foot;
-          if (is_mmapped(p)) {
+          ਜੇ (is_mmapped(p)) {
             psize += prevsize + MMAP_FOOT_PAD;
-            if (CALL_MUNMAP((char*)p - prevsize, psize) == 0)
+            ਜੇ (CALL_MUNMAP((ਅੱਖਰ*)p - prevsize, psize) == 0)
               fm->footprint -= psize;
-            goto postaction;
+            ਜਾਓ postaction;
           }
-          else {
-            mchunkptr prev = chunk_minus_offset(p, prevsize);
+          ਨਹੀਂਤਾਂ {
+            mchunkptr prev = chunk_minus_ਵਿੱਥ(p, prevsize);
             psize += prevsize;
             p = prev;
-            if (RTCHECK(ok_address(fm, prev))) { /* consolidate backward */
-              if (p != fm->dv) {
+            ਜੇ (RTCHECK(ok_ਪਤਾ(fm, prev))) { /* consolidate backward */
+              ਜੇ (p != fm->dv) {
                 unlink_chunk(fm, p, prevsize);
               }
-              else if ((next->head & INUSE_BITS) == INUSE_BITS) {
+              ਨਹੀਂਤਾਂ ਜੇ ((ਅਗਲਾ->ਸਿਰ & INUSE_ਬਿੱਟ) == INUSE_ਬਿੱਟ) {
                 fm->dvsize = psize;
-                set_free_with_pinuse(p, psize, next);
-                goto postaction;
+                ਸੈੱਟ_free_with_pinuse(p, psize, ਅਗਲਾ);
+                ਜਾਓ postaction;
               }
             }
-            else
-              goto erroraction;
+            ਨਹੀਂਤਾਂ
+              ਜਾਓ erroraction;
           }
         }
 
-        if (RTCHECK(ok_next(p, next) && ok_pinuse(next))) {
-          if (!cinuse(next)) {  /* consolidate forward */
-            if (next == fm->top) {
+        ਜੇ (RTCHECK(ok_ਅਗਲਾ(p, ਅਗਲਾ) && ok_pinuse(ਅਗਲਾ))) {
+          ਜੇ (!cinuse(ਅਗਲਾ)) {  /* consolidate forward */
+            ਜੇ (ਅਗਲਾ == fm->ਸਿਖਰ) {
               size_t tsize = fm->topsize += psize;
-              fm->top = p;
-              p->head = tsize | PINUSE_BIT;
-              if (p == fm->dv) {
+              fm->ਸਿਖਰ = p;
+              p->ਸਿਰ = tsize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+              ਜੇ (p == fm->dv) {
                 fm->dv = 0;
                 fm->dvsize = 0;
               }
-              if (should_trim(fm, tsize))
+              ਜੇ (should_trim(fm, tsize))
                 sys_trim(fm, 0);
-              goto postaction;
+              ਜਾਓ postaction;
             }
-            else if (next == fm->dv) {
+            ਨਹੀਂਤਾਂ ਜੇ (ਅਗਲਾ == fm->dv) {
               size_t dsize = fm->dvsize += psize;
               fm->dv = p;
-              set_size_and_pinuse_of_free_chunk(p, dsize);
-              goto postaction;
+              ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, dsize);
+              ਜਾਓ postaction;
             }
-            else {
-              size_t nsize = chunksize(next);
+            ਨਹੀਂਤਾਂ {
+              size_t nsize = chunksize(ਅਗਲਾ);
               psize += nsize;
-              unlink_chunk(fm, next, nsize);
-              set_size_and_pinuse_of_free_chunk(p, psize);
-              if (p == fm->dv) {
+              unlink_chunk(fm, ਅਗਲਾ, nsize);
+              ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, psize);
+              ਜੇ (p == fm->dv) {
                 fm->dvsize = psize;
-                goto postaction;
+                ਜਾਓ postaction;
               }
             }
           }
-          else
-            set_free_with_pinuse(p, psize, next);
+          ਨਹੀਂਤਾਂ
+            ਸੈੱਟ_free_with_pinuse(p, psize, ਅਗਲਾ);
 
-          if (is_small(psize)) {
-            insert_small_chunk(fm, p, psize);
+          ਜੇ (is_small(psize)) {
+            ਪਾਓ_small_chunk(fm, p, psize);
             check_free_chunk(fm, p);
           }
-          else {
+          ਨਹੀਂਤਾਂ {
             tchunkptr tp = (tchunkptr)p;
-            insert_large_chunk(fm, tp, psize);
+            ਪਾਓ_large_chunk(fm, tp, psize);
             check_free_chunk(fm, p);
-            if (--fm->release_checks == 0)
-              release_unused_segments(fm);
+            ਜੇ (--fm->release_checks == 0)
+              release_ਅਣਵਰਤਿਆ_segments(fm);
           }
-          goto postaction;
+          ਜਾਓ postaction;
         }
       }
     erroraction:
@@ -4941,133 +4941,133 @@ void dlfree(void* mem) {
       POSTACTION(fm);
     }
   }
-#if !FOOTERS
-#undef fm
-#endif /* FOOTERS */
+#ਜੇ !FOOTERS
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ fm
+#ਜੇ_ਅੰਤ /* FOOTERS */
 }
 
-void* dlcalloc(size_t n_elements, size_t elem_size) {
-  void* mem;
+ਖਾਲੀ* dlcalloc(size_t n_elements, size_t elem_ਮਾਪ) {
+  ਖਾਲੀ* mem;
   size_t req = 0;
-  if (n_elements != 0) {
-    req = n_elements * elem_size;
-    if (((n_elements | elem_size) & ~(size_t)0xffff) &&
-        (req / n_elements != elem_size))
-      req = MAX_SIZE_T; /* force downstream failure on overflow */
+  ਜੇ (n_elements != 0) {
+    req = n_elements * elem_ਮਾਪ;
+    ਜੇ (((n_elements | elem_ਮਾਪ) & ~(size_t)0xffff) &&
+        (req / n_elements != elem_ਮਾਪ))
+      req = MAX_ਮਾਪ_T; /* force downstream failure on overflow */
   }
   mem = dlmalloc(req);
-  if (mem != 0 && calloc_must_clear(mem2chunk(mem)))
+  ਜੇ (mem != 0 && calloc_must_clear(mem2chunk(mem)))
     memset(mem, 0, req);
-  return mem;
+  ਵਾਪਸ mem;
 }
 
-#endif /* !ONLY_MSPACES */
+#ਜੇ_ਅੰਤ /* !ONLY_MSPACES */
 
 /* ------------ Internal support for realloc, memalign, etc -------------- */
 
 /* Try to realloc; only in-place unless can_move true */
-static mchunkptr try_realloc_chunk(mstate m, mchunkptr p, size_t nb,
-                                   int can_move) {
+ਸਥਿਰ mchunkptr try_realloc_chunk(mstate m, mchunkptr p, size_t nb,
+                                   ਪੂਰਨ can_move) {
   mchunkptr newp = 0;
   size_t oldsize = chunksize(p);
-  mchunkptr next = chunk_plus_offset(p, oldsize);
-  if (RTCHECK(ok_address(m, p) && ok_inuse(p) &&
-              ok_next(p, next) && ok_pinuse(next))) {
-    if (is_mmapped(p)) {
+  mchunkptr ਅਗਲਾ = chunk_plus_ਵਿੱਥ(p, oldsize);
+  ਜੇ (RTCHECK(ok_ਪਤਾ(m, p) && ok_inuse(p) &&
+              ok_ਅਗਲਾ(p, ਅਗਲਾ) && ok_pinuse(ਅਗਲਾ))) {
+    ਜੇ (is_mmapped(p)) {
       newp = mmap_resize(m, p, nb, can_move);
     }
-    else if (oldsize >= nb) {             /* already big enough */
+    ਨਹੀਂਤਾਂ ਜੇ (oldsize >= nb) {             /* already big enough */
       size_t rsize = oldsize - nb;
-      if (rsize >= MIN_CHUNK_SIZE) {      /* split off remainder */
-        mchunkptr r = chunk_plus_offset(p, nb);
-        set_inuse(m, p, nb);
-        set_inuse(m, r, rsize);
+      ਜੇ (rsize >= MIN_CHUNK_ਮਾਪ) {      /* split off remainder */
+        mchunkptr r = chunk_plus_ਵਿੱਥ(p, nb);
+        ਸੈੱਟ_inuse(m, p, nb);
+        ਸੈੱਟ_inuse(m, r, rsize);
         dispose_chunk(m, r, rsize);
       }
       newp = p;
     }
-    else if (next == m->top) {  /* extend into top */
-      if (oldsize + m->topsize > nb) {
+    ਨਹੀਂਤਾਂ ਜੇ (ਅਗਲਾ == m->ਸਿਖਰ) {  /* extend into top */
+      ਜੇ (oldsize + m->topsize > nb) {
         size_t newsize = oldsize + m->topsize;
         size_t newtopsize = newsize - nb;
-        mchunkptr newtop = chunk_plus_offset(p, nb);
-        set_inuse(m, p, nb);
-        newtop->head = newtopsize |PINUSE_BIT;
-        m->top = newtop;
+        mchunkptr newtop = chunk_plus_ਵਿੱਥ(p, nb);
+        ਸੈੱਟ_inuse(m, p, nb);
+        newtop->ਸਿਰ = newtopsize |PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+        m->ਸਿਖਰ = newtop;
         m->topsize = newtopsize;
         newp = p;
       }
     }
-    else if (next == m->dv) { /* extend into dv */
+    ਨਹੀਂਤਾਂ ਜੇ (ਅਗਲਾ == m->dv) { /* extend into dv */
       size_t dvs = m->dvsize;
-      if (oldsize + dvs >= nb) {
+      ਜੇ (oldsize + dvs >= nb) {
         size_t dsize = oldsize + dvs - nb;
-        if (dsize >= MIN_CHUNK_SIZE) {
-          mchunkptr r = chunk_plus_offset(p, nb);
-          mchunkptr n = chunk_plus_offset(r, dsize);
-          set_inuse(m, p, nb);
-          set_size_and_pinuse_of_free_chunk(r, dsize);
+        ਜੇ (dsize >= MIN_CHUNK_ਮਾਪ) {
+          mchunkptr r = chunk_plus_ਵਿੱਥ(p, nb);
+          mchunkptr n = chunk_plus_ਵਿੱਥ(r, dsize);
+          ਸੈੱਟ_inuse(m, p, nb);
+          ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(r, dsize);
           clear_pinuse(n);
           m->dvsize = dsize;
           m->dv = r;
         }
-        else { /* exhaust dv */
+        ਨਹੀਂਤਾਂ { /* exhaust dv */
           size_t newsize = oldsize + dvs;
-          set_inuse(m, p, newsize);
+          ਸੈੱਟ_inuse(m, p, newsize);
           m->dvsize = 0;
           m->dv = 0;
         }
         newp = p;
       }
     }
-    else if (!cinuse(next)) { /* extend into next free chunk */
-      size_t nextsize = chunksize(next);
-      if (oldsize + nextsize >= nb) {
+    ਨਹੀਂਤਾਂ ਜੇ (!cinuse(ਅਗਲਾ)) { /* extend into next free chunk */
+      size_t nextsize = chunksize(ਅਗਲਾ);
+      ਜੇ (oldsize + nextsize >= nb) {
         size_t rsize = oldsize + nextsize - nb;
-        unlink_chunk(m, next, nextsize);
-        if (rsize < MIN_CHUNK_SIZE) {
+        unlink_chunk(m, ਅਗਲਾ, nextsize);
+        ਜੇ (rsize < MIN_CHUNK_ਮਾਪ) {
           size_t newsize = oldsize + nextsize;
-          set_inuse(m, p, newsize);
+          ਸੈੱਟ_inuse(m, p, newsize);
         }
-        else {
-          mchunkptr r = chunk_plus_offset(p, nb);
-          set_inuse(m, p, nb);
-          set_inuse(m, r, rsize);
+        ਨਹੀਂਤਾਂ {
+          mchunkptr r = chunk_plus_ਵਿੱਥ(p, nb);
+          ਸੈੱਟ_inuse(m, p, nb);
+          ਸੈੱਟ_inuse(m, r, rsize);
           dispose_chunk(m, r, rsize);
         }
         newp = p;
       }
     }
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(m, chunk2mem(p));
   }
-  return newp;
+  ਵਾਪਸ newp;
 }
 
-static void* internal_memalign(mstate m, size_t alignment, size_t bytes) {
-  void* mem = 0;
-  if (alignment <  MIN_CHUNK_SIZE) /* must be at least a minimum chunk size */
-    alignment = MIN_CHUNK_SIZE;
-  if ((alignment & (alignment-SIZE_T_ONE)) != 0) {/* Ensure a power of 2 */
+ਸਥਿਰ ਖਾਲੀ* ਅੰਦਰੂਨੀ_memalign(mstate m, size_t alignment, size_t ਬਾਈਟਾਂ) {
+  ਖਾਲੀ* mem = 0;
+  ਜੇ (alignment <  MIN_CHUNK_ਮਾਪ) /* must be at least a minimum chunk size */
+    alignment = MIN_CHUNK_ਮਾਪ;
+  ਜੇ ((alignment & (alignment-ਮਾਪ_T_ONE)) != 0) {/* Ensure a power of 2 */
     size_t a = MALLOC_ALIGNMENT << 1;
-    while (a < alignment) a <<= 1;
+    ਜਦੋਂ (a < alignment) a <<= 1;
     alignment = a;
   }
-  if (bytes >= MAX_REQUEST - alignment) {
-    if (m != 0)  { /* Test isn't needed but avoids compiler warning */
+  ਜੇ (ਬਾਈਟਾਂ >= MAX_REQUEST - alignment) {
+    ਜੇ (m != 0)  { /* Test isn't needed but avoids compiler warning */
       MALLOC_FAILURE_ACTION;
     }
   }
-  else {
-    size_t nb = request2size(bytes);
-    size_t req = nb + alignment + MIN_CHUNK_SIZE - CHUNK_OVERHEAD;
-    mem = internal_malloc(m, req);
-    if (mem != 0) {
+  ਨਹੀਂਤਾਂ {
+    size_t nb = request2size(ਬਾਈਟਾਂ);
+    size_t req = nb + alignment + MIN_CHUNK_ਮਾਪ - CHUNK_OVERHEAD;
+    mem = ਅੰਦਰੂਨੀ_malloc(m, req);
+    ਜੇ (mem != 0) {
       mchunkptr p = mem2chunk(mem);
-      if (PREACTION(m))
-        return 0;
-      if ((((size_t)(mem)) & (alignment - 1)) != 0) { /* misaligned */
+      ਜੇ (PREACTION(m))
+        ਵਾਪਸ 0;
+      ਜੇ ((((size_t)(mem)) & (alignment - 1)) != 0) { /* misaligned */
         /*
           Find an aligned spot inside chunk.  Since we need to give
           back leading space in a chunk of at least MIN_CHUNK_SIZE, if
@@ -5076,47 +5076,47 @@ static void* internal_memalign(mstate m, size_t alignment, size_t bytes) {
           We've allocated enough total room so that this is always
           possible.
         */
-        char* br = (char*)mem2chunk((size_t)(((size_t)((char*)mem + alignment -
-                                                       SIZE_T_ONE)) &
+        ਅੱਖਰ* br = (ਅੱਖਰ*)mem2chunk((size_t)(((size_t)((ਅੱਖਰ*)mem + alignment -
+                                                       ਮਾਪ_T_ONE)) &
                                              -alignment));
-        char* pos = ((size_t)(br - (char*)(p)) >= MIN_CHUNK_SIZE)?
+        ਅੱਖਰ* pos = ((size_t)(br - (ਅੱਖਰ*)(p)) >= MIN_CHUNK_ਮਾਪ)?
           br : br+alignment;
         mchunkptr newp = (mchunkptr)pos;
-        size_t leadsize = pos - (char*)(p);
+        size_t leadsize = pos - (ਅੱਖਰ*)(p);
         size_t newsize = chunksize(p) - leadsize;
 
-        if (is_mmapped(p)) { /* For mmapped chunks, just adjust offset */
+        ਜੇ (is_mmapped(p)) { /* For mmapped chunks, just adjust offset */
           newp->prev_foot = p->prev_foot + leadsize;
-          newp->head = newsize;
+          newp->ਸਿਰ = newsize;
         }
-        else { /* Otherwise, give back leader, use the rest */
-          set_inuse(m, newp, newsize);
-          set_inuse(m, p, leadsize);
+        ਨਹੀਂਤਾਂ { /* Otherwise, give back leader, use the rest */
+          ਸੈੱਟ_inuse(m, newp, newsize);
+          ਸੈੱਟ_inuse(m, p, leadsize);
           dispose_chunk(m, p, leadsize);
         }
         p = newp;
       }
 
       /* Give back spare room at the end */
-      if (!is_mmapped(p)) {
-        size_t size = chunksize(p);
-        if (size > nb + MIN_CHUNK_SIZE) {
-          size_t remainder_size = size - nb;
-          mchunkptr remainder = chunk_plus_offset(p, nb);
-          set_inuse(m, p, nb);
-          set_inuse(m, remainder, remainder_size);
-          dispose_chunk(m, remainder, remainder_size);
+      ਜੇ (!is_mmapped(p)) {
+        size_t ਮਾਪ = chunksize(p);
+        ਜੇ (ਮਾਪ > nb + MIN_CHUNK_ਮਾਪ) {
+          size_t remainder_ਮਾਪ = ਮਾਪ - nb;
+          mchunkptr remainder = chunk_plus_ਵਿੱਥ(p, nb);
+          ਸੈੱਟ_inuse(m, p, nb);
+          ਸੈੱਟ_inuse(m, remainder, remainder_ਮਾਪ);
+          dispose_chunk(m, remainder, remainder_ਮਾਪ);
         }
       }
 
       mem = chunk2mem(p);
-      assert (chunksize(p) >= nb);
-      assert(((size_t)mem & (alignment - 1)) == 0);
+      ਪ੍ਰਤਿਜ੍ਞਾ (chunksize(p) >= nb);
+      ਪ੍ਰਤਿਜ੍ਞਾ(((size_t)mem & (alignment - 1)) == 0);
       check_inuse_chunk(m, p);
       POSTACTION(m);
     }
   }
-  return mem;
+  ਵਾਪਸ mem;
 }
 
 /*
@@ -5126,53 +5126,53 @@ static void* internal_memalign(mstate m, size_t alignment, size_t bytes) {
     bit 0 set if all elements are same size (using sizes[0])
     bit 1 set if elements should be zeroed
 */
-static void** ialloc(mstate m,
+ਸਥਿਰ ਖਾਲੀ** ialloc(mstate m,
                      size_t n_elements,
                      size_t* sizes,
-                     int opts,
-                     void* chunks[]) {
+                     ਪੂਰਨ opts,
+                     ਖਾਲੀ* chunks[]) {
 
-  size_t    element_size;   /* chunksize of each element, if all same */
-  size_t    contents_size;  /* total size of elements */
-  size_t    array_size;     /* request size of pointer array */
-  void*     mem;            /* malloced aggregate space */
+  size_t    element_ਮਾਪ;   /* chunksize of each element, if all same */
+  size_t    contents_ਮਾਪ;  /* total size of elements */
+  size_t    array_ਮਾਪ;     /* request size of pointer array */
+  ਖਾਲੀ*     mem;            /* malloced aggregate space */
   mchunkptr p;              /* corresponding chunk */
-  size_t    remainder_size; /* remaining bytes while splitting */
-  void**    marray;         /* either "chunks" or malloced ptr array */
+  size_t    remainder_ਮਾਪ; /* remaining bytes while splitting */
+  ਖਾਲੀ**    marray;         /* either "chunks" or malloced ptr array */
   mchunkptr array_chunk;    /* chunk for malloced ptr array */
   flag_t    was_enabled;    /* to disable mmap */
-  size_t    size;
+  size_t    ਮਾਪ;
   size_t    i;
 
   ensure_initialization();
   /* compute array length, if needed */
-  if (chunks != 0) {
-    if (n_elements == 0)
-      return chunks; /* nothing to do */
+  ਜੇ (chunks != 0) {
+    ਜੇ (n_elements == 0)
+      ਵਾਪਸ chunks; /* nothing to do */
     marray = chunks;
-    array_size = 0;
+    array_ਮਾਪ = 0;
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     /* if empty req, must still return chunk representing empty array */
-    if (n_elements == 0)
-      return (void**)internal_malloc(m, 0);
+    ਜੇ (n_elements == 0)
+      ਵਾਪਸ (ਖਾਲੀ**)ਅੰਦਰੂਨੀ_malloc(m, 0);
     marray = 0;
-    array_size = request2size(n_elements * (sizeof(void*)));
+    array_ਮਾਪ = request2size(n_elements * (ਆਕਾਰ(ਖਾਲੀ*)));
   }
 
   /* compute total element size */
-  if (opts & 0x1) { /* all-same-size */
-    element_size = request2size(*sizes);
-    contents_size = n_elements * element_size;
+  ਜੇ (opts & 0x1) { /* all-same-size */
+    element_ਮਾਪ = request2size(*sizes);
+    contents_ਮਾਪ = n_elements * element_ਮਾਪ;
   }
-  else { /* add up all the sizes */
-    element_size = 0;
-    contents_size = 0;
-    for (i = 0; i != n_elements; ++i)
-      contents_size += request2size(sizes[i]);
+  ਨਹੀਂਤਾਂ { /* add up all the sizes */
+    element_ਮਾਪ = 0;
+    contents_ਮਾਪ = 0;
+    ਲਈ (i = 0; i != n_elements; ++i)
+      contents_ਮਾਪ += request2size(sizes[i]);
   }
 
-  size = contents_size + array_size;
+  ਮਾਪ = contents_ਮਾਪ + array_ਮਾਪ;
 
   /*
      Allocate the aggregate chunk.  First disable direct-mmapping so
@@ -5181,68 +5181,68 @@ static void** ialloc(mstate m,
   */
   was_enabled = use_mmap(m);
   disable_mmap(m);
-  mem = internal_malloc(m, size - CHUNK_OVERHEAD);
-  if (was_enabled)
+  mem = ਅੰਦਰੂਨੀ_malloc(m, ਮਾਪ - CHUNK_OVERHEAD);
+  ਜੇ (was_enabled)
     enable_mmap(m);
-  if (mem == 0)
-    return 0;
+  ਜੇ (mem == 0)
+    ਵਾਪਸ 0;
 
-  if (PREACTION(m)) return 0;
+  ਜੇ (PREACTION(m)) ਵਾਪਸ 0;
   p = mem2chunk(mem);
-  remainder_size = chunksize(p);
+  remainder_ਮਾਪ = chunksize(p);
 
-  assert(!is_mmapped(p));
+  ਪ੍ਰਤਿਜ੍ਞਾ(!is_mmapped(p));
 
-  if (opts & 0x2) {       /* optionally clear the elements */
-    memset((size_t*)mem, 0, remainder_size - SIZE_T_SIZE - array_size);
+  ਜੇ (opts & 0x2) {       /* optionally clear the elements */
+    memset((size_t*)mem, 0, remainder_ਮਾਪ - ਮਾਪ_T_ਮਾਪ - array_ਮਾਪ);
   }
 
   /* If not provided, allocate the pointer array as final part of chunk */
-  if (marray == 0) {
-    size_t  array_chunk_size;
-    array_chunk = chunk_plus_offset(p, contents_size);
-    array_chunk_size = remainder_size - contents_size;
-    marray = (void**) (chunk2mem(array_chunk));
-    set_size_and_pinuse_of_inuse_chunk(m, array_chunk, array_chunk_size);
-    remainder_size = contents_size;
+  ਜੇ (marray == 0) {
+    size_t  array_chunk_ਮਾਪ;
+    array_chunk = chunk_plus_ਵਿੱਥ(p, contents_ਮਾਪ);
+    array_chunk_ਮਾਪ = remainder_ਮਾਪ - contents_ਮਾਪ;
+    marray = (ਖਾਲੀ**) (chunk2mem(array_chunk));
+    ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, array_chunk, array_chunk_ਮਾਪ);
+    remainder_ਮਾਪ = contents_ਮਾਪ;
   }
 
   /* split out elements */
-  for (i = 0; ; ++i) {
+  ਲਈ (i = 0; ; ++i) {
     marray[i] = chunk2mem(p);
-    if (i != n_elements-1) {
-      if (element_size != 0)
-        size = element_size;
-      else
-        size = request2size(sizes[i]);
-      remainder_size -= size;
-      set_size_and_pinuse_of_inuse_chunk(m, p, size);
-      p = chunk_plus_offset(p, size);
+    ਜੇ (i != n_elements-1) {
+      ਜੇ (element_ਮਾਪ != 0)
+        ਮਾਪ = element_ਮਾਪ;
+      ਨਹੀਂਤਾਂ
+        ਮਾਪ = request2size(sizes[i]);
+      remainder_ਮਾਪ -= ਮਾਪ;
+      ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, p, ਮਾਪ);
+      p = chunk_plus_ਵਿੱਥ(p, ਮਾਪ);
     }
-    else { /* the final element absorbs any overallocation slop */
-      set_size_and_pinuse_of_inuse_chunk(m, p, remainder_size);
-      break;
+    ਨਹੀਂਤਾਂ { /* the final element absorbs any overallocation slop */
+      ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(m, p, remainder_ਮਾਪ);
+      ਰੋਕੋ;
     }
   }
 
-#if DEBUG
-  if (marray != chunks) {
+#ਜੇ DEBUG
+  ਜੇ (marray != chunks) {
     /* final element must have exactly exhausted chunk */
-    if (element_size != 0) {
-      assert(remainder_size == element_size);
+    ਜੇ (element_ਮਾਪ != 0) {
+      ਪ੍ਰਤਿਜ੍ਞਾ(remainder_ਮਾਪ == element_ਮਾਪ);
     }
-    else {
-      assert(remainder_size == request2size(sizes[i]));
+    ਨਹੀਂਤਾਂ {
+      ਪ੍ਰਤਿਜ੍ਞਾ(remainder_ਮਾਪ == request2size(sizes[i]));
     }
     check_inuse_chunk(m, mem2chunk(marray));
   }
-  for (i = 0; i != n_elements; ++i)
+  ਲਈ (i = 0; i != n_elements; ++i)
     check_inuse_chunk(m, mem2chunk(marray[i]));
 
-#endif /* DEBUG */
+#ਜੇ_ਅੰਤ /* DEBUG */
 
   POSTACTION(m);
-  return marray;
+  ਵਾਪਸ marray;
 }
 
 /* Try to free all pointers in the given array.
@@ -5252,402 +5252,402 @@ static void** ialloc(mstate m,
    chunks before freeing, which will occur often if allocated
    with ialloc or the array is sorted.
 */
-static size_t internal_bulk_free(mstate m, void* array[], size_t nelem) {
+ਸਥਿਰ size_t ਅੰਦਰੂਨੀ_bulk_free(mstate m, ਖਾਲੀ* array[], size_t nelem) {
   size_t unfreed = 0;
-  if (!PREACTION(m)) {
-    void** a;
-    void** fence = &(array[nelem]);
-    for (a = array; a != fence; ++a) {
-      void* mem = *a;
-      if (mem != 0) {
+  ਜੇ (!PREACTION(m)) {
+    ਖਾਲੀ** a;
+    ਖਾਲੀ** fence = &(array[nelem]);
+    ਲਈ (a = array; a != fence; ++a) {
+      ਖਾਲੀ* mem = *a;
+      ਜੇ (mem != 0) {
         mchunkptr p = mem2chunk(mem);
         size_t psize = chunksize(p);
-#if FOOTERS
-        if (get_mstate_for(p) != m) {
+#ਜੇ FOOTERS
+        ਜੇ (get_mstate_for(p) != m) {
           ++unfreed;
-          continue;
+          ਜਾਰੀ;
         }
-#endif
+#ਜੇ_ਅੰਤ
         check_inuse_chunk(m, p);
         *a = 0;
-        if (RTCHECK(ok_address(m, p) && ok_inuse(p))) {
-          void ** b = a + 1; /* try to merge with next chunk */
-          mchunkptr next = next_chunk(p);
-          if (b != fence && *b == chunk2mem(next)) {
-            size_t newsize = chunksize(next) + psize;
-            set_inuse(m, p, newsize);
+        ਜੇ (RTCHECK(ok_ਪਤਾ(m, p) && ok_inuse(p))) {
+          ਖਾਲੀ ** b = a + 1; /* try to merge with next chunk */
+          mchunkptr ਅਗਲਾ = ਅਗਲਾ_chunk(p);
+          ਜੇ (b != fence && *b == chunk2mem(ਅਗਲਾ)) {
+            size_t newsize = chunksize(ਅਗਲਾ) + psize;
+            ਸੈੱਟ_inuse(m, p, newsize);
             *b = chunk2mem(p);
           }
-          else
+          ਨਹੀਂਤਾਂ
             dispose_chunk(m, p, psize);
         }
-        else {
+        ਨਹੀਂਤਾਂ {
           CORRUPTION_ERROR_ACTION(m);
-          break;
+          ਰੋਕੋ;
         }
       }
     }
-    if (should_trim(m, m->topsize))
+    ਜੇ (should_trim(m, m->topsize))
       sys_trim(m, 0);
     POSTACTION(m);
   }
-  return unfreed;
+  ਵਾਪਸ unfreed;
 }
 
 /* Traversal */
-#if MALLOC_INSPECT_ALL
-static void internal_inspect_all(mstate m,
-                                 void(*handler)(void *start,
-                                                void *end,
-                                                size_t used_bytes,
-                                                void* callback_arg),
-                                 void* arg) {
-  if (is_initialized(m)) {
-    mchunkptr top = m->top;
+#ਜੇ MALLOC_INSPECT_ALL
+ਸਥਿਰ ਖਾਲੀ ਅੰਦਰੂਨੀ_inspect_all(mstate m,
+                                 ਖਾਲੀ(*handler)(ਖਾਲੀ *ਸ਼ੁਰੂ,
+                                                ਖਾਲੀ *ਸਿਰਾ,
+                                                size_t ਵਰਤਿਆ_ਬਾਈਟਾਂ,
+                                                ਖਾਲੀ* callback_arg),
+                                 ਖਾਲੀ* arg) {
+  ਜੇ (is_initialized(m)) {
+    mchunkptr ਸਿਖਰ = m->ਸਿਖਰ;
     msegmentptr s;
-    for (s = &m->seg; s != 0; s = s->next) {
-      mchunkptr q = align_as_chunk(s->base);
-      while (segment_holds(s, q) && q->head != FENCEPOST_HEAD) {
-        mchunkptr next = next_chunk(q);
+    ਲਈ (s = &m->seg; s != 0; s = s->ਅਗਲਾ) {
+      mchunkptr q = align_as_chunk(s->ਅਧਾਰ);
+      ਜਦੋਂ (segment_holds(s, q) && q->ਸਿਰ != FENCEPOST_ਸਿਰ) {
+        mchunkptr ਅਗਲਾ = ਅਗਲਾ_chunk(q);
         size_t sz = chunksize(q);
-        size_t used;
-        void* start;
-        if (is_inuse(q)) {
-          used = sz - CHUNK_OVERHEAD; /* must not be mmapped */
-          start = chunk2mem(q);
+        size_t ਵਰਤਿਆ;
+        ਖਾਲੀ* ਸ਼ੁਰੂ;
+        ਜੇ (is_inuse(q)) {
+          ਵਰਤਿਆ = sz - CHUNK_OVERHEAD; /* must not be mmapped */
+          ਸ਼ੁਰੂ = chunk2mem(q);
         }
-        else {
-          used = 0;
-          if (is_small(sz)) {     /* offset by possible bookkeeping */
-            start = (void*)((char*)q + sizeof(struct malloc_chunk));
+        ਨਹੀਂਤਾਂ {
+          ਵਰਤਿਆ = 0;
+          ਜੇ (is_small(sz)) {     /* offset by possible bookkeeping */
+            ਸ਼ੁਰੂ = (ਖਾਲੀ*)((ਅੱਖਰ*)q + ਆਕਾਰ(ਬਣਤਰ malloc_chunk));
           }
-          else {
-            start = (void*)((char*)q + sizeof(struct malloc_tree_chunk));
+          ਨਹੀਂਤਾਂ {
+            ਸ਼ੁਰੂ = (ਖਾਲੀ*)((ਅੱਖਰ*)q + ਆਕਾਰ(ਬਣਤਰ malloc_ਰੁੱਖ_chunk));
           }
         }
-        if (start < (void*)next)  /* skip if all space is bookkeeping */
-          handler(start, next, used, arg);
-        if (q == top)
-          break;
-        q = next;
+        ਜੇ (ਸ਼ੁਰੂ < (ਖਾਲੀ*)ਅਗਲਾ)  /* skip if all space is bookkeeping */
+          handler(ਸ਼ੁਰੂ, ਅਗਲਾ, ਵਰਤਿਆ, arg);
+        ਜੇ (q == ਸਿਖਰ)
+          ਰੋਕੋ;
+        q = ਅਗਲਾ;
       }
     }
   }
 }
-#endif /* MALLOC_INSPECT_ALL */
+#ਜੇ_ਅੰਤ /* MALLOC_INSPECT_ALL */
 
 /* ------------------ Exported realloc, memalign, etc -------------------- */
 
-#if !ONLY_MSPACES
+#ਜੇ !ONLY_MSPACES
 
-void* dlrealloc(void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem == 0) {
-    mem = dlmalloc(bytes);
+ਖਾਲੀ* dlrealloc(ਖਾਲੀ* oldmem, size_t ਬਾਈਟਾਂ) {
+  ਖਾਲੀ* mem = 0;
+  ਜੇ (oldmem == 0) {
+    mem = dlmalloc(ਬਾਈਟਾਂ);
   }
-  else if (bytes >= MAX_REQUEST) {
+  ਨਹੀਂਤਾਂ ਜੇ (ਬਾਈਟਾਂ >= MAX_REQUEST) {
     MALLOC_FAILURE_ACTION;
   }
-#ifdef REALLOC_ZERO_BYTES_FREES
-  else if (bytes == 0) {
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ REALLOC_ZERO_ਬਾਈਟਾਂ_FREES
+  ਨਹੀਂਤਾਂ ਜੇ (ਬਾਈਟਾਂ == 0) {
     dlfree(oldmem);
   }
-#endif /* REALLOC_ZERO_BYTES_FREES */
-  else {
-    size_t nb = request2size(bytes);
+#ਜੇ_ਅੰਤ /* REALLOC_ZERO_BYTES_FREES */
+  ਨਹੀਂਤਾਂ {
+    size_t nb = request2size(ਬਾਈਟਾਂ);
     mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ਜੇ ! FOOTERS
     mstate m = gm;
-#else /* FOOTERS */
+#ਨਹੀਂਤਾਂ /* FOOTERS */
     mstate m = get_mstate_for(oldp);
-    if (!ok_magic(m)) {
+    ਜੇ (!ok_magic(m)) {
       USAGE_ERROR_ACTION(m, oldmem);
-      return 0;
+      ਵਾਪਸ 0;
     }
-#endif /* FOOTERS */
-    if (!PREACTION(m)) {
+#ਜੇ_ਅੰਤ /* FOOTERS */
+    ਜੇ (!PREACTION(m)) {
       mchunkptr newp = try_realloc_chunk(m, oldp, nb, 1);
       POSTACTION(m);
-      if (newp != 0) {
+      ਜੇ (newp != 0) {
         check_inuse_chunk(m, newp);
         mem = chunk2mem(newp);
       }
-      else {
-        mem = internal_malloc(m, bytes);
-        if (mem != 0) {
+      ਨਹੀਂਤਾਂ {
+        mem = ਅੰਦਰੂਨੀ_malloc(m, ਬਾਈਟਾਂ);
+        ਜੇ (mem != 0) {
           size_t oc = chunksize(oldp) - overhead_for(oldp);
-          memcpy(mem, oldmem, (oc < bytes)? oc : bytes);
-          internal_free(m, oldmem);
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ(mem, oldmem, (oc < ਬਾਈਟਾਂ)? oc : ਬਾਈਟਾਂ);
+          ਅੰਦਰੂਨੀ_free(m, oldmem);
         }
       }
     }
   }
-  return mem;
+  ਵਾਪਸ mem;
 }
 
-void* dlrealloc_in_place(void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem != 0) {
-    if (bytes >= MAX_REQUEST) {
+ਖਾਲੀ* dlrealloc_ਵਿੱਚ_ਰੱਖੋ(ਖਾਲੀ* oldmem, size_t ਬਾਈਟਾਂ) {
+  ਖਾਲੀ* mem = 0;
+  ਜੇ (oldmem != 0) {
+    ਜੇ (ਬਾਈਟਾਂ >= MAX_REQUEST) {
       MALLOC_FAILURE_ACTION;
     }
-    else {
-      size_t nb = request2size(bytes);
+    ਨਹੀਂਤਾਂ {
+      size_t nb = request2size(ਬਾਈਟਾਂ);
       mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ਜੇ ! FOOTERS
       mstate m = gm;
-#else /* FOOTERS */
+#ਨਹੀਂਤਾਂ /* FOOTERS */
       mstate m = get_mstate_for(oldp);
-      if (!ok_magic(m)) {
+      ਜੇ (!ok_magic(m)) {
         USAGE_ERROR_ACTION(m, oldmem);
-        return 0;
+        ਵਾਪਸ 0;
       }
-#endif /* FOOTERS */
-      if (!PREACTION(m)) {
+#ਜੇ_ਅੰਤ /* FOOTERS */
+      ਜੇ (!PREACTION(m)) {
         mchunkptr newp = try_realloc_chunk(m, oldp, nb, 0);
         POSTACTION(m);
-        if (newp == oldp) {
+        ਜੇ (newp == oldp) {
           check_inuse_chunk(m, newp);
           mem = oldmem;
         }
       }
     }
   }
-  return mem;
+  ਵਾਪਸ mem;
 }
 
-void* dlmemalign(size_t alignment, size_t bytes) {
-  if (alignment <= MALLOC_ALIGNMENT) {
-    return dlmalloc(bytes);
+ਖਾਲੀ* dlmemalign(size_t alignment, size_t ਬਾਈਟਾਂ) {
+  ਜੇ (alignment <= MALLOC_ALIGNMENT) {
+    ਵਾਪਸ dlmalloc(ਬਾਈਟਾਂ);
   }
-  return internal_memalign(gm, alignment, bytes);
+  ਵਾਪਸ ਅੰਦਰੂਨੀ_memalign(gm, alignment, ਬਾਈਟਾਂ);
 }
 
-int dlposix_memalign(void** pp, size_t alignment, size_t bytes) {
-  void* mem = 0;
-  if (alignment == MALLOC_ALIGNMENT)
-    mem = dlmalloc(bytes);
-  else {
-    size_t d = alignment / sizeof(void*);
-    size_t r = alignment % sizeof(void*);
-    if (r != 0 || d == 0 || (d & (d-SIZE_T_ONE)) != 0)
-      return EINVAL;
-    else if (bytes <= MAX_REQUEST - alignment) {
-      if (alignment <  MIN_CHUNK_SIZE)
-        alignment = MIN_CHUNK_SIZE;
-      mem = internal_memalign(gm, alignment, bytes);
+ਪੂਰਨ dlposix_memalign(ਖਾਲੀ** pp, size_t alignment, size_t ਬਾਈਟਾਂ) {
+  ਖਾਲੀ* mem = 0;
+  ਜੇ (alignment == MALLOC_ALIGNMENT)
+    mem = dlmalloc(ਬਾਈਟਾਂ);
+  ਨਹੀਂਤਾਂ {
+    size_t d = alignment / ਆਕਾਰ(ਖਾਲੀ*);
+    size_t r = alignment % ਆਕਾਰ(ਖਾਲੀ*);
+    ਜੇ (r != 0 || d == 0 || (d & (d-ਮਾਪ_T_ONE)) != 0)
+      ਵਾਪਸ EINVAL;
+    ਨਹੀਂਤਾਂ ਜੇ (ਬਾਈਟਾਂ <= MAX_REQUEST - alignment) {
+      ਜੇ (alignment <  MIN_CHUNK_ਮਾਪ)
+        alignment = MIN_CHUNK_ਮਾਪ;
+      mem = ਅੰਦਰੂਨੀ_memalign(gm, alignment, ਬਾਈਟਾਂ);
     }
   }
-  if (mem == 0)
-    return ENOMEM;
-  else {
+  ਜੇ (mem == 0)
+    ਵਾਪਸ ENOMEM;
+  ਨਹੀਂਤਾਂ {
     *pp = mem;
-    return 0;
+    ਵਾਪਸ 0;
   }
 }
 
-void* dlvalloc(size_t bytes) {
+ਖਾਲੀ* dlvalloc(size_t ਬਾਈਟਾਂ) {
   size_t pagesz;
   ensure_initialization();
-  pagesz = mparams.page_size;
-  return dlmemalign(pagesz, bytes);
+  pagesz = mparams.ਪੰਨਾ_ਮਾਪ;
+  ਵਾਪਸ dlmemalign(pagesz, ਬਾਈਟਾਂ);
 }
 
-void* dlpvalloc(size_t bytes) {
+ਖਾਲੀ* dlpvalloc(size_t ਬਾਈਟਾਂ) {
   size_t pagesz;
   ensure_initialization();
-  pagesz = mparams.page_size;
-  return dlmemalign(pagesz, (bytes + pagesz - SIZE_T_ONE) & ~(pagesz - SIZE_T_ONE));
+  pagesz = mparams.ਪੰਨਾ_ਮਾਪ;
+  ਵਾਪਸ dlmemalign(pagesz, (ਬਾਈਟਾਂ + pagesz - ਮਾਪ_T_ONE) & ~(pagesz - ਮਾਪ_T_ONE));
 }
 
-void** dlindependent_calloc(size_t n_elements, size_t elem_size,
-                            void* chunks[]) {
-  size_t sz = elem_size; /* serves as 1-element array */
-  return ialloc(gm, n_elements, &sz, 3, chunks);
+ਖਾਲੀ** dlindependent_calloc(size_t n_elements, size_t elem_ਮਾਪ,
+                            ਖਾਲੀ* chunks[]) {
+  size_t sz = elem_ਮਾਪ; /* serves as 1-element array */
+  ਵਾਪਸ ialloc(gm, n_elements, &sz, 3, chunks);
 }
 
-void** dlindependent_comalloc(size_t n_elements, size_t sizes[],
-                              void* chunks[]) {
-  return ialloc(gm, n_elements, sizes, 0, chunks);
+ਖਾਲੀ** dlindependent_comalloc(size_t n_elements, size_t sizes[],
+                              ਖਾਲੀ* chunks[]) {
+  ਵਾਪਸ ialloc(gm, n_elements, sizes, 0, chunks);
 }
 
-size_t dlbulk_free(void* array[], size_t nelem) {
-  return internal_bulk_free(gm, array, nelem);
+size_t dlbulk_free(ਖਾਲੀ* array[], size_t nelem) {
+  ਵਾਪਸ ਅੰਦਰੂਨੀ_bulk_free(gm, array, nelem);
 }
 
-#if MALLOC_INSPECT_ALL
-void dlmalloc_inspect_all(void(*handler)(void *start,
-                                         void *end,
-                                         size_t used_bytes,
-                                         void* callback_arg),
-                          void* arg) {
+#ਜੇ MALLOC_INSPECT_ALL
+ਖਾਲੀ dlmalloc_inspect_all(ਖਾਲੀ(*handler)(ਖਾਲੀ *ਸ਼ੁਰੂ,
+                                         ਖਾਲੀ *ਸਿਰਾ,
+                                         size_t ਵਰਤਿਆ_ਬਾਈਟਾਂ,
+                                         ਖਾਲੀ* callback_arg),
+                          ਖਾਲੀ* arg) {
   ensure_initialization();
-  if (!PREACTION(gm)) {
-    internal_inspect_all(gm, handler, arg);
+  ਜੇ (!PREACTION(gm)) {
+    ਅੰਦਰੂਨੀ_inspect_all(gm, handler, arg);
     POSTACTION(gm);
   }
 }
-#endif /* MALLOC_INSPECT_ALL */
+#ਜੇ_ਅੰਤ /* MALLOC_INSPECT_ALL */
 
-int dlmalloc_trim(size_t pad) {
-  int result = 0;
+ਪੂਰਨ dlmalloc_trim(size_t pad) {
+  ਪੂਰਨ ਨਤੀਜਾ = 0;
   ensure_initialization();
-  if (!PREACTION(gm)) {
-    result = sys_trim(gm, pad);
+  ਜੇ (!PREACTION(gm)) {
+    ਨਤੀਜਾ = sys_trim(gm, pad);
     POSTACTION(gm);
   }
-  return result;
+  ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-size_t dlmalloc_footprint(void) {
-  return gm->footprint;
+size_t dlmalloc_footprint(ਖਾਲੀ) {
+  ਵਾਪਸ gm->footprint;
 }
 
-size_t dlmalloc_max_footprint(void) {
-  return gm->max_footprint;
+size_t dlmalloc_max_footprint(ਖਾਲੀ) {
+  ਵਾਪਸ gm->max_footprint;
 }
 
-size_t dlmalloc_footprint_limit(void) {
-  size_t maf = gm->footprint_limit;
-  return maf == 0 ? MAX_SIZE_T : maf;
+size_t dlmalloc_footprint_ਹੱਦਬੰਦੀ(ਖਾਲੀ) {
+  size_t maf = gm->footprint_ਹੱਦਬੰਦੀ;
+  ਵਾਪਸ maf == 0 ? MAX_ਮਾਪ_T : maf;
 }
 
-size_t dlmalloc_set_footprint_limit(size_t bytes) {
-  size_t result;  /* invert sense of 0 */
-  if (bytes == 0)
-    result = granularity_align(1); /* Use minimal size */
-  if (bytes == MAX_SIZE_T)
-    result = 0;                    /* disable */
-  else
-    result = granularity_align(bytes);
-  return gm->footprint_limit = result;
+size_t dlmalloc_ਸੈੱਟ_footprint_ਹੱਦਬੰਦੀ(size_t ਬਾਈਟਾਂ) {
+  size_t ਨਤੀਜਾ;  /* invert sense of 0 */
+  ਜੇ (ਬਾਈਟਾਂ == 0)
+    ਨਤੀਜਾ = granularity_align(1); /* Use minimal size */
+  ਜੇ (ਬਾਈਟਾਂ == MAX_ਮਾਪ_T)
+    ਨਤੀਜਾ = 0;                    /* disable */
+  ਨਹੀਂਤਾਂ
+    ਨਤੀਜਾ = granularity_align(ਬਾਈਟਾਂ);
+  ਵਾਪਸ gm->footprint_ਹੱਦਬੰਦੀ = ਨਤੀਜਾ;
 }
 
-#if !NO_MALLINFO
-struct mallinfo dlmallinfo(void) {
-  return internal_mallinfo(gm);
+#ਜੇ !NO_MALLINFO
+ਬਣਤਰ mallinfo dlmallinfo(ਖਾਲੀ) {
+  ਵਾਪਸ ਅੰਦਰੂਨੀ_mallinfo(gm);
 }
-#endif /* NO_MALLINFO */
+#ਜੇ_ਅੰਤ /* NO_MALLINFO */
 
-#if !NO_MALLOC_STATS
-void dlmalloc_stats(void) {
-  internal_malloc_stats(gm);
+#ਜੇ !NO_MALLOC_STATS
+ਖਾਲੀ dlmalloc_stats(ਖਾਲੀ) {
+  ਅੰਦਰੂਨੀ_malloc_stats(gm);
 }
-#endif /* NO_MALLOC_STATS */
+#ਜੇ_ਅੰਤ /* NO_MALLOC_STATS */
 
-int dlmallopt(int param_number, int value) {
-  return change_mparam(param_number, value);
+ਪੂਰਨ dlmallopt(ਪੂਰਨ param_ਸੰਖਿਆ, ਪੂਰਨ ਮੁੱਲ) {
+  ਵਾਪਸ change_mparam(param_ਸੰਖਿਆ, ਮੁੱਲ);
 }
 
-size_t dlmalloc_usable_size(void* mem) {
-  if (mem != 0) {
+size_t dlmalloc_usable_ਮਾਪ(ਖਾਲੀ* mem) {
+  ਜੇ (mem != 0) {
     mchunkptr p = mem2chunk(mem);
-    if (is_inuse(p))
-      return chunksize(p) - overhead_for(p);
+    ਜੇ (is_inuse(p))
+      ਵਾਪਸ chunksize(p) - overhead_for(p);
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-#endif /* !ONLY_MSPACES */
+#ਜੇ_ਅੰਤ /* !ONLY_MSPACES */
 
 /* ----------------------------- user mspaces ---------------------------- */
 
-#if MSPACES
+#ਜੇ MSPACES
 
-static mstate init_user_mstate(char* tbase, size_t tsize) {
-  size_t msize = pad_request(sizeof(struct malloc_state));
+ਸਥਿਰ mstate init_user_mstate(ਅੱਖਰ* tbase, size_t tsize) {
+  size_t msize = pad_request(ਆਕਾਰ(ਬਣਤਰ malloc_state));
   mchunkptr mn;
   mchunkptr msp = align_as_chunk(tbase);
   mstate m = (mstate)(chunk2mem(msp));
   memset(m, 0, msize);
-  (void)INITIAL_LOCK(&m->mutex);
-  msp->head = (msize|INUSE_BITS);
-  m->seg.base = m->least_addr = tbase;
-  m->seg.size = m->footprint = m->max_footprint = tsize;
+  (ਖਾਲੀ)INITIAL_ਤਾਲਾ(&m->mutex);
+  msp->ਸਿਰ = (msize|INUSE_ਬਿੱਟ);
+  m->seg.ਅਧਾਰ = m->ਘੱਟ_ਤੋਂ_ਘੱਟ_addr = tbase;
+  m->seg.ਮਾਪ = m->footprint = m->max_footprint = tsize;
   m->magic = mparams.magic;
-  m->release_checks = MAX_RELEASE_CHECK_RATE;
+  m->release_checks = MAX_RELEASE_CHECK_ਦਰ;
   m->mflags = mparams.default_mflags;
   m->extp = 0;
   m->exts = 0;
   disable_contiguous(m);
   init_bins(m);
-  mn = next_chunk(mem2chunk(m));
-  init_top(m, mn, (size_t)((tbase + tsize) - (char*)mn) - TOP_FOOT_SIZE);
-  check_top_chunk(m, m->top);
-  return m;
+  mn = ਅਗਲਾ_chunk(mem2chunk(m));
+  init_ਸਿਖਰ(m, mn, (size_t)((tbase + tsize) - (ਅੱਖਰ*)mn) - ਸਿਖਰ_FOOT_ਮਾਪ);
+  check_ਸਿਖਰ_chunk(m, m->ਸਿਖਰ);
+  ਵਾਪਸ m;
 }
 
-mspace create_mspace(size_t capacity, int locked) {
+mspace create_mspace(size_t ਸਮਰੱਥਾ, ਪੂਰਨ locked) {
   mstate m = 0;
   size_t msize;
   ensure_initialization();
-  msize = pad_request(sizeof(struct malloc_state));
-  if (capacity < (size_t) -(msize + TOP_FOOT_SIZE + mparams.page_size)) {
-    size_t rs = ((capacity == 0)? mparams.granularity :
-                 (capacity + TOP_FOOT_SIZE + msize));
+  msize = pad_request(ਆਕਾਰ(ਬਣਤਰ malloc_state));
+  ਜੇ (ਸਮਰੱਥਾ < (size_t) -(msize + ਸਿਖਰ_FOOT_ਮਾਪ + mparams.ਪੰਨਾ_ਮਾਪ)) {
+    size_t rs = ((ਸਮਰੱਥਾ == 0)? mparams.granularity :
+                 (ਸਮਰੱਥਾ + ਸਿਖਰ_FOOT_ਮਾਪ + msize));
     size_t tsize = granularity_align(rs);
-    char* tbase = (char*)(CALL_MMAP(tsize));
-    if (tbase != CMFAIL) {
+    ਅੱਖਰ* tbase = (ਅੱਖਰ*)(CALL_MMAP(tsize));
+    ਜੇ (tbase != CMFAIL) {
       m = init_user_mstate(tbase, tsize);
-      set_segment_flags(&m->seg, USE_MMAP_BIT);
-      set_lock(m, locked);
+      ਸੈੱਟ_segment_flags(&m->seg, USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ);
+      ਸੈੱਟ_ਤਾਲਾ(m, locked);
     }
   }
-  return (mspace)m;
+  ਵਾਪਸ (mspace)m;
 }
 
-mspace create_mspace_with_base(void* base, size_t capacity, int locked) {
+mspace create_mspace_with_ਅਧਾਰ(ਖਾਲੀ* ਅਧਾਰ, size_t ਸਮਰੱਥਾ, ਪੂਰਨ locked) {
   mstate m = 0;
   size_t msize;
   ensure_initialization();
-  msize = pad_request(sizeof(struct malloc_state));
-  if (capacity > msize + TOP_FOOT_SIZE &&
-      capacity < (size_t) -(msize + TOP_FOOT_SIZE + mparams.page_size)) {
-    m = init_user_mstate((char*)base, capacity);
-    set_segment_flags(&m->seg, EXTERN_BIT);
-    set_lock(m, locked);
+  msize = pad_request(ਆਕਾਰ(ਬਣਤਰ malloc_state));
+  ਜੇ (ਸਮਰੱਥਾ > msize + ਸਿਖਰ_FOOT_ਮਾਪ &&
+      ਸਮਰੱਥਾ < (size_t) -(msize + ਸਿਖਰ_FOOT_ਮਾਪ + mparams.ਪੰਨਾ_ਮਾਪ)) {
+    m = init_user_mstate((ਅੱਖਰ*)ਅਧਾਰ, ਸਮਰੱਥਾ);
+    ਸੈੱਟ_segment_flags(&m->seg, EXTERN_ਦੋਆਧਾਰੀ_ਅੰਕ);
+    ਸੈੱਟ_ਤਾਲਾ(m, locked);
   }
-  return (mspace)m;
+  ਵਾਪਸ (mspace)m;
 }
 
-int mspace_track_large_chunks(mspace msp, int enable) {
-  int ret = 0;
+ਪੂਰਨ mspace_track_large_chunks(mspace msp, ਪੂਰਨ enable) {
+  ਪੂਰਨ ret = 0;
   mstate ms = (mstate)msp;
-  if (!PREACTION(ms)) {
-    if (!use_mmap(ms)) {
+  ਜੇ (!PREACTION(ms)) {
+    ਜੇ (!use_mmap(ms)) {
       ret = 1;
     }
-    if (!enable) {
+    ਜੇ (!enable) {
       enable_mmap(ms);
-    } else {
+    } ਨਹੀਂਤਾਂ {
       disable_mmap(ms);
     }
     POSTACTION(ms);
   }
-  return ret;
+  ਵਾਪਸ ret;
 }
 
 size_t destroy_mspace(mspace msp) {
   size_t freed = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
+  ਜੇ (ok_magic(ms)) {
     msegmentptr sp = &ms->seg;
-    (void)DESTROY_LOCK(&ms->mutex); /* destroy before unmapped */
-    while (sp != 0) {
-      char* base = sp->base;
-      size_t size = sp->size;
+    (ਖਾਲੀ)DESTROY_ਤਾਲਾ(&ms->mutex); /* destroy before unmapped */
+    ਜਦੋਂ (sp != 0) {
+      ਅੱਖਰ* ਅਧਾਰ = sp->ਅਧਾਰ;
+      size_t ਮਾਪ = sp->ਮਾਪ;
       flag_t flag = get_segment_flags(sp);
-      (void)base; /* placate people compiling -Wunused-variable */
-      sp = sp->next;
-      if ((flag & USE_MMAP_BIT) && !(flag & EXTERN_BIT) &&
-          CALL_MUNMAP(base, size) == 0)
-        freed += size;
+      (ਖਾਲੀ)ਅਧਾਰ; /* placate people compiling -Wunused-variable */
+      sp = sp->ਅਗਲਾ;
+      ਜੇ ((flag & USE_MMAP_ਦੋਆਧਾਰੀ_ਅੰਕ) && !(flag & EXTERN_ਦੋਆਧਾਰੀ_ਅੰਕ) &&
+          CALL_MUNMAP(ਅਧਾਰ, ਮਾਪ) == 0)
+        freed += ਮਾਪ;
     }
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return freed;
+  ਵਾਪਸ freed;
 }
 
 /*
@@ -5655,211 +5655,211 @@ size_t destroy_mspace(mspace msp) {
   versions. This is not so nice but better than the alternatives.
 */
 
-void* mspace_malloc(mspace msp, size_t bytes) {
+ਖਾਲੀ* mspace_malloc(mspace msp, size_t ਬਾਈਟਾਂ) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ਜੇ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    ਵਾਪਸ 0;
   }
-  if (!PREACTION(ms)) {
-    void* mem;
+  ਜੇ (!PREACTION(ms)) {
+    ਖਾਲੀ* mem;
     size_t nb;
-    if (bytes <= MAX_SMALL_REQUEST) {
+    ਜੇ (ਬਾਈਟਾਂ <= MAX_SMALL_REQUEST) {
       bindex_t idx;
       binmap_t smallbits;
-      nb = (bytes < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(bytes);
-      idx = small_index(nb);
+      nb = (ਬਾਈਟਾਂ < MIN_REQUEST)? MIN_CHUNK_ਮਾਪ : pad_request(ਬਾਈਟਾਂ);
+      idx = small_ਸੂਚਕਾਂਕ(nb);
       smallbits = ms->smallmap >> idx;
 
-      if ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
+      ਜੇ ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
         mchunkptr b, p;
         idx += ~smallbits & 1;       /* Uses next bin if idx empty */
         b = smallbin_at(ms, idx);
         p = b->fd;
-        assert(chunksize(p) == small_index2size(idx));
-        unlink_first_small_chunk(ms, b, p, idx);
-        set_inuse_and_pinuse(ms, p, small_index2size(idx));
+        ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(p) == small_index2size(idx));
+        unlink_ਪਹਿਲਾ_small_chunk(ms, b, p, idx);
+        ਸੈੱਟ_inuse_and_pinuse(ms, p, small_index2size(idx));
         mem = chunk2mem(p);
         check_malloced_chunk(ms, mem, nb);
-        goto postaction;
+        ਜਾਓ postaction;
       }
 
-      else if (nb > ms->dvsize) {
-        if (smallbits != 0) { /* Use chunk in next nonempty smallbin */
+      ਨਹੀਂਤਾਂ ਜੇ (nb > ms->dvsize) {
+        ਜੇ (smallbits != 0) { /* Use chunk in next nonempty smallbin */
           mchunkptr b, p, r;
           size_t rsize;
           bindex_t i;
-          binmap_t leftbits = (smallbits << idx) & left_bits(idx2bit(idx));
-          binmap_t leastbit = least_bit(leftbits);
+          binmap_t leftbits = (smallbits << idx) & ਖੱਬਾ_ਬਿੱਟ(idx2bit(idx));
+          binmap_t leastbit = ਘੱਟ_ਤੋਂ_ਘੱਟ_ਦੋਆਧਾਰੀ_ਅੰਕ(leftbits);
           compute_bit2idx(leastbit, i);
           b = smallbin_at(ms, i);
           p = b->fd;
-          assert(chunksize(p) == small_index2size(i));
-          unlink_first_small_chunk(ms, b, p, i);
+          ਪ੍ਰਤਿਜ੍ਞਾ(chunksize(p) == small_index2size(i));
+          unlink_ਪਹਿਲਾ_small_chunk(ms, b, p, i);
           rsize = small_index2size(i) - nb;
           /* Fit here cannot be remainderless if 4byte sizes */
-          if (SIZE_T_SIZE != 4 && rsize < MIN_CHUNK_SIZE)
-            set_inuse_and_pinuse(ms, p, small_index2size(i));
-          else {
-            set_size_and_pinuse_of_inuse_chunk(ms, p, nb);
-            r = chunk_plus_offset(p, nb);
-            set_size_and_pinuse_of_free_chunk(r, rsize);
+          ਜੇ (ਮਾਪ_T_ਮਾਪ != 4 && rsize < MIN_CHUNK_ਮਾਪ)
+            ਸੈੱਟ_inuse_and_pinuse(ms, p, small_index2size(i));
+          ਨਹੀਂਤਾਂ {
+            ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(ms, p, nb);
+            r = chunk_plus_ਵਿੱਥ(p, nb);
+            ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(r, rsize);
             replace_dv(ms, r, rsize);
           }
           mem = chunk2mem(p);
           check_malloced_chunk(ms, mem, nb);
-          goto postaction;
+          ਜਾਓ postaction;
         }
 
-        else if (ms->treemap != 0 && (mem = tmalloc_small(ms, nb)) != 0) {
+        ਨਹੀਂਤਾਂ ਜੇ (ms->treemap != 0 && (mem = tmalloc_small(ms, nb)) != 0) {
           check_malloced_chunk(ms, mem, nb);
-          goto postaction;
+          ਜਾਓ postaction;
         }
       }
     }
-    else if (bytes >= MAX_REQUEST)
-      nb = MAX_SIZE_T; /* Too big to allocate. Force failure (in sys alloc) */
-    else {
-      nb = pad_request(bytes);
-      if (ms->treemap != 0 && (mem = tmalloc_large(ms, nb)) != 0) {
+    ਨਹੀਂਤਾਂ ਜੇ (ਬਾਈਟਾਂ >= MAX_REQUEST)
+      nb = MAX_ਮਾਪ_T; /* Too big to allocate. Force failure (in sys alloc) */
+    ਨਹੀਂਤਾਂ {
+      nb = pad_request(ਬਾਈਟਾਂ);
+      ਜੇ (ms->treemap != 0 && (mem = tmalloc_large(ms, nb)) != 0) {
         check_malloced_chunk(ms, mem, nb);
-        goto postaction;
+        ਜਾਓ postaction;
       }
     }
 
-    if (nb <= ms->dvsize) {
+    ਜੇ (nb <= ms->dvsize) {
       size_t rsize = ms->dvsize - nb;
       mchunkptr p = ms->dv;
-      if (rsize >= MIN_CHUNK_SIZE) { /* split dv */
-        mchunkptr r = ms->dv = chunk_plus_offset(p, nb);
+      ਜੇ (rsize >= MIN_CHUNK_ਮਾਪ) { /* split dv */
+        mchunkptr r = ms->dv = chunk_plus_ਵਿੱਥ(p, nb);
         ms->dvsize = rsize;
-        set_size_and_pinuse_of_free_chunk(r, rsize);
-        set_size_and_pinuse_of_inuse_chunk(ms, p, nb);
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(r, rsize);
+        ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(ms, p, nb);
       }
-      else { /* exhaust dv */
+      ਨਹੀਂਤਾਂ { /* exhaust dv */
         size_t dvs = ms->dvsize;
         ms->dvsize = 0;
         ms->dv = 0;
-        set_inuse_and_pinuse(ms, p, dvs);
+        ਸੈੱਟ_inuse_and_pinuse(ms, p, dvs);
       }
       mem = chunk2mem(p);
       check_malloced_chunk(ms, mem, nb);
-      goto postaction;
+      ਜਾਓ postaction;
     }
 
-    else if (nb < ms->topsize) { /* Split top */
+    ਨਹੀਂਤਾਂ ਜੇ (nb < ms->topsize) { /* Split top */
       size_t rsize = ms->topsize -= nb;
-      mchunkptr p = ms->top;
-      mchunkptr r = ms->top = chunk_plus_offset(p, nb);
-      r->head = rsize | PINUSE_BIT;
-      set_size_and_pinuse_of_inuse_chunk(ms, p, nb);
+      mchunkptr p = ms->ਸਿਖਰ;
+      mchunkptr r = ms->ਸਿਖਰ = chunk_plus_ਵਿੱਥ(p, nb);
+      r->ਸਿਰ = rsize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+      ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_inuse_chunk(ms, p, nb);
       mem = chunk2mem(p);
-      check_top_chunk(ms, ms->top);
+      check_ਸਿਖਰ_chunk(ms, ms->ਸਿਖਰ);
       check_malloced_chunk(ms, mem, nb);
-      goto postaction;
+      ਜਾਓ postaction;
     }
 
     mem = sys_alloc(ms, nb);
 
   postaction:
     POSTACTION(ms);
-    return mem;
+    ਵਾਪਸ mem;
   }
 
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-void mspace_free(mspace msp, void* mem) {
-  if (mem != 0) {
+ਖਾਲੀ mspace_free(mspace msp, ਖਾਲੀ* mem) {
+  ਜੇ (mem != 0) {
     mchunkptr p  = mem2chunk(mem);
-#if FOOTERS
+#ਜੇ FOOTERS
     mstate fm = get_mstate_for(p);
-    (void)msp; /* placate people compiling -Wunused */
-#else /* FOOTERS */
+    (ਖਾਲੀ)msp; /* placate people compiling -Wunused */
+#ਨਹੀਂਤਾਂ /* FOOTERS */
     mstate fm = (mstate)msp;
-#endif /* FOOTERS */
-    if (!ok_magic(fm)) {
+#ਜੇ_ਅੰਤ /* FOOTERS */
+    ਜੇ (!ok_magic(fm)) {
       USAGE_ERROR_ACTION(fm, p);
-      return;
+      ਵਾਪਸ;
     }
-    if (!PREACTION(fm)) {
+    ਜੇ (!PREACTION(fm)) {
       check_inuse_chunk(fm, p);
-      if (RTCHECK(ok_address(fm, p) && ok_inuse(p))) {
+      ਜੇ (RTCHECK(ok_ਪਤਾ(fm, p) && ok_inuse(p))) {
         size_t psize = chunksize(p);
-        mchunkptr next = chunk_plus_offset(p, psize);
-        if (!pinuse(p)) {
+        mchunkptr ਅਗਲਾ = chunk_plus_ਵਿੱਥ(p, psize);
+        ਜੇ (!pinuse(p)) {
           size_t prevsize = p->prev_foot;
-          if (is_mmapped(p)) {
+          ਜੇ (is_mmapped(p)) {
             psize += prevsize + MMAP_FOOT_PAD;
-            if (CALL_MUNMAP((char*)p - prevsize, psize) == 0)
+            ਜੇ (CALL_MUNMAP((ਅੱਖਰ*)p - prevsize, psize) == 0)
               fm->footprint -= psize;
-            goto postaction;
+            ਜਾਓ postaction;
           }
-          else {
-            mchunkptr prev = chunk_minus_offset(p, prevsize);
+          ਨਹੀਂਤਾਂ {
+            mchunkptr prev = chunk_minus_ਵਿੱਥ(p, prevsize);
             psize += prevsize;
             p = prev;
-            if (RTCHECK(ok_address(fm, prev))) { /* consolidate backward */
-              if (p != fm->dv) {
+            ਜੇ (RTCHECK(ok_ਪਤਾ(fm, prev))) { /* consolidate backward */
+              ਜੇ (p != fm->dv) {
                 unlink_chunk(fm, p, prevsize);
               }
-              else if ((next->head & INUSE_BITS) == INUSE_BITS) {
+              ਨਹੀਂਤਾਂ ਜੇ ((ਅਗਲਾ->ਸਿਰ & INUSE_ਬਿੱਟ) == INUSE_ਬਿੱਟ) {
                 fm->dvsize = psize;
-                set_free_with_pinuse(p, psize, next);
-                goto postaction;
+                ਸੈੱਟ_free_with_pinuse(p, psize, ਅਗਲਾ);
+                ਜਾਓ postaction;
               }
             }
-            else
-              goto erroraction;
+            ਨਹੀਂਤਾਂ
+              ਜਾਓ erroraction;
           }
         }
 
-        if (RTCHECK(ok_next(p, next) && ok_pinuse(next))) {
-          if (!cinuse(next)) {  /* consolidate forward */
-            if (next == fm->top) {
+        ਜੇ (RTCHECK(ok_ਅਗਲਾ(p, ਅਗਲਾ) && ok_pinuse(ਅਗਲਾ))) {
+          ਜੇ (!cinuse(ਅਗਲਾ)) {  /* consolidate forward */
+            ਜੇ (ਅਗਲਾ == fm->ਸਿਖਰ) {
               size_t tsize = fm->topsize += psize;
-              fm->top = p;
-              p->head = tsize | PINUSE_BIT;
-              if (p == fm->dv) {
+              fm->ਸਿਖਰ = p;
+              p->ਸਿਰ = tsize | PINUSE_ਦੋਆਧਾਰੀ_ਅੰਕ;
+              ਜੇ (p == fm->dv) {
                 fm->dv = 0;
                 fm->dvsize = 0;
               }
-              if (should_trim(fm, tsize))
+              ਜੇ (should_trim(fm, tsize))
                 sys_trim(fm, 0);
-              goto postaction;
+              ਜਾਓ postaction;
             }
-            else if (next == fm->dv) {
+            ਨਹੀਂਤਾਂ ਜੇ (ਅਗਲਾ == fm->dv) {
               size_t dsize = fm->dvsize += psize;
               fm->dv = p;
-              set_size_and_pinuse_of_free_chunk(p, dsize);
-              goto postaction;
+              ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, dsize);
+              ਜਾਓ postaction;
             }
-            else {
-              size_t nsize = chunksize(next);
+            ਨਹੀਂਤਾਂ {
+              size_t nsize = chunksize(ਅਗਲਾ);
               psize += nsize;
-              unlink_chunk(fm, next, nsize);
-              set_size_and_pinuse_of_free_chunk(p, psize);
-              if (p == fm->dv) {
+              unlink_chunk(fm, ਅਗਲਾ, nsize);
+              ਸੈੱਟ_ਮਾਪ_and_pinuse_ਦਾ_free_chunk(p, psize);
+              ਜੇ (p == fm->dv) {
                 fm->dvsize = psize;
-                goto postaction;
+                ਜਾਓ postaction;
               }
             }
           }
-          else
-            set_free_with_pinuse(p, psize, next);
+          ਨਹੀਂਤਾਂ
+            ਸੈੱਟ_free_with_pinuse(p, psize, ਅਗਲਾ);
 
-          if (is_small(psize)) {
-            insert_small_chunk(fm, p, psize);
+          ਜੇ (is_small(psize)) {
+            ਪਾਓ_small_chunk(fm, p, psize);
             check_free_chunk(fm, p);
           }
-          else {
+          ਨਹੀਂਤਾਂ {
             tchunkptr tp = (tchunkptr)p;
-            insert_large_chunk(fm, tp, psize);
+            ਪਾਓ_large_chunk(fm, tp, psize);
             check_free_chunk(fm, p);
-            if (--fm->release_checks == 0)
-              release_unused_segments(fm);
+            ਜੇ (--fm->release_checks == 0)
+              release_ਅਣਵਰਤਿਆ_segments(fm);
           }
-          goto postaction;
+          ਜਾਓ postaction;
         }
       }
     erroraction:
@@ -5870,265 +5870,265 @@ void mspace_free(mspace msp, void* mem) {
   }
 }
 
-void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size) {
-  void* mem;
+ਖਾਲੀ* mspace_calloc(mspace msp, size_t n_elements, size_t elem_ਮਾਪ) {
+  ਖਾਲੀ* mem;
   size_t req = 0;
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ਜੇ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    ਵਾਪਸ 0;
   }
-  if (n_elements != 0) {
-    req = n_elements * elem_size;
-    if (((n_elements | elem_size) & ~(size_t)0xffff) &&
-        (req / n_elements != elem_size))
-      req = MAX_SIZE_T; /* force downstream failure on overflow */
+  ਜੇ (n_elements != 0) {
+    req = n_elements * elem_ਮਾਪ;
+    ਜੇ (((n_elements | elem_ਮਾਪ) & ~(size_t)0xffff) &&
+        (req / n_elements != elem_ਮਾਪ))
+      req = MAX_ਮਾਪ_T; /* force downstream failure on overflow */
   }
-  mem = internal_malloc(ms, req);
-  if (mem != 0 && calloc_must_clear(mem2chunk(mem)))
+  mem = ਅੰਦਰੂਨੀ_malloc(ms, req);
+  ਜੇ (mem != 0 && calloc_must_clear(mem2chunk(mem)))
     memset(mem, 0, req);
-  return mem;
+  ਵਾਪਸ mem;
 }
 
-void* mspace_realloc(mspace msp, void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem == 0) {
-    mem = mspace_malloc(msp, bytes);
+ਖਾਲੀ* mspace_realloc(mspace msp, ਖਾਲੀ* oldmem, size_t ਬਾਈਟਾਂ) {
+  ਖਾਲੀ* mem = 0;
+  ਜੇ (oldmem == 0) {
+    mem = mspace_malloc(msp, ਬਾਈਟਾਂ);
   }
-  else if (bytes >= MAX_REQUEST) {
+  ਨਹੀਂਤਾਂ ਜੇ (ਬਾਈਟਾਂ >= MAX_REQUEST) {
     MALLOC_FAILURE_ACTION;
   }
-#ifdef REALLOC_ZERO_BYTES_FREES
-  else if (bytes == 0) {
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ REALLOC_ZERO_ਬਾਈਟਾਂ_FREES
+  ਨਹੀਂਤਾਂ ਜੇ (ਬਾਈਟਾਂ == 0) {
     mspace_free(msp, oldmem);
   }
-#endif /* REALLOC_ZERO_BYTES_FREES */
-  else {
-    size_t nb = request2size(bytes);
+#ਜੇ_ਅੰਤ /* REALLOC_ZERO_BYTES_FREES */
+  ਨਹੀਂਤਾਂ {
+    size_t nb = request2size(ਬਾਈਟਾਂ);
     mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ਜੇ ! FOOTERS
     mstate m = (mstate)msp;
-#else /* FOOTERS */
+#ਨਹੀਂਤਾਂ /* FOOTERS */
     mstate m = get_mstate_for(oldp);
-    if (!ok_magic(m)) {
+    ਜੇ (!ok_magic(m)) {
       USAGE_ERROR_ACTION(m, oldmem);
-      return 0;
+      ਵਾਪਸ 0;
     }
-#endif /* FOOTERS */
-    if (!PREACTION(m)) {
+#ਜੇ_ਅੰਤ /* FOOTERS */
+    ਜੇ (!PREACTION(m)) {
       mchunkptr newp = try_realloc_chunk(m, oldp, nb, 1);
       POSTACTION(m);
-      if (newp != 0) {
+      ਜੇ (newp != 0) {
         check_inuse_chunk(m, newp);
         mem = chunk2mem(newp);
       }
-      else {
-        mem = mspace_malloc(m, bytes);
-        if (mem != 0) {
+      ਨਹੀਂਤਾਂ {
+        mem = mspace_malloc(m, ਬਾਈਟਾਂ);
+        ਜੇ (mem != 0) {
           size_t oc = chunksize(oldp) - overhead_for(oldp);
-          memcpy(mem, oldmem, (oc < bytes)? oc : bytes);
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ(mem, oldmem, (oc < ਬਾਈਟਾਂ)? oc : ਬਾਈਟਾਂ);
           mspace_free(m, oldmem);
         }
       }
     }
   }
-  return mem;
+  ਵਾਪਸ mem;
 }
 
-void* mspace_realloc_in_place(mspace msp, void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem != 0) {
-    if (bytes >= MAX_REQUEST) {
+ਖਾਲੀ* mspace_realloc_ਵਿੱਚ_ਰੱਖੋ(mspace msp, ਖਾਲੀ* oldmem, size_t ਬਾਈਟਾਂ) {
+  ਖਾਲੀ* mem = 0;
+  ਜੇ (oldmem != 0) {
+    ਜੇ (ਬਾਈਟਾਂ >= MAX_REQUEST) {
       MALLOC_FAILURE_ACTION;
     }
-    else {
-      size_t nb = request2size(bytes);
+    ਨਹੀਂਤਾਂ {
+      size_t nb = request2size(ਬਾਈਟਾਂ);
       mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ਜੇ ! FOOTERS
       mstate m = (mstate)msp;
-#else /* FOOTERS */
+#ਨਹੀਂਤਾਂ /* FOOTERS */
       mstate m = get_mstate_for(oldp);
-      (void)msp; /* placate people compiling -Wunused */
-      if (!ok_magic(m)) {
+      (ਖਾਲੀ)msp; /* placate people compiling -Wunused */
+      ਜੇ (!ok_magic(m)) {
         USAGE_ERROR_ACTION(m, oldmem);
-        return 0;
+        ਵਾਪਸ 0;
       }
-#endif /* FOOTERS */
-      if (!PREACTION(m)) {
+#ਜੇ_ਅੰਤ /* FOOTERS */
+      ਜੇ (!PREACTION(m)) {
         mchunkptr newp = try_realloc_chunk(m, oldp, nb, 0);
         POSTACTION(m);
-        if (newp == oldp) {
+        ਜੇ (newp == oldp) {
           check_inuse_chunk(m, newp);
           mem = oldmem;
         }
       }
     }
   }
-  return mem;
+  ਵਾਪਸ mem;
 }
 
-void* mspace_memalign(mspace msp, size_t alignment, size_t bytes) {
+ਖਾਲੀ* mspace_memalign(mspace msp, size_t alignment, size_t ਬਾਈਟਾਂ) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ਜੇ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    ਵਾਪਸ 0;
   }
-  if (alignment <= MALLOC_ALIGNMENT)
-    return mspace_malloc(msp, bytes);
-  return internal_memalign(ms, alignment, bytes);
+  ਜੇ (alignment <= MALLOC_ALIGNMENT)
+    ਵਾਪਸ mspace_malloc(msp, ਬਾਈਟਾਂ);
+  ਵਾਪਸ ਅੰਦਰੂਨੀ_memalign(ms, alignment, ਬਾਈਟਾਂ);
 }
 
-void** mspace_independent_calloc(mspace msp, size_t n_elements,
-                                 size_t elem_size, void* chunks[]) {
-  size_t sz = elem_size; /* serves as 1-element array */
+ਖਾਲੀ** mspace_independent_calloc(mspace msp, size_t n_elements,
+                                 size_t elem_ਮਾਪ, ਖਾਲੀ* chunks[]) {
+  size_t sz = elem_ਮਾਪ; /* serves as 1-element array */
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ਜੇ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    ਵਾਪਸ 0;
   }
-  return ialloc(ms, n_elements, &sz, 3, chunks);
+  ਵਾਪਸ ialloc(ms, n_elements, &sz, 3, chunks);
 }
 
-void** mspace_independent_comalloc(mspace msp, size_t n_elements,
-                                   size_t sizes[], void* chunks[]) {
+ਖਾਲੀ** mspace_independent_comalloc(mspace msp, size_t n_elements,
+                                   size_t sizes[], ਖਾਲੀ* chunks[]) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ਜੇ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    ਵਾਪਸ 0;
   }
-  return ialloc(ms, n_elements, sizes, 0, chunks);
+  ਵਾਪਸ ialloc(ms, n_elements, sizes, 0, chunks);
 }
 
-size_t mspace_bulk_free(mspace msp, void* array[], size_t nelem) {
-  return internal_bulk_free((mstate)msp, array, nelem);
+size_t mspace_bulk_free(mspace msp, ਖਾਲੀ* array[], size_t nelem) {
+  ਵਾਪਸ ਅੰਦਰੂਨੀ_bulk_free((mstate)msp, array, nelem);
 }
 
-#if MALLOC_INSPECT_ALL
-void mspace_inspect_all(mspace msp,
-                        void(*handler)(void *start,
-                                       void *end,
-                                       size_t used_bytes,
-                                       void* callback_arg),
-                        void* arg) {
+#ਜੇ MALLOC_INSPECT_ALL
+ਖਾਲੀ mspace_inspect_all(mspace msp,
+                        ਖਾਲੀ(*handler)(ਖਾਲੀ *ਸ਼ੁਰੂ,
+                                       ਖਾਲੀ *ਸਿਰਾ,
+                                       size_t ਵਰਤਿਆ_ਬਾਈਟਾਂ,
+                                       ਖਾਲੀ* callback_arg),
+                        ਖਾਲੀ* arg) {
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    if (!PREACTION(ms)) {
-      internal_inspect_all(ms, handler, arg);
+  ਜੇ (ok_magic(ms)) {
+    ਜੇ (!PREACTION(ms)) {
+      ਅੰਦਰੂਨੀ_inspect_all(ms, handler, arg);
       POSTACTION(ms);
     }
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
 }
-#endif /* MALLOC_INSPECT_ALL */
+#ਜੇ_ਅੰਤ /* MALLOC_INSPECT_ALL */
 
-int mspace_trim(mspace msp, size_t pad) {
-  int result = 0;
+ਪੂਰਨ mspace_trim(mspace msp, size_t pad) {
+  ਪੂਰਨ ਨਤੀਜਾ = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    if (!PREACTION(ms)) {
-      result = sys_trim(ms, pad);
+  ਜੇ (ok_magic(ms)) {
+    ਜੇ (!PREACTION(ms)) {
+      ਨਤੀਜਾ = sys_trim(ms, pad);
       POSTACTION(ms);
     }
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-#if !NO_MALLOC_STATS
-void mspace_malloc_stats(mspace msp) {
+#ਜੇ !NO_MALLOC_STATS
+ਖਾਲੀ mspace_malloc_stats(mspace msp) {
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    internal_malloc_stats(ms);
+  ਜੇ (ok_magic(ms)) {
+    ਅੰਦਰੂਨੀ_malloc_stats(ms);
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
 }
-#endif /* NO_MALLOC_STATS */
+#ਜੇ_ਅੰਤ /* NO_MALLOC_STATS */
 
 size_t mspace_footprint(mspace msp) {
-  size_t result = 0;
+  size_t ਨਤੀਜਾ = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    result = ms->footprint;
+  ਜੇ (ok_magic(ms)) {
+    ਨਤੀਜਾ = ms->footprint;
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  ਵਾਪਸ ਨਤੀਜਾ;
 }
 
 size_t mspace_max_footprint(mspace msp) {
-  size_t result = 0;
+  size_t ਨਤੀਜਾ = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    result = ms->max_footprint;
+  ਜੇ (ok_magic(ms)) {
+    ਨਤੀਜਾ = ms->max_footprint;
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-size_t mspace_footprint_limit(mspace msp) {
-  size_t result = 0;
+size_t mspace_footprint_ਹੱਦਬੰਦੀ(mspace msp) {
+  size_t ਨਤੀਜਾ = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    size_t maf = ms->footprint_limit;
-    result = (maf == 0) ? MAX_SIZE_T : maf;
+  ਜੇ (ok_magic(ms)) {
+    size_t maf = ms->footprint_ਹੱਦਬੰਦੀ;
+    ਨਤੀਜਾ = (maf == 0) ? MAX_ਮਾਪ_T : maf;
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-size_t mspace_set_footprint_limit(mspace msp, size_t bytes) {
-  size_t result = 0;
+size_t mspace_ਸੈੱਟ_footprint_ਹੱਦਬੰਦੀ(mspace msp, size_t ਬਾਈਟਾਂ) {
+  size_t ਨਤੀਜਾ = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    if (bytes == 0)
-      result = granularity_align(1); /* Use minimal size */
-    if (bytes == MAX_SIZE_T)
-      result = 0;                    /* disable */
-    else
-      result = granularity_align(bytes);
-    ms->footprint_limit = result;
+  ਜੇ (ok_magic(ms)) {
+    ਜੇ (ਬਾਈਟਾਂ == 0)
+      ਨਤੀਜਾ = granularity_align(1); /* Use minimal size */
+    ਜੇ (ਬਾਈਟਾਂ == MAX_ਮਾਪ_T)
+      ਨਤੀਜਾ = 0;                    /* disable */
+    ਨਹੀਂਤਾਂ
+      ਨਤੀਜਾ = granularity_align(ਬਾਈਟਾਂ);
+    ms->footprint_ਹੱਦਬੰਦੀ = ਨਤੀਜਾ;
   }
-  else {
+  ਨਹੀਂਤਾਂ {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  ਵਾਪਸ ਨਤੀਜਾ;
 }
 
-#if !NO_MALLINFO
-struct mallinfo mspace_mallinfo(mspace msp) {
+#ਜੇ !NO_MALLINFO
+ਬਣਤਰ mallinfo mspace_mallinfo(mspace msp) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ਜੇ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return internal_mallinfo(ms);
+  ਵਾਪਸ ਅੰਦਰੂਨੀ_mallinfo(ms);
 }
-#endif /* NO_MALLINFO */
+#ਜੇ_ਅੰਤ /* NO_MALLINFO */
 
-size_t mspace_usable_size(const void* mem) {
-  if (mem != 0) {
+size_t mspace_usable_ਮਾਪ(ਅਚਲ ਖਾਲੀ* mem) {
+  ਜੇ (mem != 0) {
     mchunkptr p = mem2chunk(mem);
-    if (is_inuse(p))
-      return chunksize(p) - overhead_for(p);
+    ਜੇ (is_inuse(p))
+      ਵਾਪਸ chunksize(p) - overhead_for(p);
   }
-  return 0;
+  ਵਾਪਸ 0;
 }
 
-int mspace_mallopt(int param_number, int value) {
-  return change_mparam(param_number, value);
+ਪੂਰਨ mspace_mallopt(ਪੂਰਨ param_ਸੰਖਿਆ, ਪੂਰਨ ਮੁੱਲ) {
+  ਵਾਪਸ change_mparam(param_ਸੰਖਿਆ, ਮੁੱਲ);
 }
 
-#endif /* MSPACES */
+#ਜੇ_ਅੰਤ /* MSPACES */
 
 
 /* -------------------- Alternative MORECORE functions ------------------- */

@@ -25,107 +25,107 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
-#include <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+ਖਾਲੀ ffi_prep_ਦਲੀਲਾਂ(ਅੱਖਰ *ਢੇਰ, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
+  ਪੂਰਨ tmp;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ avn;
+  ਖਾਲੀ **p_argv;
+  ਅੱਖਰ *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = ਢੇਰ;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  ਜੇ (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->ਮਾਪ > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(ਖਾਲੀ **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  ਲਈ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      ਜੇ (((*p_arg)->alignment - 1) & (ਬਿਨਾਨਿਸ਼ਾਨੀ) argp)
+	argp = (ਅੱਖਰ *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      ਜੇ (avn != 0)
 	{
 	  avn--;
-	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  z = (*p_arg)->ਮਾਪ;
+	  ਜੇ (z < ਆਕਾਰ (ਪੂਰਨ))
 	    {
-	      z = sizeof (int);
+	      z = ਆਕਾਰ (ਪੂਰਨ);
 
-	      switch ((*p_arg)->type)
+	      ਚੋਣ ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		ਹਾਲਤ FFI_TYPE_SINT8:
+		  *(ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ *) argp = (ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ)*(SINT8 *)(* p_argv);
+		  ਰੋਕੋ;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		ਹਾਲਤ FFI_TYPE_UINT8:
+		  *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) argp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)*(UINT8 *)(* p_argv);
+		  ਰੋਕੋ;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		ਹਾਲਤ FFI_TYPE_SINT16:
+		  *(ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ *) argp = (ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ)*(SINT16 *)(* p_argv);
+		  ਰੋਕੋ;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		ਹਾਲਤ FFI_TYPE_UINT16:
+		  *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) argp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)*(UINT16 *)(* p_argv);
+		  ਰੋਕੋ;
 
-		case FFI_TYPE_STRUCT:
-	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
-		    memcpy (argp, *p_argv, z);
-		  else
-		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+		ਹਾਲਤ FFI_TYPE_STRUCT:
+	  	  z = (*p_arg)->ਮਾਪ;
+	  	  ਜੇ ((*p_arg)->alignment != 1)
+		    ਸਮ੍ਰਿਤੀ_ਨਕਲ (argp, *p_argv, z);
+		  ਨਹੀਂਤਾਂ
+		    ਸਮ੍ਰਿਤੀ_ਨਕਲ (argp + 4 - z, *p_argv, z);
+	  	  z = ਆਕਾਰ (ਪੂਰਨ);
+		  ਰੋਕੋ;
 
-		default:
+		ਮੂਲ:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  ਨਹੀਂਤਾਂ ਜੇ (z == ਆਕਾਰ (ਪੂਰਨ))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) argp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  ਨਹੀਂਤਾਂ
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      ਜੇ ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  ਜੇ (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) argp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)(ਖਾਲੀ *)(* p_argv);
+		      z = ਆਕਾਰ(ਖਾਲੀ *);
 		    }
-		  else
+		  ਨਹੀਂਤਾਂ
 		    {
-	              memcpy(argp, *p_argv, z);
+	              ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      ਨਹੀਂਤਾਂ
 	        {
 		  /* Double or long long 64bit.  */
-	          memcpy (argp, *p_argv, z);
+	          ਸਮ੍ਰਿਤੀ_ਨਕਲ (argp, *p_argv, z);
 	        }
 	    }
 	  p_argv++;
@@ -133,125 +133,125 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  ਵਾਪਸ;
 }
 
 /* Perform machine dependent cif processing.  */
-ffi_status
+ffi_ਸਥਿਤੀ
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  ਚੋਣ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    ਹਾਲਤ FFI_TYPE_VOID:
+      cif->flags = (ਬਿਨਾਨਿਸ਼ਾਨੀ) cif->rtype->type;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    ਹਾਲਤ FFI_TYPE_STRUCT:
+      ਜੇ (cif->rtype->ਮਾਪ <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      ਨਹੀਂਤਾਂ ਜੇ (cif->rtype->ਮਾਪ <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
-	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      ਨਹੀਂਤਾਂ
+	cif->flags = (ਬਿਨਾਨਿਸ਼ਾਨੀ) cif->rtype->type;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    ਹਾਲਤ FFI_TYPE_SINT64:
+    ਹਾਲਤ FFI_TYPE_UINT64:
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    ਹਾਲਤ FFI_TYPE_FLOAT:
+    ਮੂਲ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ਰੋਕੋ;
     }
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_SYSV(ਖਾਲੀ (*)(ਅੱਖਰ *, extended_cif *), extended_cif *,
+			  ਬਿਨਾਨਿਸ਼ਾਨੀ, ਬਿਨਾਨਿਸ਼ਾਨੀ, ਬਿਨਾਨਿਸ਼ਾਨੀ *, ਖਾਲੀ (*fn)(ਖਾਲੀ));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ ffi_call(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  ਖਾਲੀ **avalue_copy = ਨਿਰਾ;
+  ਪੂਰਨ i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  ਜੇ ((rvalue == ਨਿਰਾ) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca (cif->rtype->size);
+      ecif.rvalue = alloca (cif->rtype->ਮਾਪ);
     }
-  else
+  ਨਹੀਂਤਾਂ
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ਲਈ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      ਪੂਰਨ ਮਾਪ = at->ਮਾਪ;
+      ਜੇ (at->type == FFI_TYPE_STRUCT && ਮਾਪ > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ਅੱਖਰ *argcopy = alloca (ਮਾਪ);
+          ਜੇ (avalue_copy == ਨਿਰਾ)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * ਆਕਾਰ (ਖਾਲੀ *));
+              ਸਮ੍ਰਿਤੀ_ਨਕਲ (avalue_copy, avalue, nargs * ਆਕਾਰ (ਖਾਲੀ *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ (argcopy, avalue[i], ਮਾਪ);
           avalue[i] = argcopy;
         }
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  ਚੋਣ (cif->abi)
     {
-    case FFI_SYSV:
-      ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
+    ਹਾਲਤ FFI_SYSV:
+      ffi_call_SYSV(ffi_prep_ਦਲੀਲਾਂ, &ecif, cif->ਬਾਈਟਾਂ,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      ਜੇ (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  ਪੂਰਨ ਮਾਪ = cif->rtype->ਮਾਪ;
+	  ਪੂਰਨ align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  ਜੇ (ਮਾਪ < 4)
 	    {
-	      if (align == 1)
-	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
+	      ਜੇ (align == 1)
+	        *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *)(ecif.rvalue) <<= (4 - ਮਾਪ) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  ਨਹੀਂਤਾਂ ਜੇ (4 < ਮਾਪ && ਮਾਪ < 8)
 	    {
-	      if (align == 1)
+	      ਜੇ (align == 1)
 		{
-		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
+		  ਸਮ੍ਰਿਤੀ_ਨਕਲ (ecif.rvalue, ecif.rvalue + 8-ਮਾਪ, ਮਾਪ);
 		}
-	      else if (align == 2)
+	      ਨਹੀਂਤਾਂ ਜੇ (align == 2)
 		{
-		  if (size & 1)
-		    size += 1;
+		  ਜੇ (ਮਾਪ & 1)
+		    ਮਾਪ += 1;
 
-		  if (size != 8)
-		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
+		  ਜੇ (ਮਾਪ != 8)
+		    ਸਮ੍ਰਿਤੀ_ਨਕਲ (ecif.rvalue, ecif.rvalue + 8-ਮਾਪ, ਮਾਪ);
 		}
 	    }
 	}
-      break;
+      ਰੋਕੋ;
 
-    default:
+    ਮੂਲ:
       FFI_ASSERT(0);
-      break;
+      ਰੋਕੋ;
     }
 }

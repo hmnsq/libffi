@@ -27,123 +27,123 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ਨਿਸ਼ਾਨਾ_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LIBFFI_ਨਿਸ਼ਾਨਾ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_H
+#ਗਲਤੀ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ਜੇ_ਅੰਤ
 
 /* ---- System specific configurations ----------------------------------- */
 
 /* For code common to all platforms on x86 and x86_64. */
-#define X86_ANY
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ X86_ANY
 
-#if defined (X86_64) && defined (__i386__)
-#undef X86_64
-#define X86
-#endif
+#ਜੇ defined (X86_64) && defined (__i386__)
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ X86_64
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ X86
+#ਜੇ_ਅੰਤ
 
-#ifdef X86_WIN64
-#define FFI_SIZEOF_ARG 8
-#define USE_BUILTIN_FFS 0 /* not yet implemented in mingw-64 */
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ X86_WIN64
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_SIZEOF_ARG 8
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ USE_BUILTIN_FFS 0 /* not yet implemented in mingw-64 */
+#ਜੇ_ਅੰਤ
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
-#ifndef _MSC_VER
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਨਿਸ਼ਾਨਾ_SPECIFIC_ਢੇਰ_SPACE_ਵੰਡ
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ _MSC_VER
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਨਿਸ਼ਾਨਾ_HAS_COMPLEX_TYPE
+#ਜੇ_ਅੰਤ
 
-#ifdef X86_64
-#define FFI_TARGET_HAS_INT128
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ X86_64
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਨਿਸ਼ਾਨਾ_HAS_INT128
+#ਜੇ_ਅੰਤ
 
 /* The System V x86-64 psABI passes 8- and 16-byte vectors in SSE registers;
    this is implemented by the ffi64.c (FFI_UNIX64) backend only.  32-bit x86
    and the Windows x86-64 backend (ffiw64.c) do not marshal vectors.  */
-#if defined(X86_64) && !defined(X86_WIN64)
-#define FFI_TARGET_HAS_VECTOR_TYPE
-#endif
+#ਜੇ defined(X86_64) && !defined(X86_WIN64)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਨਿਸ਼ਾਨਾ_HAS_ਸਦਿਸ਼_TYPE
+#ਜੇ_ਅੰਤ
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-#ifndef LIBFFI_ASM
-#ifdef X86_WIN64
-#ifdef _MSC_VER
-typedef unsigned __int64       ffi_arg;
-typedef __int64                ffi_sarg;
-#else
-typedef unsigned long long     ffi_arg;
-typedef long long              ffi_sarg;
-#endif
-#else
-#if defined __x86_64__ && defined __ILP32__
-#define FFI_SIZEOF_ARG 8
-#define FFI_SIZEOF_JAVA_RAW  4
-typedef unsigned long long     ffi_arg;
-typedef long long              ffi_sarg;
-#else
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
-#endif
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ASM
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ X86_WIN64
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ _MSC_VER
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ __int64       ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ __int64                ffi_sarg;
+#ਨਹੀਂਤਾਂ
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਲੰਮਾ     ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਲੰਮਾ ਲੰਮਾ              ffi_sarg;
+#ਜੇ_ਅੰਤ
+#ਨਹੀਂਤਾਂ
+#ਜੇ defined __x86_64__ && defined __ILP32__
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_SIZEOF_ARG 8
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_SIZEOF_JAVA_RAW  4
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਲੰਮਾ     ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਲੰਮਾ ਲੰਮਾ              ffi_sarg;
+#ਨਹੀਂਤਾਂ
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ          ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਨਿਸ਼ਾਨੀਵਾਲਾ ਲੰਮਾ            ffi_sarg;
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ
 
-typedef enum ffi_abi {
-#if defined(X86_WIN64)
-  FFI_FIRST_ABI = 0,
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਗਿਣਤੀ ffi_abi {
+#ਜੇ defined(X86_WIN64)
+  FFI_ਪਹਿਲਾ_ABI = 0,
   FFI_WIN64,            /* sizeof(long double) == 8  - microsoft compilers */
   FFI_GNUW64,           /* sizeof(long double) == 16 - GNU compilers */
-  FFI_LAST_ABI,
-#ifdef __GNUC__
+  FFI_ਆਖਰੀ_ABI,
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __GNUC__
   FFI_DEFAULT_ABI = FFI_GNUW64
-#else
+#ਨਹੀਂਤਾਂ
   FFI_DEFAULT_ABI = FFI_WIN64
-#endif
+#ਜੇ_ਅੰਤ
 
-#elif defined(X86_64) || (defined (__x86_64__) && defined (X86_DARWIN))
-  FFI_FIRST_ABI = 1,
+#ਜਾਂਜੇ defined(X86_64) || (defined (__x86_64__) && defined (X86_DARWIN))
+  FFI_ਪਹਿਲਾ_ABI = 1,
   FFI_UNIX64,
   FFI_WIN64,
   FFI_EFI64 = FFI_WIN64,
   FFI_GNUW64,
-  FFI_LAST_ABI,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX64
 
-#elif defined(X86_WIN32)
-  FFI_FIRST_ABI = 0,
+#ਜਾਂਜੇ defined(X86_WIN32)
+  FFI_ਪਹਿਲਾ_ABI = 0,
   FFI_SYSV      = 1,
   FFI_STDCALL   = 2,
   FFI_THISCALL  = 3,
   FFI_FASTCALL  = 4,
   FFI_MS_CDECL  = 5,
   FFI_PASCAL    = 6,
-  FFI_REGISTER  = 7,
-  FFI_LAST_ABI,
+  FFI_ਰਜਿਸਟਰ  = 7,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_MS_CDECL
-#else
-  FFI_FIRST_ABI = 0,
+#ਨਹੀਂਤਾਂ
+  FFI_ਪਹਿਲਾ_ABI = 0,
   FFI_SYSV      = 1,
   FFI_THISCALL  = 3,
   FFI_FASTCALL  = 4,
   FFI_STDCALL   = 5,
   FFI_PASCAL    = 6,
-  FFI_REGISTER  = 7,
+  FFI_ਰਜਿਸਟਰ  = 7,
   FFI_MS_CDECL  = 8,
-  FFI_LAST_ABI,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
-#endif
+#ਜੇ_ਅੰਤ
 } ffi_abi;
-#endif
+#ਜੇ_ਅੰਤ
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_CLOSURES 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_GO_CLOSURES 1
 
-#define FFI_TYPE_SMALL_STRUCT_1B (FFI_TYPE_LAST + 1)
-#define FFI_TYPE_SMALL_STRUCT_2B (FFI_TYPE_LAST + 2)
-#define FFI_TYPE_SMALL_STRUCT_4B (FFI_TYPE_LAST + 3)
-#define FFI_TYPE_MS_STRUCT       (FFI_TYPE_LAST + 4)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT_1B (FFI_TYPE_ਆਖਰੀ + 1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT_2B (FFI_TYPE_ਆਖਰੀ + 2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT_4B (FFI_TYPE_ਆਖਰੀ + 3)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_MS_STRUCT       (FFI_TYPE_ਆਖਰੀ + 4)
 
 /* Tripwire: the win64.S / win64_intel.S return-value jump tables use one
    8-byte slot per code value and place the FFI_TYPE_SMALL_STRUCT_* pseudo-types
@@ -152,33 +152,33 @@ typedef enum ffi_abi {
    and opens a gap in the tables that silently misaligns small-struct returns.
    When this fires: add a matching E() slot for the new type in both win64.S
    and win64_intel.S, then bump FFI_X86_TYPE_LAST to match.  */
-#define FFI_X86_TYPE_LAST FFI_TYPE_VECTOR
-#if FFI_TYPE_LAST != FFI_X86_TYPE_LAST
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_X86_TYPE_ਆਖਰੀ FFI_TYPE_ਸਦਿਸ਼
+#ਜੇ FFI_TYPE_ਆਖਰੀ != FFI_X86_TYPE_ਆਖਰੀ
 # error "new FFI_TYPE_* added: sync the win64.S/win64_intel.S jump tables and bump FFI_X86_TYPE_LAST"
-#endif
+#ਜੇ_ਅੰਤ
 
-#if defined (X86_64) || defined(X86_WIN64) \
+#ਜੇ defined (X86_64) || defined(X86_WIN64) \
     || (defined (__x86_64__) && defined (X86_DARWIN))
 /* 4 bytes of ENDBR64 + 7 bytes of LEA + 6 bytes of JMP + 7 bytes of NOP
    + 8 bytes of pointer.  */
-# define FFI_TRAMPOLINE_SIZE 32
+# define FFI_TRAMPOLINE_ਮਾਪ 32
 # define FFI_NATIVE_RAW_API 0
-#else
+#ਨਹੀਂਤਾਂ
 /* 4 bytes of ENDBR32 + 5 bytes of MOV + 5 bytes of JMP + 2 unused
    bytes.  */
-# define FFI_TRAMPOLINE_SIZE 16
+# define FFI_TRAMPOLINE_ਮਾਪ 16
 # define FFI_NATIVE_RAW_API 1  /* x86 has native raw api support */
-#endif
+#ਜੇ_ਅੰਤ
 
-#if !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
+#ਜੇ !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
 # include <cet.h>
-# if (__CET__ & 1) != 0
+# ਜੇ (__CET__ & 1) != 0
 #   define ENDBR_PRESENT
 # endif
 # define _CET_NOTRACK notrack
-#else
+#ਨਹੀਂਤਾਂ
 # define _CET_ENDBR
 # define _CET_NOTRACK
-#endif
+#ਜੇ_ਅੰਤ
 
-#endif
+#ਜੇ_ਅੰਤ

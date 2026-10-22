@@ -28,56 +28,56 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
-#include "internal.h"
-#include <tramp.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "ffi.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "ffi_common.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "ffi_powerpc.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ "internal.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <tramp.h>
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#ਜੇ HAVE_LONG_DOUBLE_VARIANT
 /* Adjust ffi_type_longdouble.  */
-void FFI_HIDDEN
+ਖਾਲੀ FFI_HIDDEN
 ffi_prep_types (ffi_abi abi)
 {
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 #  ifdef POWERPC64
   ffi_prep_types_linux64 (abi);
-#  else
+#  ਨਹੀਂਤਾਂ
   ffi_prep_types_sysv (abi);
 #  endif
 # endif
 }
-#endif
+#ਜੇ_ਅੰਤ
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_ਸਥਿਤੀ FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64 (cif);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ POWERPC64
+  ਵਾਪਸ ffi_prep_cif_linux64 (cif);
+#ਨਹੀਂਤਾਂ
+  ਵਾਪਸ ffi_prep_cif_sysv (cif);
+#ਜੇ_ਅੰਤ
 }
 
-ffi_status FFI_HIDDEN
+ffi_ਸਥਿਤੀ FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif *cif,
-			  unsigned int nfixedargs MAYBE_UNUSED,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ nfixedargs MAYBE_ਅਣਵਰਤਿਆ,
+			  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ ntotalargs MAYBE_ਅਣਵਰਤਿਆ)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ POWERPC64
+  ਵਾਪਸ ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
+#ਨਹੀਂਤਾਂ
+  ਵਾਪਸ ffi_prep_cif_sysv (cif);
+#ਜੇ_ਅੰਤ
 }
 
-static void
+ਸਥਿਰ ਖਾਲੀ
 ffi_call_int (ffi_cif *cif,
-	      void (*fn) (void),
-	      void *rvalue,
-	      void **avalue,
-	      void *closure)
+	      ਖਾਲੀ (*fn) (ਖਾਲੀ),
+	      ਖਾਲੀ *rvalue,
+	      ਖਾਲੀ **avalue,
+	      ਖਾਲੀ *ਘੇਰਾ)
 {
   /* The final SYSV ABI says that structures smaller or equal 8 bytes
      are returned in r3/r4.  A draft ABI used by linux instead returns
@@ -89,126 +89,126 @@ ffi_call_int (ffi_cif *cif,
      For ELFv2 ABI, use a bounce buffer for homogeneous structs too,
      for similar reasons. This bounce buffer must be aligned to 16
      bytes for use with homogeneous structs of vectors (float128).  */
-  float128 smst_buffer[8];
+  float128 smst_ਬਫਰ[8];
   extended_cif ecif;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
   ecif.rvalue = rvalue;
-  if ((cif->flags & FLAG_RETURNS_SMST) != 0)
-    ecif.rvalue = smst_buffer;
+  ਜੇ ((cif->flags & FLAG_RETURNS_SMST) != 0)
+    ecif.rvalue = smst_ਬਫਰ;
   /* Ensure that we have a valid struct return value.
      FIXME: Isn't this just papering over a user problem?  */
-  else if (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
-    ecif.rvalue = alloca (cif->rtype->size);
+  ਨਹੀਂਤਾਂ ਜੇ (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
+    ecif.rvalue = alloca (cif->rtype->ਮਾਪ);
 
-#ifdef POWERPC64
-  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, closure,
-		    -(long) cif->bytes);
-#else
-  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, closure, -cif->bytes);
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ POWERPC64
+  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, ਘੇਰਾ,
+		    -(ਲੰਮਾ) cif->ਬਾਈਟਾਂ);
+#ਨਹੀਂਤਾਂ
+  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, ਘੇਰਾ, -cif->ਬਾਈਟਾਂ);
+#ਜੇ_ਅੰਤ
 
   /* Check for a bounce-buffered return value */
-  if (rvalue && ecif.rvalue == smst_buffer)
+  ਜੇ (rvalue && ecif.rvalue == smst_ਬਫਰ)
     {
-      unsigned int rsize = cif->rtype->size;
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
+      ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ rsize = cif->rtype->ਮਾਪ;
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_ਨਿਸ਼ਾਨਾ_HAS_COMPLEX_TYPE
       /* Integer-typed _Complex: the .Lsmall_struct return path stored
 	 r3 at buffer offset 0 and r4 at offset 8.  Extract one inner-
 	 sized half from each slot — right-justified on BE, low-address
 	 on LE — and lay them out as the natural packed complex value
 	 the caller expects (real@0, imag@hsize).  */
-      if (cif->rtype->type == FFI_TYPE_COMPLEX
+      ਜੇ (cif->rtype->type == FFI_TYPE_COMPLEX
 	  && (cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	{
-	  size_t hsize = cif->rtype->elements[0]->size;
-#ifndef __LITTLE_ENDIAN__
+	  size_t hsize = cif->rtype->elements[0]->ਮਾਪ;
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __LITTLE_ENDIAN__
 	  size_t off = 8 - hsize;
-#else
+#ਨਹੀਂਤਾਂ
 	  size_t off = 0;
-#endif
-	  memcpy ((char *) rvalue,         (char *) smst_buffer + off, hsize);
-	  memcpy ((char *) rvalue + hsize, (char *) smst_buffer + 8 + off, hsize);
+#ਜੇ_ਅੰਤ
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ ((ਅੱਖਰ *) rvalue,         (ਅੱਖਰ *) smst_ਬਫਰ + off, hsize);
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ ((ਅੱਖਰ *) rvalue + hsize, (ਅੱਖਰ *) smst_ਬਫਰ + 8 + off, hsize);
 	}
-      else
-#endif
-#ifndef __LITTLE_ENDIAN__
+      ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __LITTLE_ENDIAN__
       /* The SYSV ABI returns a structure of up to 4 bytes in size
 	 left-padded in r3.  */
 # ifndef POWERPC64
-      if (rsize <= 4)
-	memcpy (rvalue, (char *) smst_buffer + 4 - rsize, rsize);
-      else
+      ਜੇ (rsize <= 4)
+	ਸਮ੍ਰਿਤੀ_ਨਕਲ (rvalue, (ਅੱਖਰ *) smst_ਬਫਰ + 4 - rsize, rsize);
+      ਨਹੀਂਤਾਂ
 # endif
 	/* The SYSV ABI returns a structure of up to 8 bytes in size
 	   left-padded in r3/r4, and the ELFv2 ABI similarly returns a
 	   structure of up to 8 bytes in size left-padded in r3. But
 	   note that a structure of a single float is not paddded.  */
-	if (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
-	  memcpy (rvalue, (char *) smst_buffer + 8 - rsize, rsize);
-	else
-#endif
-	  memcpy (rvalue, smst_buffer, rsize);
+	ਜੇ (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ (rvalue, (ਅੱਖਰ *) smst_ਬਫਰ + 8 - rsize, rsize);
+	ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ (rvalue, smst_ਬਫਰ, rsize);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+ਖਾਲੀ
+ffi_call (ffi_cif *cif, ਖਾਲੀ (*fn) (ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ਨਿਰਾ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+ਖਾਲੀ
+ffi_call_go (ffi_cif *cif, ਖਾਲੀ (*fn) (ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue,
+	     ਖਾਲੀ *ਘੇਰਾ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, ਘੇਰਾ);
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ *ਘੇਰਾ,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      ਖਾਲੀ (*fun) (ffi_cif *, ਖਾਲੀ *, ਖਾਲੀ **, ਖਾਲੀ *),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ,
+		      ਖਾਲੀ *codeloc)
 {
-#ifdef POWERPC64
-  return ffi_prep_closure_loc_linux64 (closure, cif, fun, user_data, codeloc);
-#else
-  return ffi_prep_closure_loc_sysv (closure, cif, fun, user_data, codeloc);
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ POWERPC64
+  ਵਾਪਸ ffi_prep_ਘੇਰਾ_loc_linux64 (ਘੇਰਾ, cif, fun, user_ਅੰਕੜੇ, codeloc);
+#ਨਹੀਂਤਾਂ
+  ਵਾਪਸ ffi_prep_ਘੇਰਾ_loc_sysv (ਘੇਰਾ, cif, fun, user_ਅੰਕੜੇ, codeloc);
+#ਜੇ_ਅੰਤ
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_go_ਘੇਰਾ (ffi_go_ਘੇਰਾ *ਘੇਰਾ,
 		     ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     ਖਾਲੀ (*fun) (ffi_cif *, ਖਾਲੀ *, ਖਾਲੀ **, ਖਾਲੀ *))
 {
-#ifdef POWERPC64
-  closure->tramp = ffi_go_closure_linux64;
-#else
-  closure->tramp = ffi_go_closure_sysv;
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  return FFI_OK;
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ POWERPC64
+  ਘੇਰਾ->tramp = ffi_go_ਘੇਰਾ_linux64;
+#ਨਹੀਂਤਾਂ
+  ਘੇਰਾ->tramp = ffi_go_ਘੇਰਾ_sysv;
+#ਜੇ_ਅੰਤ
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
+  ਵਾਪਸ FFI_OK;
 }
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_EXEC_STATIC_TRAMP
+ਖਾਲੀ *
+ffi_tramp_arch (size_t *tramp_ਮਾਪ, size_t *map_ਮਾਪ)
 {
-  extern void *trampoline_code_table;
-  *tramp_size = PPC_TRAMP_SIZE;
-  *map_size = PPC_TRAMP_MAP_SIZE;
-#if defined (_CALL_AIX) || _CALL_ELF == 1
+  ਬਾਹਰੀ ਖਾਲੀ *trampoline_ਕੋਡ_ਸਾਰਣੀ;
+  *tramp_ਮਾਪ = PPC_TRAMP_ਮਾਪ;
+  *map_ਮਾਪ = PPC_TRAMP_MAP_ਮਾਪ;
+#ਜੇ defined (_CALL_AIX) || _CALL_ELF == 1
   /* The caller wants the entry point address of the trampoline code,
      not the address of the function descriptor.  */
-  return *(void **)trampoline_code_table;
-#else
-  return &trampoline_code_table;
-#endif
+  ਵਾਪਸ *(ਖਾਲੀ **)trampoline_ਕੋਡ_ਸਾਰਣੀ;
+#ਨਹੀਂਤਾਂ
+  ਵਾਪਸ &trampoline_ਕੋਡ_ਸਾਰਣੀ;
+#ਜੇ_ਅੰਤ
 }
-#endif
+#ਜੇ_ਅੰਤ

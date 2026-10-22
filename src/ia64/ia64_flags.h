@@ -31,13 +31,13 @@
    and bits 8-31 will be the actual size of the type.  */
 
 /* Small structures containing N words in integer registers.  */
-#define FFI_IA64_TYPE_SMALL_STRUCT	(FFI_TYPE_LAST + 1)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_IA64_TYPE_SMALL_STRUCT	(FFI_TYPE_ਆਖਰੀ + 1)
 
 /* Homogeneous Floating Point Aggregates (HFAs) which are returned
    in FP registers.  */
-#define FFI_IA64_TYPE_HFA_FLOAT		(FFI_TYPE_LAST + 2)
-#define FFI_IA64_TYPE_HFA_DOUBLE	(FFI_TYPE_LAST + 3)
-#define FFI_IA64_TYPE_HFA_LDOUBLE	(FFI_TYPE_LAST + 4)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_IA64_TYPE_HFA_FLOAT		(FFI_TYPE_ਆਖਰੀ + 2)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_IA64_TYPE_HFA_DOUBLE	(FFI_TYPE_ਆਖਰੀ + 3)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_IA64_TYPE_HFA_LDOUBLE	(FFI_TYPE_ਆਖਰੀ + 4)
 
 /* Tripwire: the .Lst_table / .Lld_table return-value jump tables in unix.S place
    the FFI_IA64_TYPE_* pseudo-types (which are FFI_TYPE_LAST-relative) immediately
@@ -45,7 +45,7 @@
    FFI_TYPE_LAST, shifts those codes, and desyncs the tables -- silently
    misdispatching small-struct/HFA returns.  When this fires: add a matching slot
    for the new type to both tables in unix.S, then bump FFI_IA64_TYPE_LAST.  */
-#define FFI_IA64_TYPE_LAST FFI_TYPE_VECTOR
-#if FFI_TYPE_LAST != FFI_IA64_TYPE_LAST
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_IA64_TYPE_ਆਖਰੀ FFI_TYPE_ਸਦਿਸ਼
+#ਜੇ FFI_TYPE_ਆਖਰੀ != FFI_IA64_TYPE_ਆਖਰੀ
 # error "new FFI_TYPE_* added: sync the unix.S jump tables and bump FFI_IA64_TYPE_LAST"
-#endif
+#ਜੇ_ਅੰਤ

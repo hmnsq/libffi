@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ਜਾਂ IMPLIED, INCLUDING BUT ਨਹੀਂ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ਅਤੇ
+   NONINFRINGEMENT.  ਵਿੱਚ NO EVENT SHALL THE AUTHORS ਜਾਂ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ਜਾਂ OTHER LIABILITY,
+   WHETHER ਵਿੱਚ AN ACTION OF CONTRACT, TORT ਜਾਂ OTHERWISE, ARISING FROM,
+   OUT OF ਜਾਂ ਵਿੱਚ CONNECTION WITH THE SOFTWARE ਜਾਂ THE USE ਜਾਂ OTHER
+   DEALINGS ਵਿੱਚ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -36,7 +36,7 @@
 	 There is a "feature" in the bfin toolchain that it puts a _ before function names
 	 that's why the function here it's called _ffi_call_SYSV and not ffi_call_SYSV
 	 */
-	.global _ffi_call_SYSV;
+	.ਵੈਸ਼੍ਵਿਕ _ffi_call_SYSV;
 	.type _ffi_call_SYSV, STT_FUNC;
 	.func ffi_call_SYSV
 
@@ -89,7 +89,7 @@ _ffi_call_SYSV:
 	P3 = [P0+4];
 	R0 = [FP-16];//SP (parameter area)
 	R1 = [FP+12];//ecif
-	call (P1);
+	ਬੁਲਾਓ (P1);
 
 .call_user_function:
 	//ajust SP so as to allow the user function access the parameters on the stack
@@ -110,7 +110,7 @@ _ffi_call_SYSV:
 	*/
 	P0 = [FP+24];
 
-	call (P1);
+	ਬੁਲਾਓ (P1);
 	SP = [FP-12];
 .compute_return:
 	P2 = [FP-20];

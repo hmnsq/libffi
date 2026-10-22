@@ -1,30 +1,30 @@
-#ifndef ASMNAMES_H
-#define ASMNAMES_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ ASMNAMES_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ASMNAMES_H
 
-#define C2(X, Y)  X ## Y
-#define C1(X, Y)  C2(X, Y)
-#ifdef __USER_LABEL_PREFIX__
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ C2(X, Y)  X ## Y
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ C1(X, Y)  C2(X, Y)
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __USER_LABEL_PREFIX__
 # define C(X)     C1(__USER_LABEL_PREFIX__, X)
-#else
+#ਨਹੀਂਤਾਂ
 # define C(X)     X
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef __APPLE__
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __APPLE__
 # define L(X)     C1(L, X)
-#else
+#ਨਹੀਂਤਾਂ
 # define L(X)     C1(.L, X)
-#endif
+#ਜੇ_ਅੰਤ
 
-#if defined(__ELF__) && defined(__PIC__)
+#ਜੇ defined(__ELF__) && defined(__PIC__)
 # define PLT(X)	  X@PLT
-#else
+#ਨਹੀਂਤਾਂ
 # define PLT(X)	  X
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef __ELF__
-# define ENDF(X)  .type	X,@function; .size X, . - X
-#else
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __ELF__
+# define ENDF(X)  .type	X,@function; .ਮਾਪ X, . - X
+#ਨਹੀਂਤਾਂ
 # define ENDF(X)
-#endif
+#ਜੇ_ਅੰਤ
 
-#endif /* ASMNAMES_H */
+#ਜੇ_ਅੰਤ /* ASMNAMES_H */

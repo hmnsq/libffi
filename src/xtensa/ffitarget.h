@@ -23,35 +23,35 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ਨਿਸ਼ਾਨਾ_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LIBFFI_ਨਿਸ਼ਾਨਾ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_H
+#ਗਲਤੀ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ਜੇ_ਅੰਤ
 
-#ifndef LIBFFI_ASM
-typedef unsigned long	ffi_arg;
-typedef signed long	ffi_sarg;
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ASM
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ	ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਨਿਸ਼ਾਨੀਵਾਲਾ ਲੰਮਾ	ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਗਿਣਤੀ ffi_abi {
+  FFI_ਪਹਿਲਾ_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#ਜੇ_ਅੰਤ
 
-#define FFI_REGISTER_NARGS	6
-#define XTENSA_STACK_ALIGNMENT	16
-#define FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
-				  XTENSA_STACK_ALIGNMENT - 1) & \
-				  -XTENSA_STACK_ALIGNMENT)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਰਜਿਸਟਰ_NARGS	6
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ XTENSA_ਢੇਰ_ALIGNMENT	16
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਰਜਿਸਟਰ_ਦਲੀਲਾਂ_SPACE ((FFI_ਰਜਿਸਟਰ_NARGS * 4 + \
+				  XTENSA_ਢੇਰ_ALIGNMENT - 1) & \
+				  -XTENSA_ਢੇਰ_ALIGNMENT)
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TRAMPOLINE_SIZE 24
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_CLOSURES 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_NATIVE_RAW_API 0
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TRAMPOLINE_ਮਾਪ 24
 
-#endif
+#ਜੇ_ਅੰਤ

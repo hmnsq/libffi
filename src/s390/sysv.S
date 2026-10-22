@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ਜਾਂ IMPLIED, INCLUDING BUT ਨਹੀਂ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ਅਤੇ
+   NONINFRINGEMENT.  ਵਿੱਚ NO EVENT SHALL THE AUTHORS ਜਾਂ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ਜਾਂ OTHER LIABILITY,
+   WHETHER ਵਿੱਚ AN ACTION OF CONTRACT, TORT ਜਾਂ OTHERWISE, ARISING FROM,
+   OUT OF ਜਾਂ ਵਿੱਚ CONNECTION WITH THE SOFTWARE ਜਾਂ THE USE ਜਾਂ OTHER
+   DEALINGS ਵਿੱਚ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -73,7 +73,7 @@ ffi_call_SYSV:
 	lm	%r2,%r6,8(%r13)			# Load arguments
 	ld	%f0,64(%r13)
 	ld	%f2,72(%r13)
-	br	%r1				# ... and call function
+	br	%r1				# ... and ਬੁਲਾਓ function
 
 	.balign	8
 .Ltable:
@@ -221,7 +221,7 @@ ffi_call_SYSV:
 	ld	%f2,136(%r13)
 	ld	%f4,144(%r13)
 	ld	%f6,152(%r13)
-	br	%r1				# ... and call function
+	br	%r1				# ... and ਬੁਲਾਓ function
 
 	.balign	8
 .Ltable:

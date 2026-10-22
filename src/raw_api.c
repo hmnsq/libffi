@@ -26,174 +26,174 @@
 
 /* This file defines generic functions for use with the raw api. */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#ਜੇ !FFI_NO_RAW_API
 
 size_t
-ffi_raw_size (ffi_cif *cif)
+ffi_raw_ਮਾਪ (ffi_cif *cif)
 {
-  size_t result = 0;
-  int i;
+  size_t ਨਤੀਜਾ = 0;
+  ਪੂਰਨ i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  ਲਈ (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
-#endif
-	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
+#ਜੇ !FFI_NO_STRUCTS
+      ਜੇ ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_ਸਦਿਸ਼)
+	ਨਤੀਜਾ += FFI_ALIGN (ਆਕਾਰ (ਖਾਲੀ*), FFI_SIZEOF_ARG);
+      ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
+	ਨਤੀਜਾ += FFI_ALIGN ((*at)->ਮਾਪ, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  ਵਾਪਸ ਨਤੀਜਾ;
 }
 
 
-void
-ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
+ਖਾਲੀ
+ffi_raw_ਮੰਜ਼ਿਲ_ptrarray (ffi_cif *cif, ffi_raw *raw, ਖਾਲੀ **ਦਲੀਲਾਂ)
 {
-  unsigned i;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#ਜੇ ਸ਼ਬਦ_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  ਲਈ (i = 0; i < cif->nargs; i++, tp++, ਦਲੀਲਾਂ++)
     {	  
-      switch ((*tp)->type)
+      ਚੋਣ ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	ਹਾਲਤ FFI_TYPE_UINT8:
+	ਹਾਲਤ FFI_TYPE_SINT8:
+	  *ਦਲੀਲਾਂ = (ਖਾਲੀ*) ((ਅੱਖਰ*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  ਰੋਕੋ;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	ਹਾਲਤ FFI_TYPE_UINT16:
+	ਹਾਲਤ FFI_TYPE_SINT16:
+	  *ਦਲੀਲਾਂ = (ਖਾਲੀ*) ((ਅੱਖਰ*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  ਰੋਕੋ;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
-#endif
+#ਜੇ FFI_SIZEOF_ARG >= 4	  
+	ਹਾਲਤ FFI_TYPE_UINT32:
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	  *ਦਲੀਲਾਂ = (ਖਾਲੀ*) ((ਅੱਖਰ*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  *args = (raw++)->ptr;
-	  break;
-#endif
+#ਜੇ !FFI_NO_STRUCTS
+	ਹਾਲਤ FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_ਸਦਿਸ਼:
+	  *ਦਲੀਲਾਂ = (raw++)->ptr;
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-	case FFI_TYPE_COMPLEX:
-	  *args = (raw++)->ptr;
-	  break;
+	ਹਾਲਤ FFI_TYPE_COMPLEX:
+	  *ਦਲੀਲਾਂ = (raw++)->ptr;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+	  *ਦਲੀਲਾਂ = (ਖਾਲੀ*) &(raw++)->ptr;
+	  ਰੋਕੋ;
 	  
-	default:
-	  *args = raw;
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	ਮੂਲ:
+	  *ਦਲੀਲਾਂ = raw;
+	  raw += FFI_ALIGN ((*tp)->ਮਾਪ, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#ਨਹੀਂਤਾਂ /* WORDS_BIGENDIAN */
 
-#if !PDP
+#ਜੇ !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  ਲਈ (i = 0; i < cif->nargs; i++, tp++, ਦਲੀਲਾਂ++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#ਜੇ !FFI_NO_STRUCTS
+      ਜੇ ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_ਸਦਿਸ਼)
 	{
-	  *args = (raw++)->ptr;
+	  *ਦਲੀਲਾਂ = (raw++)->ptr;
 	}
-      else
-#endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
+      ਜੇ ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
-	  *args = (raw++)->ptr;
+	  *ਦਲੀਲਾਂ = (raw++)->ptr;
 	}
-      else
+      ਨਹੀਂਤਾਂ
 	{
-	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  *ਦਲੀਲਾਂ = (ਖਾਲੀ*) raw;
+	  raw += FFI_ALIGN ((*tp)->ਮਾਪ, ਆਕਾਰ (ਖਾਲੀ*)) / ਆਕਾਰ (ਖਾਲੀ*);
 	}
     }
 
-#else
-#error "pdp endian not supported"
-#endif /* ! PDP */
+#ਨਹੀਂਤਾਂ
+#ਗਲਤੀ "pdp endian not supported"
+#ਜੇ_ਅੰਤ /* ! PDP */
 
-#endif /* WORDS_BIGENDIAN */
+#ਜੇ_ਅੰਤ /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
+ਖਾਲੀ
+ffi_ptrarray_ਮੰਜ਼ਿਲ_raw (ffi_cif *cif, ਖਾਲੀ **ਦਲੀਲਾਂ, ffi_raw *raw)
 {
-  unsigned i;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  ਲਈ (i = 0; i < cif->nargs; i++, tp++, ਦਲੀਲਾਂ++)
     {	  
-      switch ((*tp)->type)
+      ਚੋਣ ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	ਹਾਲਤ FFI_TYPE_UINT8:
+	  (raw++)->uint = *(UINT8*) (*ਦਲੀਲਾਂ);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_SINT8:
-	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	ਹਾਲਤ FFI_TYPE_SINT8:
+	  (raw++)->sint = *(SINT8*) (*ਦਲੀਲਾਂ);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_UINT16:
-	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	ਹਾਲਤ FFI_TYPE_UINT16:
+	  (raw++)->uint = *(UINT16*) (*ਦਲੀਲਾਂ);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_SINT16:
-	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	ਹਾਲਤ FFI_TYPE_SINT16:
+	  (raw++)->sint = *(SINT16*) (*ਦਲੀਲਾਂ);
+	  ਰੋਕੋ;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
-	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+#ਜੇ FFI_SIZEOF_ARG >= 4
+	ਹਾਲਤ FFI_TYPE_UINT32:
+	  (raw++)->uint = *(UINT32*) (*ਦਲੀਲਾਂ);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_SINT32:
-	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
-#endif
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	  (raw++)->sint = *(SINT32*) (*ਦਲੀਲਾਂ);
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  (raw++)->ptr = *args;
-	  break;
-#endif
+#ਜੇ !FFI_NO_STRUCTS
+	ਹਾਲਤ FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_ਸਦਿਸ਼:
+	  (raw++)->ptr = *ਦਲੀਲਾਂ;
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-	case FFI_TYPE_COMPLEX:
-	  (raw++)->ptr = *args;
-	  break;
+	ਹਾਲਤ FFI_TYPE_COMPLEX:
+	  (raw++)->ptr = *ਦਲੀਲਾਂ;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+	  (raw++)->ptr = **(ਖਾਲੀ***) ਦਲੀਲਾਂ;
+	  ਰੋਕੋ;
 
-	default:
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	ਮੂਲ:
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ ((ਖਾਲੀ*) raw->ਅੰਕੜੇ, (ਖਾਲੀ*)*ਦਲੀਲਾਂ, (*tp)->ਮਾਪ);
+	  raw += FFI_ALIGN ((*tp)->ਮਾਪ, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#ਜੇ !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -203,67 +203,67 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
+ਖਾਲੀ ffi_raw_call (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  ffi_raw_to_ptrarray (cif, raw, avalue);
+  ਖਾਲੀ **avalue = (ਖਾਲੀ**) alloca (cif->nargs * ਆਕਾਰ (ਖਾਲੀ*));
+  ffi_raw_ਮੰਜ਼ਿਲ_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#ਜੇ FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+ਸਥਿਰ ਖਾਲੀ
+ffi_translate_ਦਲੀਲਾਂ (ffi_cif *cif, ਖਾਲੀ *rvalue,
+		    ਖਾਲੀ **avalue, ਖਾਲੀ *user_ਅੰਕੜੇ)
 {
-  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_size (cif));
-  ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
+  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_ਮਾਪ (cif));
+  ffi_raw_ਘੇਰਾ *cl = (ffi_raw_ਘੇਰਾ*)user_ਅੰਕੜੇ;
 
-  ffi_ptrarray_to_raw (cif, avalue, raw);
-  (*cl->fun) (cif, rvalue, raw, cl->user_data);
+  ffi_ptrarray_ਮੰਜ਼ਿਲ_raw (cif, avalue, raw);
+  (*cl->fun) (cif, rvalue, raw, cl->user_ਅੰਕੜੇ);
 }
 
-ffi_status
-ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
+ffi_ਸਥਿਤੀ
+ffi_prep_raw_ਘੇਰਾ_loc (ffi_raw_ਘੇਰਾ* cl,
 			  ffi_cif *cif,
-			  void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-			  void *user_data,
-			  void *codeloc)
+			  ਖਾਲੀ (*fun)(ffi_cif*,ਖਾਲੀ*,ffi_raw*,ਖਾਲੀ*),
+			  ਖਾਲੀ *user_ਅੰਕੜੇ,
+			  ਖਾਲੀ *codeloc)
 {
-  ffi_status status;
+  ffi_ਸਥਿਤੀ status;
 
-  status = ffi_prep_closure_loc ((ffi_closure*) cl,
+  status = ffi_prep_ਘੇਰਾ_loc ((ffi_ਘੇਰਾ*) cl,
 				 cif,
-				 &ffi_translate_args,
+				 &ffi_translate_ਦਲੀਲਾਂ,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  ਜੇ (status == FFI_OK)
     {
       cl->fun       = fun;
-      cl->user_data = user_data;
+      cl->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
     }
 
-  return status;
+  ਵਾਪਸ status;
 }
 
-#endif /* FFI_CLOSURES */
-#endif /* !FFI_NATIVE_RAW_API */
+#ਜੇ_ਅੰਤ /* FFI_CLOSURES */
+#ਜੇ_ਅੰਤ /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#ਜੇ FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
  * the pointer-array format, to the raw format */
 
-ffi_status
-ffi_prep_raw_closure (ffi_raw_closure* cl,
+ffi_ਸਥਿਤੀ
+ffi_prep_raw_ਘੇਰਾ (ffi_raw_ਘੇਰਾ* cl,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-		      void *user_data)
+		      ਖਾਲੀ (*fun)(ffi_cif*,ਖਾਲੀ*,ffi_raw*,ਖਾਲੀ*),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  ਵਾਪਸ ffi_prep_raw_ਘੇਰਾ_loc (cl, cif, fun, user_ਅੰਕੜੇ, cl);
 }
 
-#endif /* FFI_CLOSURES */
+#ਜੇ_ਅੰਤ /* FFI_CLOSURES */
 
-#endif /* !FFI_NO_RAW_API */
+#ਜੇ_ਅੰਤ /* !FFI_NO_RAW_API */

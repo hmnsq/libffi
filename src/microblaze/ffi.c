@@ -24,77 +24,77 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
-extern void ffi_call_SYSV(void (*)(void*, extended_cif*), extended_cif*,
-		unsigned int, unsigned int, unsigned int*, void (*fn)(void),
-		unsigned int, unsigned int);
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_SYSV(ਖਾਲੀ (*)(ਖਾਲੀ*, extended_cif*), extended_cif*,
+		ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ, ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ, ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ*, ਖਾਲੀ (*fn)(ਖਾਲੀ),
+		ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ, ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ);
 
-extern void ffi_closure_SYSV(void);
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_SYSV(ਖਾਲੀ);
 
-#define WORD_SIZE			sizeof(unsigned int)
-#define ARGS_REGISTER_SIZE	(WORD_SIZE * 6)
-#define WORD_FFI_ALIGN(x)		FFI_ALIGN(x, WORD_SIZE)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸ਼ਬਦ_ਮਾਪ			ਆਕਾਰ(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਦਲੀਲਾਂ_ਰਜਿਸਟਰ_ਮਾਪ	(ਸ਼ਬਦ_ਮਾਪ * 6)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਸ਼ਬਦ_FFI_ALIGN(x)		FFI_ALIGN(x, ਸ਼ਬਦ_ਮਾਪ)
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
-void ffi_prep_args(void* stack, extended_cif* ecif)
+ਖਾਲੀ ffi_prep_ਦਲੀਲਾਂ(ਖਾਲੀ* ਢੇਰ, extended_cif* ecif)
 {
-	unsigned int i;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
 	ffi_type** p_arg;
-	void** p_argv;
-	void* stack_args_p = stack;
+	ਖਾਲੀ** p_argv;
+	ਖਾਲੀ* ਢੇਰ_ਦਲੀਲਾਂ_p = ਢੇਰ;
 
-	if (ecif == NULL || ecif->cif == NULL) {
-		return; /* no description to prepare */
+	ਜੇ (ecif == ਨਿਰਾ || ecif->cif == ਨਿਰਾ) {
+		ਵਾਪਸ; /* no description to prepare */
 	}
 
 	p_argv = ecif->avalue;
 
-	if ((ecif->cif->rtype != NULL) &&
+	ਜੇ ((ecif->cif->rtype != ਨਿਰਾ) &&
 			(ecif->cif->rtype->type == FFI_TYPE_STRUCT))
 	{
 		/* if return type is a struct which is referenced on the stack/reg5,
 		 * by a pointer. Stored the return value pointer in r5.
 		 */
-		char* addr = stack_args_p;
-		memcpy(addr, &(ecif->rvalue), WORD_SIZE);
-		stack_args_p += WORD_SIZE;
+		ਅੱਖਰ* addr = ਢੇਰ_ਦਲੀਲਾਂ_p;
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(addr, &(ecif->rvalue), ਸ਼ਬਦ_ਮਾਪ);
+		ਢੇਰ_ਦਲੀਲਾਂ_p += ਸ਼ਬਦ_ਮਾਪ;
 	}
 
-	if (ecif->avalue == NULL) {
-		return; /* no arguments to prepare */
+	ਜੇ (ecif->avalue == ਨਿਰਾ) {
+		ਵਾਪਸ; /* no arguments to prepare */
 	}
 
-	for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+	ਲਈ (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
 			i++, p_arg++)
 	{
-		size_t size = (*p_arg)->size;
-		int type = (*p_arg)->type;
-		void* value = p_argv[i];
-		char* addr = stack_args_p;
-		int aligned_size = WORD_FFI_ALIGN(size);
+		size_t ਮਾਪ = (*p_arg)->ਮਾਪ;
+		ਪੂਰਨ type = (*p_arg)->type;
+		ਖਾਲੀ* ਮੁੱਲ = p_argv[i];
+		ਅੱਖਰ* addr = ਢੇਰ_ਦਲੀਲਾਂ_p;
+		ਪੂਰਨ aligned_ਮਾਪ = ਸ਼ਬਦ_FFI_ALIGN(ਮਾਪ);
 
 		/* force word alignment on the stack */
-		stack_args_p += aligned_size;
+		ਢੇਰ_ਦਲੀਲਾਂ_p += aligned_ਮਾਪ;
 		
-		switch (type)
+		ਚੋਣ (type)
 		{
-			case FFI_TYPE_UINT8:
-				*(unsigned int *)addr = (unsigned int)*(UINT8*)(value);
-				break;
-			case FFI_TYPE_SINT8:
-				*(signed int *)addr = (signed int)*(SINT8*)(value);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *)addr = (unsigned int)*(UINT16*)(value);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *)addr = (signed int)*(SINT16*)(value);
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+			ਹਾਲਤ FFI_TYPE_UINT8:
+				*(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *)addr = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)*(UINT8*)(ਮੁੱਲ);
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_SINT8:
+				*(ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ *)addr = (ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ)*(SINT8*)(ਮੁੱਲ);
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_UINT16:
+				*(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *)addr = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)*(UINT16*)(ਮੁੱਲ);
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_SINT16:
+				*(ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ *)addr = (ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ)*(SINT16*)(ਮੁੱਲ);
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_STRUCT:
+#ਜੇ __BIG_ENDIAN__
 				/*
 				 * MicroBlaze toolchain appears to emit:
 				 * bsrli r5, r5, 8 (caller)
@@ -117,38 +117,38 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 				 * above mentioned case, it will re-align the contents of a
 				 * <= 3-byte struct value.
 				 */
-				if (size < WORD_SIZE)
+				ਜੇ (ਮਾਪ < ਸ਼ਬਦ_ਮਾਪ)
 				{
-				  memcpy (addr + (WORD_SIZE - size), value, size);
-				  break;
+				  ਸਮ੍ਰਿਤੀ_ਨਕਲ (addr + (ਸ਼ਬਦ_ਮਾਪ - ਮਾਪ), ਮੁੱਲ, ਮਾਪ);
+				  ਰੋਕੋ;
 				}
-#endif
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_DOUBLE:
-			default:
-				memcpy(addr, value, aligned_size);
+#ਜੇ_ਅੰਤ
+			ਹਾਲਤ FFI_TYPE_SINT32:
+			ਹਾਲਤ FFI_TYPE_UINT32:
+			ਹਾਲਤ FFI_TYPE_FLOAT:
+			ਹਾਲਤ FFI_TYPE_SINT64:
+			ਹਾਲਤ FFI_TYPE_UINT64:
+			ਹਾਲਤ FFI_TYPE_DOUBLE:
+			ਮੂਲ:
+				ਸਮ੍ਰਿਤੀ_ਨਕਲ(addr, ਮੁੱਲ, aligned_ਮਾਪ);
 		}
 	}
 }
 
-ffi_status ffi_prep_cif_machdep(ffi_cif* cif)
+ffi_ਸਥਿਤੀ ffi_prep_cif_machdep(ffi_cif* cif)
 {
 	/* check ABI */
-	switch (cif->abi)
+	ਚੋਣ (cif->abi)
 	{
-		case FFI_SYSV:
-			break;
-		default:
-			return FFI_BAD_ABI;
+		ਹਾਲਤ FFI_SYSV:
+			ਰੋਕੋ;
+		ਮੂਲ:
+			ਵਾਪਸ FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	ਵਾਪਸ FFI_OK;
 }
 
-void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
+ਖਾਲੀ ffi_call(ffi_cif* cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ* rvalue, ਖਾਲੀ** avalue)
 {
 	extended_cif ecif;
 	ecif.cif = cif;
@@ -156,30 +156,30 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 
 	/* If the return value is a struct and we don't have a return */
 	/* value address then we need to make one */
-	if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		ecif.rvalue = alloca(cif->rtype->size);
-	} else {
+	ਜੇ ((rvalue == ਨਿਰਾ) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		ecif.rvalue = alloca(cif->rtype->ਮਾਪ);
+	} ਨਹੀਂਤਾਂ {
 		ecif.rvalue = rvalue;
 	}
 
-	switch (cif->abi)
+	ਚੋਣ (cif->abi)
 	{
-	case FFI_SYSV:
-		ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags,
-				ecif.rvalue, fn, cif->rtype->type, cif->rtype->size);
-		break;
-	default:
+	ਹਾਲਤ FFI_SYSV:
+		ffi_call_SYSV(ffi_prep_ਦਲੀਲਾਂ, &ecif, cif->ਬਾਈਟਾਂ, cif->flags,
+				ecif.rvalue, fn, cif->rtype->type, cif->rtype->ਮਾਪ);
+		ਰੋਕੋ;
+	ਮੂਲ:
 		FFI_ASSERT(0);
-		break;
+		ਰੋਕੋ;
 	}
 }
 
-void ffi_closure_call_SYSV(void* register_args, void* stack_args,
-			ffi_closure* closure, void* rvalue,
-			unsigned int* rtype, unsigned int* rsize)
+ਖਾਲੀ ffi_ਘੇਰਾ_call_SYSV(ਖਾਲੀ* ਰਜਿਸਟਰ_ਦਲੀਲਾਂ, ਖਾਲੀ* ਢੇਰ_ਦਲੀਲਾਂ,
+			ffi_ਘੇਰਾ* ਘੇਰਾ, ਖਾਲੀ* rvalue,
+			ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ* rtype, ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ* rsize)
 {
 	/* prepare arguments for closure call */
-	ffi_cif* cif = closure->cif;
+	ffi_cif* cif = ਘੇਰਾ->cif;
 	ffi_type** arg_types = cif->arg_types;
 
 	/* re-allocate data for the args. This needs to be done in order to keep
@@ -187,111 +187,111 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	 * required to store the value of args in the lower 6 words in the stack
 	 * (although they are allocated in the stack).
 	 */
-	char* stackclone = alloca(cif->bytes);
-	void** avalue = alloca(cif->nargs * sizeof(void*));
-	void* struct_rvalue = NULL;
-	char* ptr = stackclone;
-	int i;
+	ਅੱਖਰ* stackclone = alloca(cif->ਬਾਈਟਾਂ);
+	ਖਾਲੀ** avalue = alloca(cif->nargs * ਆਕਾਰ(ਖਾਲੀ*));
+	ਖਾਲੀ* struct_rvalue = ਨਿਰਾ;
+	ਅੱਖਰ* ptr = stackclone;
+	ਪੂਰਨ i;
 
 	/* copy registers into stack clone */
-	int registers_used = cif->bytes;
-	if (registers_used > ARGS_REGISTER_SIZE) {
-		registers_used = ARGS_REGISTER_SIZE;
+	ਪੂਰਨ registers_ਵਰਤਿਆ = cif->ਬਾਈਟਾਂ;
+	ਜੇ (registers_ਵਰਤਿਆ > ਦਲੀਲਾਂ_ਰਜਿਸਟਰ_ਮਾਪ) {
+		registers_ਵਰਤਿਆ = ਦਲੀਲਾਂ_ਰਜਿਸਟਰ_ਮਾਪ;
 	}
-	memcpy(stackclone, register_args, registers_used);
+	ਸਮ੍ਰਿਤੀ_ਨਕਲ(stackclone, ਰਜਿਸਟਰ_ਦਲੀਲਾਂ, registers_ਵਰਤਿਆ);
 
 	/* copy stack allocated args into stack clone */
-	if (cif->bytes > ARGS_REGISTER_SIZE) {
-		int stack_used = cif->bytes - ARGS_REGISTER_SIZE;
-		memcpy(stackclone + ARGS_REGISTER_SIZE, stack_args, stack_used);
+	ਜੇ (cif->ਬਾਈਟਾਂ > ਦਲੀਲਾਂ_ਰਜਿਸਟਰ_ਮਾਪ) {
+		ਪੂਰਨ ਢੇਰ_ਵਰਤਿਆ = cif->ਬਾਈਟਾਂ - ਦਲੀਲਾਂ_ਰਜਿਸਟਰ_ਮਾਪ;
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(stackclone + ਦਲੀਲਾਂ_ਰਜਿਸਟਰ_ਮਾਪ, ਢੇਰ_ਦਲੀਲਾਂ, ਢੇਰ_ਵਰਤਿਆ);
 	}
 
 	/* preserve struct type return pointer passing */
-	if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		struct_rvalue = *((void**)ptr);
-		ptr += WORD_SIZE;
+	ਜੇ ((cif->rtype != ਨਿਰਾ) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		struct_rvalue = *((ਖਾਲੀ**)ptr);
+		ptr += ਸ਼ਬਦ_ਮਾਪ;
 	}
 
 	/* populate arg pointer list */
-	for (i = 0; i < cif->nargs; i++)
+	ਲਈ (i = 0; i < cif->nargs; i++)
 	{
-		switch (arg_types[i]->type)
+		ਚੋਣ (arg_types[i]->type)
 		{
-			case FFI_TYPE_SINT8:
-			case FFI_TYPE_UINT8:
-#ifdef __BIG_ENDIAN__
+			ਹਾਲਤ FFI_TYPE_SINT8:
+			ਹਾਲਤ FFI_TYPE_UINT8:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __BIG_ENDIAN__
 				avalue[i] = ptr + 3;
-#else
+#ਨਹੀਂਤਾਂ
 				avalue[i] = ptr;
-#endif
-				break;
-			case FFI_TYPE_SINT16:
-			case FFI_TYPE_UINT16:
-#ifdef __BIG_ENDIAN__
+#ਜੇ_ਅੰਤ
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_SINT16:
+			ਹਾਲਤ FFI_TYPE_UINT16:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __BIG_ENDIAN__
 				avalue[i] = ptr + 2;
-#else
+#ਨਹੀਂਤਾਂ
 				avalue[i] = ptr;
-#endif
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+#ਜੇ_ਅੰਤ
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_STRUCT:
+#ਜੇ __BIG_ENDIAN__
 				/*
 				 * Work around strange ABI behaviour.
 				 * (see info in ffi_prep_args)
 				 */
-				if (arg_types[i]->size < WORD_SIZE)
+				ਜੇ (arg_types[i]->ਮਾਪ < ਸ਼ਬਦ_ਮਾਪ)
 				{
-				  memcpy (ptr, ptr + (WORD_SIZE - arg_types[i]->size), arg_types[i]->size);
+				  ਸਮ੍ਰਿਤੀ_ਨਕਲ (ptr, ptr + (ਸ਼ਬਦ_ਮਾਪ - arg_types[i]->ਮਾਪ), arg_types[i]->ਮਾਪ);
 				}
-#endif
-				avalue[i] = (void*)ptr;
-				break;
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_DOUBLE:
+#ਜੇ_ਅੰਤ
+				avalue[i] = (ਖਾਲੀ*)ptr;
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_UINT64:
+			ਹਾਲਤ FFI_TYPE_SINT64:
+			ਹਾਲਤ FFI_TYPE_DOUBLE:
 				avalue[i] = ptr;
-				break;
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			default:
+				ਰੋਕੋ;
+			ਹਾਲਤ FFI_TYPE_SINT32:
+			ਹਾਲਤ FFI_TYPE_UINT32:
+			ਹਾਲਤ FFI_TYPE_FLOAT:
+			ਮੂਲ:
 				/* default 4-byte argument */
 				avalue[i] = ptr;
-				break;
+				ਰੋਕੋ;
 		}
-		ptr += WORD_FFI_ALIGN(arg_types[i]->size);
+		ptr += ਸ਼ਬਦ_FFI_ALIGN(arg_types[i]->ਮਾਪ);
 	}
 
 	/* set the return type info passed back to the wrapper */
-	*rsize = cif->rtype->size;
+	*rsize = cif->rtype->ਮਾਪ;
 	*rtype = cif->rtype->type;
-	if (struct_rvalue != NULL) {
-		closure->fun(cif, struct_rvalue, avalue, closure->user_data);
+	ਜੇ (struct_rvalue != ਨਿਰਾ) {
+		ਘੇਰਾ->fun(cif, struct_rvalue, avalue, ਘੇਰਾ->user_ਅੰਕੜੇ);
 		/* copy struct return pointer value into function return value */
-		*((void**)rvalue) = struct_rvalue;
-	} else {
-		closure->fun(cif, rvalue, avalue, closure->user_data);
+		*((ਖਾਲੀ**)rvalue) = struct_rvalue;
+	} ਨਹੀਂਤਾਂ {
+		ਘੇਰਾ->fun(cif, rvalue, avalue, ਘੇਰਾ->user_ਅੰਕੜੇ);
 	}
 }
 
-ffi_status ffi_prep_closure_loc(
-		ffi_closure* closure, ffi_cif* cif,
-		void (*fun)(ffi_cif*, void*, void**, void*),
-		void* user_data, void* codeloc)
+ffi_ਸਥਿਤੀ ffi_prep_ਘੇਰਾ_loc(
+		ffi_ਘੇਰਾ* ਘੇਰਾ, ffi_cif* cif,
+		ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+		ਖਾਲੀ* user_ਅੰਕੜੇ, ਖਾਲੀ* codeloc)
 {
-	unsigned long* tramp = (unsigned long*)&(closure->tramp[0]);
-	unsigned long cls = (unsigned long)codeloc;
-	unsigned long fn = 0;
-	unsigned long fn_closure_call_sysv = (unsigned long)ffi_closure_call_SYSV;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ* tramp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ*)&(ਘੇਰਾ->tramp[0]);
+	ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ cls = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)codeloc;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ fn = 0;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ fn_ਘੇਰਾ_call_sysv = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)ffi_ਘੇਰਾ_call_SYSV;
 
-	closure->cif = cif;
-	closure->fun = fun;
-	closure->user_data = user_data;
+	ਘੇਰਾ->cif = cif;
+	ਘੇਰਾ->fun = fun;
+	ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
 
-	switch (cif->abi)
+	ਚੋਣ (cif->abi)
 	{
-	case FFI_SYSV:
-		fn = (unsigned long)ffi_closure_SYSV;
+	ਹਾਲਤ FFI_SYSV:
+		fn = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)ffi_ਘੇਰਾ_SYSV;
 
 		/* load r11 (temp) with fn */
 		/* imm fn(upper) */
@@ -307,15 +307,15 @@ ffi_status ffi_prep_closure_loc(
 
 		/* load r3 (temp) with ffi_closure_call_SYSV */
 		/* imm fn_closure_call_sysv(upper) */
-		tramp[4] = 0xb0000000 | ((fn_closure_call_sysv >> 16) & 0xffff);
+		tramp[4] = 0xb0000000 | ((fn_ਘੇਰਾ_call_sysv >> 16) & 0xffff);
 		/* addik r3, r0, fn_closure_call_sysv(lower) */
-		tramp[5] = 0x30600000 | (fn_closure_call_sysv & 0xffff);
+		tramp[5] = 0x30600000 | (fn_ਘੇਰਾ_call_sysv & 0xffff);
 		/* branch/jump to address stored in r11 (fn) */
 		tramp[6] = 0x98085800; /* bra r11 */
 
-		break;
-	default:
-		return FFI_BAD_ABI;
+		ਰੋਕੋ;
+	ਮੂਲ:
+		ਵਾਪਸ FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	ਵਾਪਸ FFI_OK;
 }

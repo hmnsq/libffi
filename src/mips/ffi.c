@@ -26,237 +26,237 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdio.h>
 
-#ifdef __GNUC__
-#  if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __GNUC__
+#  ਜੇ (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))
 #    define USE__BUILTIN___CLEAR_CACHE 1
 #  endif
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifndef USE__BUILTIN___CLEAR_CACHE
-#  if defined(__FreeBSD__)
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ USE__BUILTIN___CLEAR_CACHE
+#  ਜੇ defined(__FreeBSD__)
 #    include <machine/sysarch.h>
 #  elif defined(__OpenBSD__)
 #    include <mips64/sysarch.h>
-#  else
+#  ਨਹੀਂਤਾਂ
 #    include <sys/cachectl.h>
 #  endif
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef FFI_DEBUG
-# define FFI_MIPS_STOP_HERE() ffi_stop_here()
-#else
-# define FFI_MIPS_STOP_HERE() do {} while(0)
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_DEBUG
+# define FFI_MIPS_STOP_ਇੱਥੇ() ffi_stop_ਇੱਥੇ()
+#ਨਹੀਂਤਾਂ
+# define FFI_MIPS_STOP_ਇੱਥੇ() ਕਰੋ {} ਜਦੋਂ(0)
+#ਜੇ_ਅੰਤ
 
-#ifdef FFI_MIPS_N32
-#define FIX_ARGP \
-FFI_ASSERT(argp <= &stack[bytes]); \
-if (argp == &stack[bytes]) \
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FIX_ARGP \
+FFI_ASSERT(argp <= &ਢੇਰ[ਬਾਈਟਾਂ]); \
+ਜੇ (argp == &ਢੇਰ[ਬਾਈਟਾਂ]) \
 { \
-  argp = stack; \
-  FFI_MIPS_STOP_HERE(); \
+  argp = ਢੇਰ; \
+  FFI_MIPS_STOP_ਇੱਥੇ(); \
 }
-#else
-#define FIX_ARGP 
-#endif
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FIX_ARGP 
+#ਜੇ_ਅੰਤ
 
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-static void ffi_prep_args(char *stack, 
+ਸਥਿਰ ਖਾਲੀ ffi_prep_ਦਲੀਲਾਂ(ਅੱਖਰ *ਢੇਰ, 
 			  extended_cif *ecif,
-			  int bytes,
-			  int flags)
+			  ਪੂਰਨ ਬਾਈਟਾਂ,
+			  ਪੂਰਨ flags)
 {
-  int i;
-  void **p_argv;
-  char *argp, *argp_f;
+  ਪੂਰਨ i;
+  ਖਾਲੀ **p_argv;
+  ਅੱਖਰ *argp, *argp_f;
   ffi_type **p_arg;
 
-  memset(stack, 0, bytes);
+  memset(ਢੇਰ, 0, ਬਾਈਟਾਂ);
 
-#ifdef FFI_MIPS_N32
-  int soft_float = (ecif->cif->abi == FFI_N32_SOFT_FLOAT
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
+  ਪੂਰਨ soft_float = (ecif->cif->abi == FFI_N32_SOFT_FLOAT
 		    || ecif->cif->abi == FFI_N64_SOFT_FLOAT);
   /* If more than 8 double words are used, the remainder go
      on the stack. We reorder stuff on the stack here to 
      support this easily. */
   /* if ret is _Complex long double, args reg shift2, and a0 should holds pointer to rvalue */
-  if (ecif->cif->rtype->type == FFI_TYPE_COMPLEX && ecif->cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+  ਜੇ (ecif->cif->rtype->type == FFI_TYPE_COMPLEX && ecif->cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
     {
-      if (bytes + 16 > 8 * sizeof(ffi_arg))
-        argp = &stack[bytes - (8 * sizeof(ffi_arg))];
-      else
-        argp = stack;
-      * (unsigned long *) argp = (unsigned long) ecif->rvalue;
+      ਜੇ (ਬਾਈਟਾਂ + 16 > 8 * ਆਕਾਰ(ffi_arg))
+        argp = &ਢੇਰ[ਬਾਈਟਾਂ - (8 * ਆਕਾਰ(ffi_arg))];
+      ਨਹੀਂਤਾਂ
+        argp = ਢੇਰ;
+      * (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *) argp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) ecif->rvalue;
       argp += 16;
     }
-  else
+  ਨਹੀਂਤਾਂ
     {
-      if (bytes > 8 * sizeof(ffi_arg))
-        argp = &stack[bytes - (8 * sizeof(ffi_arg))];
-      else
-        argp = stack;
+      ਜੇ (ਬਾਈਟਾਂ > 8 * ਆਕਾਰ(ffi_arg))
+        argp = &ਢੇਰ[ਬਾਈਟਾਂ - (8 * ਆਕਾਰ(ffi_arg))];
+      ਨਹੀਂਤਾਂ
+        argp = ਢੇਰ;
     }
-#else
-  argp = stack;
-#endif
+#ਨਹੀਂਤਾਂ
+  argp = ਢੇਰ;
+#ਜੇ_ਅੰਤ
 
   argp_f = argp;
 
-#ifdef FFI_MIPS_N32
-  if ( ecif->cif->rstruct_flag != 0 )
-#else
-  if ( ecif->cif->rtype->type == FFI_TYPE_STRUCT )
-#endif  
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
+  ਜੇ ( ecif->cif->rstruct_flag != 0 )
+#ਨਹੀਂਤਾਂ
+  ਜੇ ( ecif->cif->rtype->type == FFI_TYPE_STRUCT )
+#ਜੇ_ਅੰਤ  
     {
       *(ffi_arg *) argp = (ffi_arg) ecif->rvalue;
-      argp += sizeof(ffi_arg);
+      argp += ਆਕਾਰ(ffi_arg);
       FIX_ARGP;
     }
 
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs; i++, p_arg++)
+  ਲਈ (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs; i++, p_arg++)
     {
       size_t z;
-      unsigned int a;
+      ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ a;
 
       /* Align if necessary.  */
       a = (*p_arg)->alignment;
-      if (a < sizeof(ffi_arg))
-        a = sizeof(ffi_arg);
+      ਜੇ (a < ਆਕਾਰ(ffi_arg))
+        a = ਆਕਾਰ(ffi_arg);
       
-      if ((a - 1) & (unsigned long) argp)
+      ਜੇ ((a - 1) & (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) argp)
 	{
-	  argp = (char *) FFI_ALIGN(argp, a);
+	  argp = (ਅੱਖਰ *) FFI_ALIGN(argp, a);
 	  FIX_ARGP;
 	}
 
-      z = (*p_arg)->size;
-      if (z <= sizeof(ffi_arg))
+      z = (*p_arg)->ਮਾਪ;
+      ਜੇ (z <= ਆਕਾਰ(ffi_arg))
 	{
-          int type = (*p_arg)->type;
-	  z = sizeof(ffi_arg);
+          ਪੂਰਨ type = (*p_arg)->type;
+	  z = ਆਕਾਰ(ffi_arg);
 
           /* The size of a pointer depends on the ABI */
-          if (type == FFI_TYPE_POINTER)
+          ਜੇ (type == FFI_TYPE_ਸੂਚਕ)
             type = (ecif->cif->abi == FFI_N64
 		    || ecif->cif->abi == FFI_N64_SOFT_FLOAT)
 	      ? FFI_TYPE_SINT64 : FFI_TYPE_UINT32;
 
-	if (i < 8 && (ecif->cif->abi == FFI_N32_SOFT_FLOAT
+	ਜੇ (i < 8 && (ecif->cif->abi == FFI_N32_SOFT_FLOAT
 		      || ecif->cif->abi == FFI_N64_SOFT_FLOAT))
 	  {
-	    switch (type)
+	    ਚੋਣ (type)
 	      {
-	      case FFI_TYPE_FLOAT:
+	      ਹਾਲਤ FFI_TYPE_FLOAT:
 		type = FFI_TYPE_UINT32;
-		break;
-	      case FFI_TYPE_DOUBLE:
+		ਰੋਕੋ;
+	      ਹਾਲਤ FFI_TYPE_DOUBLE:
 		type = FFI_TYPE_UINT64;
-		break;
-	      default:
-		break;
+		ਰੋਕੋ;
+	      ਮੂਲ:
+		ਰੋਕੋ;
 	      }
 	  }
-	  switch (type)
+	  ਚੋਣ (type)
 	    {
-	      case FFI_TYPE_SINT8:
+	      ਹਾਲਤ FFI_TYPE_SINT8:
 		*(ffi_arg *)argp = *(SINT8 *)(* p_argv);
-		break;
+		ਰੋਕੋ;
 
-	      case FFI_TYPE_UINT8:
+	      ਹਾਲਤ FFI_TYPE_UINT8:
 		*(ffi_arg *)argp = *(UINT8 *)(* p_argv);
-		break;
+		ਰੋਕੋ;
 		  
-	      case FFI_TYPE_SINT16:
+	      ਹਾਲਤ FFI_TYPE_SINT16:
 		*(ffi_arg *)argp = *(SINT16 *)(* p_argv);
-		break;
+		ਰੋਕੋ;
 		  
-	      case FFI_TYPE_UINT16:
+	      ਹਾਲਤ FFI_TYPE_UINT16:
 		*(ffi_arg *)argp = *(UINT16 *)(* p_argv);
-		break;
+		ਰੋਕੋ;
 		  
-	      case FFI_TYPE_SINT32:
+	      ਹਾਲਤ FFI_TYPE_SINT32:
 		*(ffi_arg *)argp = *(SINT32 *)(* p_argv);
-		break;
+		ਰੋਕੋ;
 		  
-	      case FFI_TYPE_UINT32:
-#ifdef FFI_MIPS_N32
+	      ਹਾਲਤ FFI_TYPE_UINT32:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
 		/* The N32 ABI requires that 32-bit integers
 		   be sign-extended to 64-bits, regardless of
 		   whether they are signed or unsigned. */
 		*(ffi_arg *)argp = *(SINT32 *)(* p_argv);
-#else
+#ਨਹੀਂਤਾਂ
 		*(ffi_arg *)argp = *(UINT32 *)(* p_argv);
-#endif
-		break;
+#ਜੇ_ਅੰਤ
+		ਰੋਕੋ;
 
-#ifdef FFI_MIPS_N32
-	      case FFI_TYPE_COMPLEX:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
+	      ਹਾਲਤ FFI_TYPE_COMPLEX:
 		/* expand from 4+4 to 8+8 if pass with fpr reg */
 		/* argp will wind back to stack when we process all of reg args */
 		/* all var_args passed with gpr, should be expand */
-	        if(!soft_float
+	        ਜੇ(!soft_float
 		    && (*p_arg)->elements[0]->type == FFI_TYPE_FLOAT
 		    && argp>=argp_f
 		    && i < ecif->cif->mips_nfixedargs)
 		  {
-		    *(float *) argp = *(float *)(* p_argv);
+		    *(ਦਸ਼ਮਲਵ *) argp = *(ਦਸ਼ਮਲਵ *)(* p_argv);
 		    argp += z;
-		    char *tmp = (void *) (*p_argv);
-		    *(float *) argp = *(float *)(tmp+4);
+		    ਅੱਖਰ *tmp = (ਖਾਲੀ *) (*p_argv);
+		    *(ਦਸ਼ਮਲਵ *) argp = *(ਦਸ਼ਮਲਵ *)(tmp+4);
 		  }
-		else
-		  memcpy(argp, *p_argv, (*p_arg)->size);
-		break;
-#endif
+		ਨਹੀਂਤਾਂ
+		  ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, *p_argv, (*p_arg)->ਮਾਪ);
+		ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 	      /* This can only happen with 64bit slots.  */
-	      case FFI_TYPE_FLOAT:
-		*(float *) argp = *(float *)(* p_argv);
-		break;
+	      ਹਾਲਤ FFI_TYPE_FLOAT:
+		*(ਦਸ਼ਮਲਵ *) argp = *(ਦਸ਼ਮਲਵ *)(* p_argv);
+		ਰੋਕੋ;
 
 	      /* Handle structures.  */
-	      default:
-		memcpy(argp, *p_argv, (*p_arg)->size);
-		break;
+	      ਮੂਲ:
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, *p_argv, (*p_arg)->ਮਾਪ);
+		ਰੋਕੋ;
 	    }
 	}
-      else
+      ਨਹੀਂਤਾਂ
 	{
-#ifdef FFI_MIPS_O32
-	  memcpy(argp, *p_argv, z);
-#else
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_O32
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, *p_argv, z);
+#ਨਹੀਂਤਾਂ
 	  {
-	    unsigned long end = (unsigned long) argp + z;
-	    unsigned long cap = (unsigned long) stack + bytes;
+	    ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਸਿਰਾ = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) argp + z;
+	    ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ cap = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) ਢੇਰ + ਬਾਈਟਾਂ;
 
 	    /* Check if the data will fit within the register space.
 	       Handle it if it doesn't.  */
 
-	    if (end <= cap)
-	      memcpy(argp, *p_argv, z);
-	    else
+	    ਜੇ (ਸਿਰਾ <= cap)
+	      ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, *p_argv, z);
+	    ਨਹੀਂਤਾਂ
 	      {
-		unsigned long portion = cap - (unsigned long)argp;
+		ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ portion = cap - (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)argp;
 
-		memcpy(argp, *p_argv, portion);
-		argp = stack;
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, *p_argv, portion);
+		argp = ਢੇਰ;
                 z -= portion;
-		memcpy(argp, (void*)((unsigned long)(*p_argv) + portion),
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, (ਖਾਲੀ*)((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)(*p_argv) + portion),
                        z);
 	      }
 	  }
-#endif
+#ਜੇ_ਅੰਤ
       }
       p_argv++;
       argp += z;
@@ -264,7 +264,7 @@ static void ffi_prep_args(char *stack,
     }
 }
 
-#ifdef FFI_MIPS_N32
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
 
 /* The n32 spec says that if "a chunk consists solely of a double 
    float field (but not a double, which is part of a union), it
@@ -272,61 +272,61 @@ static void ffi_prep_args(char *stack,
    passed in an integer register". This code traverses structure
    definitions and generates the appropriate flags. */
 
-static int
-calc_n32_struct_flags_element(unsigned *flags, ffi_type *e,
-			      unsigned *loc, unsigned *arg_reg)
+ਸਥਿਰ ਪੂਰਨ
+calc_n32_struct_flags_element(ਬਿਨਾਨਿਸ਼ਾਨੀ *flags, ffi_type *e,
+			      ਬਿਨਾਨਿਸ਼ਾਨੀ *loc, ਬਿਨਾਨਿਸ਼ਾਨੀ *arg_reg)
 {
   /* Align this object.  */
   *loc = FFI_ALIGN(*loc, e->alignment);
-  if (e->type == FFI_TYPE_DOUBLE)
+  ਜੇ (e->type == FFI_TYPE_DOUBLE)
     {
       /* Already aligned to FFI_SIZEOF_ARG.  */
       *arg_reg = *loc / FFI_SIZEOF_ARG;
-      if (*arg_reg > 7)
-	return 1;
-      *flags += (FFI_TYPE_DOUBLE << (*arg_reg * FFI_FLAG_BITS));
+      ਜੇ (*arg_reg > 7)
+	ਵਾਪਸ 1;
+      *flags += (FFI_TYPE_DOUBLE << (*arg_reg * FFI_FLAG_ਬਿੱਟ));
     }
-  *loc += e->size;
-  return 0;
+  *loc += e->ਮਾਪ;
+  ਵਾਪਸ 0;
 }
 
-static unsigned
-calc_n32_struct_flags(int soft_float, ffi_type *arg,
-		      unsigned *loc, unsigned *arg_reg)
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ
+calc_n32_struct_flags(ਪੂਰਨ soft_float, ffi_type *arg,
+		      ਬਿਨਾਨਿਸ਼ਾਨੀ *loc, ਬਿਨਾਨਿਸ਼ਾਨੀ *arg_reg)
 {
-  unsigned flags = 0;
-  unsigned index = 0;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ flags = 0;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਸੂਚਕਾਂਕ = 0;
 
   ffi_type *e;
 
-  if (soft_float)
-    return 0;
+  ਜੇ (soft_float)
+    ਵਾਪਸ 0;
 
-  while ((e = arg->elements[index]))
+  ਜਦੋਂ ((e = arg->elements[ਸੂਚਕਾਂਕ]))
     {
-      if (e->type == FFI_TYPE_COMPLEX)
+      ਜੇ (e->type == FFI_TYPE_COMPLEX)
 	{
-	  if (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
-	    break;
-	  if (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
-	    break;
+	  ਜੇ (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
+	    ਰੋਕੋ;
+	  ਜੇ (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
+	    ਰੋਕੋ;
 	}
-      else
-	if (calc_n32_struct_flags_element(&flags, e, loc, arg_reg))
-	  break;
-      index++;
+      ਨਹੀਂਤਾਂ
+	ਜੇ (calc_n32_struct_flags_element(&flags, e, loc, arg_reg))
+	  ਰੋਕੋ;
+      ਸੂਚਕਾਂਕ++;
     }
   /* Next Argument register at alignment of FFI_SIZEOF_ARG.  */
   *arg_reg = FFI_ALIGN(*loc, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 
-  return flags;
+  ਵਾਪਸ flags;
 }
 
-static unsigned
-calc_n32_return_struct_flags(int soft_float, ffi_type *arg)
+ਸਥਿਰ ਬਿਨਾਨਿਸ਼ਾਨੀ
+calc_n32_return_struct_flags(ਪੂਰਨ soft_float, ffi_type *arg)
 {
-  unsigned flags;
-  unsigned small = FFI_TYPE_SMALLSTRUCT;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ flags;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ small = FFI_TYPE_SMALLSTRUCT;
   ffi_type *e;
 
   /* Returning structures under n32 is a tricky thing.
@@ -336,102 +336,102 @@ calc_n32_return_struct_flags(int soft_float, ffi_type *arg)
      (the first 64 bits) and $3 (remainder, if necessary).
      Larger structs are handled normally. */
   
-  if (arg->size > 16)
-    return 0;
+  ਜੇ (arg->ਮਾਪ > 16)
+    ਵਾਪਸ 0;
 
-  if (arg->size > 8)
+  ਜੇ (arg->ਮਾਪ > 8)
     small = FFI_TYPE_SMALLSTRUCT2;
 
   e = arg->elements[0];
 
-  if (e->type == FFI_TYPE_COMPLEX)
+  ਜੇ (e->type == FFI_TYPE_COMPLEX)
     {
-      int type = e->elements[0]->type;
+      ਪੂਰਨ type = e->elements[0]->type;
 
-      if (type != FFI_TYPE_DOUBLE && type != FFI_TYPE_FLOAT)
-	return small;
+      ਜੇ (type != FFI_TYPE_DOUBLE && type != FFI_TYPE_FLOAT)
+	ਵਾਪਸ small;
 
-      if (arg->elements[1])
+      ਜੇ (arg->elements[1])
 	{
 	  /* Two floating point fields with more fields!
 	     This must be passed the old way. */
-	  return small;
+	  ਵਾਪਸ small;
 	}
 
-      flags = (type << FFI_FLAG_BITS) + type;
+      flags = (type << FFI_FLAG_ਬਿੱਟ) + type;
     }
-  else
+  ਨਹੀਂਤਾਂ
     {
-      if (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
-	return small;
+      ਜੇ (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
+	ਵਾਪਸ small;
 
       flags = e->type;
 
-      if (arg->elements[1])
+      ਜੇ (arg->elements[1])
 	{
 	  e = arg->elements[1];
-	  if (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
-	    return small;
+	  ਜੇ (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
+	    ਵਾਪਸ small;
 
-	  if (arg->elements[2])
+	  ਜੇ (arg->elements[2])
 	    {
 	      /* There are three arguments and the first two are
 		 floats! This must be passed the old way. */
-	      return small;
+	      ਵਾਪਸ small;
 	    }
 
-	  flags += e->type << FFI_FLAG_BITS;
+	  flags += e->type << FFI_FLAG_ਬਿੱਟ;
 	}
     }
 
-  if (soft_float)
+  ਜੇ (soft_float)
     flags += FFI_TYPE_STRUCT_SOFT;
-  return flags;
+  ਵਾਪਸ flags;
 }
 
-#endif
+#ਜੇ_ਅੰਤ
 
 /* Perform machine dependent cif processing */
-static ffi_status ffi_prep_cif_machdep_int(ffi_cif *cif, unsigned nfixedargs)
+ਸਥਿਰ ffi_ਸਥਿਤੀ ffi_prep_cif_machdep_int(ffi_cif *cif, ਬਿਨਾਨਿਸ਼ਾਨੀ nfixedargs)
 {
   cif->flags = 0;
   cif->mips_nfixedargs = nfixedargs;
 
-#ifdef FFI_MIPS_O32
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_O32
   /* Set the flags necessary for O32 processing.  FFI_O32_SOFT_FLOAT
    * does not have special handling for floating point args.
    */
 
-  if (cif->rtype->type != FFI_TYPE_STRUCT && cif->rtype->type != FFI_TYPE_COMPLEX && cif->abi == FFI_O32)
+  ਜੇ (cif->rtype->type != FFI_TYPE_STRUCT && cif->rtype->type != FFI_TYPE_COMPLEX && cif->abi == FFI_O32)
     {
-      if (cif->nargs > 0 && cif->nargs == nfixedargs)
+      ਜੇ (cif->nargs > 0 && cif->nargs == nfixedargs)
 	{
-	  switch ((cif->arg_types)[0]->type)
+	  ਚੋਣ ((cif->arg_types)[0]->type)
 	    {
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_DOUBLE:
+	    ਹਾਲਤ FFI_TYPE_FLOAT:
+	    ਹਾਲਤ FFI_TYPE_DOUBLE:
 	      cif->flags += (cif->arg_types)[0]->type;
-	      break;
+	      ਰੋਕੋ;
 	      
-	    default:
-	      break;
+	    ਮੂਲ:
+	      ਰੋਕੋ;
 	    }
 
-	  if (cif->nargs > 1)
+	  ਜੇ (cif->nargs > 1)
 	    {
 	      /* Only handle the second argument if the first
 		 is a float or double. */
-	      if (cif->flags)
+	      ਜੇ (cif->flags)
 		{
-		  switch ((cif->arg_types)[1]->type)
+		  ਚੋਣ ((cif->arg_types)[1]->type)
 		    {
-		    case FFI_TYPE_FLOAT:
-		    case FFI_TYPE_DOUBLE:
-		      cif->flags += (cif->arg_types)[1]->type << FFI_FLAG_BITS;
-		      break;
+		    ਹਾਲਤ FFI_TYPE_FLOAT:
+		    ਹਾਲਤ FFI_TYPE_DOUBLE:
+		      cif->flags += (cif->arg_types)[1]->type << FFI_FLAG_ਬਿੱਟ;
+		      ਰੋਕੋ;
 		      
-		    default:
-		      break;
+		    ਮੂਲ:
+		      ਰੋਕੋ;
 		    }
 		}
 	    }
@@ -440,322 +440,322 @@ static ffi_status ffi_prep_cif_machdep_int(ffi_cif *cif, unsigned nfixedargs)
       
   /* Set the return type flag */
 
-  if (cif->abi == FFI_O32_SOFT_FLOAT)
+  ਜੇ (cif->abi == FFI_O32_SOFT_FLOAT)
     {
-      switch (cif->rtype->type)
+      ਚੋਣ (cif->rtype->type)
         {
-        case FFI_TYPE_VOID:
-        case FFI_TYPE_STRUCT:
-          cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 2);
-          break;
+        ਹਾਲਤ FFI_TYPE_VOID:
+        ਹਾਲਤ FFI_TYPE_STRUCT:
+          cif->flags += cif->rtype->type << (FFI_FLAG_ਬਿੱਟ * 2);
+          ਰੋਕੋ;
 
-        case FFI_TYPE_SINT64:
-        case FFI_TYPE_UINT64:
-        case FFI_TYPE_DOUBLE:
-          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 2);
-          break;
+        ਹਾਲਤ FFI_TYPE_SINT64:
+        ਹਾਲਤ FFI_TYPE_UINT64:
+        ਹਾਲਤ FFI_TYPE_DOUBLE:
+          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_ਬਿੱਟ * 2);
+          ਰੋਕੋ;
       
-        case FFI_TYPE_FLOAT:
-        default:
-          cif->flags += FFI_TYPE_INT << (FFI_FLAG_BITS * 2);
-          break;
+        ਹਾਲਤ FFI_TYPE_FLOAT:
+        ਮੂਲ:
+          cif->flags += FFI_TYPE_INT << (FFI_FLAG_ਬਿੱਟ * 2);
+          ਰੋਕੋ;
         }
     }
-  else
+  ਨਹੀਂਤਾਂ
     {
       /* FFI_O32 */      
-      switch (cif->rtype->type)
+      ਚੋਣ (cif->rtype->type)
         {
-        case FFI_TYPE_VOID:
-        case FFI_TYPE_STRUCT:
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_DOUBLE:
-        case FFI_TYPE_COMPLEX:
-          cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 2);
-	  if (cif->rtype->type == FFI_TYPE_COMPLEX)
-            cif->flags +=  ((*cif->rtype->elements[0]).type) << (FFI_FLAG_BITS * 4);
-          break;
+        ਹਾਲਤ FFI_TYPE_VOID:
+        ਹਾਲਤ FFI_TYPE_STRUCT:
+        ਹਾਲਤ FFI_TYPE_FLOAT:
+        ਹਾਲਤ FFI_TYPE_DOUBLE:
+        ਹਾਲਤ FFI_TYPE_COMPLEX:
+          cif->flags += cif->rtype->type << (FFI_FLAG_ਬਿੱਟ * 2);
+	  ਜੇ (cif->rtype->type == FFI_TYPE_COMPLEX)
+            cif->flags +=  ((*cif->rtype->elements[0]).type) << (FFI_FLAG_ਬਿੱਟ * 4);
+          ਰੋਕੋ;
 
-        case FFI_TYPE_SINT64:
-        case FFI_TYPE_UINT64:
-          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 2);
-          break;
+        ਹਾਲਤ FFI_TYPE_SINT64:
+        ਹਾਲਤ FFI_TYPE_UINT64:
+          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_ਬਿੱਟ * 2);
+          ਰੋਕੋ;
       
-        default:
-          cif->flags += FFI_TYPE_INT << (FFI_FLAG_BITS * 2);
-          break;
+        ਮੂਲ:
+          cif->flags += FFI_TYPE_INT << (FFI_FLAG_ਬਿੱਟ * 2);
+          ਰੋਕੋ;
         }
     }
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef FFI_MIPS_N32
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
   /* Set the flags necessary for N32 processing */
   {
-    unsigned arg_reg = 0;
-    unsigned loc = 0;
-    unsigned count = (cif->nargs < 8) ? cif->nargs : 8;
-    unsigned index = 0;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ arg_reg = 0;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ loc = 0;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਗਿਣਤੀ_2 = (cif->nargs < 8) ? cif->nargs : 8;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਸੂਚਕਾਂਕ = 0;
 
-    unsigned struct_flags = 0;
-    int soft_float = (cif->abi == FFI_N32_SOFT_FLOAT
+    ਬਿਨਾਨਿਸ਼ਾਨੀ struct_flags = 0;
+    ਪੂਰਨ soft_float = (cif->abi == FFI_N32_SOFT_FLOAT
 		      || cif->abi == FFI_N64_SOFT_FLOAT);
 
-    if (cif->rtype->type == FFI_TYPE_STRUCT)
+    ਜੇ (cif->rtype->type == FFI_TYPE_STRUCT)
       {
 	struct_flags = calc_n32_return_struct_flags(soft_float, cif->rtype);
 
-	if (struct_flags == 0)
+	ਜੇ (struct_flags == 0)
 	  {
 	    /* This means that the structure is being passed as
 	       a hidden argument */
 
 	    arg_reg = 1;
-	    count = (cif->nargs < 7) ? cif->nargs : 7;
+	    ਗਿਣਤੀ_2 = (cif->nargs < 7) ? cif->nargs : 7;
 
 	    cif->rstruct_flag = !0;
 	  }
-	else
+	ਨਹੀਂਤਾਂ
 	    cif->rstruct_flag = 0;
       }
-    else
+    ਨਹੀਂਤਾਂ
       cif->rstruct_flag = 0;
 
-    while (count-- > 0 && arg_reg < 8)
+    ਜਦੋਂ (ਗਿਣਤੀ_2-- > 0 && arg_reg < 8)
       {
-	ffi_type *t = cif->arg_types[index];
+	ffi_type *t = cif->arg_types[ਸੂਚਕਾਂਕ];
 
-	switch (t->type)
+	ਚੋਣ (t->type)
 	  {
-	  case FFI_TYPE_FLOAT:
-	  case FFI_TYPE_DOUBLE:
-	    if (!soft_float && index < nfixedargs)
-              cif->flags += t->type << (arg_reg * FFI_FLAG_BITS);
+	  ਹਾਲਤ FFI_TYPE_FLOAT:
+	  ਹਾਲਤ FFI_TYPE_DOUBLE:
+	    ਜੇ (!soft_float && ਸੂਚਕਾਂਕ < nfixedargs)
+              cif->flags += t->type << (arg_reg * FFI_FLAG_ਬਿੱਟ);
 	    arg_reg++;
-	    break;
-          case FFI_TYPE_LONGDOUBLE:
+	    ਰੋਕੋ;
+          ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
             /* Align it.  */
             arg_reg = FFI_ALIGN(arg_reg, 2);
             /* Treat it as two adjacent doubles.  */
-	    if (soft_float || index >= nfixedargs)
+	    ਜੇ (soft_float || ਸੂਚਕਾਂਕ >= nfixedargs)
 	      {
 		arg_reg += 2;
 	      }
-	    else
+	    ਨਹੀਂਤਾਂ
 	      {
 		cif->flags +=
-		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_ਬਿੱਟ));
 		arg_reg++;
-		if (arg_reg >= 8)
-		  continue;
+		ਜੇ (arg_reg >= 8)
+		  ਜਾਰੀ;
 		cif->flags +=
-		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_ਬਿੱਟ));
 		arg_reg++;
 	      }
-            break;
+            ਰੋਕੋ;
 
-	  case FFI_TYPE_COMPLEX:
-	    switch (t->elements[0]->type)
+	  ਹਾਲਤ FFI_TYPE_COMPLEX:
+	    ਚੋਣ (t->elements[0]->type)
 	      {
-	      case FFI_TYPE_LONGDOUBLE:
+	      ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 		arg_reg = FFI_ALIGN(arg_reg, 2);
-		if (soft_float || index >= nfixedargs)
+		ਜੇ (soft_float || ਸੂਚਕਾਂਕ >= nfixedargs)
 		  {
 		    arg_reg += 2;
 		  }
-		else
+		ਨਹੀਂਤਾਂ
 		  {
 		    cif->flags +=
-		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_ਬਿੱਟ));
 		    arg_reg++;
-		    if (arg_reg >= 8)
-		        continue;
+		    ਜੇ (arg_reg >= 8)
+		        ਜਾਰੀ;
 		    cif->flags +=
-		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_ਬਿੱਟ));
 		    arg_reg++;
-		    if (arg_reg >= 8)
-		        continue;
+		    ਜੇ (arg_reg >= 8)
+		        ਜਾਰੀ;
 		  }
 		/* passthrough */
-	      case FFI_TYPE_FLOAT:
+	      ਹਾਲਤ FFI_TYPE_FLOAT:
 		// one fpr can only holds one arg even it is single
-		cif->bytes += 16;
+		cif->ਬਾਈਟਾਂ += 16;
 		/* passthrough */
-	      case FFI_TYPE_SINT32:
-	      case FFI_TYPE_UINT32:
-	      case FFI_TYPE_DOUBLE:
-		if (soft_float || index >= nfixedargs)
+	      ਹਾਲਤ FFI_TYPE_SINT32:
+	      ਹਾਲਤ FFI_TYPE_UINT32:
+	      ਹਾਲਤ FFI_TYPE_DOUBLE:
+		ਜੇ (soft_float || ਸੂਚਕਾਂਕ >= nfixedargs)
 		  {
 		    arg_reg += 2;
 		  }
-		else
+		ਨਹੀਂਤਾਂ
 		  {
 		    uint32_t type = t->elements[0]->type != FFI_TYPE_LONGDOUBLE? t->elements[0]->type: FFI_TYPE_DOUBLE;
 		    cif->flags +=
-		      (type << (arg_reg * FFI_FLAG_BITS));
+		      (type << (arg_reg * FFI_FLAG_ਬਿੱਟ));
 		    arg_reg++;
-		    if (arg_reg >= 8)
-		        continue;
+		    ਜੇ (arg_reg >= 8)
+		        ਜਾਰੀ;
 		    cif->flags +=
-		      (type << (arg_reg * FFI_FLAG_BITS));
+		      (type << (arg_reg * FFI_FLAG_ਬਿੱਟ));
 		    arg_reg++;
 		  }
-		break;
-	      default:
+		ਰੋਕੋ;
+	      ਮੂਲ:
 		arg_reg += 2;
-		break;
+		ਰੋਕੋ;
 	      }
-	    break;
+	    ਰੋਕੋ;
 
-	  case FFI_TYPE_STRUCT:
+	  ਹਾਲਤ FFI_TYPE_STRUCT:
             loc = arg_reg * FFI_SIZEOF_ARG;
-	    cif->flags += calc_n32_struct_flags(soft_float || index >= nfixedargs,
+	    cif->flags += calc_n32_struct_flags(soft_float || ਸੂਚਕਾਂਕ >= nfixedargs,
 						t, &loc, &arg_reg);
-	    break;
+	    ਰੋਕੋ;
 
-	  default:
+	  ਮੂਲ:
 	    arg_reg++;
-            break;
+            ਰੋਕੋ;
 	  }
 
-	index++;
+	ਸੂਚਕਾਂਕ++;
       }
 
   /* Set the return type flag */
-    switch (cif->rtype->type)
+    ਚੋਣ (cif->rtype->type)
       {
-      case FFI_TYPE_STRUCT:
+      ਹਾਲਤ FFI_TYPE_STRUCT:
 	{
-	  if (struct_flags == 0)
+	  ਜੇ (struct_flags == 0)
 	    {
 	      /* The structure is returned through a hidden
 		 first argument. Do nothing, 'cause FFI_TYPE_VOID 
 		 is 0 */
 	    }
-	  else
+	  ਨਹੀਂਤਾਂ
 	    {
 	      /* The structure is returned via some tricky
 		 mechanism */
-	      cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_BITS * 8);
-	      cif->flags += struct_flags << (4 + (FFI_FLAG_BITS * 8));
+	      cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_ਬਿੱਟ * 8);
+	      cif->flags += struct_flags << (4 + (FFI_FLAG_ਬਿੱਟ * 8));
 	    }
-	  break;
+	  ਰੋਕੋ;
 	}
       
-      case FFI_TYPE_VOID:
+      ਹਾਲਤ FFI_TYPE_VOID:
 	/* Do nothing, 'cause FFI_TYPE_VOID is 0 */
-	break;
+	ਰੋਕੋ;
 
-      case FFI_TYPE_POINTER:
-	if (cif->abi == FFI_N32_SOFT_FLOAT || cif->abi == FFI_N32)
-	  cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_BITS * 8);
-	else
-	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 8);
-	break;
+      ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+	ਜੇ (cif->abi == FFI_N32_SOFT_FLOAT || cif->abi == FFI_N32)
+	  cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_ਬਿੱਟ * 8);
+	ਨਹੀਂਤਾਂ
+	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_ਬਿੱਟ * 8);
+	ਰੋਕੋ;
 
-      case FFI_TYPE_FLOAT:
-	if (soft_float)
+      ਹਾਲਤ FFI_TYPE_FLOAT:
+	ਜੇ (soft_float)
 	  {
-	    cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_BITS * 8);
-	    break;
+	    cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_ਬਿੱਟ * 8);
+	    ਰੋਕੋ;
 	  }
 	/* else fall through */
-      case FFI_TYPE_DOUBLE:
-	if (soft_float)
-	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 8);
-	else
-	  cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 8);
-	break;
+      ਹਾਲਤ FFI_TYPE_DOUBLE:
+	ਜੇ (soft_float)
+	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_ਬਿੱਟ * 8);
+	ਨਹੀਂਤਾਂ
+	  cif->flags += cif->rtype->type << (FFI_FLAG_ਬਿੱਟ * 8);
+	ਰੋਕੋ;
 
-      case FFI_TYPE_LONGDOUBLE:
+      ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	/* Long double is returned as if it were a struct containing
 	   two doubles.  */
-	if (soft_float)
+	ਜੇ (soft_float)
 	  {
 	    /* if ret is long double, the ret is given by v0 and a0, no idea why
 	     * Let's us VOID | VOID | LONGDOUBLE for it*/
-	    cif->flags += FFI_TYPE_LONGDOUBLE << (FFI_FLAG_BITS * 8);
+	    cif->flags += FFI_TYPE_LONGDOUBLE << (FFI_FLAG_ਬਿੱਟ * 8);
  	  }
-	else
+	ਨਹੀਂਤਾਂ
 	  {
-	    cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_BITS * 8);
+	    cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_ਬਿੱਟ * 8);
 	    cif->flags += (FFI_TYPE_DOUBLE
-			   + (FFI_TYPE_DOUBLE << FFI_FLAG_BITS))
-					      << (4 + (FFI_FLAG_BITS * 8));
+			   + (FFI_TYPE_DOUBLE << FFI_FLAG_ਬਿੱਟ))
+					      << (4 + (FFI_FLAG_ਬਿੱਟ * 8));
 	  }
-	break;
-      case FFI_TYPE_COMPLEX:
+	ਰੋਕੋ;
+      ਹਾਲਤ FFI_TYPE_COMPLEX:
 	{
-	  int type = cif->rtype->elements[0]->type;
+	  ਪੂਰਨ type = cif->rtype->elements[0]->type;
 
-	  cif->flags += (FFI_TYPE_COMPLEX << (FFI_FLAG_BITS * 8));
-	  if (soft_float || (type != FFI_TYPE_FLOAT && type != FFI_TYPE_DOUBLE && type != FFI_TYPE_LONGDOUBLE))
+	  cif->flags += (FFI_TYPE_COMPLEX << (FFI_FLAG_ਬਿੱਟ * 8));
+	  ਜੇ (soft_float || (type != FFI_TYPE_FLOAT && type != FFI_TYPE_DOUBLE && type != FFI_TYPE_LONGDOUBLE))
 	    {
-	      switch (type)
+	      ਚੋਣ (type)
 		{
-		case FFI_TYPE_DOUBLE:
-		case FFI_TYPE_SINT64:
-		case FFI_TYPE_UINT64:
-		case FFI_TYPE_INT:
+		ਹਾਲਤ FFI_TYPE_DOUBLE:
+		ਹਾਲਤ FFI_TYPE_SINT64:
+		ਹਾਲਤ FFI_TYPE_UINT64:
+		ਹਾਲਤ FFI_TYPE_INT:
 		  type = FFI_TYPE_SMALLSTRUCT2;
-		  break;
-		case FFI_TYPE_LONGDOUBLE:
+		  ਰੋਕੋ;
+		ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 		  type = FFI_TYPE_LONGDOUBLE;
-		  break;
-		case FFI_TYPE_FLOAT:
-		default:
+		  ਰੋਕੋ;
+		ਹਾਲਤ FFI_TYPE_FLOAT:
+		ਮੂਲ:
 		  type = FFI_TYPE_SMALLSTRUCT;
 		}
-	      cif->flags += type << (4 + (FFI_FLAG_BITS * 8));
+	      cif->flags += type << (4 + (FFI_FLAG_ਬਿੱਟ * 8));
 	    }
-	  else
+	  ਨਹੀਂਤਾਂ
 	    {
 	      //cif->flags += (type + (type << FFI_FLAG_BITS))
 		//	    << (4 + (FFI_FLAG_BITS * 8));
-	      cif->flags += type << (4 + (FFI_FLAG_BITS * 8));
+	      cif->flags += type << (4 + (FFI_FLAG_ਬਿੱਟ * 8));
 	    }
-	  break;
+	  ਰੋਕੋ;
 	}
-      case FFI_TYPE_UINT32:
+      ਹਾਲਤ FFI_TYPE_UINT32:
 	/* In the N32 or N64 ABI unsigned 32-bit integer should be
 	   *sign*-extended.  */
-	cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_BITS * 8);
-	break;
-      case FFI_TYPE_SINT64:
-	cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 8);
-	break;
-      default:
-	cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 8);
-	break;
+	cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_ਬਿੱਟ * 8);
+	ਰੋਕੋ;
+      ਹਾਲਤ FFI_TYPE_SINT64:
+	cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_ਬਿੱਟ * 8);
+	ਰੋਕੋ;
+      ਮੂਲ:
+	cif->flags += cif->rtype->type << (FFI_FLAG_ਬਿੱਟ * 8);
+	ਰੋਕੋ;
       }
   }
-#endif
-  return FFI_OK;
+#ਜੇ_ਅੰਤ
+  ਵਾਪਸ FFI_OK;
 }
 
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_ਸਥਿਤੀ ffi_prep_cif_machdep(ffi_cif *cif)
 {
-    return ffi_prep_cif_machdep_int(cif, cif->nargs);
+    ਵਾਪਸ ffi_prep_cif_machdep_int(cif, cif->nargs);
 }
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-                                    unsigned nfixedargs,
-                                    unsigned ntotalargs MAYBE_UNUSED)
+ffi_ਸਥਿਤੀ ffi_prep_cif_machdep_var(ffi_cif *cif,
+                                    ਬਿਨਾਨਿਸ਼ਾਨੀ nfixedargs,
+                                    ਬਿਨਾਨਿਸ਼ਾਨੀ ntotalargs MAYBE_ਅਣਵਰਤਿਆ)
 {
-    return ffi_prep_cif_machdep_int(cif, nfixedargs);
+    ਵਾਪਸ ffi_prep_cif_machdep_int(cif, nfixedargs);
 }
 
 /* Low level routine for calling O32 functions */
-extern int ffi_call_O32(void (*)(char *, extended_cif *, int, int), 
-			extended_cif *, unsigned, 
-			unsigned, unsigned *, void (*)(void), void *closure);
+ਬਾਹਰੀ ਪੂਰਨ ffi_call_O32(ਖਾਲੀ (*)(ਅੱਖਰ *, extended_cif *, ਪੂਰਨ, ਪੂਰਨ), 
+			extended_cif *, ਬਿਨਾਨਿਸ਼ਾਨੀ, 
+			ਬਿਨਾਨਿਸ਼ਾਨੀ, ਬਿਨਾਨਿਸ਼ਾਨੀ *, ਖਾਲੀ (*)(ਖਾਲੀ), ਖਾਲੀ *ਘੇਰਾ);
 
 /* Low level routine for calling N32 functions */
-extern int ffi_call_N32(void (*)(char *, extended_cif *, int, int), 
-			extended_cif *, unsigned, 
-			unsigned, void *, void (*)(void), void *closure);
+ਬਾਹਰੀ ਪੂਰਨ ffi_call_N32(ਖਾਲੀ (*)(ਅੱਖਰ *, extended_cif *, ਪੂਰਨ, ਪੂਰਨ), 
+			extended_cif *, ਬਿਨਾਨਿਸ਼ਾਨੀ, 
+			ਬਿਨਾਨਿਸ਼ਾਨੀ, ਖਾਲੀ *, ਖਾਲੀ (*)(ਖਾਲੀ), ਖਾਲੀ *ਘੇਰਾ);
 
-void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue, 
-	      void **avalue, void *closure)
+ਖਾਲੀ ffi_call_int(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, 
+	      ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
   extended_cif ecif;
 
@@ -765,32 +765,32 @@ void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
   
-  if ((rvalue == NULL) && 
+  ਜੇ ((rvalue == ਨਿਰਾ) && 
       (cif->rtype->type == FFI_TYPE_STRUCT || cif->rtype->type == FFI_TYPE_COMPLEX))
-    ecif.rvalue = alloca(cif->rtype->size);
-  else
+    ecif.rvalue = alloca(cif->rtype->ਮਾਪ);
+  ਨਹੀਂਤਾਂ
     ecif.rvalue = rvalue;
     
-  switch (cif->abi) 
+  ਚੋਣ (cif->abi) 
     {
-#ifdef FFI_MIPS_O32
-    case FFI_O32:
-    case FFI_O32_SOFT_FLOAT:
-      ffi_call_O32(ffi_prep_args, &ecif, cif->bytes, 
-		   cif->flags, ecif.rvalue, fn, closure);
-      break;
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_O32
+    ਹਾਲਤ FFI_O32:
+    ਹਾਲਤ FFI_O32_SOFT_FLOAT:
+      ffi_call_O32(ffi_prep_ਦਲੀਲਾਂ, &ecif, cif->ਬਾਈਟਾਂ, 
+		   cif->flags, ecif.rvalue, fn, ਘੇਰਾ);
+      ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-#ifdef FFI_MIPS_N32
-    case FFI_N32:
-    case FFI_N32_SOFT_FLOAT:
-    case FFI_N64:
-    case FFI_N64_SOFT_FLOAT:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_MIPS_N32
+    ਹਾਲਤ FFI_N32:
+    ਹਾਲਤ FFI_N32_SOFT_FLOAT:
+    ਹਾਲਤ FFI_N64:
+    ਹਾਲਤ FFI_N64_SOFT_FLOAT:
       {
-        int copy_rvalue = 0;
-	int copy_offset = 0;
-        char *rvalue_copy = ecif.rvalue;
-        if (cif->rtype->type == FFI_TYPE_STRUCT && cif->rtype->size < 16)
+        ਪੂਰਨ copy_rvalue = 0;
+	ਪੂਰਨ copy_ਵਿੱਥ = 0;
+        ਅੱਖਰ *rvalue_copy = ecif.rvalue;
+        ਜੇ (cif->rtype->type == FFI_TYPE_STRUCT && cif->rtype->ਮਾਪ < 16)
           {
             /* For structures smaller than 16 bytes we clobber memory
                in 8 byte increments.  Make a copy so we don't clobber
@@ -798,143 +798,143 @@ void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
             rvalue_copy = alloca(16);
             copy_rvalue = 1;
           }
-	else if (cif->rtype->type == FFI_TYPE_FLOAT
+	ਨਹੀਂਤਾਂ ਜੇ (cif->rtype->type == FFI_TYPE_FLOAT
 		 && (cif->abi == FFI_N64_SOFT_FLOAT
 		     || cif->abi == FFI_N32_SOFT_FLOAT))
 	  {
 	    rvalue_copy = alloca (8);
 	    copy_rvalue = 1;
-#if defined(__MIPSEB__) || defined(_MIPSEB)
-	    copy_offset = 4;
-#endif
+#ਜੇ defined(__MIPSEB__) || defined(_MIPSEB)
+	    copy_ਵਿੱਥ = 4;
+#ਜੇ_ਅੰਤ
 	  }
-        ffi_call_N32(ffi_prep_args, &ecif, cif->bytes,
-                     cif->flags, rvalue_copy, fn, closure);
-        if (copy_rvalue)
-          memcpy(ecif.rvalue, rvalue_copy + copy_offset, cif->rtype->size);
+        ffi_call_N32(ffi_prep_ਦਲੀਲਾਂ, &ecif, cif->ਬਾਈਟਾਂ,
+                     cif->flags, rvalue_copy, fn, ਘੇਰਾ);
+        ਜੇ (copy_rvalue)
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ(ecif.rvalue, rvalue_copy + copy_ਵਿੱਥ, cif->rtype->ਮਾਪ);
       }
-      break;
-#endif
+      ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-    default:
+    ਮੂਲ:
       FFI_ASSERT(0);
-      break;
+      ਰੋਕੋ;
     }
 }
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ
+ffi_call(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ਨਿਰਾ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+ਖਾਲੀ
+ffi_call_go (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+	     ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, ਘੇਰਾ);
 }
 
 
-#if FFI_CLOSURES
-#if defined(FFI_MIPS_O32)
-extern void ffi_closure_O32(void);
-extern void ffi_go_closure_O32(void);
-#else
-extern void ffi_closure_N32(void);
-extern void ffi_go_closure_N32(void);
-#endif /* FFI_MIPS_O32 */
+#ਜੇ FFI_CLOSURES
+#ਜੇ defined(FFI_MIPS_O32)
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_O32(ਖਾਲੀ);
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_O32(ਖਾਲੀ);
+#ਨਹੀਂਤਾਂ
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_N32(ਖਾਲੀ);
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_N32(ਖਾਲੀ);
+#ਜੇ_ਅੰਤ /* FFI_MIPS_O32 */
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ *ਘੇਰਾ,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      ਖਾਲੀ (*fun)(ffi_cif*,ਖਾਲੀ*,ਖਾਲੀ**,ਖਾਲੀ*),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ,
+		      ਖਾਲੀ *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
-  void * fn;
-  char *clear_location = (char *) codeloc;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *tramp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) &ਘੇਰਾ->tramp[0];
+  ਖਾਲੀ * fn;
+  ਅੱਖਰ *clear_location = (ਅੱਖਰ *) codeloc;
 
-#if defined(FFI_MIPS_O32)
-  if (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-  fn = ffi_closure_O32;
-#else
-#if _MIPS_SIM ==_ABIN32
-  if (cif->abi != FFI_N32
+#ਜੇ defined(FFI_MIPS_O32)
+  ਜੇ (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
+    ਵਾਪਸ FFI_BAD_ABI;
+  fn = ffi_ਘੇਰਾ_O32;
+#ਨਹੀਂਤਾਂ
+#ਜੇ _MIPS_SIM ==_ABIN32
+  ਜੇ (cif->abi != FFI_N32
       && cif->abi != FFI_N32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#else
-  if (cif->abi != FFI_N64
+    ਵਾਪਸ FFI_BAD_ABI;
+#ਨਹੀਂਤਾਂ
+  ਜੇ (cif->abi != FFI_N64
       && cif->abi != FFI_N64_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#endif
-  fn = ffi_closure_N32;
-#endif /* FFI_MIPS_O32 */
+    ਵਾਪਸ FFI_BAD_ABI;
+#ਜੇ_ਅੰਤ
+  fn = ffi_ਘੇਰਾ_N32;
+#ਜੇ_ਅੰਤ /* FFI_MIPS_O32 */
 
-#if defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
+#ਜੇ defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
   /* lui  $25,high(fn) */
-  tramp[0] = 0x3c190000 | ((unsigned)fn >> 16);
+  tramp[0] = 0x3c190000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ)fn >> 16);
   /* ori  $25,low(fn)  */
-  tramp[1] = 0x37390000 | ((unsigned)fn & 0xffff);
+  tramp[1] = 0x37390000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ)fn & 0xffff);
   /* lui  $12,high(codeloc) */
-  tramp[2] = 0x3c0c0000 | ((unsigned)codeloc >> 16);
+  tramp[2] = 0x3c0c0000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ)codeloc >> 16);
   /* jr   $25          */
-#if !defined(__mips_isa_rev) || (__mips_isa_rev<6)
+#ਜੇ !defined(__mips_isa_rev) || (__mips_isa_rev<6)
   tramp[3] = 0x03200008;
-#else
+#ਨਹੀਂਤਾਂ
   tramp[3] = 0x03200009;
-#endif
+#ਜੇ_ਅੰਤ
   /* ori  $12,low(codeloc)  */
-  tramp[4] = 0x358c0000 | ((unsigned)codeloc & 0xffff);
-#else
+  tramp[4] = 0x358c0000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ)codeloc & 0xffff);
+#ਨਹੀਂਤਾਂ
   /* N64 has a somewhat larger trampoline.  */
   /* lui  $25,high(fn) */
-  tramp[0] = 0x3c190000 | ((unsigned long)fn >> 48);
+  tramp[0] = 0x3c190000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)fn >> 48);
   /* lui  $12,high(codeloc) */
-  tramp[1] = 0x3c0c0000 | ((unsigned long)codeloc >> 48);
+  tramp[1] = 0x3c0c0000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)codeloc >> 48);
   /* ori  $25,mid-high(fn)  */
-  tramp[2] = 0x37390000 | (((unsigned long)fn >> 32 ) & 0xffff);
+  tramp[2] = 0x37390000 | (((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)fn >> 32 ) & 0xffff);
   /* ori  $12,mid-high(codeloc)  */
-  tramp[3] = 0x358c0000 | (((unsigned long)codeloc >> 32) & 0xffff);
+  tramp[3] = 0x358c0000 | (((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)codeloc >> 32) & 0xffff);
   /* dsll $25,$25,16 */
   tramp[4] = 0x0019cc38;
   /* dsll $12,$12,16 */
   tramp[5] = 0x000c6438;
   /* ori  $25,mid-low(fn)  */
-  tramp[6] = 0x37390000 | (((unsigned long)fn >> 16 ) & 0xffff);
+  tramp[6] = 0x37390000 | (((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)fn >> 16 ) & 0xffff);
   /* ori  $12,mid-low(codeloc)  */
-  tramp[7] = 0x358c0000 | (((unsigned long)codeloc >> 16) & 0xffff);
+  tramp[7] = 0x358c0000 | (((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)codeloc >> 16) & 0xffff);
   /* dsll $25,$25,16 */
   tramp[8] = 0x0019cc38;
   /* dsll $12,$12,16 */
   tramp[9] = 0x000c6438;
   /* ori  $25,low(fn)  */
-  tramp[10] = 0x37390000 | ((unsigned long)fn  & 0xffff);
+  tramp[10] = 0x37390000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)fn  & 0xffff);
   /* jr   $25          */
-#if !defined(__mips_isa_rev) || (__mips_isa_rev<6)
+#ਜੇ !defined(__mips_isa_rev) || (__mips_isa_rev<6)
   tramp[11] = 0x03200008;
-#else
+#ਨਹੀਂਤਾਂ
   tramp[11] = 0x03200009;
-#endif
+#ਜੇ_ਅੰਤ
   /* ori  $12,low(codeloc)  */
-  tramp[12] = 0x358c0000 | ((unsigned long)codeloc & 0xffff);
+  tramp[12] = 0x358c0000 | ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)codeloc & 0xffff);
 
-#endif
+#ਜੇ_ਅੰਤ
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
 
-#if !defined(__FreeBSD__)
-#ifdef USE__BUILTIN___CLEAR_CACHE
-  __builtin___clear_cache(clear_location, clear_location + FFI_TRAMPOLINE_SIZE);
-#else
-  cacheflush (clear_location, FFI_TRAMPOLINE_SIZE, ICACHE);
-#endif
-#endif /* ! __FreeBSD__ */
-  return FFI_OK;
+#ਜੇ !defined(__FreeBSD__)
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ USE__BUILTIN___CLEAR_CACHE
+  __builtin___clear_cache(clear_location, clear_location + FFI_TRAMPOLINE_ਮਾਪ);
+#ਨਹੀਂਤਾਂ
+  cacheflush (clear_location, FFI_TRAMPOLINE_ਮਾਪ, ICACHE);
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ /* ! __FreeBSD__ */
+  ਵਾਪਸ FFI_OK;
 }
 
 /*
@@ -954,31 +954,31 @@ ffi_prep_closure_loc (ffi_closure *closure,
  *
  * Based on the similar routine for sparc.
  */
-int
-ffi_closure_mips_inner_O32 (ffi_cif *cif,
-                            void (*fun)(ffi_cif*, void*, void**, void*),
-			    void *user_data,
-			    void *rvalue, ffi_arg *ar,
-			    double *fpr)
+ਪੂਰਨ
+ffi_ਘੇਰਾ_mips_inner_O32 (ffi_cif *cif,
+                            ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+			    ਖਾਲੀ *user_ਅੰਕੜੇ,
+			    ਖਾਲੀ *rvalue, ffi_arg *ar,
+			    ਦੁੱਗਣਾ *fpr)
 {
-  void **avaluep;
+  ਖਾਲੀ **avaluep;
   ffi_arg *avalue;
   ffi_type **arg_types;
-  int i, avn, argn, seen_int;
+  ਪੂਰਨ i, avn, argn, ਵੇਖਿਆ_int;
 
-  avalue = alloca (cif->nargs * sizeof (ffi_arg));
-  avaluep = alloca (cif->nargs * sizeof (ffi_arg));
+  avalue = alloca (cif->nargs * ਆਕਾਰ (ffi_arg));
+  avaluep = alloca (cif->nargs * ਆਕਾਰ (ffi_arg));
 
-  seen_int = (cif->abi == FFI_O32_SOFT_FLOAT) || (cif->mips_nfixedargs != cif->nargs);
+  ਵੇਖਿਆ_int = (cif->abi == FFI_O32_SOFT_FLOAT) || (cif->mips_nfixedargs != cif->nargs);
   argn = 0;
 
-  if ((cif->flags >> (FFI_FLAG_BITS * 2)) == FFI_TYPE_STRUCT)
+  ਜੇ ((cif->flags >> (FFI_FLAG_ਬਿੱਟ * 2)) == FFI_TYPE_STRUCT)
     {
-      rvalue = (void *)(uintptr_t)ar[0];
+      rvalue = (ਖਾਲੀ *)(uintptr_t)ar[0];
       argn = 1;
-      seen_int = 1;
+      ਵੇਖਿਆ_int = 1;
     }
-  if ((cif->flags >> (FFI_FLAG_BITS * 2)) == FFI_TYPE_COMPLEX)
+  ਜੇ ((cif->flags >> (FFI_FLAG_ਬਿੱਟ * 2)) == FFI_TYPE_COMPLEX)
     {
       rvalue = fpr;
       argn = 1;
@@ -988,117 +988,117 @@ ffi_closure_mips_inner_O32 (ffi_cif *cif,
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  while (i < avn)
+  ਜਦੋਂ (i < avn)
     {
-      if (arg_types[i]->alignment == 8 && (argn & 0x1))
+      ਜੇ (arg_types[i]->alignment == 8 && (argn & 0x1))
         argn++;
-      if (i < 2 && !seen_int &&
+      ਜੇ (i < 2 && !ਵੇਖਿਆ_int &&
 	  (arg_types[i]->type == FFI_TYPE_FLOAT ||
 	   arg_types[i]->type == FFI_TYPE_DOUBLE ||
 	   arg_types[i]->type == FFI_TYPE_LONGDOUBLE))
 	{
-#if defined(__MIPSEB__) || defined(_MIPSEB)
-	  if (arg_types[i]->type == FFI_TYPE_FLOAT)
-	    avaluep[i] = ((char *) &fpr[i]) + sizeof (float);
-	  else
-#endif
-	    avaluep[i] = (char *) &fpr[i];
+#ਜੇ defined(__MIPSEB__) || defined(_MIPSEB)
+	  ਜੇ (arg_types[i]->type == FFI_TYPE_FLOAT)
+	    avaluep[i] = ((ਅੱਖਰ *) &fpr[i]) + ਆਕਾਰ (ਦਸ਼ਮਲਵ);
+	  ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
+	    avaluep[i] = (ਅੱਖਰ *) &fpr[i];
 	}
-      else
+      ਨਹੀਂਤਾਂ
 	{
-	  switch (arg_types[i]->type)
+	  ਚੋਣ (arg_types[i]->type)
 	    {
-	      case FFI_TYPE_SINT8:
+	      ਹਾਲਤ FFI_TYPE_SINT8:
 		avaluep[i] = &avalue[i];
 		*(SINT8 *) &avalue[i] = (SINT8) ar[argn];
-		break;
+		ਰੋਕੋ;
 
-	      case FFI_TYPE_UINT8:
+	      ਹਾਲਤ FFI_TYPE_UINT8:
 		avaluep[i] = &avalue[i];
 		*(UINT8 *) &avalue[i] = (UINT8) ar[argn];
-		break;
+		ਰੋਕੋ;
 		  
-	      case FFI_TYPE_SINT16:
+	      ਹਾਲਤ FFI_TYPE_SINT16:
 		avaluep[i] = &avalue[i];
 		*(SINT16 *) &avalue[i] = (SINT16) ar[argn];
-		break;
+		ਰੋਕੋ;
 		  
-	      case FFI_TYPE_UINT16:
+	      ਹਾਲਤ FFI_TYPE_UINT16:
 		avaluep[i] = &avalue[i];
 		*(UINT16 *) &avalue[i] = (UINT16) ar[argn];
-		break;
+		ਰੋਕੋ;
 
-	      default:
-		avaluep[i] = (char *) &ar[argn];
-		break;
+	      ਮੂਲ:
+		avaluep[i] = (ਅੱਖਰ *) &ar[argn];
+		ਰੋਕੋ;
 	    }
-	  seen_int = 1;
+	  ਵੇਖਿਆ_int = 1;
 	}
-      argn += FFI_ALIGN(arg_types[i]->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+      argn += FFI_ALIGN(arg_types[i]->ਮਾਪ, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
       i++;
     }
 
   /* Invoke the closure. */
-  fun(cif, rvalue, avaluep, user_data);
+  fun(cif, rvalue, avaluep, user_ਅੰਕੜੇ);
 
-  if (cif->abi == FFI_O32_SOFT_FLOAT)
+  ਜੇ (cif->abi == FFI_O32_SOFT_FLOAT)
     {
-      switch (cif->rtype->type)
+      ਚੋਣ (cif->rtype->type)
         {
-        case FFI_TYPE_FLOAT:
-          return FFI_TYPE_INT;
-        case FFI_TYPE_DOUBLE:
-          return FFI_TYPE_UINT64;
-        default:
-          return cif->rtype->type;
+        ਹਾਲਤ FFI_TYPE_FLOAT:
+          ਵਾਪਸ FFI_TYPE_INT;
+        ਹਾਲਤ FFI_TYPE_DOUBLE:
+          ਵਾਪਸ FFI_TYPE_UINT64;
+        ਮੂਲ:
+          ਵਾਪਸ cif->rtype->type;
         }
     }
-  else
+  ਨਹੀਂਤਾਂ
     {
-      if (cif->rtype->type == FFI_TYPE_COMPLEX) {
-          __asm__ volatile ("move $v1, %0" : : "r"(cif->rtype->size));
+      ਜੇ (cif->rtype->type == FFI_TYPE_COMPLEX) {
+          __asm__ ਅਸਥਿਰ ("move $v1, %0" : : "r"(cif->rtype->ਮਾਪ));
       }
-      return cif->rtype->type;
+      ਵਾਪਸ cif->rtype->type;
     }
 }
 
-#if defined(FFI_MIPS_N32)
+#ਜੇ defined(FFI_MIPS_N32)
 
-static void
-copy_struct_N32(char *target, unsigned offset, ffi_abi abi, ffi_type *type,
-                int argn, unsigned arg_offset, ffi_arg *ar,
-                ffi_arg *fpr, int soft_float)
+ਸਥਿਰ ਖਾਲੀ
+copy_struct_N32(ਅੱਖਰ *ਨਿਸ਼ਾਨਾ_2, ਬਿਨਾਨਿਸ਼ਾਨੀ offset, ffi_abi abi, ffi_type *type,
+                ਪੂਰਨ argn, ਬਿਨਾਨਿਸ਼ਾਨੀ arg_ਵਿੱਥ, ffi_arg *ar,
+                ffi_arg *fpr, ਪੂਰਨ soft_float)
 {
   ffi_type **elt_typep = type->elements;
-  while(*elt_typep)
+  ਜਦੋਂ(*elt_typep)
     {
       ffi_type *elt_type = *elt_typep;
-      unsigned o;
-      char *tp;
-      char *argp;
-      char *fpp;
+      ਬਿਨਾਨਿਸ਼ਾਨੀ o;
+      ਅੱਖਰ *tp;
+      ਅੱਖਰ *argp;
+      ਅੱਖਰ *fpp;
 
       o = FFI_ALIGN(offset, elt_type->alignment);
-      arg_offset += o - offset;
+      arg_ਵਿੱਥ += o - offset;
       offset = o;
-      argn += arg_offset / sizeof(ffi_arg);
-      arg_offset = arg_offset % sizeof(ffi_arg);
+      argn += arg_ਵਿੱਥ / ਆਕਾਰ(ffi_arg);
+      arg_ਵਿੱਥ = arg_ਵਿੱਥ % ਆਕਾਰ(ffi_arg);
 
-      argp = (char *)(ar + argn);
-      fpp = (char *)(argn >= 8 ? ar + argn : fpr + argn);
+      argp = (ਅੱਖਰ *)(ar + argn);
+      fpp = (ਅੱਖਰ *)(argn >= 8 ? ar + argn : fpr + argn);
 
-      tp = target + offset;
+      tp = ਨਿਸ਼ਾਨਾ_2 + offset;
 
-      if (elt_type->type == FFI_TYPE_DOUBLE && !soft_float)
-        *(double *)tp = *(double *)fpp;
-      else
-        memcpy(tp, argp + arg_offset, elt_type->size);
+      ਜੇ (elt_type->type == FFI_TYPE_DOUBLE && !soft_float)
+        *(ਦੁੱਗਣਾ *)tp = *(ਦੁੱਗਣਾ *)fpp;
+      ਨਹੀਂਤਾਂ
+        ਸਮ੍ਰਿਤੀ_ਨਕਲ(tp, argp + arg_ਵਿੱਥ, elt_type->ਮਾਪ);
 
-      offset += elt_type->size;
-      arg_offset += elt_type->size;
+      offset += elt_type->ਮਾਪ;
+      arg_ਵਿੱਥ += elt_type->ਮਾਪ;
       elt_typep++;
-      argn += arg_offset / sizeof(ffi_arg);
-      arg_offset = arg_offset % sizeof(ffi_arg);
+      argn += arg_ਵਿੱਥ / ਆਕਾਰ(ffi_arg);
+      arg_ਵਿੱਥ = arg_ਵਿੱਥ % ਆਕਾਰ(ffi_arg);
     }
 }
 
@@ -1117,201 +1117,201 @@ copy_struct_N32(char *target, unsigned offset, ffi_abi abi, ffi_type *type,
  * Returns the function return flags.
  *
  */
-int
-ffi_closure_mips_inner_N32 (ffi_cif *cif, 
-			    void (*fun)(ffi_cif*, void*, void**, void*),
-                            void *user_data,
-			    void *rvalue, ffi_arg *ar,
+ਪੂਰਨ
+ffi_ਘੇਰਾ_mips_inner_N32 (ffi_cif *cif, 
+			    ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+                            ਖਾਲੀ *user_ਅੰਕੜੇ,
+			    ਖਾਲੀ *rvalue, ffi_arg *ar,
 			    ffi_arg *fpr)
 {
-  void **avaluep;
+  ਖਾਲੀ **avaluep;
   ffi_arg *avalue;
   ffi_type **arg_types;
-  int i, avn, argn;
-  int soft_float;
+  ਪੂਰਨ i, avn, argn;
+  ਪੂਰਨ soft_float;
   ffi_arg *argp;
 
   soft_float = cif->abi == FFI_N64_SOFT_FLOAT
     || cif->abi == FFI_N32_SOFT_FLOAT;
-  avalue = alloca (cif->nargs * sizeof (ffi_arg));
-  avaluep = alloca (cif->nargs * sizeof (ffi_arg));
+  avalue = alloca (cif->nargs * ਆਕਾਰ (ffi_arg));
+  avaluep = alloca (cif->nargs * ਆਕਾਰ (ffi_arg));
 
   argn = 0;
 
-  if (cif->rstruct_flag)
+  ਜੇ (cif->rstruct_flag)
     {
-#if _MIPS_SIM==_ABIN32
-      rvalue = (void *)(UINT32)ar[0];
-#else /* N64 */
-      rvalue = (void *)ar[0];
-#endif
+#ਜੇ _MIPS_SIM==_ABIN32
+      rvalue = (ਖਾਲੀ *)(UINT32)ar[0];
+#ਨਹੀਂਤਾਂ /* N64 */
+      rvalue = (ਖਾਲੀ *)ar[0];
+#ਜੇ_ਅੰਤ
       argn = 1;
     }
-  if (cif->rtype->type == FFI_TYPE_COMPLEX && cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+  ਜੇ (cif->rtype->type == FFI_TYPE_COMPLEX && cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
     argn = 2;
 
   i = 0;
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  while (i < avn)
+  ਜਦੋਂ (i < avn)
     {
-      if (arg_types[i]->type == FFI_TYPE_FLOAT
+      ਜੇ (arg_types[i]->type == FFI_TYPE_FLOAT
 	  || arg_types[i]->type == FFI_TYPE_DOUBLE
 	  || arg_types[i]->type == FFI_TYPE_LONGDOUBLE)
         {
           argp = (argn >= 8 || i >= cif->mips_nfixedargs || soft_float) ? ar + argn : fpr + argn;
-          if ((arg_types[i]->type == FFI_TYPE_LONGDOUBLE) && ((uintptr_t)argp & (arg_types[i]->alignment-1)))
+          ਜੇ ((arg_types[i]->type == FFI_TYPE_LONGDOUBLE) && ((uintptr_t)argp & (arg_types[i]->alignment-1)))
             {
               argp=(ffi_arg*)FFI_ALIGN(argp,arg_types[i]->alignment);
               argn++;
             }
-#if defined(__MIPSEB__) || defined(_MIPSEB)
-          if (arg_types[i]->type == FFI_TYPE_FLOAT && argn < 8)
-            avaluep[i] = ((char *) argp) + sizeof (float);
-          else
-#endif
-            avaluep[i] = (char *) argp;
+#ਜੇ defined(__MIPSEB__) || defined(_MIPSEB)
+          ਜੇ (arg_types[i]->type == FFI_TYPE_FLOAT && argn < 8)
+            avaluep[i] = ((ਅੱਖਰ *) argp) + ਆਕਾਰ (ਦਸ਼ਮਲਵ);
+          ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
+            avaluep[i] = (ਅੱਖਰ *) argp;
         }
-      else if (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
+      ਨਹੀਂਤਾਂ ਜੇ (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
         {
           argp = (argn >= 8 || i >= cif->mips_nfixedargs || soft_float) ? ar + argn : fpr + argn;
-          avaluep[i] = (char *) argp;
+          avaluep[i] = (ਅੱਖਰ *) argp;
         }
-      else if (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+      ਨਹੀਂਤਾਂ ਜੇ (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_LONGDOUBLE)
         {
 	  /* align long double */
 	  argn += ((argn & 0x1)? 1 : 0);
           argp = (argn >= 8 || i >= cif->mips_nfixedargs || soft_float) ? ar + argn : fpr + argn;
-          avaluep[i] = (char *) argp;
+          avaluep[i] = (ਅੱਖਰ *) argp;
         }
-      else if (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT)
+      ਨਹੀਂਤਾਂ ਜੇ (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT)
         {
-          if (argn >= 8 || i >= cif->mips_nfixedargs || soft_float)
+          ਜੇ (argn >= 8 || i >= cif->mips_nfixedargs || soft_float)
 	     argp = ar + argn;
-	  else
+	  ਨਹੀਂਤਾਂ
 	    {
 	      argp = fpr + argn;
 	      /* the normal args for function holds 8bytes, while here we convert it to ptr */
 	      uint32_t *tmp = (uint32_t *)argp;
 	      tmp[1] = tmp[2];
 	    }
-          avaluep[i] = (char *) argp;
+          avaluep[i] = (ਅੱਖਰ *) argp;
         }
-      else
+      ਨਹੀਂਤਾਂ
         {
-          unsigned type = arg_types[i]->type;
+          ਬਿਨਾਨਿਸ਼ਾਨੀ type = arg_types[i]->type;
 
-          if (arg_types[i]->alignment > sizeof(ffi_arg))
-            argn = FFI_ALIGN(argn, arg_types[i]->alignment / sizeof(ffi_arg));
+          ਜੇ (arg_types[i]->alignment > ਆਕਾਰ(ffi_arg))
+            argn = FFI_ALIGN(argn, arg_types[i]->alignment / ਆਕਾਰ(ffi_arg));
 
           argp = ar + argn;
 
           /* The size of a pointer depends on the ABI */
-          if (type == FFI_TYPE_POINTER)
+          ਜੇ (type == FFI_TYPE_ਸੂਚਕ)
             type = (cif->abi == FFI_N64 || cif->abi == FFI_N64_SOFT_FLOAT)
 	      ? FFI_TYPE_SINT64 : FFI_TYPE_UINT32;
 
-	  if (soft_float && type ==  FFI_TYPE_FLOAT)
+	  ਜੇ (soft_float && type ==  FFI_TYPE_FLOAT)
 	    type = FFI_TYPE_SINT32;
 
-          switch (type)
+          ਚੋਣ (type)
             {
-            case FFI_TYPE_SINT8:
+            ਹਾਲਤ FFI_TYPE_SINT8:
               avaluep[i] = &avalue[i];
               *(SINT8 *) &avalue[i] = (SINT8) *argp;
-              break;
+              ਰੋਕੋ;
 
-            case FFI_TYPE_UINT8:
+            ਹਾਲਤ FFI_TYPE_UINT8:
               avaluep[i] = &avalue[i];
               *(UINT8 *) &avalue[i] = (UINT8) *argp;
-              break;
+              ਰੋਕੋ;
 
-            case FFI_TYPE_SINT16:
+            ਹਾਲਤ FFI_TYPE_SINT16:
               avaluep[i] = &avalue[i];
               *(SINT16 *) &avalue[i] = (SINT16) *argp;
-              break;
+              ਰੋਕੋ;
 
-            case FFI_TYPE_UINT16:
+            ਹਾਲਤ FFI_TYPE_UINT16:
               avaluep[i] = &avalue[i];
               *(UINT16 *) &avalue[i] = (UINT16) *argp;
-              break;
+              ਰੋਕੋ;
 
-            case FFI_TYPE_SINT32:
+            ਹਾਲਤ FFI_TYPE_SINT32:
               avaluep[i] = &avalue[i];
               *(SINT32 *) &avalue[i] = (SINT32) *argp;
-              break;
+              ਰੋਕੋ;
 
-            case FFI_TYPE_UINT32:
+            ਹਾਲਤ FFI_TYPE_UINT32:
               avaluep[i] = &avalue[i];
               *(UINT32 *) &avalue[i] = (UINT32) *argp;
-              break;
+              ਰੋਕੋ;
 
-            case FFI_TYPE_STRUCT:
-              if (argn < 8)
+            ਹਾਲਤ FFI_TYPE_STRUCT:
+              ਜੇ (argn < 8)
                 {
                   /* Allocate space for the struct as at least part of
                      it was passed in registers.  */
-                  avaluep[i] = alloca(arg_types[i]->size);
+                  avaluep[i] = alloca(arg_types[i]->ਮਾਪ);
                   copy_struct_N32(avaluep[i], 0, cif->abi, arg_types[i],
                                   argn, 0, ar, fpr, i >= cif->mips_nfixedargs || soft_float);
 
-                  break;
+                  ਰੋਕੋ;
                 }
               /* Else fall through.  */
-            default:
-              avaluep[i] = (char *) argp;
-              break;
+            ਮੂਲ:
+              avaluep[i] = (ਅੱਖਰ *) argp;
+              ਰੋਕੋ;
             }
         }
-      argn += FFI_ALIGN(arg_types[i]->size, sizeof(ffi_arg)) / sizeof(ffi_arg);
+      argn += FFI_ALIGN(arg_types[i]->ਮਾਪ, ਆਕਾਰ(ffi_arg)) / ਆਕਾਰ(ffi_arg);
       i++;
     }
 
   /* Invoke the closure. */
-  fun (cif, rvalue, avaluep, user_data);
+  fun (cif, rvalue, avaluep, user_ਅੰਕੜੇ);
 
-  return cif->flags >> (FFI_FLAG_BITS * 8);
+  ਵਾਪਸ cif->flags >> (FFI_FLAG_ਬਿੱਟ * 8);
 }
 
-#endif /* FFI_MIPS_N32 */
+#ਜੇ_ਅੰਤ /* FFI_MIPS_N32 */
 
-#if defined(FFI_MIPS_O32)
-extern void ffi_closure_O32(void);
-extern void ffi_go_closure_O32(void);
-#else
-extern void ffi_closure_N32(void);
-extern void ffi_go_closure_N32(void);
-#endif /* FFI_MIPS_O32 */
+#ਜੇ defined(FFI_MIPS_O32)
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_O32(ਖਾਲੀ);
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_O32(ਖਾਲੀ);
+#ਨਹੀਂਤਾਂ
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_N32(ਖਾਲੀ);
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_N32(ਖਾਲੀ);
+#ਜੇ_ਅੰਤ /* FFI_MIPS_O32 */
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*,void*,void**,void*))
+ffi_ਸਥਿਤੀ
+ffi_prep_go_ਘੇਰਾ (ffi_go_ਘੇਰਾ* ਘੇਰਾ, ffi_cif* cif,
+		     ਖਾਲੀ (*fun)(ffi_cif*,ਖਾਲੀ*,ਖਾਲੀ**,ਖਾਲੀ*))
 {
-  void * fn;
+  ਖਾਲੀ * fn;
 
-#if defined(FFI_MIPS_O32)
-  if (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-  fn = ffi_go_closure_O32;
-#else
-#if _MIPS_SIM ==_ABIN32
-  if (cif->abi != FFI_N32
+#ਜੇ defined(FFI_MIPS_O32)
+  ਜੇ (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
+    ਵਾਪਸ FFI_BAD_ABI;
+  fn = ffi_go_ਘੇਰਾ_O32;
+#ਨਹੀਂਤਾਂ
+#ਜੇ _MIPS_SIM ==_ABIN32
+  ਜੇ (cif->abi != FFI_N32
       && cif->abi != FFI_N32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#else
-  if (cif->abi != FFI_N64
+    ਵਾਪਸ FFI_BAD_ABI;
+#ਨਹੀਂਤਾਂ
+  ਜੇ (cif->abi != FFI_N64
       && cif->abi != FFI_N64_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#endif
-  fn = ffi_go_closure_N32;
-#endif /* FFI_MIPS_O32 */
+    ਵਾਪਸ FFI_BAD_ABI;
+#ਜੇ_ਅੰਤ
+  fn = ffi_go_ਘੇਰਾ_N32;
+#ਜੇ_ਅੰਤ /* FFI_MIPS_O32 */
 
-  closure->tramp = (void *)fn;
-  closure->cif = cif;
-  closure->fun = fun;
+  ਘੇਰਾ->tramp = (ਖਾਲੀ *)fn;
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-#endif /* FFI_CLOSURES */
+#ਜੇ_ਅੰਤ /* FFI_CLOSURES */

@@ -27,52 +27,52 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include <tramp.h>
-#include "internal64.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdarg.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stddef.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <string.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <tramp.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "internal64.h"
 
-#ifdef __x86_64__
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __x86_64__
 
-#define MAX_GPR_REGS 6
-#define MAX_SSE_REGS 8
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_GPR_REGS 6
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_SSE_REGS 8
 
-#if defined(__INTEL_COMPILER)
-#include "xmmintrin.h"
-#define UINT128 __m128
-#else
-#if defined(__SUNPRO_C)
-#include <sunmedia_types.h>
-#define UINT128 __m128i
-#else
-#define UINT128 __int128_t
-#endif
-#endif
+#ਜੇ defined(__INTEL_COMPILER)
+#ਅਨ੍ਤਰ੍ਭਾਵ "xmmintrin.h"
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ UINT128 __m128
+#ਨਹੀਂਤਾਂ
+#ਜੇ defined(__SUNPRO_C)
+#ਅਨ੍ਤਰ੍ਭਾਵ <sunmedia_types.h>
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ UINT128 __m128i
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ UINT128 __int128_t
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ
 
-union big_int_union
+ਸੰਘ big_int_union
 {
   UINT32 i32;
   UINT64 i64;
   UINT128 i128;
 };
 
-struct register_args
+ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ
 {
   /* Registers for argument passing.  */
   UINT64 gpr[MAX_GPR_REGS];
-  union big_int_union sse[MAX_SSE_REGS];
+  ਸੰਘ big_int_union sse[MAX_SSE_REGS];
   UINT64 rax;	/* ssecount */
   UINT64 r10;	/* static chain */
 };
 
-extern void ffi_call_unix64 (void *args, unsigned long bytes, unsigned flags,
-			     void *raddr, void (*fnaddr)(void)) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_unix64 (ਖਾਲੀ *ਦਲੀਲਾਂ, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਬਾਈਟਾਂ, ਬਿਨਾਨਿਸ਼ਾਨੀ flags,
+			     ਖਾਲੀ *raddr, ਖਾਲੀ (*fnaddr)(ਖਾਲੀ)) FFI_HIDDEN;
 
 /* All reference to register classes here is identical to the code in
    gcc/config/i386/i386.c. Do *not* change one without the other.  */
@@ -85,7 +85,7 @@ extern void ffi_call_unix64 (void *args, unsigned long bytes, unsigned flags,
 
    Similary we play games with INTEGERSI_CLASS to use cheaper SImode moves
    whenever possible (upper half does contain padding).  */
-enum x86_64_reg_class
+ਗਿਣਤੀ x86_64_reg_class
   {
     X86_64_NO_CLASS,
     X86_64_INTEGER_CLASS,
@@ -95,14 +95,14 @@ enum x86_64_reg_class
     X86_64_SSEDF_CLASS,
     X86_64_SSEUP_CLASS,
     X86_64_X87_CLASS,
-    X86_64_X87UP_CLASS,
+    X86_64_X87_ਉੱਪਰ_CLASS,
     X86_64_COMPLEX_X87_CLASS,
-    X86_64_MEMORY_CLASS
+    X86_64_ਸਮ੍ਰਿਤੀ_CLASS
   };
 
-#define MAX_CLASSES 4
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MAX_CLASSES 4
 
-#define SSE_CLASS_P(X)	((X) >= X86_64_SSE_CLASS && X <= X86_64_SSEUP_CLASS)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ SSE_CLASS_P(X)	((X) >= X86_64_SSE_CLASS && X <= X86_64_SSEUP_CLASS)
 
 /* On most x86-64 targets `long double` is the 80-bit x87 type: classified
    X87/X87UP, passed in memory, returned in st(0).  But some targets (notably
@@ -111,12 +111,12 @@ enum x86_64_reg_class
    registers exactly like __float128 (class SSE/SSEUP -> one %xmm register).
    Detect that at compile time and classify long double accordingly.  A mantissa
    of 113 bits uniquely identifies binary128 (x87 extended is 64).  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE \
+#ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE \
     && defined(__LDBL_MANT_DIG__) && __LDBL_MANT_DIG__ == 113
 # define FFI_LONGDOUBLE_BINARY128 1
-#else
+#ਨਹੀਂਤਾਂ
 # define FFI_LONGDOUBLE_BINARY128 0
-#endif
+#ਜੇ_ਅੰਤ
 
 /* x86-64 register passing implementation.  See x86-64 ABI for details.  Goal
    of this code is to classify each 8bytes of incoming argument by the register
@@ -125,44 +125,44 @@ enum x86_64_reg_class
 /* Return the union class of CLASS1 and CLASS2.
    See the x86-64 PS ABI for details.  */
 
-static enum x86_64_reg_class
-merge_classes (enum x86_64_reg_class class1, enum x86_64_reg_class class2)
+ਸਥਿਰ ਗਿਣਤੀ x86_64_reg_class
+ਮਿਲਾਓ_classes (ਗਿਣਤੀ x86_64_reg_class class1, ਗਿਣਤੀ x86_64_reg_class class2)
 {
   /* Rule #1: If both classes are equal, this is the resulting class.  */
-  if (class1 == class2)
-    return class1;
+  ਜੇ (class1 == class2)
+    ਵਾਪਸ class1;
 
   /* Rule #2: If one of the classes is NO_CLASS, the resulting class is
      the other class.  */
-  if (class1 == X86_64_NO_CLASS)
-    return class2;
-  if (class2 == X86_64_NO_CLASS)
-    return class1;
+  ਜੇ (class1 == X86_64_NO_CLASS)
+    ਵਾਪਸ class2;
+  ਜੇ (class2 == X86_64_NO_CLASS)
+    ਵਾਪਸ class1;
 
   /* Rule #3: If one of the classes is MEMORY, the result is MEMORY.  */
-  if (class1 == X86_64_MEMORY_CLASS || class2 == X86_64_MEMORY_CLASS)
-    return X86_64_MEMORY_CLASS;
+  ਜੇ (class1 == X86_64_ਸਮ੍ਰਿਤੀ_CLASS || class2 == X86_64_ਸਮ੍ਰਿਤੀ_CLASS)
+    ਵਾਪਸ X86_64_ਸਮ੍ਰਿਤੀ_CLASS;
 
   /* Rule #4: If one of the classes is INTEGER, the result is INTEGER.  */
-  if ((class1 == X86_64_INTEGERSI_CLASS && class2 == X86_64_SSESF_CLASS)
+  ਜੇ ((class1 == X86_64_INTEGERSI_CLASS && class2 == X86_64_SSESF_CLASS)
       || (class2 == X86_64_INTEGERSI_CLASS && class1 == X86_64_SSESF_CLASS))
-    return X86_64_INTEGERSI_CLASS;
-  if (class1 == X86_64_INTEGER_CLASS || class1 == X86_64_INTEGERSI_CLASS
+    ਵਾਪਸ X86_64_INTEGERSI_CLASS;
+  ਜੇ (class1 == X86_64_INTEGER_CLASS || class1 == X86_64_INTEGERSI_CLASS
       || class2 == X86_64_INTEGER_CLASS || class2 == X86_64_INTEGERSI_CLASS)
-    return X86_64_INTEGER_CLASS;
+    ਵਾਪਸ X86_64_INTEGER_CLASS;
 
   /* Rule #5: If one of the classes is X87, X87UP, or COMPLEX_X87 class,
      MEMORY is used.  */
-  if (class1 == X86_64_X87_CLASS
-      || class1 == X86_64_X87UP_CLASS
+  ਜੇ (class1 == X86_64_X87_CLASS
+      || class1 == X86_64_X87_ਉੱਪਰ_CLASS
       || class1 == X86_64_COMPLEX_X87_CLASS
       || class2 == X86_64_X87_CLASS
-      || class2 == X86_64_X87UP_CLASS
+      || class2 == X86_64_X87_ਉੱਪਰ_CLASS
       || class2 == X86_64_COMPLEX_X87_CLASS)
-    return X86_64_MEMORY_CLASS;
+    ਵਾਪਸ X86_64_ਸਮ੍ਰਿਤੀ_CLASS;
 
   /* Rule #6: Otherwise class SSE is used.  */
-  return X86_64_SSE_CLASS;
+  ਵਾਪਸ X86_64_SSE_CLASS;
 }
 
 /* Classify the argument of type TYPE and mode MODE.
@@ -173,143 +173,143 @@ merge_classes (enum x86_64_reg_class class1, enum x86_64_reg_class class2)
 
    See the x86-64 PS ABI for details.
 */
-static size_t
-classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
-		   size_t byte_offset)
+ਸਥਿਰ size_t
+classify_ਦਲੀਲ (ffi_type *type, ਗਿਣਤੀ x86_64_reg_class classes[],
+		   size_t byte_ਵਿੱਥ)
 {
-  switch (type->type)
+  ਚੋਣ (type->type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_SINT128:
-    case FFI_TYPE_POINTER:
+    ਹਾਲਤ FFI_TYPE_UINT8:
+    ਹਾਲਤ FFI_TYPE_SINT8:
+    ਹਾਲਤ FFI_TYPE_UINT16:
+    ਹਾਲਤ FFI_TYPE_SINT16:
+    ਹਾਲਤ FFI_TYPE_UINT32:
+    ਹਾਲਤ FFI_TYPE_SINT32:
+    ਹਾਲਤ FFI_TYPE_UINT64:
+    ਹਾਲਤ FFI_TYPE_SINT64:
+    ਹਾਲਤ FFI_TYPE_UINT128:
+    ਹਾਲਤ FFI_TYPE_SINT128:
+    ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
     do_integer:
       {
-	size_t size = byte_offset + type->size;
+	size_t ਮਾਪ = byte_ਵਿੱਥ + type->ਮਾਪ;
 
-	if (size <= 4)
+	ਜੇ (ਮਾਪ <= 4)
 	  {
 	    classes[0] = X86_64_INTEGERSI_CLASS;
-	    return 1;
+	    ਵਾਪਸ 1;
 	  }
-	else if (size <= 8)
+	ਨਹੀਂਤਾਂ ਜੇ (ਮਾਪ <= 8)
 	  {
 	    classes[0] = X86_64_INTEGER_CLASS;
-	    return 1;
+	    ਵਾਪਸ 1;
 	  }
-	else if (size <= 12)
+	ਨਹੀਂਤਾਂ ਜੇ (ਮਾਪ <= 12)
 	  {
 	    classes[0] = X86_64_INTEGER_CLASS;
 	    classes[1] = X86_64_INTEGERSI_CLASS;
-	    return 2;
+	    ਵਾਪਸ 2;
 	  }
-	else if (size <= 16)
+	ਨਹੀਂਤਾਂ ਜੇ (ਮਾਪ <= 16)
 	  {
 	    classes[0] = classes[1] = X86_64_INTEGER_CLASS;
-	    return 2;
+	    ਵਾਪਸ 2;
 	  }
-	else
+	ਨਹੀਂਤਾਂ
 	  FFI_ASSERT (0);
       }
-    case FFI_TYPE_FLOAT:
-      if (!(byte_offset % 8))
+    ਹਾਲਤ FFI_TYPE_FLOAT:
+      ਜੇ (!(byte_ਵਿੱਥ % 8))
 	classes[0] = X86_64_SSESF_CLASS;
-      else
+      ਨਹੀਂਤਾਂ
 	classes[0] = X86_64_SSE_CLASS;
-      return 1;
-    case FFI_TYPE_DOUBLE:
+      ਵਾਪਸ 1;
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
       classes[0] = X86_64_SSEDF_CLASS;
-      return 1;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+      ਵਾਪਸ 1;
+#ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
+#ਜੇ FFI_LONGDOUBLE_BINARY128
       /* IEEE binary128: one %xmm register, like __float128.  */
       classes[0] = X86_64_SSE_CLASS;
       classes[1] = X86_64_SSEUP_CLASS;
-#else
+#ਨਹੀਂਤਾਂ
       classes[0] = X86_64_X87_CLASS;
-      classes[1] = X86_64_X87UP_CLASS;
-#endif
-      return 2;
-#endif
-    case FFI_TYPE_STRUCT:
+      classes[1] = X86_64_X87_ਉੱਪਰ_CLASS;
+#ਜੇ_ਅੰਤ
+      ਵਾਪਸ 2;
+#ਜੇ_ਅੰਤ
+    ਹਾਲਤ FFI_TYPE_STRUCT:
       {
-	const size_t UNITS_PER_WORD = 8;
-        size_t words = (type->size + byte_offset + UNITS_PER_WORD - 1)
-                       / UNITS_PER_WORD;
+	ਅਚਲ size_t UNITS_ਪ੍ਰਤੀ_ਸ਼ਬਦ = 8;
+        size_t ਸ਼ਬਦ = (type->ਮਾਪ + byte_ਵਿੱਥ + UNITS_ਪ੍ਰਤੀ_ਸ਼ਬਦ - 1)
+                       / UNITS_ਪ੍ਰਤੀ_ਸ਼ਬਦ;
 	ffi_type **ptr;
-	unsigned int i;
-	enum x86_64_reg_class subclasses[MAX_CLASSES];
+	ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
+	ਗਿਣਤੀ x86_64_reg_class subclasses[MAX_CLASSES];
 
 	/* If the struct is larger than 32 bytes, pass it on the stack.  */
-	if (type->size > 32)
-	  return 0;
+	ਜੇ (type->ਮਾਪ > 32)
+	  ਵਾਪਸ 0;
 
-	for (i = 0; i < words; i++)
+	ਲਈ (i = 0; i < ਸ਼ਬਦ; i++)
 	  classes[i] = X86_64_NO_CLASS;
 
 	/* Zero sized arrays or structures are NO_CLASS.  We return 0 to
 	   signalize memory class, so handle it as special case.  */
-	if (!words)
+	ਜੇ (!ਸ਼ਬਦ)
 	  {
-    case FFI_TYPE_VOID:
+    ਹਾਲਤ FFI_TYPE_VOID:
 	    classes[0] = X86_64_NO_CLASS;
-	    return 1;
+	    ਵਾਪਸ 1;
 	  }
 
 	/* Merge the fields of structure.  */
-	for (ptr = type->elements; *ptr != NULL; ptr++)
+	ਲਈ (ptr = type->elements; *ptr != ਨਿਰਾ; ptr++)
 	  {
-	    size_t num, pos;
+	    size_t ਅੰਕ, pos;
 
-	    byte_offset = FFI_ALIGN (byte_offset, (*ptr)->alignment);
+	    byte_ਵਿੱਥ = FFI_ALIGN (byte_ਵਿੱਥ, (*ptr)->alignment);
 
-	    num = classify_argument (*ptr, subclasses, byte_offset % 8);
-	    if (num == 0)
-	      return 0;
-            pos = byte_offset / 8;
-            for (i = 0; i < num && (i + pos) < words; i++)
+	    ਅੰਕ = classify_ਦਲੀਲ (*ptr, subclasses, byte_ਵਿੱਥ % 8);
+	    ਜੇ (ਅੰਕ == 0)
+	      ਵਾਪਸ 0;
+            pos = byte_ਵਿੱਥ / 8;
+            ਲਈ (i = 0; i < ਅੰਕ && (i + pos) < ਸ਼ਬਦ; i++)
 	      {
-		size_t pos = byte_offset / 8;
+		size_t pos = byte_ਵਿੱਥ / 8;
 		classes[i + pos] =
-		  merge_classes (subclasses[i], classes[i + pos]);
+		  ਮਿਲਾਓ_classes (subclasses[i], classes[i + pos]);
 	      }
 
-	    byte_offset += (*ptr)->size;
+	    byte_ਵਿੱਥ += (*ptr)->ਮਾਪ;
 	  }
 
-	if (words > 2)
+	ਜੇ (ਸ਼ਬਦ > 2)
 	  {
 	    /* When size > 16 bytes, if the first one isn't
 	       X86_64_SSE_CLASS or any other ones aren't
 	       X86_64_SSEUP_CLASS, everything should be passed in
 	       memory.  */
-	    if (classes[0] != X86_64_SSE_CLASS)
-	      return 0;
+	    ਜੇ (classes[0] != X86_64_SSE_CLASS)
+	      ਵਾਪਸ 0;
 
-	    for (i = 1; i < words; i++)
-	      if (classes[i] != X86_64_SSEUP_CLASS)
-		return 0;
+	    ਲਈ (i = 1; i < ਸ਼ਬਦ; i++)
+	      ਜੇ (classes[i] != X86_64_SSEUP_CLASS)
+		ਵਾਪਸ 0;
 	  }
 
 	/* Final merger cleanup.  */
-	for (i = 0; i < words; i++)
+	ਲਈ (i = 0; i < ਸ਼ਬਦ; i++)
 	  {
 	    /* If one class is MEMORY, everything should be passed in
 	       memory.  */
-	    if (classes[i] == X86_64_MEMORY_CLASS)
-	      return 0;
+	    ਜੇ (classes[i] == X86_64_ਸਮ੍ਰਿਤੀ_CLASS)
+	      ਵਾਪਸ 0;
 
 	    /* The X86_64_SSEUP_CLASS should be always preceded by
 	       X86_64_SSE_CLASS or X86_64_SSEUP_CLASS.  */
-	    if (i > 1 && classes[i] == X86_64_SSEUP_CLASS
+	    ਜੇ (i > 1 && classes[i] == X86_64_SSEUP_CLASS
 		&& classes[i - 1] != X86_64_SSE_CLASS
 		&& classes[i - 1] != X86_64_SSEUP_CLASS)
 	      {
@@ -320,76 +320,76 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 
 	    /*  If X86_64_X87UP_CLASS isn't preceded by X86_64_X87_CLASS,
 		everything should be passed in memory.  */
-	    if (i > 1 && classes[i] == X86_64_X87UP_CLASS
+	    ਜੇ (i > 1 && classes[i] == X86_64_X87_ਉੱਪਰ_CLASS
 		&& (classes[i - 1] != X86_64_X87_CLASS))
 	      {
 		/* The first one should never be X86_64_X87UP_CLASS.  */
 		FFI_ASSERT (i != 0);
-		return 0;
+		ਵਾਪਸ 0;
 	      }
 	  }
-	return words;
+	ਵਾਪਸ ਸ਼ਬਦ;
       }
-    case FFI_TYPE_VECTOR:
+    ਹਾਲਤ FFI_TYPE_ਸਦਿਸ਼:
       /* A Short Vector occupies SSE registers: an 8-byte vector is a single
 	 SSE eightbyte; a 16-byte vector is one %xmm register (SSE + SSEUP).
 	 Wider vectors would need %ymm/%zmm handling this port does not
 	 implement; classify them as memory here and reject them outright in
 	 ffi_prep_cif_machdep so the caller gets FFI_BAD_TYPEDEF, not a
 	 silently wrong in-memory pass.  */
-      if (type->size == 8)
+      ਜੇ (type->ਮਾਪ == 8)
 	{
 	  classes[0] = X86_64_SSE_CLASS;
-	  return 1;
+	  ਵਾਪਸ 1;
 	}
-      else if (type->size == 16)
+      ਨਹੀਂਤਾਂ ਜੇ (type->ਮਾਪ == 16)
 	{
 	  classes[0] = X86_64_SSE_CLASS;
 	  classes[1] = X86_64_SSEUP_CLASS;
-	  return 2;
+	  ਵਾਪਸ 2;
 	}
-      return 0;
-    case FFI_TYPE_COMPLEX:
+      ਵਾਪਸ 0;
+    ਹਾਲਤ FFI_TYPE_COMPLEX:
       {
 	ffi_type *inner = type->elements[0];
-	switch (inner->type)
+	ਚੋਣ (inner->type)
 	  {
-	  case FFI_TYPE_INT:
-	  case FFI_TYPE_UINT8:
-	  case FFI_TYPE_SINT8:
-	  case FFI_TYPE_UINT16:
-	  case FFI_TYPE_SINT16:
-	  case FFI_TYPE_UINT32:
-	  case FFI_TYPE_SINT32:
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
-	    goto do_integer;
+	  ਹਾਲਤ FFI_TYPE_INT:
+	  ਹਾਲਤ FFI_TYPE_UINT8:
+	  ਹਾਲਤ FFI_TYPE_SINT8:
+	  ਹਾਲਤ FFI_TYPE_UINT16:
+	  ਹਾਲਤ FFI_TYPE_SINT16:
+	  ਹਾਲਤ FFI_TYPE_UINT32:
+	  ਹਾਲਤ FFI_TYPE_SINT32:
+	  ਹਾਲਤ FFI_TYPE_UINT64:
+	  ਹਾਲਤ FFI_TYPE_SINT64:
+	    ਜਾਓ do_integer;
 
-	  case FFI_TYPE_SINT128:
-	  case FFI_TYPE_UINT128:
-	    return 0;
+	  ਹਾਲਤ FFI_TYPE_SINT128:
+	  ਹਾਲਤ FFI_TYPE_UINT128:
+	    ਵਾਪਸ 0;
 
-	  case FFI_TYPE_FLOAT:
+	  ਹਾਲਤ FFI_TYPE_FLOAT:
 	    classes[0] = X86_64_SSE_CLASS;
-	    if (byte_offset % 8)
+	    ਜੇ (byte_ਵਿੱਥ % 8)
 	      {
 		classes[1] = X86_64_SSESF_CLASS;
-		return 2;
+		ਵਾਪਸ 2;
 	      }
-	    return 1;
-	  case FFI_TYPE_DOUBLE:
+	    ਵਾਪਸ 1;
+	  ਹਾਲਤ FFI_TYPE_DOUBLE:
 	    classes[0] = classes[1] = X86_64_SSEDF_CLASS;
-	    return 2;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	  case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+	    ਵਾਪਸ 2;
+#ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	  ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
+#ਜੇ FFI_LONGDOUBLE_BINARY128
 	    /* _Complex binary128 is 32 bytes -> passed/returned in memory.  */
-	    return 0;
-#else
+	    ਵਾਪਸ 0;
+#ਨਹੀਂਤਾਂ
 	    classes[0] = X86_64_COMPLEX_X87_CLASS;
-	    return 1;
-#endif
-#endif
+	    ਵਾਪਸ 1;
+#ਜੇ_ਅੰਤ
+#ਜੇ_ਅੰਤ
 	  }
       }
     }
@@ -400,265 +400,265 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
    class.  Return zero iff parameter should be passed in memory, otherwise
    the number of registers.  */
 
-static size_t
-examine_argument (ffi_type *type, enum x86_64_reg_class classes[MAX_CLASSES],
-		  _Bool in_return, int *pngpr, int *pnsse)
+ਸਥਿਰ size_t
+examine_ਦਲੀਲ (ffi_type *type, ਗਿਣਤੀ x86_64_reg_class classes[MAX_CLASSES],
+		  _Bool ਵਿੱਚ_return, ਪੂਰਨ *pngpr, ਪੂਰਨ *pnsse)
 {
   size_t n;
-  unsigned int i;
-  int ngpr, nsse;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
+  ਪੂਰਨ ngpr, nsse;
 
-  n = classify_argument (type, classes, 0);
-  if (n == 0)
-    return 0;
+  n = classify_ਦਲੀਲ (type, classes, 0);
+  ਜੇ (n == 0)
+    ਵਾਪਸ 0;
 
   ngpr = nsse = 0;
-  for (i = 0; i < n; ++i)
-    switch (classes[i])
+  ਲਈ (i = 0; i < n; ++i)
+    ਚੋਣ (classes[i])
       {
-      case X86_64_INTEGER_CLASS:
-      case X86_64_INTEGERSI_CLASS:
+      ਹਾਲਤ X86_64_INTEGER_CLASS:
+      ਹਾਲਤ X86_64_INTEGERSI_CLASS:
 	ngpr++;
-	break;
-      case X86_64_SSE_CLASS:
-      case X86_64_SSESF_CLASS:
-      case X86_64_SSEDF_CLASS:
+	ਰੋਕੋ;
+      ਹਾਲਤ X86_64_SSE_CLASS:
+      ਹਾਲਤ X86_64_SSESF_CLASS:
+      ਹਾਲਤ X86_64_SSEDF_CLASS:
 	nsse++;
-	break;
-      case X86_64_NO_CLASS:
-      case X86_64_SSEUP_CLASS:
-	break;
-      case X86_64_X87_CLASS:
-      case X86_64_X87UP_CLASS:
-      case X86_64_COMPLEX_X87_CLASS:
-	return in_return != 0;
-      default:
+	ਰੋਕੋ;
+      ਹਾਲਤ X86_64_NO_CLASS:
+      ਹਾਲਤ X86_64_SSEUP_CLASS:
+	ਰੋਕੋ;
+      ਹਾਲਤ X86_64_X87_CLASS:
+      ਹਾਲਤ X86_64_X87_ਉੱਪਰ_CLASS:
+      ਹਾਲਤ X86_64_COMPLEX_X87_CLASS:
+	ਵਾਪਸ ਵਿੱਚ_return != 0;
+      ਮੂਲ:
 	abort ();
       }
 
   *pngpr = ngpr;
   *pnsse = nsse;
 
-  return n;
+  ਵਾਪਸ n;
 }
 
 /* Perform machine dependent cif processing.  */
 
-#ifndef __ILP32__
-extern ffi_status
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+ਬਾਹਰੀ ffi_ਸਥਿਤੀ
 ffi_prep_cif_machdep_efi64(ffi_cif *cif);
-#endif
+#ਜੇ_ਅੰਤ
 
-ffi_status FFI_HIDDEN
+ffi_ਸਥਿਤੀ FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-  int gprcount, ssecount, i, avn, ngpr, nsse;
-  unsigned flags;
-  enum x86_64_reg_class classes[MAX_CLASSES];
-  size_t bytes, n, rtype_size;
+  ਪੂਰਨ gprcount, ssecount, i, avn, ngpr, nsse;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ flags;
+  ਗਿਣਤੀ x86_64_reg_class classes[MAX_CLASSES];
+  size_t ਬਾਈਟਾਂ, n, rtype_ਮਾਪ;
   ffi_type *rtype;
 
-#ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_cif_machdep_efi64(cif);
-#endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+  ਜੇ (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    ਵਾਪਸ ffi_prep_cif_machdep_efi64(cif);
+#ਜੇ_ਅੰਤ
+  ਜੇ (cif->abi != FFI_UNIX64)
+    ਵਾਪਸ FFI_BAD_ABI;
 
   gprcount = ssecount = 0;
 
   rtype = cif->rtype;
-  rtype_size = rtype->size;
-  switch (rtype->type)
+  rtype_ਮਾਪ = rtype->ਮਾਪ;
+  ਚੋਣ (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ਹਾਲਤ FFI_TYPE_VOID:
       flags = UNIX64_RET_VOID;
-      break;
-    case FFI_TYPE_UINT8:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT8:
       flags = UNIX64_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT8:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT8:
       flags = UNIX64_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT16:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT16:
       flags = UNIX64_RET_UINT16;
-      break;
-    case FFI_TYPE_SINT16:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT16:
       flags = UNIX64_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT32:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT32:
       flags = UNIX64_RET_UINT32;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_INT:
+    ਹਾਲਤ FFI_TYPE_SINT32:
       flags = UNIX64_RET_SINT32;
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT64:
+    ਹਾਲਤ FFI_TYPE_SINT64:
       flags = UNIX64_RET_INT64;
-      break;
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_SINT128:
-      flags = UNIX64_RET_ST_RAX_RDX | (16 << UNIX64_SIZE_SHIFT);
-      break;
-    case FFI_TYPE_POINTER:
-      flags = (sizeof(void *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
-      break;
-    case FFI_TYPE_FLOAT:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT128:
+    ਹਾਲਤ FFI_TYPE_SINT128:
+      flags = UNIX64_RET_ST_RAX_RDX | (16 << UNIX64_ਮਾਪ_ਖਿਸਕਾਓ);
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+      flags = (ਆਕਾਰ(ਖਾਲੀ *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_FLOAT:
       flags = UNIX64_RET_XMM32;
-      break;
-    case FFI_TYPE_DOUBLE:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
       flags = UNIX64_RET_XMM64;
-      break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+      ਰੋਕੋ;
+#ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
+#ਜੇ FFI_LONGDOUBLE_BINARY128
       flags = UNIX64_RET_XMM128;	/* returned in %xmm0 (16 bytes) */
-#else
+#ਨਹੀਂਤਾਂ
       flags = UNIX64_RET_X87;
-#endif
-      break;
-#endif
-    case FFI_TYPE_STRUCT:
-      n = examine_argument (cif->rtype, classes, 1, &ngpr, &nsse);
-      if (n == 0)
+#ਜੇ_ਅੰਤ
+      ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
+    ਹਾਲਤ FFI_TYPE_STRUCT:
+      n = examine_ਦਲੀਲ (cif->rtype, classes, 1, &ngpr, &nsse);
+      ਜੇ (n == 0)
 	{
 	  /* The return value is passed in memory.  A pointer to that
 	     memory is the first argument.  Allocate a register for it.  */
 	  gprcount++;
 	  /* We don't have to do anything in asm for the return.  */
-	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
+	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_ਵਿੱਚ_MEM;
 	}
-      else
+      ਨਹੀਂਤਾਂ
 	{
 	  _Bool sse0 = SSE_CLASS_P (classes[0]);
 
-	  if (rtype_size == 4 && sse0)
+	  ਜੇ (rtype_ਮਾਪ == 4 && sse0)
 	    flags = UNIX64_RET_XMM32;
-	  else if (rtype_size == 8)
+	  ਨਹੀਂਤਾਂ ਜੇ (rtype_ਮਾਪ == 8)
 	    flags = sse0 ? UNIX64_RET_XMM64 : UNIX64_RET_INT64;
-	  else
+	  ਨਹੀਂਤਾਂ
 	    {
 	      _Bool sse1 = n == 2 && SSE_CLASS_P (classes[1]);
-	      if (sse0 && sse1)
+	      ਜੇ (sse0 && sse1)
 		flags = UNIX64_RET_ST_XMM0_XMM1;
-	      else if (sse0)
+	      ਨਹੀਂਤਾਂ ਜੇ (sse0)
 		flags = UNIX64_RET_ST_XMM0_RAX;
-	      else if (sse1)
+	      ਨਹੀਂਤਾਂ ਜੇ (sse1)
 		flags = UNIX64_RET_ST_RAX_XMM0;
-	      else
+	      ਨਹੀਂਤਾਂ
 		flags = UNIX64_RET_ST_RAX_RDX;
-	      flags |= rtype_size << UNIX64_SIZE_SHIFT;
+	      flags |= rtype_ਮਾਪ << UNIX64_ਮਾਪ_ਖਿਸਕਾਓ;
 	    }
 	}
-      break;
-    case FFI_TYPE_VECTOR:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_ਸਦਿਸ਼:
       /* An 8-byte vector returns in the low half of %xmm0; a 16-byte vector
 	 fills %xmm0 (SSE + SSEUP).  Wider vectors are unsupported here.  */
-      if (rtype_size == 8)
+      ਜੇ (rtype_ਮਾਪ == 8)
 	flags = UNIX64_RET_XMM64;
-      else if (rtype_size == 16)
+      ਨਹੀਂਤਾਂ ਜੇ (rtype_ਮਾਪ == 16)
 	flags = UNIX64_RET_XMM128;
-      else
-	return FFI_BAD_TYPEDEF;
-      break;
-    case FFI_TYPE_COMPLEX:
-      switch (rtype->elements[0]->type)
+      ਨਹੀਂਤਾਂ
+	ਵਾਪਸ FFI_BAD_TYPEDEF;
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_COMPLEX:
+      ਚੋਣ (rtype->elements[0]->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	  flags = UNIX64_RET_ST_RAX_RDX | ((unsigned) rtype_size << UNIX64_SIZE_SHIFT);
-	  break;
-	case FFI_TYPE_FLOAT:
+	ਹਾਲਤ FFI_TYPE_UINT8:
+	ਹਾਲਤ FFI_TYPE_SINT8:
+	ਹਾਲਤ FFI_TYPE_UINT16:
+	ਹਾਲਤ FFI_TYPE_SINT16:
+	ਹਾਲਤ FFI_TYPE_INT:
+	ਹਾਲਤ FFI_TYPE_UINT32:
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	ਹਾਲਤ FFI_TYPE_UINT64:
+	ਹਾਲਤ FFI_TYPE_SINT64:
+	  flags = UNIX64_RET_ST_RAX_RDX | ((ਬਿਨਾਨਿਸ਼ਾਨੀ) rtype_ਮਾਪ << UNIX64_ਮਾਪ_ਖਿਸਕਾਓ);
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_FLOAT:
 	  flags = UNIX64_RET_XMM64;
-	  break;
-	case FFI_TYPE_DOUBLE:
-	  flags = UNIX64_RET_ST_XMM0_XMM1 | (16 << UNIX64_SIZE_SHIFT);
-	  break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_DOUBLE:
+	  flags = UNIX64_RET_ST_XMM0_XMM1 | (16 << UNIX64_ਮਾਪ_ਖਿਸਕਾਓ);
+	  ਰੋਕੋ;
+#ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
+#ਜੇ FFI_LONGDOUBLE_BINARY128
 	  /* _Complex binary128 (32 bytes) is returned in memory.  */
 	  gprcount++;
-	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
-#else
+	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_ਵਿੱਚ_MEM;
+#ਨਹੀਂਤਾਂ
 	  flags = UNIX64_RET_X87_2;
-#endif
-	  break;
-#endif
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
+#ਜੇ_ਅੰਤ
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
+	ਹਾਲਤ FFI_TYPE_SINT128:
+	ਹਾਲਤ FFI_TYPE_UINT128:
 	  gprcount++;
-	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
-	  break;
-	default:
-	  return FFI_BAD_TYPEDEF;
+	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_ਵਿੱਚ_MEM;
+	  ਰੋਕੋ;
+	ਮੂਲ:
+	  ਵਾਪਸ FFI_BAD_TYPEDEF;
 	}
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+      ਰੋਕੋ;
+    ਮੂਲ:
+      ਵਾਪਸ FFI_BAD_TYPEDEF;
     }
 
   /* Reject vectors wider than 16 bytes as arguments: correct %ymm/%zmm
      passing needs unix64.S register-save changes that are out of scope for
      this port, and classify_argument would otherwise silently treat them as
      an in-memory aggregate.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
-    if (cif->arg_types[i]->type == FFI_TYPE_VECTOR
-	&& cif->arg_types[i]->size > 16)
-      return FFI_BAD_TYPEDEF;
+  ਲਈ (i = 0, avn = cif->nargs; i < avn; i++)
+    ਜੇ (cif->arg_types[i]->type == FFI_TYPE_ਸਦਿਸ਼
+	&& cif->arg_types[i]->ਮਾਪ > 16)
+      ਵਾਪਸ FFI_BAD_TYPEDEF;
 
   /* Go over all arguments and determine the way they should be passed.
      If it's in a register and there is space for it, let that be so. If
      not, add it's size to the stack byte count.  */
-  for (bytes = 0, i = 0, avn = cif->nargs; i < avn; i++)
+  ਲਈ (ਬਾਈਟਾਂ = 0, i = 0, avn = cif->nargs; i < avn; i++)
     {
-      if (examine_argument (cif->arg_types[i], classes, 0, &ngpr, &nsse) == 0
+      ਜੇ (examine_ਦਲੀਲ (cif->arg_types[i], classes, 0, &ngpr, &nsse) == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
-	  long align = cif->arg_types[i]->alignment;
+	  ਲੰਮਾ align = cif->arg_types[i]->alignment;
 
-	  if (align < 8)
+	  ਜੇ (align < 8)
 	    align = 8;
 
-	  bytes = FFI_ALIGN (bytes, align);
-	  bytes += cif->arg_types[i]->size;
+	  ਬਾਈਟਾਂ = FFI_ALIGN (ਬਾਈਟਾਂ, align);
+	  ਬਾਈਟਾਂ += cif->arg_types[i]->ਮਾਪ;
 	}
-      else
+      ਨਹੀਂਤਾਂ
 	{
 	  gprcount += ngpr;
 	  ssecount += nsse;
 	}
     }
-  if (ssecount)
-    flags |= UNIX64_FLAG_XMM_ARGS;
+  ਜੇ (ssecount)
+    flags |= UNIX64_FLAG_XMM_ਦਲੀਲਾਂ;
 
   cif->flags = flags;
-  cif->bytes = (unsigned) FFI_ALIGN (bytes, 8);
+  cif->ਬਾਈਟਾਂ = (ਬਿਨਾਨਿਸ਼ਾਨੀ) FFI_ALIGN (ਬਾਈਟਾਂ, 8);
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
 /* n.b. ffi_call_unix64 will steal the alloca'd `stack` variable here for use
    _as its own stack_ - so we need to compile this function without ASAN */
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ਸਥਿਰ ਖਾਲੀ
+ffi_call_int (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+	      ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
-  enum x86_64_reg_class classes[MAX_CLASSES];
-  char *stack, *argp;
+  ਗਿਣਤੀ x86_64_reg_class classes[MAX_CLASSES];
+  ਅੱਖਰ *ਢੇਰ, *argp;
   ffi_type **arg_types;
-  int gprcount, ssecount, ngpr, nsse, i, avn, flags;
-  struct register_args *reg_args;
+  ਪੂਰਨ gprcount, ssecount, ngpr, nsse, i, avn, flags;
+  ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ *reg_ਦਲੀਲਾਂ;
 
   /* Can't call 32-bit mode from 64-bit mode.  */
   FFI_ASSERT (cif->abi == FFI_UNIX64);
@@ -666,11 +666,11 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  Otherwise we can ignore it.  */
   flags = cif->flags;
-  if (rvalue == NULL)
+  ਜੇ (rvalue == ਨਿਰਾ)
     {
-      if (flags & UNIX64_FLAG_RET_IN_MEM)
-	rvalue = alloca (cif->rtype->size);
-      else
+      ਜੇ (flags & UNIX64_FLAG_RET_ਵਿੱਚ_MEM)
+	rvalue = alloca (cif->rtype->ਮਾਪ);
+      ਨਹੀਂਤਾਂ
 	flags = UNIX64_RET_VOID;
     }
 
@@ -678,102 +678,102 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   avn = cif->nargs;
 
   /* Allocate the space for the arguments, plus 4 words of temp space.  */
-  stack = alloca (sizeof (struct register_args) + cif->bytes + 4*8);
-  reg_args = (struct register_args *) stack;
-  argp = stack + sizeof (struct register_args);
+  ਢੇਰ = alloca (ਆਕਾਰ (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ) + cif->ਬਾਈਟਾਂ + 4*8);
+  reg_ਦਲੀਲਾਂ = (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ *) ਢੇਰ;
+  argp = ਢੇਰ + ਆਕਾਰ (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ);
 
-  reg_args->r10 = (uintptr_t) closure;
+  reg_ਦਲੀਲਾਂ->r10 = (uintptr_t) ਘੇਰਾ;
 
   gprcount = ssecount = 0;
 
   /* If the return value is passed in memory, add the pointer as the
      first integer argument.  */
-  if (flags & UNIX64_FLAG_RET_IN_MEM)
-    reg_args->gpr[gprcount++] = (unsigned long) rvalue;
+  ਜੇ (flags & UNIX64_FLAG_RET_ਵਿੱਚ_MEM)
+    reg_ਦਲੀਲਾਂ->gpr[gprcount++] = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) rvalue;
 
-  for (i = 0; i < avn; ++i)
+  ਲਈ (i = 0; i < avn; ++i)
     {
-      size_t n, size = arg_types[i]->size;
+      size_t n, ਮਾਪ = arg_types[i]->ਮਾਪ;
 
-      n = examine_argument (arg_types[i], classes, 0, &ngpr, &nsse);
-      if (n == 0
+      n = examine_ਦਲੀਲ (arg_types[i], classes, 0, &ngpr, &nsse);
+      ਜੇ (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
-	  long align = arg_types[i]->alignment;
+	  ਲੰਮਾ align = arg_types[i]->alignment;
 
 	  /* Stack arguments are *always* at least 8 byte aligned.  */
-	  if (align < 8)
+	  ਜੇ (align < 8)
 	    align = 8;
 
           /* Pass this argument in memory.  */
-          argp = (void *) FFI_ALIGN (argp, align);
-          memcpy (argp, avalue[i], size);
+          argp = (ਖਾਲੀ *) FFI_ALIGN (argp, align);
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ (argp, avalue[i], ਮਾਪ);
 
-          argp += size;
+          argp += ਮਾਪ;
         }
-      else
+      ਨਹੀਂਤਾਂ
 	{
 	  /* The argument is passed entirely in registers.  */
-	  char *a = (char *) avalue[i];
-	  unsigned int j;
+	  ਅੱਖਰ *a = (ਅੱਖਰ *) avalue[i];
+	  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ j;
 
-	  for (j = 0; j < n; j++, a += 8, size -= 8)
+	  ਲਈ (j = 0; j < n; j++, a += 8, ਮਾਪ -= 8)
 	    {
-	      switch (classes[j])
+	      ਚੋਣ (classes[j])
 		{
-		case X86_64_NO_CLASS:
-		  break;
-		case X86_64_SSEUP_CLASS:
+		ਹਾਲਤ X86_64_NO_CLASS:
+		  ਰੋਕੋ;
+		ਹਾਲਤ X86_64_SSEUP_CLASS:
 		  /* The upper 8 bytes of the same %xmm register written by
 		     the preceding SSE class (e.g. the high half of a
 		     binary128 long double).  */
-		  memcpy ((char *) &reg_args->sse[ssecount - 1] + 8, a,
-			  size < 8 ? size : 8);
-		  break;
-		case X86_64_INTEGER_CLASS:
-		case X86_64_INTEGERSI_CLASS:
+		  ਸਮ੍ਰਿਤੀ_ਨਕਲ ((ਅੱਖਰ *) &reg_ਦਲੀਲਾਂ->sse[ssecount - 1] + 8, a,
+			  ਮਾਪ < 8 ? ਮਾਪ : 8);
+		  ਰੋਕੋ;
+		ਹਾਲਤ X86_64_INTEGER_CLASS:
+		ਹਾਲਤ X86_64_INTEGERSI_CLASS:
 		  /* Sign-extend integer arguments passed in general
 		     purpose registers, to cope with the fact that
 		     LLVM incorrectly assumes that this will be done
 		     (the x86-64 PS ABI does not specify this). */
-		  switch (arg_types[i]->type)
+		  ਚੋਣ (arg_types[i]->type)
 		    {
-		    case FFI_TYPE_SINT8:
-		      reg_args->gpr[gprcount] = (SINT64) *((SINT8 *) a);
-		      break;
-		    case FFI_TYPE_SINT16:
-		      reg_args->gpr[gprcount] = (SINT64) *((SINT16 *) a);
-		      break;
-		    case FFI_TYPE_SINT32:
-		      reg_args->gpr[gprcount] = (SINT64) *((SINT32 *) a);
-		      break;
-		    default:
-		      reg_args->gpr[gprcount] = 0;
-		      memcpy (&reg_args->gpr[gprcount], a, size <= 8 ? size : 8);
+		    ਹਾਲਤ FFI_TYPE_SINT8:
+		      reg_ਦਲੀਲਾਂ->gpr[gprcount] = (SINT64) *((SINT8 *) a);
+		      ਰੋਕੋ;
+		    ਹਾਲਤ FFI_TYPE_SINT16:
+		      reg_ਦਲੀਲਾਂ->gpr[gprcount] = (SINT64) *((SINT16 *) a);
+		      ਰੋਕੋ;
+		    ਹਾਲਤ FFI_TYPE_SINT32:
+		      reg_ਦਲੀਲਾਂ->gpr[gprcount] = (SINT64) *((SINT32 *) a);
+		      ਰੋਕੋ;
+		    ਮੂਲ:
+		      reg_ਦਲੀਲਾਂ->gpr[gprcount] = 0;
+		      ਸਮ੍ਰਿਤੀ_ਨਕਲ (&reg_ਦਲੀਲਾਂ->gpr[gprcount], a, ਮਾਪ <= 8 ? ਮਾਪ : 8);
 		    }
 		  gprcount++;
-		  break;
-		case X86_64_SSE_CLASS:
-		case X86_64_SSEDF_CLASS:
-		  memcpy (&reg_args->sse[ssecount++].i64, a, sizeof(UINT64));
-		  break;
-		case X86_64_SSESF_CLASS:
-		  memcpy (&reg_args->sse[ssecount++].i32, a, sizeof(UINT32));
-		  break;
-		default:
+		  ਰੋਕੋ;
+		ਹਾਲਤ X86_64_SSE_CLASS:
+		ਹਾਲਤ X86_64_SSEDF_CLASS:
+		  ਸਮ੍ਰਿਤੀ_ਨਕਲ (&reg_ਦਲੀਲਾਂ->sse[ssecount++].i64, a, ਆਕਾਰ(UINT64));
+		  ਰੋਕੋ;
+		ਹਾਲਤ X86_64_SSESF_CLASS:
+		  ਸਮ੍ਰਿਤੀ_ਨਕਲ (&reg_ਦਲੀਲਾਂ->sse[ssecount++].i32, a, ਆਕਾਰ(UINT32));
+		  ਰੋਕੋ;
+		ਮੂਲ:
 		  abort();
 		}
 	    }
 	}
     }
-  reg_args->rax = ssecount;
+  reg_ਦਲੀਲਾਂ->rax = ssecount;
 
-  ffi_call_unix64 (stack, cif->bytes + sizeof (struct register_args),
+  ffi_call_unix64 (ਢੇਰ, cif->ਬਾਈਟਾਂ + ਆਕਾਰ (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ),
 		   flags, rvalue, fn);
 }
 
-#ifndef __ILP32__
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
 /* =====================================================================
    Precompiled argument-placement plan, used by the ffi_call_plan API.
 
@@ -792,280 +792,280 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
    complex, or x87 long double argument has no plan, so the caller's invoke
    falls back to ffi_call. */
 
-enum ffi_move_op
+ਗਿਣਤੀ ffi_move_op
 {
   FFI_MOVE_SE8, FFI_MOVE_SE16, FFI_MOVE_SE32,  /* sign-extend N bytes -> gpr   */
   FFI_MOVE_GP64,                               /* copy a full 8-byte word -> gpr */
   FFI_MOVE_GP,                                 /* zero gpr, copy len(<8) bytes  */
   FFI_MOVE_SSE64, FFI_MOVE_SSE32,              /* copy 8/4 bytes -> sse slot    */
-  FFI_MOVE_STACK                               /* copy len bytes -> stack       */
+  FFI_MOVE_ਢੇਰ                               /* copy len bytes -> stack       */
 };
 
-typedef struct
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ
 {
-  unsigned src_idx;     /* avalue[] index                                  */
-  unsigned src_off;     /* byte offset within avalue[src_idx] (chunk * 8)  */
-  unsigned dst_off;     /* byte offset within the register_args+stack buf  */
-  unsigned len;         /* bytes for FFI_MOVE_GP / FFI_MOVE_STACK          */
-  unsigned char op;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ src_idx;     /* avalue[] index                                  */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ src_off;     /* byte offset within avalue[src_idx] (chunk * 8)  */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ dst_off;     /* byte offset within the register_args+stack buf  */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ len;         /* bytes for FFI_MOVE_GP / FFI_MOVE_STACK          */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ op;
 } ffi_move;
 
-typedef struct
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਣਤਰ
 {
-  unsigned nmoves;
-  unsigned ssecount;    /* -> reg_args->rax                                */
-  unsigned bytes;       /* stack-arg area size (== cif->bytes)             */
-  unsigned flags;       /* == cif->flags                                   */
-  unsigned ret_in_mem;  /* nonzero -> reg_args->gpr[0] = rvalue            */
-  unsigned fast;        /* nonzero -> lean trampoline eligible             */
-  unsigned retcode;     /* UNIX64_RET_* (low byte of flags) for the store  */
-  int      thunk_n;     /* >=0 -> ffi_gp_thunks[thunk_n], else -1          */
-  unsigned alloc_bytes; /* malloc'd size, reported by ffi_call_plan_size   */
-  ffi_move moves[];
+  ਬਿਨਾਨਿਸ਼ਾਨੀ nmoves;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ssecount;    /* -> reg_args->rax                                */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਬਾਈਟਾਂ;       /* stack-arg area size (== cif->bytes)             */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ flags;       /* == cif->flags                                   */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ret_ਵਿੱਚ_mem;  /* nonzero -> reg_args->gpr[0] = rvalue            */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ fast;        /* nonzero -> lean trampoline eligible             */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ retcode;     /* UNIX64_RET_* (low byte of flags) for the store  */
+  ਪੂਰਨ      thunk_n;     /* >=0 -> ffi_gp_thunks[thunk_n], else -1          */
+  ਬਿਨਾਨਿਸ਼ਾਨੀ alloc_ਬਾਈਟਾਂ; /* malloc'd size, reported by ffi_call_plan_size   */
+  ffi_move ਚਾਲਾਂ[];
 } ffi_plan;
 
 /* Return of the lean trampoline / direct thunks: callee's rax in .i, xmm0 in .d. */
-struct ffi_ret2 { UINT64 i; double d; };
-extern struct ffi_ret2 ffi_plan_fast_call (struct register_args *img,
-					   void (*fn) (void)) FFI_HIDDEN;
+ਬਣਤਰ ffi_ret2 { UINT64 i; ਦੁੱਗਣਾ d; };
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_fast_call (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ *img,
+					   ਖਾਲੀ (*fn) (ਖਾਲੀ)) FFI_HIDDEN;
 
 /* Count-based direct thunks: load avalue[0..N-1] into arg registers, call. */
-extern struct ffi_ret2 ffi_plan_gp0 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp1 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp2 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp3 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp4 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp5 (void **, void (*)(void)) FFI_HIDDEN;
-extern struct ffi_ret2 ffi_plan_gp6 (void **, void (*)(void)) FFI_HIDDEN;
-static struct ffi_ret2 (*const ffi_gp_thunks[7]) (void **, void (*)(void)) =
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_gp0 (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) FFI_HIDDEN;
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_gp1 (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) FFI_HIDDEN;
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_gp2 (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) FFI_HIDDEN;
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_gp3 (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) FFI_HIDDEN;
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_gp4 (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) FFI_HIDDEN;
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_gp5 (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) FFI_HIDDEN;
+ਬਾਹਰੀ ਬਣਤਰ ffi_ret2 ffi_plan_gp6 (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) FFI_HIDDEN;
+ਸਥਿਰ ਬਣਤਰ ffi_ret2 (*ਅਚਲ ffi_gp_thunks[7]) (ਖਾਲੀ **, ਖਾਲੀ (*)(ਖਾਲੀ)) =
   { ffi_plan_gp0, ffi_plan_gp1, ffi_plan_gp2, ffi_plan_gp3,
     ffi_plan_gp4, ffi_plan_gp5, ffi_plan_gp6 };
 
 /* Store the callee return value, replicating the unix64.S store_table widths. */
-static inline void
-store_ret (void *rvalue, unsigned retcode, struct ffi_ret2 r)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਖਾਲੀ
+store_ret (ਖਾਲੀ *rvalue, ਬਿਨਾਨਿਸ਼ਾਨੀ retcode, ਬਣਤਰ ffi_ret2 r)
 {
-  switch (retcode)
+  ਚੋਣ (retcode)
     {
-    case UNIX64_RET_VOID:   break;
-    case UNIX64_RET_UINT8:  *(UINT64 *) rvalue = (UINT8)  r.i; break;
-    case UNIX64_RET_UINT16: *(UINT64 *) rvalue = (UINT16) r.i; break;
-    case UNIX64_RET_UINT32: *(UINT64 *) rvalue = (UINT32) r.i; break;
-    case UNIX64_RET_SINT8:  *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT8)  r.i; break;
-    case UNIX64_RET_SINT16: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT16) r.i; break;
-    case UNIX64_RET_SINT32: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT32) r.i; break;
-    case UNIX64_RET_INT64:  *(UINT64 *) rvalue = r.i; break;
-    case UNIX64_RET_XMM32:  memcpy (rvalue, &r.d, 4); break;
-    case UNIX64_RET_XMM64:  memcpy (rvalue, &r.d, 8); break;
+    ਹਾਲਤ UNIX64_RET_VOID:   ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_UINT8:  *(UINT64 *) rvalue = (UINT8)  r.i; ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_UINT16: *(UINT64 *) rvalue = (UINT16) r.i; ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_UINT32: *(UINT64 *) rvalue = (UINT32) r.i; ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_SINT8:  *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT8)  r.i; ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_SINT16: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT16) r.i; ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_SINT32: *(UINT64 *) rvalue = (UINT64)(SINT64)(SINT32) r.i; ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_INT64:  *(UINT64 *) rvalue = r.i; ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_XMM32:  ਸਮ੍ਰਿਤੀ_ਨਕਲ (rvalue, &r.d, 4); ਰੋਕੋ;
+    ਹਾਲਤ UNIX64_RET_XMM64:  ਸਮ੍ਰਿਤੀ_ਨਕਲ (rvalue, &r.d, 8); ਰੋਕੋ;
     }
 }
 
 /* Build the move-list for CIF, or NULL if not plan-able (caller falls back). */
-static ffi_plan *
+ਸਥਿਰ ffi_plan *
 build_plan (ffi_cif *cif)
 {
-  unsigned i, avn = cif->nargs;
-  enum x86_64_reg_class classes[MAX_CLASSES];
-  unsigned nm, gprcount, ssecount;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ i, avn = cif->nargs;
+  ਗਿਣਤੀ x86_64_reg_class classes[MAX_CLASSES];
+  ਬਿਨਾਨਿਸ਼ਾਨੀ nm, gprcount, ssecount;
   size_t argp_off, nbytes;
   ffi_plan *plan;
-  int all_gp64 = 1;	/* every arg is exactly one 64-bit GP move? */
+  ਪੂਰਨ all_gp64 = 1;	/* every arg is exactly one 64-bit GP move? */
 
-  if (cif->abi != FFI_UNIX64)
-    return NULL;
+  ਜੇ (cif->abi != FFI_UNIX64)
+    ਵਾਪਸ ਨਿਰਾ;
 
   /* Reject arg types this cut doesn't encode; returns are handled by flags. */
-  for (i = 0; i < avn; i++)
+  ਲਈ (i = 0; i < avn; i++)
     {
-      int t = cif->arg_types[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
-	return NULL;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      if (t == FFI_TYPE_LONGDOUBLE)
-	return NULL;
-#endif
+      ਪੂਰਨ t = cif->arg_types[i]->type;
+      ਜੇ (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+	ਵਾਪਸ ਨਿਰਾ;
+#ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      ਜੇ (t == FFI_TYPE_LONGDOUBLE)
+	ਵਾਪਸ ਨਿਰਾ;
+#ਜੇ_ਅੰਤ
     }
 
   /* One self-contained allocation: header + moves, released with plain free(). */
-  nbytes = sizeof (ffi_plan) + sizeof (ffi_move) * (2 * avn + 1);
-  plan = malloc (nbytes);
-  if (plan == NULL)
-    return NULL;
-  plan->alloc_bytes = (unsigned) nbytes;
+  nbytes = ਆਕਾਰ (ffi_plan) + ਆਕਾਰ (ffi_move) * (2 * avn + 1);
+  plan = ਸਮ੍ਰਿਤੀ_ਦਿਓ (nbytes);
+  ਜੇ (plan == ਨਿਰਾ)
+    ਵਾਪਸ ਨਿਰਾ;
+  plan->alloc_ਬਾਈਟਾਂ = (ਬਿਨਾਨਿਸ਼ਾਨੀ) nbytes;
 
   nm = gprcount = ssecount = 0;
   argp_off = 0;
-  plan->ret_in_mem = (cif->flags & UNIX64_FLAG_RET_IN_MEM) ? 1 : 0;
-  if (plan->ret_in_mem)
+  plan->ret_ਵਿੱਚ_mem = (cif->flags & UNIX64_FLAG_RET_ਵਿੱਚ_MEM) ? 1 : 0;
+  ਜੇ (plan->ret_ਵਿੱਚ_mem)
     gprcount++;				/* sret pointer occupies gpr[0] */
 
-  for (i = 0; i < avn; i++)
+  ਲਈ (i = 0; i < avn; i++)
     {
       ffi_type *at = cif->arg_types[i];
-      size_t size = at->size, n, rem;
-      int ngpr, nsse;
-      unsigned j;
+      size_t ਮਾਪ = at->ਮਾਪ, n, rem;
+      ਪੂਰਨ ngpr, nsse;
+      ਬਿਨਾਨਿਸ਼ਾਨੀ j;
 
-      n = examine_argument (at, classes, 0, &ngpr, &nsse);
-      if (n == 0
+      n = examine_ਦਲੀਲ (at, classes, 0, &ngpr, &nsse);
+      ਜੇ (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
-	  long align = at->alignment;
-	  ffi_move *m = &plan->moves[nm++];
+	  ਲੰਮਾ align = at->alignment;
+	  ffi_move *m = &plan->ਚਾਲਾਂ[nm++];
 	  all_gp64 = 0;
-	  if (align < 8)
+	  ਜੇ (align < 8)
 	    align = 8;
 	  argp_off = FFI_ALIGN (argp_off, align);
-	  m->op = FFI_MOVE_STACK;
+	  m->op = FFI_MOVE_ਢੇਰ;
 	  m->src_idx = i;
 	  m->src_off = 0;
-	  m->dst_off = (unsigned) (sizeof (struct register_args) + argp_off);
-	  m->len = (unsigned) size;
-	  argp_off += size;
-	  continue;
+	  m->dst_off = (ਬਿਨਾਨਿਸ਼ਾਨੀ) (ਆਕਾਰ (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ) + argp_off);
+	  m->len = (ਬਿਨਾਨਿਸ਼ਾਨੀ) ਮਾਪ;
+	  argp_off += ਮਾਪ;
+	  ਜਾਰੀ;
 	}
 
-      for (j = 0, rem = size; j < n; j++, rem -= 8)
+      ਲਈ (j = 0, rem = ਮਾਪ; j < n; j++, rem -= 8)
 	{
 	  ffi_move m;
 	  m.src_idx = i;
 	  m.src_off = j * 8;
-	  switch (classes[j])
+	  ਚੋਣ (classes[j])
 	    {
-	    case X86_64_NO_CLASS:
-	    case X86_64_SSEUP_CLASS:
-	      continue;			/* nothing placed for this 8-byte */
-	    case X86_64_INTEGER_CLASS:
-	    case X86_64_INTEGERSI_CLASS:
+	    ਹਾਲਤ X86_64_NO_CLASS:
+	    ਹਾਲਤ X86_64_SSEUP_CLASS:
+	      ਜਾਰੀ;			/* nothing placed for this 8-byte */
+	    ਹਾਲਤ X86_64_INTEGER_CLASS:
+	    ਹਾਲਤ X86_64_INTEGERSI_CLASS:
 	      m.dst_off = gprcount * 8;	/* offsetof(register_args,gpr) == 0 */
-	      switch (at->type)
+	      ਚੋਣ (at->type)
 		{
-		case FFI_TYPE_SINT8:  m.op = FFI_MOVE_SE8;  all_gp64 = 0; break;
-		case FFI_TYPE_SINT16: m.op = FFI_MOVE_SE16; all_gp64 = 0; break;
-		case FFI_TYPE_SINT32: m.op = FFI_MOVE_SE32; all_gp64 = 0; break;
-		default:
-		  if (rem >= 8)
+		ਹਾਲਤ FFI_TYPE_SINT8:  m.op = FFI_MOVE_SE8;  all_gp64 = 0; ਰੋਕੋ;
+		ਹਾਲਤ FFI_TYPE_SINT16: m.op = FFI_MOVE_SE16; all_gp64 = 0; ਰੋਕੋ;
+		ਹਾਲਤ FFI_TYPE_SINT32: m.op = FFI_MOVE_SE32; all_gp64 = 0; ਰੋਕੋ;
+		ਮੂਲ:
+		  ਜੇ (rem >= 8)
 		    m.op = FFI_MOVE_GP64;
-		  else
-		    { m.op = FFI_MOVE_GP; m.len = (unsigned) rem; all_gp64 = 0; }
-		  break;
+		  ਨਹੀਂਤਾਂ
+		    { m.op = FFI_MOVE_GP; m.len = (ਬਿਨਾਨਿਸ਼ਾਨੀ) rem; all_gp64 = 0; }
+		  ਰੋਕੋ;
 		}
 	      gprcount++;
-	      break;
-	    case X86_64_SSE_CLASS:
-	    case X86_64_SSEDF_CLASS:
-	      m.dst_off = (unsigned) (offsetof (struct register_args, sse)
-				      + ssecount * sizeof (union big_int_union));
+	      ਰੋਕੋ;
+	    ਹਾਲਤ X86_64_SSE_CLASS:
+	    ਹਾਲਤ X86_64_SSEDF_CLASS:
+	      m.dst_off = (ਬਿਨਾਨਿਸ਼ਾਨੀ) (offsetof (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ, sse)
+				      + ssecount * ਆਕਾਰ (ਸੰਘ big_int_union));
 	      m.op = FFI_MOVE_SSE64;
 	      ssecount++;
 	      all_gp64 = 0;
-	      break;
-	    case X86_64_SSESF_CLASS:
-	      m.dst_off = (unsigned) (offsetof (struct register_args, sse)
-				      + ssecount * sizeof (union big_int_union));
+	      ਰੋਕੋ;
+	    ਹਾਲਤ X86_64_SSESF_CLASS:
+	      m.dst_off = (ਬਿਨਾਨਿਸ਼ਾਨੀ) (offsetof (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ, sse)
+				      + ssecount * ਆਕਾਰ (ਸੰਘ big_int_union));
 	      m.op = FFI_MOVE_SSE32;
 	      ssecount++;
 	      all_gp64 = 0;
-	      break;
-	    default:
-	      free (plan);		/* X87 etc. in registers: bail */
-	      return NULL;
+	      ਰੋਕੋ;
+	    ਮੂਲ:
+	      ਮੁਕਤ (plan);		/* X87 etc. in registers: bail */
+	      ਵਾਪਸ ਨਿਰਾ;
 	    }
-	  plan->moves[nm++] = m;
+	  plan->ਚਾਲਾਂ[nm++] = m;
 	}
     }
 
   plan->nmoves = nm;
   plan->ssecount = ssecount;
-  plan->bytes = cif->bytes;
+  plan->ਬਾਈਟਾਂ = cif->ਬਾਈਟਾਂ;
   plan->flags = cif->flags;
   plan->retcode = cif->flags & 0xff;	/* UNIX64_RET_* */
   /* Lean-trampoline eligible: no spilled stack args and a simple return
      (VOID..XMM64, codes 0..9; RET_IN_MEM has low byte VOID).  Struct-in-regs
      (>=12) and x87 (10,11) returns stay on ffi_call_unix64. */
-  plan->fast = (cif->bytes == 0 && plan->retcode <= UNIX64_RET_XMM64) ? 1 : 0;
+  plan->fast = (cif->ਬਾਈਟਾਂ == 0 && plan->retcode <= UNIX64_RET_XMM64) ? 1 : 0;
   /* Pure-GP64 direct thunk: every arg is one 64-bit GP value (so a plain load
      per arg is exact), <=6 of them, no sret, simple return -> load avalue
      straight into the arg registers, no register image. */
   plan->thunk_n =
-    (all_gp64 && !plan->ret_in_mem && nm == avn && avn <= MAX_GPR_REGS
+    (all_gp64 && !plan->ret_ਵਿੱਚ_mem && nm == avn && avn <= MAX_GPR_REGS
      && plan->fast)
-    ? (int) avn : -1;
-  return plan;
+    ? (ਪੂਰਨ) avn : -1;
+  ਵਾਪਸ plan;
 }
 
 /* Execute PLAN: rebuild register_args + stack buffer, then ffi_call_unix64. */
 FFI_ASAN_NO_SANITIZE
-static inline __attribute__ ((always_inline)) void
-plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
-	   void *rvalue, void **avalue)
+ਸਥਿਰ ਸਤਰਅੰਦਰ __attribute__ ((always_inline)) ਖਾਲੀ
+plan_exec (ffi_cif *cif, ffi_plan *plan, ਖਾਲੀ (*fn) (ਖਾਲੀ),
+	   ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
-  unsigned flags = plan->flags;
-  struct register_args local __attribute__ ((aligned (16)));
-  char *stack = NULL;
-  struct register_args *reg_args;
-  unsigned k;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ flags = plan->flags;
+  ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ local __attribute__ ((aligned (16)));
+  ਅੱਖਰ *ਢੇਰ = ਨਿਰਾ;
+  ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ *reg_ਦਲੀਲਾਂ;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ k;
 
-  if (rvalue == NULL)
+  ਜੇ (rvalue == ਨਿਰਾ)
     {
-      if (flags & UNIX64_FLAG_RET_IN_MEM)
-	rvalue = alloca (cif->rtype->size);
-      else
+      ਜੇ (flags & UNIX64_FLAG_RET_ਵਿੱਚ_MEM)
+	rvalue = alloca (cif->rtype->ਮਾਪ);
+      ਨਹੀਂਤਾਂ
 	flags = UNIX64_RET_VOID;
     }
 
-  if (plan->thunk_n >= 0)
+  ਜੇ (plan->thunk_n >= 0)
     {
       /* Pure-GP64: load avalue straight into arg regs, no image at all. */
-      struct ffi_ret2 r = ffi_gp_thunks[plan->thunk_n] (avalue, fn);
-      if (rvalue != NULL)
+      ਬਣਤਰ ffi_ret2 r = ffi_gp_thunks[plan->thunk_n] (avalue, fn);
+      ਜੇ (rvalue != ਨਿਰਾ)
 	store_ret (rvalue, plan->retcode, r);
-      return;
+      ਵਾਪਸ;
     }
 
-  if (plan->fast)
-    reg_args = &local;			/* no stack args: fixed local image */
-  else
+  ਜੇ (plan->fast)
+    reg_ਦਲੀਲਾਂ = &local;			/* no stack args: fixed local image */
+  ਨਹੀਂਤਾਂ
     {
-      stack = alloca (sizeof (struct register_args) + plan->bytes + 4 * 8);
-      reg_args = (struct register_args *) stack;
+      ਢੇਰ = alloca (ਆਕਾਰ (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ) + plan->ਬਾਈਟਾਂ + 4 * 8);
+      reg_ਦਲੀਲਾਂ = (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ *) ਢੇਰ;
     }
-  reg_args->r10 = 0;			/* closure (none for ffi_call) */
-  if (plan->ret_in_mem)
-    reg_args->gpr[0] = (UINT64) (uintptr_t) rvalue;
+  reg_ਦਲੀਲਾਂ->r10 = 0;			/* closure (none for ffi_call) */
+  ਜੇ (plan->ret_ਵਿੱਚ_mem)
+    reg_ਦਲੀਲਾਂ->gpr[0] = (UINT64) (uintptr_t) rvalue;
 
-  for (k = 0; k < plan->nmoves; k++)
+  ਲਈ (k = 0; k < plan->nmoves; k++)
     {
-      ffi_move *m = &plan->moves[k];
-      char *src = (char *) avalue[m->src_idx] + m->src_off;
-      char *dst = (char *) reg_args + m->dst_off;
-      switch (m->op)
+      ffi_move *m = &plan->ਚਾਲਾਂ[k];
+      ਅੱਖਰ *src = (ਅੱਖਰ *) avalue[m->src_idx] + m->src_off;
+      ਅੱਖਰ *dst = (ਅੱਖਰ *) reg_ਦਲੀਲਾਂ + m->dst_off;
+      ਚੋਣ (m->op)
 	{
 	/* x86-64: unaligned scalar loads from avalue[] are fine. */
-	case FFI_MOVE_SE8:   *(UINT64 *) dst = (UINT64) (SINT64) *(SINT8 *)  src; break;
-	case FFI_MOVE_SE16:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT16 *) src; break;
-	case FFI_MOVE_SE32:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT32 *) src; break;
-	case FFI_MOVE_GP64:  *(UINT64 *) dst = *(UINT64 *) src;                   break;
-	case FFI_MOVE_GP:    *(UINT64 *) dst = 0; memcpy (dst, src, m->len);     break;
-	case FFI_MOVE_SSE64: *(UINT64 *) dst = *(UINT64 *) src;                   break;
-	case FFI_MOVE_SSE32: *(UINT32 *) dst = *(UINT32 *) src;                   break;
-	case FFI_MOVE_STACK: memcpy (dst, src, m->len);                          break;
+	ਹਾਲਤ FFI_MOVE_SE8:   *(UINT64 *) dst = (UINT64) (SINT64) *(SINT8 *)  src; ਰੋਕੋ;
+	ਹਾਲਤ FFI_MOVE_SE16:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT16 *) src; ਰੋਕੋ;
+	ਹਾਲਤ FFI_MOVE_SE32:  *(UINT64 *) dst = (UINT64) (SINT64) *(SINT32 *) src; ਰੋਕੋ;
+	ਹਾਲਤ FFI_MOVE_GP64:  *(UINT64 *) dst = *(UINT64 *) src;                   ਰੋਕੋ;
+	ਹਾਲਤ FFI_MOVE_GP:    *(UINT64 *) dst = 0; ਸਮ੍ਰਿਤੀ_ਨਕਲ (dst, src, m->len);     ਰੋਕੋ;
+	ਹਾਲਤ FFI_MOVE_SSE64: *(UINT64 *) dst = *(UINT64 *) src;                   ਰੋਕੋ;
+	ਹਾਲਤ FFI_MOVE_SSE32: *(UINT32 *) dst = *(UINT32 *) src;                   ਰੋਕੋ;
+	ਹਾਲਤ FFI_MOVE_ਢੇਰ: ਸਮ੍ਰਿਤੀ_ਨਕਲ (dst, src, m->len);                          ਰੋਕੋ;
 	}
     }
-  reg_args->rax = plan->ssecount;
+  reg_ਦਲੀਲਾਂ->rax = plan->ssecount;
 
-  if (plan->fast)
+  ਜੇ (plan->fast)
     {
       /* No stack args; lean trampoline + return store replicating the
 	 unix64.S store_table widths.  ret_in_mem already wrote gpr[0]. */
-      struct ffi_ret2 r = ffi_plan_fast_call (reg_args, fn);
-      if (rvalue != NULL)
+      ਬਣਤਰ ffi_ret2 r = ffi_plan_fast_call (reg_ਦਲੀਲਾਂ, fn);
+      ਜੇ (rvalue != ਨਿਰਾ)
 	store_ret (rvalue, plan->retcode, r);
-      return;
+      ਵਾਪਸ;
     }
 
-  ffi_call_unix64 (stack, plan->bytes + sizeof (struct register_args),
+  ffi_call_unix64 (ਢੇਰ, plan->ਬਾਈਟਾਂ + ਆਕਾਰ (ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ),
 		   flags, rvalue, fn);
 }
 
@@ -1074,7 +1074,7 @@ plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
    classification ffi_call does every time.  Signatures with no fast path
    (FAST is NULL) fall back to ffi_call.  The plan is immutable after alloc, so
    it carries no per-thread state and can be invoked from any thread.  */
-struct ffi_call_plan
+ਬਣਤਰ ffi_call_plan
 {
   ffi_cif  *cif;
   ffi_plan *fast;		/* prebuilt plan, or NULL -> fall back to ffi_call */
@@ -1083,136 +1083,136 @@ struct ffi_call_plan
 ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
-  ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan == NULL)
-    return NULL;
+  ffi_call_plan *plan = ਸਮ੍ਰਿਤੀ_ਦਿਓ (ਆਕਾਰ (ਬਣਤਰ ffi_call_plan));
+  ਜੇ (plan == ਨਿਰਾ)
+    ਵਾਪਸ ਨਿਰਾ;
   plan->cif  = cif;
   plan->fast = build_plan (cif);	/* NULL if this signature has no fast path */
-  return plan;
+  ਵਾਪਸ plan;
 }
 
-void
-ffi_call_plan_invoke (ffi_call_plan *plan, void (*fn) (void),
-		      void *rvalue, void **avalue)
+ਖਾਲੀ
+ffi_call_plan_invoke (ffi_call_plan *plan, ਖਾਲੀ (*fn) (ਖਾਲੀ),
+		      ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
-  if (plan->fast != NULL)
+  ਜੇ (plan->fast != ਨਿਰਾ)
     plan_exec (plan->cif, plan->fast, fn, rvalue, avalue);
-  else
+  ਨਹੀਂਤਾਂ
     ffi_call (plan->cif, fn, rvalue, avalue);
 }
 
-void
+ਖਾਲੀ
 ffi_call_plan_free (ffi_call_plan *plan)
 {
-  if (plan != NULL)
+  ਜੇ (plan != ਨਿਰਾ)
     {
-      free (plan->fast);
-      free (plan);
+      ਮੁਕਤ (plan->fast);
+      ਮੁਕਤ (plan);
     }
 }
 
 size_t
-ffi_call_plan_size (ffi_call_plan *plan)
+ffi_call_plan_ਮਾਪ (ffi_call_plan *plan)
 {
-  if (plan == NULL)
-    return 0;
+  ਜੇ (plan == ਨਿਰਾ)
+    ਵਾਪਸ 0;
   /* The move-list carries its own size; a signature with no fast path owns
      nothing beyond the handle.  */
-  return sizeof (struct ffi_call_plan)
-	 + (plan->fast != NULL ? plan->fast->alloc_bytes : 0);
+  ਵਾਪਸ ਆਕਾਰ (ਬਣਤਰ ffi_call_plan)
+	 + (plan->fast != ਨਿਰਾ ? plan->fast->alloc_ਬਾਈਟਾਂ : 0);
 }
 
-extern void
-ffi_call_efi64(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue);
-#endif
+ਬਾਹਰੀ ਖਾਲੀ
+ffi_call_efi64(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue);
+#ਜੇ_ਅੰਤ
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ
+ffi_call (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
-  const int max_reg_struct_size = cif->abi == FFI_GNUW64 ? 8 : 16;
+  ਖਾਲੀ **avalue_copy = ਨਿਰਾ;
+  ਪੂਰਨ i, nargs = cif->nargs;
+  ਅਚਲ ਪੂਰਨ max_reg_struct_ਮਾਪ = cif->abi == FFI_GNUW64 ? 8 : 16;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ਲਈ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > max_reg_struct_size)
+      ਪੂਰਨ ਮਾਪ = at->ਮਾਪ;
+      ਜੇ (at->type == FFI_TYPE_STRUCT && ਮਾਪ > max_reg_struct_ਮਾਪ)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ਅੱਖਰ *argcopy = alloca (ਮਾਪ);
+          ਜੇ (avalue_copy == ਨਿਰਾ)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * ਆਕਾਰ (ਖਾਲੀ *));
+              ਸਮ੍ਰਿਤੀ_ਨਕਲ (avalue_copy, avalue, nargs * ਆਕਾਰ (ਖਾਲੀ *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ (argcopy, avalue[i], ਮਾਪ);
           avalue[i] = argcopy;
         }
     }
 
-#ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+  ਜੇ (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
     {
       ffi_call_efi64(cif, fn, rvalue, avalue);
-      return;
+      ਵਾਪਸ;
     }
-#endif
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+#ਜੇ_ਅੰਤ
+  ffi_call_int (cif, fn, rvalue, avalue, ਨਿਰਾ);
 }
 
-#ifdef FFI_GO_CLOSURES
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_GO_CLOSURES
 
-#ifndef __ILP32__
-extern void
-ffi_call_go_efi64(ffi_cif *cif, void (*fn)(void), void *rvalue,
-		  void **avalue, void *closure);
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+ਬਾਹਰੀ ਖਾਲੀ
+ffi_call_go_efi64(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+		  ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ);
+#ਜੇ_ਅੰਤ
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+ਖਾਲੀ
+ffi_call_go (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+	     ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
-#ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+  ਜੇ (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
     {
-      ffi_call_go_efi64(cif, fn, rvalue, avalue, closure);
-      return;
+      ffi_call_go_efi64(cif, fn, rvalue, avalue, ਘੇਰਾ);
+      ਵਾਪਸ;
     }
-#endif
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+#ਜੇ_ਅੰਤ
+  ffi_call_int (cif, fn, rvalue, avalue, ਘੇਰਾ);
 }
 
-#endif /* FFI_GO_CLOSURES */
+#ਜੇ_ਅੰਤ /* FFI_GO_CLOSURES */
 
-extern void ffi_closure_unix64(void) FFI_HIDDEN;
-extern void ffi_closure_unix64_sse(void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-extern void ffi_closure_unix64_alt(void) FFI_HIDDEN;
-extern void ffi_closure_unix64_sse_alt(void) FFI_HIDDEN;
-#endif
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_unix64(ਖਾਲੀ) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_unix64_sse(ਖਾਲੀ) FFI_HIDDEN;
+#ਜੇ defined(FFI_EXEC_STATIC_TRAMP)
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_unix64_alt(ਖਾਲੀ) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_unix64_sse_alt(ਖਾਲੀ) FFI_HIDDEN;
+#ਜੇ_ਅੰਤ
 
-#ifndef __ILP32__
-extern ffi_status
-ffi_prep_closure_loc_efi64(ffi_closure* closure,
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+ਬਾਹਰੀ ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc_efi64(ffi_ਘੇਰਾ* ਘੇਰਾ,
 			   ffi_cif* cif,
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data,
-			   void *codeloc);
-#endif
+			   ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+			   ਖਾਲੀ *user_ਅੰਕੜੇ,
+			   ਖਾਲੀ *codeloc);
+#ਜੇ_ਅੰਤ
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ* ਘੇਰਾ,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ,
+		      ਖਾਲੀ *codeloc)
 {
-  static const unsigned char trampoline[24] = {
+  ਸਥਿਰ ਅਚਲ ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ trampoline[24] = {
     /* endbr64 */
     0xf3, 0x0f, 0x1e, 0xfa,
     /* leaq  -0xb(%rip),%r10   # 0x0  */
@@ -1222,190 +1222,190 @@ ffi_prep_closure_loc (ffi_closure* closure,
     /* nopl  0(%rax) */
     0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00
   };
-  void (*dest)(void);
-  char *tramp = closure->tramp;
+  ਖਾਲੀ (*dest)(ਖਾਲੀ);
+  ਅੱਖਰ *tramp = ਘੇਰਾ->tramp;
 
-#ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_closure_loc_efi64(closure, cif, fun, user_data, codeloc);
-#endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+  ਜੇ (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    ਵਾਪਸ ffi_prep_ਘੇਰਾ_loc_efi64(ਘੇਰਾ, cif, fun, user_ਅੰਕੜੇ, codeloc);
+#ਜੇ_ਅੰਤ
+  ਜੇ (cif->abi != FFI_UNIX64)
+    ਵਾਪਸ FFI_BAD_ABI;
 
-  if (cif->flags & UNIX64_FLAG_XMM_ARGS)
-    dest = ffi_closure_unix64_sse;
-  else
-    dest = ffi_closure_unix64;
+  ਜੇ (cif->flags & UNIX64_FLAG_XMM_ਦਲੀਲਾਂ)
+    dest = ffi_ਘੇਰਾ_unix64_sse;
+  ਨਹੀਂਤਾਂ
+    dest = ffi_ਘੇਰਾ_unix64;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ਜੇ defined(FFI_EXEC_STATIC_TRAMP)
+  ਜੇ (ffi_tramp_is_present(ਘੇਰਾ))
     {
       /* Initialize the static trampoline's parameters. */
-      if (dest == ffi_closure_unix64_sse)
-        dest = ffi_closure_unix64_sse_alt;
-      else
-        dest = ffi_closure_unix64_alt;
-      ffi_tramp_set_parms (closure->ftramp, dest, closure);
-      goto out;
+      ਜੇ (dest == ffi_ਘੇਰਾ_unix64_sse)
+        dest = ffi_ਘੇਰਾ_unix64_sse_alt;
+      ਨਹੀਂਤਾਂ
+        dest = ffi_ਘੇਰਾ_unix64_alt;
+      ffi_tramp_ਸੈੱਟ_parms (ਘੇਰਾ->ftramp, dest, ਘੇਰਾ);
+      ਜਾਓ ਬਾਹਰਲਾ;
     }
-#endif
+#ਜੇ_ਅੰਤ
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
-  *(UINT64 *)(tramp + sizeof (trampoline)) = (uintptr_t)dest;
+  ਸਮ੍ਰਿਤੀ_ਨਕਲ (tramp, trampoline, ਆਕਾਰ(trampoline));
+  *(UINT64 *)(tramp + ਆਕਾਰ (trampoline)) = (uintptr_t)dest;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-out:
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+#ਜੇ defined(FFI_EXEC_STATIC_TRAMP)
+ਬਾਹਰਲਾ:
+#ਜੇ_ਅੰਤ
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-int FFI_HIDDEN
-ffi_closure_unix64_inner(ffi_cif *cif,
-			 void (*fun)(ffi_cif*, void*, void**, void*),
-			 void *user_data,
-			 void *rvalue,
-			 struct register_args *reg_args,
-			 char *argp)
+ਪੂਰਨ FFI_HIDDEN
+ffi_ਘੇਰਾ_unix64_inner(ffi_cif *cif,
+			 ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+			 ਖਾਲੀ *user_ਅੰਕੜੇ,
+			 ਖਾਲੀ *rvalue,
+			 ਬਣਤਰ ਰਜਿਸਟਰ_ਦਲੀਲਾਂ *reg_ਦਲੀਲਾਂ,
+			 ਅੱਖਰ *argp)
 {
-  void **avalue;
+  ਖਾਲੀ **avalue;
   ffi_type **arg_types;
-  long i, avn;
-  int gprcount, ssecount, ngpr, nsse;
-  int flags;
+  ਲੰਮਾ i, avn;
+  ਪੂਰਨ gprcount, ssecount, ngpr, nsse;
+  ਪੂਰਨ flags;
 
   avn = cif->nargs;
   flags = cif->flags;
 
-  avalue = alloca(avn * sizeof(void *));
+  avalue = alloca(avn * ਆਕਾਰ(ਖਾਲੀ *));
   gprcount = ssecount = 0;
 
-  if (flags & UNIX64_FLAG_RET_IN_MEM)
+  ਜੇ (flags & UNIX64_FLAG_RET_ਵਿੱਚ_MEM)
     {
       /* On return, %rax will contain the address that was passed
 	 by the caller in %rdi.  */
-      void *r = (void *)(uintptr_t)reg_args->gpr[gprcount++];
-      *(void **)rvalue = r;
+      ਖਾਲੀ *r = (ਖਾਲੀ *)(uintptr_t)reg_ਦਲੀਲਾਂ->gpr[gprcount++];
+      *(ਖਾਲੀ **)rvalue = r;
       rvalue = r;
-      flags = (sizeof(void *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
+      flags = (ਆਕਾਰ(ਖਾਲੀ *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
     }
 
   arg_types = cif->arg_types;
-  for (i = 0; i < avn; ++i)
+  ਲਈ (i = 0; i < avn; ++i)
     {
-      enum x86_64_reg_class classes[MAX_CLASSES];
+      ਗਿਣਤੀ x86_64_reg_class classes[MAX_CLASSES];
       size_t n;
 
-      n = examine_argument (arg_types[i], classes, 0, &ngpr, &nsse);
-      if (n == 0
+      n = examine_ਦਲੀਲ (arg_types[i], classes, 0, &ngpr, &nsse);
+      ਜੇ (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
-	  long align = arg_types[i]->alignment;
+	  ਲੰਮਾ align = arg_types[i]->alignment;
 
 	  /* Stack arguments are *always* at least 8 byte aligned.  */
-	  if (align < 8)
+	  ਜੇ (align < 8)
 	    align = 8;
 
 	  /* Pass this argument in memory.  */
-	  argp = (void *) FFI_ALIGN (argp, align);
+	  argp = (ਖਾਲੀ *) FFI_ALIGN (argp, align);
 	  avalue[i] = argp;
-	  argp += arg_types[i]->size;
+	  argp += arg_types[i]->ਮਾਪ;
 	}
       /* If the argument is in a single register, or two consecutive
 	 integer registers, then we can use that address directly.  */
-      else if (n == 1
+      ਨਹੀਂਤਾਂ ਜੇ (n == 1
 	       || (n == 2 && !(SSE_CLASS_P (classes[0])
 			       || SSE_CLASS_P (classes[1]))))
 	{
 	  /* The argument is in a single register.  */
-	  if (SSE_CLASS_P (classes[0]))
+	  ਜੇ (SSE_CLASS_P (classes[0]))
 	    {
-	      avalue[i] = &reg_args->sse[ssecount];
+	      avalue[i] = &reg_ਦਲੀਲਾਂ->sse[ssecount];
 	      ssecount += n;
 	    }
-	  else
+	  ਨਹੀਂਤਾਂ
 	    {
-	      avalue[i] = &reg_args->gpr[gprcount];
+	      avalue[i] = &reg_ਦਲੀਲਾਂ->gpr[gprcount];
 	      gprcount += n;
 	    }
 	}
       /* Otherwise, allocate space to make them consecutive.  */
-      else
+      ਨਹੀਂਤਾਂ
 	{
-	  char *a = alloca (n * 8);
-	  unsigned int j;
+	  ਅੱਖਰ *a = alloca (n * 8);
+	  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ j;
 
 	  avalue[i] = a;
-	  for (j = 0; j < n; j++, a += 8)
+	  ਲਈ (j = 0; j < n; j++, a += 8)
 	    {
-	      if (classes[j] == X86_64_SSEUP_CLASS)
+	      ਜੇ (classes[j] == X86_64_SSEUP_CLASS)
 		/* The high half of the same %xmm register as the preceding
 		   SSE class (e.g. the upper bits of a binary128 long double);
 		   it does not consume another register.  */
-		memcpy (a, (char *) &reg_args->sse[ssecount - 1] + 8, 8);
-	      else if (SSE_CLASS_P (classes[j]))
-		memcpy (a, &reg_args->sse[ssecount++], 8);
-	      else
-		memcpy (a, &reg_args->gpr[gprcount++], 8);
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ (a, (ਅੱਖਰ *) &reg_ਦਲੀਲਾਂ->sse[ssecount - 1] + 8, 8);
+	      ਨਹੀਂਤਾਂ ਜੇ (SSE_CLASS_P (classes[j]))
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ (a, &reg_ਦਲੀਲਾਂ->sse[ssecount++], 8);
+	      ਨਹੀਂਤਾਂ
+		ਸਮ੍ਰਿਤੀ_ਨਕਲ (a, &reg_ਦਲੀਲਾਂ->gpr[gprcount++], 8);
 	    }
 	}
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_ਅੰਕੜੇ);
 
   /* Tell assembly how to perform return type promotions.  */
-  return flags;
+  ਵਾਪਸ flags;
 }
 
-#ifdef FFI_GO_CLOSURES
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ FFI_GO_CLOSURES
 
-extern void ffi_go_closure_unix64(void) FFI_HIDDEN;
-extern void ffi_go_closure_unix64_sse(void) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_unix64(ਖਾਲੀ) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_unix64_sse(ਖਾਲੀ) FFI_HIDDEN;
 
-#ifndef __ILP32__
-extern ffi_status
-ffi_prep_go_closure_efi64(ffi_go_closure* closure, ffi_cif* cif,
-			  void (*fun)(ffi_cif*, void*, void**, void*));
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+ਬਾਹਰੀ ffi_ਸਥਿਤੀ
+ffi_prep_go_ਘੇਰਾ_efi64(ffi_go_ਘੇਰਾ* ਘੇਰਾ, ffi_cif* cif,
+			  ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*));
+#ਜੇ_ਅੰਤ
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+ffi_ਸਥਿਤੀ
+ffi_prep_go_ਘੇਰਾ (ffi_go_ਘੇਰਾ* ਘੇਰਾ, ffi_cif* cif,
+		     ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*))
 {
-#ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_go_closure_efi64(closure, cif, fun);
-#endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __ILP32__
+  ਜੇ (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    ਵਾਪਸ ffi_prep_go_ਘੇਰਾ_efi64(ਘੇਰਾ, cif, fun);
+#ਜੇ_ਅੰਤ
+  ਜੇ (cif->abi != FFI_UNIX64)
+    ਵਾਪਸ FFI_BAD_ABI;
 
-  closure->tramp = (cif->flags & UNIX64_FLAG_XMM_ARGS
-		    ? ffi_go_closure_unix64_sse
-		    : ffi_go_closure_unix64);
-  closure->cif = cif;
-  closure->fun = fun;
+  ਘੇਰਾ->tramp = (cif->flags & UNIX64_FLAG_XMM_ਦਲੀਲਾਂ
+		    ? ffi_go_ਘੇਰਾ_unix64_sse
+		    : ffi_go_ਘੇਰਾ_unix64);
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-#endif /* FFI_GO_CLOSURES */
+#ਜੇ_ਅੰਤ /* FFI_GO_CLOSURES */
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#ਜੇ defined(FFI_EXEC_STATIC_TRAMP)
+ਖਾਲੀ *
+ffi_tramp_arch (size_t *tramp_ਮਾਪ, size_t *map_ਮਾਪ)
 {
-  extern void *trampoline_code_table;
+  ਬਾਹਰੀ ਖਾਲੀ *trampoline_ਕੋਡ_ਸਾਰਣੀ;
 
-  *map_size = UNIX64_TRAMP_MAP_SIZE;
-  *tramp_size = UNIX64_TRAMP_SIZE;
-  return &trampoline_code_table;
+  *map_ਮਾਪ = UNIX64_TRAMP_MAP_ਮਾਪ;
+  *tramp_ਮਾਪ = UNIX64_TRAMP_ਮਾਪ;
+  ਵਾਪਸ &trampoline_ਕੋਡ_ਸਾਰਣੀ;
 }
-#endif
+#ਜੇ_ਅੰਤ
 
-#endif /* __x86_64__ */
+#ਜੇ_ਅੰਤ /* __x86_64__ */

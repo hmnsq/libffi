@@ -28,139 +28,139 @@
  * be implemented in C.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>
 
-#define CIF_FLAGS_CHAR		1	/* for struct only */
-#define CIF_FLAGS_SHORT		2	/* for struct only */
-#define CIF_FLAGS_INT		4
-#define CIF_FLAGS_DINT		8
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CIF_FLAGS_CHAR		1	/* for struct only */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CIF_FLAGS_SHORT		2	/* for struct only */
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CIF_FLAGS_INT		4
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ CIF_FLAGS_DINT		8
 
 /*
  * Foreign Function Interface API
  */
 
-void ffi_call_elfbsd (extended_cif *, unsigned, unsigned, void *,
-		       void (*) ());
-void *ffi_prep_args (extended_cif *ecif, void *stack);
+ਖਾਲੀ ffi_call_elfbsd (extended_cif *, ਬਿਨਾਨਿਸ਼ਾਨੀ, ਬਿਨਾਨਿਸ਼ਾਨੀ, ਖਾਲੀ *,
+		       ਖਾਲੀ (*) ());
+ਖਾਲੀ *ffi_prep_ਦਲੀਲਾਂ (extended_cif *ecif, ਖਾਲੀ *ਢੇਰ);
 
-void *
-ffi_prep_args (extended_cif *ecif, void *stack)
+ਖਾਲੀ *
+ffi_prep_ਦਲੀਲਾਂ (extended_cif *ecif, ਖਾਲੀ *ਢੇਰ)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
+  ਖਾਲੀ **p_argv;
+  ਅੱਖਰ *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  ਖਾਲੀ *struct_ਮੁੱਲ_ptr;
 
-  argp = stack;
+  argp = ਢੇਰ;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  ਜੇ (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_ਮੁੱਲ_ptr = ecif->rvalue;
+  ਨਹੀਂਤਾਂ
+    struct_ਮੁੱਲ_ptr = ਨਿਰਾ;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  ਲਈ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof (int))
+      z = (*p_arg)->ਮਾਪ;
+      ਜੇ (z < ਆਕਾਰ (ਪੂਰਨ))
 	{
-	  switch ((*p_arg)->type)
+	  ਚੋਣ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    ਹਾਲਤ FFI_TYPE_SINT8:
+	      *(ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ *) argp = (ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ) *(SINT8 *) *p_argv;
+	      ਰੋਕੋ;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    ਹਾਲਤ FFI_TYPE_UINT8:
+	      *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) argp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ) *(UINT8 *) *p_argv;
+	      ਰੋਕੋ;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    ਹਾਲਤ FFI_TYPE_SINT16:
+	      *(ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ *) argp = (ਨਿਸ਼ਾਨੀਵਾਲਾ ਪੂਰਨ) *(SINT16 *) *p_argv;
+	      ਰੋਕੋ;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    ਹਾਲਤ FFI_TYPE_UINT16:
+	      *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) argp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ) *(UINT16 *) *p_argv;
+	      ਰੋਕੋ;
 
-	    case FFI_TYPE_STRUCT:
-	      memcpy (argp, *p_argv, z);
-	      break;
+	    ਹਾਲਤ FFI_TYPE_STRUCT:
+	      ਸਮ੍ਰਿਤੀ_ਨਕਲ (argp, *p_argv, z);
+	      ਰੋਕੋ;
 
-	    default:
+	    ਮੂਲ:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = ਆਕਾਰ (ਪੂਰਨ);
 	}
-      else
+      ਨਹੀਂਤਾਂ
 	{
-	  memcpy (argp, *p_argv, z);
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  ਜੇ ((ਆਕਾਰ(ਪੂਰਨ) - 1) & z)
+	    z = FFI_ALIGN(z, ਆਕਾਰ(ਪੂਰਨ));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  ਵਾਪਸ struct_ਮੁੱਲ_ptr;
 }
 
-ffi_status
+ffi_ਸਥਿਤੀ
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ਚੋਣ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ਹਾਲਤ FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    ਹਾਲਤ FFI_TYPE_STRUCT:
+      ਜੇ (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
 	  cif->rtype->elements[1])
 	{
 	  cif->flags = 0;
-	  break;
+	  ਰੋਕੋ;
 	}
 
-      if (cif->rtype->size == sizeof (char))
+      ਜੇ (cif->rtype->ਮਾਪ == ਆਕਾਰ (ਅੱਖਰ))
 	cif->flags = CIF_FLAGS_CHAR;
-      else if (cif->rtype->size == sizeof (short))
+      ਨਹੀਂਤਾਂ ਜੇ (cif->rtype->ਮਾਪ == ਆਕਾਰ (ਛੋਟਾ))
 	cif->flags = CIF_FLAGS_SHORT;
-      else if (cif->rtype->size == sizeof (int))
+      ਨਹੀਂਤਾਂ ਜੇ (cif->rtype->ਮਾਪ == ਆਕਾਰ (ਪੂਰਨ))
 	cif->flags = CIF_FLAGS_INT;
-      else if (cif->rtype->size == 2 * sizeof (int))
+      ਨਹੀਂਤਾਂ ਜੇ (cif->rtype->ਮਾਪ == 2 * ਆਕਾਰ (ਪੂਰਨ))
 	cif->flags = CIF_FLAGS_DINT;
-      else
+      ਨਹੀਂਤਾਂ
 	cif->flags = 0;
-      break;
+      ਰੋਕੋ;
 
-    default:
-      if (cif->rtype->size <= sizeof (int))
+    ਮੂਲ:
+      ਜੇ (cif->rtype->ਮਾਪ <= ਆਕਾਰ (ਪੂਰਨ))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      ਨਹੀਂਤਾਂ
 	cif->flags = CIF_FLAGS_DINT;
-      break;
+      ਰੋਕੋ;
     }
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+ਖਾਲੀ
+ffi_call (ffi_cif *cif, ਖਾਲੀ (*fn) (), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
   extended_cif ecif;
 
@@ -170,22 +170,22 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  ਜੇ (rvalue == ਨਿਰਾ
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->flags == 0)
-    ecif.rvalue = alloca (cif->rtype->size);
-  else
+    ecif.rvalue = alloca (cif->rtype->ਮਾਪ);
+  ਨਹੀਂਤਾਂ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ਚੋਣ (cif->abi)
     {
-    case FFI_ELFBSD:
-      ffi_call_elfbsd (&ecif, cif->bytes, cif->flags, ecif.rvalue, fn);
-      break;
+    ਹਾਲਤ FFI_ELFBSD:
+      ffi_call_elfbsd (&ecif, cif->ਬਾਈਟਾਂ, cif->flags, ecif.rvalue, fn);
+      ਰੋਕੋ;
 
-    default:
+    ਮੂਲ:
       FFI_ASSERT (0);
-      break;
+      ਰੋਕੋ;
     }
 }
 
@@ -193,84 +193,84 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-void ffi_closure_elfbsd (void);
-void ffi_closure_struct_elfbsd (void);
-unsigned int ffi_closure_elfbsd_inner (ffi_closure *, void *, char *);
+ਖਾਲੀ ffi_ਘੇਰਾ_elfbsd (ਖਾਲੀ);
+ਖਾਲੀ ffi_ਘੇਰਾ_struct_elfbsd (ਖਾਲੀ);
+ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ ffi_ਘੇਰਾ_elfbsd_inner (ffi_ਘੇਰਾ *, ਖਾਲੀ *, ਅੱਖਰ *);
 
-static void
-ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
+ਸਥਿਰ ਖਾਲੀ
+ffi_prep_ਘੇਰਾ_elfbsd (ffi_cif *cif, ਖਾਲੀ **avalue, ਅੱਖਰ *stackp)
 {
-  unsigned int i;
-  void **p_argv;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
+  ਖਾਲੀ **p_argv;
   ffi_type **p_arg;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  ਲਈ (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
+      z = (*p_arg)->ਮਾਪ;
       *p_argv = stackp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      ਜੇ ((ਆਕਾਰ (ਪੂਰਨ) - 1) & z)
+	z = FFI_ALIGN(z, ਆਕਾਰ (ਪੂਰਨ));
 
       p_argv++;
       stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ
+ffi_ਘੇਰਾ_elfbsd_inner (ffi_ਘੇਰਾ *ਘੇਰਾ, ਖਾਲੀ *resp, ਅੱਖਰ *ਢੇਰ)
 {
   ffi_cif *cif;
-  void **arg_area;
+  ਖਾਲੀ **arg_area;
 
-  cif = closure->cif;
-  arg_area = (void **) alloca (cif->nargs * sizeof (void *));
+  cif = ਘੇਰਾ->cif;
+  arg_area = (ਖਾਲੀ **) alloca (cif->nargs * ਆਕਾਰ (ਖਾਲੀ *));
 
-  ffi_prep_closure_elfbsd (cif, arg_area, stack);
+  ffi_prep_ਘੇਰਾ_elfbsd (cif, arg_area, ਢੇਰ);
 
-  (closure->fun) (cif, resp, arg_area, closure->user_data);
+  (ਘੇਰਾ->fun) (cif, resp, arg_area, ਘੇਰਾ->user_ਅੰਕੜੇ);
 
-  return cif->flags;
+  ਵਾਪਸ cif->flags;
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun)(ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ *ਘੇਰਾ, ffi_cif *cif,
+		      ਖਾਲੀ (*fun)(ffi_cif *, ਖਾਲੀ *, ਖਾਲੀ **, ਖਾਲੀ *),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ, ਖਾਲੀ *codeloc)
 {
-  char *tramp = (char *) codeloc;
-  void *fn;
+  ਅੱਖਰ *tramp = (ਅੱਖਰ *) codeloc;
+  ਖਾਲੀ *fn;
 
   FFI_ASSERT (cif->abi == FFI_ELFBSD);
 
   /* entry mask */
-  *(unsigned short *)(tramp + 0) = 0x0000;
+  *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਛੋਟਾ *)(tramp + 0) = 0x0000;
   /* movl #closure, r0 */
   tramp[2] = 0xd0;
   tramp[3] = 0x8f;
-  *(unsigned int *)(tramp + 4) = (unsigned int) closure;
+  *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *)(tramp + 4) = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ) ਘੇਰਾ;
   tramp[8] = 0x50;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  ਜੇ (cif->rtype->type == FFI_TYPE_STRUCT
       && !cif->flags)
-    fn = &ffi_closure_struct_elfbsd;
-  else
-    fn = &ffi_closure_elfbsd;
+    fn = &ffi_ਘੇਰਾ_struct_elfbsd;
+  ਨਹੀਂਤਾਂ
+    fn = &ffi_ਘੇਰਾ_elfbsd;
 
   /* jmpl #fn */
   tramp[9] = 0x17;
   tramp[10] = 0xef;
-  *(unsigned int *)(tramp + 11) = (unsigned int)fn + 2 -
-				  (unsigned int)tramp - 9 - 6;
+  *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *)(tramp + 11) = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)fn + 2 -
+				  (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)tramp - 9 - 6;
 
-  closure->cif = cif;
-  closure->user_data = user_data;
-  closure->fun = fun;
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
+  ਘੇਰਾ->fun = fun;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }

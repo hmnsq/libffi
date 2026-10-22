@@ -28,47 +28,47 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdio.h>
 
-#define ROUND_UP(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਗੇੜਾ_ਉੱਪਰ(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
 
-#define MIN_STACK_SIZE  64
-#define FIRST_ARG_SLOT  9
-#define DEBUG_LEVEL   0
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ MIN_ਢੇਰ_ਮਾਪ  64
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਪਹਿਲਾ_ARG_ਥਾਂ  9
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ DEBUG_LEVEL   0
 
-#define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
-#define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
-#define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
-#define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ fldw(addr, fpreg) \
+  __asm__ ਅਸਥਿਰ ("fldw 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ fstw(fpreg, addr) \
+  __asm__ ਅਸਥਿਰ ("fstw %%" #fpreg "L, 0(%0)" : : "r"(addr))
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ fldd(addr, fpreg) \
+  __asm__ ਅਸਥਿਰ ("fldd 0(%0), %%" #fpreg : : "r"(addr) : #fpreg)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ fstd(fpreg, addr) \
+  __asm__ ਅਸਥਿਰ ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ debug(lvl, x...) ਕਰੋ { ਜੇ (lvl <= DEBUG_LEVEL) { ਲਿਖੋ(x); } } ਜਦੋਂ (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਪੂਰਨ ffi_struct_type(ffi_type *t)
 {
-  size_t sz = t->size;
+  size_t sz = t->ਮਾਪ;
 
   /* Small structure results are passed in registers,
      larger ones are passed by pointer.  Note that small
      structures differ from the corresponding integer
      types in that they have different alignment requirements.  */
 
-  if (sz <= 8)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
+  ਜੇ (sz <= 8)
+    ਵਾਪਸ -sz;
+  ਨਹੀਂਤਾਂ
+    ਵਾਪਸ FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
 }
 
 /* PA has a downward growing stack, which looks like this:
 
-   Offset
+ਵਿੱਥ
 	[ Variable args ]
    SP = (4*(n+9))       arg word N
    ...
@@ -124,167 +124,167 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
+ਖਾਲੀ ffi_prep_ਦਲੀਲਾਂ_pa32(UINT32 *ਢੇਰ, extended_cif *ecif, ਬਿਨਾਨਿਸ਼ਾਨੀ ਬਾਈਟਾਂ)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
-  char *dest_cpy;
+  ਰਜਿਸਟਰ ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
+  ਰਜਿਸਟਰ ffi_type **p_arg;
+  ਰਜਿਸਟਰ ਖਾਲੀ **p_argv;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ ਥਾਂ = ਪਹਿਲਾ_ARG_ਥਾਂ;
+  ਅੱਖਰ *dest_cpy;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
-	ecif, bytes);
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, ਢੇਰ,
+	ecif, ਬਾਈਟਾਂ);
 
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  ਲਈ (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      ਪੂਰਨ type = (*p_arg)->type;
 
-      switch (type)
+      ਚੋਣ (type)
 	{
-	case FFI_TYPE_SINT8:
-	  *(SINT32 *)(stack - slot) = *(SINT8 *)(*p_argv);
-	  break;
+	ਹਾਲਤ FFI_TYPE_SINT8:
+	  *(SINT32 *)(ਢੇਰ - ਥਾਂ) = *(SINT8 *)(*p_argv);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_UINT8:
-	  *(UINT32 *)(stack - slot) = *(UINT8 *)(*p_argv);
-	  break;
+	ਹਾਲਤ FFI_TYPE_UINT8:
+	  *(UINT32 *)(ਢੇਰ - ਥਾਂ) = *(UINT8 *)(*p_argv);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_SINT16:
-	  *(SINT32 *)(stack - slot) = *(SINT16 *)(*p_argv);
-	  break;
+	ਹਾਲਤ FFI_TYPE_SINT16:
+	  *(SINT32 *)(ਢੇਰ - ਥਾਂ) = *(SINT16 *)(*p_argv);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_UINT16:
-	  *(UINT32 *)(stack - slot) = *(UINT16 *)(*p_argv);
-	  break;
+	ਹਾਲਤ FFI_TYPE_UINT16:
+	  *(UINT32 *)(ਢੇਰ - ਥਾਂ) = *(UINT16 *)(*p_argv);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
+	ਹਾਲਤ FFI_TYPE_UINT32:
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
 	  debug(3, "Storing UINT32 %u in slot %u\n", *(UINT32 *)(*p_argv),
-		slot);
-	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
-	  break;
+		ਥਾਂ);
+	  *(UINT32 *)(ਢੇਰ - ਥਾਂ) = *(UINT32 *)(*p_argv);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	ਹਾਲਤ FFI_TYPE_UINT64:
+	ਹਾਲਤ FFI_TYPE_SINT64:
 	  /* Align slot for 64-bit type.  */
-	  slot += (slot & 1) ? 1 : 2;
-	  *(UINT64 *)(stack - slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  ਥਾਂ += (ਥਾਂ & 1) ? 1 : 2;
+	  *(UINT64 *)(ਢੇਰ - ਥਾਂ) = *(UINT64 *)(*p_argv);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_FLOAT:
+	ਹਾਲਤ FFI_TYPE_FLOAT:
 	  /* First 4 args go in fr4L - fr7L.  */
-	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT32 *)(stack - slot) = *(UINT32 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  debug(3, "Storing UINT32(float) in slot %u\n", ਥਾਂ);
+	  *(UINT32 *)(ਢੇਰ - ਥਾਂ) = *(UINT32 *)(*p_argv);
+	  ਚੋਣ (ਥਾਂ - ਪਹਿਲਾ_ARG_ਥਾਂ)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack - slot, fr4); break;
-	    case 1: fldw(stack - slot, fr5); break;
-	    case 2: fldw(stack - slot, fr6); break;
-	    case 3: fldw(stack - slot, fr7); break;
+	    ਹਾਲਤ 0: fldw(ਢੇਰ - ਥਾਂ, fr4); ਰੋਕੋ;
+	    ਹਾਲਤ 1: fldw(ਢੇਰ - ਥਾਂ, fr5); ਰੋਕੋ;
+	    ਹਾਲਤ 2: fldw(ਢੇਰ - ਥਾਂ, fr6); ਰੋਕੋ;
+	    ਹਾਲਤ 3: fldw(ਢੇਰ - ਥਾਂ, fr7); ਰੋਕੋ;
 	    }
-	  break;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_DOUBLE:
+	ਹਾਲਤ FFI_TYPE_DOUBLE:
 	  /* Align slot for 64-bit type.  */
-	  slot += (slot & 1) ? 1 : 2;
-	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack - slot) = *(UINT64 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  ਥਾਂ += (ਥਾਂ & 1) ? 1 : 2;
+	  debug(3, "Storing UINT64(double) at slot %u\n", ਥਾਂ);
+	  *(UINT64 *)(ਢੇਰ - ਥਾਂ) = *(UINT64 *)(*p_argv);
+	  ਚੋਣ (ਥਾਂ - ਪਹਿਲਾ_ARG_ਥਾਂ)
 	    {
 	      /* First 2 args go in fr5, fr7.  */
-	      case 1: fldd(stack - slot, fr5); break;
-	      case 3: fldd(stack - slot, fr7); break;
+	      ਹਾਲਤ 1: fldd(ਢੇਰ - ਥਾਂ, fr5); ਰੋਕੋ;
+	      ਹਾਲਤ 3: fldd(ਢੇਰ - ਥਾਂ, fr7); ਰੋਕੋ;
 	    }
-	  break;
+	  ਰੋਕੋ;
 
-#ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_HPUX
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are passed in the same manner as structures
 	     larger than 8 bytes.  */
-	  *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
-#endif
+	  *(UINT32 *)(ਢੇਰ - ਥਾਂ) = (UINT32)(*p_argv);
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-	case FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_STRUCT:
 
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
 
-	  len = (*p_arg)->size;
-	  if (len <= 4)
+	  len = (*p_arg)->ਮਾਪ;
+	  ਜੇ (len <= 4)
 	    {
-	      dest_cpy = (char *)(stack - slot) + 4 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      dest_cpy = (ਅੱਖਰ *)(ਢੇਰ - ਥਾਂ) + 4 - len;
+	      ਸਮ੍ਰਿਤੀ_ਨਕਲ(dest_cpy, (ਅੱਖਰ *)*p_argv, len);
 	    }
-	  else if (len <= 8)
+	  ਨਹੀਂਤਾਂ ਜੇ (len <= 8)
 	    {
-	      slot += (slot & 1) ? 1 : 2;
-	      dest_cpy = (char *)(stack - slot) + 8 - len;
-	      memcpy(dest_cpy, (char *)*p_argv, len);
+	      ਥਾਂ += (ਥਾਂ & 1) ? 1 : 2;
+	      dest_cpy = (ਅੱਖਰ *)(ਢੇਰ - ਥਾਂ) + 8 - len;
+	      ਸਮ੍ਰਿਤੀ_ਨਕਲ(dest_cpy, (ਅੱਖਰ *)*p_argv, len);
 	    }
-	  else
-	    *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
-	  break;
+	  ਨਹੀਂਤਾਂ
+	    *(UINT32 *)(ਢੇਰ - ਥਾਂ) = (UINT32)(*p_argv);
+	  ਰੋਕੋ;
 
-	default:
+	ਮੂਲ:
 	  FFI_ASSERT(0);
 	}
 
-      slot++;
+      ਥਾਂ++;
       p_arg++;
       p_argv++;
     }
 
   /* Make sure we didn't mess up and scribble on the stack.  */
   {
-    unsigned int n;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ n;
 
     debug(5, "Stack setup:\n");
-    for (n = 0; n < (bytes + 3) / 4; n++)
+    ਲਈ (n = 0; n < (ਬਾਈਟਾਂ + 3) / 4; n++)
       {
-	if ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned int)(stack - n)); }
-	debug(5, "%08x ", *(stack - n));
+	ਜੇ ((n%4) == 0) { debug(5, "\n%08x: ", (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)(ਢੇਰ - n)); }
+	debug(5, "%08x ", *(ਢੇਰ - n));
       }
     debug(5, "\n");
   }
 
-  FFI_ASSERT(slot * 4 <= bytes);
+  FFI_ASSERT(ਥਾਂ * 4 <= ਬਾਈਟਾਂ);
 
-  return;
+  ਵਾਪਸ;
 }
 
-static void ffi_size_stack_pa32(ffi_cif *cif)
+ਸਥਿਰ ਖਾਲੀ ffi_ਮਾਪ_ਢੇਰ_pa32(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  ਪੂਰਨ i;
+  ਪੂਰਨ z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  ਲਈ (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
+      ਪੂਰਨ type = (*ptr)->type;
 
-      switch (type)
+      ਚੋਣ (type)
 	{
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	ਹਾਲਤ FFI_TYPE_DOUBLE:
+	ਹਾਲਤ FFI_TYPE_UINT64:
+	ਹਾਲਤ FFI_TYPE_SINT64:
 	  z += 2 + (z & 1); /* must start on even regs, so we may waste one */
-	  break;
+	  ਰੋਕੋ;
 
-#ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_HPUX
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	  z += 1; /* passed by pointer, like a large struct */
-	  break;
-#endif
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-	case FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_STRUCT:
 	  /* This must mirror the slot accounting in ffi_prep_args_pa32:
 	     structs of 1-4 bytes occupy one slot, structs of 5-8 bytes are
 	     passed inline in two even-aligned slots (exactly like a 64-bit
@@ -292,113 +292,113 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 	     z stays offset from the marshaller's slot by FIRST_ARG_SLOT (odd),
 	     so (z & 1) tracks the same alignment the marshaller applies.  */
 	  {
-	    size_t len = (*ptr)->size;
-	    if (len <= 4 || len > 8)
+	    size_t len = (*ptr)->ਮਾਪ;
+	    ਜੇ (len <= 4 || len > 8)
 	      z += 1;
-	    else
+	    ਨਹੀਂਤਾਂ
 	      z += 2 + (z & 1);
 	  }
-	  break;
+	  ਰੋਕੋ;
 
-	default: /* <= 32-bit values */
+	ਮੂਲ: /* <= 32-bit values */
 	  z++;
 	}
     }
 
   /* We can fit up to 6 args in the default 64-byte stack frame,
      if we need more, we need more stack.  */
-  if (z <= 6)
-    cif->bytes = MIN_STACK_SIZE; /* min stack size */
-  else
-    cif->bytes = 64 + ROUND_UP((z - 6) * sizeof(UINT32), MIN_STACK_SIZE);
+  ਜੇ (z <= 6)
+    cif->ਬਾਈਟਾਂ = MIN_ਢੇਰ_ਮਾਪ; /* min stack size */
+  ਨਹੀਂਤਾਂ
+    cif->ਬਾਈਟਾਂ = 64 + ਗੇੜਾ_ਉੱਪਰ((z - 6) * ਆਕਾਰ(UINT32), MIN_ਢੇਰ_ਮਾਪ);
 
-  debug(3, "Calculated stack size is %u bytes\n", cif->bytes);
+  debug(3, "Calculated stack size is %u bytes\n", cif->ਬਾਈਟਾਂ);
 }
 
 /* Perform machine dependent cif processing.  */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_ਸਥਿਤੀ ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ਚੋਣ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    ਹਾਲਤ FFI_TYPE_VOID:
+    ਹਾਲਤ FFI_TYPE_FLOAT:
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
+      cif->flags = (ਬਿਨਾਨਿਸ਼ਾਨੀ) cif->rtype->type;
+      ਰੋਕੋ;
 
-#ifdef PA_HPUX
-    case FFI_TYPE_LONGDOUBLE:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_HPUX
+    ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
       /* Long doubles are treated like a structure.  */
       cif->flags = FFI_TYPE_STRUCT;
-      break;
-#endif
+      ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-    case FFI_TYPE_STRUCT:
+    ਹਾਲਤ FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 4 bytes, the result is given back
 	 in one register. If the size is smaller or equal 8 bytes than we
 	 return the result in two registers. But if the size is bigger than
 	 8 bytes, we work with pointers.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    ਹਾਲਤ FFI_TYPE_UINT64:
+    ਹਾਲਤ FFI_TYPE_SINT64:
       cif->flags = FFI_TYPE_UINT64;
-      break;
+      ਰੋਕੋ;
 
-    default:
+    ਮੂਲ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ਰੋਕੋ;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
-  switch (cif->abi)
+  ਚੋਣ (cif->abi)
     {
-    case FFI_PA32:
-      ffi_size_stack_pa32(cif);
-      break;
+    ਹਾਲਤ FFI_PA32:
+      ffi_ਮਾਪ_ਢੇਰ_pa32(cif);
+      ਰੋਕੋ;
 
-    default:
+    ਮੂਲ:
       FFI_ASSERT(0);
-      break;
+      ਰੋਕੋ;
     }
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-extern void ffi_call_pa32(void (*)(UINT32 *, extended_cif *, unsigned),
-			  extended_cif *, unsigned, unsigned, unsigned *,
-			  void (*fn)(void));
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_pa32(ਖਾਲੀ (*)(UINT32 *, extended_cif *, ਬਿਨਾਨਿਸ਼ਾਨੀ),
+			  extended_cif *, ਬਿਨਾਨਿਸ਼ਾਨੀ, ਬਿਨਾਨਿਸ਼ਾਨੀ, ਬਿਨਾਨਿਸ਼ਾਨੀ *,
+			  ਖਾਲੀ (*fn)(ਖਾਲੀ));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ ffi_call(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
   extended_cif ecif;
   size_t i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  ਖਾਲੀ **avalue_copy = ਨਿਰਾ;
 
   ecif.cif = cif;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ਲਈ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 8)
+      ਪੂਰਨ ਮਾਪ = at->ਮਾਪ;
+      ਜੇ (at->type == FFI_TYPE_STRUCT && ਮਾਪ > 8)
 	{
-	  char *argcopy = alloca (size);
-	  if (avalue_copy == NULL)
+	  ਅੱਖਰ *argcopy = alloca (ਮਾਪ);
+	  ਜੇ (avalue_copy == ਨਿਰਾ)
 	    {
-	      avalue_copy = alloca (nargs * sizeof (void *));
-	      memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+	      avalue_copy = alloca (nargs * ਆਕਾਰ (ਖਾਲੀ *));
+	      ਸਮ੍ਰਿਤੀ_ਨਕਲ (avalue_copy, avalue, nargs * ਆਕਾਰ (ਖਾਲੀ *));
 	      avalue = avalue_copy;
 	    }
-	  memcpy (argcopy, avalue[i], size);
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ (argcopy, avalue[i], ਮਾਪ);
 	  avalue[i] = argcopy;
 	}
     }
@@ -407,290 +407,290 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
-#ifdef PA_HPUX
+  ਜੇ (rvalue == ਨਿਰਾ
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_HPUX
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_LONGDOUBLE))
-#else
+#ਨਹੀਂਤਾਂ
       && cif->rtype->type == FFI_TYPE_STRUCT)
-#endif
+#ਜੇ_ਅੰਤ
     {
-      ecif.rvalue = alloca(cif->rtype->size);
+      ecif.rvalue = alloca(cif->rtype->ਮਾਪ);
     }
-  else
+  ਨਹੀਂਤਾਂ
     ecif.rvalue = rvalue;
 
 
-  switch (cif->abi)
+  ਚੋਣ (cif->abi)
     {
-    case FFI_PA32:
-      debug(3, "Calling ffi_call_pa32: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
-      ffi_call_pa32(ffi_prep_args_pa32, &ecif, cif->bytes,
+    ਹਾਲਤ FFI_PA32:
+      debug(3, "Calling ffi_call_pa32: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->ਬਾਈਟਾਂ, cif->flags, ecif.rvalue, (ਖਾਲੀ *)fn);
+      ffi_call_pa32(ffi_prep_ਦਲੀਲਾਂ_pa32, &ecif, cif->ਬਾਈਟਾਂ,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      ਰੋਕੋ;
 
-    default:
+    ਮੂਲ:
       FFI_ASSERT(0);
-      break;
+      ਰੋਕੋ;
     }
 }
 
-#if FFI_CLOSURES
+#ਜੇ FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
+ffi_ਸਥਿਤੀ ffi_ਘੇਰਾ_inner_pa32(ffi_ਘੇਰਾ *ਘੇਰਾ, UINT32 *ਢੇਰ)
 {
   ffi_cif *cif;
-  void **avalue;
-  void *rvalue;
+  ਖਾਲੀ **avalue;
+  ਖਾਲੀ *rvalue;
   /* Functions can return up to 64-bits in registers.  Return address
      must be double word aligned.  */
-  union { double rd; UINT32 ret[2]; } u;
+  ਸੰਘ { ਦੁੱਗਣਾ rd; UINT32 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT32 r28 __asm__("r28");
+  ਅੱਖਰ *tmp;
+  ਪੂਰਨ i, avn;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ ਥਾਂ = ਪਹਿਲਾ_ARG_ਥਾਂ;
+  ਰਜਿਸਟਰ UINT32 r28 __asm__("r28");
 
-  cif = closure->cif;
+  cif = ਘੇਰਾ->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
-    rvalue = (void *)r28;
-  else
+  ਜੇ (cif->flags == FFI_TYPE_STRUCT)
+    rvalue = (ਖਾਲੀ *)r28;
+  ਨਹੀਂਤਾਂ
     rvalue = &u;
 
-  avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
+  avalue = (ਖਾਲੀ **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  ਲਈ (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      ਪੂਰਨ type = (*p_arg)->type;
 
-      switch (type)
+      ਚੋਣ (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_POINTER:
-	  avalue[i] = (char *)(stack - slot) + sizeof(UINT32) - (*p_arg)->size;
-	  break;
+	ਹਾਲਤ FFI_TYPE_SINT8:
+	ਹਾਲਤ FFI_TYPE_UINT8:
+	ਹਾਲਤ FFI_TYPE_SINT16:
+	ਹਾਲਤ FFI_TYPE_UINT16:
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	ਹਾਲਤ FFI_TYPE_UINT32:
+	ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+	  avalue[i] = (ਅੱਖਰ *)(ਢੇਰ - ਥਾਂ) + ਆਕਾਰ(UINT32) - (*p_arg)->ਮਾਪ;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  slot += (slot & 1) ? 1 : 2;
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+	ਹਾਲਤ FFI_TYPE_SINT64:
+	ਹਾਲਤ FFI_TYPE_UINT64:
+	  ਥਾਂ += (ਥਾਂ & 1) ? 1 : 2;
+	  avalue[i] = (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_FLOAT:
-#ifdef PA_LINUX
+	ਹਾਲਤ FFI_TYPE_FLOAT:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_LINUX
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
 	     in the floating point registers instead of the general
 	     registers.  So, we need to replace what was previously
 	     stored in the current slot with the value in the
 	     corresponding floating point register.  */
-	  switch (slot - FIRST_ARG_SLOT)
+	  ਚੋਣ (ਥਾਂ - ਪਹਿਲਾ_ARG_ਥਾਂ)
 	    {
-	    case 0: fstw(fr4, (void *)(stack - slot)); break;
-	    case 1: fstw(fr5, (void *)(stack - slot)); break;
-	    case 2: fstw(fr6, (void *)(stack - slot)); break;
-	    case 3: fstw(fr7, (void *)(stack - slot)); break;
+	    ਹਾਲਤ 0: fstw(fr4, (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ)); ਰੋਕੋ;
+	    ਹਾਲਤ 1: fstw(fr5, (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ)); ਰੋਕੋ;
+	    ਹਾਲਤ 2: fstw(fr6, (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ)); ਰੋਕੋ;
+	    ਹਾਲਤ 3: fstw(fr7, (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ)); ਰੋਕੋ;
 	    }
-#endif
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+#ਜੇ_ਅੰਤ
+	  avalue[i] = (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ);
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_DOUBLE:
-	  slot += (slot & 1) ? 1 : 2;
-#ifdef PA_LINUX
+	ਹਾਲਤ FFI_TYPE_DOUBLE:
+	  ਥਾਂ += (ਥਾਂ & 1) ? 1 : 2;
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_LINUX
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
-	  switch (slot - FIRST_ARG_SLOT)
+	  ਚੋਣ (ਥਾਂ - ਪਹਿਲਾ_ARG_ਥਾਂ)
 	    {
-	    case 1: fstd(fr5, (void *)(stack - slot)); break;
-	    case 3: fstd(fr7, (void *)(stack - slot)); break;
+	    ਹਾਲਤ 1: fstd(fr5, (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ)); ਰੋਕੋ;
+	    ਹਾਲਤ 3: fstd(fr7, (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ)); ਰੋਕੋ;
 	    }
-#endif
-	  avalue[i] = (void *)(stack - slot);
-	  break;
+#ਜੇ_ਅੰਤ
+	  avalue[i] = (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ);
+	  ਰੋਕੋ;
 
-#ifdef PA_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_HPUX
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
-	  avalue[i] = (void *) *(stack - slot);
-	  break;
-#endif
+	  avalue[i] = (ਖਾਲੀ *) *(ਢੇਰ - ਥਾਂ);
+	  ਰੋਕੋ;
+#ਜੇ_ਅੰਤ
 
-	case FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_STRUCT:
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
-	  if((*p_arg)->size <= 4)
+	  ਜੇ((*p_arg)->ਮਾਪ <= 4)
 	    {
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT32) -
-		(*p_arg)->size;
+	      avalue[i] = (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ) + ਆਕਾਰ(UINT32) -
+		(*p_arg)->ਮਾਪ;
 	    }
-	  else if ((*p_arg)->size <= 8)
+	  ਨਹੀਂਤਾਂ ਜੇ ((*p_arg)->ਮਾਪ <= 8)
 	    {
-	      slot += (slot & 1) ? 1 : 2;
-	      avalue[i] = (void *)(stack - slot) + sizeof(UINT64) -
-		(*p_arg)->size;
+	      ਥਾਂ += (ਥਾਂ & 1) ? 1 : 2;
+	      avalue[i] = (ਖਾਲੀ *)(ਢੇਰ - ਥਾਂ) + ਆਕਾਰ(UINT64) -
+		(*p_arg)->ਮਾਪ;
 	    }
-	  else
-	    avalue[i] = (void *) *(stack - slot);
-	  break;
+	  ਨਹੀਂਤਾਂ
+	    avalue[i] = (ਖਾਲੀ *) *(ਢੇਰ - ਥਾਂ);
+	  ਰੋਕੋ;
 
-	default:
+	ਮੂਲ:
 	  FFI_ASSERT(0);
 	}
 
-      slot++;
+      ਥਾਂ++;
       p_arg++;
     }
 
   /* Invoke the closure.  */
-  (closure->fun) (cif, rvalue, avalue, closure->user_data);
+  (ਘੇਰਾ->fun) (cif, rvalue, avalue, ਘੇਰਾ->user_ਅੰਕੜੇ);
 
   debug(3, "after calling function, ret[0] = %08x, ret[1] = %08x\n", u.ret[0],
 	u.ret[1]);
 
   /* Store the result using the lower 2 bytes of the flags.  */
-  switch (cif->flags)
+  ਚੋਣ (cif->flags)
     {
-    case FFI_TYPE_UINT8:
-      *(stack - FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
-      *(stack - FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
-      *(stack - FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
-      *(stack - FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      *(stack - FIRST_ARG_SLOT - 1) = u.ret[1];
-      break;
+    ਹਾਲਤ FFI_TYPE_UINT8:
+      *(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ) = (UINT8)u.ret[0];
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT8:
+      *(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ) = (SINT8)u.ret[0];
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT16:
+      *(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ) = (UINT16)u.ret[0];
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT16:
+      *(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ) = (SINT16)u.ret[0];
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_INT:
+    ਹਾਲਤ FFI_TYPE_SINT32:
+    ਹਾਲਤ FFI_TYPE_UINT32:
+      *(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ) = u.ret[0];
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT64:
+    ਹਾਲਤ FFI_TYPE_UINT64:
+      *(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ) = u.ret[0];
+      *(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ - 1) = u.ret[1];
+      ਰੋਕੋ;
 
-    case FFI_TYPE_DOUBLE:
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_FLOAT:
+    ਹਾਲਤ FFI_TYPE_FLOAT:
       fldw(rvalue, fr4);
-      break;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_STRUCT:
+    ਹਾਲਤ FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_SMALL_STRUCT1:
-    case FFI_TYPE_SMALL_STRUCT2:
-    case FFI_TYPE_SMALL_STRUCT3:
-    case FFI_TYPE_SMALL_STRUCT4:
-      tmp = (void*)(stack -  FIRST_ARG_SLOT);
-      tmp += 4 - cif->rtype->size;
-      memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT1:
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT2:
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT3:
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT4:
+      tmp = (ਖਾਲੀ*)(ਢੇਰ -  ਪਹਿਲਾ_ARG_ਥਾਂ);
+      tmp += 4 - cif->rtype->ਮਾਪ;
+      ਸਮ੍ਰਿਤੀ_ਨਕਲ((ਖਾਲੀ*)tmp, &u, cif->rtype->ਮਾਪ);
+      ਰੋਕੋ;
 
-    case FFI_TYPE_SMALL_STRUCT5:
-    case FFI_TYPE_SMALL_STRUCT6:
-    case FFI_TYPE_SMALL_STRUCT7:
-    case FFI_TYPE_SMALL_STRUCT8:
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT5:
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT6:
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT7:
+    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT8:
       {
-	unsigned int ret2[2];
-	int off;
+	ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ ret2[2];
+	ਪੂਰਨ off;
 
 	/* Right justify ret[0] and ret[1] */
-	switch (cif->flags)
+	ਚੋਣ (cif->flags)
 	  {
-	    case FFI_TYPE_SMALL_STRUCT5: off = 3; break;
-	    case FFI_TYPE_SMALL_STRUCT6: off = 2; break;
-	    case FFI_TYPE_SMALL_STRUCT7: off = 1; break;
-	    default: off = 0; break;
+	    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT5: off = 3; ਰੋਕੋ;
+	    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT6: off = 2; ਰੋਕੋ;
+	    ਹਾਲਤ FFI_TYPE_SMALL_STRUCT7: off = 1; ਰੋਕੋ;
+	    ਮੂਲ: off = 0; ਰੋਕੋ;
 	  }
 
-	memset (ret2, 0, sizeof (ret2));
-	memcpy ((char *)ret2 + off, &u, 8 - off);
+	memset (ret2, 0, ਆਕਾਰ (ret2));
+	ਸਮ੍ਰਿਤੀ_ਨਕਲ ((ਅੱਖਰ *)ret2 + off, &u, 8 - off);
 
-	*(stack - FIRST_ARG_SLOT) = ret2[0];
-	*(stack - FIRST_ARG_SLOT - 1) = ret2[1];
+	*(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ) = ret2[0];
+	*(ਢੇਰ - ਪਹਿਲਾ_ARG_ਥਾਂ - 1) = ret2[1];
       }
-      break;
+      ਰੋਕੋ;
 
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_VOID:
-      break;
+    ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+    ਹਾਲਤ FFI_TYPE_VOID:
+      ਰੋਕੋ;
 
-    default:
+    ਮੂਲ:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      ਰੋਕੋ;
     }
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
    cif specifies the argument and result types for fun.
    The cif must already be prep'ed.  */
 
-extern void ffi_closure_pa32(void);
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_pa32(ਖਾਲੀ);
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ* ਘੇਰਾ,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      ਖਾਲੀ (*fun)(ffi_cif*,ਖਾਲੀ*,ਖਾਲੀ**,ਖਾਲੀ*),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ,
+		      ਖਾਲੀ *codeloc)
 {
   /* The layout of a function descriptor.  A function pointer with the PLABEL
      bit set points to a function descriptor.  */
-  struct pa32_fd
+  ਬਣਤਰ pa32_fd
   {
-    UINT32 code_pointer;
+    UINT32 ਕੋਡ_ਸੂਚਕ;
     UINT32 gp;
   };
 
-  struct ffi_pa32_trampoline_struct
+  ਬਣਤਰ ffi_pa32_trampoline_struct
   {
-     UINT32 code_pointer;        /* Pointer to ffi_closure_unix.  */
+     UINT32 ਕੋਡ_ਸੂਚਕ;        /* Pointer to ffi_closure_unix.  */
      UINT32 fake_gp;             /* Pointer to closure, installed as gp.  */
      UINT32 real_gp;             /* Real gp value.  */
   };
 
-  struct ffi_pa32_trampoline_struct *tramp;
-  struct pa32_fd *fd;
+  ਬਣਤਰ ffi_pa32_trampoline_struct *tramp;
+  ਬਣਤਰ pa32_fd *fd;
 
-  if (cif->abi != FFI_PA32)
-    return FFI_BAD_ABI;
+  ਜੇ (cif->abi != FFI_PA32)
+    ਵਾਪਸ FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa32.  */
-  fd = (struct pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
+  fd = (ਬਣਤਰ pa32_fd *)((UINT32)ffi_ਘੇਰਾ_pa32 & ~3);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa32_trampoline_struct *)closure->tramp;
-  tramp->code_pointer = fd->code_pointer;
+  tramp = (ਬਣਤਰ ffi_pa32_trampoline_struct *)ਘੇਰਾ->tramp;
+  tramp->ਕੋਡ_ਸੂਚਕ = fd->ਕੋਡ_ਸੂਚਕ;
   tramp->fake_gp = (UINT32)codeloc & ~3;
   tramp->real_gp = fd->gp;
 
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
+  ਘੇਰਾ->cif  = cif;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
+  ਘੇਰਾ->fun  = fun;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
-#endif
+#ਜੇ_ਅੰਤ

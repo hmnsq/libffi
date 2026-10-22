@@ -25,177 +25,177 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ "internal.h"
 
-#ifndef SPARC64
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ SPARC64
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+#ਜੇ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ਜੇ FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE ਬਾਹਰਲਾ ਦਾ date
 # endif
-#else
+#ਨਹੀਂਤਾਂ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#ਜੇ_ਅੰਤ
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_ਸਥਿਤੀ FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
-  size_t bytes;
-  int i, n, flags;
+  ਪੂਰਨ rtt = rtype->type;
+  size_t ਬਾਈਟਾਂ;
+  ਪੂਰਨ i, n, flags;
 
   /* Set the return type flag */
-  switch (rtt)
+  ਚੋਣ (rtt)
     {
-    case FFI_TYPE_VOID:
+    ਹਾਲਤ FFI_TYPE_VOID:
       flags = SPARC_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_FLOAT:
       flags = SPARC_RET_F_1;
-      break;
-    case FFI_TYPE_DOUBLE:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
       flags = SPARC_RET_F_2;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
-      flags = (rtype->size & 0xfff) << SPARC_SIZEMASK_SHIFT;
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
+    ਹਾਲਤ FFI_TYPE_STRUCT:
+      flags = (rtype->ਮਾਪ & 0xfff) << SPARC_SIZEMASK_ਖਿਸਕਾਓ;
       flags |= SPARC_RET_STRUCT;
-      break;
-    case FFI_TYPE_SINT8:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT8:
       flags = SPARC_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT8:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT8:
       flags = SPARC_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT16:
       flags = SPARC_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT16:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_UINT16:
       flags = SPARC_RET_UINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_INT:
+    ਹਾਲਤ FFI_TYPE_SINT32:
+    ਹਾਲਤ FFI_TYPE_UINT32:
+    ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
       flags = SPARC_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_SINT64:
+    ਹਾਲਤ FFI_TYPE_UINT64:
       flags = SPARC_RET_INT64;
-      break;
-    case FFI_TYPE_COMPLEX:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_COMPLEX:
       rtt = rtype->elements[0]->type;
-      switch (rtt)
+      ਚੋਣ (rtt)
 	{
-	case FFI_TYPE_FLOAT:
+	ਹਾਲਤ FFI_TYPE_FLOAT:
 	  flags = SPARC_RET_F_2;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_DOUBLE:
 	  flags = SPARC_RET_F_4;
-	  break;
-	case FFI_TYPE_LONGDOUBLE:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	  flags = SPARC_RET_F_8;
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_SINT64:
+	ਹਾਲਤ FFI_TYPE_UINT64:
 	  flags = SPARC_RET_INT128;
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_INT:
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	ਹਾਲਤ FFI_TYPE_UINT32:
 	  flags = SPARC_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_SINT16:
+	ਹਾਲਤ FFI_TYPE_UINT16:
 	  flags = SP_V8_RET_CPLX16;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_SINT8:
+	ਹਾਲਤ FFI_TYPE_UINT8:
 	  flags = SP_V8_RET_CPLX8;
-	  break;
-	default:
+	  ਰੋਕੋ;
+	ਮੂਲ:
 	  abort();
 	}
-      break;
-    default:
+      ਰੋਕੋ;
+    ਮੂਲ:
       abort();
     }
   cif->flags = flags;
 
-  bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  ਬਾਈਟਾਂ = 0;
+  ਲਈ (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
-      size_t z = ty->size;
-      int tt = ty->type;
+      size_t z = ty->ਮਾਪ;
+      ਪੂਰਨ tt = ty->type;
 
-      switch (tt)
+      ਚੋਣ (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	ਹਾਲਤ FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Passed by reference.  */
 	  z = 4;
-	  break;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_COMPLEX:
+	ਹਾਲਤ FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
+	  ਜੇ (tt == FFI_TYPE_FLOAT || z > 8)
+	    ਜਾਓ by_reference;
 	  /* FALLTHRU */
 
-	default:
+	ਮੂਲ:
 	  z = FFI_ALIGN(z, 4);
 	}
-      bytes += z;
+      ਬਾਈਟਾਂ += z;
     }
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary.  */
-  if (bytes < 6 * 4)
-    bytes = 6 * 4;
+  ਜੇ (ਬਾਈਟਾਂ < 6 * 4)
+    ਬਾਈਟਾਂ = 6 * 4;
 
   /* The ABI always requires space for the struct return pointer.  */
-  bytes += 4;
+  ਬਾਈਟਾਂ += 4;
 
   /* The stack must be 2 word aligned, so round bytes up appropriately. */
-  bytes = FFI_ALIGN(bytes, 2 * 4);
+  ਬਾਈਟਾਂ = FFI_ALIGN(ਬਾਈਟਾਂ, 2 * 4);
 
   /* Include the call frame to prep_args.  */
-  bytes += 4*16 + 4*8;
-  cif->bytes = bytes;
+  ਬਾਈਟਾਂ += 4*16 + 4*8;
+  cif->ਬਾਈਟਾਂ = ਬਾਈਟਾਂ;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
-			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_v8(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+			ਖਾਲੀ **avalue, size_t ਬਾਈਟਾਂ, ਖਾਲੀ *ਘੇਰਾ) FFI_HIDDEN;
 
-int FFI_HIDDEN
-ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
+ਪੂਰਨ FFI_HIDDEN
+ffi_prep_ਦਲੀਲਾਂ_v8(ffi_cif *cif, ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *argp, ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  ਪੂਰਨ flags = cif->flags;
+  ਪੂਰਨ i, nargs;
 
-  if (rvalue == NULL)
+  ਜੇ (rvalue == ਨਿਰਾ)
     {
-      if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+      ਜੇ ((flags & SPARC_FLAG_RET_ਨਕਾਬ) == SPARC_RET_STRUCT)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
-	  rvalue = (char *)argp + cif->bytes;
+	  rvalue = (ਅੱਖਰ *)argp + cif->ਬਾਈਟਾਂ;
 	}
-      else
+      ਨਹੀਂਤਾਂ
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -204,216 +204,216 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 
   /* This could only really be done when we are returning a structure.
      However, the space is reserved so we can do it unconditionally.  */
-  *argp++ = (unsigned long)rvalue;
+  *argp++ = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)rvalue;
 
-#ifdef USING_PURIFY
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ USING_PURIFY
   /* Purify will probably complain in our assembly routine,
      unless we zero out this memory. */
   memset(argp, 0, 6*4);
-#endif
+#ਜੇ_ਅੰਤ
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  ਲਈ (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
-      void *a = avalue[i];
-      int tt = ty->type;
+      ਖਾਲੀ *a = avalue[i];
+      ਪੂਰਨ tt = ty->type;
       size_t z;
 
-      switch (tt)
+      ਚੋਣ (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	ਹਾਲਤ FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	by_reference:
-	  *argp++ = (unsigned long)a;
-	  break;
+	  *argp++ = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)a;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	  memcpy(argp, a, 8);
+	ਹਾਲਤ FFI_TYPE_DOUBLE:
+	ਹਾਲਤ FFI_TYPE_UINT64:
+	ਹਾਲਤ FFI_TYPE_SINT64:
+	  ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, a, 8);
 	  argp += 2;
-	  break;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  *argp++ = *(unsigned *)a;
-	  break;
+	ਹਾਲਤ FFI_TYPE_INT:
+	ਹਾਲਤ FFI_TYPE_FLOAT:
+	ਹਾਲਤ FFI_TYPE_UINT32:
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+	  *argp++ = *(ਬਿਨਾਨਿਸ਼ਾਨੀ *)a;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_UINT8:
+	ਹਾਲਤ FFI_TYPE_UINT8:
 	  *argp++ = *(UINT8 *)a;
-	  break;
-	case FFI_TYPE_SINT8:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_SINT8:
 	  *argp++ = *(SINT8 *)a;
-	  break;
-	case FFI_TYPE_UINT16:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_UINT16:
 	  *argp++ = *(UINT16 *)a;
-	  break;
-	case FFI_TYPE_SINT16:
+	  ਰੋਕੋ;
+	ਹਾਲਤ FFI_TYPE_SINT16:
 	  *argp++ = *(SINT16 *)a;
-	  break;
+	  ਰੋਕੋ;
 
-        case FFI_TYPE_COMPLEX:
+        ਹਾਲਤ FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->ਮਾਪ;
+	  ਜੇ (tt == FFI_TYPE_FLOAT || z > 8)
+	    ਜਾਓ by_reference;
+	  ਜੇ (z < 4)
 	    {
-	      memcpy((char *)argp + 4 - z, a, z);
+	      ਸਮ੍ਰਿਤੀ_ਨਕਲ((ਅੱਖਰ *)argp + 4 - z, a, z);
 	      argp++;
 	    }
-	  else
+	  ਨਹੀਂਤਾਂ
 	    {
-	      memcpy(argp, a, z);
+	      ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, a, z);
 	      argp += z / 4;
 	    }
-	  break;
+	  ਰੋਕੋ;
 
-	default:
+	ਮੂਲ:
 	  abort();
 	}
     }
 
-  return flags;
+  ਵਾਪਸ flags;
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ਸਥਿਰ ਖਾਲੀ
+ffi_call_int (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+	      ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
-  size_t bytes = cif->bytes;
+  size_t ਬਾਈਟਾਂ = cif->ਬਾਈਟਾਂ;
   size_t i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  ਖਾਲੀ **avalue_copy = ਨਿਰਾ;
 
   FFI_ASSERT (cif->abi == FFI_V8);
 
   /* If we've not got a return value, we need to create one if we've
      got to pass the return value to the callee.  Otherwise ignore it.  */
-  if (rvalue == NULL
-      && (cif->flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
-    bytes += FFI_ALIGN (cif->rtype->size, 8);
+  ਜੇ (rvalue == ਨਿਰਾ
+      && (cif->flags & SPARC_FLAG_RET_ਨਕਾਬ) == SPARC_RET_STRUCT)
+    ਬਾਈਟਾਂ += FFI_ALIGN (cif->rtype->ਮਾਪ, 8);
 
   /* If we have any structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ਲਈ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT)
+      ਪੂਰਨ ਮਾਪ = at->ਮਾਪ;
+      ਜੇ (at->type == FFI_TYPE_STRUCT)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ਅੱਖਰ *argcopy = alloca (ਮਾਪ);
+          ਜੇ (avalue_copy == ਨਿਰਾ)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * ਆਕਾਰ (ਖਾਲੀ *));
+              ਸਮ੍ਰਿਤੀ_ਨਕਲ (avalue_copy, avalue, nargs * ਆਕਾਰ (ਖਾਲੀ *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ (argcopy, avalue[i], ਮਾਪ);
           avalue[i] = argcopy;
         }
     }
 
-  ffi_call_v8(cif, fn, rvalue, avalue, -bytes, closure);
+  ffi_call_v8(cif, fn, rvalue, avalue, -ਬਾਈਟਾਂ, ਘੇਰਾ);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ
+ffi_call (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ਨਿਰਾ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+ਖਾਲੀ
+ffi_call_go (ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue,
+	     ਖਾਲੀ **avalue, ਖਾਲੀ *ਘੇਰਾ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, ਘੇਰਾ);
 }
 
-#ifdef __GNUC__
-static inline void
-ffi_flush_icache (void *p)
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __GNUC__
+ਸਥਿਰ ਸਤਰਅੰਦਰ ਖਾਲੀ
+ffi_flush_icache (ਖਾਲੀ *p)
 {
   /* SPARC v8 requires 5 instructions for flush to be visible */
-  __asm__ volatile ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
+  __asm__ ਅਸਥਿਰ ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
 		: : "r" (p) : "memory");
 }
-#else
-extern void ffi_flush_icache (void *) FFI_HIDDEN;
-#endif
+#ਨਹੀਂਤਾਂ
+ਬਾਹਰੀ ਖਾਲੀ ffi_flush_icache (ਖਾਲੀ *) FFI_HIDDEN;
+#ਜੇ_ਅੰਤ
 
-extern void ffi_closure_v8(void) FFI_HIDDEN;
-extern void ffi_go_closure_v8(void) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_v8(ਖਾਲੀ) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_go_ਘੇਰਾ_v8(ਖਾਲੀ) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ *ਘੇਰਾ,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+		      ਖਾਲੀ *user_ਅੰਕੜੇ,
+		      ਖਾਲੀ *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
-  unsigned long ctx = (unsigned long) closure;
-  unsigned long fn = (unsigned long) ffi_closure_v8;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *tramp = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ *) &ਘੇਰਾ->tramp[0];
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ctx = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) ਘੇਰਾ;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ fn = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) ffi_ਘੇਰਾ_v8;
 
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  ਜੇ (cif->abi != FFI_V8)
+    ਵਾਪਸ FFI_BAD_ABI;
 
   tramp[0] = 0x03000000 | fn >> 10;	/* sethi %hi(fn), %g1	*/
   tramp[1] = 0x05000000 | ctx >> 10;	/* sethi %hi(ctx), %g2	*/
   tramp[2] = 0x81c06000 | (fn & 0x3ff);	/* jmp   %g1+%lo(fn)	*/
   tramp[3] = 0x8410a000 | (ctx & 0x3ff);/* or    %g2, %lo(ctx)	*/
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
 
-  ffi_flush_icache (closure);
+  ffi_flush_icache (ਘੇਰਾ);
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+ffi_ਸਥਿਤੀ
+ffi_prep_go_ਘੇਰਾ (ffi_go_ਘੇਰਾ *ਘੇਰਾ, ffi_cif *cif,
+		     ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*))
 {
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  ਜੇ (cif->abi != FFI_V8)
+    ਵਾਪਸ FFI_BAD_ABI;
 
-  closure->tramp = ffi_go_closure_v8;
-  closure->cif = cif;
-  closure->fun = fun;
+  ਘੇਰਾ->tramp = ffi_go_ਘੇਰਾ_v8;
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
-int FFI_HIDDEN
-ffi_closure_sparc_inner_v8(ffi_cif *cif, 
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data, void *rvalue,
-			   unsigned long *argp)
+ਪੂਰਨ FFI_HIDDEN
+ffi_ਘੇਰਾ_sparc_inner_v8(ffi_cif *cif, 
+			   ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+			   ਖਾਲੀ *user_ਅੰਕੜੇ, ਖਾਲੀ *rvalue,
+			   ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *argp)
 {
   ffi_type **arg_types;
-  void **avalue;
-  int i, nargs, flags;
+  ਖਾਲੀ **avalue;
+  ਪੂਰਨ i, nargs, flags;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
   flags = cif->flags;
-  avalue = alloca(nargs * sizeof(void *));
+  avalue = alloca(nargs * ਆਕਾਰ(ਖਾਲੀ *));
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  Also install it so we
      can return the address in %o0.  */
-  if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+  ਜੇ ((flags & SPARC_FLAG_RET_ਨਕਾਬ) == SPARC_RET_STRUCT)
     {
-      void *new_rvalue = (void *)*argp;
-      *(void **)rvalue = new_rvalue;
+      ਖਾਲੀ *new_rvalue = (ਖਾਲੀ *)*argp;
+      *(ਖਾਲੀ **)rvalue = new_rvalue;
       rvalue = new_rvalue;
     }
 
@@ -421,26 +421,26 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   argp++;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++)
+  ਲਈ (i = 0; i < nargs; i++)
     {
       ffi_type *ty = arg_types[i];
-      int tt = ty->type;
-      void *a = argp;
+      ਪੂਰਨ tt = ty->type;
+      ਖਾਲੀ *a = argp;
       size_t z;
 
-      switch (tt)
+      ਚੋਣ (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	ਹਾਲਤ FFI_TYPE_STRUCT:
+	ਹਾਲਤ FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Straight copy of invisible reference.  */
-	  a = (void *)*argp;
-	  break;
+	  a = (ਖਾਲੀ *)*argp;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  if ((unsigned long)a & 7)
+	ਹਾਲਤ FFI_TYPE_DOUBLE:
+	ਹਾਲਤ FFI_TYPE_SINT64:
+	ਹਾਲਤ FFI_TYPE_UINT64:
+	  ਜੇ ((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)a & 7)
 	    {
 	      /* Align on a 8-byte boundary.  */
 	      UINT64 *tmp = alloca(8);
@@ -448,35 +448,35 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 	      a = tmp;
 	    }
 	  argp++;
-	  break;
+	  ਰੋਕੋ;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  break;
-        case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT16:
+	ਹਾਲਤ FFI_TYPE_INT:
+	ਹਾਲਤ FFI_TYPE_FLOAT:
+	ਹਾਲਤ FFI_TYPE_UINT32:
+	ਹਾਲਤ FFI_TYPE_SINT32:
+	ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+	  ਰੋਕੋ;
+        ਹਾਲਤ FFI_TYPE_UINT16:
+        ਹਾਲਤ FFI_TYPE_SINT16:
 	  a += 2;
-	  break;
-        case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT8:
+	  ਰੋਕੋ;
+        ਹਾਲਤ FFI_TYPE_UINT8:
+        ਹਾਲਤ FFI_TYPE_SINT8:
 	  a += 3;
-	  break;
+	  ਰੋਕੋ;
 
-        case FFI_TYPE_COMPLEX:
+        ਹਾਲਤ FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->ਮਾਪ;
+	  ਜੇ (tt == FFI_TYPE_FLOAT || z > 8)
+	    ਜਾਓ by_reference;
+	  ਜੇ (z < 4)
 	    a += 4 - z;
-	  else if (z > 4)
+	  ਨਹੀਂਤਾਂ ਜੇ (z > 4)
 	    argp++;
-	  break;
+	  ਰੋਕੋ;
 
-	default:
+	ਮੂਲ:
 	  abort();
 	}
       argp++;
@@ -484,9 +484,9 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_ਅੰਕੜੇ);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  ਵਾਪਸ flags;
 }
-#endif /* !SPARC64 */
+#ਜੇ_ਅੰਤ /* !SPARC64 */

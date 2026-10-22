@@ -27,37 +27,37 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ਨਿਸ਼ਾਨਾ_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LIBFFI_ਨਿਸ਼ਾਨਾ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_H
+#ਗਲਤੀ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ਜੇ_ਅੰਤ
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ASM
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ          ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਨਿਸ਼ਾਨੀਵਾਲਾ ਲੰਮਾ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਗਿਣਤੀ ffi_abi {
+  FFI_ਪਹਿਲਾ_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV,
 } ffi_abi;
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef __CSKYABIV2__
-#define FFI_ASM_ARGREG_SIZE 16
-#define TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_ASM_ARGREG_SIZE 24
-#define TRAMPOLINE_SIZE 20
-#define FFI_TRAMPOLINE_SIZE 28
-#endif
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __CSKYABIV2__
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ASM_ARGREG_ਮਾਪ 16
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TRAMPOLINE_ਮਾਪ 16
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TRAMPOLINE_ਮਾਪ 24
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ASM_ARGREG_ਮਾਪ 24
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ TRAMPOLINE_ਮਾਪ 20
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TRAMPOLINE_ਮਾਪ 28
+#ਜੇ_ਅੰਤ
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#endif
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_CLOSURES 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_NATIVE_RAW_API 0
+#ਜੇ_ਅੰਤ

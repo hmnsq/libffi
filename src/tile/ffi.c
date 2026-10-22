@@ -24,256 +24,256 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <arch/abi.h>
-#include <arch/icache.h>
-#include <arch/opcode.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdlib.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <stdint.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <unistd.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <arch/abi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <arch/icache.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <arch/opcode.h>
 
 
 /* The first 10 registers are used to pass arguments and return values. */
-#define NUM_ARG_REGS 10
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ ਅੰਕ_ARG_REGS 10
 
 /* Performs a raw function call with the given NUM_ARG_REGS register arguments
    and the specified additional stack arguments (if any). */
-extern void ffi_call_tile(ffi_sarg reg_args[NUM_ARG_REGS],
-                          const ffi_sarg *stack_args,
-                          size_t stack_args_bytes,
-                          void (*fnaddr)(void))
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_tile(ffi_sarg reg_ਦਲੀਲਾਂ[ਅੰਕ_ARG_REGS],
+                          ਅਚਲ ffi_sarg *ਢੇਰ_ਦਲੀਲਾਂ,
+                          size_t ਢੇਰ_ਦਲੀਲਾਂ_ਬਾਈਟਾਂ,
+                          ਖਾਲੀ (*fnaddr)(ਖਾਲੀ))
   FFI_HIDDEN;
 
 /* This handles the raw call from the closure stub, cleaning up the
    parameters and delegating to ffi_closure_tile_inner. */
-extern void ffi_closure_tile(void) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_tile(ਖਾਲੀ) FFI_HIDDEN;
 
 
-ffi_status
+ffi_ਸਥਿਤੀ
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* We always allocate room for all registers. Even if we don't
      use them as parameters, they get returned in the same array
      as struct return values so we need to make room. */
-  if (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
-    cif->bytes = NUM_ARG_REGS * FFI_SIZEOF_ARG;
+  ਜੇ (cif->ਬਾਈਟਾਂ < ਅੰਕ_ARG_REGS * FFI_SIZEOF_ARG)
+    cif->ਬਾਈਟਾਂ = ਅੰਕ_ARG_REGS * FFI_SIZEOF_ARG;
 
-  if (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  ਜੇ (cif->rtype->ਮਾਪ > ਅੰਕ_ARG_REGS * FFI_SIZEOF_ARG)
     cif->flags = FFI_TYPE_STRUCT;
-  else
+  ਨਹੀਂਤਾਂ
     cif->flags = FFI_TYPE_INT;
 
   /* Nothing to do. */
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
 
-static long
-assign_to_ffi_arg(ffi_sarg *out, void *in, const ffi_type *type,
-                  int write_to_reg)
+ਸਥਿਰ ਲੰਮਾ
+ਸੌਂਪੋ_ਮੰਜ਼ਿਲ_ffi_arg(ffi_sarg *ਬਾਹਰਲਾ, ਖਾਲੀ *ਵਿੱਚ_2, ਅਚਲ ffi_type *type,
+                  ਪੂਰਨ write_ਮੰਜ਼ਿਲ_reg)
 {
-  switch (type->type)
+  ਚੋਣ (type->type)
     {
-    case FFI_TYPE_SINT8:
-      *out = *(SINT8 *)in;
-      return 1;
+    ਹਾਲਤ FFI_TYPE_SINT8:
+      *ਬਾਹਰਲਾ = *(SINT8 *)ਵਿੱਚ_2;
+      ਵਾਪਸ 1;
 
-    case FFI_TYPE_UINT8:
-      *out = *(UINT8 *)in;
-      return 1;
+    ਹਾਲਤ FFI_TYPE_UINT8:
+      *ਬਾਹਰਲਾ = *(UINT8 *)ਵਿੱਚ_2;
+      ਵਾਪਸ 1;
 
-    case FFI_TYPE_SINT16:
-      *out = *(SINT16 *)in;
-      return 1;
+    ਹਾਲਤ FFI_TYPE_SINT16:
+      *ਬਾਹਰਲਾ = *(SINT16 *)ਵਿੱਚ_2;
+      ਵਾਪਸ 1;
 
-    case FFI_TYPE_UINT16:
-      *out = *(UINT16 *)in;
-      return 1;
+    ਹਾਲਤ FFI_TYPE_UINT16:
+      *ਬਾਹਰਲਾ = *(UINT16 *)ਵਿੱਚ_2;
+      ਵਾਪਸ 1;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-#ifndef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
+    ਹਾਲਤ FFI_TYPE_SINT32:
+    ਹਾਲਤ FFI_TYPE_UINT32:
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __LP64__
+    ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+#ਜੇ_ਅੰਤ
       /* Note that even unsigned 32-bit quantities are sign extended
          on tilegx when stored in a register.  */
-      *out = *(SINT32 *)in;
-      return 1;
+      *ਬਾਹਰਲਾ = *(SINT32 *)ਵਿੱਚ_2;
+      ਵਾਪਸ 1;
 
-    case FFI_TYPE_FLOAT:
-#ifdef __tilegx__
-      if (write_to_reg)
+    ਹਾਲਤ FFI_TYPE_FLOAT:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __tilegx__
+      ਜੇ (write_ਮੰਜ਼ਿਲ_reg)
         {
           /* Properly sign extend the value.  */
-          union { float f; SINT32 s32; } val;
-          val.f = *(float *)in;
-          *out = val.s32;
+          ਸੰਘ { ਦਸ਼ਮਲਵ f; SINT32 s32; } val;
+          val.f = *(ਦਸ਼ਮਲਵ *)ਵਿੱਚ_2;
+          *ਬਾਹਰਲਾ = val.s32;
         }
-      else
-#endif
+      ਨਹੀਂਤਾਂ
+#ਜੇ_ਅੰਤ
         {
-          *(float *)out = *(float *)in;
+          *(ਦਸ਼ਮਲਵ *)ਬਾਹਰਲਾ = *(ਦਸ਼ਮਲਵ *)ਵਿੱਚ_2;
         }
-      return 1;
+      ਵਾਪਸ 1;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
-#ifdef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
-      *(UINT64 *)out = *(UINT64 *)in;
-      return sizeof(UINT64) / FFI_SIZEOF_ARG;
+    ਹਾਲਤ FFI_TYPE_SINT64:
+    ਹਾਲਤ FFI_TYPE_UINT64:
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __LP64__
+    ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
+#ਜੇ_ਅੰਤ
+      *(UINT64 *)ਬਾਹਰਲਾ = *(UINT64 *)ਵਿੱਚ_2;
+      ਵਾਪਸ ਆਕਾਰ(UINT64) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_STRUCT:
-      memcpy(out, in, type->size);
-      return (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+    ਹਾਲਤ FFI_TYPE_STRUCT:
+      ਸਮ੍ਰਿਤੀ_ਨਕਲ(ਬਾਹਰਲਾ, ਵਿੱਚ_2, type->ਮਾਪ);
+      ਵਾਪਸ (type->ਮਾਪ + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_VOID:
+    ਹਾਲਤ FFI_TYPE_VOID:
       /* Must be a return type. Nothing to do. */
-      return 0;
+      ਵਾਪਸ 0;
 
-    default:
+    ਮੂਲ:
       FFI_ASSERT(0);
-      return -1;
+      ਵਾਪਸ -1;
     }
 }
 
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ
+ffi_call(ffi_cif *cif, ਖਾਲੀ (*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
-  ffi_sarg * const arg_mem = alloca(cif->bytes);
-  ffi_sarg * const reg_args = arg_mem;
-  ffi_sarg * const stack_args = &reg_args[NUM_ARG_REGS];
+  ffi_sarg * ਅਚਲ arg_mem = alloca(cif->ਬਾਈਟਾਂ);
+  ffi_sarg * ਅਚਲ reg_ਦਲੀਲਾਂ = arg_mem;
+  ffi_sarg * ਅਚਲ ਢੇਰ_ਦਲੀਲਾਂ = &reg_ਦਲੀਲਾਂ[ਅੰਕ_ARG_REGS];
   ffi_sarg *argp = arg_mem;
-  ffi_type ** const arg_types = cif->arg_types;
-  const long num_args = cif->nargs;
-  long i;
+  ffi_type ** ਅਚਲ arg_types = cif->arg_types;
+  ਅਚਲ ਲੰਮਾ ਅੰਕ_ਦਲੀਲਾਂ = cif->nargs;
+  ਲੰਮਾ i;
 
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ਜੇ (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Pass a hidden pointer to the return value. We make sure there
          is scratch space for the callee to store the return value even if
          our caller doesn't care about it. */
-      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->size));
+      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->ਮਾਪ));
 
       /* No more work needed to return anything. */
-      rvalue = NULL;
+      rvalue = ਨਿਰਾ;
     }
 
-  for (i = 0; i < num_args; i++)
+  ਲਈ (i = 0; i < ਅੰਕ_ਦਲੀਲਾਂ; i++)
     {
       ffi_type *type = arg_types[i];
-      void * const arg_in = avalue[i];
-      ptrdiff_t arg_word = argp - arg_mem;
+      ਖਾਲੀ * ਅਚਲ arg_ਵਿੱਚ = avalue[i];
+      ptrdiff_t arg_ਸ਼ਬਦ = argp - arg_mem;
 
-#ifndef __tilegx__
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      ਲੰਮਾ align = arg_ਸ਼ਬਦ & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
-      arg_word += align;
-#endif
+      arg_ਸ਼ਬਦ += align;
+#ਜੇ_ਅੰਤ
 
-      if (type->type == FFI_TYPE_STRUCT)
+      ਜੇ (type->type == FFI_TYPE_STRUCT)
         {
-          const size_t arg_size_in_words =
-            (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+          ਅਚਲ size_t arg_ਮਾਪ_ਵਿੱਚ_ਸ਼ਬਦ =
+            (type->ਮਾਪ + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-          if (arg_word < NUM_ARG_REGS &&
-              arg_word + arg_size_in_words > NUM_ARG_REGS)
+          ਜੇ (arg_ਸ਼ਬਦ < ਅੰਕ_ARG_REGS &&
+              arg_ਸ਼ਬਦ + arg_ਮਾਪ_ਵਿੱਚ_ਸ਼ਬਦ > ਅੰਕ_ARG_REGS)
             {
               /* Args are not allowed to span registers and the stack. */
-              argp = stack_args;
+              argp = ਢੇਰ_ਦਲੀਲਾਂ;
             }
 
-          memcpy(argp, arg_in, type->size);
-          argp += arg_size_in_words;
+          ਸਮ੍ਰਿਤੀ_ਨਕਲ(argp, arg_ਵਿੱਚ, type->ਮਾਪ);
+          argp += arg_ਮਾਪ_ਵਿੱਚ_ਸ਼ਬਦ;
         }
-      else
+      ਨਹੀਂਤਾਂ
         {
-          argp += assign_to_ffi_arg(argp, arg_in, arg_types[i], 1);
+          argp += ਸੌਂਪੋ_ਮੰਜ਼ਿਲ_ffi_arg(argp, arg_ਵਿੱਚ, arg_types[i], 1);
         }
     }
 
   /* Actually do the call. */
-  ffi_call_tile(reg_args, stack_args,
-                cif->bytes - (NUM_ARG_REGS * FFI_SIZEOF_ARG), fn);
+  ffi_call_tile(reg_ਦਲੀਲਾਂ, ਢੇਰ_ਦਲੀਲਾਂ,
+                cif->ਬਾਈਟਾਂ - (ਅੰਕ_ARG_REGS * FFI_SIZEOF_ARG), fn);
 
-  if (rvalue != NULL)
-    assign_to_ffi_arg(rvalue, reg_args, cif->rtype, 0);
+  ਜੇ (rvalue != ਨਿਰਾ)
+    ਸੌਂਪੋ_ਮੰਜ਼ਿਲ_ffi_arg(rvalue, reg_ਦਲੀਲਾਂ, cif->rtype, 0);
 }
 
 
 /* Template code for closure. */
-extern const UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
+ਬਾਹਰੀ ਅਚਲ UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
 
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ *ਘੇਰਾ,
                       ffi_cif *cif,
-                      void (*fun)(ffi_cif*, void*, void**, void*),
-                      void *user_data,
-                      void *codeloc)
+                      ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+                      ਖਾਲੀ *user_ਅੰਕੜੇ,
+                      ਖਾਲੀ *codeloc)
 {
-#ifdef __tilegx__
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ __tilegx__
   /* TILE-Gx */
   SINT64 c;
   SINT64 h;
-  int s;
-  UINT64 *out;
+  ਪੂਰਨ s;
+  UINT64 *ਬਾਹਰਲਾ;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  ਜੇ (cif->abi != FFI_UNIX)
+    ਵਾਪਸ FFI_BAD_ABI;
 
-  out = (UINT64 *)closure->tramp;
+  ਬਾਹਰਲਾ = (UINT64 *)ਘੇਰਾ->tramp;
 
-  c = (intptr_t)closure;
-  h = (intptr_t)ffi_closure_tile;
+  c = (intptr_t)ਘੇਰਾ;
+  h = (intptr_t)ffi_ਘੇਰਾ_tile;
   s = 0;
 
   /* Find the smallest shift count that doesn't lose information
      (i.e. no need to explicitly insert high bits of the address that
      are just the sign extension of the low bits). */
-  while ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
+  ਜਦੋਂ ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
     s += 16;
 
-#define OPS(a, b, shift) \
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ OPS(a, b, shift) \
   (create_Imm16_X0((a) >> (shift)) | create_Imm16_X1((b) >> (shift)))
 
   /* Emit the moveli. */
-  *out++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
-  for (s -= 16; s >= 0; s -= 16)
-    *out++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
+  *ਬਾਹਰਲਾ++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
+  ਲਈ (s -= 16; s >= 0; s -= 16)
+    *ਬਾਹਰਲਾ++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
 
-#undef OPS
+#ਪਰਿਭਾਸ਼ਾ_ਰੱਦ OPS
 
-  *out++ = ffi_template_tramp_tile[2];
+  *ਬਾਹਰਲਾ++ = ffi_template_tramp_tile[2];
 
-#else
+#ਨਹੀਂਤਾਂ
   /* TILEPro */
-  UINT64 *out;
+  UINT64 *ਬਾਹਰਲਾ;
   intptr_t delta;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  ਜੇ (cif->abi != FFI_UNIX)
+    ਵਾਪਸ FFI_BAD_ABI;
 
-  out = (UINT64 *)closure->tramp;
-  delta = (intptr_t)ffi_closure_tile - (intptr_t)codeloc;
+  ਬਾਹਰਲਾ = (UINT64 *)ਘੇਰਾ->tramp;
+  delta = (intptr_t)ffi_ਘੇਰਾ_tile - (intptr_t)codeloc;
 
-  *out++ = ffi_template_tramp_tile[0] | create_JOffLong_X1(delta >> 3);
-#endif
+  *ਬਾਹਰਲਾ++ = ffi_template_tramp_tile[0] | create_JOffLong_X1(delta >> 3);
+#ਜੇ_ਅੰਤ
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
 
-  invalidate_icache(closure->tramp, (char *)out - closure->tramp,
+  invalidate_icache(ਘੇਰਾ->tramp, (ਅੱਖਰ *)ਬਾਹਰਲਾ - ਘੇਰਾ->tramp,
                     getpagesize());
 
-  return FFI_OK;
+  ਵਾਪਸ FFI_OK;
 }
 
 
@@ -281,75 +281,75 @@ ffi_prep_closure_loc (ffi_closure *closure,
    all of the work. On entry reg_args[0] holds the values the registers
    had when the closure was invoked. On return reg_args[1] holds the register
    values to be returned to the caller (many of which may be garbage). */
-void FFI_HIDDEN
-ffi_closure_tile_inner(ffi_closure *closure,
-                       ffi_sarg reg_args[2][NUM_ARG_REGS],
-                       ffi_sarg *stack_args)
+ਖਾਲੀ FFI_HIDDEN
+ffi_ਘੇਰਾ_tile_inner(ffi_ਘੇਰਾ *ਘੇਰਾ,
+                       ffi_sarg reg_ਦਲੀਲਾਂ[2][ਅੰਕ_ARG_REGS],
+                       ffi_sarg *ਢੇਰ_ਦਲੀਲਾਂ)
 {
-  ffi_cif * const cif = closure->cif;
-  void ** const avalue = alloca(cif->nargs * sizeof(void *));
-  void *rvalue;
-  ffi_type ** const arg_types = cif->arg_types;
-  ffi_sarg * const reg_args_in = reg_args[0];
-  ffi_sarg * const reg_args_out = reg_args[1];
+  ffi_cif * ਅਚਲ cif = ਘੇਰਾ->cif;
+  ਖਾਲੀ ** ਅਚਲ avalue = alloca(cif->nargs * ਆਕਾਰ(ਖਾਲੀ *));
+  ਖਾਲੀ *rvalue;
+  ffi_type ** ਅਚਲ arg_types = cif->arg_types;
+  ffi_sarg * ਅਚਲ reg_ਦਲੀਲਾਂ_ਵਿੱਚ = reg_ਦਲੀਲਾਂ[0];
+  ffi_sarg * ਅਚਲ reg_ਦਲੀਲਾਂ_ਬਾਹਰਲਾ = reg_ਦਲੀਲਾਂ[1];
   ffi_sarg * argp;
-  long i, arg_word, nargs = cif->nargs;
+  ਲੰਮਾ i, arg_ਸ਼ਬਦ, nargs = cif->nargs;
   /* Use a union to guarantee proper alignment for double. */
-  union { ffi_sarg arg[NUM_ARG_REGS]; double d; UINT64 u64; } closure_ret;
+  ਸੰਘ { ffi_sarg arg[ਅੰਕ_ARG_REGS]; ਦੁੱਗਣਾ d; UINT64 u64; } ਘੇਰਾ_ret;
 
   /* Start out reading register arguments. */
-  argp = reg_args_in;
+  argp = reg_ਦਲੀਲਾਂ_ਵਿੱਚ;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ਜੇ (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Return by reference via hidden pointer. */
-      rvalue = (void *)(intptr_t)*argp++;
-      arg_word = 1;
+      rvalue = (ਖਾਲੀ *)(intptr_t)*argp++;
+      arg_ਸ਼ਬਦ = 1;
     }
-  else
+  ਨਹੀਂਤਾਂ
     {
       /* Return the value in registers. */
-      rvalue = &closure_ret;
-      arg_word = 0;
+      rvalue = &ਘੇਰਾ_ret;
+      arg_ਸ਼ਬਦ = 0;
     }
 
   /* Grab the addresses of the arguments. */
-  for (i = 0; i < nargs; i++)
+  ਲਈ (i = 0; i < nargs; i++)
     {
-      ffi_type * const type = arg_types[i];
-      const size_t arg_size_in_words =
-        (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+      ffi_type * ਅਚਲ type = arg_types[i];
+      ਅਚਲ size_t arg_ਮਾਪ_ਵਿੱਚ_ਸ਼ਬਦ =
+        (type->ਮਾਪ + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-#ifndef __tilegx__
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      ਲੰਮਾ align = arg_ਸ਼ਬਦ & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
-      arg_word += align;
-#endif
+      arg_ਸ਼ਬਦ += align;
+#ਜੇ_ਅੰਤ
 
-      if (arg_word == NUM_ARG_REGS ||
-          (arg_word < NUM_ARG_REGS &&
-           arg_word + arg_size_in_words > NUM_ARG_REGS))
+      ਜੇ (arg_ਸ਼ਬਦ == ਅੰਕ_ARG_REGS ||
+          (arg_ਸ਼ਬਦ < ਅੰਕ_ARG_REGS &&
+           arg_ਸ਼ਬਦ + arg_ਮਾਪ_ਵਿੱਚ_ਸ਼ਬਦ > ਅੰਕ_ARG_REGS))
         {
           /* Switch to reading arguments from the stack. */
-          argp = stack_args;
-          arg_word = NUM_ARG_REGS;
+          argp = ਢੇਰ_ਦਲੀਲਾਂ;
+          arg_ਸ਼ਬਦ = ਅੰਕ_ARG_REGS;
         }
 
       avalue[i] = argp;
-      argp += arg_size_in_words;
-      arg_word += arg_size_in_words;
+      argp += arg_ਮਾਪ_ਵਿੱਚ_ਸ਼ਬਦ;
+      arg_ਸ਼ਬਦ += arg_ਮਾਪ_ਵਿੱਚ_ਸ਼ਬਦ;
     }
 
   /* Invoke the closure.  */
-  closure->fun(cif, rvalue, avalue, closure->user_data);
+  ਘੇਰਾ->fun(cif, rvalue, avalue, ਘੇਰਾ->user_ਅੰਕੜੇ);
 
-  if (cif->flags != FFI_TYPE_STRUCT)
+  ਜੇ (cif->flags != FFI_TYPE_STRUCT)
     {
       /* Canonicalize for register representation. */
-      assign_to_ffi_arg(reg_args_out, &closure_ret, cif->rtype, 1);
+      ਸੌਂਪੋ_ਮੰਜ਼ਿਲ_ffi_arg(reg_ਦਲੀਲਾਂ_ਬਾਹਰਲਾ, &ਘੇਰਾ_ret, cif->rtype, 1);
     }
 }

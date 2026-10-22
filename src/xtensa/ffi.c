@@ -24,8 +24,8 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi.h>
+#ਅਨ੍ਤਰ੍ਭਾਵ <ffi_common.h>
 
 /*
                                  |----------------------------------------|
@@ -45,159 +45,159 @@
 */
 
 
-#define FFI_TYPE_STRUCT_REGS FFI_TYPE_LAST
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_STRUCT_REGS FFI_TYPE_ਆਖਰੀ
 
 
-extern void ffi_call_SYSV(void *rvalue, unsigned rsize, unsigned flags,
-			  void(*fn)(void), unsigned nbytes, extended_cif*);
-extern void ffi_closure_SYSV(void) FFI_HIDDEN;
+ਬਾਹਰੀ ਖਾਲੀ ffi_call_SYSV(ਖਾਲੀ *rvalue, ਬਿਨਾਨਿਸ਼ਾਨੀ rsize, ਬਿਨਾਨਿਸ਼ਾਨੀ flags,
+			  ਖਾਲੀ(*fn)(ਖਾਲੀ), ਬਿਨਾਨਿਸ਼ਾਨੀ nbytes, extended_cif*);
+ਬਾਹਰੀ ਖਾਲੀ ffi_ਘੇਰਾ_SYSV(ਖਾਲੀ) FFI_HIDDEN;
 
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_ਸਥਿਤੀ ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  switch(cif->rtype->type) {
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT16:
+  ਚੋਣ(cif->rtype->type) {
+    ਹਾਲਤ FFI_TYPE_SINT8:
+    ਹਾਲਤ FFI_TYPE_UINT8:
+    ਹਾਲਤ FFI_TYPE_SINT16:
+    ਹਾਲਤ FFI_TYPE_UINT16:
       cif->flags = cif->rtype->type;
-      break;
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_VOID:
+    ਹਾਲਤ FFI_TYPE_FLOAT:
       cif->flags = FFI_TYPE_UINT32;
-      break;
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_DOUBLE:
+    ਹਾਲਤ FFI_TYPE_UINT64:
+    ਹਾਲਤ FFI_TYPE_SINT64:
       cif->flags = FFI_TYPE_UINT64; // cif->rtype->type;
-      break;
-    case FFI_TYPE_STRUCT:
+      ਰੋਕੋ;
+    ਹਾਲਤ FFI_TYPE_STRUCT:
       cif->flags = FFI_TYPE_STRUCT; //_REGS;
       /* Up to 16 bytes are returned in registers */
-      if (cif->rtype->size > 4 * 4) {
+      ਜੇ (cif->rtype->ਮਾਪ > 4 * 4) {
         /* returned structure is referenced by a register; use 8 bytes
            (including 4 bytes for potential additional alignment) */
         cif->flags = FFI_TYPE_STRUCT;	
-        cif->bytes += 8;
+        cif->ਬਾਈਟਾਂ += 8;
       }
-      break;
+      ਰੋਕੋ;
 
-    default:
+    ਮੂਲ:
       cif->flags = FFI_TYPE_UINT32;
-      break;
+      ਰੋਕੋ;
   }
 
   /* Round up stack size needed for arguments.
      Allocate FFI_REGISTER_ARGS_SPACE bytes when there are only arguments
      passed in registers, round space reserved for arguments passed on stack
      up to ABI-specified alignment.  */
-  if (cif->bytes < FFI_REGISTER_NARGS * 4)
-    cif->bytes = FFI_REGISTER_ARGS_SPACE;
-  else
-    cif->bytes = FFI_REGISTER_ARGS_SPACE +
-	    FFI_ALIGN(cif->bytes - FFI_REGISTER_NARGS * 4,
-		      XTENSA_STACK_ALIGNMENT);
-  return FFI_OK;
+  ਜੇ (cif->ਬਾਈਟਾਂ < FFI_ਰਜਿਸਟਰ_NARGS * 4)
+    cif->ਬਾਈਟਾਂ = FFI_ਰਜਿਸਟਰ_ਦਲੀਲਾਂ_SPACE;
+  ਨਹੀਂਤਾਂ
+    cif->ਬਾਈਟਾਂ = FFI_ਰਜਿਸਟਰ_ਦਲੀਲਾਂ_SPACE +
+	    FFI_ALIGN(cif->ਬਾਈਟਾਂ - FFI_ਰਜਿਸਟਰ_NARGS * 4,
+		      XTENSA_ਢੇਰ_ALIGNMENT);
+  ਵਾਪਸ FFI_OK;
 }
 
-void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
+ਖਾਲੀ ffi_prep_ਦਲੀਲਾਂ(extended_cif *ecif, ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ* ਢੇਰ)
 {
-  unsigned int i;
-  unsigned long *addr;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ i;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ *addr;
   ffi_type **ptr;
 
-  union {
-    void **v;
-    char **c;
-    signed char **sc;
-    unsigned char **uc;
-    signed short **ss;
-    unsigned short **us;
-    unsigned int **i;
-    long long **ll;
-    float **f;
-    double **d;
+  ਸੰਘ {
+    ਖਾਲੀ **v;
+    ਅੱਖਰ **c;
+    ਨਿਸ਼ਾਨੀਵਾਲਾ ਅੱਖਰ **sc;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਅੱਖਰ **uc;
+    ਨਿਸ਼ਾਨੀਵਾਲਾ ਛੋਟਾ **ss;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਛੋਟਾ **us;
+    ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ **i;
+    ਲੰਮਾ ਲੰਮਾ **ll;
+    ਦਸ਼ਮਲਵ **f;
+    ਦੁੱਗਣਾ **d;
   } p_argv;
 
   /* Verify that everything is aligned up properly */
-  FFI_ASSERT (((unsigned long) stack & 0x7) == 0);
+  FFI_ASSERT (((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) ਢੇਰ & 0x7) == 0);
 
   p_argv.v = ecif->avalue;
-  addr = (unsigned long*)stack;
+  addr = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ*)ਢੇਰ;
 
   /* structures with a size greater than 16 bytes are passed in memory */
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 16)
+  ਜੇ (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->ਮਾਪ > 16)
   {
-    *addr++ = (unsigned long)ecif->rvalue;
+    *addr++ = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)ecif->rvalue;
   }
 
-  for (i = ecif->cif->nargs, ptr = ecif->cif->arg_types;
+  ਲਈ (i = ecif->cif->nargs, ptr = ecif->cif->arg_types;
        i > 0;
        i--, ptr++, p_argv.v++)
   {
-    switch ((*ptr)->type)
+    ਚੋਣ ((*ptr)->type)
     {
-      case FFI_TYPE_SINT8:
+      ਹਾਲਤ FFI_TYPE_SINT8:
         *addr++ = **p_argv.sc;
-        break;
-      case FFI_TYPE_UINT8:
+        ਰੋਕੋ;
+      ਹਾਲਤ FFI_TYPE_UINT8:
         *addr++ = **p_argv.uc;
-        break;
-      case FFI_TYPE_SINT16:
+        ਰੋਕੋ;
+      ਹਾਲਤ FFI_TYPE_SINT16:
         *addr++ = **p_argv.ss;
-        break;
-      case FFI_TYPE_UINT16:
+        ਰੋਕੋ;
+      ਹਾਲਤ FFI_TYPE_UINT16:
         *addr++ = **p_argv.us;
-        break;
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_POINTER:
+        ਰੋਕੋ;
+      ਹਾਲਤ FFI_TYPE_FLOAT:
+      ਹਾਲਤ FFI_TYPE_INT:
+      ਹਾਲਤ FFI_TYPE_UINT32:
+      ਹਾਲਤ FFI_TYPE_SINT32:
+      ਹਾਲਤ FFI_TYPE_ਸੂਚਕ:
         *addr++ = **p_argv.i;
-        break;
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-        if (((unsigned long)addr & 4) != 0)
+        ਰੋਕੋ;
+      ਹਾਲਤ FFI_TYPE_DOUBLE:
+      ਹਾਲਤ FFI_TYPE_UINT64:
+      ਹਾਲਤ FFI_TYPE_SINT64:
+        ਜੇ (((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)addr & 4) != 0)
           addr++;
-        *(unsigned long long*)addr = **p_argv.ll;
-	addr += sizeof(unsigned long long) / sizeof (addr);
-        break;
+        *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਲੰਮਾ*)addr = **p_argv.ll;
+	addr += ਆਕਾਰ(ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਲੰਮਾ) / ਆਕਾਰ (addr);
+        ਰੋਕੋ;
 
-      case FFI_TYPE_STRUCT:
+      ਹਾਲਤ FFI_TYPE_STRUCT:
       {
-        unsigned long offs;
-        unsigned long size;
+        ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ offs;
+        ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ ਮਾਪ;
 
-        if (((unsigned long)addr & 4) != 0 && (*ptr)->alignment > 4)
+        ਜੇ (((ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ)addr & 4) != 0 && (*ptr)->alignment > 4)
           addr++;
 
-        offs = (unsigned long) addr - (unsigned long) stack;
-        size = (*ptr)->size;
+        offs = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) addr - (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ) ਢੇਰ;
+        ਮਾਪ = (*ptr)->ਮਾਪ;
 
         /* Entire structure must fit the argument registers or referenced */
-        if (offs < FFI_REGISTER_NARGS * 4
-            && offs + size > FFI_REGISTER_NARGS * 4)
-          addr = (unsigned long*) (stack + FFI_REGISTER_NARGS * 4);
+        ਜੇ (offs < FFI_ਰਜਿਸਟਰ_NARGS * 4
+            && offs + ਮਾਪ > FFI_ਰਜਿਸਟਰ_NARGS * 4)
+          addr = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ*) (ਢੇਰ + FFI_ਰਜਿਸਟਰ_NARGS * 4);
 
-        memcpy((char*) addr, *p_argv.c, size);
-        addr += (size + 3) / 4;
-        break;
+        ਸਮ੍ਰਿਤੀ_ਨਕਲ((ਅੱਖਰ*) addr, *p_argv.c, ਮਾਪ);
+        addr += (ਮਾਪ + 3) / 4;
+        ਰੋਕੋ;
       }
 
-      default:
+      ਮੂਲ:
         FFI_ASSERT(0);
     }
   }
 }
 
 
-void ffi_call(ffi_cif* cif, void(*fn)(void), void *rvalue, void **avalue)
+ਖਾਲੀ ffi_call(ffi_cif* cif, ਖਾਲੀ(*fn)(ਖਾਲੀ), ਖਾਲੀ *rvalue, ਖਾਲੀ **avalue)
 {
   extended_cif ecif;
-  unsigned long rsize = cif->rtype->size;
-  int flags = cif->flags;
-  void *alloc = NULL;
+  ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ rsize = cif->rtype->ਮਾਪ;
+  ਪੂਰਨ flags = cif->flags;
+  ਖਾਲੀ *alloc = ਨਿਰਾ;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
@@ -208,99 +208,99 @@ void ffi_call(ffi_cif* cif, void(*fn)(void), void *rvalue, void **avalue)
      the length not a multiple of 4 bytes. Handling all those cases would be
      very complex.  */
 
-  if (flags == FFI_TYPE_STRUCT && (rsize <= 16 || rvalue == NULL))
+  ਜੇ (flags == FFI_TYPE_STRUCT && (rsize <= 16 || rvalue == ਨਿਰਾ))
   {
     alloc = alloca(FFI_ALIGN(rsize, 4));
     ecif.rvalue = alloc;
   }
-  else
+  ਨਹੀਂਤਾਂ
   {
     ecif.rvalue = rvalue;
   }
 
-  if (cif->abi != FFI_SYSV)
+  ਜੇ (cif->abi != FFI_SYSV)
     FFI_ASSERT(0);
 
-  ffi_call_SYSV (ecif.rvalue, rsize, cif->flags, fn, cif->bytes, &ecif);
+  ffi_call_SYSV (ecif.rvalue, rsize, cif->flags, fn, cif->ਬਾਈਟਾਂ, &ecif);
 
-  if (alloc != NULL && rvalue != NULL)
-    memcpy(rvalue, alloc, rsize);
+  ਜੇ (alloc != ਨਿਰਾ && rvalue != ਨਿਰਾ)
+    ਸਮ੍ਰਿਤੀ_ਨਕਲ(rvalue, alloc, rsize);
 }
 
-extern void ffi_trampoline();
-extern void ffi_cacheflush(void* start, void* end);
+ਬਾਹਰੀ ਖਾਲੀ ffi_trampoline();
+ਬਾਹਰੀ ਖਾਲੀ ffi_cacheflush(ਖਾਲੀ* ਸ਼ੁਰੂ, ਖਾਲੀ* ਸਿਰਾ);
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_ਸਥਿਤੀ
+ffi_prep_ਘੇਰਾ_loc (ffi_ਘੇਰਾ* ਘੇਰਾ,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*, void*, void**, void*),
-                      void *user_data,
-                      void *codeloc)
+                      ਖਾਲੀ (*fun)(ffi_cif*, ਖਾਲੀ*, ਖਾਲੀ**, ਖਾਲੀ*),
+                      ਖਾਲੀ *user_ਅੰਕੜੇ,
+                      ਖਾਲੀ *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ਜੇ (cif->abi != FFI_SYSV)
+    ਵਾਪਸ FFI_BAD_ABI;
 
   /* copye trampoline to stack and patch 'ffi_closure_SYSV' pointer */
-  memcpy(closure->tramp, ffi_trampoline, FFI_TRAMPOLINE_SIZE);
-  *(unsigned int*)(&closure->tramp[8]) = (unsigned int)ffi_closure_SYSV;
+  ਸਮ੍ਰਿਤੀ_ਨਕਲ(ਘੇਰਾ->tramp, ffi_trampoline, FFI_TRAMPOLINE_ਮਾਪ);
+  *(ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ*)(&ਘੇਰਾ->tramp[8]) = (ਬਿਨਾਨਿਸ਼ਾਨੀ ਪੂਰਨ)ffi_ਘੇਰਾ_SYSV;
 
   // Do we have this function?
   // __builtin___clear_cache(closer->tramp, closer->tramp + FFI_TRAMPOLINE_SIZE)
-  ffi_cacheflush(closure->tramp, closure->tramp + FFI_TRAMPOLINE_SIZE);
+  ffi_cacheflush(ਘੇਰਾ->tramp, ਘੇਰਾ->tramp + FFI_TRAMPOLINE_ਮਾਪ);
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
-  return FFI_OK; 
+  ਘੇਰਾ->cif = cif;
+  ਘੇਰਾ->fun = fun;
+  ਘੇਰਾ->user_ਅੰਕੜੇ = user_ਅੰਕੜੇ;
+  ਵਾਪਸ FFI_OK; 
 }
 
 
-long FFI_HIDDEN
-ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
+ਲੰਮਾ FFI_HIDDEN
+ffi_ਘੇਰਾ_SYSV_inner(ffi_ਘੇਰਾ *ਘੇਰਾ, ਖਾਲੀ **ਮੁੱਲਾਂ, ਖਾਲੀ *rvalue)
 {
   ffi_cif *cif;
   ffi_type **arg_types;
-  void **avalue;
-  int i, areg;
+  ਖਾਲੀ **avalue;
+  ਪੂਰਨ i, areg;
 
-  cif = closure->cif;
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  cif = ਘੇਰਾ->cif;
+  ਜੇ (cif->abi != FFI_SYSV)
+    ਵਾਪਸ FFI_BAD_ABI;
 
   areg = 0;
 
-  int rtype = cif->rtype->type;
-  if (rtype == FFI_TYPE_STRUCT && cif->rtype->size > 4 * 4)
+  ਪੂਰਨ rtype = cif->rtype->type;
+  ਜੇ (rtype == FFI_TYPE_STRUCT && cif->rtype->ਮਾਪ > 4 * 4)
   {
-    rvalue = *values;
+    rvalue = *ਮੁੱਲਾਂ;
     areg++;
   }
 
-  cif = closure->cif; 
+  cif = ਘੇਰਾ->cif; 
   arg_types = cif->arg_types;
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * ਆਕਾਰ(ਖਾਲੀ *));
 
-  for (i = 0; i < cif->nargs; i++)
+  ਲਈ (i = 0; i < cif->nargs; i++)
   {
-    if (arg_types[i]->alignment == 8 && (areg & 1) != 0)
+    ਜੇ (arg_types[i]->alignment == 8 && (areg & 1) != 0)
       areg++;
 
     // skip the entry a1, * framework, see ffi_trampoline
-    if (areg == FFI_REGISTER_NARGS)
-      areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
+    ਜੇ (areg == FFI_ਰਜਿਸਟਰ_NARGS)
+      areg = (FFI_ਰਜਿਸਟਰ_ਦਲੀਲਾਂ_SPACE + 32) / 4;
 
-    if (arg_types[i]->type == FFI_TYPE_STRUCT)
+    ਜੇ (arg_types[i]->type == FFI_TYPE_STRUCT)
     {
-      int numregs = ((arg_types[i]->size + 3) & ~3) / 4;
-      if (areg < FFI_REGISTER_NARGS && areg + numregs > FFI_REGISTER_NARGS)
-        areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
+      ਪੂਰਨ numregs = ((arg_types[i]->ਮਾਪ + 3) & ~3) / 4;
+      ਜੇ (areg < FFI_ਰਜਿਸਟਰ_NARGS && areg + numregs > FFI_ਰਜਿਸਟਰ_NARGS)
+        areg = (FFI_ਰਜਿਸਟਰ_ਦਲੀਲਾਂ_SPACE + 32) / 4;
     }
 
-    avalue[i] = &values[areg];
-    areg += (arg_types[i]->size + 3) / 4;
+    avalue[i] = &ਮੁੱਲਾਂ[areg];
+    areg += (arg_types[i]->ਮਾਪ + 3) / 4;
   }
 
-  (closure->fun)(cif, rvalue, avalue, closure->user_data);
+  (ਘੇਰਾ->fun)(cif, rvalue, avalue, ਘੇਰਾ->user_ਅੰਕੜੇ);
 
-  return rtype;
+  ਵਾਪਸ rtype;
 }

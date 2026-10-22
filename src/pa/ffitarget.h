@@ -25,62 +25,62 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ਨਿਸ਼ਾਨਾ_H
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ LIBFFI_ਨਿਸ਼ਾਨਾ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_H
+#ਗਲਤੀ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ਜੇ_ਅੰਤ
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#ਜੇ_ਅਪਰਿਭਾਸ਼ਿਤ LIBFFI_ASM
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਬਿਨਾਨਿਸ਼ਾਨੀ ਲੰਮਾ          ffi_arg;
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਨਿਸ਼ਾਨੀਵਾਲਾ ਲੰਮਾ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+ਕਿਸਮਪਰਿਭਾਸ਼ਾ ਗਿਣਤੀ ffi_abi {
+  FFI_ਪਹਿਲਾ_ABI = 0,
 
-#ifdef PA_LINUX
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_LINUX
   FFI_PA32,
-  FFI_LAST_ABI,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_PA32
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef PA_HPUX
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA_HPUX
   FFI_PA32,
-  FFI_LAST_ABI,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_PA32
-#endif
+#ਜੇ_ਅੰਤ
 
-#ifdef PA64_HPUX
+#ਜੇ_ਪਰਿਭਾਸ਼ਿਤ PA64_HPUX
   FFI_PA64,
-  FFI_LAST_ABI,
+  FFI_ਆਖਰੀ_ABI,
   FFI_DEFAULT_ABI = FFI_PA64
-#endif
+#ਜੇ_ਅੰਤ
 } ffi_abi;
-#endif
+#ਜੇ_ਅੰਤ
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_ਨਿਸ਼ਾਨਾ_SPECIFIC_ਢੇਰ_SPACE_ਵੰਡ
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#if defined(PA64_HPUX)
-#define FFI_TRAMPOLINE_SIZE 32
-#else
-#define FFI_TRAMPOLINE_SIZE 12
-#endif
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_CLOSURES 1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_NATIVE_RAW_API 0
+#ਜੇ defined(PA64_HPUX)
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TRAMPOLINE_ਮਾਪ 32
+#ਨਹੀਂਤਾਂ
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TRAMPOLINE_ਮਾਪ 12
+#ਜੇ_ਅੰਤ
 
-#define FFI_TYPE_SMALL_STRUCT1 -1
-#define FFI_TYPE_SMALL_STRUCT2 -2
-#define FFI_TYPE_SMALL_STRUCT3 -3
-#define FFI_TYPE_SMALL_STRUCT4 -4
-#define FFI_TYPE_SMALL_STRUCT5 -5
-#define FFI_TYPE_SMALL_STRUCT6 -6
-#define FFI_TYPE_SMALL_STRUCT7 -7
-#define FFI_TYPE_SMALL_STRUCT8 -8
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT1 -1
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT2 -2
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT3 -3
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT4 -4
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT5 -5
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT6 -6
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT7 -7
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_TYPE_SMALL_STRUCT8 -8
 
 /* The return-value jump tables in linux.S and hpux32.S are indexed by
    cif->flags, which ffi_prep_cif_machdep derives from the return type.  Any
@@ -95,13 +95,13 @@ typedef enum ffi_abi {
    FFI_TARGET_HAS_VECTOR_TYPE, so ffi_prep_cif_core rejects any vector
    signature with FFI_BAD_TYPEDEF before machdep runs.  Bumping the tripwire
    past it is therefore safe.  */
-#define FFI_PA_TYPE_LAST FFI_TYPE_VECTOR
+#ਪਰਿਭਾਸ਼ਿਤ_ਕਰੋ FFI_PA_TYPE_ਆਖਰੀ FFI_TYPE_ਸਦਿਸ਼
 
 /* Tripwire: when a new generic type is added FFI_TYPE_LAST changes and this
    fires, forcing a review of ffi_prep_cif_machdep and the linux.S / hpux32.S
    jump tables before FFI_PA_TYPE_LAST above is bumped.  */
-#if FFI_TYPE_LAST != FFI_PA_TYPE_LAST
+#ਜੇ FFI_TYPE_ਆਖਰੀ != FFI_PA_TYPE_ਆਖਰੀ
 # error "You likely have broken jump tables"
-#endif
+#ਜੇ_ਅੰਤ
 
-#endif
+#ਜੇ_ਅੰਤ
