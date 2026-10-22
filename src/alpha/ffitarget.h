@@ -25,34 +25,34 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_تعریف_نشده LIBFFI_هدف_H
+#تعریف_کن LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#اگر_تعریف_نشده LIBFFI_H
+#خطا "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#پایان_اگر
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#اگر_تعریف_نشده LIBFFI_ASM
+تعريفنوع بیعلامت دراز          ffi_arg;
+تعريفنوع علامتدار دراز            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_اولی_ABI = 0,
   FFI_OSF,
-  FFI_LAST_ABI,
+  FFI_آخرین_ABI,
   FFI_DEFAULT_ABI = FFI_OSF
 } ffi_abi;
-#endif
+#پایان_اگر
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#define FFI_TARGET_HAS_INT128
+#تعریف_کن FFI_هدف_SPECIFIC_پشته_SPACE_تخصیص
+#تعریف_کن FFI_هدف_HAS_COMPLEX_TYPE
+#تعریف_کن FFI_هدف_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کن FFI_CLOSURES 1
+#تعریف_کن FFI_GO_CLOSURES 1
+#تعریف_کن FFI_TRAMPOLINE_اندازه 24
+#تعریف_کن FFI_NATIVE_RAW_API 0
 
-#endif
+#پایان_اگر

@@ -24,13 +24,13 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
+#ضمن <stdlib.h>
 
 /* Round up to FFI_SIZEOF_ARG. */
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#تعریف_کن پشته_ARG_اندازه(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
 /* Compute the machine-independent layout of a vector (SIMD) type.
 
@@ -49,89 +49,89 @@
    valid lane types.  Anything else -- a heterogeneous element list, an
    aggregate lane, long double, or a zero-length vector -- is FFI_BAD_TYPEDEF. */
 
-static ffi_status
-initialize_vector (ffi_type *arg)
+ساكن ffi_وضعیت
+initialize_وکتور (ffi_type *arg)
 {
   ffi_type **ptr = arg->elements;
   ffi_type *elem;
-  size_t count = 0;
-  size_t total, p2;
+  size_t شمار = 0;
+  size_t مجموع, p2;
 
-  if (UNLIKELY (ptr == NULL || *ptr == NULL))
-    return FFI_BAD_TYPEDEF;
+  إذا (UNLIKELY (ptr == عدم || *ptr == عدم))
+    أرجع FFI_BAD_TYPEDEF;
 
   elem = *ptr;
-  switch (elem->type)
+  بدل (elem->type)
     {
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+    حالة FFI_TYPE_FLOAT:
+    حالة FFI_TYPE_DOUBLE:
+    حالة FFI_TYPE_UINT8:
+    حالة FFI_TYPE_SINT8:
+    حالة FFI_TYPE_UINT16:
+    حالة FFI_TYPE_SINT16:
+    حالة FFI_TYPE_UINT32:
+    حالة FFI_TYPE_SINT32:
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
+      اكسر;
+    افتراضي:
+      أرجع FFI_BAD_TYPEDEF;
     }
 
   /* Every lane must be the identical scalar type.  */
-  for (; *ptr != NULL; ptr++)
+  لكل (; *ptr != عدم; ptr++)
     {
-      if ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
-	return FFI_BAD_TYPEDEF;
-      count++;
+      إذا ((*ptr)->type != elem->type || (*ptr)->اندازه != elem->اندازه)
+	أرجع FFI_BAD_TYPEDEF;
+      شمار++;
     }
 
-  if (UNLIKELY (count < 1 || elem->size == 0))
-    return FFI_BAD_TYPEDEF;
+  إذا (UNLIKELY (شمار < 1 || elem->اندازه == 0))
+    أرجع FFI_BAD_TYPEDEF;
 
-  total = elem->size * count;
-  for (p2 = 1; p2 < total; p2 <<= 1)
+  مجموع = elem->اندازه * شمار;
+  لكل (p2 = 1; p2 < مجموع; p2 <<= 1)
     ;
 
-  arg->size = p2;
+  arg->اندازه = p2;
   arg->alignment = p2 < 16 ? p2 : 16;
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
 /* Perform machine independent initialization of aggregate type
    specifications. */
 
-static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
+ساكن ffi_وضعیت initialize_aggregate(ffi_type *arg, size_t *offsets)
 {
   ffi_type **ptr;
 
-  if (UNLIKELY(arg == NULL || arg->elements == NULL))
-    return FFI_BAD_TYPEDEF;
+  إذا (UNLIKELY(arg == عدم || arg->elements == عدم))
+    أرجع FFI_BAD_TYPEDEF;
 
-  if (arg->type == FFI_TYPE_VECTOR)
-    return initialize_vector (arg);
+  إذا (arg->type == FFI_TYPE_وکتور)
+    أرجع initialize_وکتور (arg);
 
-  arg->size = 0;
+  arg->اندازه = 0;
   arg->alignment = 0;
 
   ptr = &(arg->elements[0]);
 
-  if (UNLIKELY(ptr == 0))
-    return FFI_BAD_TYPEDEF;
+  إذا (UNLIKELY(ptr == 0))
+    أرجع FFI_BAD_TYPEDEF;
 
-  while ((*ptr) != NULL)
+  طالما ((*ptr) != عدم)
     {
-      if (UNLIKELY(((*ptr)->size == 0)
-		    && (initialize_aggregate((*ptr), NULL) != FFI_OK)))
-	return FFI_BAD_TYPEDEF;
+      إذا (UNLIKELY(((*ptr)->اندازه == 0)
+		    && (initialize_aggregate((*ptr), عدم) != FFI_OK)))
+	أرجع FFI_BAD_TYPEDEF;
 
       /* Perform a sanity check on the argument type */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-      arg->size = FFI_ALIGN(arg->size, (*ptr)->alignment);
-      if (offsets)
-	*offsets++ = arg->size;
-      arg->size += (*ptr)->size;
+      arg->اندازه = FFI_ALIGN(arg->اندازه, (*ptr)->alignment);
+      إذا (offsets)
+	*offsets++ = arg->اندازه;
+      arg->اندازه += (*ptr)->اندازه;
 
       arg->alignment = (arg->alignment > (*ptr)->alignment) ?
 	arg->alignment : (*ptr)->alignment;
@@ -146,44 +146,44 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
      struct A { long a; char b; }; struct B { struct A x; char y; };
      should find y at an offset of 2*sizeof(long) and result in a
      total size of 3*sizeof(long).  */
-  arg->size = FFI_ALIGN (arg->size, arg->alignment);
+  arg->اندازه = FFI_ALIGN (arg->اندازه, arg->alignment);
 
   /* On some targets, the ABI defines that structures have an additional
      alignment beyond the "natural" one based on their elements.  */
-#ifdef FFI_AGGREGATE_ALIGNMENT
-  if (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
+#اگر_تعریف_شده FFI_AGGREGATE_ALIGNMENT
+  إذا (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
     arg->alignment = FFI_AGGREGATE_ALIGNMENT;
-#endif
+#پایان_اگر
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  إذا (arg->اندازه == 0)
+    أرجع FFI_BAD_TYPEDEF;
+  وإلا
+    أرجع FFI_OK;
 }
 
-#ifndef FFI_TARGET_HAS_VECTOR_TYPE
+#اگر_تعریف_نشده FFI_هدف_HAS_وکتور_TYPE
 /* Recursively test whether TY is, or contains, a vector (SIMD) type.  Ports
    that do not define FFI_TARGET_HAS_VECTOR_TYPE cannot marshal vectors, so
    ffi_prep_cif_core rejects any signature that mentions one (directly or
    nested inside a struct) with FFI_BAD_TYPEDEF rather than aborting.  */
-static int
-ffi_type_contains_vector (ffi_type *ty)
+ساكن صحيح
+ffi_type_شامل_است_وکتور (ffi_type *ty)
 {
   ffi_type **p;
 
-  if (ty == NULL)
-    return 0;
-  if (ty->type == FFI_TYPE_VECTOR)
-    return 1;
-  if (ty->type == FFI_TYPE_STRUCT && ty->elements != NULL)
-    for (p = ty->elements; *p != NULL; p++)
-      if (ffi_type_contains_vector (*p))
-	return 1;
-  return 0;
+  إذا (ty == عدم)
+    أرجع 0;
+  إذا (ty->type == FFI_TYPE_وکتور)
+    أرجع 1;
+  إذا (ty->type == FFI_TYPE_STRUCT && ty->elements != عدم)
+    لكل (p = ty->elements; *p != عدم; p++)
+      إذا (ffi_type_شامل_است_وکتور (*p))
+	أرجع 1;
+  أرجع 0;
 }
-#endif /* !FFI_TARGET_HAS_VECTOR_TYPE */
+#پایان_اگر /* !FFI_TARGET_HAS_VECTOR_TYPE */
 
-#ifndef __CRIS__
+#اگر_تعریف_نشده __CRIS__
 /* The CRIS ABI specifies structure elements to have byte
    alignment only, so it completely overrides this functions,
    which assumes "natural" alignment and padding.  */
@@ -198,186 +198,186 @@ ffi_type_contains_vector (ffi_type *ty)
    and ntotalargs set as appropriate. nfixedargs must always be >=1 */
 
 
-ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
-			     unsigned int isvariadic,
-                             unsigned int nfixedargs,
-                             unsigned int ntotalargs,
+ffi_وضعیت FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
+			     بیعلامت صحيح isvariadic,
+                             بیعلامت صحيح nfixedargs,
+                             بیعلامت صحيح ntotalargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  unsigned bytes = 0;
-  unsigned int i;
+  بیعلامت بایتها = 0;
+  بیعلامت صحيح i;
   ffi_type **ptr;
 
-  FFI_ASSERT(cif != NULL);
+  FFI_ASSERT(cif != عدم);
   FFI_ASSERT((!isvariadic) || (nfixedargs >= 1));
   FFI_ASSERT(nfixedargs <= ntotalargs);
 
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
+  إذا (! (abi > FFI_اولی_ABI && abi < FFI_آخرین_ABI))
+    أرجع FFI_BAD_ABI;
 
   cif->abi = abi;
   cif->arg_types = atypes;
   cif->nargs = ntotalargs;
   cif->rtype = rtype;
 
-#ifndef FFI_TARGET_HAS_VECTOR_TYPE
+#اگر_تعریف_نشده FFI_هدف_HAS_وکتور_TYPE
   /* Vector (SIMD) types are only marshalled on ports that opt in.  */
-  if (ffi_type_contains_vector (rtype))
-    return FFI_BAD_TYPEDEF;
-  for (i = 0; i < ntotalargs; i++)
-    if (ffi_type_contains_vector (atypes[i]))
-      return FFI_BAD_TYPEDEF;
-#endif
+  إذا (ffi_type_شامل_است_وکتور (rtype))
+    أرجع FFI_BAD_TYPEDEF;
+  لكل (i = 0; i < ntotalargs; i++)
+    إذا (ffi_type_شامل_است_وکتور (atypes[i]))
+      أرجع FFI_BAD_TYPEDEF;
+#پایان_اگر
 
   cif->flags = 0;
-#if (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
+#إذا (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
   cif->is_variadic = isvariadic;
-#endif
-#if HAVE_LONG_DOUBLE_VARIANT
+#پایان_اگر
+#إذا HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
-#endif
+#پایان_اگر
 
   /* Initialize the return type if necessary */
-  if ((cif->rtype->size == 0)
-      && (initialize_aggregate(cif->rtype, NULL) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+  إذا ((cif->rtype->اندازه == 0)
+      && (initialize_aggregate(cif->rtype, عدم) != FFI_OK))
+    أرجع FFI_BAD_TYPEDEF;
 
-#ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-  if (rtype->type == FFI_TYPE_COMPLEX)
+#اگر_تعریف_نشده FFI_هدف_HAS_COMPLEX_TYPE
+  إذا (rtype->type == FFI_TYPE_COMPLEX)
     abort();
-#endif
+#پایان_اگر
   /* Perform a sanity check on the return type */
   FFI_ASSERT_VALID_TYPE(cif->rtype);
 
   /* x86, x86-64 and s390 stack space allocation is handled in prep_machdep. */
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#إذا !defined FFI_هدف_SPECIFIC_پشته_SPACE_تخصیص
   /* Make space for the return structure pointer */
-  if ((cif->rtype->type == FFI_TYPE_STRUCT
-       || cif->rtype->type == FFI_TYPE_VECTOR)
-#ifdef TILE
-      && (cif->rtype->size > 10 * FFI_SIZEOF_ARG)
-#endif
-#ifdef XTENSA
-      && (cif->rtype->size > 16)
-#endif
+  إذا ((cif->rtype->type == FFI_TYPE_STRUCT
+       || cif->rtype->type == FFI_TYPE_وکتور)
+#اگر_تعریف_شده TILE
+      && (cif->rtype->اندازه > 10 * FFI_SIZEOF_ARG)
+#پایان_اگر
+#اگر_تعریف_شده XTENSA
+      && (cif->rtype->اندازه > 16)
+#پایان_اگر
      )
-    bytes = STACK_ARG_SIZE(sizeof(void*));
-#endif
+    بایتها = پشته_ARG_اندازه(حجم(فراغ*));
+#پایان_اگر
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  لكل (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
 
       /* Initialize any uninitialized aggregate type definitions */
-      if (((*ptr)->size == 0)
-	  && (initialize_aggregate((*ptr), NULL) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+      إذا (((*ptr)->اندازه == 0)
+	  && (initialize_aggregate((*ptr), عدم) != FFI_OK))
+	أرجع FFI_BAD_TYPEDEF;
 
-#ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-      if ((*ptr)->type == FFI_TYPE_COMPLEX)
+#اگر_تعریف_نشده FFI_هدف_HAS_COMPLEX_TYPE
+      إذا ((*ptr)->type == FFI_TYPE_COMPLEX)
 	abort();
-#endif
+#پایان_اگر
       /* Perform a sanity check on the argument type, do this
 	 check after the initialization.  */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#إذا !defined FFI_هدف_SPECIFIC_پشته_SPACE_تخصیص
 	{
 	  /* Add any padding if necessary */
-	  if (((*ptr)->alignment - 1) & bytes)
-	    bytes = (unsigned)FFI_ALIGN(bytes, (*ptr)->alignment);
+	  إذا (((*ptr)->alignment - 1) & بایتها)
+	    بایتها = (بیعلامت)FFI_ALIGN(بایتها, (*ptr)->alignment);
 
-#ifdef TILE
-	  if (bytes < 10 * FFI_SIZEOF_ARG &&
-	      bytes + STACK_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
+#اگر_تعریف_شده TILE
+	  إذا (بایتها < 10 * FFI_SIZEOF_ARG &&
+	      بایتها + پشته_ARG_اندازه((*ptr)->اندازه) > 10 * FFI_SIZEOF_ARG)
 	    {
 	      /* An argument is never split between the 10 parameter
 		 registers and the stack.  */
-	      bytes = 10 * FFI_SIZEOF_ARG;
+	      بایتها = 10 * FFI_SIZEOF_ARG;
 	    }
-#endif
-#ifdef XTENSA
-	  if (bytes <= 6*4 && bytes + STACK_ARG_SIZE((*ptr)->size) > 6*4)
-	    bytes = 6*4;
-#endif
+#پایان_اگر
+#اگر_تعریف_شده XTENSA
+	  إذا (بایتها <= 6*4 && بایتها + پشته_ARG_اندازه((*ptr)->اندازه) > 6*4)
+	    بایتها = 6*4;
+#پایان_اگر
 
-	  bytes += (unsigned int)STACK_ARG_SIZE((*ptr)->size);
+	  بایتها += (بیعلامت صحيح)پشته_ARG_اندازه((*ptr)->اندازه);
 	}
-#endif
+#پایان_اگر
     }
 
-  cif->bytes = bytes;
+  cif->بایتها = بایتها;
 
   /* Perform machine dependent cif processing */
-#ifdef FFI_TARGET_SPECIFIC_VARIADIC
-  if (isvariadic)
-	return ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
-#endif
+#اگر_تعریف_شده FFI_هدف_SPECIFIC_VARIADIC
+  إذا (isvariadic)
+	أرجع ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
+#پایان_اگر
 
-  return ffi_prep_cif_machdep(cif);
+  أرجع ffi_prep_cif_machdep(cif);
 }
-#endif /* not __CRIS__ */
+#پایان_اگر /* not __CRIS__ */
 
-ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, unsigned int nargs,
+ffi_وضعیت ffi_prep_cif(ffi_cif *cif, ffi_abi abi, بیعلامت صحيح nargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  return ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
+  أرجع ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
 }
 
-ffi_status ffi_prep_cif_var(ffi_cif *cif,
+ffi_وضعیت ffi_prep_cif_var(ffi_cif *cif,
                             ffi_abi abi,
-                            unsigned int nfixedargs,
-                            unsigned int ntotalargs,
+                            بیعلامت صحيح nfixedargs,
+                            بیعلامت صحيح ntotalargs,
                             ffi_type *rtype,
                             ffi_type **atypes)
 {
-  ffi_status rc;
-  size_t int_size = ffi_type_sint.size;
-  unsigned int i;
+  ffi_وضعیت rc;
+  size_t int_اندازه = ffi_type_sint.اندازه;
+  بیعلامت صحيح i;
 
   rc = ffi_prep_cif_core(cif, abi, 1, nfixedargs, ntotalargs, rtype, atypes);
 
-  if (rc != FFI_OK)
-    return rc;
+  إذا (rc != FFI_OK)
+    أرجع rc;
 
-  for (i = nfixedargs; i < ntotalargs; i++)
+  لكل (i = nfixedargs; i < ntotalargs; i++)
     {
       ffi_type *arg_type = atypes[i];
-      if (arg_type == &ffi_type_float
+      إذا (arg_type == &ffi_type_float
           || ((arg_type->type != FFI_TYPE_STRUCT
                && arg_type->type != FFI_TYPE_COMPLEX)
-              && arg_type->size < int_size))
-        return FFI_BAD_ARGTYPE;
+              && arg_type->اندازه < int_اندازه))
+        أرجع FFI_BAD_ARGTYPE;
     }
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-#if FFI_CLOSURES
+#إذا FFI_CLOSURES
 
-ffi_status
-ffi_prep_closure (ffi_closure* closure,
+ffi_وضعیت
+ffi_prep_بستگی (ffi_بستگی* بستگی,
 		  ffi_cif* cif,
-		  void (*fun)(ffi_cif*,void*,void**,void*),
-		  void *user_data)
+		  فراغ (*fun)(ffi_cif*,فراغ*,فراغ**,فراغ*),
+		  فراغ *user_داده)
 {
-  return ffi_prep_closure_loc (closure, cif, fun, user_data, closure);
+  أرجع ffi_prep_بستگی_loc (بستگی, cif, fun, user_داده, بستگی);
 }
 
-#endif
+#پایان_اگر
 
-ffi_status
+ffi_وضعیت
 ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
 {
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
-  if (struct_type->type != FFI_TYPE_STRUCT)
-    return FFI_BAD_TYPEDEF;
+  إذا (! (abi > FFI_اولی_ABI && abi < FFI_آخرین_ABI))
+    أرجع FFI_BAD_ABI;
+  إذا (struct_type->type != FFI_TYPE_STRUCT)
+    أرجع FFI_BAD_TYPEDEF;
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#إذا HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
-#endif
+#پایان_اگر
 
-  return initialize_aggregate(struct_type, offsets);
+  أرجع initialize_aggregate(struct_type, offsets);
 }
 
 /* Generic ffi_call_plan: a portable fallback compiled on every target that does
@@ -388,9 +388,9 @@ ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
    exclude the fallback only when ffi64.c actually provides it; everywhere else
    this plan just records the cif and invoke calls ffi_call, so the API is
    always present and links on all targets.  The cif must outlive the plan. */
-#if !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
+#إذا !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
 
-struct ffi_call_plan
+بنية ffi_call_plan
 {
   ffi_cif *cif;
 };
@@ -398,30 +398,30 @@ struct ffi_call_plan
 ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
-  ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan != NULL)
+  ffi_call_plan *plan = حافظه_بده (حجم (بنية ffi_call_plan));
+  إذا (plan != عدم)
     plan->cif = cif;
-  return plan;
+  أرجع plan;
 }
 
-void
-ffi_call_plan_invoke (ffi_call_plan *plan, void (*fn) (void),
-		      void *rvalue, void **avalue)
+فراغ
+ffi_call_plan_invoke (ffi_call_plan *plan, فراغ (*fn) (فراغ),
+		      فراغ *rvalue, فراغ **avalue)
 {
   ffi_call (plan->cif, fn, rvalue, avalue);
 }
 
-void
+فراغ
 ffi_call_plan_free (ffi_call_plan *plan)
 {
-  free (plan);
+  حرر (plan);
 }
 
 size_t
-ffi_call_plan_size (ffi_call_plan *plan)
+ffi_call_plan_اندازه (ffi_call_plan *plan)
 {
   /* The generic plan is a bare handle; there is no separate move-list.  */
-  return plan != NULL ? sizeof (struct ffi_call_plan) : 0;
+  أرجع plan != عدم ? حجم (بنية ffi_call_plan) : 0;
 }
 
-#endif /* generic ffi_call_plan fallback */
+#پایان_اگر /* generic ffi_call_plan fallback */

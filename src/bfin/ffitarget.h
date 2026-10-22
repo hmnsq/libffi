@@ -24,20 +24,20 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_تعریف_نشده LIBFFI_هدف_H
+#تعریف_کن LIBFFI_هدف_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed 	 long          ffi_sarg;
+#اگر_تعریف_نشده LIBFFI_ASM
+تعريفنوع بیعلامت دراز          ffi_arg;
+تعريفنوع علامتدار 	 دراز          ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_اولی_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخرین_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#پایان_اگر
 
-#endif
+#پایان_اگر
 

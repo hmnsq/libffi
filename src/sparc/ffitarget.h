@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_تعریف_نشده LIBFFI_هدف_H
+#تعریف_کن LIBFFI_هدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#اگر_تعریف_نشده LIBFFI_H
+#خطا "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#پایان_اگر
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#إذا defined(__arch64__) || defined(__sparcv9)
+#اگر_تعریف_نشده SPARC64
+#تعریف_کن SPARC64
+#پایان_اگر
+#پایان_اگر
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#اگر_تعریف_نشده LIBFFI_ASM
+تعريفنوع بیعلامت دراز          ffi_arg;
+تعريفنوع علامتدار دراز            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+تعريفنوع تعداد ffi_abi {
+  FFI_اولی_ABI = 0,
+#اگر_تعریف_شده SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#وإلا
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
-  FFI_LAST_ABI
+#پایان_اگر
+  FFI_آخرین_ABI
 } ffi_abi;
-#endif
+#پایان_اگر
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#تعریف_کن FFI_هدف_SPECIFIC_پشته_SPACE_تخصیص 1
+#تعریف_کن FFI_هدف_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+#اگر_تعریف_شده SPARC64
+# define FFI_هدف_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS  بیعلامت صحيح nfixedargs
+#پایان_اگر
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کن FFI_CLOSURES 1
+#تعریف_کن FFI_GO_CLOSURES 1
+#تعریف_کن FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#اگر_تعریف_شده SPARC64
+#تعریف_کن FFI_TRAMPOLINE_اندازه 24
+#وإلا
+#تعریف_کن FFI_TRAMPOLINE_اندازه 16
+#پایان_اگر
 
-#endif
+#پایان_اگر
 

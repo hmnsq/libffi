@@ -22,14 +22,14 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdio.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
+#ضمن <stdlib.h>
+#ضمن <stdio.h>
 
 /* General debugging routines */
 
-void ffi_stop_here(void)
+فراغ ffi_stop_اینجا(فراغ)
 {
   /* This function is only useful for debugging purposes.
      Place a breakpoint on ffi_stop_here to be notified of
@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN فراغ ffi_assert(ثابت حرف *عبارت, ثابت حرف *file, صحيح سطر)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
-  ffi_stop_here();
+  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", عبارت, file, سطر);
+  ffi_stop_اینجا();
   abort();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+فراغ ffi_type_test(ffi_type *a, ثابت حرف *file, صحيح سطر)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != عدم, file, سطر);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_آخرین, file, سطر);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->اندازه > 0, file, سطر);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, سطر);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
-		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		 && a->type != FFI_TYPE_وکتور)
+		|| a->elements != عدم, file, سطر);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
-		|| (a->elements != NULL
-		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		|| (a->elements != عدم
+		    && a->elements[0] != عدم && a->elements[1] == عدم),
+		file, سطر);
 
 }
