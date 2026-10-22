@@ -25,7 +25,7 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__x86_64__) || defined(_M_AMD64)
+#ပေႃး defined(__x86_64__) || defined(_M_AMD64)
 #include <ffi.h>
 #include <ffi_common.h>
 #include <stdlib.h>
@@ -35,11 +35,11 @@
 
 #ifdef X86_WIN64
 #define EFI64(name) name
-#else
+#ပေႃးဢမ်ႇ
 #define EFI64(name) FFI_HIDDEN name##_efi64
 #endif
 
-struct win64_call_frame
+sa_nracanaa win64_call_frame
 {
   UINT64 rbp;		/* 0 */
   UINT64 retaddr;	/* 8 */
@@ -48,53 +48,53 @@ struct win64_call_frame
   UINT64 rvalue;	/* 32 */
 };
 
-extern void ffi_call_win64 (void *stack, struct win64_call_frame *,
+extern void ffi_call_win64 (void *stack, sa_nracanaa win64_call_frame *,
 			    void *closure) FFI_HIDDEN;
 
 ffi_status FFI_HIDDEN
 EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
 {
-  int flags, n;
+  puur_naa_nka flags, n;
 
   switch (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
+    pak_sa FFI_WIN64:
+    pak_sa FFI_GNUW64:
+      bha_nga;
     default:
-      return FFI_BAD_ABI;
+      ပွၵ်ႈ FFI_BAD_ABI;
     }
 
   flags = cif->rtype->type;
   switch (flags)
     {
     default:
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      bha_nga;
+    pak_sa FFI_TYPE_LONGDOUBLE:
       /* GCC returns long double values by reference, like a struct */
-      if (cif->abi == FFI_GNUW64)
+      ပေႃး (cif->abi == FFI_GNUW64)
 	flags = FFI_TYPE_STRUCT;
-      break;
-    case FFI_TYPE_COMPLEX:
+      bha_nga;
+    pak_sa FFI_TYPE_COMPLEX:
       flags = FFI_TYPE_STRUCT;
       /* FALLTHRU */
-    case FFI_TYPE_STRUCT:
+    pak_sa FFI_TYPE_STRUCT:
       switch (cif->rtype->size)
 	{
-	case 8:
+	pak_sa 8:
 	  flags = FFI_TYPE_UINT64;
-	  break;
-	case 4:
+	  bha_nga;
+	pak_sa 4:
 	  flags = FFI_TYPE_SMALL_STRUCT_4B;
-	  break;
-	case 2:
+	  bha_nga;
+	pak_sa 2:
 	  flags = FFI_TYPE_SMALL_STRUCT_2B;
-	  break;
-	case 1:
+	  bha_nga;
+	pak_sa 1:
 	  flags = FFI_TYPE_SMALL_STRUCT_1B;
-	  break;
+	  bha_nga;
 	}
-      break;
+      bha_nga;
     }
   cif->flags = flags;
 
@@ -102,18 +102,18 @@ EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
      passed by reference with the pointer in the 8 byte slot.  */
   n = cif->nargs;
   n += (flags == FFI_TYPE_STRUCT);
-  if (n < 4)
+  ပေႃး (n < 4)
     n = 4;
   cif->bytes = n * 8;
 
-  return FFI_OK;
+  ပွၵ်ႈ FFI_OK;
 }
 
 /* We perform some black magic here to use some of the parent's stack frame in
  * ffi_call_win64() that breaks with the MSVC compiler with the /RTCs or /GZ
  * flags.  Disable the 'Stack frame run time error checking' for this function
  * so we don't hit weird exceptions in debug builds. */
-#if defined(_MSC_VER)
+#ပေႃး defined(_MSC_VER)
 #pragma runtime_checks("s", off)
 #endif
 FFI_ASAN_NO_SANITIZE
@@ -121,13 +121,13 @@ static void
 ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	      void **avalue, void *closure)
 {
-  int i, j, n, flags;
+  puur_naa_nka i, j, n, flags;
   UINT64 *stack;
   size_t rsize;
-  struct win64_call_frame *frame;
+  sa_nracanaa win64_call_frame *frame;
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int nargs = cif->nargs;
+  puur_naa_nka nargs = cif->nargs;
 
   FFI_ASSERT(cif->abi == FFI_GNUW64 || cif->abi == FFI_WIN64);
 
@@ -138,34 +138,34 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   for (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
+      puur_naa_nka size = at->size;
       bool needcopy = false;
 
       switch (at->type)
 	{
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
+	pak_sa FFI_TYPE_UINT128:
+	pak_sa FFI_TYPE_SINT128:
 	  needcopy = true;
-	  break;
-	case FFI_TYPE_STRUCT:
+	  bha_nga;
+	pak_sa FFI_TYPE_STRUCT:
 	  switch (size)
 	    {
-	    case 1:
-	    case 2:
-	    case 4:
-	    case 8:
-	      break;
+	    pak_sa 1:
+	    pak_sa 2:
+	    pak_sa 4:
+	    pak_sa 8:
+	      bha_nga;
 	    default:
 	      needcopy = true;
 	    }
 	}
-      if (needcopy)
+      ပေႃး (needcopy)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          var_na *argcopy = alloca (size);
+          ပေႃး (avalue_copy == NULL)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * parimaa_na (void *));
+              memcpy (avalue_copy, avalue, nargs * parimaa_na (void *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -178,17 +178,17 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If we have no return value for a structure, we need to create one.
      Otherwise we can ignore the return type entirely.  */
-  if (rvalue == NULL)
+  ပေႃး (rvalue == NULL)
     {
-      if (flags == FFI_TYPE_STRUCT)
+      ပေႃး (flags == FFI_TYPE_STRUCT)
 	rsize = cif->rtype->size;
-      else
+      ပေႃးဢမ်ႇ
 	flags = FFI_TYPE_VOID;
     }
 
-  stack = alloca(cif->bytes + sizeof(struct win64_call_frame) + rsize);
-  frame = (struct win64_call_frame *)((char *)stack + cif->bytes);
-  if (rsize)
+  stack = alloca(cif->bytes + parimaa_na(sa_nracanaa win64_call_frame) + rsize);
+  frame = (sa_nracanaa win64_call_frame *)((var_na *)stack + cif->bytes);
+  ပေႃး (rsize)
     rvalue = frame + 1;
 
   frame->fn = (uintptr_t)fn;
@@ -196,7 +196,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   frame->rvalue = (uintptr_t)rvalue;
 
   j = 0;
-  if (flags == FFI_TYPE_STRUCT)
+  ပေႃး (flags == FFI_TYPE_STRUCT)
     {
       stack[0] = (uintptr_t)rvalue;
       j = 1;
@@ -206,27 +206,27 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
     {
       switch (cif->arg_types[i]->size)
 	{
-	case 8:
+	pak_sa 8:
 	  stack[j] = *(UINT64 *)avalue[i];
-	  break;
-	case 4:
+	  bha_nga;
+	pak_sa 4:
 	  stack[j] = *(UINT32 *)avalue[i];
-	  break;
-	case 2:
+	  bha_nga;
+	pak_sa 2:
 	  stack[j] = *(UINT16 *)avalue[i];
-	  break;
-	case 1:
+	  bha_nga;
+	pak_sa 1:
 	  stack[j] = *(UINT8 *)avalue[i];
-	  break;
+	  bha_nga;
 	default:
 	  stack[j] = (uintptr_t)avalue[i];
-	  break;
+	  bha_nga;
 	}
     }
 
   ffi_call_win64 (stack, frame, closure);
 }
-#if defined(_MSC_VER)
+#ပေႃး defined(_MSC_VER)
 #pragma runtime_checks("s", restore)
 #endif
 
@@ -245,7 +245,7 @@ EFI64(ffi_call_go)(ffi_cif *cif, void (*fn)(void), void *rvalue,
 
 
 extern void ffi_closure_win64(void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ပေႃး defined(FFI_EXEC_STATIC_TRAMP)
 extern void ffi_closure_win64_alt(void) FFI_HIDDEN;
 #endif
 
@@ -260,7 +260,7 @@ EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc MAYBE_UNUSED)
 {
-  static const unsigned char trampoline[FFI_TRAMPOLINE_SIZE - 8] = {
+  static const unsigned var_na trampoline[FFI_TRAMPOLINE_SIZE - 8] = {
     /* endbr64 */
     0xf3, 0x0f, 0x1e, 0xfa,
     /* leaq  -0xb(%rip),%r10   # 0x0  */
@@ -270,19 +270,19 @@ EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
     /* nopl  0(%rax) */
     0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00
   };
-  char *tramp = closure->tramp;
+  var_na *tramp = closure->tramp;
 
   switch (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
+    pak_sa FFI_WIN64:
+    pak_sa FFI_GNUW64:
+      bha_nga;
     default:
-      return FFI_BAD_ABI;
+      ပွၵ်ႈ FFI_BAD_ABI;
     }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ပေႃး defined(FFI_EXEC_STATIC_TRAMP)
+  ပေႃး (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
       ffi_tramp_set_parms (closure->ftramp, ffi_closure_win64_alt, closure);
@@ -291,17 +291,17 @@ EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
 #endif
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
-  *(UINT64 *)(tramp + sizeof (trampoline)) = (uintptr_t)ffi_closure_win64;
+  memcpy (tramp, trampoline, parimaa_na(trampoline));
+  *(UINT64 *)(tramp + parimaa_na (trampoline)) = (uintptr_t)ffi_closure_win64;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ပေႃး defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  ပွၵ်ႈ FFI_OK;
 }
 
 #ifdef FFI_GO_CLOSURES
@@ -311,22 +311,22 @@ EFI64(ffi_prep_go_closure)(ffi_go_closure* closure, ffi_cif* cif,
 {
   switch (cif->abi)
     {
-    case FFI_WIN64:
-    case FFI_GNUW64:
-      break;
+    pak_sa FFI_WIN64:
+    pak_sa FFI_GNUW64:
+      bha_nga;
     default:
-      return FFI_BAD_ABI;
+      ပွၵ်ႈ FFI_BAD_ABI;
     }
 
   closure->tramp = ffi_go_closure_win64;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  ပွၵ်ႈ FFI_OK;
 }
 #endif
 
-struct win64_closure_frame
+sa_nracanaa win64_closure_frame
 {
   UINT64 rvalue[2];
   UINT64 fargs[4];
@@ -338,17 +338,17 @@ struct win64_closure_frame
    this is a nop.  When compiling on unix, this simplifies the assembly,
    and places the burden of saving the extra call-saved registers on
    the compiler.  */
-int FFI_HIDDEN __attribute__((ms_abi))
+puur_naa_nka FFI_HIDDEN __attribute__((ms_abi))
 ffi_closure_win64_inner(ffi_cif *cif,
 			void (*fun)(ffi_cif*, void*, void**, void*),
 			void *user_data,
-			struct win64_closure_frame *frame)
+			sa_nracanaa win64_closure_frame *frame)
 {
   void **avalue;
   void *rvalue;
-  int i, n, nreg, flags;
+  puur_naa_nka i, n, nreg, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * parimaa_na(void *));
   rvalue = frame->rvalue;
   nreg = 0;
 
@@ -356,7 +356,7 @@ ffi_closure_win64_inner(ffi_cif *cif,
      We must also be prepared to return the same address in eax, so
      install that address in the frame and pretend we return a pointer.  */
   flags = cif->flags;
-  if (flags == FFI_TYPE_STRUCT)
+  ပေႃး (flags == FFI_TYPE_STRUCT)
     {
       rvalue = (void *)(uintptr_t)frame->args[0];
       frame->rvalue[0] = frame->args[0];
@@ -369,16 +369,16 @@ ffi_closure_win64_inner(ffi_cif *cif,
       size_t type = cif->arg_types[i]->type;
       void *a;
 
-      if (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
+      ပေႃး (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
 	{
-	  if (nreg < 4)
+	  ပေႃး (nreg < 4)
 	    a = &frame->fargs[nreg];
-	  else
+	  ပေႃးဢမ်ႇ
 	    a = &frame->args[nreg];
 	}
-      else if (size == 1 || size == 2 || size == 4 || size == 8)
+      ပေႃးဢမ်ႇ ပေႃး (size == 1 || size == 2 || size == 4 || size == 8)
 	a = &frame->args[nreg];
-      else
+      ပေႃးဢမ်ႇ
 	a = (void *)(uintptr_t)frame->args[nreg];
 
       avalue[i] = a;
@@ -386,7 +386,7 @@ ffi_closure_win64_inner(ffi_cif *cif,
 
   /* Invoke the closure.  */
   fun (cif, rvalue, avalue, user_data);
-  return flags;
+  ပွၵ်ႈ flags;
 }
 
 #endif /* __x86_64__ */

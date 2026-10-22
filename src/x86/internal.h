@@ -24,11 +24,11 @@
 
 #ifdef __PCC__
 # define HAVE_FASTCALL 0
-#else
+#ပေႃးဢမ်ႇ
 # define HAVE_FASTCALL 1
 #endif
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ပေႃး defined(FFI_EXEC_STATIC_TRAMP)
 /*
  * For the trampoline code table mapping, a mapping size of 4K (base page size)
  * is chosen.
@@ -37,7 +37,7 @@
 #define X86_TRAMP_MAP_SIZE	(1 << X86_TRAMP_MAP_SHIFT)
 #ifdef ENDBR_PRESENT
 #define X86_TRAMP_SIZE		44
-#else
+#ပေႃးဢမ်ႇ
 #define X86_TRAMP_SIZE		40
 #endif
 #endif
