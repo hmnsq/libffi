@@ -43,14 +43,14 @@
 #define MAX_GPR_REGS 6
 #define MAX_SSE_REGS 8
 
-#if defined(__INTEL_COMPILER)
+#ако defined(__INTEL_COMPILER)
 #include "xmmintrin.h"
 #define UINT128 __m128
-#else
-#if defined(__SUNPRO_C)
+#иначе
+#ако defined(__SUNPRO_C)
 #include <sunmedia_types.h>
 #define UINT128 __m128i
-#else
+#иначе
 #define UINT128 __int128_t
 #endif
 #endif
@@ -111,10 +111,10 @@ enum x86_64_reg_class
    registers exactly like __float128 (class SSE/SSEUP -> one %xmm register).
    Detect that at compile time and classify long double accordingly.  A mantissa
    of 113 bits uniquely identifies binary128 (x87 extended is 64).  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE \
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE \
     && defined(__LDBL_MANT_DIG__) && __LDBL_MANT_DIG__ == 113
 # define FFI_LONGDOUBLE_BINARY128 1
-#else
+#иначе
 # define FFI_LONGDOUBLE_BINARY128 0
 #endif
 
@@ -129,40 +129,40 @@ static enum x86_64_reg_class
 merge_classes (enum x86_64_reg_class class1, enum x86_64_reg_class class2)
 {
   /* Rule #1: If both classes are equal, this is the resulting class.  */
-  if (class1 == class2)
-    return class1;
+  ако (class1 == class2)
+    върни class1;
 
   /* Rule #2: If one of the classes is NO_CLASS, the resulting class is
      the other class.  */
-  if (class1 == X86_64_NO_CLASS)
-    return class2;
-  if (class2 == X86_64_NO_CLASS)
-    return class1;
+  ако (class1 == X86_64_NO_CLASS)
+    върни class2;
+  ако (class2 == X86_64_NO_CLASS)
+    върни class1;
 
   /* Rule #3: If one of the classes is MEMORY, the result is MEMORY.  */
-  if (class1 == X86_64_MEMORY_CLASS || class2 == X86_64_MEMORY_CLASS)
-    return X86_64_MEMORY_CLASS;
+  ако (class1 == X86_64_MEMORY_CLASS || class2 == X86_64_MEMORY_CLASS)
+    върни X86_64_MEMORY_CLASS;
 
   /* Rule #4: If one of the classes is INTEGER, the result is INTEGER.  */
-  if ((class1 == X86_64_INTEGERSI_CLASS && class2 == X86_64_SSESF_CLASS)
+  ако ((class1 == X86_64_INTEGERSI_CLASS && class2 == X86_64_SSESF_CLASS)
       || (class2 == X86_64_INTEGERSI_CLASS && class1 == X86_64_SSESF_CLASS))
-    return X86_64_INTEGERSI_CLASS;
-  if (class1 == X86_64_INTEGER_CLASS || class1 == X86_64_INTEGERSI_CLASS
+    върни X86_64_INTEGERSI_CLASS;
+  ако (class1 == X86_64_INTEGER_CLASS || class1 == X86_64_INTEGERSI_CLASS
       || class2 == X86_64_INTEGER_CLASS || class2 == X86_64_INTEGERSI_CLASS)
-    return X86_64_INTEGER_CLASS;
+    върни X86_64_INTEGER_CLASS;
 
   /* Rule #5: If one of the classes is X87, X87UP, or COMPLEX_X87 class,
      MEMORY is used.  */
-  if (class1 == X86_64_X87_CLASS
+  ако (class1 == X86_64_X87_CLASS
       || class1 == X86_64_X87UP_CLASS
       || class1 == X86_64_COMPLEX_X87_CLASS
       || class2 == X86_64_X87_CLASS
       || class2 == X86_64_X87UP_CLASS
       || class2 == X86_64_COMPLEX_X87_CLASS)
-    return X86_64_MEMORY_CLASS;
+    върни X86_64_MEMORY_CLASS;
 
   /* Rule #6: Otherwise class SSE is used.  */
-  return X86_64_SSE_CLASS;
+  върни X86_64_SSE_CLASS;
 }
 
 /* Classify the argument of type TYPE and mode MODE.
@@ -194,50 +194,50 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
       {
 	size_t size = byte_offset + type->size;
 
-	if (size <= 4)
+	ако (size <= 4)
 	  {
 	    classes[0] = X86_64_INTEGERSI_CLASS;
-	    return 1;
+	    върни 1;
 	  }
-	else if (size <= 8)
+	иначе ако (size <= 8)
 	  {
 	    classes[0] = X86_64_INTEGER_CLASS;
-	    return 1;
+	    върни 1;
 	  }
-	else if (size <= 12)
+	иначе ако (size <= 12)
 	  {
 	    classes[0] = X86_64_INTEGER_CLASS;
 	    classes[1] = X86_64_INTEGERSI_CLASS;
-	    return 2;
+	    върни 2;
 	  }
-	else if (size <= 16)
+	иначе ако (size <= 16)
 	  {
 	    classes[0] = classes[1] = X86_64_INTEGER_CLASS;
-	    return 2;
+	    върни 2;
 	  }
-	else
+	иначе
 	  FFI_ASSERT (0);
       }
     case FFI_TYPE_FLOAT:
-      if (!(byte_offset % 8))
+      ако (!(byte_offset % 8))
 	classes[0] = X86_64_SSESF_CLASS;
-      else
+      иначе
 	classes[0] = X86_64_SSE_CLASS;
-      return 1;
+      върни 1;
     case FFI_TYPE_DOUBLE:
       classes[0] = X86_64_SSEDF_CLASS;
-      return 1;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      върни 1;
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
     case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+#ако FFI_LONGDOUBLE_BINARY128
       /* IEEE binary128: one %xmm register, like __float128.  */
       classes[0] = X86_64_SSE_CLASS;
       classes[1] = X86_64_SSEUP_CLASS;
-#else
+#иначе
       classes[0] = X86_64_X87_CLASS;
       classes[1] = X86_64_X87UP_CLASS;
 #endif
-      return 2;
+      върни 2;
 #endif
     case FFI_TYPE_STRUCT:
       {
@@ -245,37 +245,37 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
         size_t words = (type->size + byte_offset + UNITS_PER_WORD - 1)
                        / UNITS_PER_WORD;
 	ffi_type **ptr;
-	unsigned int i;
+	unsigned цяло i;
 	enum x86_64_reg_class subclasses[MAX_CLASSES];
 
 	/* If the struct is larger than 32 bytes, pass it on the stack.  */
-	if (type->size > 32)
-	  return 0;
+	ако (type->size > 32)
+	  върни 0;
 
-	for (i = 0; i < words; i++)
+	за (i = 0; i < words; i++)
 	  classes[i] = X86_64_NO_CLASS;
 
 	/* Zero sized arrays or structures are NO_CLASS.  We return 0 to
 	   signalize memory class, so handle it as special case.  */
-	if (!words)
+	ако (!words)
 	  {
     case FFI_TYPE_VOID:
 	    classes[0] = X86_64_NO_CLASS;
-	    return 1;
+	    върни 1;
 	  }
 
 	/* Merge the fields of structure.  */
-	for (ptr = type->elements; *ptr != NULL; ptr++)
+	за (ptr = type->elements; *ptr != NULL; ptr++)
 	  {
 	    size_t num, pos;
 
 	    byte_offset = FFI_ALIGN (byte_offset, (*ptr)->alignment);
 
 	    num = classify_argument (*ptr, subclasses, byte_offset % 8);
-	    if (num == 0)
-	      return 0;
+	    ако (num == 0)
+	      върни 0;
             pos = byte_offset / 8;
-            for (i = 0; i < num && (i + pos) < words; i++)
+            за (i = 0; i < num && (i + pos) < words; i++)
 	      {
 		size_t pos = byte_offset / 8;
 		classes[i + pos] =
@@ -285,31 +285,31 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 	    byte_offset += (*ptr)->size;
 	  }
 
-	if (words > 2)
+	ако (words > 2)
 	  {
 	    /* When size > 16 bytes, if the first one isn't
 	       X86_64_SSE_CLASS or any other ones aren't
 	       X86_64_SSEUP_CLASS, everything should be passed in
 	       memory.  */
-	    if (classes[0] != X86_64_SSE_CLASS)
-	      return 0;
+	    ако (classes[0] != X86_64_SSE_CLASS)
+	      върни 0;
 
-	    for (i = 1; i < words; i++)
-	      if (classes[i] != X86_64_SSEUP_CLASS)
-		return 0;
+	    за (i = 1; i < words; i++)
+	      ако (classes[i] != X86_64_SSEUP_CLASS)
+		върни 0;
 	  }
 
 	/* Final merger cleanup.  */
-	for (i = 0; i < words; i++)
+	за (i = 0; i < words; i++)
 	  {
 	    /* If one class is MEMORY, everything should be passed in
 	       memory.  */
-	    if (classes[i] == X86_64_MEMORY_CLASS)
-	      return 0;
+	    ако (classes[i] == X86_64_MEMORY_CLASS)
+	      върни 0;
 
 	    /* The X86_64_SSEUP_CLASS should be always preceded by
 	       X86_64_SSE_CLASS or X86_64_SSEUP_CLASS.  */
-	    if (i > 1 && classes[i] == X86_64_SSEUP_CLASS
+	    ако (i > 1 && classes[i] == X86_64_SSEUP_CLASS
 		&& classes[i - 1] != X86_64_SSE_CLASS
 		&& classes[i - 1] != X86_64_SSEUP_CLASS)
 	      {
@@ -320,15 +320,15 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 
 	    /*  If X86_64_X87UP_CLASS isn't preceded by X86_64_X87_CLASS,
 		everything should be passed in memory.  */
-	    if (i > 1 && classes[i] == X86_64_X87UP_CLASS
+	    ако (i > 1 && classes[i] == X86_64_X87UP_CLASS
 		&& (classes[i - 1] != X86_64_X87_CLASS))
 	      {
 		/* The first one should never be X86_64_X87UP_CLASS.  */
 		FFI_ASSERT (i != 0);
-		return 0;
+		върни 0;
 	      }
 	  }
-	return words;
+	върни words;
       }
     case FFI_TYPE_VECTOR:
       /* A Short Vector occupies SSE registers: an 8-byte vector is a single
@@ -337,18 +337,18 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 	 implement; classify them as memory here and reject them outright in
 	 ffi_prep_cif_machdep so the caller gets FFI_BAD_TYPEDEF, not a
 	 silently wrong in-memory pass.  */
-      if (type->size == 8)
+      ако (type->size == 8)
 	{
 	  classes[0] = X86_64_SSE_CLASS;
-	  return 1;
+	  върни 1;
 	}
-      else if (type->size == 16)
+      иначе ако (type->size == 16)
 	{
 	  classes[0] = X86_64_SSE_CLASS;
 	  classes[1] = X86_64_SSEUP_CLASS;
-	  return 2;
+	  върни 2;
 	}
-      return 0;
+      върни 0;
     case FFI_TYPE_COMPLEX:
       {
 	ffi_type *inner = type->elements[0];
@@ -367,27 +367,27 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 
 	  case FFI_TYPE_SINT128:
 	  case FFI_TYPE_UINT128:
-	    return 0;
+	    върни 0;
 
 	  case FFI_TYPE_FLOAT:
 	    classes[0] = X86_64_SSE_CLASS;
-	    if (byte_offset % 8)
+	    ако (byte_offset % 8)
 	      {
 		classes[1] = X86_64_SSESF_CLASS;
-		return 2;
+		върни 2;
 	      }
-	    return 1;
+	    върни 1;
 	  case FFI_TYPE_DOUBLE:
 	    classes[0] = classes[1] = X86_64_SSEDF_CLASS;
-	    return 2;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	    върни 2;
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+#ако FFI_LONGDOUBLE_BINARY128
 	    /* _Complex binary128 is 32 bytes -> passed/returned in memory.  */
-	    return 0;
-#else
+	    върни 0;
+#иначе
 	    classes[0] = X86_64_COMPLEX_X87_CLASS;
-	    return 1;
+	    върни 1;
 #endif
 #endif
 	  }
@@ -402,18 +402,18 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 
 static size_t
 examine_argument (ffi_type *type, enum x86_64_reg_class classes[MAX_CLASSES],
-		  _Bool in_return, int *pngpr, int *pnsse)
+		  _Bool in_return, цяло *pngpr, цяло *pnsse)
 {
   size_t n;
-  unsigned int i;
-  int ngpr, nsse;
+  unsigned цяло i;
+  цяло ngpr, nsse;
 
   n = classify_argument (type, classes, 0);
-  if (n == 0)
-    return 0;
+  ако (n == 0)
+    върни 0;
 
   ngpr = nsse = 0;
-  for (i = 0; i < n; ++i)
+  за (i = 0; i < n; ++i)
     switch (classes[i])
       {
       case X86_64_INTEGER_CLASS:
@@ -431,7 +431,7 @@ examine_argument (ffi_type *type, enum x86_64_reg_class classes[MAX_CLASSES],
       case X86_64_X87_CLASS:
       case X86_64_X87UP_CLASS:
       case X86_64_COMPLEX_X87_CLASS:
-	return in_return != 0;
+	върни in_return != 0;
       default:
 	abort ();
       }
@@ -439,7 +439,7 @@ examine_argument (ffi_type *type, enum x86_64_reg_class classes[MAX_CLASSES],
   *pngpr = ngpr;
   *pnsse = nsse;
 
-  return n;
+  върни n;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -452,18 +452,18 @@ ffi_prep_cif_machdep_efi64(ffi_cif *cif);
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-  int gprcount, ssecount, i, avn, ngpr, nsse;
+  цяло gprcount, ssecount, i, avn, ngpr, nsse;
   unsigned flags;
   enum x86_64_reg_class classes[MAX_CLASSES];
   size_t bytes, n, rtype_size;
   ffi_type *rtype;
 
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_cif_machdep_efi64(cif);
+  ако (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    върни ffi_prep_cif_machdep_efi64(cif);
 #endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+  ако (cif->abi != FFI_UNIX64)
+    върни FFI_BAD_ABI;
 
   gprcount = ssecount = 0;
 
@@ -510,18 +510,18 @@ ffi_prep_cif_machdep (ffi_cif *cif)
     case FFI_TYPE_DOUBLE:
       flags = UNIX64_RET_XMM64;
       break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
     case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+#ако FFI_LONGDOUBLE_BINARY128
       flags = UNIX64_RET_XMM128;	/* returned in %xmm0 (16 bytes) */
-#else
+#иначе
       flags = UNIX64_RET_X87;
 #endif
       break;
 #endif
     case FFI_TYPE_STRUCT:
       n = examine_argument (cif->rtype, classes, 1, &ngpr, &nsse);
-      if (n == 0)
+      ако (n == 0)
 	{
 	  /* The return value is passed in memory.  A pointer to that
 	     memory is the first argument.  Allocate a register for it.  */
@@ -529,24 +529,24 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	  /* We don't have to do anything in asm for the return.  */
 	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
 	}
-      else
+      иначе
 	{
 	  _Bool sse0 = SSE_CLASS_P (classes[0]);
 
-	  if (rtype_size == 4 && sse0)
+	  ако (rtype_size == 4 && sse0)
 	    flags = UNIX64_RET_XMM32;
-	  else if (rtype_size == 8)
+	  иначе ако (rtype_size == 8)
 	    flags = sse0 ? UNIX64_RET_XMM64 : UNIX64_RET_INT64;
-	  else
+	  иначе
 	    {
 	      _Bool sse1 = n == 2 && SSE_CLASS_P (classes[1]);
-	      if (sse0 && sse1)
+	      ако (sse0 && sse1)
 		flags = UNIX64_RET_ST_XMM0_XMM1;
-	      else if (sse0)
+	      иначе ако (sse0)
 		flags = UNIX64_RET_ST_XMM0_RAX;
-	      else if (sse1)
+	      иначе ако (sse1)
 		flags = UNIX64_RET_ST_RAX_XMM0;
-	      else
+	      иначе
 		flags = UNIX64_RET_ST_RAX_RDX;
 	      flags |= rtype_size << UNIX64_SIZE_SHIFT;
 	    }
@@ -555,12 +555,12 @@ ffi_prep_cif_machdep (ffi_cif *cif)
     case FFI_TYPE_VECTOR:
       /* An 8-byte vector returns in the low half of %xmm0; a 16-byte vector
 	 fills %xmm0 (SSE + SSEUP).  Wider vectors are unsupported here.  */
-      if (rtype_size == 8)
+      ако (rtype_size == 8)
 	flags = UNIX64_RET_XMM64;
-      else if (rtype_size == 16)
+      иначе ако (rtype_size == 16)
 	flags = UNIX64_RET_XMM128;
-      else
-	return FFI_BAD_TYPEDEF;
+      иначе
+	върни FFI_BAD_TYPEDEF;
       break;
     case FFI_TYPE_COMPLEX:
       switch (rtype->elements[0]->type)
@@ -582,13 +582,13 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	case FFI_TYPE_DOUBLE:
 	  flags = UNIX64_RET_ST_XMM0_XMM1 | (16 << UNIX64_SIZE_SHIFT);
 	  break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	case FFI_TYPE_LONGDOUBLE:
-#if FFI_LONGDOUBLE_BINARY128
+#ако FFI_LONGDOUBLE_BINARY128
 	  /* _Complex binary128 (32 bytes) is returned in memory.  */
 	  gprcount++;
 	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
-#else
+#иначе
 	  flags = UNIX64_RET_X87_2;
 #endif
 	  break;
@@ -599,52 +599,52 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	  flags = UNIX64_RET_VOID | UNIX64_FLAG_RET_IN_MEM;
 	  break;
 	default:
-	  return FFI_BAD_TYPEDEF;
+	  върни FFI_BAD_TYPEDEF;
 	}
       break;
     default:
-      return FFI_BAD_TYPEDEF;
+      върни FFI_BAD_TYPEDEF;
     }
 
   /* Reject vectors wider than 16 bytes as arguments: correct %ymm/%zmm
      passing needs unix64.S register-save changes that are out of scope for
      this port, and classify_argument would otherwise silently treat them as
      an in-memory aggregate.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
-    if (cif->arg_types[i]->type == FFI_TYPE_VECTOR
+  за (i = 0, avn = cif->nargs; i < avn; i++)
+    ако (cif->arg_types[i]->type == FFI_TYPE_VECTOR
 	&& cif->arg_types[i]->size > 16)
-      return FFI_BAD_TYPEDEF;
+      върни FFI_BAD_TYPEDEF;
 
   /* Go over all arguments and determine the way they should be passed.
      If it's in a register and there is space for it, let that be so. If
      not, add it's size to the stack byte count.  */
-  for (bytes = 0, i = 0, avn = cif->nargs; i < avn; i++)
+  за (bytes = 0, i = 0, avn = cif->nargs; i < avn; i++)
     {
-      if (examine_argument (cif->arg_types[i], classes, 0, &ngpr, &nsse) == 0
+      ако (examine_argument (cif->arg_types[i], classes, 0, &ngpr, &nsse) == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = cif->arg_types[i]->alignment;
 
-	  if (align < 8)
+	  ако (align < 8)
 	    align = 8;
 
 	  bytes = FFI_ALIGN (bytes, align);
 	  bytes += cif->arg_types[i]->size;
 	}
-      else
+      иначе
 	{
 	  gprcount += ngpr;
 	  ssecount += nsse;
 	}
     }
-  if (ssecount)
+  ако (ssecount)
     flags |= UNIX64_FLAG_XMM_ARGS;
 
   cif->flags = flags;
   cif->bytes = (unsigned) FFI_ALIGN (bytes, 8);
 
-  return FFI_OK;
+  върни FFI_OK;
 }
 
 /* n.b. ffi_call_unix64 will steal the alloca'd `stack` variable here for use
@@ -657,7 +657,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   enum x86_64_reg_class classes[MAX_CLASSES];
   char *stack, *argp;
   ffi_type **arg_types;
-  int gprcount, ssecount, ngpr, nsse, i, avn, flags;
+  цяло gprcount, ssecount, ngpr, nsse, i, avn, flags;
   struct register_args *reg_args;
 
   /* Can't call 32-bit mode from 64-bit mode.  */
@@ -666,11 +666,11 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  Otherwise we can ignore it.  */
   flags = cif->flags;
-  if (rvalue == NULL)
+  ако (rvalue == NULL)
     {
-      if (flags & UNIX64_FLAG_RET_IN_MEM)
+      ако (flags & UNIX64_FLAG_RET_IN_MEM)
 	rvalue = alloca (cif->rtype->size);
-      else
+      иначе
 	flags = UNIX64_RET_VOID;
     }
 
@@ -688,22 +688,22 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If the return value is passed in memory, add the pointer as the
      first integer argument.  */
-  if (flags & UNIX64_FLAG_RET_IN_MEM)
+  ако (flags & UNIX64_FLAG_RET_IN_MEM)
     reg_args->gpr[gprcount++] = (unsigned long) rvalue;
 
-  for (i = 0; i < avn; ++i)
+  за (i = 0; i < avn; ++i)
     {
       size_t n, size = arg_types[i]->size;
 
       n = examine_argument (arg_types[i], classes, 0, &ngpr, &nsse);
-      if (n == 0
+      ако (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = arg_types[i]->alignment;
 
 	  /* Stack arguments are *always* at least 8 byte aligned.  */
-	  if (align < 8)
+	  ако (align < 8)
 	    align = 8;
 
           /* Pass this argument in memory.  */
@@ -712,13 +712,13 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
           argp += size;
         }
-      else
+      иначе
 	{
 	  /* The argument is passed entirely in registers.  */
 	  char *a = (char *) avalue[i];
-	  unsigned int j;
+	  unsigned цяло j;
 
-	  for (j = 0; j < n; j++, a += 8, size -= 8)
+	  за (j = 0; j < n; j++, a += 8, size -= 8)
 	    {
 	      switch (classes[j])
 		{
@@ -819,7 +819,7 @@ typedef struct
   unsigned ret_in_mem;  /* nonzero -> reg_args->gpr[0] = rvalue            */
   unsigned fast;        /* nonzero -> lean trampoline eligible             */
   unsigned retcode;     /* UNIX64_RET_* (low byte of flags) for the store  */
-  int      thunk_n;     /* >=0 -> ffi_gp_thunks[thunk_n], else -1          */
+  цяло      thunk_n;     /* >=0 -> ffi_gp_thunks[thunk_n], else -1          */
   unsigned alloc_bytes; /* malloc'd size, reported by ffi_call_plan_size   */
   ffi_move moves[];
 } ffi_plan;
@@ -869,52 +869,52 @@ build_plan (ffi_cif *cif)
   unsigned nm, gprcount, ssecount;
   size_t argp_off, nbytes;
   ffi_plan *plan;
-  int all_gp64 = 1;	/* every arg is exactly one 64-bit GP move? */
+  цяло all_gp64 = 1;	/* every arg is exactly one 64-bit GP move? */
 
-  if (cif->abi != FFI_UNIX64)
-    return NULL;
+  ако (cif->abi != FFI_UNIX64)
+    върни NULL;
 
   /* Reject arg types this cut doesn't encode; returns are handled by flags. */
-  for (i = 0; i < avn; i++)
+  за (i = 0; i < avn; i++)
     {
-      int t = cif->arg_types[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
-	return NULL;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      if (t == FFI_TYPE_LONGDOUBLE)
-	return NULL;
+      цяло t = cif->arg_types[i]->type;
+      ако (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+	върни NULL;
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      ако (t == FFI_TYPE_LONGDOUBLE)
+	върни NULL;
 #endif
     }
 
   /* One self-contained allocation: header + moves, released with plain free(). */
   nbytes = sizeof (ffi_plan) + sizeof (ffi_move) * (2 * avn + 1);
   plan = malloc (nbytes);
-  if (plan == NULL)
-    return NULL;
+  ако (plan == NULL)
+    върни NULL;
   plan->alloc_bytes = (unsigned) nbytes;
 
   nm = gprcount = ssecount = 0;
   argp_off = 0;
   plan->ret_in_mem = (cif->flags & UNIX64_FLAG_RET_IN_MEM) ? 1 : 0;
-  if (plan->ret_in_mem)
+  ако (plan->ret_in_mem)
     gprcount++;				/* sret pointer occupies gpr[0] */
 
-  for (i = 0; i < avn; i++)
+  за (i = 0; i < avn; i++)
     {
       ffi_type *at = cif->arg_types[i];
       size_t size = at->size, n, rem;
-      int ngpr, nsse;
+      цяло ngpr, nsse;
       unsigned j;
 
       n = examine_argument (at, classes, 0, &ngpr, &nsse);
-      if (n == 0
+      ако (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = at->alignment;
 	  ffi_move *m = &plan->moves[nm++];
 	  all_gp64 = 0;
-	  if (align < 8)
+	  ако (align < 8)
 	    align = 8;
 	  argp_off = FFI_ALIGN (argp_off, align);
 	  m->op = FFI_MOVE_STACK;
@@ -926,7 +926,7 @@ build_plan (ffi_cif *cif)
 	  continue;
 	}
 
-      for (j = 0, rem = size; j < n; j++, rem -= 8)
+      за (j = 0, rem = size; j < n; j++, rem -= 8)
 	{
 	  ffi_move m;
 	  m.src_idx = i;
@@ -945,9 +945,9 @@ build_plan (ffi_cif *cif)
 		case FFI_TYPE_SINT16: m.op = FFI_MOVE_SE16; all_gp64 = 0; break;
 		case FFI_TYPE_SINT32: m.op = FFI_MOVE_SE32; all_gp64 = 0; break;
 		default:
-		  if (rem >= 8)
+		  ако (rem >= 8)
 		    m.op = FFI_MOVE_GP64;
-		  else
+		  иначе
 		    { m.op = FFI_MOVE_GP; m.len = (unsigned) rem; all_gp64 = 0; }
 		  break;
 		}
@@ -970,7 +970,7 @@ build_plan (ffi_cif *cif)
 	      break;
 	    default:
 	      free (plan);		/* X87 etc. in registers: bail */
-	      return NULL;
+	      върни NULL;
 	    }
 	  plan->moves[nm++] = m;
 	}
@@ -991,8 +991,8 @@ build_plan (ffi_cif *cif)
   plan->thunk_n =
     (all_gp64 && !plan->ret_in_mem && nm == avn && avn <= MAX_GPR_REGS
      && plan->fast)
-    ? (int) avn : -1;
-  return plan;
+    ? (цяло) avn : -1;
+  върни plan;
 }
 
 /* Execute PLAN: rebuild register_args + stack buffer, then ffi_call_unix64. */
@@ -1007,35 +1007,35 @@ plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
   struct register_args *reg_args;
   unsigned k;
 
-  if (rvalue == NULL)
+  ако (rvalue == NULL)
     {
-      if (flags & UNIX64_FLAG_RET_IN_MEM)
+      ако (flags & UNIX64_FLAG_RET_IN_MEM)
 	rvalue = alloca (cif->rtype->size);
-      else
+      иначе
 	flags = UNIX64_RET_VOID;
     }
 
-  if (plan->thunk_n >= 0)
+  ако (plan->thunk_n >= 0)
     {
       /* Pure-GP64: load avalue straight into arg regs, no image at all. */
       struct ffi_ret2 r = ffi_gp_thunks[plan->thunk_n] (avalue, fn);
-      if (rvalue != NULL)
+      ако (rvalue != NULL)
 	store_ret (rvalue, plan->retcode, r);
-      return;
+      върни;
     }
 
-  if (plan->fast)
+  ако (plan->fast)
     reg_args = &local;			/* no stack args: fixed local image */
-  else
+  иначе
     {
       stack = alloca (sizeof (struct register_args) + plan->bytes + 4 * 8);
       reg_args = (struct register_args *) stack;
     }
   reg_args->r10 = 0;			/* closure (none for ffi_call) */
-  if (plan->ret_in_mem)
+  ако (plan->ret_in_mem)
     reg_args->gpr[0] = (UINT64) (uintptr_t) rvalue;
 
-  for (k = 0; k < plan->nmoves; k++)
+  за (k = 0; k < plan->nmoves; k++)
     {
       ffi_move *m = &plan->moves[k];
       char *src = (char *) avalue[m->src_idx] + m->src_off;
@@ -1055,14 +1055,14 @@ plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
     }
   reg_args->rax = plan->ssecount;
 
-  if (plan->fast)
+  ако (plan->fast)
     {
       /* No stack args; lean trampoline + return store replicating the
 	 unix64.S store_table widths.  ret_in_mem already wrote gpr[0]. */
       struct ffi_ret2 r = ffi_plan_fast_call (reg_args, fn);
-      if (rvalue != NULL)
+      ако (rvalue != NULL)
 	store_ret (rvalue, plan->retcode, r);
-      return;
+      върни;
     }
 
   ffi_call_unix64 (stack, plan->bytes + sizeof (struct register_args),
@@ -1084,27 +1084,27 @@ ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
   ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan == NULL)
-    return NULL;
+  ако (plan == NULL)
+    върни NULL;
   plan->cif  = cif;
   plan->fast = build_plan (cif);	/* NULL if this signature has no fast path */
-  return plan;
+  върни plan;
 }
 
 void
 ffi_call_plan_invoke (ffi_call_plan *plan, void (*fn) (void),
 		      void *rvalue, void **avalue)
 {
-  if (plan->fast != NULL)
+  ако (plan->fast != NULL)
     plan_exec (plan->cif, plan->fast, fn, rvalue, avalue);
-  else
+  иначе
     ffi_call (plan->cif, fn, rvalue, avalue);
 }
 
 void
 ffi_call_plan_free (ffi_call_plan *plan)
 {
-  if (plan != NULL)
+  ако (plan != NULL)
     {
       free (plan->fast);
       free (plan);
@@ -1114,11 +1114,11 @@ ffi_call_plan_free (ffi_call_plan *plan)
 size_t
 ffi_call_plan_size (ffi_call_plan *plan)
 {
-  if (plan == NULL)
-    return 0;
+  ако (plan == NULL)
+    върни 0;
   /* The move-list carries its own size; a signature with no fast path owns
      nothing beyond the handle.  */
-  return sizeof (struct ffi_call_plan)
+  върни sizeof (struct ffi_call_plan)
 	 + (plan->fast != NULL ? plan->fast->alloc_bytes : 0);
 }
 
@@ -1131,20 +1131,20 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
-  const int max_reg_struct_size = cif->abi == FFI_GNUW64 ? 8 : 16;
+  цяло i, nargs = cif->nargs;
+  const цяло max_reg_struct_size = cif->abi == FFI_GNUW64 ? 8 : 16;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  за (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > max_reg_struct_size)
+      цяло size = at->size;
+      ако (at->type == FFI_TYPE_STRUCT && size > max_reg_struct_size)
         {
           char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ако (avalue_copy == NULL)
             {
               avalue_copy = alloca (nargs * sizeof (void *));
               memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -1156,10 +1156,10 @@ ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+  ако (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
     {
       ffi_call_efi64(cif, fn, rvalue, avalue);
-      return;
+      върни;
     }
 #endif
   ffi_call_int (cif, fn, rvalue, avalue, NULL);
@@ -1178,10 +1178,10 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	     void **avalue, void *closure)
 {
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+  ако (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
     {
       ffi_call_go_efi64(cif, fn, rvalue, avalue, closure);
-      return;
+      върни;
     }
 #endif
   ffi_call_int (cif, fn, rvalue, avalue, closure);
@@ -1191,7 +1191,7 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
 extern void ffi_closure_unix64(void) FFI_HIDDEN;
 extern void ffi_closure_unix64_sse(void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ако defined(FFI_EXEC_STATIC_TRAMP)
 extern void ffi_closure_unix64_alt(void) FFI_HIDDEN;
 extern void ffi_closure_unix64_sse_alt(void) FFI_HIDDEN;
 #endif
@@ -1226,24 +1226,24 @@ ffi_prep_closure_loc (ffi_closure* closure,
   char *tramp = closure->tramp;
 
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_closure_loc_efi64(closure, cif, fun, user_data, codeloc);
+  ако (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    върни ffi_prep_closure_loc_efi64(closure, cif, fun, user_data, codeloc);
 #endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+  ако (cif->abi != FFI_UNIX64)
+    върни FFI_BAD_ABI;
 
-  if (cif->flags & UNIX64_FLAG_XMM_ARGS)
+  ако (cif->flags & UNIX64_FLAG_XMM_ARGS)
     dest = ffi_closure_unix64_sse;
-  else
+  иначе
     dest = ffi_closure_unix64;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ако defined(FFI_EXEC_STATIC_TRAMP)
+  ако (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      if (dest == ffi_closure_unix64_sse)
+      ако (dest == ffi_closure_unix64_sse)
         dest = ffi_closure_unix64_sse_alt;
-      else
+      иначе
         dest = ffi_closure_unix64_alt;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
       goto out;
@@ -1254,17 +1254,17 @@ ffi_prep_closure_loc (ffi_closure* closure,
   memcpy (tramp, trampoline, sizeof(trampoline));
   *(UINT64 *)(tramp + sizeof (trampoline)) = (uintptr_t)dest;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ако defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  върни FFI_OK;
 }
 
-int FFI_HIDDEN
+цяло FFI_HIDDEN
 ffi_closure_unix64_inner(ffi_cif *cif,
 			 void (*fun)(ffi_cif*, void*, void**, void*),
 			 void *user_data,
@@ -1275,8 +1275,8 @@ ffi_closure_unix64_inner(ffi_cif *cif,
   void **avalue;
   ffi_type **arg_types;
   long i, avn;
-  int gprcount, ssecount, ngpr, nsse;
-  int flags;
+  цяло gprcount, ssecount, ngpr, nsse;
+  цяло flags;
 
   avn = cif->nargs;
   flags = cif->flags;
@@ -1284,7 +1284,7 @@ ffi_closure_unix64_inner(ffi_cif *cif,
   avalue = alloca(avn * sizeof(void *));
   gprcount = ssecount = 0;
 
-  if (flags & UNIX64_FLAG_RET_IN_MEM)
+  ако (flags & UNIX64_FLAG_RET_IN_MEM)
     {
       /* On return, %rax will contain the address that was passed
 	 by the caller in %rdi.  */
@@ -1295,20 +1295,20 @@ ffi_closure_unix64_inner(ffi_cif *cif,
     }
 
   arg_types = cif->arg_types;
-  for (i = 0; i < avn; ++i)
+  за (i = 0; i < avn; ++i)
     {
       enum x86_64_reg_class classes[MAX_CLASSES];
       size_t n;
 
       n = examine_argument (arg_types[i], classes, 0, &ngpr, &nsse);
-      if (n == 0
+      ако (n == 0
 	  || gprcount + ngpr > MAX_GPR_REGS
 	  || ssecount + nsse > MAX_SSE_REGS)
 	{
 	  long align = arg_types[i]->alignment;
 
 	  /* Stack arguments are *always* at least 8 byte aligned.  */
-	  if (align < 8)
+	  ако (align < 8)
 	    align = 8;
 
 	  /* Pass this argument in memory.  */
@@ -1318,39 +1318,39 @@ ffi_closure_unix64_inner(ffi_cif *cif,
 	}
       /* If the argument is in a single register, or two consecutive
 	 integer registers, then we can use that address directly.  */
-      else if (n == 1
+      иначе ако (n == 1
 	       || (n == 2 && !(SSE_CLASS_P (classes[0])
 			       || SSE_CLASS_P (classes[1]))))
 	{
 	  /* The argument is in a single register.  */
-	  if (SSE_CLASS_P (classes[0]))
+	  ако (SSE_CLASS_P (classes[0]))
 	    {
 	      avalue[i] = &reg_args->sse[ssecount];
 	      ssecount += n;
 	    }
-	  else
+	  иначе
 	    {
 	      avalue[i] = &reg_args->gpr[gprcount];
 	      gprcount += n;
 	    }
 	}
       /* Otherwise, allocate space to make them consecutive.  */
-      else
+      иначе
 	{
 	  char *a = alloca (n * 8);
-	  unsigned int j;
+	  unsigned цяло j;
 
 	  avalue[i] = a;
-	  for (j = 0; j < n; j++, a += 8)
+	  за (j = 0; j < n; j++, a += 8)
 	    {
-	      if (classes[j] == X86_64_SSEUP_CLASS)
+	      ако (classes[j] == X86_64_SSEUP_CLASS)
 		/* The high half of the same %xmm register as the preceding
 		   SSE class (e.g. the upper bits of a binary128 long double);
 		   it does not consume another register.  */
 		memcpy (a, (char *) &reg_args->sse[ssecount - 1] + 8, 8);
-	      else if (SSE_CLASS_P (classes[j]))
+	      иначе ако (SSE_CLASS_P (classes[j]))
 		memcpy (a, &reg_args->sse[ssecount++], 8);
-	      else
+	      иначе
 		memcpy (a, &reg_args->gpr[gprcount++], 8);
 	    }
 	}
@@ -1360,7 +1360,7 @@ ffi_closure_unix64_inner(ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell assembly how to perform return type promotions.  */
-  return flags;
+  върни flags;
 }
 
 #ifdef FFI_GO_CLOSURES
@@ -1379,11 +1379,11 @@ ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
 		     void (*fun)(ffi_cif*, void*, void**, void*))
 {
 #ifndef __ILP32__
-  if (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
-    return ffi_prep_go_closure_efi64(closure, cif, fun);
+  ако (cif->abi == FFI_EFI64 || cif->abi == FFI_GNUW64)
+    върни ffi_prep_go_closure_efi64(closure, cif, fun);
 #endif
-  if (cif->abi != FFI_UNIX64)
-    return FFI_BAD_ABI;
+  ако (cif->abi != FFI_UNIX64)
+    върни FFI_BAD_ABI;
 
   closure->tramp = (cif->flags & UNIX64_FLAG_XMM_ARGS
 		    ? ffi_go_closure_unix64_sse
@@ -1391,12 +1391,12 @@ ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  върни FFI_OK;
 }
 
 #endif /* FFI_GO_CLOSURES */
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ако defined(FFI_EXEC_STATIC_TRAMP)
 void *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
@@ -1404,7 +1404,7 @@ ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 
   *map_size = UNIX64_TRAMP_MAP_SIZE;
   *tramp_size = UNIX64_TRAMP_SIZE;
-  return &trampoline_code_table;
+  върни &trampoline_code_table;
 }
 #endif
 

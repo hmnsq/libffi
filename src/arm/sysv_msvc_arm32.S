@@ -43,13 +43,13 @@
 
         ; determine the area we will put the function into
 __FuncArea   SETS    "|.text|"
-        IF "$AreaName" != ""
+        ако "$AreaName" != ""
 __FuncArea   SETS    "$AreaName"
         ENDIF
 
         ; set up the exception handler itself
 __FuncExceptionHandler SETS ""
-        IF "$ExceptHandler" != ""
+        ако "$ExceptHandler" != ""
 __FuncExceptionHandler SETS    "|$ExceptHandler|"
         ENDIF
 

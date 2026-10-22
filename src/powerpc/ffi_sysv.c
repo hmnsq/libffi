@@ -43,17 +43,17 @@
 #define NUM_FPR_ARG_REGISTERS 8
 
 
-#if HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ако HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 /* Adjust size of ffi_type_longdouble.  */
 void FFI_HIDDEN
 ffi_prep_types_sysv (ffi_abi abi)
 {
-  if ((abi & (FFI_SYSV | FFI_SYSV_LONG_DOUBLE_128)) == FFI_SYSV)
+  ако ((abi & (FFI_SYSV | FFI_SYSV_LONG_DOUBLE_128)) == FFI_SYSV)
     {
       ffi_type_longdouble.size = 8;
       ffi_type_longdouble.alignment = 8;
     }
-  else
+  иначе
     {
       ffi_type_longdouble.size = 16;
       ffi_type_longdouble.alignment = 16;
@@ -62,31 +62,31 @@ ffi_prep_types_sysv (ffi_abi abi)
 #endif
 
 /* Transform long double, double and float to other types as per abi.  */
-static int
-translate_float (int abi, int type)
+static цяло
+translate_float (цяло abi, цяло type)
 {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-  if (type == FFI_TYPE_LONGDOUBLE
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+  ако (type == FFI_TYPE_LONGDOUBLE
       && (abi & FFI_SYSV_LONG_DOUBLE_128) == 0)
     type = FFI_TYPE_DOUBLE;
 #endif
-  if ((abi & FFI_SYSV_SOFT_FLOAT) != 0)
+  ако ((abi & FFI_SYSV_SOFT_FLOAT) != 0)
     {
-      if (type == FFI_TYPE_FLOAT)
+      ако (type == FFI_TYPE_FLOAT)
 	type = FFI_TYPE_UINT32;
-      else if (type == FFI_TYPE_DOUBLE)
+      иначе ако (type == FFI_TYPE_DOUBLE)
 	type = FFI_TYPE_UINT64;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      else if (type == FFI_TYPE_LONGDOUBLE)
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      иначе ако (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_UINT128;
     }
-  else if ((abi & FFI_SYSV_IBM_LONG_DOUBLE) == 0)
+  иначе ако ((abi & FFI_SYSV_IBM_LONG_DOUBLE) == 0)
     {
-      if (type == FFI_TYPE_LONGDOUBLE)
+      ако (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_STRUCT;
 #endif
     }
-  return type;
+  върни type;
 }
 
 /* Perform machine dependent cif processing */
@@ -105,10 +105,10 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
      for us.  Redo the calculation.  */
 
   /* Space for the frame pointer, callee's LR, and the asm's temp regs.  */
-  bytes = (2 + ASM_NEEDS_REGISTERS) * sizeof (int);
+  bytes = (2 + ASM_NEEDS_REGISTERS) * sizeof (цяло);
 
   /* Space for the GPR registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS * sizeof (int);
+  bytes += NUM_GPR_ARG_REGISTERS * sizeof (цяло);
 
   /* Return value handling.  The rules for SYSV are as follows:
      - 32-bit (or less) integer values are returned in gpr3;
@@ -125,7 +125,7 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 
   switch (type)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
     case FFI_TYPE_LONGDOUBLE:
       flags |= FLAG_RETURNS_128BITS;
       /* Fall through.  */
@@ -136,7 +136,7 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
     case FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
 #ifdef __NO_FPRS__
-      return FFI_BAD_ABI;
+      върни FFI_BAD_ABI;
 #endif
       break;
 
@@ -152,7 +152,7 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
       /* The final SYSV ABI says that structures smaller or equal 8 bytes
 	 are returned in r3/r4.  A draft ABI used by linux instead
 	 returns them in memory.  */
-      if ((cif->abi & FFI_SYSV_STRUCT_RET) != 0 && size <= 8)
+      ако ((cif->abi & FFI_SYSV_STRUCT_RET) != 0 && size <= 8)
 	{
 	  flags |= FLAG_RETURNS_SMST;
 	  break;
@@ -174,7 +174,7 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
      goes on the stack.  Structures and long doubles (if not equivalent
      to double) are passed as a pointer to a copy of the structure.
      Stuff on the stack needs to keep proper alignment.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  за (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
       unsigned short typenum = (*ptr)->type;
 
@@ -182,45 +182,45 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 
       switch (typenum)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	case FFI_TYPE_LONGDOUBLE:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS - 1)
+	  ако (fpr_count >= NUM_FPR_ARG_REGISTERS - 1)
 	    {
 	      fpr_count = NUM_FPR_ARG_REGISTERS;
 	      /* 8-byte align long doubles.  */
 	      stack_count += stack_count & 1;
 	      stack_count += 4;
 	    }
-	  else
+	  иначе
 	    fpr_count += 2;
 #ifdef __NO_FPRS__
-	  return FFI_BAD_ABI;
+	  върни FFI_BAD_ABI;
 #endif
 	  break;
 #endif
 
 	case FFI_TYPE_DOUBLE:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS)
+	  ако (fpr_count >= NUM_FPR_ARG_REGISTERS)
 	    {
 	      /* 8-byte align doubles.  */
 	      stack_count += stack_count & 1;
 	      stack_count += 2;
 	    }
-	  else
+	  иначе
 	    fpr_count += 1;
 #ifdef __NO_FPRS__
-	  return FFI_BAD_ABI;
+	  върни FFI_BAD_ABI;
 #endif
 	  break;
 
 	case FFI_TYPE_FLOAT:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS)
+	  ако (fpr_count >= NUM_FPR_ARG_REGISTERS)
 	    /* Yes, we don't follow the ABI, but neither does gcc.  */
 	    stack_count += 1;
-	  else
+	  иначе
 	    fpr_count += 1;
 #ifdef __NO_FPRS__
-	  return FFI_BAD_ABI;
+	  върни FFI_BAD_ABI;
 #endif
 	  break;
 
@@ -228,11 +228,11 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	  /* A long double in FFI_LINUX_SOFT_FLOAT can use only a set
 	     of four consecutive gprs. If we do not have enough, we
 	     have to adjust the gpr_count value.  */
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS - 3)
+	  ако (gpr_count >= NUM_GPR_ARG_REGISTERS - 3)
 	    gpr_count = NUM_GPR_ARG_REGISTERS;
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
+	  ако (gpr_count >= NUM_GPR_ARG_REGISTERS)
 	    stack_count += 4;
-	  else
+	  иначе
 	    gpr_count += 4;
 	  break;
 
@@ -247,12 +247,12 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	     passing long long int -- specifically (r3,r4), (r5,r6),
 	     (r7,r8), (r9,r10).  */
 	  gpr_count += gpr_count & 1;
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
+	  ако (gpr_count >= NUM_GPR_ARG_REGISTERS)
 	    {
 	      stack_count += stack_count & 1;
 	      stack_count += 2;
 	    }
-	  else
+	  иначе
 	    gpr_count += 2;
 	  break;
 
@@ -274,9 +274,9 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	case FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 4-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
+	  ако (gpr_count >= NUM_GPR_ARG_REGISTERS)
 	    stack_count += 1;
-	  else
+	  иначе
 	    gpr_count += 1;
 	  break;
 
@@ -285,19 +285,19 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	}
     }
 
-  if (fpr_count != 0)
+  ако (fpr_count != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (gpr_count > 4)
+  ако (gpr_count > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
-  if (struct_copy_size != 0)
+  ако (struct_copy_size != 0)
     flags |= FLAG_ARG_NEEDS_COPY;
 
   /* Space for the FPR registers, if needed.  */
-  if (fpr_count != 0)
+  ако (fpr_count != 0)
     bytes += NUM_FPR_ARG_REGISTERS * sizeof (double);
 
   /* Stack space.  */
-  bytes += stack_count * sizeof (int);
+  bytes += stack_count * sizeof (цяло);
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
   bytes = (bytes + 15) & ~0xF;
@@ -308,20 +308,20 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
   cif->flags = flags;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  върни FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_sysv (ffi_cif *cif)
 {
-  if ((cif->abi & FFI_SYSV) == 0)
+  ако ((cif->abi & FFI_SYSV) == 0)
     {
       /* This call is from old code.  Translate to new ABI values.  */
       cif->flags |= FLAG_COMPAT;
       switch (cif->abi)
 	{
 	default:
-	  return FFI_BAD_ABI;
+	  върни FFI_BAD_ABI;
 
 	case FFI_COMPAT_SYSV:
 	  cif->abi = FFI_SYSV | FFI_SYSV_STRUCT_RET | FFI_SYSV_LONG_DOUBLE_128;
@@ -342,7 +342,7 @@ ffi_prep_cif_sysv (ffi_cif *cif)
 	  break;
 	}
     }
-  return ffi_prep_cif_sysv_core (cif);
+  върни ffi_prep_cif_sysv_core (cif);
 }
 
 /* ffi_prep_args_SYSV is called by the assembly routine once stack space
@@ -408,7 +408,7 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
   /* 'next_arg' grows up as we put parameters in it.  */
   valp next_arg;
 
-  int i;
+  цяло i;
   ffi_type **ptr;
 #ifndef __NO_FPRS__
   double double_tmp;
@@ -421,7 +421,7 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
     unsigned char **uc;
     signed short **ss;
     unsigned short **us;
-    unsigned int **ui;
+    unsigned цяло **ui;
     long long **ll;
     float **f;
     double **d;
@@ -436,7 +436,7 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
   fpr_end.d = gpr_base.d;
   fpr_base.d = fpr_end.d - NUM_FPR_ARG_REGISTERS;
   copy_space.c = ((flags & FLAG_FP_ARGUMENTS) ? fpr_base.c : gpr_base.c);
-#else
+#иначе
   copy_space.c = gpr_base.c;
 #endif
   next_arg.u = stack + 2;
@@ -449,16 +449,16 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
   FFI_ASSERT (copy_space.c >= next_arg.c);
 
   /* Deal with return values that are actually pass-by-reference.  */
-  if (flags & FLAG_RETVAL_REFERENCE)
+  ако (flags & FLAG_RETVAL_REFERENCE)
     *gpr_base.u++ = (unsigned) (char *) ecif->rvalue;
 
   /* Now for the arguments.  */
   p_argv.v = ecif->avalue;
-  for (ptr = ecif->cif->arg_types, i = ecif->cif->nargs;
+  за (ptr = ecif->cif->arg_types, i = ecif->cif->nargs;
        i > 0;
        i--, ptr++, p_argv.v++)
     {
-      unsigned int typenum = (*ptr)->type;
+      unsigned цяло typenum = (*ptr)->type;
 
       typenum = translate_float (ecif->cif->abi, typenum);
 
@@ -466,14 +466,14 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
       switch (typenum)
 	{
 #ifndef __NO_FPRS__
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	case FFI_TYPE_LONGDOUBLE:
 	  double_tmp = (*p_argv.d)[0];
 
-	  if (fpr_base.d >= fpr_end.d - 1)
+	  ако (fpr_base.d >= fpr_end.d - 1)
 	    {
 	      fpr_base.d = fpr_end.d;
-	      if (((next_arg.u - stack) & 1) != 0)
+	      ако (((next_arg.u - stack) & 1) != 0)
 		next_arg.u += 1;
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
@@ -481,7 +481,7 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
 	    }
-	  else
+	  иначе
 	    {
 	      *fpr_base.d++ = double_tmp;
 	      double_tmp = (*p_argv.d)[1];
@@ -493,26 +493,26 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	case FFI_TYPE_DOUBLE:
 	  double_tmp = **p_argv.d;
 
-	  if (fpr_base.d >= fpr_end.d)
+	  ако (fpr_base.d >= fpr_end.d)
 	    {
-	      if (((next_arg.u - stack) & 1) != 0)
+	      ако (((next_arg.u - stack) & 1) != 0)
 		next_arg.u += 1;
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
 	    }
-	  else
+	  иначе
 	    *fpr_base.d++ = double_tmp;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	  break;
 
 	case FFI_TYPE_FLOAT:
 	  double_tmp = **p_argv.f;
-	  if (fpr_base.d >= fpr_end.d)
+	  ако (fpr_base.d >= fpr_end.d)
 	    {
 	      *next_arg.f = (float) double_tmp;
 	      next_arg.u += 1;
 	    }
-	  else
+	  иначе
 	    *fpr_base.d++ = double_tmp;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	  break;
@@ -523,22 +523,22 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	     is passed in four consecutive GPRs if available.  A maximum of 2
 	     long doubles can be passed in gprs.  If we do not have 4 GPRs
 	     left, the long double is passed on the stack, 4-byte aligned.  */
-	  if (gpr_base.u >= gpr_end.u - 3)
+	  ако (gpr_base.u >= gpr_end.u - 3)
 	    {
-	      unsigned int ii;
+	      unsigned цяло ii;
 	      gpr_base.u = gpr_end.u;
-	      for (ii = 0; ii < 4; ii++)
+	      за (ii = 0; ii < 4; ii++)
 		{
-		  unsigned int int_tmp = (*p_argv.ui)[ii];
+		  unsigned цяло int_tmp = (*p_argv.ui)[ii];
 		  *next_arg.u++ = int_tmp;
 		}
 	    }
-	  else
+	  иначе
 	    {
-	      unsigned int ii;
-	      for (ii = 0; ii < 4; ii++)
+	      unsigned цяло ii;
+	      за (ii = 0; ii < 4; ii++)
 		{
-		  unsigned int int_tmp = (*p_argv.ui)[ii];
+		  unsigned цяло int_tmp = (*p_argv.ui)[ii];
 		  *gpr_base.u++ = int_tmp;
 		}
 	    }
@@ -546,22 +546,22 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 
 	case FFI_TYPE_UINT64:
 	case FFI_TYPE_SINT64:
-	  if (gpr_base.u >= gpr_end.u - 1)
+	  ако (gpr_base.u >= gpr_end.u - 1)
 	    {
 	      gpr_base.u = gpr_end.u;
-	      if (((next_arg.u - stack) & 1) != 0)
+	      ако (((next_arg.u - stack) & 1) != 0)
 		next_arg.u++;
 	      *next_arg.ll = **p_argv.ll;
 	      next_arg.u += 2;
 	    }
-	  else
+	  иначе
 	    {
 	      /* The abi states only certain register pairs can be
 		 used for passing long long int specifically (r3,r4),
 		 (r5,r6), (r7,r8), (r9,r10).  If next arg is long long
 		 but not correct starting register of pair then skip
 		 until the proper starting register.  */
-	      if (((gpr_end.u - gpr_base.u) & 1) != 0)
+	      ако (((gpr_end.u - gpr_base.u) & 1) != 0)
 		gpr_base.u++;
 	      *gpr_base.ll++ = **p_argv.ll;
 	    }
@@ -599,9 +599,9 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	  gprvalue = **p_argv.ui;
 
 	putgpr:
-	  if (gpr_base.u >= gpr_end.u)
+	  ако (gpr_base.u >= gpr_end.u)
 	    *next_arg.u++ = gprvalue;
-	  else
+	  иначе
 	    *gpr_base.u++ = gprvalue;
 	  break;
 	}
@@ -620,10 +620,10 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 #define MIN_CACHE_LINE_SIZE 8
 
 static void
-flush_icache (char *wraddr, char *xaddr, int size)
+flush_icache (char *wraddr, char *xaddr, цяло size)
 {
-  int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
+  цяло i;
+  за (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
     __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
   __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
@@ -638,20 +638,20 @@ ffi_prep_closure_loc_sysv (ffi_closure *closure,
 			   void *user_data,
 			   void *codeloc)
 {
-  if (cif->abi < FFI_SYSV || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  ако (cif->abi < FFI_SYSV || cif->abi >= FFI_LAST_ABI)
+    върни FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present(closure))
+  ако (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
       void (*dest)(void) = ffi_closure_SYSV;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  иначе
 #endif
     {
-      unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+      unsigned цяло *tramp = (unsigned цяло *) &closure->tramp[0];
       tramp[0] = 0x7c0802a6;  /*   mflr    r0 */
       tramp[1] = 0x429f0005;  /*   bcl     20,31,.+4 */
       tramp[2] = 0x7d6802a6;  /*   mflr    r11 */
@@ -671,7 +671,7 @@ ffi_prep_closure_loc_sysv (ffi_closure *closure,
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  върни FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on
@@ -681,7 +681,7 @@ ffi_prep_closure_loc_sysv (ffi_closure *closure,
    up space for a return value, ffi_closure_SYSV invokes the
    following helper function to do most of the work.  */
 
-int
+цяло
 ffi_closure_helper_SYSV (ffi_cif *cif,
 			 void (*fun) (ffi_cif *, void *, void **, void *),
 			 void *user_data,
@@ -715,7 +715,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
      returns the data directly to the caller.
      For FFI_SYSV the result is passed in r3/r4 if the struct size is less
      or equal 8 bytes.  */
-  if (rtypenum == FFI_TYPE_STRUCT
+  ако (rtypenum == FFI_TYPE_STRUCT
       && !((cif->abi & FFI_SYSV_STRUCT_RET) != 0 && size <= 8))
     {
       rvalue = (void *) *pgr;
@@ -728,7 +728,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn) {
+  докато (i < avn) {
     unsigned short typenum = arg_types[i]->type;
 
     /* We may need to handle some values depending on ABI.  */
@@ -741,7 +741,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	/* Unfortunately float values are stored as doubles
 	   in the ffi_closure_SYSV code (since we don't check
 	   the type in that routine).  */
-	if (nf < NUM_FPR_ARG_REGISTERS)
+	ако (nf < NUM_FPR_ARG_REGISTERS)
 	  {
 	    /* FIXME? here we are really changing the values
 	       stored in the original calling routines outgoing
@@ -753,7 +753,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	    nf++;
 	    pfr++;
 	  }
-	else
+	иначе
 	  {
 	    avalue[i] = pst;
 	    pst += 1;
@@ -761,32 +761,32 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	break;
 
       case FFI_TYPE_DOUBLE:
-	if (nf < NUM_FPR_ARG_REGISTERS)
+	ако (nf < NUM_FPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = pfr;
 	    nf++;
 	    pfr++;
 	  }
-	else
+	иначе
 	  {
-	    if (((long) pst) & 4)
+	    ако (((long) pst) & 4)
 	      pst++;
 	    avalue[i] = pst;
 	    pst += 2;
 	  }
 	break;
 
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ако FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       case FFI_TYPE_LONGDOUBLE:
-	if (nf < NUM_FPR_ARG_REGISTERS - 1)
+	ако (nf < NUM_FPR_ARG_REGISTERS - 1)
 	  {
 	    avalue[i] = pfr;
 	    pfr += 2;
 	    nf += 2;
 	  }
-	else
+	иначе
 	  {
-	    if (((long) pst) & 4)
+	    ако (((long) pst) & 4)
 	      pst++;
 	    avalue[i] = pst;
 	    pst += 4;
@@ -799,13 +799,13 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_UINT128:
 	/* Test if for the whole long double, 4 gprs are available.
 	   otherwise the stuff ends up on the stack.  */
-	if (ng < NUM_GPR_ARG_REGISTERS - 3)
+	ако (ng < NUM_GPR_ARG_REGISTERS - 3)
 	  {
 	    avalue[i] = pgr;
 	    pgr += 4;
 	    ng += 4;
 	  }
-	else
+	иначе
 	  {
 	    avalue[i] = pst;
 	    pst += 4;
@@ -816,13 +816,13 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_SINT8:
       case FFI_TYPE_UINT8:
 #ifndef __LITTLE_ENDIAN__
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	ако (ng < NUM_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = (char *) pgr + 3;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	иначе
 	  {
 	    avalue[i] = (char *) pst + 3;
 	    pst++;
@@ -833,13 +833,13 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_SINT16:
       case FFI_TYPE_UINT16:
 #ifndef __LITTLE_ENDIAN__
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	ако (ng < NUM_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = (char *) pgr + 2;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	иначе
 	  {
 	    avalue[i] = (char *) pst + 2;
 	    pst++;
@@ -850,13 +850,13 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_SINT32:
       case FFI_TYPE_UINT32:
       case FFI_TYPE_POINTER:
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	ако (ng < NUM_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = pgr;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	иначе
 	  {
 	    avalue[i] = pst;
 	    pst++;
@@ -866,13 +866,13 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_STRUCT:
 	/* Structs are passed by reference. The address will appear in a
 	   gpr if it is one of the first 8 arguments.  */
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	ако (ng < NUM_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = (void *) *pgr;
 	    ng++;
 	    pgr++;
 	  }
-	else
+	иначе
 	  {
 	    avalue[i] = (void *) *pst;
 	    pst++;
@@ -889,9 +889,9 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	   must will be kept.  So we must either look in pgr
 	   or pst to find the correct address for this type
 	   of parameter.  */
-	if (ng < NUM_GPR_ARG_REGISTERS - 1)
+	ако (ng < NUM_GPR_ARG_REGISTERS - 1)
 	  {
-	    if (ng & 1)
+	    ако (ng & 1)
 	      {
 		/* skip r4, r6, r8 as starting points */
 		ng++;
@@ -901,9 +901,9 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	    ng += 2;
 	    pgr += 2;
 	  }
-	else
+	иначе
 	  {
-	    if (((long) pst) & 4)
+	    ако (((long) pst) & 4)
 	      pst++;
 	    avalue[i] = pst;
 	    pst += 2;
@@ -926,57 +926,57 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   switch (rtypenum)
     {
     case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
+      върни PPC_LD_NONE;
     case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
+      върни PPC_LD_F32;
     case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+      върни PPC_LD_F64;
+#ако FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
     case FFI_TYPE_LONGDOUBLE:
-      return PPC_LD_F128;
+      върни PPC_LD_F128;
 #endif
     case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
+      върни PPC_LD_U8;
     case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
+      върни PPC_LD_S8;
     case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
+      върни PPC_LD_U16;
     case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
+      върни PPC_LD_S16;
     case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
+      върни PPC_LD_U32;
     case FFI_TYPE_INT:
     case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
+      върни PPC_LD_S32;
     case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
+      върни PPC_LD_PTR;
     case FFI_TYPE_UINT64:
     case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
+      върни PPC_LD_I64;
     case FFI_TYPE_UINT128:
-      return PPC32_LD_R3R6;
+      върни PPC32_LD_R3R6;
     case FFI_TYPE_STRUCT:
-      if (cif->abi & FFI_SYSV_STRUCT_RET)
+      ако (cif->abi & FFI_SYSV_STRUCT_RET)
 	switch (size)
 	  {
 	  case 1:
-	    return PPC_LD_U8;
+	    върни PPC_LD_U8;
 	  case 2:
-	    return PPC_LD_U16;
+	    върни PPC_LD_U16;
 	  case 3:
-	    return PPC32_SYSV_LD_STRUCT_3;
+	    върни PPC32_SYSV_LD_STRUCT_3;
 	  case 4:
-	    return PPC_LD_U32;
+	    върни PPC_LD_U32;
 	  case 5:
-	    return PPC32_SYSV_LD_STRUCT_5;
+	    върни PPC32_SYSV_LD_STRUCT_5;
 	  case 6:
-	    return PPC32_SYSV_LD_STRUCT_6;
+	    върни PPC32_SYSV_LD_STRUCT_6;
 	  case 7:
-	    return PPC32_SYSV_LD_STRUCT_7;
+	    върни PPC32_SYSV_LD_STRUCT_7;
 	  case 8:
-	    return PPC_LD_I64;
+	    върни PPC_LD_I64;
 	  }
-      return PPC_LD_NONE;
+      върни PPC_LD_NONE;
     default:
       abort();
     }
