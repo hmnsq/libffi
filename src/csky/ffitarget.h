@@ -50,7 +50,7 @@ typedef enum ffi_abi {
 #define FFI_ASM_ARGREG_SIZE 16
 #define TRAMPOLINE_SIZE 16
 #define FFI_TRAMPOLINE_SIZE 24
-#else
+#không_thì
 #define FFI_ASM_ARGREG_SIZE 24
 #define TRAMPOLINE_SIZE 20
 #define FFI_TRAMPOLINE_SIZE 28

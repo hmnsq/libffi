@@ -35,9 +35,9 @@
 
 void ffi_prep_args(char *stack, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
+  unsigned số_nguyên i;
+  số_nguyên tmp;
+  unsigned số_nguyên avn;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
@@ -45,7 +45,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   tmp = 0;
   argp = stack;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  nếu (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
       *(void **) argp = ecif->rvalue;
       argp += 4;
@@ -54,75 +54,75 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  cho (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
+      nếu (((*p_arg)->alignment - 1) & (unsigned) argp)
 	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      nếu (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  nếu (z < sizeof (số_nguyên))
 	    {
-	      z = sizeof (int);
+	      z = sizeof (số_nguyên);
 
 	      switch ((*p_arg)->type)
 		{
 		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
+		  *(signed số_nguyên *) argp = (signed số_nguyên)*(SINT8 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
+		  *(unsigned số_nguyên *) argp = (unsigned số_nguyên)*(UINT8 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
+		  *(signed số_nguyên *) argp = (signed số_nguyên)*(SINT16 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
+		  *(unsigned số_nguyên *) argp = (unsigned số_nguyên)*(UINT16 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  nếu ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  không_thì
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
+	  	  z = sizeof (số_nguyên);
 		  break;
 
 		default:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  không_thì nếu (z == sizeof (số_nguyên))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned số_nguyên *) argp = (unsigned số_nguyên)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  không_thì
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      nếu ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  nếu (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
+		      *(unsigned số_nguyên *) argp = (unsigned số_nguyên)(void *)(* p_argv);
 		      z = sizeof(void *);
 		    }
-		  else
+		  không_thì
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      không_thì
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  trả_về;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -148,13 +148,13 @@ ffi_prep_cif_machdep(ffi_cif *cif)
       break;
 
     case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+      nếu (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      không_thì nếu (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      không_thì
 	cif->flags = (unsigned) cif->rtype->type;
       break;
 
@@ -170,7 +170,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
       break;
     }
 
-  return FFI_OK;
+  trả_về FFI_OK;
 }
 
 extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
@@ -181,31 +181,31 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  số_nguyên i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  nếu ((rvalue == NULL) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  không_thì
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  cho (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      số_nguyên size = at->size;
+      nếu (at->type == FFI_TYPE_STRUCT && size > 4)
         {
           char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          nếu (avalue_copy == NULL)
             {
               avalue_copy = alloca (nargs * sizeof (void *));
               memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -222,28 +222,28 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     case FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      nếu (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  số_nguyên size = cif->rtype->size;
+	  số_nguyên align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  nếu (size < 4)
 	    {
-	      if (align == 1)
+	      nếu (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  không_thì nếu (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      nếu (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      không_thì nếu (align == 2)
 		{
-		  if (size & 1)
+		  nếu (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  nếu (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }

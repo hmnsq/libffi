@@ -33,26 +33,26 @@
 void* ffi_prep_args(char *stack, extended_cif *ecif)
 {
   char *stacktemp = stack;
-  int i, s;
+  số_nguyên i, s;
   ffi_type **arg;
-  int count = 0;
-  int nfixedargs;
+  số_nguyên count = 0;
+  số_nguyên nfixedargs;
 
   nfixedargs = ecif->cif->nfixedargs;
   arg = ecif->cif->arg_types;
   void **argv = ecif->avalue;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
+  nếu (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
     {
       *(void **) stack = ecif->rvalue;
       stack += 4;
       count = 4;
     }
-  for(i=0; i<ecif->cif->nargs; i++)
+  cho(i=0; i<ecif->cif->nargs; i++)
   {
 
     /* variadic args are saved on stack */
-    if ((nfixedargs == 0) && (count < 24))
+    nếu ((nfixedargs == 0) && (count < 24))
       {
         count = 24;
         stack = stacktemp + 24;
@@ -67,30 +67,30 @@ void* ffi_prep_args(char *stack, extended_cif *ecif)
         break;
 
       case FFI_TYPE_SINT8:
-        *(signed int *) stack = (signed int)*(SINT8 *)(* argv);
+        *(signed số_nguyên *) stack = (signed số_nguyên)*(SINT8 *)(* argv);
         break;
 
       case FFI_TYPE_UINT8:
-        *(unsigned int *) stack = (unsigned int)*(UINT8 *)(* argv);
+        *(unsigned số_nguyên *) stack = (unsigned số_nguyên)*(UINT8 *)(* argv);
         break;
 
       case FFI_TYPE_SINT16:
-        *(signed int *) stack = (signed int)*(SINT16 *)(* argv);
+        *(signed số_nguyên *) stack = (signed số_nguyên)*(SINT16 *)(* argv);
         break;
 
       case FFI_TYPE_UINT16:
-        *(unsigned int *) stack = (unsigned int)*(UINT16 *)(* argv);
+        *(unsigned số_nguyên *) stack = (unsigned số_nguyên)*(UINT16 *)(* argv);
         break;
 
       case FFI_TYPE_SINT32:
       case FFI_TYPE_UINT32:
       case FFI_TYPE_FLOAT:
       case FFI_TYPE_POINTER:
-        *(int *)stack = *(int*)(*argv);
+        *(số_nguyên *)stack = *(số_nguyên*)(*argv);
         break;
 
       default: /* 8 byte types */
-        if (count == 20) /* never split arguments */
+        nếu (count == 20) /* never split arguments */
           {
             stack += 4;
             count += 4;
@@ -105,7 +105,7 @@ void* ffi_prep_args(char *stack, extended_cif *ecif)
     argv++;
     arg++;
   }
-  return stacktemp + ((count>24)?24:0);
+  trả_về stacktemp + ((count>24)?24:0);
 }
 
 extern void ffi_call_SYSV(unsigned,
@@ -118,21 +118,21 @@ extern void ffi_call_SYSV(unsigned,
 
 void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
-  int i;
-  int size;
+  số_nguyên i;
+  số_nguyên size;
   ffi_type **arg;
   void **avalue_copy = NULL;
 
   /* Calculate size to allocate on stack */
 
-  for(i = 0, arg = cif->arg_types, size=0; i < cif->nargs; i++, arg++)
+  cho(i = 0, arg = cif->arg_types, size=0; i < cif->nargs; i++, arg++)
     {
-      if ((*arg)->type == FFI_TYPE_STRUCT)
+      nếu ((*arg)->type == FFI_TYPE_STRUCT)
         size += 4;
-      else
-      if ((*arg)->size <= 4)
+      không_thì
+      nếu ((*arg)->size <= 4)
         size += 4;
-      else
+      không_thì
         size += 8;
 
       /* If we have any large structure arguments, make a copy so we are passing
@@ -141,11 +141,11 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
          modified.  */
       {
         ffi_type *at = cif->arg_types[i];
-        int size = at->size;
-        if (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
+        số_nguyên size = at->size;
+        nếu (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
           {
             char *argcopy = alloca (size);
-            if (avalue_copy == NULL)
+            nếu (avalue_copy == NULL)
               {
                 avalue_copy = alloca (cif->nargs * sizeof (void *));
                 memcpy (avalue_copy, avalue, cif->nargs * sizeof (void *));
@@ -158,10 +158,10 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 
   /* for variadic functions more space is needed on the stack */
-  if (cif->nargs != cif->nfixedargs)
+  nếu (cif->nargs != cif->nfixedargs)
     size += 24;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  nếu (cif->rtype->type == FFI_TYPE_STRUCT)
     size += 4;
 
 
@@ -185,8 +185,8 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
                       unsigned long r6, unsigned long r7, unsigned long r8)
 {
-  register int *sp __asm__ ("r17");
-  register int *r13 __asm__ ("r13");
+  register số_nguyên *sp __asm__ ("r17");
+  register số_nguyên *r13 __asm__ ("r13");
 
   ffi_closure* closure = (ffi_closure*) r13;
   char *stack_args = (char*) sp;
@@ -202,24 +202,24 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
   ffi_type **arg_types = cif->arg_types;
   void **avalue = alloca (cif->nargs * sizeof(void *));
   char *ptr = (char *) register_args;
-  int count = 0;
-  int nfixedargs = cif->nfixedargs;
-  int i;
+  số_nguyên count = 0;
+  số_nguyên nfixedargs = cif->nfixedargs;
+  số_nguyên i;
 
   /* preserve struct type return pointer passing */
 
-  if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
+  nếu ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
   {
     ptr += 4;
     count = 4;
   }
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  cho (i = 0; i < cif->nargs; i++)
     {
 
       /* variadic args are saved on stack */
-      if ((nfixedargs == 0) && (count < 24))
+      nếu ((nfixedargs == 0) && (count < 24))
         {
           ptr = stack_args;
           count = 24;
@@ -253,7 +253,7 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
           /* 8-byte values  */
 
           /* arguments are never splitted */
-          if (ptr == &register_args[5])
+          nếu (ptr == &register_args[5])
             ptr = stack_args;
           avalue[i] = ptr;
           ptr += 4;
@@ -266,18 +266,18 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
       /* If we've handled more arguments than fit in registers,
          start looking at the those passed on the stack.  */
 
-      if (count == 24)
+      nếu (count == 24)
         ptr = stack_args;
     }
 
-  if (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
+  nếu (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       (closure->fun) (cif, struct_rvalue, avalue, closure->user_data);
-    } else
+    } không_thì
     {
       long long rvalue;
       (closure->fun) (cif, &rvalue, avalue, closure->user_data);
-      if (cif->rtype)
+      nếu (cif->rtype)
         __asm__ ("l.ori r12, %0, 0x0\n l.lwz r11, 0(r12)\n l.lwz r12, 4(r12)" : : "r" (&rvalue));
     }
 }
@@ -294,8 +294,8 @@ ffi_prep_closure_loc (ffi_closure* closure,
   unsigned long fn = (unsigned long) ffi_closure_SYSV;
   unsigned long cls = (unsigned long) codeloc;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  nếu (cif->abi != FFI_SYSV)
+    trả_về FFI_BAD_ABI;
 
   closure->cif = cif;
   closure->user_data = user_data;
@@ -318,7 +318,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
   tramp[10] = (0x2a << 10) | (17 << 5) | 1; /* l.ori r17, r1, ... */
   tramp[11] = 0x0;
 
-  return FFI_OK;
+  trả_về FFI_OK;
 }
 
 
@@ -327,24 +327,24 @@ ffi_status ffi_prep_cif_machdep (ffi_cif *cif)
   cif->flags = 0;
 
   /* structures are returned as pointers */
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  nếu (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = FFI_TYPE_STRUCT;
-  else
-  if (cif->rtype->size > 4)
+  không_thì
+  nếu (cif->rtype->size > 4)
     cif->flags = FFI_TYPE_UINT64;
 
   cif->nfixedargs = cif->nargs;
 
-  return FFI_OK;
+  trả_về FFI_OK;
 }
 
 
 ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-         unsigned int nfixedargs, unsigned int ntotalargs)
+         unsigned số_nguyên nfixedargs, unsigned số_nguyên ntotalargs)
 {
   ffi_status status;
 
   status = ffi_prep_cif_machdep (cif);
   cif->nfixedargs = nfixedargs;
-  return status;
+  trả_về status;
 }

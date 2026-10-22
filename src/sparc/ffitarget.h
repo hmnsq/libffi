@@ -34,7 +34,7 @@
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
+#nếu defined(__arch64__) || defined(__sparcv9)
 #ifndef SPARC64
 #define SPARC64
 #endif
@@ -49,7 +49,7 @@ typedef enum ffi_abi {
 #ifdef SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#không_thì
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
 #endif
@@ -62,7 +62,7 @@ typedef enum ffi_abi {
 
 #ifdef SPARC64
 # define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+# define FFI_EXTRA_CIF_FIELDS  unsigned số_nguyên nfixedargs
 #endif
 
 /* ---- Definitions for closures ----------------------------------------- */
@@ -73,7 +73,7 @@ typedef enum ffi_abi {
 
 #ifdef SPARC64
 #define FFI_TRAMPOLINE_SIZE 24
-#else
+#không_thì
 #define FFI_TRAMPOLINE_SIZE 16
 #endif
 

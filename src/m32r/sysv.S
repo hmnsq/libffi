@@ -95,7 +95,7 @@ adjust_stack:
 	/* If the return value pointer is NULL, assume no return value.  */
 	beqz	r2, epilogue
 
-	/* Return INT.  */
+	/* Return số_nguyên.  */
 	ldi	r4, #FFI_TYPE_INT
 	bne	r3, r4, return_double
 	st	r0, @r2	

@@ -44,7 +44,7 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_EXTRA_CIF_FIELDS unsigned int rstruct_flag
+#define FFI_EXTRA_CIF_FIELDS unsigned số_nguyên rstruct_flag
 
 /* Definitions for closures */
 

@@ -49,9 +49,9 @@
 #define fstd(fpreg, addr) \
   __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) do { nếu (lvl <= DEBUG_LEVEL) { printf(x); } } trong_khi (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+static inline số_nguyên ffi_struct_type(ffi_type *t)
 {
   size_t sz = t->size;
 
@@ -60,10 +60,10 @@ static inline int ffi_struct_type(ffi_type *t)
      structures differ from the corresponding integer
      types in that they have different alignment requirements.  */
 
-  if (sz <= 8)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
+  nếu (sz <= 8)
+    trả_về -sz;
+  không_thì
+    trả_về FFI_TYPE_STRUCT; /* else, we pass it by pointer.  */
 }
 
 /* PA has a downward growing stack, which looks like this:
@@ -126,10 +126,10 @@ static inline int ffi_struct_type(ffi_type *t)
 
 void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
+  register unsigned số_nguyên i;
   register ffi_type **p_arg;
   register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
+  unsigned số_nguyên slot = FIRST_ARG_SLOT;
   char *dest_cpy;
   size_t len;
 
@@ -139,9 +139,9 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  cho (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      số_nguyên type = (*p_arg)->type;
 
       switch (type)
 	{
@@ -218,18 +218,18 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 	     registers. Larger structures are passed by pointer.  */
 
 	  len = (*p_arg)->size;
-	  if (len <= 4)
+	  nếu (len <= 4)
 	    {
 	      dest_cpy = (char *)(stack - slot) + 4 - len;
 	      memcpy(dest_cpy, (char *)*p_argv, len);
 	    }
-	  else if (len <= 8)
+	  không_thì nếu (len <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
 	      dest_cpy = (char *)(stack - slot) + 8 - len;
 	      memcpy(dest_cpy, (char *)*p_argv, len);
 	    }
-	  else
+	  không_thì
 	    *(UINT32 *)(stack - slot) = (UINT32)(*p_argv);
 	  break;
 
@@ -244,12 +244,12 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 
   /* Make sure we didn't mess up and scribble on the stack.  */
   {
-    unsigned int n;
+    unsigned số_nguyên n;
 
     debug(5, "Stack setup:\n");
-    for (n = 0; n < (bytes + 3) / 4; n++)
+    cho (n = 0; n < (bytes + 3) / 4; n++)
       {
-	if ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned int)(stack - n)); }
+	nếu ((n%4) == 0) { debug(5, "\n%08x: ", (unsigned số_nguyên)(stack - n)); }
 	debug(5, "%08x ", *(stack - n));
       }
     debug(5, "\n");
@@ -257,18 +257,18 @@ void ffi_prep_args_pa32(UINT32 *stack, extended_cif *ecif, unsigned bytes)
 
   FFI_ASSERT(slot * 4 <= bytes);
 
-  return;
+  trả_về;
 }
 
 static void ffi_size_stack_pa32(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  số_nguyên i;
+  số_nguyên z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  cho (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
+      số_nguyên type = (*ptr)->type;
 
       switch (type)
 	{
@@ -293,9 +293,9 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 	     so (z & 1) tracks the same alignment the marshaller applies.  */
 	  {
 	    size_t len = (*ptr)->size;
-	    if (len <= 4 || len > 8)
+	    nếu (len <= 4 || len > 8)
 	      z += 1;
-	    else
+	    không_thì
 	      z += 2 + (z & 1);
 	  }
 	  break;
@@ -307,9 +307,9 @@ static void ffi_size_stack_pa32(ffi_cif *cif)
 
   /* We can fit up to 6 args in the default 64-byte stack frame,
      if we need more, we need more stack.  */
-  if (z <= 6)
+  nếu (z <= 6)
     cif->bytes = MIN_STACK_SIZE; /* min stack size */
-  else
+  không_thì
     cif->bytes = 64 + ROUND_UP((z - 6) * sizeof(UINT32), MIN_STACK_SIZE);
 
   debug(3, "Calculated stack size is %u bytes\n", cif->bytes);
@@ -366,7 +366,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
       break;
     }
 
-  return FFI_OK;
+  trả_về FFI_OK;
 }
 
 extern void ffi_call_pa32(void (*)(UINT32 *, extended_cif *, unsigned),
@@ -385,14 +385,14 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  cho (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 8)
+      số_nguyên size = at->size;
+      nếu (at->type == FFI_TYPE_STRUCT && size > 8)
 	{
 	  char *argcopy = alloca (size);
-	  if (avalue_copy == NULL)
+	  nếu (avalue_copy == NULL)
 	    {
 	      avalue_copy = alloca (nargs * sizeof (void *));
 	      memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -407,17 +407,17 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  nếu (rvalue == NULL
 #ifdef PA_HPUX
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_LONGDOUBLE))
-#else
+#không_thì
       && cif->rtype->type == FFI_TYPE_STRUCT)
 #endif
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  không_thì
     ecif.rvalue = rvalue;
 
 
@@ -435,7 +435,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 }
 
-#if FFI_CLOSURES
+#nếu FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
@@ -450,25 +450,25 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
   union { double rd; UINT32 ret[2]; } u;
   ffi_type **p_arg;
   char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
+  số_nguyên i, avn;
+  unsigned số_nguyên slot = FIRST_ARG_SLOT;
   register UINT32 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  nếu (cif->flags == FFI_TYPE_STRUCT)
     rvalue = (void *)r28;
-  else
+  không_thì
     rvalue = &u;
 
   avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  cho (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      số_nguyên type = (*p_arg)->type;
 
       switch (type)
 	{
@@ -531,18 +531,18 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
 	  /* Structs smaller or equal than 4 bytes are passed in one
 	     register. Structs smaller or equal 8 bytes are passed in two
 	     registers. Larger structures are passed by pointer.  */
-	  if((*p_arg)->size <= 4)
+	  nếu((*p_arg)->size <= 4)
 	    {
 	      avalue[i] = (void *)(stack - slot) + sizeof(UINT32) -
 		(*p_arg)->size;
 	    }
-	  else if ((*p_arg)->size <= 8)
+	  không_thì nếu ((*p_arg)->size <= 8)
 	    {
 	      slot += (slot & 1) ? 1 : 2;
 	      avalue[i] = (void *)(stack - slot) + sizeof(UINT64) -
 		(*p_arg)->size;
 	    }
-	  else
+	  không_thì
 	    avalue[i] = (void *) *(stack - slot);
 	  break;
 
@@ -612,8 +612,8 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
     case FFI_TYPE_SMALL_STRUCT7:
     case FFI_TYPE_SMALL_STRUCT8:
       {
-	unsigned int ret2[2];
-	int off;
+	unsigned số_nguyên ret2[2];
+	số_nguyên off;
 
 	/* Right justify ret[0] and ret[1] */
 	switch (cif->flags)
@@ -641,7 +641,7 @@ ffi_status ffi_closure_inner_pa32(ffi_closure *closure, UINT32 *stack)
       FFI_ASSERT(0);
       break;
     }
-  return FFI_OK;
+  trả_về FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
@@ -675,8 +675,8 @@ ffi_prep_closure_loc (ffi_closure* closure,
   struct ffi_pa32_trampoline_struct *tramp;
   struct pa32_fd *fd;
 
-  if (cif->abi != FFI_PA32)
-    return FFI_BAD_ABI;
+  nếu (cif->abi != FFI_PA32)
+    trả_về FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa32.  */
   fd = (struct pa32_fd *)((UINT32)ffi_closure_pa32 & ~3);
@@ -691,6 +691,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  trả_về FFI_OK;
 }
 #endif
