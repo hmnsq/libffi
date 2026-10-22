@@ -50,72 +50,72 @@ void *ffi_prep_args (extended_cif *ecif, void *stack);
 void *
 ffi_prep_args (extended_cif *ecif, void *stack)
 {
-  unsigned int i;
+  unsigned ཧྲིལ i;
   void **p_argv;
-  char *argp;
+  var_na *argp;
   ffi_type **p_arg;
   void *struct_value_ptr;
 
   argp = stack;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  གལ་སྲིད (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
     struct_value_ptr = ecif->rvalue;
-  else
+  དེ་མིན
     struct_value_ptr = NULL;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  དོན་ལུ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof (int))
+      གལ་སྲིད (z < parimaa_na (ཧྲིལ))
 	{
 	  switch ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    pak_sa FFI_TYPE_SINT8:
+	      *(signed ཧྲིལ *) argp = (signed ཧྲིལ) *(SINT8 *) *p_argv;
+	      bha_nga;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    pak_sa FFI_TYPE_UINT8:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ) *(UINT8 *) *p_argv;
+	      bha_nga;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    pak_sa FFI_TYPE_SINT16:
+	      *(signed ཧྲིལ *) argp = (signed ཧྲིལ) *(SINT16 *) *p_argv;
+	      bha_nga;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    pak_sa FFI_TYPE_UINT16:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ) *(UINT16 *) *p_argv;
+	      bha_nga;
 
-	    case FFI_TYPE_STRUCT:
+	    pak_sa FFI_TYPE_STRUCT:
 	      memcpy (argp, *p_argv, z);
-	      break;
+	      bha_nga;
 
 	    default:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = parimaa_na (ཧྲིལ);
 	}
-      else
+      དེ་མིན
 	{
 	  memcpy (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  གལ་སྲིད ((parimaa_na(ཧྲིལ) - 1) & z)
+	    z = FFI_ALIGN(z, parimaa_na(ཧྲིལ));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  ལོག struct_value_ptr;
 }
 
 ffi_status
@@ -124,39 +124,39 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   /* Set the return type flag */
   switch (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    pak_sa FFI_TYPE_STRUCT:
+      གལ་སྲིད (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
 	  cif->rtype->elements[1])
 	{
 	  cif->flags = 0;
-	  break;
+	  bha_nga;
 	}
 
-      if (cif->rtype->size == sizeof (char))
+      གལ་སྲིད (cif->rtype->size == parimaa_na (var_na))
 	cif->flags = CIF_FLAGS_CHAR;
-      else if (cif->rtype->size == sizeof (short))
+      དེ་མིན གལ་སྲིད (cif->rtype->size == parimaa_na (short))
 	cif->flags = CIF_FLAGS_SHORT;
-      else if (cif->rtype->size == sizeof (int))
+      དེ་མིན གལ་སྲིད (cif->rtype->size == parimaa_na (ཧྲིལ))
 	cif->flags = CIF_FLAGS_INT;
-      else if (cif->rtype->size == 2 * sizeof (int))
+      དེ་མིན གལ་སྲིད (cif->rtype->size == 2 * parimaa_na (ཧྲིལ))
 	cif->flags = CIF_FLAGS_DINT;
-      else
+      དེ་མིན
 	cif->flags = 0;
-      break;
+      bha_nga;
 
     default:
-      if (cif->rtype->size <= sizeof (int))
+      གལ་སྲིད (cif->rtype->size <= parimaa_na (ཧྲིལ))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      དེ་མིན
 	cif->flags = CIF_FLAGS_DINT;
-      break;
+      bha_nga;
     }
 
-  return FFI_OK;
+  ལོག FFI_OK;
 }
 
 void
@@ -170,22 +170,22 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  གལ་སྲིད (rvalue == NULL
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->flags == 0)
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  དེ་མིན
     ecif.rvalue = rvalue;
 
   switch (cif->abi)
     {
-    case FFI_ELFBSD:
+    pak_sa FFI_ELFBSD:
       ffi_call_elfbsd (&ecif, cif->bytes, cif->flags, ecif.rvalue, fn);
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT (0);
-      break;
+      bha_nga;
     }
 }
 
@@ -195,18 +195,18 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
 
 void ffi_closure_elfbsd (void);
 void ffi_closure_struct_elfbsd (void);
-unsigned int ffi_closure_elfbsd_inner (ffi_closure *, void *, char *);
+unsigned ཧྲིལ ffi_closure_elfbsd_inner (ffi_closure *, void *, var_na *);
 
 static void
-ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
+ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, var_na *stackp)
 {
-  unsigned int i;
+  unsigned ཧྲིལ i;
   void **p_argv;
   ffi_type **p_arg;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  དོན་ལུ (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
 
@@ -214,28 +214,28 @@ ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
       *p_argv = stackp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      གལ་སྲིད ((parimaa_na (ཧྲིལ) - 1) & z)
+	z = FFI_ALIGN(z, parimaa_na (ཧྲིལ));
 
       p_argv++;
       stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+unsigned ཧྲིལ
+ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, var_na *stack)
 {
   ffi_cif *cif;
   void **arg_area;
 
   cif = closure->cif;
-  arg_area = (void **) alloca (cif->nargs * sizeof (void *));
+  arg_area = (void **) alloca (cif->nargs * parimaa_na (void *));
 
   ffi_prep_closure_elfbsd (cif, arg_area, stack);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  ལོག cif->flags;
 }
 
 ffi_status
@@ -243,7 +243,7 @@ ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
 		      void (*fun)(ffi_cif *, void *, void **, void *),
 		      void *user_data, void *codeloc)
 {
-  char *tramp = (char *) codeloc;
+  var_na *tramp = (var_na *) codeloc;
   void *fn;
 
   FFI_ASSERT (cif->abi == FFI_ELFBSD);
@@ -253,24 +253,24 @@ ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
   /* movl #closure, r0 */
   tramp[2] = 0xd0;
   tramp[3] = 0x8f;
-  *(unsigned int *)(tramp + 4) = (unsigned int) closure;
+  *(unsigned ཧྲིལ *)(tramp + 4) = (unsigned ཧྲིལ) closure;
   tramp[8] = 0x50;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  གལ་སྲིད (cif->rtype->type == FFI_TYPE_STRUCT
       && !cif->flags)
     fn = &ffi_closure_struct_elfbsd;
-  else
+  དེ་མིན
     fn = &ffi_closure_elfbsd;
 
   /* jmpl #fn */
   tramp[9] = 0x17;
   tramp[10] = 0xef;
-  *(unsigned int *)(tramp + 11) = (unsigned int)fn + 2 -
-				  (unsigned int)tramp - 9 - 6;
+  *(unsigned ཧྲིལ *)(tramp + 11) = (unsigned ཧྲིལ)fn + 2 -
+				  (unsigned ཧྲིལ)tramp - 9 - 6;
 
   closure->cif = cif;
   closure->user_data = user_data;
   closure->fun = fun;
 
-  return FFI_OK;
+  ལོག FFI_OK;
 }

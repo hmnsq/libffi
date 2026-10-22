@@ -60,14 +60,14 @@
 #define PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
 #define PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
 #define PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
-#else
+#དེ་མིན
 #define PPC32_SYSV_LD_STRUCT_3	11
 #define PPC32_SYSV_LD_STRUCT_5	12
 #define PPC32_SYSV_LD_STRUCT_6	13
 #define PPC32_SYSV_LD_STRUCT_7	14
 #endif
 
-#else /* POWERPC64 */
+#དེ་མིན /* POWERPC64 */
 
 #define PPC_LD_U32		10
 #define PPC_LD_S32		11
@@ -84,7 +84,7 @@
 #define PPC64_LD_STRUCT_5	PPC_LD_I64
 #define PPC64_LD_STRUCT_6	PPC_LD_I64
 #define PPC64_LD_STRUCT_7	PPC_LD_I64
-#else
+#དེ་མིན
 #define PPC64_LD_STRUCT_3	16
 #define PPC64_LD_STRUCT_5	17
 #define PPC64_LD_STRUCT_6	18
@@ -95,7 +95,7 @@
 
 #ifndef LIBFFI_ASM
 
-enum {
+ga_nanaa {
   /* The assembly depends on these exact flags.  */
   /* These go in cr7 */
   FLAG_RETURNS_SMST     = 1 << (31-31), /* Used for FFI_SYSV small structs.  */
@@ -118,24 +118,24 @@ enum {
   FLAG_VEC_ARGUMENTS    = 1 << (31- 3),
 };
 
-typedef union
+typedef sa_ngha
 {
   float f;
-  double d;
+  dviguu_na d;
 } ffi_dblfl;
 
-#if defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
+#གལ་སྲིད defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
 typedef _Float128 float128;
 #elif defined(__FLOAT128__)
 typedef __float128 float128;
-#else
-typedef char float128[16] __attribute__((aligned(16)));
+#དེ་མིན
+typedef var_na float128[16] __attribute__((aligned(16)));
 #endif
 
 void FFI_HIDDEN ffi_closure_SYSV (void);
 void FFI_HIDDEN ffi_go_closure_sysv (void);
 void FFI_HIDDEN ffi_call_SYSV(extended_cif *, void (*)(void), void *,
-			      unsigned, void *, int);
+			      unsigned, void *, ཧྲིལ);
 
 void FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
 ffi_status FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
@@ -144,7 +144,7 @@ ffi_status FFI_HIDDEN ffi_prep_closure_loc_sysv (ffi_closure *,
 						 void (*) (ffi_cif *, void *,
 							   void **, void *),
 						 void *, void *);
-int FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
+ཧྲིལ FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
 					void (*) (ffi_cif *, void *,
 						  void **, void *),
 					void *, void *, unsigned long *,
@@ -157,14 +157,14 @@ void FFI_HIDDEN ffi_go_closure_linux64 (void);
 
 void FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
 ffi_status FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned int,
-						unsigned int);
+ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned ཧྲིལ,
+						unsigned ཧྲིལ);
 void FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *const);
 ffi_status FFI_HIDDEN ffi_prep_closure_loc_linux64 (ffi_closure *, ffi_cif *,
 						    void (*) (ffi_cif *, void *,
 							      void **, void *),
 						    void *, void *);
-int FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
+ཧྲིལ FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
 					   void (*) (ffi_cif *, void *,
 						     void **, void *),
 					   void *, void *,

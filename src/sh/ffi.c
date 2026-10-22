@@ -31,106 +31,106 @@
 #include <stdlib.h>
 
 #define NGREGARG 4
-#if defined(__SH4__)
+#གལ་སྲིད defined(__SH4__)
 #define NFREGARG 8
 #endif
 
-#if defined(__HITACHI__)
+#གལ་སྲིད defined(__HITACHI__)
 #define STRUCT_VALUE_ADDRESS_WITH_ARG 1
-#else
+#དེ་མིན
 #define STRUCT_VALUE_ADDRESS_WITH_ARG 0
 #endif
 
 /* If the structure has essentially an unique element, return its type.  */
-static int
+static ཧྲིལ
 simple_type (ffi_type *arg)
 {
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
-  else if (arg->elements[1])
-    return FFI_TYPE_STRUCT;
+  གལ་སྲིད (arg->type != FFI_TYPE_STRUCT)
+    ལོག arg->type;
+  དེ་མིན གལ་སྲིད (arg->elements[1])
+    ལོག FFI_TYPE_STRUCT;
 
-  return simple_type (arg->elements[0]);
+  ལོག simple_type (arg->elements[0]);
 }
 
-static int
+static ཧྲིལ
 return_type (ffi_type *arg)
 {
   unsigned short type;
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  གལ་སྲིད (arg->type != FFI_TYPE_STRUCT)
+    ལོག arg->type;
 
   type = simple_type (arg->elements[0]);
-  if (! arg->elements[1])
+  གལ་སྲིད (! arg->elements[1])
     {
       switch (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  return FFI_TYPE_INT;
+	pak_sa FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT32:
+	  ལོག FFI_TYPE_INT;
 
 	default:
-	  return type;
+	  ལོག type;
 	}
     }
 
   /* gcc uses r0/r1 pair for some kind of structures.  */
-  if (arg->size <= 2 * sizeof (int))
+  གལ་སྲིད (arg->size <= 2 * parimaa_na (ཧྲིལ))
     {
-      int i = 0;
+      ཧྲིལ i = 0;
       ffi_type *e;
 
-      while ((e = arg->elements[i++]))
+      སྐབས ((e = arg->elements[i++]))
 	{
 	  type = simple_type (e);
 	  switch (type)
 	    {
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_FLOAT:
-	      return FFI_TYPE_UINT64;
+	    pak_sa FFI_TYPE_SINT32:
+	    pak_sa FFI_TYPE_UINT32:
+	    pak_sa FFI_TYPE_INT:
+	    pak_sa FFI_TYPE_FLOAT:
+	      ལོག FFI_TYPE_UINT64;
 
 	    default:
-	      break;
+	      bha_nga;
 	    }
 	}
     }
 
-  return FFI_TYPE_STRUCT;
+  ལོག FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_args(var_na *stack, extended_cif *ecif)
 {
-  register unsigned int i;
-  register int tmp;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
-  int greg, ireg;
-#if defined(__SH4__)
-  int freg = 0;
+  pa_njikaa unsigned ཧྲིལ i;
+  pa_njikaa ཧྲིལ tmp;
+  pa_njikaa unsigned ཧྲིལ avn;
+  pa_njikaa void **p_argv;
+  pa_njikaa var_na *argp;
+  pa_njikaa ffi_type **p_arg;
+  ཧྲིལ greg, ireg;
+#གལ་སྲིད defined(__SH4__)
+  ཧྲིལ freg = 0;
 #endif
 
   tmp = 0;
   argp = stack;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  གལ་སྲིད (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
       *(void **) argp = ecif->rvalue;
       argp += 4;
       ireg = STRUCT_VALUE_ADDRESS_WITH_ARG ? 1 : 0;
     }
-  else
+  དེ་མིན
     ireg = 0;
 
   /* Set arguments for registers.  */
@@ -138,65 +138,65 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  དོན་ལུ (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      གལ་སྲིད (z < parimaa_na(ཧྲིལ))
 	{
-	  if (greg++ >= NGREGARG)
+	  གལ་སྲིད (greg++ >= NGREGARG)
 	    continue;
 
-	  z = sizeof(int);
+	  z = parimaa_na(ཧྲིལ);
 	  switch ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_SINT8:
+	      *(signed ཧྲིལ *) argp = (signed ཧྲིལ)*(SINT8 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_UINT8:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT8 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_SINT16:
+	      *(signed ཧྲིལ *) argp = (signed ཧྲིལ)*(SINT16 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_UINT16:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT16 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_STRUCT:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT32 *)(* p_argv);
+	      bha_nga;
 
 	    default:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      དེ་མིན གལ་སྲིད (z == parimaa_na(ཧྲིལ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#གལ་སྲིད defined(__SH4__)
+	  གལ་སྲིད ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
+	      གལ་སྲིད (freg++ >= NFREGARG)
 		continue;
 	    }
-	  else
+	  དེ་མིན
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
+	      གལ་སྲིད (greg++ >= NGREGARG)
 		continue;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#གལ་སྲིད defined(__SH4__)
+      དེ་མིན གལ་སྲིད ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
+	  གལ་སྲིད (freg + 1 >= NFREGARG)
 	    continue;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
@@ -204,88 +204,88 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	  argp += z;
 	}
 #endif
-      else
+      དེ་མིན
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
+	  ཧྲིལ n = (z + parimaa_na (ཧྲིལ) - 1) / parimaa_na (ཧྲིལ);
+#གལ་སྲིད defined(__SH4__)
+	  གལ་སྲིད (greg + n - 1 >= NGREGARG)
 	    continue;
-#else
-	  if (greg >= NGREGARG)
+#དེ་མིན
+	  གལ་སྲིད (greg >= NGREGARG)
 	    continue;
 #endif
 	  greg += n;
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  argp += n * parimaa_na (ཧྲིལ);
 	}
     }
 
   /* Set arguments on stack.  */
   greg = ireg;
-#if defined(__SH4__)
+#གལ་སྲིད defined(__SH4__)
   freg = 0;
 #endif
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  དོན་ལུ (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      གལ་སྲིད (z < parimaa_na(ཧྲིལ))
 	{
-	  if (greg++ < NGREGARG)
+	  གལ་སྲིད (greg++ < NGREGARG)
 	    continue;
 
-	  z = sizeof(int);
+	  z = parimaa_na(ཧྲིལ);
 	  switch ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_SINT8:
+	      *(signed ཧྲིལ *) argp = (signed ཧྲིལ)*(SINT8 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_UINT8:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT8 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_SINT16:
+	      *(signed ཧྲིལ *) argp = (signed ཧྲིལ)*(SINT16 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_UINT16:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT16 *)(* p_argv);
+	      bha_nga;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    pak_sa FFI_TYPE_STRUCT:
+	      *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT32 *)(* p_argv);
+	      bha_nga;
 
 	    default:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      དེ་མིན གལ་སྲིད (z == parimaa_na(ཧྲིལ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#གལ་སྲིད defined(__SH4__)
+	  གལ་སྲིད ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
+	      གལ་སྲིད (freg++ < NFREGARG)
 		continue;
 	    }
-	  else
+	  དེ་མིན
 #endif
 	    {
-	      if (greg++ < NGREGARG)
+	      གལ་སྲིད (greg++ < NGREGARG)
 		continue;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned ཧྲིལ *) argp = (unsigned ཧྲིལ)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#གལ་སྲིད defined(__SH4__)
+      དེ་མིན གལ་སྲིད ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  གལ་སྲིད (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
@@ -295,38 +295,38 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	  argp += z;
 	}
 #endif
-      else
+      དེ་མིན
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  ཧྲིལ n = (z + parimaa_na (ཧྲིལ) - 1) / parimaa_na (ཧྲིལ);
+	  གལ་སྲིད (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
 	      continue;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#གལ་སྲིད (! defined(__SH4__))
+	  དེ་མིན གལ་སྲིད (greg < NGREGARG)
 	    {
 	      greg = NGREGARG;
 	      continue;
 	    }
 #endif
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  argp += n * parimaa_na (ཧྲིལ);
 	}
     }
 
-  return;
+  ལོག;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-#if defined(__SH4__)
-  int freg = 0;
+  ཧྲིལ i, j;
+  ཧྲིལ size, type;
+  ཧྲིལ n, m;
+  ཧྲིལ greg;
+#གལ་སྲིད defined(__SH4__)
+  ཧྲིལ freg = 0;
 #endif
 
   cif->flags = 0;
@@ -334,51 +334,51 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
   greg = ((return_type (cif->rtype) == FFI_TYPE_STRUCT) &&
 	  STRUCT_VALUE_ADDRESS_WITH_ARG) ? 1 : 0;
 
-#if defined(__SH4__)
-  for (i = j = 0; i < cif->nargs && j < 12; i++)
+#གལ་སྲིད defined(__SH4__)
+  དོན་ལུ (i = j = 0; i < cif->nargs && j < 12; i++)
     {
       type = (cif->arg_types)[i]->type;
       switch (type)
 	{
-	case FFI_TYPE_FLOAT:
-	  if (freg >= NFREGARG)
+	pak_sa FFI_TYPE_FLOAT:
+	  གལ་སྲིད (freg >= NFREGARG)
 	    continue;
 	  freg++;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
-	  if ((freg + 1) >= NFREGARG)
+	pak_sa FFI_TYPE_DOUBLE:
+	  གལ་སྲིད ((freg + 1) >= NFREGARG)
 	    continue;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  bha_nga;
 	      
 	default:
 	  size = (cif->arg_types)[i]->size;
-	  n = (size + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 >= NGREGARG)
+	  n = (size + parimaa_na (ཧྲིལ) - 1) / parimaa_na (ཧྲིལ);
+	  གལ་སྲིད (greg + n - 1 >= NGREGARG)
 		continue;
 	  greg += n;
-	  for (m = 0; m < n; m++)
+	  དོན་ལུ (m = 0; m < n; m++)
 	    cif->flags += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  bha_nga;
 	}
     }
-#else
-  for (i = j = 0; i < cif->nargs && j < 4; i++)
+#དེ་མིན
+  དོན་ལུ (i = j = 0; i < cif->nargs && j < 4; i++)
     {
       size = (cif->arg_types)[i]->size;
-      n = (size + sizeof (int) - 1) / sizeof (int);
-      if (greg >= NGREGARG)
+      n = (size + parimaa_na (ཧྲིལ) - 1) / parimaa_na (ཧྲིལ);
+      གལ་སྲིད (greg >= NGREGARG)
 	continue;
-      else if (greg + n - 1 >= NGREGARG)
+      དེ་མིན གལ་སྲིད (greg + n - 1 >= NGREGARG)
 	n = NGREGARG - greg;
       greg += n;
-      for (m = 0; m < n; m++)
+      དོན་ལུ (m = 0; m < n; m++)
         cif->flags += FFI_TYPE_INT << (2 * j++);
     }
 #endif
@@ -386,27 +386,27 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
   /* Set the return type flag */
   switch (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
+    pak_sa FFI_TYPE_STRUCT:
       cif->flags += (unsigned) (return_type (cif->rtype)) << 24;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
       cif->flags += (unsigned) cif->rtype->type << 24;
-      break;
+      bha_nga;
 
     default:
       cif->flags += FFI_TYPE_INT << 24;
-      break;
+      bha_nga;
     }
 
-  return FFI_OK;
+  ལོག FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
+extern void ffi_call_SYSV(void (*)(var_na *, extended_cif *), extended_cif *,
 			  unsigned, unsigned, unsigned *, void (*fn)(void));
 
 void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
@@ -420,36 +420,36 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  གལ་སྲིད (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  དེ་མིན གལ་སྲིད ((rvalue == NULL) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  དེ་མིན
     ecif.rvalue = rvalue;
 
   switch (cif->abi) 
     {
-    case FFI_SYSV:
+    pak_sa FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, ecif.rvalue,
 		    fn);
-      break;
+      bha_nga;
     default:
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
 
-  if (rvalue
+  གལ་སྲིད (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     memcpy (rvalue, &trvalue, cif->rtype->size);
 }
 
 extern void ffi_closure_SYSV (void);
-#if defined(__SH4__)
+#གལ་སྲིད defined(__SH4__)
 extern void __ic_invalidate (void *line);
 #endif
 
@@ -460,13 +460,13 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp;
-  unsigned int insn;
+  unsigned ཧྲིལ *tramp;
+  unsigned ཧྲིལ insn;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  གལ་སྲིད (cif->abi != FFI_SYSV)
+    ལོག FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned ཧྲིལ *) &closure->tramp[0];
   /* Set T bit if the function returns a struct pointed with R2.  */
   insn = (return_type (cif->rtype) == FFI_TYPE_STRUCT
 	  ? 0x0018 /* sett */
@@ -475,7 +475,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0xd301d102;
   tramp[1] = 0x0000412b | (insn << 16);
-#else
+#དེ་མིན
   tramp[0] = 0xd102d301;
   tramp[1] = 0x412b0000 | insn;
 #endif
@@ -486,12 +486,12 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->fun = fun;
   closure->user_data = user_data;
 
-#if defined(__SH4__)
+#གལ་སྲིད defined(__SH4__)
   /* Flush the icache.  */
   __ic_invalidate(codeloc);
 #endif
 
-  return FFI_OK;
+  ལོག FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -505,36 +505,36 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
 #define OFS_INT8	0
 #define OFS_INT16	0
-#else
+#དེ་མིན
 #define OFS_INT8	3
 #define OFS_INT16	2
 #endif
 
-int
+ཧྲིལ
 ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue, 
 			 unsigned long *pgr, unsigned long *pfr, 
 			 unsigned long *pst)
 {
   void **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int ireg, greg = 0;
-#if defined(__SH4__)
-  int freg = 0;
+  ཧྲིལ i, avn;
+  ཧྲིལ ireg, greg = 0;
+#གལ་སྲིད defined(__SH4__)
+  ཧྲིལ freg = 0;
 #endif
   ffi_cif *cif; 
 
   cif = closure->cif;
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * parimaa_na(void *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_VALUE_ADDRESS_WITH_ARG)
+  གལ་སྲིད (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_VALUE_ADDRESS_WITH_ARG)
     {
       rvalue = (void *) *pgr++;
       ireg = 1;
     }
-  else
+  དེ་མིན
     ireg = 0;
 
   cif = closure->cif;
@@ -542,63 +542,63 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  དོན་ལུ (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      གལ་སྲིད (z < parimaa_na(ཧྲིལ))
 	{
-	  if (greg++ >= NGREGARG)
+	  གལ་སྲིད (greg++ >= NGREGARG)
 	    continue;
 
-	  z = sizeof(int);
+	  z = parimaa_na(ཧྲིལ);
 	  switch ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pgr) + OFS_INT8);
-	      break;
+	    pak_sa FFI_TYPE_SINT8:
+	    pak_sa FFI_TYPE_UINT8:
+	      avalue[i] = (((var_na *)pgr) + OFS_INT8);
+	      bha_nga;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pgr) + OFS_INT16);
-	      break;
+	    pak_sa FFI_TYPE_SINT16:
+	    pak_sa FFI_TYPE_UINT16:
+	      avalue[i] = (((var_na *)pgr) + OFS_INT16);
+	      bha_nga;
   
-	    case FFI_TYPE_STRUCT:
+	    pak_sa FFI_TYPE_STRUCT:
 	      avalue[i] = pgr;
-	      break;
+	      bha_nga;
 
 	    default:
 	      FFI_ASSERT(0);
 	    }
 	  pgr++;
 	}
-      else if (z == sizeof(int))
+      དེ་མིན གལ་སྲིད (z == parimaa_na(ཧྲིལ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#གལ་སྲིད defined(__SH4__)
+	  གལ་སྲིད ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
+	      གལ་སྲིད (freg++ >= NFREGARG)
 		continue;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  དེ་མིན
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
+	      གལ་སྲིད (greg++ >= NGREGARG)
 		continue;
 	      avalue[i] = pgr;
 	      pgr++;
 	    }
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#གལ་སྲིད defined(__SH4__)
+      དེ་མིན གལ་སྲིད ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
+	  གལ་སྲིད (freg + 1 >= NFREGARG)
 	    continue;
-	  if (freg & 1)
+	  གལ་སྲིད (freg & 1)
 	    pfr++;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
@@ -606,14 +606,14 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
 	  pfr += 2;
 	}
 #endif
-      else
+      དེ་མིན
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
+	  ཧྲིལ n = (z + parimaa_na (ཧྲིལ) - 1) / parimaa_na (ཧྲིལ);
+#གལ་སྲིད defined(__SH4__)
+	  གལ་སྲིད (greg + n - 1 >= NGREGARG)
 	    continue;
-#else
-	  if (greg >= NGREGARG)
+#དེ་མིན
+	  གལ་སྲིད (greg >= NGREGARG)
 	    continue;
 #endif
 	  greg += n;
@@ -623,63 +623,63 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
     }
 
   greg = ireg;
-#if defined(__SH4__)
+#གལ་སྲིད defined(__SH4__)
   freg = 0;
 #endif
 
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  དོན་ལུ (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      གལ་སྲིད (z < parimaa_na(ཧྲིལ))
 	{
-	  if (greg++ < NGREGARG)
+	  གལ་སྲིད (greg++ < NGREGARG)
 	    continue;
 
-	  z = sizeof(int);
+	  z = parimaa_na(ཧྲིལ);
 	  switch ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pst) + OFS_INT8);
-	      break;
+	    pak_sa FFI_TYPE_SINT8:
+	    pak_sa FFI_TYPE_UINT8:
+	      avalue[i] = (((var_na *)pst) + OFS_INT8);
+	      bha_nga;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pst) + OFS_INT16);
-	      break;
+	    pak_sa FFI_TYPE_SINT16:
+	    pak_sa FFI_TYPE_UINT16:
+	      avalue[i] = (((var_na *)pst) + OFS_INT16);
+	      bha_nga;
   
-	    case FFI_TYPE_STRUCT:
+	    pak_sa FFI_TYPE_STRUCT:
 	      avalue[i] = pst;
-	      break;
+	      bha_nga;
 
 	    default:
 	      FFI_ASSERT(0);
 	    }
 	  pst++;
 	}
-      else if (z == sizeof(int))
+      དེ་མིན གལ་སྲིད (z == parimaa_na(ཧྲིལ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#གལ་སྲིད defined(__SH4__)
+	  གལ་སྲིད ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
+	      གལ་སྲིད (freg++ < NFREGARG)
 		continue;
 	    }
-	  else
+	  དེ་མིན
 #endif
 	    {
-	      if (greg++ < NGREGARG)
+	      གལ་སྲིད (greg++ < NGREGARG)
 		continue;
 	    }
 	  avalue[i] = pst;
 	  pst++;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#གལ་སྲིད defined(__SH4__)
+      དེ་མིན གལ་སྲིད ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  གལ་སྲིད (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
@@ -689,16 +689,16 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
 	  pst += 2;
 	}
 #endif
-      else
+      དེ་མིན
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  ཧྲིལ n = (z + parimaa_na (ཧྲིལ) - 1) / parimaa_na (ཧྲིལ);
+	  གལ་སྲིད (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
 	      continue;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#གལ་སྲིད (! defined(__SH4__))
+	  དེ་མིན གལ་སྲིད (greg < NGREGARG)
 	    {
 	      greg += n;
 	      pst += greg - NGREGARG;
@@ -713,5 +713,5 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
   (closure->fun) (cif, rvalue, avalue, closure->user_data);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  ལོག return_type (cif->rtype);
 }
