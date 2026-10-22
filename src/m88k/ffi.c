@@ -43,23 +43,23 @@
  *   fixes.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#شامل <stdlib.h>
+#شامل <unistd.h>
 
-void ffi_call_OBSD (unsigned int, extended_cif *, unsigned int, void *,
-		    void (*fn) ());
-void *ffi_prep_args (void *, extended_cif *);
-void ffi_closure_OBSD (ffi_closure *);
-void ffi_closure_struct_OBSD (ffi_closure *);
-unsigned int ffi_closure_OBSD_inner (ffi_closure *, void *, unsigned int *,
-				     char *);
-void ffi_cacheflush_OBSD (unsigned int, unsigned int);
+خالی ffi_call_OBSD (غیرعلامتی صحیح, extended_cif *, غیرعلامتی صحیح, خالی *,
+		    خالی (*fn) ());
+خالی *ffi_prep_دلائل (خالی *, extended_cif *);
+خالی ffi_احاطہ_OBSD (ffi_احاطہ *);
+خالی ffi_احاطہ_struct_OBSD (ffi_احاطہ *);
+غیرعلامتی صحیح ffi_احاطہ_OBSD_inner (ffi_احاطہ *, خالی *, غیرعلامتی صحیح *,
+				     حرف *);
+خالی ffi_cacheflush_OBSD (غیرعلامتی صحیح, غیرعلامتی صحیح);
 
-#define CIF_FLAGS_INT		(1 << 0)
-#define CIF_FLAGS_DINT		(1 << 1)
+#تعریف_کرو CIF_FLAGS_INT		(1 << 0)
+#تعریف_کرو CIF_FLAGS_DINT		(1 << 1)
 
 /*
  * Foreign Function Interface API
@@ -68,35 +68,35 @@ void ffi_cacheflush_OBSD (unsigned int, unsigned int);
 /* ffi_prep_args is called by the assembly routine once stack space has
    been allocated for the function's arguments.  */
 
-void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+خالی *
+ffi_prep_دلائل (خالی *ڈھیر, extended_cif *ecif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp, *stackp;
-  unsigned int *regp;
-  unsigned int regused;
+  غیرعلامتی صحیح i;
+  خالی **p_argv;
+  حرف *argp, *stackp;
+  غیرعلامتی صحیح *regp;
+  غیرعلامتی صحیح regused;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  خالی *struct_قدر_ptr;
 
-  regp = (unsigned int *)stack;
-  stackp = (char *)(regp + 8);
+  regp = (غیرعلامتی صحیح *)ڈھیر;
+  stackp = (حرف *)(regp + 8);
   regused = 0;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  اگر (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_قدر_ptr = ecif->rvalue;
+  ورنہ
+    struct_قدر_ptr = تہی;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; i != 0; i--, p_arg++)
+  برائے (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
-      unsigned short t, a;
+      غیرعلامتی مختصر t, a;
 
-      z = (*p_arg)->size;
+      z = (*p_arg)->سائز;
       t = (*p_arg)->type;
       a = (*p_arg)->alignment;
 
@@ -107,129 +107,129 @@ ffi_prep_args (void *stack, extended_cif *ecif)
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      اگر (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
-	    argp = (char *)regp;
-	  else
+	  اگر (z == حجم (صحیح) && a == حجم (صحیح) && regused < 8)
+	    argp = (حرف *)regp;
+	  ورنہ
 	    argp = stackp;
 	}
-      else
+      ورنہ
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  اگر (z > حجم (صحیح) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      اگر (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
-	    argp = (char *)regp;
-	  else
+	  اگر (regused < 8)
+	    argp = (حرف *)regp;
+	  ورنہ
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      اگر (argp == stackp && a > حجم (صحیح))
 	{
-	  stackp = (char *) FFI_ALIGN(stackp, a);
+	  stackp = (حرف *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
 	}
 
-      switch (t)
+      انتخاب (t)
 	{
-	case FFI_TYPE_SINT8:
-	  *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	  break;
+	حالت FFI_TYPE_SINT8:
+	  *(علامتی صحیح *) argp = (علامتی صحیح) *(SINT8 *) *p_argv;
+	  توڑو;
 
-	case FFI_TYPE_UINT8:
-	  *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	  break;
+	حالت FFI_TYPE_UINT8:
+	  *(غیرعلامتی صحیح *) argp = (غیرعلامتی صحیح) *(UINT8 *) *p_argv;
+	  توڑو;
 
-	case FFI_TYPE_SINT16:
-	  *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	  break;
+	حالت FFI_TYPE_SINT16:
+	  *(علامتی صحیح *) argp = (علامتی صحیح) *(SINT16 *) *p_argv;
+	  توڑو;
 
-	case FFI_TYPE_UINT16:
-	  *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	  break;
+	حالت FFI_TYPE_UINT16:
+	  *(غیرعلامتی صحیح *) argp = (غیرعلامتی صحیح) *(UINT16 *) *p_argv;
+	  توڑو;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  *(unsigned int *) argp = *(unsigned int *) *p_argv;
-	  break;
+	حالت FFI_TYPE_INT:
+	حالت FFI_TYPE_FLOAT:
+	حالت FFI_TYPE_UINT32:
+	حالت FFI_TYPE_SINT32:
+	حالت FFI_TYPE_اشارہ_گر:
+	  *(غیرعلامتی صحیح *) argp = *(غیرعلامتی صحیح *) *p_argv;
+	  توڑو;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_STRUCT:
-	  memcpy (argp, *p_argv, z);
-	  break;
+	حالت FFI_TYPE_DOUBLE:
+	حالت FFI_TYPE_UINT64:
+	حالت FFI_TYPE_SINT64:
+	حالت FFI_TYPE_STRUCT:
+	  حافظہ_نقل (argp, *p_argv, z);
+	  توڑو;
 
-	default:
+	طےشدہ:
 	  FFI_ASSERT (0);
 	}
 
       /* Align if necessary.  */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      اگر ((حجم (صحیح) - 1) & z)
+	z = FFI_ALIGN(z, حجم (صحیح));
 
       p_argv++;
 
       /* Be careful, once all registers are filled, and about to continue
          on stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      اگر (argp == (حرف *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / حجم (صحیح);
+	  regused += z / حجم (صحیح);
 	}
-      else
+      ورنہ
 	stackp += z;
     }
 
-  return struct_value_ptr;
+  واپس struct_قدر_ptr;
 }
 
 /* Perform machine dependent cif processing */
-ffi_status
+ffi_حالت
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    حالت FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      توڑو;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size == sizeof (int) &&
-	  cif->rtype->alignment == sizeof (int))
+    حالت FFI_TYPE_STRUCT:
+      اگر (cif->rtype->سائز == حجم (صحیح) &&
+	  cif->rtype->alignment == حجم (صحیح))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      ورنہ
 	cif->flags = 0;
-      break;
+      توڑو;
 
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    حالت FFI_TYPE_DOUBLE:
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
       cif->flags = CIF_FLAGS_DINT;
-      break;
+      توڑو;
 
-    default:
+    طےشدہ:
       cif->flags = CIF_FLAGS_INT;
-      break;
+      توڑو;
     }
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+خالی
+ffi_call (ffi_cif *cif, خالی (*fn) (), خالی *rvalue, خالی **avalue)
 {
   extended_cif ecif;
 
@@ -239,23 +239,23 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  اگر (rvalue == تہی
       && cif->rtype->type == FFI_TYPE_STRUCT
-      && (cif->rtype->size != sizeof (int)
-	  || cif->rtype->alignment != sizeof (int)))
-    ecif.rvalue = alloca (cif->rtype->size);
-  else
+      && (cif->rtype->سائز != حجم (صحیح)
+	  || cif->rtype->alignment != حجم (صحیح)))
+    ecif.rvalue = alloca (cif->rtype->سائز);
+  ورنہ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  انتخاب (cif->abi)
     {
-    case FFI_OBSD:
-      ffi_call_OBSD (cif->bytes, &ecif, cif->flags, ecif.rvalue, fn);
-      break;
+    حالت FFI_OBSD:
+      ffi_call_OBSD (cif->بائٹیں, &ecif, cif->flags, ecif.rvalue, fn);
+      توڑو;
 
-    default:
+    طےشدہ:
       FFI_ASSERT (0);
-      break;
+      توڑو;
     }
 }
 
@@ -263,26 +263,26 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-static void
-ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
-			    char *stackp)
+ساکن خالی
+ffi_prep_احاطہ_دلائل_OBSD (ffi_cif *cif, خالی **avalue, غیرعلامتی صحیح *regp,
+			    حرف *stackp)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
-  unsigned int regused;
+  غیرعلامتی صحیح i;
+  خالی **p_argv;
+  حرف *argp;
+  غیرعلامتی صحیح regused;
   ffi_type **p_arg;
 
   regused = 0;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  برائے (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
-      unsigned short t, a;
+      غیرعلامتی مختصر t, a;
 
-      z = (*p_arg)->size;
+      z = (*p_arg)->سائز;
       t = (*p_arg)->type;
       a = (*p_arg)->alignment;
 
@@ -293,108 +293,108 @@ ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      اگر (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
-	    argp = (char *)regp;
-	  else
+	  اگر (z == حجم (صحیح) && a == حجم (صحیح) && regused < 8)
+	    argp = (حرف *)regp;
+	  ورنہ
 	    argp = stackp;
 	}
-      else
+      ورنہ
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  اگر (z > حجم (صحیح) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      اگر (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
-	    argp = (char *)regp;
-	  else
+	  اگر (regused < 8)
+	    argp = (حرف *)regp;
+	  ورنہ
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      اگر (argp == stackp && a > حجم (صحیح))
 	{
-	  stackp = (char *) FFI_ALIGN(stackp, a);
+	  stackp = (حرف *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
 	}
 
-      if (z < sizeof (int) && t != FFI_TYPE_STRUCT)
-	*p_argv = (void *) (argp + sizeof (int) - z);
-      else
-	*p_argv = (void *) argp;
+      اگر (z < حجم (صحیح) && t != FFI_TYPE_STRUCT)
+	*p_argv = (خالی *) (argp + حجم (صحیح) - z);
+      ورنہ
+	*p_argv = (خالی *) argp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      اگر ((حجم (صحیح) - 1) & z)
+	z = FFI_ALIGN(z, حجم (صحیح));
 
       p_argv++;
 
       /* Be careful, once all registers are exhausted, and about to fetch from
 	 stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      اگر (argp == (حرف *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / حجم (صحیح);
+	  regused += z / حجم (صحیح);
 	}
-      else
+      ورنہ
 	stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned int *regp,
-			char *stackp)
+غیرعلامتی صحیح
+ffi_احاطہ_OBSD_inner (ffi_احاطہ *احاطہ, خالی *resp, غیرعلامتی صحیح *regp,
+			حرف *stackp)
 {
   ffi_cif *cif;
-  void **arg_area;
+  خالی **arg_area;
 
-  cif = closure->cif;
-  arg_area = (void**) alloca (cif->nargs * sizeof (void *));
+  cif = احاطہ->cif;
+  arg_area = (خالی**) alloca (cif->nargs * حجم (خالی *));
 
-  ffi_prep_closure_args_OBSD(cif, arg_area, regp, stackp);
+  ffi_prep_احاطہ_دلائل_OBSD(cif, arg_area, regp, stackp);
 
-  (closure->fun) (cif, resp, arg_area, closure->user_data);
+  (احاطہ->fun) (cif, resp, arg_area, احاطہ->user_ڈیٹا);
 
-  return cif->flags;
+  واپس cif->flags;
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure, ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data, void *codeloc)
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ* احاطہ, ffi_cif* cif,
+		      خالی (*fun)(ffi_cif*,خالی*,خالی**,خالی*),
+		      خالی *user_ڈیٹا, خالی *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) codeloc;
-  void *fn;
+  غیرعلامتی صحیح *tramp = (غیرعلامتی صحیح *) codeloc;
+  خالی *fn;
 
   FFI_ASSERT (cif->abi == FFI_OBSD);
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
-    fn = &ffi_closure_struct_OBSD;
-  else
-    fn = &ffi_closure_OBSD;
+  اگر (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
+    fn = &ffi_احاطہ_struct_OBSD;
+  ورنہ
+    fn = &ffi_احاطہ_OBSD;
 
   /* or.u %r10, %r0, %hi16(fn) */
-  tramp[0] = 0x5d400000 | (((unsigned int)fn) >> 16);
+  tramp[0] = 0x5d400000 | (((غیرعلامتی صحیح)fn) >> 16);
   /* or.u %r13, %r0, %hi16(closure) */
-  tramp[1] = 0x5da00000 | ((unsigned int)closure >> 16);
+  tramp[1] = 0x5da00000 | ((غیرعلامتی صحیح)احاطہ >> 16);
   /* or %r10, %r10, %lo16(fn) */
-  tramp[2] = 0x594a0000 | (((unsigned int)fn) & 0xffff);
+  tramp[2] = 0x594a0000 | (((غیرعلامتی صحیح)fn) & 0xffff);
   /* jmp.n %r10 */
   tramp[3] = 0xf400c40a;
   /* or %r13, %r13, %lo16(closure) */
-  tramp[4] = 0x59ad0000 | ((unsigned int)closure & 0xffff);
+  tramp[4] = 0x59ad0000 | ((غیرعلامتی صحیح)احاطہ & 0xffff);
 
-  ffi_cacheflush_OBSD((unsigned int)codeloc, FFI_TRAMPOLINE_SIZE);
+  ffi_cacheflush_OBSD((غیرعلامتی صحیح)codeloc, FFI_TRAMPOLINE_سائز);
 
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
+  احاطہ->cif  = cif;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
+  احاطہ->fun  = fun;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }

@@ -25,55 +25,55 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_غیر_تعریف_شدہ LIBFFI_ہدف_H
+#تعریف_کرو LIBFFI_ہدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#اگر_غیر_تعریف_شدہ LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#اگر_ختم
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+قسمتعریف غیرعلامتی طویل ffi_arg;
+قسمتعریف علامتی طویل ffi_sarg;
 
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
-typedef void (*ffi_fp)(void);
+قسمتعریف خالی (*ffi_fp)(خالی);
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+قسمتعریف شمار ffi_abi {
+  FFI_پہلا_ABI = 0,
+#اگر __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
-#elif __SIZEOF_POINTER__ == 8
+#وگرنہ_اگر __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
-#error "Unknown pointer size"
-#endif
-  FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
-#ifdef __EMSCRIPTEN__
+#ورنہ
+#غلطی "Unknown pointer size"
+#اگر_ختم
+  FFI_آخری_ABI,
+#اگر __SIZEOF_POINTER__ == 4
+#اگر_تعریف_شدہ __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#ورنہ
   FFI_DEFAULT_ABI = FFI_WASM32
-#endif
-#elif __SIZEOF_POINTER__ == 8
-#ifdef __EMSCRIPTEN__
+#اگر_ختم
+#وگرنہ_اگر __SIZEOF_POINTER__ == 8
+#اگر_تعریف_شدہ __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#ورنہ
   FFI_DEFAULT_ABI = FFI_WASM64
-#endif
-#else
-#error "Unknown pointer size"
-#endif
+#اگر_ختم
+#ورنہ
+#غلطی "Unknown pointer size"
+#اگر_ختم
 } ffi_abi;
 
-#define FFI_CLOSURES 1
+#تعریف_کرو FFI_CLOSURES 1
 // #define FFI_GO_CLOSURES 0
-#define FFI_TRAMPOLINE_SIZE 4
+#تعریف_کرو FFI_TRAMPOLINE_سائز 4
 // #define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#تعریف_کرو FFI_ہدف_SPECIFIC_VARIADIC 1
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS  غیرعلامتی صحیح nfixedargs
 
-#endif
+#اگر_ختم

@@ -23,43 +23,43 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_غیر_تعریف_شدہ LIBFFI_ہدف_H
+#تعریف_کرو LIBFFI_ہدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#اگر_غیر_تعریف_شدہ LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#اگر_ختم
 
-#ifndef LIBFFI_ASM
+#اگر_غیر_تعریف_شدہ LIBFFI_ASM
 
-#include <arch/abi.h>
+#شامل <arch/abi.h>
 
-typedef uint_reg_t ffi_arg;
-typedef int_reg_t  ffi_sarg;
+قسمتعریف uint_reg_t ffi_arg;
+قسمتعریف int_reg_t  ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+قسمتعریف شمار ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_UNIX,
-  FFI_LAST_ABI,
+  FFI_آخری_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX
 } ffi_abi;
-#endif
+#اگر_ختم
 
 /* ---- Definitions for closures ----------------------------------------- */
-#define FFI_CLOSURES 1
+#تعریف_کرو FFI_CLOSURES 1
 
-#ifdef __tilegx__
+#اگر_تعریف_شدہ __tilegx__
 /* We always pass 8-byte values, even in -m32 mode. */
 # define FFI_SIZEOF_ARG 8
 # ifdef __LP64__
-#  define FFI_TRAMPOLINE_SIZE (8 * 5)  /* 5 bundles */
-# else
-#  define FFI_TRAMPOLINE_SIZE (8 * 3)  /* 3 bundles */
+#  define FFI_TRAMPOLINE_سائز (8 * 5)  /* 5 bundles */
+# ورنہ
+#  define FFI_TRAMPOLINE_سائز (8 * 3)  /* 3 bundles */
 # endif
-#else
+#ورنہ
 # define FFI_SIZEOF_ARG 4
-# define FFI_TRAMPOLINE_SIZE 8 /* 1 bundle */
-#endif
-#define FFI_NATIVE_RAW_API 0
+# define FFI_TRAMPOLINE_سائز 8 /* 1 bundle */
+#اگر_ختم
+#تعریف_کرو FFI_NATIVE_RAW_API 0
 
-#endif
+#اگر_ختم

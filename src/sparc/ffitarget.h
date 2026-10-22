@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_غیر_تعریف_شدہ LIBFFI_ہدف_H
+#تعریف_کرو LIBFFI_ہدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#اگر_غیر_تعریف_شدہ LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#اگر_ختم
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#اگر defined(__arch64__) || defined(__sparcv9)
+#اگر_غیر_تعریف_شدہ SPARC64
+#تعریف_کرو SPARC64
+#اگر_ختم
+#اگر_ختم
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#اگر_غیر_تعریف_شدہ LIBFFI_ASM
+قسمتعریف غیرعلامتی طویل          ffi_arg;
+قسمتعریف علامتی طویل            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+قسمتعریف شمار ffi_abi {
+  FFI_پہلا_ABI = 0,
+#اگر_تعریف_شدہ SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#ورنہ
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
-  FFI_LAST_ABI
+#اگر_ختم
+  FFI_آخری_ABI
 } ffi_abi;
-#endif
+#اگر_ختم
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#تعریف_کرو FFI_ہدف_SPECIFIC_ڈھیر_SPACE_تخصیص 1
+#تعریف_کرو FFI_ہدف_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+#اگر_تعریف_شدہ SPARC64
+# define FFI_ہدف_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS  غیرعلامتی صحیح nfixedargs
+#اگر_ختم
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_GO_CLOSURES 1
+#تعریف_کرو FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#اگر_تعریف_شدہ SPARC64
+#تعریف_کرو FFI_TRAMPOLINE_سائز 24
+#ورنہ
+#تعریف_کرو FFI_TRAMPOLINE_سائز 16
+#اگر_ختم
 
-#endif
+#اگر_ختم
 

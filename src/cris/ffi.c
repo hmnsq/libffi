@@ -26,33 +26,33 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#تعریف_کرو ڈھیر_ARG_سائز(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
-static ffi_status
+ساکن ffi_حالت
 initialize_aggregate_packed_struct (ffi_type * arg)
 {
   ffi_type **ptr;
 
-  FFI_ASSERT (arg != NULL);
+  FFI_ASSERT (arg != تہی);
 
-  FFI_ASSERT (arg->elements != NULL);
-  FFI_ASSERT (arg->size == 0);
+  FFI_ASSERT (arg->elements != تہی);
+  FFI_ASSERT (arg->سائز == 0);
   FFI_ASSERT (arg->alignment == 0);
 
   ptr = &(arg->elements[0]);
 
-  while ((*ptr) != NULL)
+  جب ((*ptr) != تہی)
     {
-      if (((*ptr)->size == 0)
+      اگر (((*ptr)->سائز == 0)
 	  && (initialize_aggregate_packed_struct ((*ptr)) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+	واپس FFI_BAD_TYPEDEF;
 
       FFI_ASSERT (ffi_type_test ((*ptr)));
 
-      arg->size += (*ptr)->size;
+      arg->سائز += (*ptr)->سائز;
 
       arg->alignment = (arg->alignment > (*ptr)->alignment) ?
 	arg->alignment : (*ptr)->alignment;
@@ -60,113 +60,113 @@ initialize_aggregate_packed_struct (ffi_type * arg)
       ptr++;
     }
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  اگر (arg->سائز == 0)
+    واپس FFI_BAD_TYPEDEF;
+  ورنہ
+    واپس FFI_OK;
 }
 
-int
-ffi_prep_args (char *stack, extended_cif * ecif)
+صحیح
+ffi_prep_دلائل (حرف *ڈھیر, extended_cif * ecif)
 {
-  unsigned int i;
-  unsigned int struct_count = 0;
-  void **p_argv;
-  char *argp;
+  غیرعلامتی صحیح i;
+  غیرعلامتی صحیح struct_گنتی = 0;
+  خالی **p_argv;
+  حرف *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = ڈھیر;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  برائے (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0); i--, p_arg++)
     {
       size_t z;
 
-      switch ((*p_arg)->type)
+      انتخاب ((*p_arg)->type)
 	{
-	case FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_STRUCT:
 	  {
-	    z = (*p_arg)->size;
-	    if (z <= 4)
+	    z = (*p_arg)->سائز;
+	    اگر (z <= 4)
 	      {
-		memcpy (argp, *p_argv, z);
+		حافظہ_نقل (argp, *p_argv, z);
 		z = 4;
 	      }
-	    else if (z <= 8)
+	    ورنہ اگر (z <= 8)
 	      {
-		memcpy (argp, *p_argv, z);
+		حافظہ_نقل (argp, *p_argv, z);
 		z = 8;
 	      }
-	    else
+	    ورنہ
 	      {
-		unsigned int uiLocOnStack;
-		z = sizeof (void *);
-		uiLocOnStack = 4 * ecif->cif->nargs + struct_count;
-		struct_count = struct_count + (*p_arg)->size;
-		*(unsigned int *) argp =
-		  (unsigned int) (UINT32 *) (stack + uiLocOnStack);
-		memcpy ((stack + uiLocOnStack), *p_argv, (*p_arg)->size);
+		غیرعلامتی صحیح ui_Loc_On_ڈھیر;
+		z = حجم (خالی *);
+		ui_Loc_On_ڈھیر = 4 * ecif->cif->nargs + struct_گنتی;
+		struct_گنتی = struct_گنتی + (*p_arg)->سائز;
+		*(غیرعلامتی صحیح *) argp =
+		  (غیرعلامتی صحیح) (UINT32 *) (ڈھیر + ui_Loc_On_ڈھیر);
+		حافظہ_نقل ((ڈھیر + ui_Loc_On_ڈھیر), *p_argv, (*p_arg)->سائز);
 	      }
-	    break;
+	    توڑو;
 	  }
-	default:
-	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	طےشدہ:
+	  z = (*p_arg)->سائز;
+	  اگر (z < حجم (صحیح))
 	    {
-	      switch ((*p_arg)->type)
+	      انتخاب ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int) *(SINT8 *) (*p_argv);
-		  break;
+		حالت FFI_TYPE_SINT8:
+		  *(علامتی صحیح *) argp = (علامتی صحیح) *(SINT8 *) (*p_argv);
+		  توڑو;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp =
-		    (unsigned int) *(UINT8 *) (*p_argv);
-		  break;
+		حالت FFI_TYPE_UINT8:
+		  *(غیرعلامتی صحیح *) argp =
+		    (غیرعلامتی صحیح) *(UINT8 *) (*p_argv);
+		  توڑو;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int) *(SINT16 *) (*p_argv);
-		  break;
+		حالت FFI_TYPE_SINT16:
+		  *(علامتی صحیح *) argp = (علامتی صحیح) *(SINT16 *) (*p_argv);
+		  توڑو;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp =
-		    (unsigned int) *(UINT16 *) (*p_argv);
-		  break;
+		حالت FFI_TYPE_UINT16:
+		  *(غیرعلامتی صحیح *) argp =
+		    (غیرعلامتی صحیح) *(UINT16 *) (*p_argv);
+		  توڑو;
 
-		default:
+		طےشدہ:
 		  FFI_ASSERT (0);
 		}
-	      z = sizeof (int);
+	      z = حجم (صحیح);
 	    }
-	  else if (z == sizeof (int))
-	    *(unsigned int *) argp = (unsigned int) *(UINT32 *) (*p_argv);
-	  else
-	    memcpy (argp, *p_argv, z);
-	  break;
+	  ورنہ اگر (z == حجم (صحیح))
+	    *(غیرعلامتی صحیح *) argp = (غیرعلامتی صحیح) *(UINT32 *) (*p_argv);
+	  ورنہ
+	    حافظہ_نقل (argp, *p_argv, z);
+	  توڑو;
 	}
       p_argv++;
       argp += z;
     }
 
-  return (struct_count);
+  واپس (struct_گنتی);
 }
 
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_core (ffi_cif * cif,
-	           ffi_abi abi, unsigned int isvariadic,
-		   unsigned int nfixedargs, unsigned int ntotalargs,
+	           ffi_abi abi, غیرعلامتی صحیح isvariadic,
+		   غیرعلامتی صحیح nfixedargs, غیرعلامتی صحیح ntotalargs,
 	           ffi_type * rtype, ffi_type ** atypes)
 {
-  unsigned bytes = 0;
-  unsigned int i;
+  غیرعلامتی بائٹیں = 0;
+  غیرعلامتی صحیح i;
   ffi_type **ptr;
 
-  FFI_ASSERT (cif != NULL);
+  FFI_ASSERT (cif != تہی);
   FFI_ASSERT((!isvariadic) || (nfixedargs >= 1));
   FFI_ASSERT(nfixedargs <= ntotalargs);
-  FFI_ASSERT (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI);
+  FFI_ASSERT (abi > FFI_پہلا_ABI && abi < FFI_آخری_ABI);
 
   cif->abi = abi;
   cif->arg_types = atypes;
@@ -175,97 +175,97 @@ ffi_prep_cif_core (ffi_cif * cif,
 
   cif->flags = 0;
 
-  if ((cif->rtype->size == 0)
+  اگر ((cif->rtype->سائز == 0)
       && (initialize_aggregate_packed_struct (cif->rtype) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+    واپس FFI_BAD_TYPEDEF;
 
   FFI_ASSERT_VALID_TYPE (cif->rtype);
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  برائے (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      if (((*ptr)->size == 0)
+      اگر (((*ptr)->سائز == 0)
 	  && (initialize_aggregate_packed_struct ((*ptr)) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+	واپس FFI_BAD_TYPEDEF;
 
       FFI_ASSERT_VALID_TYPE (*ptr);
 
-      if (((*ptr)->alignment - 1) & bytes)
-	bytes = FFI_ALIGN (bytes, (*ptr)->alignment);
-      if ((*ptr)->type == FFI_TYPE_STRUCT)
+      اگر (((*ptr)->alignment - 1) & بائٹیں)
+	بائٹیں = FFI_ALIGN (بائٹیں, (*ptr)->alignment);
+      اگر ((*ptr)->type == FFI_TYPE_STRUCT)
 	{
-	  if ((*ptr)->size > 8)
+	  اگر ((*ptr)->سائز > 8)
 	    {
-	      bytes += (*ptr)->size;
-	      bytes += sizeof (void *);
+	      بائٹیں += (*ptr)->سائز;
+	      بائٹیں += حجم (خالی *);
 	    }
-	  else
+	  ورنہ
 	    {
-	      if ((*ptr)->size > 4)
-		bytes += 8;
-	      else
-		bytes += 4;
+	      اگر ((*ptr)->سائز > 4)
+		بائٹیں += 8;
+	      ورنہ
+		بائٹیں += 4;
 	    }
 	}
-      else
-	bytes += STACK_ARG_SIZE ((*ptr)->size);
+      ورنہ
+	بائٹیں += ڈھیر_ARG_سائز ((*ptr)->سائز);
     }
 
-  cif->bytes = bytes;
+  cif->بائٹیں = بائٹیں;
 
-  return ffi_prep_cif_machdep (cif);
+  واپس ffi_prep_cif_machdep (cif);
 }
 
-ffi_status
+ffi_حالت
 ffi_prep_cif_machdep (ffi_cif * cif)
 {
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    حالت FFI_TYPE_VOID:
+    حالت FFI_TYPE_STRUCT:
+    حالت FFI_TYPE_FLOAT:
+    حالت FFI_TYPE_DOUBLE:
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
+      cif->flags = (غیرعلامتی) cif->rtype->type;
+      توڑو;
 
-    default:
+    طےشدہ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      توڑو;
     }
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
-extern void ffi_call_SYSV (int (*)(char *, extended_cif *),
+خارجی خالی ffi_call_SYSV (صحیح (*)(حرف *, extended_cif *),
 			   extended_cif *,
-			   unsigned, unsigned, unsigned *, void (*fn) ())
+			   غیرعلامتی, غیرعلامتی, غیرعلامتی *, خالی (*fn) ())
      __attribute__ ((__visibility__ ("hidden")));
 
-void
-ffi_call (ffi_cif * cif, void (*fn) (), void *rvalue, void **avalue)
+خالی
+ffi_call (ffi_cif * cif, خالی (*fn) (), خالی *rvalue, خالی **avalue)
 {
   extended_cif ecif;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
-  if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
+  اگر ((rvalue == تہی) && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca (cif->rtype->size);
+      ecif.rvalue = alloca (cif->rtype->سائز);
     }
-  else
+  ورنہ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  انتخاب (cif->abi)
     {
-    case FFI_SYSV:
-      ffi_call_SYSV (ffi_prep_args, &ecif, cif->bytes,
+    حالت FFI_SYSV:
+      ffi_call_SYSV (ffi_prep_دلائل, &ecif, cif->بائٹیں,
 		     cif->flags, ecif.rvalue, fn);
-      break;
-    default:
+      توڑو;
+    طےشدہ:
       FFI_ASSERT (0);
-      break;
+      توڑو;
     }
 }
 
@@ -273,17 +273,17 @@ ffi_call (ffi_cif * cif, void (*fn) (), void *rvalue, void **avalue)
    mark them hidden.  */
 
 /* Assembly code for the jump stub.  */
-extern const char ffi_cris_trampoline_template[]
+خارجی ثابت حرف ffi_cris_trampoline_template[]
  __attribute__ ((__visibility__ ("hidden")));
 
 /* Offset into ffi_cris_trampoline_template of where to put the
    ffi_prep_closure_inner function.  */
-extern const int ffi_cris_trampoline_fn_offset
+خارجی ثابت صحیح ffi_cris_trampoline_fn_انحراف
  __attribute__ ((__visibility__ ("hidden")));
 
 /* Offset into ffi_cris_trampoline_template of where to put the
    closure data.  */
-extern const int ffi_cris_trampoline_closure_offset
+خارجی ثابت صحیح ffi_cris_trampoline_احاطہ_انحراف
  __attribute__ ((__visibility__ ("hidden")));
 
 /* This function is sibling-called (jumped to) by the closure
@@ -293,57 +293,57 @@ extern const int ffi_cris_trampoline_closure_offset
    put at the appropriate place in CLOSURE which is then executed and
    the return value is passed back to the caller.  */
 
-static unsigned long long
-ffi_prep_closure_inner (void **params, ffi_closure* closure)
+ساکن غیرعلامتی طویل طویل
+ffi_prep_احاطہ_inner (خالی **params, ffi_احاطہ* احاطہ)
 {
-  char *register_args = (char *) params;
-  void *struct_ret = params[5];
-  char *stack_args = params[6];
-  char *ptr = register_args;
-  ffi_cif *cif = closure->cif;
+  حرف *رجسٹر_دلائل = (حرف *) params;
+  خالی *struct_ret = params[5];
+  حرف *ڈھیر_دلائل = params[6];
+  حرف *ptr = رجسٹر_دلائل;
+  ffi_cif *cif = احاطہ->cif;
   ffi_type **arg_types = cif->arg_types;
 
   /* Max room needed is number of arguments as 64-bit values.  */
-  void **avalue = alloca (closure->cif->nargs * sizeof(void *));
-  int i;
-  int doing_regs;
-  long long llret = 0;
+  خالی **avalue = alloca (احاطہ->cif->nargs * حجم(خالی *));
+  صحیح i;
+  صحیح doing_regs;
+  طویل طویل llret = 0;
 
   /* Find the address of each argument.  */
-  for (i = 0, doing_regs = 1; i < cif->nargs; i++)
+  برائے (i = 0, doing_regs = 1; i < cif->nargs; i++)
     {
       /* Types up to and including 8 bytes go by-value.  */
-      if (arg_types[i]->size <= 4)
+      اگر (arg_types[i]->سائز <= 4)
 	{
 	  avalue[i] = ptr;
 	  ptr += 4;
 	}
-      else if (arg_types[i]->size <= 8)
+      ورنہ اگر (arg_types[i]->سائز <= 8)
 	{
 	  avalue[i] = ptr;
 	  ptr += 8;
 	}
-      else
+      ورنہ
 	{
 	  FFI_ASSERT (arg_types[i]->type == FFI_TYPE_STRUCT);
 
 	  /* Passed by-reference, so copy the pointer.  */
-	  avalue[i] = *(void **) ptr;
+	  avalue[i] = *(خالی **) ptr;
 	  ptr += 4;
 	}
 
       /* If we've handled more arguments than fit in registers, start
 	 looking at the those passed on the stack.  Step over the
 	 first one if we had a straddling parameter.  */
-      if (doing_regs && ptr >= register_args + 4*4)
+      اگر (doing_regs && ptr >= رجسٹر_دلائل + 4*4)
 	{
-	  ptr = stack_args + ((ptr > register_args + 4*4) ? 4 : 0);
+	  ptr = ڈھیر_دلائل + ((ptr > رجسٹر_دلائل + 4*4) ? 4 : 0);
 	  doing_regs = 0;
 	}
     }
 
   /* Invoke the closure.  */
-  (closure->fun) (cif,
+  (احاطہ->fun) (cif,
 
 		  cif->rtype->type == FFI_TYPE_STRUCT
 		  /* The caller allocated space for the return
@@ -354,33 +354,33 @@ ffi_prep_closure_inner (void **params, ffi_closure* closure)
 		  /* We take advantage of being able to ignore that
 		     the high part isn't set if the return value is
 		     not in R10:R11, but in R10 only.  */
-		  : (void *) &llret,
+		  : (خالی *) &llret,
 
-		  avalue, closure->user_data);
+		  avalue, احاطہ->user_ڈیٹا);
 
-  return llret;
+  واپس llret;
 }
 
 /* API function: Prepare the trampoline.  */
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ* احاطہ,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif *, void *, void **, void*),
-		      void *user_data,
-		      void *codeloc)
+		      خالی (*fun)(ffi_cif *, خالی *, خالی **, خالی*),
+		      خالی *user_ڈیٹا,
+		      خالی *codeloc)
 {
-  void *innerfn = ffi_prep_closure_inner;
+  خالی *innerfn = ffi_prep_احاطہ_inner;
   FFI_ASSERT (cif->abi == FFI_SYSV);
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
-  memcpy (closure->tramp, ffi_cris_trampoline_template,
-	  FFI_CRIS_TRAMPOLINE_CODE_PART_SIZE);
-  memcpy (closure->tramp + ffi_cris_trampoline_fn_offset,
-	  &innerfn, sizeof (void *));
-  memcpy (closure->tramp + ffi_cris_trampoline_closure_offset,
-	  &codeloc, sizeof (void *));
+  احاطہ->cif  = cif;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
+  احاطہ->fun  = fun;
+  حافظہ_نقل (احاطہ->tramp, ffi_cris_trampoline_template,
+	  FFI_CRIS_TRAMPOLINE_رمز_PART_سائز);
+  حافظہ_نقل (احاطہ->tramp + ffi_cris_trampoline_fn_انحراف,
+	  &innerfn, حجم (خالی *));
+  حافظہ_نقل (احاطہ->tramp + ffi_cris_trampoline_احاطہ_انحراف,
+	  &codeloc, حجم (خالی *));
 
-  return FFI_OK;
+  واپس FFI_OK;
 }

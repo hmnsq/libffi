@@ -24,256 +24,256 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <arch/abi.h>
-#include <arch/icache.h>
-#include <arch/opcode.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
+#شامل <stdlib.h>
+#شامل <stdint.h>
+#شامل <unistd.h>
+#شامل <arch/abi.h>
+#شامل <arch/icache.h>
+#شامل <arch/opcode.h>
 
 
 /* The first 10 registers are used to pass arguments and return values. */
-#define NUM_ARG_REGS 10
+#تعریف_کرو عدد_ARG_REGS 10
 
 /* Performs a raw function call with the given NUM_ARG_REGS register arguments
    and the specified additional stack arguments (if any). */
-extern void ffi_call_tile(ffi_sarg reg_args[NUM_ARG_REGS],
-                          const ffi_sarg *stack_args,
-                          size_t stack_args_bytes,
-                          void (*fnaddr)(void))
+خارجی خالی ffi_call_tile(ffi_sarg reg_دلائل[عدد_ARG_REGS],
+                          ثابت ffi_sarg *ڈھیر_دلائل,
+                          size_t ڈھیر_دلائل_بائٹیں,
+                          خالی (*fnaddr)(خالی))
   FFI_HIDDEN;
 
 /* This handles the raw call from the closure stub, cleaning up the
    parameters and delegating to ffi_closure_tile_inner. */
-extern void ffi_closure_tile(void) FFI_HIDDEN;
+خارجی خالی ffi_احاطہ_tile(خالی) FFI_HIDDEN;
 
 
-ffi_status
+ffi_حالت
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* We always allocate room for all registers. Even if we don't
      use them as parameters, they get returned in the same array
      as struct return values so we need to make room. */
-  if (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
-    cif->bytes = NUM_ARG_REGS * FFI_SIZEOF_ARG;
+  اگر (cif->بائٹیں < عدد_ARG_REGS * FFI_SIZEOF_ARG)
+    cif->بائٹیں = عدد_ARG_REGS * FFI_SIZEOF_ARG;
 
-  if (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  اگر (cif->rtype->سائز > عدد_ARG_REGS * FFI_SIZEOF_ARG)
     cif->flags = FFI_TYPE_STRUCT;
-  else
+  ورنہ
     cif->flags = FFI_TYPE_INT;
 
   /* Nothing to do. */
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 
-static long
-assign_to_ffi_arg(ffi_sarg *out, void *in, const ffi_type *type,
-                  int write_to_reg)
+ساکن طویل
+تفویض_مقصد_ffi_arg(ffi_sarg *برآمد, خالی *اندر, ثابت ffi_type *type,
+                  صحیح write_مقصد_reg)
 {
-  switch (type->type)
+  انتخاب (type->type)
     {
-    case FFI_TYPE_SINT8:
-      *out = *(SINT8 *)in;
-      return 1;
+    حالت FFI_TYPE_SINT8:
+      *برآمد = *(SINT8 *)اندر;
+      واپس 1;
 
-    case FFI_TYPE_UINT8:
-      *out = *(UINT8 *)in;
-      return 1;
+    حالت FFI_TYPE_UINT8:
+      *برآمد = *(UINT8 *)اندر;
+      واپس 1;
 
-    case FFI_TYPE_SINT16:
-      *out = *(SINT16 *)in;
-      return 1;
+    حالت FFI_TYPE_SINT16:
+      *برآمد = *(SINT16 *)اندر;
+      واپس 1;
 
-    case FFI_TYPE_UINT16:
-      *out = *(UINT16 *)in;
-      return 1;
+    حالت FFI_TYPE_UINT16:
+      *برآمد = *(UINT16 *)اندر;
+      واپس 1;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-#ifndef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
+    حالت FFI_TYPE_SINT32:
+    حالت FFI_TYPE_UINT32:
+#اگر_غیر_تعریف_شدہ __LP64__
+    حالت FFI_TYPE_اشارہ_گر:
+#اگر_ختم
       /* Note that even unsigned 32-bit quantities are sign extended
          on tilegx when stored in a register.  */
-      *out = *(SINT32 *)in;
-      return 1;
+      *برآمد = *(SINT32 *)اندر;
+      واپس 1;
 
-    case FFI_TYPE_FLOAT:
-#ifdef __tilegx__
-      if (write_to_reg)
+    حالت FFI_TYPE_FLOAT:
+#اگر_تعریف_شدہ __tilegx__
+      اگر (write_مقصد_reg)
         {
           /* Properly sign extend the value.  */
-          union { float f; SINT32 s32; } val;
-          val.f = *(float *)in;
-          *out = val.s32;
+          اتحاد { اعشاری f; SINT32 s32; } val;
+          val.f = *(اعشاری *)اندر;
+          *برآمد = val.s32;
         }
-      else
-#endif
+      ورنہ
+#اگر_ختم
         {
-          *(float *)out = *(float *)in;
+          *(اعشاری *)برآمد = *(اعشاری *)اندر;
         }
-      return 1;
+      واپس 1;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
-#ifdef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
-      *(UINT64 *)out = *(UINT64 *)in;
-      return sizeof(UINT64) / FFI_SIZEOF_ARG;
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
+    حالت FFI_TYPE_DOUBLE:
+#اگر_تعریف_شدہ __LP64__
+    حالت FFI_TYPE_اشارہ_گر:
+#اگر_ختم
+      *(UINT64 *)برآمد = *(UINT64 *)اندر;
+      واپس حجم(UINT64) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_STRUCT:
-      memcpy(out, in, type->size);
-      return (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+    حالت FFI_TYPE_STRUCT:
+      حافظہ_نقل(برآمد, اندر, type->سائز);
+      واپس (type->سائز + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_VOID:
+    حالت FFI_TYPE_VOID:
       /* Must be a return type. Nothing to do. */
-      return 0;
+      واپس 0;
 
-    default:
+    طےشدہ:
       FFI_ASSERT(0);
-      return -1;
+      واپس -1;
     }
 }
 
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+خالی
+ffi_call(ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue, خالی **avalue)
 {
-  ffi_sarg * const arg_mem = alloca(cif->bytes);
-  ffi_sarg * const reg_args = arg_mem;
-  ffi_sarg * const stack_args = &reg_args[NUM_ARG_REGS];
+  ffi_sarg * ثابت arg_mem = alloca(cif->بائٹیں);
+  ffi_sarg * ثابت reg_دلائل = arg_mem;
+  ffi_sarg * ثابت ڈھیر_دلائل = &reg_دلائل[عدد_ARG_REGS];
   ffi_sarg *argp = arg_mem;
-  ffi_type ** const arg_types = cif->arg_types;
-  const long num_args = cif->nargs;
-  long i;
+  ffi_type ** ثابت arg_types = cif->arg_types;
+  ثابت طویل عدد_دلائل = cif->nargs;
+  طویل i;
 
-  if (cif->flags == FFI_TYPE_STRUCT)
+  اگر (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Pass a hidden pointer to the return value. We make sure there
          is scratch space for the callee to store the return value even if
          our caller doesn't care about it. */
-      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->size));
+      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->سائز));
 
       /* No more work needed to return anything. */
-      rvalue = NULL;
+      rvalue = تہی;
     }
 
-  for (i = 0; i < num_args; i++)
+  برائے (i = 0; i < عدد_دلائل; i++)
     {
       ffi_type *type = arg_types[i];
-      void * const arg_in = avalue[i];
-      ptrdiff_t arg_word = argp - arg_mem;
+      خالی * ثابت arg_اندر = avalue[i];
+      ptrdiff_t arg_لفظ = argp - arg_mem;
 
-#ifndef __tilegx__
+#اگر_غیر_تعریف_شدہ __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      طویل align = arg_لفظ & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
-      arg_word += align;
-#endif
+      arg_لفظ += align;
+#اگر_ختم
 
-      if (type->type == FFI_TYPE_STRUCT)
+      اگر (type->type == FFI_TYPE_STRUCT)
         {
-          const size_t arg_size_in_words =
-            (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+          ثابت size_t arg_سائز_اندر_الفاظ =
+            (type->سائز + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-          if (arg_word < NUM_ARG_REGS &&
-              arg_word + arg_size_in_words > NUM_ARG_REGS)
+          اگر (arg_لفظ < عدد_ARG_REGS &&
+              arg_لفظ + arg_سائز_اندر_الفاظ > عدد_ARG_REGS)
             {
               /* Args are not allowed to span registers and the stack. */
-              argp = stack_args;
+              argp = ڈھیر_دلائل;
             }
 
-          memcpy(argp, arg_in, type->size);
-          argp += arg_size_in_words;
+          حافظہ_نقل(argp, arg_اندر, type->سائز);
+          argp += arg_سائز_اندر_الفاظ;
         }
-      else
+      ورنہ
         {
-          argp += assign_to_ffi_arg(argp, arg_in, arg_types[i], 1);
+          argp += تفویض_مقصد_ffi_arg(argp, arg_اندر, arg_types[i], 1);
         }
     }
 
   /* Actually do the call. */
-  ffi_call_tile(reg_args, stack_args,
-                cif->bytes - (NUM_ARG_REGS * FFI_SIZEOF_ARG), fn);
+  ffi_call_tile(reg_دلائل, ڈھیر_دلائل,
+                cif->بائٹیں - (عدد_ARG_REGS * FFI_SIZEOF_ARG), fn);
 
-  if (rvalue != NULL)
-    assign_to_ffi_arg(rvalue, reg_args, cif->rtype, 0);
+  اگر (rvalue != تہی)
+    تفویض_مقصد_ffi_arg(rvalue, reg_دلائل, cif->rtype, 0);
 }
 
 
 /* Template code for closure. */
-extern const UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
+خارجی ثابت UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
 
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ *احاطہ,
                       ffi_cif *cif,
-                      void (*fun)(ffi_cif*, void*, void**, void*),
-                      void *user_data,
-                      void *codeloc)
+                      خالی (*fun)(ffi_cif*, خالی*, خالی**, خالی*),
+                      خالی *user_ڈیٹا,
+                      خالی *codeloc)
 {
-#ifdef __tilegx__
+#اگر_تعریف_شدہ __tilegx__
   /* TILE-Gx */
   SINT64 c;
   SINT64 h;
-  int s;
-  UINT64 *out;
+  صحیح s;
+  UINT64 *برآمد;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_UNIX)
+    واپس FFI_BAD_ABI;
 
-  out = (UINT64 *)closure->tramp;
+  برآمد = (UINT64 *)احاطہ->tramp;
 
-  c = (intptr_t)closure;
-  h = (intptr_t)ffi_closure_tile;
+  c = (intptr_t)احاطہ;
+  h = (intptr_t)ffi_احاطہ_tile;
   s = 0;
 
   /* Find the smallest shift count that doesn't lose information
      (i.e. no need to explicitly insert high bits of the address that
      are just the sign extension of the low bits). */
-  while ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
+  جب ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
     s += 16;
 
-#define OPS(a, b, shift) \
+#تعریف_کرو OPS(a, b, shift) \
   (create_Imm16_X0((a) >> (shift)) | create_Imm16_X1((b) >> (shift)))
 
   /* Emit the moveli. */
-  *out++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
-  for (s -= 16; s >= 0; s -= 16)
-    *out++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
+  *برآمد++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
+  برائے (s -= 16; s >= 0; s -= 16)
+    *برآمد++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
 
-#undef OPS
+#تعریف_منسوخ OPS
 
-  *out++ = ffi_template_tramp_tile[2];
+  *برآمد++ = ffi_template_tramp_tile[2];
 
-#else
+#ورنہ
   /* TILEPro */
-  UINT64 *out;
+  UINT64 *برآمد;
   intptr_t delta;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_UNIX)
+    واپس FFI_BAD_ABI;
 
-  out = (UINT64 *)closure->tramp;
-  delta = (intptr_t)ffi_closure_tile - (intptr_t)codeloc;
+  برآمد = (UINT64 *)احاطہ->tramp;
+  delta = (intptr_t)ffi_احاطہ_tile - (intptr_t)codeloc;
 
-  *out++ = ffi_template_tramp_tile[0] | create_JOffLong_X1(delta >> 3);
-#endif
+  *برآمد++ = ffi_template_tramp_tile[0] | create_JOffLong_X1(delta >> 3);
+#اگر_ختم
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
 
-  invalidate_icache(closure->tramp, (char *)out - closure->tramp,
+  invalidate_icache(احاطہ->tramp, (حرف *)برآمد - احاطہ->tramp,
                     getpagesize());
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 
@@ -281,75 +281,75 @@ ffi_prep_closure_loc (ffi_closure *closure,
    all of the work. On entry reg_args[0] holds the values the registers
    had when the closure was invoked. On return reg_args[1] holds the register
    values to be returned to the caller (many of which may be garbage). */
-void FFI_HIDDEN
-ffi_closure_tile_inner(ffi_closure *closure,
-                       ffi_sarg reg_args[2][NUM_ARG_REGS],
-                       ffi_sarg *stack_args)
+خالی FFI_HIDDEN
+ffi_احاطہ_tile_inner(ffi_احاطہ *احاطہ,
+                       ffi_sarg reg_دلائل[2][عدد_ARG_REGS],
+                       ffi_sarg *ڈھیر_دلائل)
 {
-  ffi_cif * const cif = closure->cif;
-  void ** const avalue = alloca(cif->nargs * sizeof(void *));
-  void *rvalue;
-  ffi_type ** const arg_types = cif->arg_types;
-  ffi_sarg * const reg_args_in = reg_args[0];
-  ffi_sarg * const reg_args_out = reg_args[1];
+  ffi_cif * ثابت cif = احاطہ->cif;
+  خالی ** ثابت avalue = alloca(cif->nargs * حجم(خالی *));
+  خالی *rvalue;
+  ffi_type ** ثابت arg_types = cif->arg_types;
+  ffi_sarg * ثابت reg_دلائل_اندر = reg_دلائل[0];
+  ffi_sarg * ثابت reg_دلائل_برآمد = reg_دلائل[1];
   ffi_sarg * argp;
-  long i, arg_word, nargs = cif->nargs;
+  طویل i, arg_لفظ, nargs = cif->nargs;
   /* Use a union to guarantee proper alignment for double. */
-  union { ffi_sarg arg[NUM_ARG_REGS]; double d; UINT64 u64; } closure_ret;
+  اتحاد { ffi_sarg arg[عدد_ARG_REGS]; دوہرا d; UINT64 u64; } احاطہ_ret;
 
   /* Start out reading register arguments. */
-  argp = reg_args_in;
+  argp = reg_دلائل_اندر;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  اگر (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Return by reference via hidden pointer. */
-      rvalue = (void *)(intptr_t)*argp++;
-      arg_word = 1;
+      rvalue = (خالی *)(intptr_t)*argp++;
+      arg_لفظ = 1;
     }
-  else
+  ورنہ
     {
       /* Return the value in registers. */
-      rvalue = &closure_ret;
-      arg_word = 0;
+      rvalue = &احاطہ_ret;
+      arg_لفظ = 0;
     }
 
   /* Grab the addresses of the arguments. */
-  for (i = 0; i < nargs; i++)
+  برائے (i = 0; i < nargs; i++)
     {
-      ffi_type * const type = arg_types[i];
-      const size_t arg_size_in_words =
-        (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+      ffi_type * ثابت type = arg_types[i];
+      ثابت size_t arg_سائز_اندر_الفاظ =
+        (type->سائز + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-#ifndef __tilegx__
+#اگر_غیر_تعریف_شدہ __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      طویل align = arg_لفظ & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
-      arg_word += align;
-#endif
+      arg_لفظ += align;
+#اگر_ختم
 
-      if (arg_word == NUM_ARG_REGS ||
-          (arg_word < NUM_ARG_REGS &&
-           arg_word + arg_size_in_words > NUM_ARG_REGS))
+      اگر (arg_لفظ == عدد_ARG_REGS ||
+          (arg_لفظ < عدد_ARG_REGS &&
+           arg_لفظ + arg_سائز_اندر_الفاظ > عدد_ARG_REGS))
         {
           /* Switch to reading arguments from the stack. */
-          argp = stack_args;
-          arg_word = NUM_ARG_REGS;
+          argp = ڈھیر_دلائل;
+          arg_لفظ = عدد_ARG_REGS;
         }
 
       avalue[i] = argp;
-      argp += arg_size_in_words;
-      arg_word += arg_size_in_words;
+      argp += arg_سائز_اندر_الفاظ;
+      arg_لفظ += arg_سائز_اندر_الفاظ;
     }
 
   /* Invoke the closure.  */
-  closure->fun(cif, rvalue, avalue, closure->user_data);
+  احاطہ->fun(cif, rvalue, avalue, احاطہ->user_ڈیٹا);
 
-  if (cif->flags != FFI_TYPE_STRUCT)
+  اگر (cif->flags != FFI_TYPE_STRUCT)
     {
       /* Canonicalize for register representation. */
-      assign_to_ffi_arg(reg_args_out, &closure_ret, cif->rtype, 1);
+      تفویض_مقصد_ffi_arg(reg_دلائل_برآمد, &احاطہ_ret, cif->rtype, 1);
     }
 }

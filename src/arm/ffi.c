@@ -28,119 +28,119 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__arm__) || defined(_M_ARM)
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <tramp.h>
-#include "internal.h"
+#اگر defined(__arm__) || defined(_M_ARM)
+#شامل <fficonfig.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
+#شامل <stdint.h>
+#شامل <stdlib.h>
+#شامل <tramp.h>
+#شامل "internal.h"
 
-#if defined(_WIN32)
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
+#اگر defined(_WIN32)
+#تعریف_کرو WIN32_LEAN_AND_اوسط
+#شامل <windows.h>
+#اگر_ختم
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#اگر FFI_EXEC_TRAMPOLINE_جدول
 
-#ifdef __MACH__
-#include <mach/machine/vm_param.h>
-#endif
+#اگر_تعریف_شدہ __MACH__
+#شامل <mach/machine/vm_param.h>
+#اگر_ختم
 
-#else
-#ifndef _WIN32
-extern unsigned int ffi_arm_trampoline[2] FFI_HIDDEN;
-#else
+#ورنہ
+#اگر_غیر_تعریف_شدہ _WIN32
+خارجی غیرعلامتی صحیح ffi_arm_trampoline[2] FFI_HIDDEN;
+#ورنہ
 // Declare this as an array of char, instead of array of int,
 // otherwise Clang optimizes out the "& 0xFFFFFFFE" for clearing
 // the thumb bit.
-extern unsigned char ffi_arm_trampoline[12] FFI_HIDDEN;
-#endif
-#endif
+خارجی غیرعلامتی حرف ffi_arm_trampoline[12] FFI_HIDDEN;
+#اگر_ختم
+#اگر_ختم
 
-#if defined(__FreeBSD__) && defined(__arm__)
-#include <sys/types.h>
-#include <machine/sysarch.h>
-#endif
+#اگر defined(__FreeBSD__) && defined(__arm__)
+#شامل <sys/types.h>
+#شامل <machine/sysarch.h>
+#اگر_ختم
 
-#if defined(__QNX__)
-#include <sys/mman.h>
-#endif
+#اگر defined(__QNX__)
+#شامل <sys/mman.h>
+#اگر_ختم
 
 /* Forward declares. */
-static int vfp_type_p (const ffi_type *);
-static void layout_vfp_args (ffi_cif *);
+ساکن صحیح vfp_type_p (ثابت ffi_type *);
+ساکن خالی layout_vfp_دلائل (ffi_cif *);
 
-static void *
-ffi_align (ffi_type *ty, void *p)
+ساکن خالی *
+ffi_align (ffi_type *ty, خالی *p)
 {
   /* Align if necessary */
   size_t alignment;
-#ifdef _WIN32_WCE
+#اگر_تعریف_شدہ _WIN32_WCE
   alignment = 4;
-#else
+#ورنہ
   alignment = ty->alignment;
-  if (alignment < 4)
+  اگر (alignment < 4)
     alignment = 4;
-#endif
-  return (void *) FFI_ALIGN (p, alignment);
+#اگر_ختم
+  واپس (خالی *) FFI_ALIGN (p, alignment);
 }
 
-static size_t
-ffi_put_arg (ffi_type *ty, void *src, void *dst)
+ساکن size_t
+ffi_put_arg (ffi_type *ty, خالی *src, خالی *dst)
 {
-  size_t z = ty->size;
+  size_t z = ty->سائز;
 
-  switch (ty->type)
+  انتخاب (ty->type)
     {
-    case FFI_TYPE_SINT8:
+    حالت FFI_TYPE_SINT8:
       *(UINT32 *)dst = *(SINT8 *)src;
-      break;
-    case FFI_TYPE_UINT8:
+      توڑو;
+    حالت FFI_TYPE_UINT8:
       *(UINT32 *)dst = *(UINT8 *)src;
-      break;
-    case FFI_TYPE_SINT16:
+      توڑو;
+    حالت FFI_TYPE_SINT16:
       *(UINT32 *)dst = *(SINT16 *)src;
-      break;
-    case FFI_TYPE_UINT16:
+      توڑو;
+    حالت FFI_TYPE_UINT16:
       *(UINT32 *)dst = *(UINT16 *)src;
-      break;
+      توڑو;
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
-#ifndef _WIN32
-    case FFI_TYPE_FLOAT:
-#endif
+    حالت FFI_TYPE_INT:
+    حالت FFI_TYPE_SINT32:
+    حالت FFI_TYPE_UINT32:
+    حالت FFI_TYPE_اشارہ_گر:
+#اگر_غیر_تعریف_شدہ _WIN32
+    حالت FFI_TYPE_FLOAT:
+#اگر_ختم
       *(UINT32 *)dst = *(UINT32 *)src;
-      break;
+      توڑو;
 
-#ifdef _WIN32
+#اگر_تعریف_شدہ _WIN32
     // casting a float* to a UINT32* doesn't work on Windows
-    case FFI_TYPE_FLOAT:
+    حالت FFI_TYPE_FLOAT:
         *(uintptr_t *)dst = 0;
-        *(float *)dst = *(float *)src;
-        break;
-#endif
+        *(اعشاری *)dst = *(اعشاری *)src;
+        توڑو;
+#اگر_ختم
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
+    حالت FFI_TYPE_DOUBLE:
       *(UINT64 *)dst = *(UINT64 *)src;
-      break;
+      توڑو;
 
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_COMPLEX:
-      memcpy (dst, src, z);
-      break;
+    حالت FFI_TYPE_STRUCT:
+    حالت FFI_TYPE_COMPLEX:
+      حافظہ_نقل (dst, src, z);
+      توڑو;
 
-    default:
+    طےشدہ:
       abort();
     }
 
-  return FFI_ALIGN (z, 4);
+  واپس FFI_ALIGN (z, 4);
 }
 
 /* ffi_prep_args is called once stack space has been allocated
@@ -150,20 +150,20 @@ ffi_put_arg (ffi_type *ty, void *src, void *dst)
    value is cif->vfp_used (word bitset of VFP regs used for passing
    arguments). These are only used for the VFP hard-float ABI.
 */
-static void
-ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
-		    void **avalue, char *argp)
+ساکن خالی
+ffi_prep_دلائل_SYSV (ffi_cif *cif, صحیح flags, خالی *rvalue,
+		    خالی **avalue, حرف *argp)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n;
+  صحیح i, n;
 
-  if (flags == ARM_TYPE_STRUCT)
+  اگر (flags == ARM_TYPE_STRUCT)
     {
-      *(void **) argp = rvalue;
+      *(خالی **) argp = rvalue;
       argp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  برائے (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
       argp = ffi_align (ty, argp);
@@ -171,548 +171,548 @@ ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
     }
 }
 
-static void
-ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
-                   void **avalue, char *stack, char *vfp_space)
+ساکن خالی
+ffi_prep_دلائل_VFP (ffi_cif *cif, صحیح flags, خالی *rvalue,
+                   خالی **avalue, حرف *ڈھیر, حرف *vfp_space)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n, vi = 0;
-  char *argp, *regp, *eo_regp;
-  char stack_used = 0;
-  char done_with_regs = 0;
+  صحیح i, n, vi = 0;
+  حرف *argp, *regp, *eo_regp;
+  حرف ڈھیر_مستعمل = 0;
+  حرف مکمل_with_regs = 0;
 
   /* The first 4 words on the stack are used for values
      passed in core registers.  */
-  regp = stack;
+  regp = ڈھیر;
   eo_regp = argp = regp + 16;
 
   /* If the function returns an FFI_TYPE_STRUCT in memory,
      that address is passed in r0 to the function.  */
-  if (flags == ARM_TYPE_STRUCT)
+  اگر (flags == ARM_TYPE_STRUCT)
     {
-      *(void **) regp = rvalue;
+      *(خالی **) regp = rvalue;
       regp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  برائے (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *a = avalue[i];
-      int is_vfp_type = vfp_type_p (ty);
+      خالی *a = avalue[i];
+      صحیح is_vfp_type = vfp_type_p (ty);
 
       /* Allocated in VFP registers. */
-      if (vi < cif->vfp_nargs && is_vfp_type)
+      اگر (vi < cif->vfp_nargs && is_vfp_type)
 	{
-	  char *vfp_slot = vfp_space + cif->vfp_args[vi++] * 4;
-	  ffi_put_arg (ty, a, vfp_slot);
-	  continue;
+	  حرف *vfp_خانہ = vfp_space + cif->vfp_دلائل[vi++] * 4;
+	  ffi_put_arg (ty, a, vfp_خانہ);
+	  جاری;
 	}
       /* Try allocating in core registers. */
-      else if (!done_with_regs && !is_vfp_type)
+      ورنہ اگر (!مکمل_with_regs && !is_vfp_type)
 	{
-	  char *tregp = ffi_align (ty, regp);
-	  size_t size = ty->size;
-	  size = (size < 4) ? 4 : size;	// pad
+	  حرف *tregp = ffi_align (ty, regp);
+	  size_t سائز = ty->سائز;
+	  سائز = (سائز < 4) ? 4 : سائز;	// pad
 	  /* Check if there is space left in the aligned register
 	     area to place the argument.  */
-	  if (tregp + size <= eo_regp)
+	  اگر (tregp + سائز <= eo_regp)
 	    {
 	      regp = tregp + ffi_put_arg (ty, a, tregp);
-	      done_with_regs = (regp == argp);
+	      مکمل_with_regs = (regp == argp);
 	      // ensure we did not write into the stack area
 	      FFI_ASSERT (regp <= argp);
-	      continue;
+	      جاری;
 	    }
 	  /* In case there are no arguments in the stack area yet,
 	     the argument is passed in the remaining core registers
 	     and on the stack.  */
-	  else if (!stack_used)
+	  ورنہ اگر (!ڈھیر_مستعمل)
 	    {
-	      stack_used = 1;
-	      done_with_regs = 1;
+	      ڈھیر_مستعمل = 1;
+	      مکمل_with_regs = 1;
 	      argp = tregp + ffi_put_arg (ty, a, tregp);
 	      FFI_ASSERT (eo_regp < argp);
-	      continue;
+	      جاری;
 	    }
 	}
       /* Base case, arguments are passed on the stack */
-      stack_used = 1;
+      ڈھیر_مستعمل = 1;
       argp = ffi_align (ty, argp);
       argp += ffi_put_arg (ty, a, argp);
     }
 }
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-  int flags = 0, cabi = cif->abi;
-  size_t bytes = cif->bytes;
+  صحیح flags = 0, cabi = cif->abi;
+  size_t بائٹیں = cif->بائٹیں;
 
   /* Map out the register placements of VFP register args.  The VFP
      hard-float calling conventions are slightly more sophisticated
      than the base calling conventions, so we do it here instead of
      in ffi_prep_args(). */
-  if (cabi == FFI_VFP)
-    layout_vfp_args (cif);
+  اگر (cabi == FFI_VFP)
+    layout_vfp_دلائل (cif);
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    حالت FFI_TYPE_VOID:
       flags = ARM_TYPE_VOID;
-      break;
+      توڑو;
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_POINTER:
+    حالت FFI_TYPE_INT:
+    حالت FFI_TYPE_UINT8:
+    حالت FFI_TYPE_SINT8:
+    حالت FFI_TYPE_UINT16:
+    حالت FFI_TYPE_SINT16:
+    حالت FFI_TYPE_UINT32:
+    حالت FFI_TYPE_SINT32:
+    حالت FFI_TYPE_اشارہ_گر:
       flags = ARM_TYPE_INT;
-      break;
+      توڑو;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
       flags = ARM_TYPE_INT64;
-      break;
+      توڑو;
 
-    case FFI_TYPE_FLOAT:
+    حالت FFI_TYPE_FLOAT:
       flags = (cabi == FFI_VFP ? ARM_TYPE_VFP_S : ARM_TYPE_INT);
-      break;
-    case FFI_TYPE_DOUBLE:
+      توڑو;
+    حالت FFI_TYPE_DOUBLE:
       flags = (cabi == FFI_VFP ? ARM_TYPE_VFP_D : ARM_TYPE_INT64);
-      break;
+      توڑو;
 
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_COMPLEX:
-      if (cabi == FFI_VFP)
+    حالت FFI_TYPE_STRUCT:
+    حالت FFI_TYPE_COMPLEX:
+      اگر (cabi == FFI_VFP)
 	{
-	  int h = vfp_type_p (cif->rtype);
+	  صحیح h = vfp_type_p (cif->rtype);
 
 	  flags = ARM_TYPE_VFP_N;
-	  if (h == 0x100 + FFI_TYPE_FLOAT)
+	  اگر (h == 0x100 + FFI_TYPE_FLOAT)
 	    flags = ARM_TYPE_VFP_S;
-	  if (h == 0x100 + FFI_TYPE_DOUBLE)
+	  اگر (h == 0x100 + FFI_TYPE_DOUBLE)
 	    flags = ARM_TYPE_VFP_D;
-	  if (h != 0)
-	      break;
+	  اگر (h != 0)
+	      توڑو;
 	}
 
       /* A Composite Type not larger than 4 bytes is returned in r0.
 	 A Composite Type larger than 4 bytes, or whose size cannot
 	 be determined statically ... is stored in memory at an
 	 address passed [in r0].  */
-      if (cif->rtype->size <= 4)
+      اگر (cif->rtype->سائز <= 4)
 	flags = ARM_TYPE_INT;
-      else
+      ورنہ
 	{
 	  flags = ARM_TYPE_STRUCT;
-	  bytes += 4;
+	  بائٹیں += 4;
 	}
-      break;
+      توڑو;
 
-    default:
+    طےشدہ:
       abort();
     }
 
   /* Round the stack up to a multiple of 8 bytes.  This isn't needed
      everywhere, but it is on some platforms, and it doesn't harm anything
      when it isn't needed.  */
-  bytes = FFI_ALIGN (bytes, 8);
+  بائٹیں = FFI_ALIGN (بائٹیں, 8);
 
   /* Minimum stack space is the 4 register arguments that we pop.  */
-  if (bytes < 4*4)
-    bytes = 4*4;
+  اگر (بائٹیں < 4*4)
+    بائٹیں = 4*4;
 
-  cif->bytes = bytes;
+  cif->بائٹیں = بائٹیں;
   cif->flags = flags;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 /* Perform machine dependent cif processing for variadic calls */
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif * cif,
-			  unsigned int nfixedargs, unsigned int ntotalargs)
+			  غیرعلامتی صحیح nfixedargs, غیرعلامتی صحیح ntotalargs)
 {
   /* VFP variadic calls actually use the SYSV ABI */
-  if (cif->abi == FFI_VFP)
+  اگر (cif->abi == FFI_VFP)
     cif->abi = FFI_SYSV;
 
-  return ffi_prep_cif_machdep (cif);
+  واپس ffi_prep_cif_machdep (cif);
 }
 
 /* Prototypes for assembly functions, in sysv.S.  */
 
-struct call_frame
+ساخت call_چوکھٹا
 {
-  void *fp;
-  void *lr;
-  void *rvalue;
-  int flags;
-  void *closure;
+  خالی *fp;
+  خالی *lr;
+  خالی *rvalue;
+  صحیح flags;
+  خالی *احاطہ;
 };
 
-extern void ffi_call_SYSV (void *stack, struct call_frame *,
-			   void (*fn) (void)) FFI_HIDDEN;
-extern void ffi_call_VFP (void *vfp_space, struct call_frame *,
-			   void (*fn) (void), unsigned vfp_used) FFI_HIDDEN;
+خارجی خالی ffi_call_SYSV (خالی *ڈھیر, ساخت call_چوکھٹا *,
+			   خالی (*fn) (خالی)) FFI_HIDDEN;
+خارجی خالی ffi_call_VFP (خالی *vfp_space, ساخت call_چوکھٹا *,
+			   خالی (*fn) (خالی), غیرعلامتی vfp_مستعمل) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
-	      void **avalue, void *closure)
+ساکن خالی
+ffi_call_int (ffi_cif * cif, خالی (*fn) (خالی), خالی *rvalue,
+	      خالی **avalue, خالی *احاطہ)
 {
-  int flags = cif->flags;
+  صحیح flags = cif->flags;
   ffi_type *rtype = cif->rtype;
-  size_t bytes, rsize, vfp_size;
-  char *stack, *vfp_space, *new_rvalue;
-  struct call_frame *frame;
+  size_t بائٹیں, rsize, vfp_سائز;
+  حرف *ڈھیر, *vfp_space, *new_rvalue;
+  ساخت call_چوکھٹا *چوکھٹا;
 
   rsize = 0;
-  if (rvalue == NULL)
+  اگر (rvalue == تہی)
     {
       /* If the return value is a struct and we don't have a return
 	 value address then we need to make one.  Otherwise the return
 	 value is in registers and we can ignore them.  */
-      if (flags == ARM_TYPE_STRUCT)
-	rsize = rtype->size;
-      else
+      اگر (flags == ARM_TYPE_STRUCT)
+	rsize = rtype->سائز;
+      ورنہ
 	flags = ARM_TYPE_VOID;
     }
-  else if (flags == ARM_TYPE_VFP_N)
+  ورنہ اگر (flags == ARM_TYPE_VFP_N)
     {
       /* Largest case is double x 4. */
       rsize = 32;
     }
-  else if (flags == ARM_TYPE_INT && rtype->type == FFI_TYPE_STRUCT)
+  ورنہ اگر (flags == ARM_TYPE_INT && rtype->type == FFI_TYPE_STRUCT)
     rsize = 4;
 
   /* Largest case.  */
-  vfp_size = (cif->abi == FFI_VFP && cif->vfp_used ? 8*8: 0);
+  vfp_سائز = (cif->abi == FFI_VFP && cif->vfp_مستعمل ? 8*8: 0);
 
-  bytes = cif->bytes;
-  stack = alloca (vfp_size + bytes + sizeof(struct call_frame) + rsize);
+  بائٹیں = cif->بائٹیں;
+  ڈھیر = alloca (vfp_سائز + بائٹیں + حجم(ساخت call_چوکھٹا) + rsize);
 
-  vfp_space = NULL;
-  if (vfp_size)
+  vfp_space = تہی;
+  اگر (vfp_سائز)
     {
-      vfp_space = stack;
-      stack += vfp_size;
+      vfp_space = ڈھیر;
+      ڈھیر += vfp_سائز;
     }
 
-  frame = (struct call_frame *)(stack + bytes);
+  چوکھٹا = (ساخت call_چوکھٹا *)(ڈھیر + بائٹیں);
 
   new_rvalue = rvalue;
-  if (rsize)
-    new_rvalue = (void *)(frame + 1);
+  اگر (rsize)
+    new_rvalue = (خالی *)(چوکھٹا + 1);
 
-  frame->rvalue = new_rvalue;
-  frame->flags = flags;
-  frame->closure = closure;
+  چوکھٹا->rvalue = new_rvalue;
+  چوکھٹا->flags = flags;
+  چوکھٹا->احاطہ = احاطہ;
 
-  if (vfp_space)
+  اگر (vfp_space)
     {
-      ffi_prep_args_VFP (cif, flags, new_rvalue, avalue, stack, vfp_space);
-      ffi_call_VFP (vfp_space, frame, fn, cif->vfp_used);
+      ffi_prep_دلائل_VFP (cif, flags, new_rvalue, avalue, ڈھیر, vfp_space);
+      ffi_call_VFP (vfp_space, چوکھٹا, fn, cif->vfp_مستعمل);
     }
-  else
+  ورنہ
     {
-      ffi_prep_args_SYSV (cif, flags, new_rvalue, avalue, stack);
-      ffi_call_SYSV (stack, frame, fn);
+      ffi_prep_دلائل_SYSV (cif, flags, new_rvalue, avalue, ڈھیر);
+      ffi_call_SYSV (ڈھیر, چوکھٹا, fn);
     }
 
-  if (rvalue && rvalue != new_rvalue)
-    memcpy (rvalue, new_rvalue, rtype->size);
+  اگر (rvalue && rvalue != new_rvalue)
+    حافظہ_نقل (rvalue, new_rvalue, rtype->سائز);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+خالی
+ffi_call (ffi_cif *cif, خالی (*fn) (خالی), خالی *rvalue, خالی **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, تہی);
 }
 
-#ifdef FFI_GO_CLOSURES
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+#اگر_تعریف_شدہ FFI_GO_CLOSURES
+خالی
+ffi_call_go (ffi_cif *cif, خالی (*fn) (خالی), خالی *rvalue,
+	     خالی **avalue, خالی *احاطہ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, احاطہ);
 }
-#endif
+#اگر_ختم
 
-static void *
-ffi_prep_incoming_args_SYSV (ffi_cif *cif, void *rvalue,
-			     char *argp, void **avalue)
+ساکن خالی *
+ffi_prep_incoming_دلائل_SYSV (ffi_cif *cif, خالی *rvalue,
+			     حرف *argp, خالی **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n;
+  صحیح i, n;
 
-  if (cif->flags == ARM_TYPE_STRUCT)
+  اگر (cif->flags == ARM_TYPE_STRUCT)
     {
-      rvalue = *(void **) argp;
+      rvalue = *(خالی **) argp;
       argp += 4;
     }
-  else
+  ورنہ
     {
-      if (cif->rtype->size && cif->rtype->size < 4)
+      اگر (cif->rtype->سائز && cif->rtype->سائز < 4)
         *(uint32_t *) rvalue = 0;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  برائے (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      size_t z = ty->size;
+      size_t z = ty->سائز;
 
       argp = ffi_align (ty, argp);
-#ifdef __ARMEB__
-      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
-	avalue[i] = (void *) (argp + 4 - z);
-      else
-#endif
-      avalue[i] = (void *) argp;
+#اگر_تعریف_شدہ __ARMEB__
+      اگر (z < 4 && ty->type != FFI_TYPE_STRUCT)
+	avalue[i] = (خالی *) (argp + 4 - z);
+      ورنہ
+#اگر_ختم
+      avalue[i] = (خالی *) argp;
       argp += z;
     }
 
-  return rvalue;
+  واپس rvalue;
 }
 
-static void *
-ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
-			    char *vfp_space, void **avalue)
+ساکن خالی *
+ffi_prep_incoming_دلائل_VFP (ffi_cif *cif, خالی *rvalue, حرف *ڈھیر,
+			    حرف *vfp_space, خالی **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n, vi = 0;
-  char *argp, *regp, *eo_regp;
-  char done_with_regs = 0;
-  char stack_used = 0;
+  صحیح i, n, vi = 0;
+  حرف *argp, *regp, *eo_regp;
+  حرف مکمل_with_regs = 0;
+  حرف ڈھیر_مستعمل = 0;
 
-  regp = stack;
+  regp = ڈھیر;
   eo_regp = argp = regp + 16;
 
-  if (cif->flags == ARM_TYPE_STRUCT)
+  اگر (cif->flags == ARM_TYPE_STRUCT)
     {
-      rvalue = *(void **) regp;
+      rvalue = *(خالی **) regp;
       regp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  برائے (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      int is_vfp_type = vfp_type_p (ty);
-      size_t z = ty->size;
+      صحیح is_vfp_type = vfp_type_p (ty);
+      size_t z = ty->سائز;
 
-      if (vi < cif->vfp_nargs && is_vfp_type)
+      اگر (vi < cif->vfp_nargs && is_vfp_type)
 	{
-	  avalue[i] = vfp_space + cif->vfp_args[vi++] * 4;
-	  continue;
+	  avalue[i] = vfp_space + cif->vfp_دلائل[vi++] * 4;
+	  جاری;
 	}
-      else if (!done_with_regs && !is_vfp_type)
+      ورنہ اگر (!مکمل_with_regs && !is_vfp_type)
 	{
-	  char *tregp = ffi_align (ty, regp);
+	  حرف *tregp = ffi_align (ty, regp);
 
 	  z = (z < 4) ? 4 : z;	// pad
 
 	  /* If the arguments either fits into the registers or uses registers
 	     and stack, while we haven't read other things from the stack */
-	  if (tregp + z <= eo_regp || !stack_used)
+	  اگر (tregp + z <= eo_regp || !ڈھیر_مستعمل)
 	    {
 	      /* Because we're little endian, this is what it turns into.  */
-#ifdef __ARMEB__
-	      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
-		avalue[i] = (void *) (tregp + 4 - z);
-	      else
-#endif
-	      avalue[i] = (void *) tregp;
+#اگر_تعریف_شدہ __ARMEB__
+	      اگر (z < 4 && ty->type != FFI_TYPE_STRUCT)
+		avalue[i] = (خالی *) (tregp + 4 - z);
+	      ورنہ
+#اگر_ختم
+	      avalue[i] = (خالی *) tregp;
 	      regp = tregp + z;
 
 	      /* If we read past the last core register, make sure we
 		 have not read from the stack before and continue
 		 reading after regp.  */
-	      if (regp > eo_regp)
+	      اگر (regp > eo_regp)
 		{
-		  FFI_ASSERT (!stack_used);
+		  FFI_ASSERT (!ڈھیر_مستعمل);
 		  argp = regp;
 		}
-	      if (regp >= eo_regp)
+	      اگر (regp >= eo_regp)
 		{
-		  done_with_regs = 1;
-		  stack_used = 1;
+		  مکمل_with_regs = 1;
+		  ڈھیر_مستعمل = 1;
 		}
-	      continue;
+	      جاری;
 	    }
 	}
 
-      stack_used = 1;
+      ڈھیر_مستعمل = 1;
       argp = ffi_align (ty, argp);
-#ifdef __ARMEB__
-      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
-	avalue[i] = (void *) (argp + 4 - z);
-      else
-#endif
-      avalue[i] = (void *) argp;
+#اگر_تعریف_شدہ __ARMEB__
+      اگر (z < 4 && ty->type != FFI_TYPE_STRUCT)
+	avalue[i] = (خالی *) (argp + 4 - z);
+      ورنہ
+#اگر_ختم
+      avalue[i] = (خالی *) argp;
       argp += z;
     }
 
-  return rvalue;
+  واپس rvalue;
 }
 
-#if FFI_CLOSURES
+#اگر FFI_CLOSURES
 
-struct closure_frame
+ساخت احاطہ_چوکھٹا
 {
-  char vfp_space[8*8] __attribute__((aligned(8)));
-  char result[8*4];
-  char argp[];
+  حرف vfp_space[8*8] __attribute__((aligned(8)));
+  حرف نتیجہ[8*4];
+  حرف argp[];
 };
 
-int FFI_HIDDEN
-ffi_closure_inner_SYSV (ffi_cif *cif,
-		        void (*fun) (ffi_cif *, void *, void **, void *),
-		        void *user_data,
-		        struct closure_frame *frame)
+صحیح FFI_HIDDEN
+ffi_احاطہ_inner_SYSV (ffi_cif *cif,
+		        خالی (*fun) (ffi_cif *, خالی *, خالی **, خالی *),
+		        خالی *user_ڈیٹا,
+		        ساخت احاطہ_چوکھٹا *چوکھٹا)
 {
-  void **avalue = (void **) alloca (cif->nargs * sizeof (void *));
-  void *rvalue = ffi_prep_incoming_args_SYSV (cif, frame->result,
-					      frame->argp, avalue);
-  fun (cif, rvalue, avalue, user_data);
-  return cif->flags;
+  خالی **avalue = (خالی **) alloca (cif->nargs * حجم (خالی *));
+  خالی *rvalue = ffi_prep_incoming_دلائل_SYSV (cif, چوکھٹا->نتیجہ,
+					      چوکھٹا->argp, avalue);
+  fun (cif, rvalue, avalue, user_ڈیٹا);
+  واپس cif->flags;
 }
 
-int FFI_HIDDEN
-ffi_closure_inner_VFP (ffi_cif *cif,
-		       void (*fun) (ffi_cif *, void *, void **, void *),
-		       void *user_data,
-		       struct closure_frame *frame)
+صحیح FFI_HIDDEN
+ffi_احاطہ_inner_VFP (ffi_cif *cif,
+		       خالی (*fun) (ffi_cif *, خالی *, خالی **, خالی *),
+		       خالی *user_ڈیٹا,
+		       ساخت احاطہ_چوکھٹا *چوکھٹا)
 {
-  void **avalue = (void **) alloca (cif->nargs * sizeof (void *));
-  void *rvalue = ffi_prep_incoming_args_VFP (cif, frame->result, frame->argp,
-					     frame->vfp_space, avalue);
-  fun (cif, rvalue, avalue, user_data);
-  return cif->flags;
+  خالی **avalue = (خالی **) alloca (cif->nargs * حجم (خالی *));
+  خالی *rvalue = ffi_prep_incoming_دلائل_VFP (cif, چوکھٹا->نتیجہ, چوکھٹا->argp,
+					     چوکھٹا->vfp_space, avalue);
+  fun (cif, rvalue, avalue, user_ڈیٹا);
+  واپس cif->flags;
 }
 
-void ffi_closure_SYSV (void) FFI_HIDDEN;
-void ffi_closure_VFP (void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void ffi_closure_SYSV_alt (void) FFI_HIDDEN;
-void ffi_closure_VFP_alt (void) FFI_HIDDEN;
-#endif
+خالی ffi_احاطہ_SYSV (خالی) FFI_HIDDEN;
+خالی ffi_احاطہ_VFP (خالی) FFI_HIDDEN;
+#اگر defined(FFI_EXEC_STATIC_TRAMP)
+خالی ffi_احاطہ_SYSV_alt (خالی) FFI_HIDDEN;
+خالی ffi_احاطہ_VFP_alt (خالی) FFI_HIDDEN;
+#اگر_ختم
 
-#ifdef FFI_GO_CLOSURES
-void ffi_go_closure_SYSV (void) FFI_HIDDEN;
-void ffi_go_closure_VFP (void) FFI_HIDDEN;
-#endif
+#اگر_تعریف_شدہ FFI_GO_CLOSURES
+خالی ffi_go_احاطہ_SYSV (خالی) FFI_HIDDEN;
+خالی ffi_go_احاطہ_VFP (خالی) FFI_HIDDEN;
+#اگر_ختم
 
 /* the cif must already be prep'ed */
 
-#if defined(__FreeBSD__) && defined(__arm__)
-#define __clear_cache(start, end) do { \
-		struct arm_sync_icache_args ua; 		\
+#اگر defined(__FreeBSD__) && defined(__arm__)
+#تعریف_کرو __clear_cache(آغاز, انتہا) کرو { \
+		ساخت arm_sync_icache_دلائل ua; 		\
 								\
-		ua.addr = (uintptr_t)(start);			\
-		ua.len = (char *)(end) - (char *)start;		\
+		ua.addr = (uintptr_t)(آغاز);			\
+		ua.len = (حرف *)(انتہا) - (حرف *)آغاز;		\
 		sysarch(ARM_SYNC_ICACHE, &ua);			\
-	} while (0);
-#endif
+	} جب (0);
+#اگر_ختم
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure * closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ * احاطہ,
 		      ffi_cif * cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      خالی (*fun) (ffi_cif *, خالی *, خالی **, خالی *),
+		      خالی *user_ڈیٹا, خالی *codeloc)
 {
-  void (*closure_func) (void) = ffi_closure_SYSV;
+  خالی (*احاطہ_func) (خالی) = ffi_احاطہ_SYSV;
 
-  if (cif->abi == FFI_VFP)
+  اگر (cif->abi == FFI_VFP)
     {
       /* We only need take the vfp path if there are vfp arguments.  */
-      if (cif->vfp_used)
-	closure_func = ffi_closure_VFP;
+      اگر (cif->vfp_مستعمل)
+	احاطہ_func = ffi_احاطہ_VFP;
     }
-  else if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ورنہ اگر (cif->abi != FFI_SYSV)
+    واپس FFI_BAD_ABI;
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
-  void **config = (void **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
-  config[0] = closure;
-  config[1] = closure_func;
-#else
+#اگر FFI_EXEC_TRAMPOLINE_جدول
+  خالی **config = (خالی **)((uint8_t *)codeloc - صفحہ_MAX_سائز);
+  config[0] = احاطہ;
+  config[1] = احاطہ_func;
+#ورنہ
 
-# if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+# اگر defined(FFI_EXEC_STATIC_TRAMP)
+  اگر (ffi_tramp_is_present(احاطہ))
     {
       /* Initialize the static trampoline's parameters. */
-      if (closure_func == ffi_closure_SYSV)
-        closure_func = ffi_closure_SYSV_alt;
-      else
-        closure_func = ffi_closure_VFP_alt;
-      ffi_tramp_set_parms (closure->ftramp, closure_func, closure);
-      goto out;
+      اگر (احاطہ_func == ffi_احاطہ_SYSV)
+        احاطہ_func = ffi_احاطہ_SYSV_alt;
+      ورنہ
+        احاطہ_func = ffi_احاطہ_VFP_alt;
+      ffi_tramp_سیٹ_parms (احاطہ->ftramp, احاطہ_func, احاطہ);
+      جاؤ برآمد;
     }
 # endif
 
   /* Initialize the dynamic trampoline. */
 # ifndef _WIN32
-  memcpy(closure->tramp, ffi_arm_trampoline, 8);
-# else
+  حافظہ_نقل(احاطہ->tramp, ffi_arm_trampoline, 8);
+# ورنہ
   // cast away function type so MSVC doesn't set the lower bit of the function pointer
-  memcpy(closure->tramp, (void*)((uintptr_t)ffi_arm_trampoline & 0xFFFFFFFE), FFI_TRAMPOLINE_CLOSURE_OFFSET);
+  حافظہ_نقل(احاطہ->tramp, (خالی*)((uintptr_t)ffi_arm_trampoline & 0xFFFFFFFE), FFI_TRAMPOLINE_احاطہ_انحراف);
 # endif
 
-# if defined(__QNX__)
-  msync (closure->tramp, 8, MS_INVALIDATE_ICACHE);	/* clear data map */
+# اگر defined(__QNX__)
+  msync (احاطہ->tramp, 8, MS_INVALIDATE_ICACHE);	/* clear data map */
   msync (codeloc, 8, MS_INVALIDATE_ICACHE);		/* clear insn map */
 # elif defined(_WIN32)
-  FlushInstructionCache(GetCurrentProcess(), closure->tramp, FFI_TRAMPOLINE_SIZE);
-# else
-  __clear_cache(closure->tramp, closure->tramp + 8);	/* clear data map */
+  FlushInstructionCache(GetCurrentProcess(), احاطہ->tramp, FFI_TRAMPOLINE_سائز);
+# ورنہ
+  __clear_cache(احاطہ->tramp, احاطہ->tramp + 8);	/* clear data map */
   __clear_cache(codeloc, codeloc + 8);			/* clear insn map */
 # endif
 # ifdef _WIN32
-  *(void(**)(void))(closure->tramp + FFI_TRAMPOLINE_CLOSURE_FUNCTION) = closure_func;
-# else
-  *(void (**)(void))(closure->tramp + 8) = closure_func;
+  *(خالی(**)(خالی))(احاطہ->tramp + FFI_TRAMPOLINE_احاطہ_FUNCTION) = احاطہ_func;
+# ورنہ
+  *(خالی (**)(خالی))(احاطہ->tramp + 8) = احاطہ_func;
 # endif
-# if defined(FFI_EXEC_STATIC_TRAMP)
-out:
+# اگر defined(FFI_EXEC_STATIC_TRAMP)
+برآمد:
 # endif
-#endif
+#اگر_ختم
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
-#ifdef FFI_GO_CLOSURES
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+#اگر_تعریف_شدہ FFI_GO_CLOSURES
+ffi_حالت
+ffi_prep_go_احاطہ (ffi_go_احاطہ *احاطہ, ffi_cif *cif,
+		     خالی (*fun) (ffi_cif *, خالی *, خالی **, خالی *))
 {
-  void (*closure_func) (void) = ffi_go_closure_SYSV;
+  خالی (*احاطہ_func) (خالی) = ffi_go_احاطہ_SYSV;
 
-  if (cif->abi == FFI_VFP)
+  اگر (cif->abi == FFI_VFP)
     {
       /* We only need take the vfp path if there are vfp arguments.  */
-      if (cif->vfp_used)
-	closure_func = ffi_go_closure_VFP;
+      اگر (cif->vfp_مستعمل)
+	احاطہ_func = ffi_go_احاطہ_VFP;
     }
-  else if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ورنہ اگر (cif->abi != FFI_SYSV)
+    واپس FFI_BAD_ABI;
 
-  closure->tramp = closure_func;
-  closure->cif = cif;
-  closure->fun = fun;
+  احاطہ->tramp = احاطہ_func;
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
-#endif
+#اگر_ختم
 
-#endif /* FFI_CLOSURES */
+#اگر_ختم /* FFI_CLOSURES */
 
 /* Below are routines for VFP hard-float support. */
 
@@ -720,51 +720,51 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
    of the first non-structure element.  Recurse for structure elements.
    Return -1 if the structure is in fact empty, i.e. no nested elements.  */
 
-static int
-is_hfa0 (const ffi_type *ty)
+ساکن صحیح
+is_hfa0 (ثابت ffi_type *ty)
 {
   ffi_type **elements = ty->elements;
-  int i, ret = -1;
+  صحیح i, ret = -1;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  اگر (elements != تہی)
+    برائے (i = 0; elements[i]; ++i)
       {
         ret = elements[i]->type;
-        if (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_COMPLEX)
+        اگر (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_COMPLEX)
           {
             ret = is_hfa0 (elements[i]);
-            if (ret < 0)
-              continue;
+            اگر (ret < 0)
+              جاری;
           }
-        break;
+        توڑو;
       }
 
-  return ret;
+  واپس ret;
 }
 
 /* A subroutine of vfp_type_p.  Given a structure type, return true if all
    of the non-structure elements are the same as CANDIDATE.  */
 
-static int
-is_hfa1 (const ffi_type *ty, int candidate)
+ساکن صحیح
+is_hfa1 (ثابت ffi_type *ty, صحیح candidate)
 {
   ffi_type **elements = ty->elements;
-  int i;
+  صحیح i;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  اگر (elements != تہی)
+    برائے (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+        صحیح t = elements[i]->type;
+        اگر (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
           {
-            if (!is_hfa1 (elements[i], candidate))
-              return 0;
+            اگر (!is_hfa1 (elements[i], candidate))
+              واپس 0;
           }
-        else if (t != candidate)
-          return 0;
+        ورنہ اگر (t != candidate)
+          واپس 0;
       }
 
-  return 1;
+  واپس 1;
 }
 
 /* Determine if TY is an homogenous floating point aggregate (HFA).
@@ -774,163 +774,163 @@ is_hfa1 (const ffi_type *ty, int candidate)
    Returns non-zero iff TY is an HFA.  The result is an encoded value where
    bits 0-7 contain the type code, and bits 8-10 contain the element count.  */
 
-static int
-vfp_type_p (const ffi_type *ty)
+ساکن صحیح
+vfp_type_p (ثابت ffi_type *ty)
 {
   ffi_type **elements;
-  int candidate, i;
-  size_t size, ele_count;
+  صحیح candidate, i;
+  size_t سائز, ele_گنتی;
 
   /* Quickest tests first.  */
   candidate = ty->type;
-  switch (ty->type)
+  انتخاب (ty->type)
     {
-    default:
-      return 0;
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-      ele_count = 1;
-      goto done;
-    case FFI_TYPE_COMPLEX:
+    طےشدہ:
+      واپس 0;
+    حالت FFI_TYPE_FLOAT:
+    حالت FFI_TYPE_DOUBLE:
+      ele_گنتی = 1;
+      جاؤ مکمل;
+    حالت FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
-      if (candidate != FFI_TYPE_FLOAT && candidate != FFI_TYPE_DOUBLE)
-	return 0;
-      ele_count = 2;
-      goto done;
-    case FFI_TYPE_STRUCT:
-      break;
+      اگر (candidate != FFI_TYPE_FLOAT && candidate != FFI_TYPE_DOUBLE)
+	واپس 0;
+      ele_گنتی = 2;
+      جاؤ مکمل;
+    حالت FFI_TYPE_STRUCT:
+      توڑو;
     }
 
   /* No HFA types are smaller than 4 bytes, or larger than 32 bytes.  */
-  size = ty->size;
-  if (size < 4 || size > 32)
-    return 0;
+  سائز = ty->سائز;
+  اگر (سائز < 4 || سائز > 32)
+    واپس 0;
 
   /* Find the type of the first non-structure member.  */
   elements = ty->elements;
   candidate = elements[0]->type;
-  if (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_COMPLEX)
+  اگر (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_COMPLEX)
     {
-      for (i = 0; ; ++i)
+      برائے (i = 0; ; ++i)
         {
           candidate = is_hfa0 (elements[i]);
-          if (candidate >= 0)
-            break;
+          اگر (candidate >= 0)
+            توڑو;
         }
     }
 
   /* If the first member is not a floating point type, it's not an HFA.
      Also quickly re-check the size of the structure.  */
-  switch (candidate)
+  انتخاب (candidate)
     {
-    case FFI_TYPE_FLOAT:
-      ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
-        return 0;
-      break;
-    case FFI_TYPE_DOUBLE:
-      ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
-        return 0;
-      break;
-    default:
-      return 0;
+    حالت FFI_TYPE_FLOAT:
+      ele_گنتی = سائز / حجم(اعشاری);
+      اگر (سائز != ele_گنتی * حجم(اعشاری))
+        واپس 0;
+      توڑو;
+    حالت FFI_TYPE_DOUBLE:
+      ele_گنتی = سائز / حجم(دوہرا);
+      اگر (سائز != ele_گنتی * حجم(دوہرا))
+        واپس 0;
+      توڑو;
+    طےشدہ:
+      واپس 0;
     }
-  if (ele_count > 4)
-    return 0;
+  اگر (ele_گنتی > 4)
+    واپس 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
-  for (i = 0; elements[i]; ++i)
+  برائے (i = 0; elements[i]; ++i)
     {
-      int t = elements[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+      صحیح t = elements[i]->type;
+      اگر (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
         {
-          if (!is_hfa1 (elements[i], candidate))
-            return 0;
+          اگر (!is_hfa1 (elements[i], candidate))
+            واپس 0;
         }
-      else if (t != candidate)
-        return 0;
+      ورنہ اگر (t != candidate)
+        واپس 0;
     }
 
   /* All tests succeeded.  Encode the result.  */
- done:
-  return (ele_count << 8) | candidate;
+ مکمل:
+  واپس (ele_گنتی << 8) | candidate;
 }
 
-static int
-place_vfp_arg (ffi_cif *cif, int h)
+ساکن صحیح
+رکھو_vfp_arg (ffi_cif *cif, صحیح h)
 {
-  unsigned short reg = cif->vfp_reg_free;
-  int align = 1, nregs = h >> 8;
+  غیرعلامتی مختصر reg = cif->vfp_reg_free;
+  صحیح align = 1, nregs = h >> 8;
 
-  if ((h & 0xff) == FFI_TYPE_DOUBLE)
+  اگر ((h & 0xff) == FFI_TYPE_DOUBLE)
     align = 2, nregs *= 2;
 
   /* Align register number. */
-  if ((reg & 1) && align == 2)
+  اگر ((reg & 1) && align == 2)
     reg++;
 
-  while (reg + nregs <= 16)
+  جب (reg + nregs <= 16)
     {
-      int s, new_used = 0;
-      for (s = reg; s < reg + nregs; s++)
+      صحیح s, new_مستعمل = 0;
+      برائے (s = reg; s < reg + nregs; s++)
 	{
-	  new_used |= (1 << s);
-	  if (cif->vfp_used & (1 << s))
+	  new_مستعمل |= (1 << s);
+	  اگر (cif->vfp_مستعمل & (1 << s))
 	    {
 	      reg += align;
-	      goto next_reg;
+	      جاؤ اگلا_reg;
 	    }
 	}
       /* Found regs to allocate. */
-      cif->vfp_used |= new_used;
-      cif->vfp_args[cif->vfp_nargs++] = (signed char)reg;
+      cif->vfp_مستعمل |= new_مستعمل;
+      cif->vfp_دلائل[cif->vfp_nargs++] = (علامتی حرف)reg;
 
       /* Update vfp_reg_free. */
-      if (cif->vfp_used & (1 << cif->vfp_reg_free))
+      اگر (cif->vfp_مستعمل & (1 << cif->vfp_reg_free))
 	{
 	  reg += nregs;
-	  while (cif->vfp_used & (1 << reg))
+	  جب (cif->vfp_مستعمل & (1 << reg))
 	    reg += 1;
 	  cif->vfp_reg_free = reg;
 	}
-      return 0;
-    next_reg:;
+      واپس 0;
+    اگلا_reg:;
     }
   // done, mark all regs as used
   cif->vfp_reg_free = 16;
-  cif->vfp_used = 0xFFFF;
-  return 1;
+  cif->vfp_مستعمل = 0xFFFF;
+  واپس 1;
 }
 
-static void
-layout_vfp_args (ffi_cif * cif)
+ساکن خالی
+layout_vfp_دلائل (ffi_cif * cif)
 {
-  unsigned int i;
+  غیرعلامتی صحیح i;
   /* Init VFP fields */
-  cif->vfp_used = 0;
+  cif->vfp_مستعمل = 0;
   cif->vfp_nargs = 0;
   cif->vfp_reg_free = 0;
-  memset (cif->vfp_args, -1, 16);	/* Init to -1. */
+  memset (cif->vfp_دلائل, -1, 16);	/* Init to -1. */
 
-  for (i = 0; i < cif->nargs; i++)
+  برائے (i = 0; i < cif->nargs; i++)
     {
-      int h = vfp_type_p (cif->arg_types[i]);
-      if (h && place_vfp_arg (cif, h) == 1)
-	break;
+      صحیح h = vfp_type_p (cif->arg_types[i]);
+      اگر (h && رکھو_vfp_arg (cif, h) == 1)
+	توڑو;
     }
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#اگر defined(FFI_EXEC_STATIC_TRAMP)
+خالی *
+ffi_tramp_arch (size_t *tramp_سائز, size_t *map_سائز)
 {
-  extern void *trampoline_code_table;
+  خارجی خالی *trampoline_رمز_جدول;
 
-  *tramp_size = ARM_TRAMP_SIZE;
-  *map_size = ARM_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  *tramp_سائز = ARM_TRAMP_سائز;
+  *map_سائز = ARM_TRAMP_MAP_سائز;
+  واپس &trampoline_رمز_جدول;
 }
-#endif
+#اگر_ختم
 
-#endif /* __arm__ or _M_ARM */
+#اگر_ختم /* __arm__ or _M_ARM */

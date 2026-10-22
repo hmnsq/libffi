@@ -24,116 +24,116 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include "ffi_common.h"
+#شامل <ffi.h>
+#شامل "ffi_common.h"
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void* ffi_prep_args(char *stack, extended_cif *ecif)
+خالی* ffi_prep_دلائل(حرف *ڈھیر, extended_cif *ecif)
 {
-  char *stacktemp = stack;
-  int i, s;
+  حرف *stacktemp = ڈھیر;
+  صحیح i, s;
   ffi_type **arg;
-  int count = 0;
-  int nfixedargs;
+  صحیح گنتی = 0;
+  صحیح nfixedargs;
 
   nfixedargs = ecif->cif->nfixedargs;
   arg = ecif->cif->arg_types;
-  void **argv = ecif->avalue;
+  خالی **argv = ecif->avalue;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
+  اگر (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
     {
-      *(void **) stack = ecif->rvalue;
-      stack += 4;
-      count = 4;
+      *(خالی **) ڈھیر = ecif->rvalue;
+      ڈھیر += 4;
+      گنتی = 4;
     }
-  for(i=0; i<ecif->cif->nargs; i++)
+  برائے(i=0; i<ecif->cif->nargs; i++)
   {
 
     /* variadic args are saved on stack */
-    if ((nfixedargs == 0) && (count < 24))
+    اگر ((nfixedargs == 0) && (گنتی < 24))
       {
-        count = 24;
-        stack = stacktemp + 24;
+        گنتی = 24;
+        ڈھیر = stacktemp + 24;
       }
     nfixedargs--;
 
     s = 4;
-    switch((*arg)->type)
+    انتخاب((*arg)->type)
       {
-      case FFI_TYPE_STRUCT:
-        *(void **)stack = *argv;
-        break;
+      حالت FFI_TYPE_STRUCT:
+        *(خالی **)ڈھیر = *argv;
+        توڑو;
 
-      case FFI_TYPE_SINT8:
-        *(signed int *) stack = (signed int)*(SINT8 *)(* argv);
-        break;
+      حالت FFI_TYPE_SINT8:
+        *(علامتی صحیح *) ڈھیر = (علامتی صحیح)*(SINT8 *)(* argv);
+        توڑو;
 
-      case FFI_TYPE_UINT8:
-        *(unsigned int *) stack = (unsigned int)*(UINT8 *)(* argv);
-        break;
+      حالت FFI_TYPE_UINT8:
+        *(غیرعلامتی صحیح *) ڈھیر = (غیرعلامتی صحیح)*(UINT8 *)(* argv);
+        توڑو;
 
-      case FFI_TYPE_SINT16:
-        *(signed int *) stack = (signed int)*(SINT16 *)(* argv);
-        break;
+      حالت FFI_TYPE_SINT16:
+        *(علامتی صحیح *) ڈھیر = (علامتی صحیح)*(SINT16 *)(* argv);
+        توڑو;
 
-      case FFI_TYPE_UINT16:
-        *(unsigned int *) stack = (unsigned int)*(UINT16 *)(* argv);
-        break;
+      حالت FFI_TYPE_UINT16:
+        *(غیرعلامتی صحیح *) ڈھیر = (غیرعلامتی صحیح)*(UINT16 *)(* argv);
+        توڑو;
 
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_POINTER:
-        *(int *)stack = *(int*)(*argv);
-        break;
+      حالت FFI_TYPE_SINT32:
+      حالت FFI_TYPE_UINT32:
+      حالت FFI_TYPE_FLOAT:
+      حالت FFI_TYPE_اشارہ_گر:
+        *(صحیح *)ڈھیر = *(صحیح*)(*argv);
+        توڑو;
 
-      default: /* 8 byte types */
-        if (count == 20) /* never split arguments */
+      طےشدہ: /* 8 byte types */
+        اگر (گنتی == 20) /* never split arguments */
           {
-            stack += 4;
-            count += 4;
+            ڈھیر += 4;
+            گنتی += 4;
           }
-        s = (*arg)->size;
-        memcpy(stack, *argv, s);
-        break;
+        s = (*arg)->سائز;
+        حافظہ_نقل(ڈھیر, *argv, s);
+        توڑو;
       }
 
-    stack += s;
-    count += s;
+    ڈھیر += s;
+    گنتی += s;
     argv++;
     arg++;
   }
-  return stacktemp + ((count>24)?24:0);
+  واپس stacktemp + ((گنتی>24)?24:0);
 }
 
-extern void ffi_call_SYSV(unsigned,
+خارجی خالی ffi_call_SYSV(غیرعلامتی,
                           extended_cif *,
-                          void *(*)(char *, extended_cif *),
-                          unsigned *,
-                          void (*fn)(void),
-                          unsigned);
+                          خالی *(*)(حرف *, extended_cif *),
+                          غیرعلامتی *,
+                          خالی (*fn)(خالی),
+                          غیرعلامتی);
 
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+خالی ffi_call(ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue, خالی **avalue)
 {
-  int i;
-  int size;
+  صحیح i;
+  صحیح سائز;
   ffi_type **arg;
-  void **avalue_copy = NULL;
+  خالی **avalue_copy = تہی;
 
   /* Calculate size to allocate on stack */
 
-  for(i = 0, arg = cif->arg_types, size=0; i < cif->nargs; i++, arg++)
+  برائے(i = 0, arg = cif->arg_types, سائز=0; i < cif->nargs; i++, arg++)
     {
-      if ((*arg)->type == FFI_TYPE_STRUCT)
-        size += 4;
-      else
-      if ((*arg)->size <= 4)
-        size += 4;
-      else
-        size += 8;
+      اگر ((*arg)->type == FFI_TYPE_STRUCT)
+        سائز += 4;
+      ورنہ
+      اگر ((*arg)->سائز <= 4)
+        سائز += 4;
+      ورنہ
+        سائز += 8;
 
       /* If we have any large structure arguments, make a copy so we are passing
          by value.  The pointer array is cloned first: the caller owns
@@ -141,28 +141,28 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
          modified.  */
       {
         ffi_type *at = cif->arg_types[i];
-        int size = at->size;
-        if (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
+        صحیح سائز = at->سائز;
+        اگر (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
           {
-            char *argcopy = alloca (size);
-            if (avalue_copy == NULL)
+            حرف *argcopy = alloca (سائز);
+            اگر (avalue_copy == تہی)
               {
-                avalue_copy = alloca (cif->nargs * sizeof (void *));
-                memcpy (avalue_copy, avalue, cif->nargs * sizeof (void *));
+                avalue_copy = alloca (cif->nargs * حجم (خالی *));
+                حافظہ_نقل (avalue_copy, avalue, cif->nargs * حجم (خالی *));
                 avalue = avalue_copy;
               }
-            memcpy (argcopy, avalue[i], size);
+            حافظہ_نقل (argcopy, avalue[i], سائز);
             avalue[i] = argcopy;
           }
       }
     }
 
   /* for variadic functions more space is needed on the stack */
-  if (cif->nargs != cif->nfixedargs)
-    size += 24;
+  اگر (cif->nargs != cif->nfixedargs)
+    سائز += 24;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
-    size += 4;
+  اگر (cif->rtype->type == FFI_TYPE_STRUCT)
+    سائز += 4;
 
 
   extended_cif ecif;
@@ -170,136 +170,136 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ecif.avalue = avalue;
   ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  انتخاب (cif->abi)
   {
-    case FFI_SYSV:
-      ffi_call_SYSV(size, &ecif, ffi_prep_args, rvalue, fn, cif->flags);
-      break;
-    default:
+    حالت FFI_SYSV:
+      ffi_call_SYSV(سائز, &ecif, ffi_prep_دلائل, rvalue, fn, cif->flags);
+      توڑو;
+    طےشدہ:
       FFI_ASSERT(0);
-      break;
+      توڑو;
   }
 }
 
 
-void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
-                      unsigned long r6, unsigned long r7, unsigned long r8)
+خالی ffi_احاطہ_SYSV(غیرعلامتی طویل r3, غیرعلامتی طویل r4, غیرعلامتی طویل r5,
+                      غیرعلامتی طویل r6, غیرعلامتی طویل r7, غیرعلامتی طویل r8)
 {
-  register int *sp __asm__ ("r17");
-  register int *r13 __asm__ ("r13");
+  اندراج صحیح *sp __asm__ ("r17");
+  اندراج صحیح *r13 __asm__ ("r13");
 
-  ffi_closure* closure = (ffi_closure*) r13;
-  char *stack_args = (char*) sp;
+  ffi_احاطہ* احاطہ = (ffi_احاطہ*) r13;
+  حرف *ڈھیر_دلائل = (حرف*) sp;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
-  unsigned register_args[6] =
+  غیرعلامتی رجسٹر_دلائل[6] =
     { r3, r4, r5, r6, r7, r8 };
 
   /* Pointer to a struct return value.  */
-  void *struct_rvalue = (void *) r3;
+  خالی *struct_rvalue = (خالی *) r3;
 
-  ffi_cif *cif = closure->cif;
+  ffi_cif *cif = احاطہ->cif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
-  int count = 0;
-  int nfixedargs = cif->nfixedargs;
-  int i;
+  خالی **avalue = alloca (cif->nargs * حجم(خالی *));
+  حرف *ptr = (حرف *) رجسٹر_دلائل;
+  صحیح گنتی = 0;
+  صحیح nfixedargs = cif->nfixedargs;
+  صحیح i;
 
   /* preserve struct type return pointer passing */
 
-  if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
+  اگر ((cif->rtype != تہی) && (cif->rtype->type == FFI_TYPE_STRUCT))
   {
     ptr += 4;
-    count = 4;
+    گنتی = 4;
   }
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  برائے (i = 0; i < cif->nargs; i++)
     {
 
       /* variadic args are saved on stack */
-      if ((nfixedargs == 0) && (count < 24))
+      اگر ((nfixedargs == 0) && (گنتی < 24))
         {
-          ptr = stack_args;
-          count = 24;
+          ptr = ڈھیر_دلائل;
+          گنتی = 24;
         }
       nfixedargs--;
 
-      switch (arg_types[i]->type)
+      انتخاب (arg_types[i]->type)
         {
-        case FFI_TYPE_SINT8:
-        case FFI_TYPE_UINT8:
+        حالت FFI_TYPE_SINT8:
+        حالت FFI_TYPE_UINT8:
           avalue[i] = ptr + 3;
-          break;
+          توڑو;
 
-        case FFI_TYPE_SINT16:
-        case FFI_TYPE_UINT16:
+        حالت FFI_TYPE_SINT16:
+        حالت FFI_TYPE_UINT16:
           avalue[i] = ptr + 2;
-          break;
+          توڑو;
 
-        case FFI_TYPE_SINT32:
-        case FFI_TYPE_UINT32:
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_POINTER:
+        حالت FFI_TYPE_SINT32:
+        حالت FFI_TYPE_UINT32:
+        حالت FFI_TYPE_FLOAT:
+        حالت FFI_TYPE_اشارہ_گر:
           avalue[i] = ptr;
-          break;
+          توڑو;
 
-        case FFI_TYPE_STRUCT:
-          avalue[i] = *(void**)ptr;
-          break;
+        حالت FFI_TYPE_STRUCT:
+          avalue[i] = *(خالی**)ptr;
+          توڑو;
 
-        default:
+        طےشدہ:
           /* 8-byte values  */
 
           /* arguments are never splitted */
-          if (ptr == &register_args[5])
-            ptr = stack_args;
+          اگر (ptr == &رجسٹر_دلائل[5])
+            ptr = ڈھیر_دلائل;
           avalue[i] = ptr;
           ptr += 4;
-          count += 4;
-          break;
+          گنتی += 4;
+          توڑو;
         }
       ptr += 4;
-      count += 4;
+      گنتی += 4;
 
       /* If we've handled more arguments than fit in registers,
          start looking at the those passed on the stack.  */
 
-      if (count == 24)
-        ptr = stack_args;
+      اگر (گنتی == 24)
+        ptr = ڈھیر_دلائل;
     }
 
-  if (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
+  اگر (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      (closure->fun) (cif, struct_rvalue, avalue, closure->user_data);
-    } else
+      (احاطہ->fun) (cif, struct_rvalue, avalue, احاطہ->user_ڈیٹا);
+    } ورنہ
     {
-      long long rvalue;
-      (closure->fun) (cif, &rvalue, avalue, closure->user_data);
-      if (cif->rtype)
+      طویل طویل rvalue;
+      (احاطہ->fun) (cif, &rvalue, avalue, احاطہ->user_ڈیٹا);
+      اگر (cif->rtype)
         __asm__ ("l.ori r12, %0, 0x0\n l.lwz r11, 0(r12)\n l.lwz r12, 4(r12)" : : "r" (&rvalue));
     }
 }
 
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ* احاطہ,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      خالی (*fun)(ffi_cif*,خالی*,خالی**,خالی*),
+                      خالی *user_ڈیٹا,
+                      خالی *codeloc)
 {
-  unsigned short *tramp = (unsigned short *) closure->tramp;
-  unsigned long fn = (unsigned long) ffi_closure_SYSV;
-  unsigned long cls = (unsigned long) codeloc;
+  غیرعلامتی مختصر *tramp = (غیرعلامتی مختصر *) احاطہ->tramp;
+  غیرعلامتی طویل fn = (غیرعلامتی طویل) ffi_احاطہ_SYSV;
+  غیرعلامتی طویل cls = (غیرعلامتی طویل) codeloc;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_SYSV)
+    واپس FFI_BAD_ABI;
 
-  closure->cif = cif;
-  closure->user_data = user_data;
-  closure->fun = fun;
+  احاطہ->cif = cif;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
+  احاطہ->fun = fun;
 
   /* write pointers to temporary registers */
   tramp[0] = (0x6 << 10) | (13 << 5); /* l.movhi r13, ... */
@@ -318,33 +318,33 @@ ffi_prep_closure_loc (ffi_closure* closure,
   tramp[10] = (0x2a << 10) | (17 << 5) | 1; /* l.ori r17, r1, ... */
   tramp[11] = 0x0;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 
-ffi_status ffi_prep_cif_machdep (ffi_cif *cif)
+ffi_حالت ffi_prep_cif_machdep (ffi_cif *cif)
 {
   cif->flags = 0;
 
   /* structures are returned as pointers */
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  اگر (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = FFI_TYPE_STRUCT;
-  else
-  if (cif->rtype->size > 4)
+  ورنہ
+  اگر (cif->rtype->سائز > 4)
     cif->flags = FFI_TYPE_UINT64;
 
   cif->nfixedargs = cif->nargs;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-         unsigned int nfixedargs, unsigned int ntotalargs)
+ffi_حالت ffi_prep_cif_machdep_var(ffi_cif *cif,
+         غیرعلامتی صحیح nfixedargs, غیرعلامتی صحیح ntotalargs)
 {
-  ffi_status status;
+  ffi_حالت status;
 
   status = ffi_prep_cif_machdep (cif);
   cif->nfixedargs = nfixedargs;
-  return status;
+  واپس status;
 }

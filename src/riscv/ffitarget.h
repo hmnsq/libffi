@@ -25,46 +25,46 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_غیر_تعریف_شدہ LIBFFI_ہدف_H
+#تعریف_کرو LIBFFI_ہدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#اگر_غیر_تعریف_شدہ LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#اگر_ختم
 
-#ifndef __riscv
-#error "libffi was configured for a RISC-V target but this does not appear to be a RISC-V compiler."
-#endif
+#اگر_غیر_تعریف_شدہ __riscv
+#غلطی "libffi was configured for a RISC-V target but this does not appear to be a RISC-V compiler."
+#اگر_ختم
 
-#ifndef LIBFFI_ASM
+#اگر_غیر_تعریف_شدہ LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef   signed long ffi_sarg;
+قسمتعریف غیرعلامتی طویل ffi_arg;
+قسمتعریف   علامتی طویل ffi_sarg;
 
 /* FFI_UNUSED_NN and riscv_unused are to maintain ABI compatibility with a
    distributed Berkeley patch from 2014, and can be removed at SONAME bump */
-typedef enum ffi_abi {
-    FFI_FIRST_ABI = 0,
+قسمتعریف شمار ffi_abi {
+    FFI_پہلا_ABI = 0,
     FFI_SYSV,
-    FFI_UNUSED_1,
-    FFI_UNUSED_2,
-    FFI_UNUSED_3,
-    FFI_LAST_ABI,
+    FFI_غیر_مستعمل_1,
+    FFI_غیر_مستعمل_2,
+    FFI_غیر_مستعمل_3,
+    FFI_آخری_ABI,
 
     FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
-#endif /* LIBFFI_ASM */
+#اگر_ختم /* LIBFFI_ASM */
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
-#define FFI_EXTRA_CIF_FIELDS unsigned riscv_nfixedargs; unsigned riscv_unused
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#define FFI_TARGET_HAS_INT128
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_GO_CLOSURES 1
+#تعریف_کرو FFI_TRAMPOLINE_سائز 24
+#تعریف_کرو FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS غیرعلامتی riscv_nfixedargs; غیرعلامتی riscv_غیر_مستعمل
+#تعریف_کرو FFI_ہدف_SPECIFIC_VARIADIC
+#تعریف_کرو FFI_ہدف_HAS_INT128
 
-#endif
+#اگر_ختم
 

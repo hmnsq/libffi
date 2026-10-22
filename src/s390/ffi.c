@@ -28,31 +28,31 @@
 /*                          --------                                  */
 /*====================================================================*/
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdint.h>
-#include "internal.h"
-#include <tramp.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
+#شامل <stdint.h>
+#شامل "internal.h"
+#شامل <tramp.h>
 
 /*====================== End of Includes =============================*/
 
 /*====================================================================*/
-/*                           Defines                                  */
+/*متعین_کرتا*/
 /*                           -------                                  */
 /*====================================================================*/
 
 /* Maximum number of GPRs available for argument passing.  */
-#define MAX_GPRARGS 5
+#تعریف_کرو MAX_GPRARGS 5
 
 /* Maximum number of FPRs available for argument passing.  */
-#ifdef __s390x__
-#define MAX_FPRARGS 4
-#else
-#define MAX_FPRARGS 2
-#endif
+#اگر_تعریف_شدہ __s390x__
+#تعریف_کرو MAX_FPRARGS 4
+#ورنہ
+#تعریف_کرو MAX_FPRARGS 2
+#اگر_ختم
 
 /* Round to multiple of 16.  */
-#define ROUND_SIZE(size) (((size) + 15) & ~15)
+#تعریف_کرو باری_سائز(سائز) (((سائز) + 15) & ~15)
 
 /*===================== End of Defines ===============================*/
 
@@ -61,20 +61,20 @@
 /*                          ---------                                 */
 /*====================================================================*/
 
-struct call_frame
+ساخت call_چوکھٹا
 {
-  void *back_chain;
-  void *eos;
-  unsigned long gpr_args[5];
-  unsigned long gpr_save[9];
-  unsigned long long fpr_args[4];
+  خالی *عقب_chain;
+  خالی *eos;
+  غیرعلامتی طویل gpr_دلائل[5];
+  غیرعلامتی طویل gpr_save[9];
+  غیرعلامتی طویل طویل fpr_دلائل[4];
 };
 
-extern void FFI_HIDDEN ffi_call_SYSV(struct call_frame *, unsigned, void *,
-			             void (*fn)(void), void *);
+خارجی خالی FFI_HIDDEN ffi_call_SYSV(ساخت call_چوکھٹا *, غیرعلامتی, خالی *,
+			             خالی (*fn)(خالی), خالی *);
 
-extern void ffi_closure_SYSV(void);
-extern void ffi_go_closure_SYSV(void);
+خارجی خالی ffi_احاطہ_SYSV(خالی);
+خارجی خالی ffi_go_احاطہ_SYSV(خالی);
 
 /*====================== End of Externals ============================*/
 
@@ -87,45 +87,45 @@ extern void ffi_go_closure_SYSV(void);
 /*                                                                    */
 /*====================================================================*/
 
-static int
+ساکن صحیح
 ffi_check_struct_type (ffi_type *arg)
 {
-  size_t size = arg->size;
+  size_t سائز = arg->سائز;
 
   /* If the struct has just one element, look at that element
      to find out whether to consider the struct as floating point.  */
-  while (arg->type == FFI_TYPE_STRUCT
+  جب (arg->type == FFI_TYPE_STRUCT
          && arg->elements[0] && !arg->elements[1])
     arg = arg->elements[0];
 
   /* Structs of size 1, 2, 4, and 8 are passed in registers,
      just like the corresponding int/float types.  */
-  switch (size)
+  انتخاب (سائز)
     {
-      case 1:
-        return FFI_TYPE_UINT8;
+      حالت 1:
+        واپس FFI_TYPE_UINT8;
 
-      case 2:
-        return FFI_TYPE_UINT16;
+      حالت 2:
+        واپس FFI_TYPE_UINT16;
 
-      case 4:
-	if (arg->type == FFI_TYPE_FLOAT)
-          return FFI_TYPE_FLOAT;
-	else
-	  return FFI_TYPE_UINT32;
+      حالت 4:
+	اگر (arg->type == FFI_TYPE_FLOAT)
+          واپس FFI_TYPE_FLOAT;
+	ورنہ
+	  واپس FFI_TYPE_UINT32;
 
-      case 8:
-	if (arg->type == FFI_TYPE_DOUBLE)
-          return FFI_TYPE_DOUBLE;
-	else
-	  return FFI_TYPE_UINT64;
+      حالت 8:
+	اگر (arg->type == FFI_TYPE_DOUBLE)
+          واپس FFI_TYPE_DOUBLE;
+	ورنہ
+	  واپس FFI_TYPE_UINT64;
 
-      default:
-	break;
+      طےشدہ:
+	توڑو;
     }
 
   /* Other structs are passed via a pointer to the data.  */
-  return FFI_TYPE_POINTER;
+  واپس FFI_TYPE_اشارہ_گر;
 }
 
 /*======================== End of Routine ============================*/
@@ -138,160 +138,160 @@ ffi_check_struct_type (ffi_type *arg)
 /*                                                                    */
 /*====================================================================*/
 
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  size_t struct_size = 0;
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  size_t struct_سائز = 0;
+  صحیح n_gpr = 0;
+  صحیح n_fpr = 0;
+  صحیح n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  صحیح i;
 
   /* Determine return value handling.  */
 
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
       /* Void is easy.  */
-      case FFI_TYPE_VOID:
+      حالت FFI_TYPE_VOID:
 	cif->flags = FFI390_RET_VOID;
-	break;
+	توڑو;
 
       /* Structures, complex, int128, and long double are
          returned via a hidden pointer.  */
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_COMPLEX:
-      case FFI_TYPE_SINT128:
-      case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      case FFI_TYPE_LONGDOUBLE:
-#endif
+      حالت FFI_TYPE_STRUCT:
+      حالت FFI_TYPE_COMPLEX:
+      حالت FFI_TYPE_SINT128:
+      حالت FFI_TYPE_UINT128:
+#اگر FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      حالت FFI_TYPE_LONGDOUBLE:
+#اگر_ختم
 	cif->flags = FFI390_RET_STRUCT;
 	n_gpr++;  /* We need one GPR to pass the pointer.  */
-	break;
+	توڑو;
 
       /* Floating point values are returned in fpr 0.  */
-      case FFI_TYPE_FLOAT:
+      حالت FFI_TYPE_FLOAT:
 	cif->flags = FFI390_RET_FLOAT;
-	break;
+	توڑو;
 
-      case FFI_TYPE_DOUBLE:
+      حالت FFI_TYPE_DOUBLE:
 	cif->flags = FFI390_RET_DOUBLE;
-	break;
+	توڑو;
 
       /* Integer values are returned in gpr 2 (and gpr 3
 	 for 64-bit values on 31-bit machines).  */
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
+      حالت FFI_TYPE_UINT64:
+      حالت FFI_TYPE_SINT64:
 	cif->flags = FFI390_RET_INT64;
-	break;
+	توڑو;
 
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
+      حالت FFI_TYPE_اشارہ_گر:
+      حالت FFI_TYPE_INT:
+      حالت FFI_TYPE_UINT32:
+      حالت FFI_TYPE_SINT32:
+      حالت FFI_TYPE_UINT16:
+      حالت FFI_TYPE_SINT16:
+      حالت FFI_TYPE_UINT8:
+      حالت FFI_TYPE_SINT8:
 	/* These are to be extended to word size.  */
-#ifdef __s390x__
+#اگر_تعریف_شدہ __s390x__
 	cif->flags = FFI390_RET_INT64;
-#else
+#ورنہ
 	cif->flags = FFI390_RET_INT32;
-#endif
-	break;
+#اگر_ختم
+	توڑو;
 
-      default:
+      طےشدہ:
         FFI_ASSERT (0);
-        break;
+        توڑو;
     }
 
   /* Now for the arguments.  */
 
-  for (ptr = cif->arg_types, i = cif->nargs;
+  برائے (ptr = cif->arg_types, i = cif->nargs;
        i > 0;
        i--, ptr++)
     {
-      int type = (*ptr)->type;
+      صحیح type = (*ptr)->type;
 
-      switch (type)
+      انتخاب (type)
 	{
-	case FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_STRUCT:
 	  type = ffi_check_struct_type (*ptr);
-	  if (type != FFI_TYPE_POINTER)
-	    break;
+	  اگر (type != FFI_TYPE_اشارہ_گر)
+	    توڑو;
 	  /* fall through */
 
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-#endif
-	  type = FFI_TYPE_POINTER;
+	حالت FFI_TYPE_COMPLEX:
+	حالت FFI_TYPE_SINT128:
+	حالت FFI_TYPE_UINT128:
+#اگر FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	حالت FFI_TYPE_LONGDOUBLE:
+#اگر_ختم
+	  type = FFI_TYPE_اشارہ_گر;
 	  /* If we pass via pointer, we must reserve space to copy
 	     its data for proper call-by-value semantics.  */
-	  struct_size += ROUND_SIZE ((*ptr)->size);
-	  break;
+	  struct_سائز += باری_سائز ((*ptr)->سائز);
+	  توڑو;
 	}
 
       /* Now handle all primitive int/float data types.  */
-      switch (type)
+      انتخاب (type)
 	{
 	  /* The first MAX_FPRARGS floating point arguments
 	     go in FPRs, the rest overflow to the stack.  */
 
-	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	  حالت FFI_TYPE_DOUBLE:
+	    اگر (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
-	      n_ov += sizeof (double) / sizeof (long);
-	    break;
+	    ورنہ
+	      n_ov += حجم (دوہرا) / حجم (طویل);
+	    توڑو;
 
-	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	  حالت FFI_TYPE_FLOAT:
+	    اگر (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
+	    ورنہ
 	      n_ov++;
-	    break;
+	    توڑو;
 
 	  /* On 31-bit machines, 64-bit integers are passed in GPR pairs,
 	     if one is still available, or else on the stack.  If only one
 	     register is free, skip the register (it won't be used for any
 	     subsequent argument either).  */
 
-#ifndef __s390x__
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
-	    if (n_gpr == MAX_GPRARGS-1)
+#اگر_غیر_تعریف_شدہ __s390x__
+	  حالت FFI_TYPE_UINT64:
+	  حالت FFI_TYPE_SINT64:
+	    اگر (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    اگر (n_gpr < MAX_GPRARGS)
 	      n_gpr += 2;
-	    else
+	    ورنہ
 	      n_ov += 2;
-	    break;
-#endif
+	    توڑو;
+#اگر_ختم
 
 	  /* Everything else is passed in GPRs (until MAX_GPRARGS
 	     have been used) or overflows to the stack.  */
 
-	  default:
-	    if (n_gpr < MAX_GPRARGS)
+	  طےشدہ:
+	    اگر (n_gpr < MAX_GPRARGS)
 	      n_gpr++;
-	    else
+	    ورنہ
 	      n_ov++;
-	    break;
+	    توڑو;
         }
     }
 
   /* Total stack space as required for overflow arguments
      and temporary structure copies.  */
 
-  cif->bytes = ROUND_SIZE (n_ov * sizeof (long)) + struct_size;
+  cif->بائٹیں = باری_سائز (n_ov * حجم (طویل)) + struct_سائز;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
@@ -304,30 +304,30 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 /*                                                                    */
 /*====================================================================*/
 
-static void
+ساکن خالی
 ffi_call_int(ffi_cif *cif,
-	     void (*fn)(void),
-	     void *rvalue,
-	     void **avalue,
-	     void *closure)
+	     خالی (*fn)(خالی),
+	     خالی *rvalue,
+	     خالی **avalue,
+	     خالی *احاطہ)
 {
-  int ret_type = cif->flags;
-  size_t rsize = 0, bytes = cif->bytes;
-  unsigned char *stack, *p_struct;
-  struct call_frame *frame;
-  unsigned long *p_ov, *p_gpr;
-  unsigned long long *p_fpr;
-  int n_fpr, n_gpr, n_ov, i, n;
+  صحیح ret_type = cif->flags;
+  size_t rsize = 0, بائٹیں = cif->بائٹیں;
+  غیرعلامتی حرف *ڈھیر, *p_struct;
+  ساخت call_چوکھٹا *چوکھٹا;
+  غیرعلامتی طویل *p_ov, *p_gpr;
+  غیرعلامتی طویل طویل *p_fpr;
+  صحیح n_fpr, n_gpr, n_ov, i, n;
   ffi_type **arg_types;
 
   FFI_ASSERT (cif->abi == FFI_SYSV);
 
   /* If we don't have a return value, we need to fake one.  */
-  if (rvalue == NULL)
+  اگر (rvalue == تہی)
     {
-      if (ret_type & FFI390_RET_IN_MEM)
-	rsize = cif->rtype->size;
-      else
+      اگر (ret_type & FFI390_RET_اندر_MEM)
+	rsize = cif->rtype->سائز;
+      ورنہ
 	ret_type = FFI390_RET_VOID;
     }
 
@@ -355,142 +355,142 @@ ffi_call_int(ffi_cif *cif,
      than 5 arguments (indeed only memcpy and ffi_call_SYSV),
      and thus we don't have any stacked outgoing parameters.  */
 
-  stack = alloca (bytes + sizeof(struct call_frame) + rsize);
-  frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
-    rvalue = frame + 1;
+  ڈھیر = alloca (بائٹیں + حجم(ساخت call_چوکھٹا) + rsize);
+  چوکھٹا = (ساخت call_چوکھٹا *)(ڈھیر + بائٹیں);
+  اگر (rsize)
+    rvalue = چوکھٹا + 1;
 
   /* Link the new frame back to the one from this function.  */
-  frame->back_chain = __builtin_frame_address (0);
+  چوکھٹا->عقب_chain = __builtin_frame_address (0);
 
   /* Fill in all of the argument stuff.  */
-  p_ov = (unsigned long *)stack;
-  p_struct = (unsigned char *)frame;
-  p_gpr = frame->gpr_args;
-  p_fpr = frame->fpr_args;
+  p_ov = (غیرعلامتی طویل *)ڈھیر;
+  p_struct = (غیرعلامتی حرف *)چوکھٹا;
+  p_gpr = چوکھٹا->gpr_دلائل;
+  p_fpr = چوکھٹا->fpr_دلائل;
   n_fpr = n_gpr = n_ov = 0;
 
   /* If we returning a structure then we set the first parameter register
      to the address of where we are returning this structure.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
+  اگر (cif->flags & FFI390_RET_اندر_MEM)
     p_gpr[n_gpr++] = (uintptr_t) rvalue;
 
   /* Now for the arguments.  */
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  برائے (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = arg_types[i];
-      void *arg = avalue[i];
-      int type = ty->type;
+      خالی *arg = avalue[i];
+      صحیح type = ty->type;
       ffi_arg val;
 
     restart:
-      switch (type)
+      انتخاب (type)
 	{
-	case FFI_TYPE_SINT8:
+	حالت FFI_TYPE_SINT8:
 	  val = *(SINT8 *)arg;
-	  goto do_int;
-	case FFI_TYPE_UINT8:
+	  جاؤ do_int;
+	حالت FFI_TYPE_UINT8:
 	  val = *(UINT8 *)arg;
-	  goto do_int;
-	case FFI_TYPE_SINT16:
+	  جاؤ do_int;
+	حالت FFI_TYPE_SINT16:
 	  val = *(SINT16 *)arg;
-	  goto do_int;
-	case FFI_TYPE_UINT16:
+	  جاؤ do_int;
+	حالت FFI_TYPE_UINT16:
 	  val = *(UINT16 *)arg;
-	  goto do_int;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	  جاؤ do_int;
+	حالت FFI_TYPE_INT:
+	حالت FFI_TYPE_SINT32:
 	  val = *(SINT32 *)arg;
-	  goto do_int;
-	case FFI_TYPE_UINT32:
+	  جاؤ do_int;
+	حالت FFI_TYPE_UINT32:
 	  val = *(UINT32 *)arg;
-	  goto do_int;
-	case FFI_TYPE_POINTER:
+	  جاؤ do_int;
+	حالت FFI_TYPE_اشارہ_گر:
 	  val = *(uintptr_t *)arg;
 	do_int:
 	  *(n_gpr < MAX_GPRARGS ? p_gpr + n_gpr++ : p_ov + n_ov++) = val;
-	  break;
+	  توڑو;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-#ifdef __s390x__
+	حالت FFI_TYPE_UINT64:
+	حالت FFI_TYPE_SINT64:
+#اگر_تعریف_شدہ __s390x__
 	  val = *(UINT64 *)arg;
-	  goto do_int;
-#else
-	  if (n_gpr == MAX_GPRARGS-1)
+	  جاؤ do_int;
+#ورنہ
+	  اگر (n_gpr == MAX_GPRARGS-1)
 	    n_gpr = MAX_GPRARGS;
-	  if (n_gpr < MAX_GPRARGS)
+	  اگر (n_gpr < MAX_GPRARGS)
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[0],
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[1];
-	  else
+	  ورنہ
 	    p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	    p_ov[n_ov++] = ((UINT32 *) arg)[1];
-#endif
-	  break;
+#اگر_ختم
+	  توڑو;
 
-	case FFI_TYPE_DOUBLE:
-	  if (n_fpr < MAX_FPRARGS)
+	حالت FFI_TYPE_DOUBLE:
+	  اگر (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = *(UINT64 *) arg;
-	  else
+	  ورنہ
 	    {
-#ifdef __s390x__
+#اگر_تعریف_شدہ __s390x__
 	      p_ov[n_ov++] = *(UINT64 *) arg;
-#else
+#ورنہ
 	      p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	      p_ov[n_ov++] = ((UINT32 *) arg)[1];
-#endif
+#اگر_ختم
 	    }
-	  break;
+	  توڑو;
 
-	case FFI_TYPE_FLOAT:
+	حالت FFI_TYPE_FLOAT:
 	  val = *(UINT32 *)arg;
-	  if (n_fpr < MAX_FPRARGS)
+	  اگر (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = (UINT64)val << 32;
-	  else
+	  ورنہ
 	    p_ov[n_ov++] = val;
-	  break;
+	  توڑو;
 
-	case FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_STRUCT:
           /* Check how a structure type is passed.  */
 	  type = ffi_check_struct_type (ty);
 	  /* Some structures are passed via a type they contain.  */
-	  if (type != FFI_TYPE_POINTER)
-	    goto restart;
+	  اگر (type != FFI_TYPE_اشارہ_گر)
+	    جاؤ restart;
 	  /* ... otherwise, passed by reference.  fallthru.  */
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-#endif
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
+#اگر FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	حالت FFI_TYPE_LONGDOUBLE:
+#اگر_ختم
+	حالت FFI_TYPE_COMPLEX:
+	حالت FFI_TYPE_SINT128:
+	حالت FFI_TYPE_UINT128:
 	  /* Complex, int128 and long double types are passed via reference. */
-	  p_struct -= ROUND_SIZE (ty->size);
-	  memcpy (p_struct, arg, ty->size);
+	  p_struct -= باری_سائز (ty->سائز);
+	  حافظہ_نقل (p_struct, arg, ty->سائز);
 	  val = (uintptr_t)p_struct;
-	  goto do_int;
+	  جاؤ do_int;
 
-	default:
+	طےشدہ:
 	  FFI_ASSERT (0);
-	  break;
+	  توڑو;
         }
     }
 
-  ffi_call_SYSV (frame, ret_type & FFI360_RET_MASK, rvalue, fn, closure);
+  ffi_call_SYSV (چوکھٹا, ret_type & FFI360_RET_نقاب, rvalue, fn, احاطہ);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+خالی
+ffi_call (ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue, خالی **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, تہی);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+خالی
+ffi_call_go (ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue,
+	     خالی **avalue, خالی *احاطہ)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, closure);
+  ffi_call_int(cif, fn, rvalue, avalue, احاطہ);
 }
 
 /*======================== End of Routine ============================*/
@@ -503,197 +503,197 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 /*                                                                    */
 /*====================================================================*/
 
-void FFI_HIDDEN
-ffi_closure_helper_SYSV (ffi_cif *cif,
-			 void (*fun)(ffi_cif*,void*,void**,void*),
-			 void *user_data,
-			 unsigned long *p_gpr,
-			 unsigned long long *p_fpr,
-			 unsigned long *p_ov)
+خالی FFI_HIDDEN
+ffi_احاطہ_helper_SYSV (ffi_cif *cif,
+			 خالی (*fun)(ffi_cif*,خالی*,خالی**,خالی*),
+			 خالی *user_ڈیٹا,
+			 غیرعلامتی طویل *p_gpr,
+			 غیرعلامتی طویل طویل *p_fpr,
+			 غیرعلامتی طویل *p_ov)
 {
-  unsigned long long ret_buffer;
+  غیرعلامتی طویل طویل ret_بفر;
 
-  void *rvalue = &ret_buffer;
-  void **avalue;
-  void **p_arg;
+  خالی *rvalue = &ret_بفر;
+  خالی **avalue;
+  خالی **p_arg;
 
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  صحیح n_gpr = 0;
+  صحیح n_fpr = 0;
+  صحیح n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  صحیح i;
 
   /* Allocate buffer for argument list pointers.  */
-  p_arg = avalue = alloca (cif->nargs * sizeof (void *));
+  p_arg = avalue = alloca (cif->nargs * حجم (خالی *));
 
   /* If we returning a structure, pass the structure address
      directly to the target function.  Otherwise, have the target
      function store the return value to the GPR save area.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
-    rvalue = (void *) p_gpr[n_gpr++];
+  اگر (cif->flags & FFI390_RET_اندر_MEM)
+    rvalue = (خالی *) p_gpr[n_gpr++];
 
   /* Now for the arguments.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
+  برائے (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
     {
-      int deref_struct_pointer = 0;
-      int type = (*ptr)->type;
+      صحیح deref_struct_اشارہ_گر = 0;
+      صحیح type = (*ptr)->type;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#اگر FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       /* 16-byte long double is passed like a struct.  */
-      if (type == FFI_TYPE_LONGDOUBLE)
+      اگر (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_STRUCT;
-#endif
+#اگر_ختم
 
       /* Check how a structure type is passed.  */
-      if (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
+      اگر (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
 	{
-	  if (type == FFI_TYPE_COMPLEX)
-	    type = FFI_TYPE_POINTER;
-	  else
+	  اگر (type == FFI_TYPE_COMPLEX)
+	    type = FFI_TYPE_اشارہ_گر;
+	  ورنہ
 	    type = ffi_check_struct_type (*ptr);
 
 	  /* If we pass the struct via pointer, remember to
 	     retrieve the pointer later.  */
-	  if (type == FFI_TYPE_POINTER)
-	    deref_struct_pointer = 1;
+	  اگر (type == FFI_TYPE_اشارہ_گر)
+	    deref_struct_اشارہ_گر = 1;
 	}
 
       /* Pointers are passed like UINTs of the same size.  */
-      if (type == FFI_TYPE_POINTER)
+      اگر (type == FFI_TYPE_اشارہ_گر)
 	{
-#ifdef __s390x__
+#اگر_تعریف_شدہ __s390x__
 	  type = FFI_TYPE_UINT64;
-#else
+#ورنہ
 	  type = FFI_TYPE_UINT32;
-#endif
+#اگر_ختم
 	}
 
       /* Now handle all primitive int/float data types.  */
-      switch (type)
+      انتخاب (type)
 	{
-	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	  حالت FFI_TYPE_DOUBLE:
+	    اگر (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
+	    ورنہ
 	      *p_arg = &p_ov[n_ov],
-	      n_ov += sizeof (double) / sizeof (long);
-	    break;
+	      n_ov += حجم (دوہرا) / حجم (طویل);
+	    توڑو;
 
-	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	  حالت FFI_TYPE_FLOAT:
+	    اگر (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
-	    break;
+	    ورنہ
+	      *p_arg = (حرف *)&p_ov[n_ov++] + حجم (طویل) - 4;
+	    توڑو;
 
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
-#ifdef __s390x__
-	    if (n_gpr < MAX_GPRARGS)
+	  حالت FFI_TYPE_UINT64:
+	  حالت FFI_TYPE_SINT64:
+#اگر_تعریف_شدہ __s390x__
+	    اگر (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr++];
-	    else
+	    ورنہ
 	      *p_arg = &p_ov[n_ov++];
-#else
-	    if (n_gpr == MAX_GPRARGS-1)
+#ورنہ
+	    اگر (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    اگر (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr], n_gpr += 2;
-	    else
+	    ورنہ
 	      *p_arg = &p_ov[n_ov], n_ov += 2;
-#endif
-	    break;
+#اگر_ختم
+	    توڑو;
 
-	  case FFI_TYPE_INT:
-	  case FFI_TYPE_UINT32:
-	  case FFI_TYPE_SINT32:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 4;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
-	    break;
+	  حالت FFI_TYPE_INT:
+	  حالت FFI_TYPE_UINT32:
+	  حالت FFI_TYPE_SINT32:
+	    اگر (n_gpr < MAX_GPRARGS)
+	      *p_arg = (حرف *)&p_gpr[n_gpr++] + حجم (طویل) - 4;
+	    ورنہ
+	      *p_arg = (حرف *)&p_ov[n_ov++] + حجم (طویل) - 4;
+	    توڑو;
 
-	  case FFI_TYPE_UINT16:
-	  case FFI_TYPE_SINT16:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 2;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 2;
-	    break;
+	  حالت FFI_TYPE_UINT16:
+	  حالت FFI_TYPE_SINT16:
+	    اگر (n_gpr < MAX_GPRARGS)
+	      *p_arg = (حرف *)&p_gpr[n_gpr++] + حجم (طویل) - 2;
+	    ورنہ
+	      *p_arg = (حرف *)&p_ov[n_ov++] + حجم (طویل) - 2;
+	    توڑو;
 
-	  case FFI_TYPE_UINT8:
-	  case FFI_TYPE_SINT8:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 1;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 1;
-	    break;
+	  حالت FFI_TYPE_UINT8:
+	  حالت FFI_TYPE_SINT8:
+	    اگر (n_gpr < MAX_GPRARGS)
+	      *p_arg = (حرف *)&p_gpr[n_gpr++] + حجم (طویل) - 1;
+	    ورنہ
+	      *p_arg = (حرف *)&p_ov[n_ov++] + حجم (طویل) - 1;
+	    توڑو;
 
-	  default:
+	  طےشدہ:
 	    FFI_ASSERT (0);
-	    break;
+	    توڑو;
         }
 
       /* If this is a struct passed via pointer, we need to
 	 actually retrieve that pointer.  */
-      if (deref_struct_pointer)
-	*p_arg = *(void **)*p_arg;
+      اگر (deref_struct_اشارہ_گر)
+	*p_arg = *(خالی **)*p_arg;
     }
 
 
   /* Call the target function.  */
-  (fun) (cif, rvalue, avalue, user_data);
+  (fun) (cif, rvalue, avalue, user_ڈیٹا);
 
   /* Convert the return value.  */
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
       /* Void is easy, and so is struct.  */
-      case FFI_TYPE_VOID:
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_COMPLEX:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      case FFI_TYPE_LONGDOUBLE:
-#endif
-	break;
+      حالت FFI_TYPE_VOID:
+      حالت FFI_TYPE_STRUCT:
+      حالت FFI_TYPE_COMPLEX:
+#اگر FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      حالت FFI_TYPE_LONGDOUBLE:
+#اگر_ختم
+	توڑو;
 
       /* Floating point values are returned in fpr 0.  */
-      case FFI_TYPE_FLOAT:
-	p_fpr[0] = (long long) *(unsigned int *) rvalue << 32;
-	break;
+      حالت FFI_TYPE_FLOAT:
+	p_fpr[0] = (طویل طویل) *(غیرعلامتی صحیح *) rvalue << 32;
+	توڑو;
 
-      case FFI_TYPE_DOUBLE:
-	p_fpr[0] = *(unsigned long long *) rvalue;
-	break;
+      حالت FFI_TYPE_DOUBLE:
+	p_fpr[0] = *(غیرعلامتی طویل طویل *) rvalue;
+	توڑو;
 
       /* Integer values are returned in gpr 2 (and gpr 3
 	 for 64-bit values on 31-bit machines).  */
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-#ifdef __s390x__
-	p_gpr[0] = *(unsigned long *) rvalue;
-#else
-	p_gpr[0] = ((unsigned long *) rvalue)[0],
-	p_gpr[1] = ((unsigned long *) rvalue)[1];
-#endif
-	break;
+      حالت FFI_TYPE_UINT64:
+      حالت FFI_TYPE_SINT64:
+#اگر_تعریف_شدہ __s390x__
+	p_gpr[0] = *(غیرعلامتی طویل *) rvalue;
+#ورنہ
+	p_gpr[0] = ((غیرعلامتی طویل *) rvalue)[0],
+	p_gpr[1] = ((غیرعلامتی طویل *) rvalue)[1];
+#اگر_ختم
+	توڑو;
 
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_UINT8:
-	p_gpr[0] = *(unsigned long *) rvalue;
-	break;
+      حالت FFI_TYPE_اشارہ_گر:
+      حالت FFI_TYPE_UINT32:
+      حالت FFI_TYPE_UINT16:
+      حالت FFI_TYPE_UINT8:
+	p_gpr[0] = *(غیرعلامتی طویل *) rvalue;
+	توڑو;
 
-      case FFI_TYPE_INT:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_SINT8:
-	p_gpr[0] = *(signed long *) rvalue;
-	break;
+      حالت FFI_TYPE_INT:
+      حالت FFI_TYPE_SINT32:
+      حالت FFI_TYPE_SINT16:
+      حالت FFI_TYPE_SINT8:
+	p_gpr[0] = *(علامتی طویل *) rvalue;
+	توڑو;
 
-      default:
+      طےشدہ:
         FFI_ASSERT (0);
-        break;
+        توڑو;
     }
 }
 
@@ -707,79 +707,79 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 /*                                                                    */
 /*====================================================================*/
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ *احاطہ,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      خالی (*fun) (ffi_cif *, خالی *, خالی **, خالی *),
+		      خالی *user_ڈیٹا,
+		      خالی *codeloc)
 {
-  static unsigned short const template[] = {
+  ساکن غیرعلامتی مختصر ثابت سانچہ[] = {
     0x0d10,			/* basr %r1,0 */
-#ifndef __s390x__
+#اگر_غیر_تعریف_شدہ __s390x__
     0x9801, 0x1006,		/* lm %r0,%r1,6(%r1) */
-#else
+#ورنہ
     0xeb01, 0x100e, 0x0004,	/* lmg %r0,%r1,14(%r1) */
-#endif
+#اگر_ختم
     0x07f1			/* br %r1 */
   };
-  void (*dest)(void);
-  unsigned long *tramp = (unsigned long *)&closure->tramp;
+  خالی (*dest)(خالی);
+  غیرعلامتی طویل *tramp = (غیرعلامتی طویل *)&احاطہ->tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_SYSV)
+    واپس FFI_BAD_ABI;
 
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#اگر defined(FFI_EXEC_STATIC_TRAMP)
+  اگر (ffi_tramp_is_present(احاطہ))
     {
       /* Initialize the static trampoline's parameters. */
-      dest = ffi_closure_SYSV;
-      ffi_tramp_set_parms (closure->ftramp, dest, closure);
-      goto out;
+      dest = ffi_احاطہ_SYSV;
+      ffi_tramp_سیٹ_parms (احاطہ->ftramp, dest, احاطہ);
+      جاؤ برآمد;
     }
-#endif
+#اگر_ختم
 
-  memcpy (tramp, template, sizeof(template));
-  tramp[2] = (unsigned long)codeloc;
-  tramp[3] = (unsigned long)&ffi_closure_SYSV;
+  حافظہ_نقل (tramp, سانچہ, حجم(سانچہ));
+  tramp[2] = (غیرعلامتی طویل)codeloc;
+  tramp[3] = (غیرعلامتی طویل)&ffi_احاطہ_SYSV;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-out:
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+#اگر defined(FFI_EXEC_STATIC_TRAMP)
+برآمد:
+#اگر_ختم
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
 
 /* Build a Go language closure.  */
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun)(ffi_cif*,void*,void**,void*))
+ffi_حالت
+ffi_prep_go_احاطہ (ffi_go_احاطہ *احاطہ, ffi_cif *cif,
+		     خالی (*fun)(ffi_cif*,خالی*,خالی**,خالی*))
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_SYSV)
+    واپس FFI_BAD_ABI;
 
-  closure->tramp = ffi_go_closure_SYSV;
-  closure->cif = cif;
-  closure->fun = fun;
+  احاطہ->tramp = ffi_go_احاطہ_SYSV;
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#اگر defined(FFI_EXEC_STATIC_TRAMP)
+خالی *
+ffi_tramp_arch (size_t *tramp_سائز, size_t *map_سائز)
 {
-  extern void *trampoline_code_table;
+  خارجی خالی *trampoline_رمز_جدول;
 
-  *tramp_size = FFI390_TRAMP_SIZE;
-  *map_size = FFI390_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  *tramp_سائز = FFI390_TRAMP_سائز;
+  *map_سائز = FFI390_TRAMP_MAP_سائز;
+  واپس &trampoline_رمز_جدول;
 }
-#endif
+#اگر_ختم

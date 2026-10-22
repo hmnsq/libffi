@@ -33,69 +33,69 @@
  */
 
 /* Common to ppc32 and ppc64 */
-#define PPC_LD_NONE		0
-#define PPC_LD_R3		1
-#define PPC_LD_R3R4		2
-#define PPC_LD_F32		3
-#define PPC_LD_F64		4
-#define PPC_LD_F128		5
-#define PPC_LD_U8		6
-#define PPC_LD_S8		7
-#define PPC_LD_U16		8
-#define PPC_LD_S16		9
+#تعریف_کرو PPC_LD_NONE		0
+#تعریف_کرو PPC_LD_R3		1
+#تعریف_کرو PPC_LD_R3R4		2
+#تعریف_کرو PPC_LD_F32		3
+#تعریف_کرو PPC_LD_F64		4
+#تعریف_کرو PPC_LD_F128		5
+#تعریف_کرو PPC_LD_U8		6
+#تعریف_کرو PPC_LD_S8		7
+#تعریف_کرو PPC_LD_U16		8
+#تعریف_کرو PPC_LD_S16		9
 
-#ifndef POWERPC64
+#اگر_غیر_تعریف_شدہ POWERPC64
 
-#define PPC_LD_U32		PPC_LD_R3
-#define PPC_LD_S32		PPC_LD_R3
-#define PPC_LD_PTR		PPC_LD_R3
-#define PPC_LD_I64		PPC_LD_R3R4
+#تعریف_کرو PPC_LD_U32		PPC_LD_R3
+#تعریف_کرو PPC_LD_S32		PPC_LD_R3
+#تعریف_کرو PPC_LD_PTR		PPC_LD_R3
+#تعریف_کرو PPC_LD_I64		PPC_LD_R3R4
 
 /* Needed for soft-float long-double. */
-#define PPC32_LD_R3R6		10
+#تعریف_کرو PPC32_LD_R3R6		10
 
 /* Needed for FFI_SYSV small structure returns.  */
-#ifdef __LITTLE_ENDIAN__
-#define PPC32_SYSV_LD_STRUCT_3	PPC32_LD_R3
-#define PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
-#define PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
-#define PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
-#else
-#define PPC32_SYSV_LD_STRUCT_3	11
-#define PPC32_SYSV_LD_STRUCT_5	12
-#define PPC32_SYSV_LD_STRUCT_6	13
-#define PPC32_SYSV_LD_STRUCT_7	14
-#endif
+#اگر_تعریف_شدہ __LITTLE_ENDIAN__
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_3	PPC32_LD_R3
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
+#ورنہ
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_3	11
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_5	12
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_6	13
+#تعریف_کرو PPC32_SYSV_LD_STRUCT_7	14
+#اگر_ختم
 
-#else /* POWERPC64 */
+#ورنہ /* POWERPC64 */
 
-#define PPC_LD_U32		10
-#define PPC_LD_S32		11
-#define PPC_LD_PTR		PPC_LD_R3
-#define PPC_LD_I64		PPC_LD_R3
+#تعریف_کرو PPC_LD_U32		10
+#تعریف_کرو PPC_LD_S32		11
+#تعریف_کرو PPC_LD_PTR		PPC_LD_R3
+#تعریف_کرو PPC_LD_I64		PPC_LD_R3
 
 /* Used by ELFv2 for homogenous structure returns.  */
-#define PPC64_LD_VECTOR		12
-#define PPC64_LD_VECTOR_HOMOG	13
-#define PPC64_LD_FLOAT_HOMOG	14
-#define PPC64_LD_DOUBLE_HOMOG	15
-#ifdef __LITTLE_ENDIAN__
-#define PPC64_LD_STRUCT_3	PPC_LD_U32
-#define PPC64_LD_STRUCT_5	PPC_LD_I64
-#define PPC64_LD_STRUCT_6	PPC_LD_I64
-#define PPC64_LD_STRUCT_7	PPC_LD_I64
-#else
-#define PPC64_LD_STRUCT_3	16
-#define PPC64_LD_STRUCT_5	17
-#define PPC64_LD_STRUCT_6	18
-#define PPC64_LD_STRUCT_7	19
-#endif
+#تعریف_کرو PPC64_LD_سمتیہ		12
+#تعریف_کرو PPC64_LD_سمتیہ_HOMOG	13
+#تعریف_کرو PPC64_LD_FLOAT_HOMOG	14
+#تعریف_کرو PPC64_LD_DOUBLE_HOMOG	15
+#اگر_تعریف_شدہ __LITTLE_ENDIAN__
+#تعریف_کرو PPC64_LD_STRUCT_3	PPC_LD_U32
+#تعریف_کرو PPC64_LD_STRUCT_5	PPC_LD_I64
+#تعریف_کرو PPC64_LD_STRUCT_6	PPC_LD_I64
+#تعریف_کرو PPC64_LD_STRUCT_7	PPC_LD_I64
+#ورنہ
+#تعریف_کرو PPC64_LD_STRUCT_3	16
+#تعریف_کرو PPC64_LD_STRUCT_5	17
+#تعریف_کرو PPC64_LD_STRUCT_6	18
+#تعریف_کرو PPC64_LD_STRUCT_7	19
+#اگر_ختم
 
-#endif /* POWERPC64 */
+#اگر_ختم /* POWERPC64 */
 
-#ifndef LIBFFI_ASM
+#اگر_غیر_تعریف_شدہ LIBFFI_ASM
 
-enum {
+شمار {
   /* The assembly depends on these exact flags.  */
   /* These go in cr7 */
   FLAG_RETURNS_SMST     = 1 << (31-31), /* Used for FFI_SYSV small structs.  */
@@ -104,8 +104,8 @@ enum {
   FLAG_RETURNS_VEC      = 1 << (31-28),
 
   /* These go in cr6 */
-  FLAG_RETURNS_64BITS   = 1 << (31-27),
-  FLAG_RETURNS_128BITS  = 1 << (31-26),
+  FLAG_RETURNS_64_بٹ   = 1 << (31-27),
+  FLAG_RETURNS_128_بٹ  = 1 << (31-26),
 
   FLAG_COMPAT           = 1 << (31- 8), /* Not used by assembly */
 
@@ -118,57 +118,57 @@ enum {
   FLAG_VEC_ARGUMENTS    = 1 << (31- 3),
 };
 
-typedef union
+قسمتعریف اتحاد
 {
-  float f;
-  double d;
+  اعشاری f;
+  دوہرا d;
 } ffi_dblfl;
 
-#if defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
-typedef _Float128 float128;
-#elif defined(__FLOAT128__)
-typedef __float128 float128;
-#else
-typedef char float128[16] __attribute__((aligned(16)));
-#endif
+#اگر defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
+قسمتعریف _Float128 float128;
+#وگرنہ_اگر defined(__FLOAT128__)
+قسمتعریف __float128 float128;
+#ورنہ
+قسمتعریف حرف float128[16] __attribute__((aligned(16)));
+#اگر_ختم
 
-void FFI_HIDDEN ffi_closure_SYSV (void);
-void FFI_HIDDEN ffi_go_closure_sysv (void);
-void FFI_HIDDEN ffi_call_SYSV(extended_cif *, void (*)(void), void *,
-			      unsigned, void *, int);
+خالی FFI_HIDDEN ffi_احاطہ_SYSV (خالی);
+خالی FFI_HIDDEN ffi_go_احاطہ_sysv (خالی);
+خالی FFI_HIDDEN ffi_call_SYSV(extended_cif *, خالی (*)(خالی), خالی *,
+			      غیرعلامتی, خالی *, صحیح);
 
-void FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
-ffi_status FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_closure_loc_sysv (ffi_closure *,
+خالی FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
+ffi_حالت FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
+ffi_حالت FFI_HIDDEN ffi_prep_احاطہ_loc_sysv (ffi_احاطہ *,
 						 ffi_cif *,
-						 void (*) (ffi_cif *, void *,
-							   void **, void *),
-						 void *, void *);
-int FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
-					void (*) (ffi_cif *, void *,
-						  void **, void *),
-					void *, void *, unsigned long *,
-					ffi_dblfl *, unsigned long *);
+						 خالی (*) (ffi_cif *, خالی *,
+							   خالی **, خالی *),
+						 خالی *, خالی *);
+صحیح FFI_HIDDEN ffi_احاطہ_helper_SYSV (ffi_cif *,
+					خالی (*) (ffi_cif *, خالی *,
+						  خالی **, خالی *),
+					خالی *, خالی *, غیرعلامتی طویل *,
+					ffi_dblfl *, غیرعلامتی طویل *);
 
-void FFI_HIDDEN ffi_call_LINUX64(extended_cif *, void (*) (void), void *,
-				 unsigned long, void *, long);
-void FFI_HIDDEN ffi_closure_LINUX64 (void);
-void FFI_HIDDEN ffi_go_closure_linux64 (void);
+خالی FFI_HIDDEN ffi_call_LINUX64(extended_cif *, خالی (*) (خالی), خالی *,
+				 غیرعلامتی طویل, خالی *, طویل);
+خالی FFI_HIDDEN ffi_احاطہ_LINUX64 (خالی);
+خالی FFI_HIDDEN ffi_go_احاطہ_linux64 (خالی);
 
-void FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned int,
-						unsigned int);
-void FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *const);
-ffi_status FFI_HIDDEN ffi_prep_closure_loc_linux64 (ffi_closure *, ffi_cif *,
-						    void (*) (ffi_cif *, void *,
-							      void **, void *),
-						    void *, void *);
-int FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
-					   void (*) (ffi_cif *, void *,
-						     void **, void *),
-					   void *, void *,
-					   unsigned long *, ffi_dblfl *,
+خالی FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
+ffi_حالت FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
+ffi_حالت FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, غیرعلامتی صحیح,
+						غیرعلامتی صحیح);
+خالی FFI_HIDDEN ffi_prep_args64 (extended_cif *, غیرعلامتی طویل *ثابت);
+ffi_حالت FFI_HIDDEN ffi_prep_احاطہ_loc_linux64 (ffi_احاطہ *, ffi_cif *,
+						    خالی (*) (ffi_cif *, خالی *,
+							      خالی **, خالی *),
+						    خالی *, خالی *);
+صحیح FFI_HIDDEN ffi_احاطہ_helper_LINUX64 (ffi_cif *,
+					   خالی (*) (ffi_cif *, خالی *,
+						     خالی **, خالی *),
+					   خالی *, خالی *,
+					   غیرعلامتی طویل *, ffi_dblfl *,
 					   float128 *);
 
-#endif /* !LIBFFI_ASM */
+#اگر_ختم /* !LIBFFI_ASM */

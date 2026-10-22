@@ -25,99 +25,99 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#شامل <stdlib.h>
+#شامل <stdint.h>
 
-#include <emscripten/emscripten.h>
+#شامل <emscripten/emscripten.h>
 
-#ifdef DEBUG_F
-#define LOG_DEBUG(args...)  \
-  console.warn(`====LIBFFI(line __LINE__)`, args)
-#else
-#define LOG_DEBUG(args...) 0
-#endif
+#اگر_تعریف_شدہ DEBUG_F
+#تعریف_کرو LOG_DEBUG(دلائل...)  \
+  console.warn(`====LIBFFI(سطر __LINE__)`, دلائل)
+#ورنہ
+#تعریف_کرو LOG_DEBUG(دلائل...) 0
+#اگر_ختم
 
-#define EM_JS_MACROS(ret, name, args, body...) EM_JS(ret, name, args, body)
+#تعریف_کرو EM_JS_MACROS(ret, name, دلائل, body...) EM_JS(ret, name, دلائل, body)
 
 EM_JS_DEPS(libffi, "$getWasmTableEntry,$setWasmTableEntry,$getEmptyTableSlot,$wasmTable,$stackSave,$stackAlloc,$stackRestore");
 
-#define DEREF_U8(addr, offset) HEAPU8[addr + offset]
-#define DEREF_S8(addr, offset) HEAP8[addr + offset]
-#define DEREF_U16(addr, offset) HEAPU16[(addr >> 1) + offset]
-#define DEREF_S16(addr, offset) HEAP16[(addr >> 1) + offset]
-#define DEREF_U32(addr, offset) HEAPU32[(addr >> 2) + offset]
-#define DEREF_S32(addr, offset) HEAP32[(addr >> 2) + offset]
+#تعریف_کرو DEREF_U8(addr, offset) HEAPU8[addr + offset]
+#تعریف_کرو DEREF_S8(addr, offset) HEAP8[addr + offset]
+#تعریف_کرو DEREF_U16(addr, offset) HEAPU16[(addr >> 1) + offset]
+#تعریف_کرو DEREF_S16(addr, offset) HEAP16[(addr >> 1) + offset]
+#تعریف_کرو DEREF_U32(addr, offset) HEAPU32[(addr >> 2) + offset]
+#تعریف_کرو DEREF_S32(addr, offset) HEAP32[(addr >> 2) + offset]
 
-#define DEREF_F32(addr, offset) HEAPF32[(addr >> 2) + offset]
-#define DEREF_F64(addr, offset) HEAPF64[(addr >> 3) + offset]
-#define DEREF_U64(addr, offset) HEAPU64[(addr >> 3) + offset]
+#تعریف_کرو DEREF_F32(addr, offset) HEAPF32[(addr >> 2) + offset]
+#تعریف_کرو DEREF_F64(addr, offset) HEAPF64[(addr >> 3) + offset]
+#تعریف_کرو DEREF_U64(addr, offset) HEAPU64[(addr >> 3) + offset]
 
-#define CHECK_FIELD_OFFSET(struct, field, offset)                                  \
+#تعریف_کرو CHECK_میدان_انحراف(ساخت, میدان, offset)                                  \
   _Static_assert(                                                                  \
-    offsetof(struct, field) == offset,                                             \
+    offsetof(ساخت, میدان) == offset,                                             \
     "Memory layout of '" #struct "' has changed: '" #field "' is in an unexpected location");
 
-#if __SIZEOF_POINTER__ == 4
+#اگر __SIZEOF_POINTER__ == 4
 
-#define FFI_EMSCRIPTEN_ABI FFI_WASM32_EMSCRIPTEN
-#define PTR_SIG 'i'
-#define PTR_WASM_TYPE 0x7f
+#تعریف_کرو FFI_EMSCRIPTEN_ABI FFI_WASM32_EMSCRIPTEN
+#تعریف_کرو PTR_SIG 'i'
+#تعریف_کرو PTR_WASM_TYPE 0x7f
 
-#define DEC_PTR(p) p
-#define ENC_PTR(p) p
+#تعریف_کرو DEC_PTR(p) p
+#تعریف_کرو ENC_PTR(p) p
 
-#define DEREF_PTR(addr, offset) DEREF_U32(addr, offset)
-#define DEREF_PTR_NUMBER(addr, offset) DEREF_PTR(addr, offset)
+#تعریف_کرو DEREF_PTR(addr, offset) DEREF_U32(addr, offset)
+#تعریف_کرو DEREF_PTR_نمبر(addr, offset) DEREF_PTR(addr, offset)
 
 // Store an integral return value widened to ffi_arg (32 bits on wasm32), as
 // the libffi API promises for integral returns narrower than a register.
 // The typed-array store wraps modulo 2^32, so a sign-extended negative
 // Number is stored correctly by both variants.
-#define STORE_ARG_WIDENED_UNSIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
-#define STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
+#تعریف_کرو STORE_ARG_WIDENED_UNSIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
+#تعریف_کرو STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
 
-CHECK_FIELD_OFFSET(ffi_cif, abi, 4*0);
-CHECK_FIELD_OFFSET(ffi_cif, nargs, 4*1);
-CHECK_FIELD_OFFSET(ffi_cif, arg_types, 4*2);
-CHECK_FIELD_OFFSET(ffi_cif, rtype, 4*3);
-CHECK_FIELD_OFFSET(ffi_cif, flags, 4*5);
-CHECK_FIELD_OFFSET(ffi_cif, nfixedargs, 4*6);
+CHECK_میدان_انحراف(ffi_cif, abi, 4*0);
+CHECK_میدان_انحراف(ffi_cif, nargs, 4*1);
+CHECK_میدان_انحراف(ffi_cif, arg_types, 4*2);
+CHECK_میدان_انحراف(ffi_cif, rtype, 4*3);
+CHECK_میدان_انحراف(ffi_cif, flags, 4*5);
+CHECK_میدان_انحراف(ffi_cif, nfixedargs, 4*6);
 
-#define CIF__ABI(addr) DEREF_U32(addr, 0)
-#define CIF__NARGS(addr) DEREF_U32(addr, 1)
-#define CIF__ARGTYPES(addr) DEREF_U32(addr, 2)
-#define CIF__RTYPE(addr) DEREF_U32(addr, 3)
-#define CIF__FLAGS(addr) DEREF_U32(addr, 5)
-#define CIF__NFIXEDARGS(addr) DEREF_U32(addr, 6)
+#تعریف_کرو CIF__ABI(addr) DEREF_U32(addr, 0)
+#تعریف_کرو CIF__NARGS(addr) DEREF_U32(addr, 1)
+#تعریف_کرو CIF__ARGTYPES(addr) DEREF_U32(addr, 2)
+#تعریف_کرو CIF__RTYPE(addr) DEREF_U32(addr, 3)
+#تعریف_کرو CIF__FLAGS(addr) DEREF_U32(addr, 5)
+#تعریف_کرو CIF__NFIXEDARGS(addr) DEREF_U32(addr, 6)
 
-CHECK_FIELD_OFFSET(ffi_type, size, 0);
-CHECK_FIELD_OFFSET(ffi_type, alignment, 4);
-CHECK_FIELD_OFFSET(ffi_type, type, 6);
-CHECK_FIELD_OFFSET(ffi_type, elements, 8);
+CHECK_میدان_انحراف(ffi_type, سائز, 0);
+CHECK_میدان_انحراف(ffi_type, alignment, 4);
+CHECK_میدان_انحراف(ffi_type, type, 6);
+CHECK_میدان_انحراف(ffi_type, elements, 8);
 
-#define FFI_TYPE__SIZE(addr) DEREF_U32(addr, 0)
-#define FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 4, 0)
-#define FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 6, 0)
-#define FFI_TYPE__ELEMENTS(addr) DEREF_U32(addr + 8, 0)
+#تعریف_کرو FFI_TYPE_سائز(addr) DEREF_U32(addr, 0)
+#تعریف_کرو FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 4, 0)
+#تعریف_کرو FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 6, 0)
+#تعریف_کرو FFI_TYPE__ELEMENTS(addr) DEREF_U32(addr + 8, 0)
 
-#elif __SIZEOF_POINTER__ == 8
+#وگرنہ_اگر __SIZEOF_POINTER__ == 8
 
-#define FFI_EMSCRIPTEN_ABI FFI_WASM64_EMSCRIPTEN
-#define PTR_SIG 'j'
-#define PTR_WASM_TYPE 0x7e
+#تعریف_کرو FFI_EMSCRIPTEN_ABI FFI_WASM64_EMSCRIPTEN
+#تعریف_کرو PTR_SIG 'j'
+#تعریف_کرو PTR_WASM_TYPE 0x7e
 
 // DEC_PTR casts a pointer value (coming from Wasm) represented as BigInt (i64) to Number (i53).
 // This should be used for a pointer that is expected to be within the i53 range. If the pointer
 // value is outside the Number's range, the value will become NaN.
-#define DEC_PTR(p) bigintToI53Checked(p)
+#تعریف_کرو DEC_PTR(p) bigint_مقصد_I53_Checked(p)
 // ENC_PTR casts a pointer value represented as Number to BigInt (i64)
-#define ENC_PTR(p) BigInt(p)
+#تعریف_کرو ENC_PTR(p) BigInt(p)
 
-#define DEREF_PTR(addr, offset) DEREF_U64(addr, offset)
-#define DEREF_PTR_NUMBER(addr, offset) DEC_PTR(DEREF_PTR(addr, offset))
+#تعریف_کرو DEREF_PTR(addr, offset) DEREF_U64(addr, offset)
+#تعریف_کرو DEREF_PTR_نمبر(addr, offset) DEC_PTR(DEREF_PTR(addr, offset))
 
 // Store an integral return value widened to ffi_arg (64 bits on wasm64), as
 // the libffi API promises for integral returns narrower than a register.
@@ -125,83 +125,83 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 8);
 // the unsigned variant zero-extends a possibly-negative i32 Number, while
 // the BigUint64Array store wraps the signed variant modulo 2^64, which is
 // sign extension.
-#define STORE_ARG_WIDENED_UNSIGNED(rvalue, x) \
+#تعریف_کرو STORE_ARG_WIDENED_UNSIGNED(rvalue, x) \
   (DEREF_U64(rvalue, 0) = BigInt(x) & BigInt(4294967295))
-#define STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U64(rvalue, 0) = BigInt(x))
+#تعریف_کرو STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U64(rvalue, 0) = BigInt(x))
 
-CHECK_FIELD_OFFSET(ffi_cif, abi, 0);
-CHECK_FIELD_OFFSET(ffi_cif, nargs, 4);
-CHECK_FIELD_OFFSET(ffi_cif, arg_types, 8);
-CHECK_FIELD_OFFSET(ffi_cif, rtype, 16);
-CHECK_FIELD_OFFSET(ffi_cif, flags, 28);
-CHECK_FIELD_OFFSET(ffi_cif, nfixedargs, 32);
+CHECK_میدان_انحراف(ffi_cif, abi, 0);
+CHECK_میدان_انحراف(ffi_cif, nargs, 4);
+CHECK_میدان_انحراف(ffi_cif, arg_types, 8);
+CHECK_میدان_انحراف(ffi_cif, rtype, 16);
+CHECK_میدان_انحراف(ffi_cif, flags, 28);
+CHECK_میدان_انحراف(ffi_cif, nfixedargs, 32);
 
-#define CIF__ABI(addr) DEREF_U32(addr, 0)
-#define CIF__NARGS(addr) DEREF_U32(addr + 4,  0)
-#define CIF__ARGTYPES(addr) DEREF_U64(addr + 8,  0)
-#define CIF__RTYPE(addr) DEREF_U64(addr + 16, 0)
-#define CIF__FLAGS(addr) DEREF_U32(addr + 28, 0)
-#define CIF__NFIXEDARGS(addr) DEREF_U32(addr + 32, 0)
+#تعریف_کرو CIF__ABI(addr) DEREF_U32(addr, 0)
+#تعریف_کرو CIF__NARGS(addr) DEREF_U32(addr + 4,  0)
+#تعریف_کرو CIF__ARGTYPES(addr) DEREF_U64(addr + 8,  0)
+#تعریف_کرو CIF__RTYPE(addr) DEREF_U64(addr + 16, 0)
+#تعریف_کرو CIF__FLAGS(addr) DEREF_U32(addr + 28, 0)
+#تعریف_کرو CIF__NFIXEDARGS(addr) DEREF_U32(addr + 32, 0)
 
-CHECK_FIELD_OFFSET(ffi_type, size, 0);
-CHECK_FIELD_OFFSET(ffi_type, alignment, 8);
-CHECK_FIELD_OFFSET(ffi_type, type, 10);
-CHECK_FIELD_OFFSET(ffi_type, elements, 16);
+CHECK_میدان_انحراف(ffi_type, سائز, 0);
+CHECK_میدان_انحراف(ffi_type, alignment, 8);
+CHECK_میدان_انحراف(ffi_type, type, 10);
+CHECK_میدان_انحراف(ffi_type, elements, 16);
 
-#define FFI_TYPE__SIZE(addr) DEREF_U64(addr, 0)
-#define FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 8, 0)
-#define FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 10, 0)
-#define FFI_TYPE__ELEMENTS(addr) DEREF_U64(addr + 16, 0)
+#تعریف_کرو FFI_TYPE_سائز(addr) DEREF_U64(addr, 0)
+#تعریف_کرو FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 8, 0)
+#تعریف_کرو FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 10, 0)
+#تعریف_کرو FFI_TYPE__ELEMENTS(addr) DEREF_U64(addr + 16, 0)
 
-#else
-#error "Unknown pointer size"
-#endif
+#ورنہ
+#غلطی "Unknown pointer size"
+#اگر_ختم
 
-#define ALIGN_ADDRESS(addr, align) (addr &= (~((align) - 1)))
-#define STACK_ALLOC(stack, size, align) ((stack -= (size)), ALIGN_ADDRESS(stack, align))
+#تعریف_کرو ALIGN_پتہ(addr, align) (addr &= (~((align) - 1)))
+#تعریف_کرو ڈھیر_ALLOC(ڈھیر, سائز, align) ((ڈھیر -= (سائز)), ALIGN_پتہ(ڈھیر, align))
 
 // Most wasm runtimes support at most 1000 Js trampoline args.
-#define MAX_ARGS 1000
+#تعریف_کرو MAX_دلائل 1000
 
-#include <stddef.h>
+#شامل <stddef.h>
 
-#define VARARGS_FLAG 1
+#تعریف_کرو VARARGS_FLAG 1
 
-#define FFI_OK_MACRO 0
+#تعریف_کرو FFI_OK_MACRO 0
 _Static_assert(FFI_OK_MACRO == FFI_OK, "FFI_OK must be 0");
 
-#define FFI_BAD_TYPEDEF_MACRO 1
+#تعریف_کرو FFI_BAD_TYPEDEF_MACRO 1
 _Static_assert(FFI_BAD_TYPEDEF_MACRO == FFI_BAD_TYPEDEF, "FFI_BAD_TYPEDEF must be 1");
 
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_EMSCRIPTEN_ABI)
+    واپس FFI_BAD_ABI;
   // This is called after ffi_prep_cif_machdep_var so we need to avoid
   // overwriting cif->nfixedargs.
-  if (!(cif->flags & VARARGS_FLAG))
+  اگر (!(cif->flags & VARARGS_FLAG))
     cif->nfixedargs = cif->nargs;
-  if (cif->nargs > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  if (cif->rtype->type == FFI_TYPE_COMPLEX)
-    return FFI_BAD_TYPEDEF;
+  اگر (cif->nargs > MAX_دلائل)
+    واپس FFI_BAD_TYPEDEF;
+  اگر (cif->rtype->type == FFI_TYPE_COMPLEX)
+    واپس FFI_BAD_TYPEDEF;
   // If they put the COMPLEX type into a struct we won't notice, but whatever.
-  for (int i = 0; i < cif->nargs; i++)
-    if (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
-      return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  برائے (صحیح i = 0; i < cif->nargs; i++)
+    اگر (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
+      واپس FFI_BAD_TYPEDEF;
+  واپس FFI_OK;
 }
 
-ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
+ffi_حالت FFI_HIDDEN
+ffi_prep_cif_machdep_var(ffi_cif *cif, غیرعلامتی nfixedargs, غیرعلامتی ntotalargs)
 {
   cif->flags |= VARARGS_FLAG;
   cif->nfixedargs = nfixedargs;
   // The varargs takes up one extra argument
-  if (cif->nfixedargs + 1 > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  اگر (cif->nfixedargs + 1 > MAX_دلائل)
+    واپس FFI_BAD_TYPEDEF;
+  واپس FFI_OK;
 }
 
 /**
@@ -218,11 +218,11 @@ ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
  * By always unboxing structs up front, we can avoid messy casework later.
  */
 EM_JS_MACROS(
-void,
+خالی,
 unbox_small_structs, (ffi_type type_ptr), {
   type_ptr = DEC_PTR(type_ptr);
   var type_id = FFI_TYPE__TYPEID(type_ptr);
-  while (type_id === FFI_TYPE_STRUCT) {
+  جب (type_id === FFI_TYPE_STRUCT) {
     // Don't unbox single element structs if they are bigger than 16 bytes. This
     // is a work around for the fact that Python will give incorrect values for
     // the size of the field in these cases: it says that the struct has pointer
@@ -233,27 +233,27 @@ unbox_small_structs, (ffi_type type_ptr), {
     //
     // See the Python comment here:
     // https://github.com/python/cpython/blob/a16a9f978f42b8a09297c1efbf33877f6388c403/Modules/_ctypes/stgdict.c#L718-L779
-    if (DEC_PTR(FFI_TYPE__SIZE(type_ptr)) > 16) {
-      break;
+    اگر (DEC_PTR(FFI_TYPE_سائز(type_ptr)) > 16) {
+      توڑو;
     }
     var elements = DEC_PTR(FFI_TYPE__ELEMENTS(type_ptr));
-    var first_element = DEREF_PTR_NUMBER(elements, 0);
-    if (first_element === 0) {
+    var پہلا_element = DEREF_PTR_نمبر(elements, 0);
+    اگر (پہلا_element === 0) {
       type_id = FFI_TYPE_VOID;
-      break;
-    } else if (DEREF_PTR_NUMBER(elements, 1) === 0) {
-      type_ptr = first_element;
-      type_id = FFI_TYPE__TYPEID(first_element);
-    } else {
-      break;
+      توڑو;
+    } ورنہ اگر (DEREF_PTR_نمبر(elements, 1) === 0) {
+      type_ptr = پہلا_element;
+      type_id = FFI_TYPE__TYPEID(پہلا_element);
+    } ورنہ {
+      توڑو;
     }
   }
-  return [type_ptr, type_id];
+  واپس [type_ptr, type_id];
 })
 
 EM_JS_MACROS(
-void,
-ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
+خالی,
+ffi_call_js, (ffi_cif *cif, ffi_fp fn, خالی *rvalue, خالی **avalue),
 {
   cif = DEC_PTR(cif);
   fn = DEC_PTR(fn);
@@ -271,18 +271,18 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // still a struct to the caller: its buffer is exactly the struct's size,
   // so it must not get the integral widening to ffi_arg.
   var rtype_widen = FFI_TYPE__TYPEID(DEC_PTR(CIF__RTYPE(cif))) !== FFI_TYPE_STRUCT;
-  var orig_stack_ptr = stackSave();
-  var cur_stack_ptr = orig_stack_ptr;
+  var orig_ڈھیر_ptr = ڈھیر_Save();
+  var cur_ڈھیر_ptr = orig_ڈھیر_ptr;
 
-  var args = [];
+  var دلائل = [];
   // Does our onwards call return by argument or normally? We return by argument
   // no matter what.
   var ret_by_arg = false;
 
-  if (rtype_id === FFI_TYPE_COMPLEX) {
+  اگر (rtype_id === FFI_TYPE_COMPLEX) {
     throw new Error('complex ret marshalling nyi');
   }
-  if (rtype_id < 0 || rtype_id > FFI_TYPE_LAST) {
+  اگر (rtype_id < 0 || rtype_id > FFI_TYPE_آخری) {
     throw new Error('Unexpected rtype ' + rtype_id);
   }
   // If the return type is a struct with multiple entries or a long double, the
@@ -290,17 +290,17 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Conveniently, we've already received a pointer to return value, so we can
   // just use this. We also mark a flag that we don't need to convert the return
   // value of the dynamic call back to C.
-  if (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
-    if (rvalue === 0) {
+  اگر (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
+    اگر (rvalue === 0) {
       // NULL rvalue: the caller discards the result, but the callee still
       // needs somewhere to write it. Allocate scratch space on the stack;
       // it is released by the stackRestore after the call.
-      var rsize = DEC_PTR(FFI_TYPE__SIZE(rtype_ptr));
+      var rsize = DEC_PTR(FFI_TYPE_سائز(rtype_ptr));
       var ralign = FFI_TYPE__ALIGN(rtype_ptr);
-      STACK_ALLOC(cur_stack_ptr, rsize, ralign);
-      rvalue = cur_stack_ptr;
+      ڈھیر_ALLOC(cur_ڈھیر_ptr, rsize, ralign);
+      rvalue = cur_ڈھیر_ptr;
     }
-    args.push(ENC_PTR(rvalue));
+    دلائل.ڈالو(ENC_PTR(rvalue));
     ret_by_arg = true;
   }
 
@@ -308,8 +308,8 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // the wasm function. The Javascript wrapper does a type conversion from
   // Javascript to C automatically, here we manually do the inverse conversion
   // from C to Javascript.
-  for (var i = 0; i < nfixedargs; i++) {
-    var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
+  برائے (var i = 0; i < nfixedargs; i++) {
+    var arg_ptr = DEREF_PTR_نمبر(avalue, i);
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
@@ -317,55 +317,55 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
     // It's okay here to always use unsigned integers as long as the size is 32
     // or 64 bits. Smaller sizes get extended to 32 bits differently according
     // to whether they are signed or unsigned.
-    switch (arg_type_id) {
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-      args.push(DEREF_U32(arg_ptr, 0));
-      break;
-    case FFI_TYPE_FLOAT:
-      args.push(DEREF_F32(arg_ptr, 0));
-      break;
-    case FFI_TYPE_DOUBLE:
-      args.push(DEREF_F64(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT8:
-      args.push(DEREF_U8(arg_ptr, 0));
-      break;
-    case FFI_TYPE_SINT8:
-      args.push(DEREF_S8(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT16:
-      args.push(DEREF_U16(arg_ptr, 0));
-      break;
-    case FFI_TYPE_SINT16:
-      args.push(DEREF_S16(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      args.push(DEREF_U64(arg_ptr, 0));
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+    انتخاب (arg_type_id) {
+    حالت FFI_TYPE_INT:
+    حالت FFI_TYPE_SINT32:
+    حالت FFI_TYPE_UINT32:
+      دلائل.ڈالو(DEREF_U32(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_FLOAT:
+      دلائل.ڈالو(DEREF_F32(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_DOUBLE:
+      دلائل.ڈالو(DEREF_F64(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_UINT8:
+      دلائل.ڈالو(DEREF_U8(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_SINT8:
+      دلائل.ڈالو(DEREF_S8(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_UINT16:
+      دلائل.ڈالو(DEREF_U16(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_SINT16:
+      دلائل.ڈالو(DEREF_S16(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_UINT64:
+    حالت FFI_TYPE_SINT64:
+      دلائل.ڈالو(DEREF_U64(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_LONGDOUBLE:
       // long double is passed as a pair of BigInts.
-      args.push(DEREF_U64(arg_ptr, 0));
-      args.push(DEREF_U64(arg_ptr, 1));
-      break;
-    case FFI_TYPE_STRUCT:
+      دلائل.ڈالو(DEREF_U64(arg_ptr, 0));
+      دلائل.ڈالو(DEREF_U64(arg_ptr, 1));
+      توڑو;
+    حالت FFI_TYPE_STRUCT:
       // Nontrivial structs are passed by pointer.
       // Have to copy the struct onto the stack though because C ABI says it's
       // call by value.
-      var size = DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr));
+      var سائز = DEC_PTR(FFI_TYPE_سائز(arg_type_ptr));
       var align = FFI_TYPE__ALIGN(arg_type_ptr);
-      STACK_ALLOC(cur_stack_ptr, size, align);
-      HEAP8.subarray(cur_stack_ptr, cur_stack_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
-      args.push(ENC_PTR(cur_stack_ptr));
-      break;
-    case FFI_TYPE_POINTER:
-      args.push(DEREF_PTR(arg_ptr, 0));
-      break;
-    case FFI_TYPE_COMPLEX:
+      ڈھیر_ALLOC(cur_ڈھیر_ptr, سائز, align);
+      HEAP8.subarray(cur_ڈھیر_ptr, cur_ڈھیر_ptr+سائز).سیٹ(HEAP8.subarray(arg_ptr, arg_ptr + سائز));
+      دلائل.ڈالو(ENC_PTR(cur_ڈھیر_ptr));
+      توڑو;
+    حالت FFI_TYPE_اشارہ_گر:
+      دلائل.ڈالو(DEREF_PTR(arg_ptr, 0));
+      توڑو;
+    حالت FFI_TYPE_COMPLEX:
       throw new Error('complex marshalling nyi');
-    default:
+    طےشدہ:
       throw new Error('Unexpected type ' + arg_type_id);
     }
   }
@@ -379,93 +379,93 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // We don't have any way of knowing how many args were actually passed, so we
   // just always copy extra nonsense past the end. The ownwards call will know
   // not to look at it.
-  if (flags & VARARGS_FLAG) {
+  اگر (flags & VARARGS_FLAG) {
     var struct_arg_info = [];
-    for (var i = nargs - 1;  i >= nfixedargs; i--) {
-      var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
+    برائے (var i = nargs - 1;  i >= nfixedargs; i--) {
+      var arg_ptr = DEREF_PTR_نمبر(avalue, i);
       var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
       var arg_type_ptr = arg_unboxed[0];
       var arg_type_id = arg_unboxed[1];
-      switch (arg_type_id) {
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
-        STACK_ALLOC(cur_stack_ptr, 1, 1);
-        DEREF_U8(cur_stack_ptr, 0) = DEREF_U8(arg_ptr, 0);
-        break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
-        STACK_ALLOC(cur_stack_ptr, 2, 2);
-        DEREF_U16(cur_stack_ptr, 0) = DEREF_U16(arg_ptr, 0);
-        break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_FLOAT:
-        STACK_ALLOC(cur_stack_ptr, 4, 4);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        break;
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-        STACK_ALLOC(cur_stack_ptr, 8, 8);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
-        break;
-      case FFI_TYPE_LONGDOUBLE:
-        STACK_ALLOC(cur_stack_ptr, 16, 8);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
-        DEREF_U32(cur_stack_ptr, 2) = DEREF_U32(arg_ptr, 2);
-        DEREF_U32(cur_stack_ptr, 3) = DEREF_U32(arg_ptr, 3);
-        break;
-      case FFI_TYPE_STRUCT:
+      انتخاب (arg_type_id) {
+      حالت FFI_TYPE_UINT8:
+      حالت FFI_TYPE_SINT8:
+        ڈھیر_ALLOC(cur_ڈھیر_ptr, 1, 1);
+        DEREF_U8(cur_ڈھیر_ptr, 0) = DEREF_U8(arg_ptr, 0);
+        توڑو;
+      حالت FFI_TYPE_UINT16:
+      حالت FFI_TYPE_SINT16:
+        ڈھیر_ALLOC(cur_ڈھیر_ptr, 2, 2);
+        DEREF_U16(cur_ڈھیر_ptr, 0) = DEREF_U16(arg_ptr, 0);
+        توڑو;
+      حالت FFI_TYPE_INT:
+      حالت FFI_TYPE_UINT32:
+      حالت FFI_TYPE_SINT32:
+      حالت FFI_TYPE_FLOAT:
+        ڈھیر_ALLOC(cur_ڈھیر_ptr, 4, 4);
+        DEREF_U32(cur_ڈھیر_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        توڑو;
+      حالت FFI_TYPE_DOUBLE:
+      حالت FFI_TYPE_UINT64:
+      حالت FFI_TYPE_SINT64:
+        ڈھیر_ALLOC(cur_ڈھیر_ptr, 8, 8);
+        DEREF_U32(cur_ڈھیر_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        DEREF_U32(cur_ڈھیر_ptr, 1) = DEREF_U32(arg_ptr, 1);
+        توڑو;
+      حالت FFI_TYPE_LONGDOUBLE:
+        ڈھیر_ALLOC(cur_ڈھیر_ptr, 16, 8);
+        DEREF_U32(cur_ڈھیر_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        DEREF_U32(cur_ڈھیر_ptr, 1) = DEREF_U32(arg_ptr, 1);
+        DEREF_U32(cur_ڈھیر_ptr, 2) = DEREF_U32(arg_ptr, 2);
+        DEREF_U32(cur_ڈھیر_ptr, 3) = DEREF_U32(arg_ptr, 3);
+        توڑو;
+      حالت FFI_TYPE_STRUCT:
         // Again, struct must be passed by pointer.
         // But ABI is by value, so have to copy struct onto stack.
         // Currently arguments are going onto stack so we can't put it there now. Come back for this.
-        STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        struct_arg_info.push([cur_stack_ptr, arg_ptr, DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
-        break;
-      case FFI_TYPE_POINTER:
-        STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        DEREF_PTR(cur_stack_ptr, 0) = DEREF_PTR(arg_ptr, 0);
-        break;
-      case FFI_TYPE_COMPLEX:
+        ڈھیر_ALLOC(cur_ڈھیر_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        struct_arg_info.ڈالو([cur_ڈھیر_ptr, arg_ptr, DEC_PTR(FFI_TYPE_سائز(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
+        توڑو;
+      حالت FFI_TYPE_اشارہ_گر:
+        ڈھیر_ALLOC(cur_ڈھیر_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        DEREF_PTR(cur_ڈھیر_ptr, 0) = DEREF_PTR(arg_ptr, 0);
+        توڑو;
+      حالت FFI_TYPE_COMPLEX:
         throw new Error('complex arg marshalling nyi');
-      default:
+      طےشدہ:
         throw new Error('Unexpected argtype ' + arg_type_id);
       }
     }
     // extra normal argument which is the pointer to the varargs.
-    args.push(ENC_PTR(cur_stack_ptr));
+    دلائل.ڈالو(ENC_PTR(cur_ڈھیر_ptr));
     // Now allocate variable struct args on stack too.
-    for (var i = 0; i < struct_arg_info.length; i++) {
+    برائے (var i = 0; i < struct_arg_info.لمبائی; i++) {
       var struct_info = struct_arg_info[i];
-      var arg_target = struct_info[0];
+      var arg_ہدف = struct_info[0];
       var arg_ptr = struct_info[1];
-      var size = struct_info[2];
+      var سائز = struct_info[2];
       var align = struct_info[3];
-      STACK_ALLOC(cur_stack_ptr, size, align);
-      HEAP8.subarray(cur_stack_ptr, cur_stack_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
-      DEREF_PTR(arg_target, 0) = ENC_PTR(cur_stack_ptr);
+      ڈھیر_ALLOC(cur_ڈھیر_ptr, سائز, align);
+      HEAP8.subarray(cur_ڈھیر_ptr, cur_ڈھیر_ptr+سائز).سیٹ(HEAP8.subarray(arg_ptr, arg_ptr + سائز));
+      DEREF_PTR(arg_ہدف, 0) = ENC_PTR(cur_ڈھیر_ptr);
     }
   }
-  stackRestore(cur_stack_ptr);
-  stackAlloc(0); // stackAlloc enforces alignment invariants on the stack pointer
-  LOG_DEBUG("CALL_FUNC_PTR", "fn:", fn, "args:", args);
-  var result = getWasmTableEntry(fn).apply(null, args);
+  ڈھیر_Restore(cur_ڈھیر_ptr);
+  ڈھیر_Alloc(0); // stackAlloc enforces alignment invariants on the stack pointer
+  LOG_DEBUG("CALL_FUNC_PTR", "fn:", fn, "args:", دلائل);
+  var نتیجہ = get_Wasm_جدول_اندراج(fn).apply(null, دلائل);
   // Put the stack pointer back (we moved it if there were any struct args or we
   // made a varargs call)
-  stackRestore(orig_stack_ptr);
+  ڈھیر_Restore(orig_ڈھیر_ptr);
 
   // We need to return by argument. If return value was a nontrivial struct or
   // long double, the onwards call already put the return value in rvalue
-  if (ret_by_arg) {
-    return;
+  اگر (ret_by_arg) {
+    واپس;
   }
 
   // A NULL rvalue means the caller discards the return value.
-  if (rvalue === 0) {
-    return;
+  اگر (rvalue === 0) {
+    واپس;
   }
 
   // Otherwise the result was automatically converted from C into Javascript and
@@ -473,123 +473,123 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Integral returns narrower than a register are widened to ffi_arg, as
   // documented and as every native port does -- but only genuine scalar
   // returns: an unboxed small-struct return keeps its natural width.
-  switch (rtype_id) {
-  case FFI_TYPE_VOID:
-    break;
-  case FFI_TYPE_INT:
-  case FFI_TYPE_SINT32:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_SIGNED(rvalue, result | 0);
-    else
-      DEREF_U32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT32:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_UNSIGNED(rvalue, result | 0);
-    else
-      DEREF_U32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_FLOAT:
-    DEREF_F32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_DOUBLE:
-    DEREF_F64(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT8:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xff);
-    else
-      DEREF_U8(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_SINT8:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_SIGNED(rvalue, (result << 24) >> 24);
-    else
-      DEREF_U8(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT16:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xffff);
-    else
-      DEREF_U16(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_SINT16:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_SIGNED(rvalue, (result << 16) >> 16);
-    else
-      DEREF_U16(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT64:
-  case FFI_TYPE_SINT64:
-    DEREF_U64(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_POINTER:
-    DEREF_PTR(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_COMPLEX:
+  انتخاب (rtype_id) {
+  حالت FFI_TYPE_VOID:
+    توڑو;
+  حالت FFI_TYPE_INT:
+  حالت FFI_TYPE_SINT32:
+    اگر (rtype_widen)
+      STORE_ARG_WIDENED_SIGNED(rvalue, نتیجہ | 0);
+    ورنہ
+      DEREF_U32(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_UINT32:
+    اگر (rtype_widen)
+      STORE_ARG_WIDENED_UNSIGNED(rvalue, نتیجہ | 0);
+    ورنہ
+      DEREF_U32(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_FLOAT:
+    DEREF_F32(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_DOUBLE:
+    DEREF_F64(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_UINT8:
+    اگر (rtype_widen)
+      STORE_ARG_WIDENED_UNSIGNED(rvalue, نتیجہ & 0xff);
+    ورنہ
+      DEREF_U8(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_SINT8:
+    اگر (rtype_widen)
+      STORE_ARG_WIDENED_SIGNED(rvalue, (نتیجہ << 24) >> 24);
+    ورنہ
+      DEREF_U8(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_UINT16:
+    اگر (rtype_widen)
+      STORE_ARG_WIDENED_UNSIGNED(rvalue, نتیجہ & 0xffff);
+    ورنہ
+      DEREF_U16(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_SINT16:
+    اگر (rtype_widen)
+      STORE_ARG_WIDENED_SIGNED(rvalue, (نتیجہ << 16) >> 16);
+    ورنہ
+      DEREF_U16(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_UINT64:
+  حالت FFI_TYPE_SINT64:
+    DEREF_U64(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_اشارہ_گر:
+    DEREF_PTR(rvalue, 0) = نتیجہ;
+    توڑو;
+  حالت FFI_TYPE_COMPLEX:
     throw new Error('complex ret marshalling nyi');
-  default:
+  طےشدہ:
     throw new Error('Unexpected rtype ' + rtype_id);
   }
 });
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue) {
+خالی ffi_call(ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue, خالی **avalue) {
   ffi_call_js(cif, fn, rvalue, avalue);
 }
 
-#if __SIZEOF_POINTER__ == 4
+#اگر __SIZEOF_POINTER__ == 4
 
-CHECK_FIELD_OFFSET(ffi_closure, ftramp, 4*0);
-CHECK_FIELD_OFFSET(ffi_closure, cif, 4*1);
-CHECK_FIELD_OFFSET(ffi_closure, fun, 4*2);
-CHECK_FIELD_OFFSET(ffi_closure, user_data, 4*3);
+CHECK_میدان_انحراف(ffi_احاطہ, ftramp, 4*0);
+CHECK_میدان_انحراف(ffi_احاطہ, cif, 4*1);
+CHECK_میدان_انحراف(ffi_احاطہ, fun, 4*2);
+CHECK_میدان_انحراف(ffi_احاطہ, user_ڈیٹا, 4*3);
 
-#define CLOSURE__wrapper(addr) DEREF_U32(addr, 0)
-#define CLOSURE__cif(addr) DEREF_U32(addr, 1)
-#define CLOSURE__fun(addr) DEREF_U32(addr, 2)
-#define CLOSURE__user_data(addr) DEREF_U32(addr, 3)
+#تعریف_کرو احاطہ_wrapper(addr) DEREF_U32(addr, 0)
+#تعریف_کرو احاطہ_cif(addr) DEREF_U32(addr, 1)
+#تعریف_کرو احاطہ_fun(addr) DEREF_U32(addr, 2)
+#تعریف_کرو احاطہ_user_ڈیٹا(addr) DEREF_U32(addr, 3)
 
-#elif __SIZEOF_POINTER__ == 8
+#وگرنہ_اگر __SIZEOF_POINTER__ == 8
 
-CHECK_FIELD_OFFSET(ffi_closure, ftramp, 0);
-CHECK_FIELD_OFFSET(ffi_closure, cif, 8);
-CHECK_FIELD_OFFSET(ffi_closure, fun, 16);
-CHECK_FIELD_OFFSET(ffi_closure, user_data, 24);
+CHECK_میدان_انحراف(ffi_احاطہ, ftramp, 0);
+CHECK_میدان_انحراف(ffi_احاطہ, cif, 8);
+CHECK_میدان_انحراف(ffi_احاطہ, fun, 16);
+CHECK_میدان_انحراف(ffi_احاطہ, user_ڈیٹا, 24);
 
-#define CLOSURE__wrapper(addr) DEREF_U64(addr, 0)
-#define CLOSURE__cif(addr) DEREF_U64(addr, 1)
-#define CLOSURE__fun(addr) DEREF_U64(addr, 2)
-#define CLOSURE__user_data(addr) DEREF_U64(addr, 3)
+#تعریف_کرو احاطہ_wrapper(addr) DEREF_U64(addr, 0)
+#تعریف_کرو احاطہ_cif(addr) DEREF_U64(addr, 1)
+#تعریف_کرو احاطہ_fun(addr) DEREF_U64(addr, 2)
+#تعریف_کرو احاطہ_user_ڈیٹا(addr) DEREF_U64(addr, 3)
 
-#else
-#error "Unknown pointer size"
-#endif
+#ورنہ
+#غلطی "Unknown pointer size"
+#اگر_ختم
 
-EM_JS_MACROS(void *, ffi_closure_alloc_js, (size_t size, void **code), {
-  size = DEC_PTR(size);
-  code = DEC_PTR(code);
-  var closure = _malloc(size);
-  var index = getEmptyTableSlot();
-  DEREF_PTR(code, 0) = ENC_PTR(index);
-  CLOSURE__wrapper(closure) = ENC_PTR(index);
-  return ENC_PTR(closure);
+EM_JS_MACROS(خالی *, ffi_احاطہ_alloc_js, (size_t سائز, خالی **رمز), {
+  سائز = DEC_PTR(سائز);
+  رمز = DEC_PTR(رمز);
+  var احاطہ = _malloc(سائز);
+  var اشاریہ = get_خالی_خانے_جدول_خانہ();
+  DEREF_PTR(رمز, 0) = ENC_PTR(اشاریہ);
+  احاطہ_wrapper(احاطہ) = ENC_PTR(اشاریہ);
+  واپس ENC_PTR(احاطہ);
 })
 
-void * __attribute__ ((visibility ("default")))
-ffi_closure_alloc(size_t size, void **code) {
-  return ffi_closure_alloc_js(size, code);
+خالی * __attribute__ ((visibility ("default")))
+ffi_احاطہ_alloc(size_t سائز, خالی **رمز) {
+  واپس ffi_احاطہ_alloc_js(سائز, رمز);
 }
 
-EM_JS_MACROS(void, ffi_closure_free_js, (void *closure), {
-  closure = DEC_PTR(closure);
-  var index = DEC_PTR(CLOSURE__wrapper(closure));
-  freeTableIndexes.push(index);
-  _free(closure);
+EM_JS_MACROS(خالی, ffi_احاطہ_free_js, (خالی *احاطہ), {
+  احاطہ = DEC_PTR(احاطہ);
+  var اشاریہ = DEC_PTR(احاطہ_wrapper(احاطہ));
+  free_جدول_Indexes.ڈالو(اشاریہ);
+  _free(احاطہ);
 })
 
-void __attribute__ ((visibility ("default")))
-ffi_closure_free(void *closure) {
-  return ffi_closure_free_js(closure);
+خالی __attribute__ ((visibility ("default")))
+ffi_احاطہ_free(خالی *احاطہ) {
+  واپس ffi_احاطہ_free_js(احاطہ);
 }
 
 
@@ -621,44 +621,44 @@ ffi_closure_free(void *closure) {
  * with that closure's prelude.
  */
 EM_JS_MACROS(
-ffi_status,
-ffi_prep_closure_loc_js,
-(ffi_closure *closure, ffi_cif *cif, void *fun, void *user_data, void *codeloc),
+ffi_حالت,
+ffi_prep_احاطہ_loc_js,
+(ffi_احاطہ *احاطہ, ffi_cif *cif, خالی *fun, خالی *user_ڈیٹا, خالی *codeloc),
 {
-  closure = DEC_PTR(closure);
+  احاطہ = DEC_PTR(احاطہ);
   cif = DEC_PTR(cif);
   fun = DEC_PTR(fun);
-  user_data = DEC_PTR(user_data);
+  user_ڈیٹا = DEC_PTR(user_ڈیٹا);
   codeloc = DEC_PTR(codeloc);
-  var { sig, call_info } = ffi_cif_to_call_info(cif);
+  var { sig, call_info } = ffi_cif_مقصد_call_info(cif);
 
   LOG_DEBUG("CREATE_CLOSURE", "sig:", sig);
   try {
     var instance = new WebAssembly.Instance(
-      ffi_closure_trampoline_module(sig),
+      ffi_احاطہ_trampoline_module(sig),
       {
         e: {
-          p: ffi_closure_prelude(closure, call_info),
-          e: ffi_closure_epilogue(sig),
-          t: wasmTable,
+          p: ffi_احاطہ_prelude(احاطہ, call_info),
+          e: ffi_احاطہ_epilogue(sig),
+          t: wasm_جدول,
         },
       },
     );
   } catch (e) {
     LOG_DEBUG("CREATE_CLOSURE_FAILED", e);
-    return FFI_BAD_TYPEDEF_MACRO;
+    واپس FFI_BAD_TYPEDEF_MACRO;
   }
   var wasm_trampoline = instance.exports["f"];
-  setWasmTableEntry(codeloc, wasm_trampoline);
-  CLOSURE__cif(closure) = ENC_PTR(cif);
-  CLOSURE__fun(closure) = ENC_PTR(fun);
-  CLOSURE__user_data(closure) = ENC_PTR(user_data);
-  return FFI_OK_MACRO;
+  سیٹ_Wasm_جدول_اندراج(codeloc, wasm_trampoline);
+  احاطہ_cif(احاطہ) = ENC_PTR(cif);
+  احاطہ_fun(احاطہ) = ENC_PTR(fun);
+  احاطہ_user_ڈیٹا(احاطہ) = ENC_PTR(user_ڈیٹا);
+  واپس FFI_OK_MACRO;
 }
 
 // Walk the CIF and compute the metadata we need for ffi_closure_prelude
 // and ffi_closure_trampoline_module.
-function ffi_cif_to_call_info(cif) {
+function ffi_cif_مقصد_call_info(cif) {
   var abi = CIF__ABI(cif);
   var nargs = CIF__NARGS(cif);
   var nfixedargs = CIF__NFIXEDARGS(cif);
@@ -671,91 +671,91 @@ function ffi_cif_to_call_info(cif) {
   // Important: this is the signature for calling us, the onward call always has sig viiii.
   var sig;
   var ret_by_arg = false;
-  switch (rtype_id) {
-  case FFI_TYPE_VOID:
+  انتخاب (rtype_id) {
+  حالت FFI_TYPE_VOID:
     sig = 'v';
-    break;
-  case FFI_TYPE_STRUCT:
-  case FFI_TYPE_LONGDOUBLE:
+    توڑو;
+  حالت FFI_TYPE_STRUCT:
+  حالت FFI_TYPE_LONGDOUBLE:
     // Return via a first pointer argument.
     sig = 'v' + PTR_SIG;
     ret_by_arg = true;
-    break;
-  case FFI_TYPE_INT:
-  case FFI_TYPE_UINT8:
-  case FFI_TYPE_SINT8:
-  case FFI_TYPE_UINT16:
-  case FFI_TYPE_SINT16:
-  case FFI_TYPE_UINT32:
-  case FFI_TYPE_SINT32:
+    توڑو;
+  حالت FFI_TYPE_INT:
+  حالت FFI_TYPE_UINT8:
+  حالت FFI_TYPE_SINT8:
+  حالت FFI_TYPE_UINT16:
+  حالت FFI_TYPE_SINT16:
+  حالت FFI_TYPE_UINT32:
+  حالت FFI_TYPE_SINT32:
     sig = 'i';
-    break;
-  case FFI_TYPE_FLOAT:
+    توڑو;
+  حالت FFI_TYPE_FLOAT:
     sig = 'f';
-    break;
-  case FFI_TYPE_DOUBLE:
+    توڑو;
+  حالت FFI_TYPE_DOUBLE:
     sig = 'd';
-    break;
-  case FFI_TYPE_UINT64:
-  case FFI_TYPE_SINT64:
+    توڑو;
+  حالت FFI_TYPE_UINT64:
+  حالت FFI_TYPE_SINT64:
     sig = 'j';
-    break;
-  case FFI_TYPE_POINTER:
+    توڑو;
+  حالت FFI_TYPE_اشارہ_گر:
     sig = PTR_SIG;
-    break;
-  case FFI_TYPE_COMPLEX:
+    توڑو;
+  حالت FFI_TYPE_COMPLEX:
     throw new Error('complex ret marshalling nyi');
-  default:
+  طےشدہ:
     throw new Error('Unexpected rtype ' + rtype_id);
   }
   var unboxed_arg_type_id_list = [];
   var unboxed_arg_type_info_list = [];
-  for (var i = 0; i < nargs; i++) {
+  برائے (var i = 0; i < nargs; i++) {
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
-    unboxed_arg_type_id_list.push(arg_type_id);
-    unboxed_arg_type_info_list.push([DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
+    unboxed_arg_type_id_list.ڈالو(arg_type_id);
+    unboxed_arg_type_info_list.ڈالو([DEC_PTR(FFI_TYPE_سائز(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
   }
-  for (var i = 0; i < nfixedargs; i++) {
-    switch (unboxed_arg_type_id_list[i]) {
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+  برائے (var i = 0; i < nfixedargs; i++) {
+    انتخاب (unboxed_arg_type_id_list[i]) {
+    حالت FFI_TYPE_INT:
+    حالت FFI_TYPE_UINT8:
+    حالت FFI_TYPE_SINT8:
+    حالت FFI_TYPE_UINT16:
+    حالت FFI_TYPE_SINT16:
+    حالت FFI_TYPE_UINT32:
+    حالت FFI_TYPE_SINT32:
       sig += 'i';
-      break;
-    case FFI_TYPE_FLOAT:
+      توڑو;
+    حالت FFI_TYPE_FLOAT:
       sig += 'f';
-      break;
-    case FFI_TYPE_DOUBLE:
+      توڑو;
+    حالت FFI_TYPE_DOUBLE:
       sig += 'd';
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      توڑو;
+    حالت FFI_TYPE_LONGDOUBLE:
       sig += 'jj';
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      توڑو;
+    حالت FFI_TYPE_UINT64:
+    حالت FFI_TYPE_SINT64:
       sig += 'j';
-      break;
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_POINTER:
+      توڑو;
+    حالت FFI_TYPE_STRUCT:
+    حالت FFI_TYPE_اشارہ_گر:
       sig += PTR_SIG;
-      break;
-    case FFI_TYPE_COMPLEX:
+      توڑو;
+    حالت FFI_TYPE_COMPLEX:
       throw new Error('complex marshalling nyi');
-    default:
+    طےشدہ:
       throw new Error('Unexpected argtype ' + arg_type_id);
     }
   }
-  if (nfixedargs < nargs) {
+  اگر (nfixedargs < nargs) {
     // extra pointer to varargs stack
     sig += PTR_SIG;
   }
-  return {
+  واپس {
     sig,
     call_info: {
       nfixedargs,
@@ -770,8 +770,8 @@ function ffi_cif_to_call_info(cif) {
 // The prelude() function is called by the wasm trampoline with the closure's
 // arguments. It marshals them onto the C stack and returns what the trampoline
 // needs to make the onward call.
-function ffi_closure_prelude(
-  closure,
+function ffi_احاطہ_prelude(
+  احاطہ,
   {
     nfixedargs,
     nargs,
@@ -780,98 +780,98 @@ function ffi_closure_prelude(
     unboxed_arg_type_id_list,
   },
 ) {
-  return function prelude() {
-    var args = arguments;
-    var orig_stack_ptr = stackSave();
-    var cur_ptr = orig_stack_ptr;
+  واپس function prelude() {
+    var دلائل = arguments;
+    var orig_ڈھیر_ptr = ڈھیر_Save();
+    var cur_ptr = orig_ڈھیر_ptr;
     var ret_ptr;
     var jsarg_idx = 0;
     // Should we return by argument or not? The onwards call returns by argument
     // no matter what. (Warning: ret_by_arg means the opposite in ffi_call)
-    if (ret_by_arg) {
-      ret_ptr = DEC_PTR(args[jsarg_idx++]);
-    } else {
+    اگر (ret_by_arg) {
+      ret_ptr = DEC_PTR(دلائل[jsarg_idx++]);
+    } ورنہ {
       // We might return 4 bytes or 8 bytes, allocate 8 just in case.
-      STACK_ALLOC(cur_ptr, 8, 8);
+      ڈھیر_ALLOC(cur_ptr, 8, 8);
       ret_ptr = cur_ptr;
     }
     cur_ptr -= __SIZEOF_POINTER__ * nargs;
-    var args_ptr = cur_ptr;
+    var دلائل_ptr = cur_ptr;
     var carg_idx = 0;
     // Here we either have the actual argument, or a pair of BigInts for long
     // double, or a pointer to struct. We have to store into args_ptr[i] a
     // pointer to the ith argument. If the argument is a struct, just store the
     // pointer. Otherwise allocate stack space and copy the js argument onto the
     // stack.
-    for (; carg_idx < nfixedargs; carg_idx++) {
+    برائے (; carg_idx < nfixedargs; carg_idx++) {
       // jsarg_idx might start out as 0 or 1 depending on ret_by_arg
       // it advances an extra time for long double
-      var cur_arg = args[jsarg_idx++];
+      var cur_arg = دلائل[jsarg_idx++];
       var arg_type_info = unboxed_arg_type_info_list[carg_idx];
-      var arg_size = arg_type_info[0];
+      var arg_سائز = arg_type_info[0];
       var arg_align = arg_type_info[1];
       var arg_type_id = unboxed_arg_type_id_list[carg_idx];
-      switch (arg_type_id) {
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
+      انتخاب (arg_type_id) {
+      حالت FFI_TYPE_UINT8:
+      حالت FFI_TYPE_SINT8:
         // Bad things happen if we don't align to 4 here
-        STACK_ALLOC(cur_ptr, 1, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ڈھیر_ALLOC(cur_ptr, 1, 4);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U8(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+        توڑو;
+      حالت FFI_TYPE_UINT16:
+      حالت FFI_TYPE_SINT16:
         // Bad things happen if we don't align to 4 here
-        STACK_ALLOC(cur_ptr, 2, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ڈھیر_ALLOC(cur_ptr, 2, 4);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U16(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-        STACK_ALLOC(cur_ptr, 4, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        توڑو;
+      حالت FFI_TYPE_INT:
+      حالت FFI_TYPE_UINT32:
+      حالت FFI_TYPE_SINT32:
+        ڈھیر_ALLOC(cur_ptr, 4, 4);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U32(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_STRUCT:
+        توڑو;
+      حالت FFI_TYPE_STRUCT:
         // cur_arg is already a pointer to struct
         // copy it onto stack to pass by value
-        STACK_ALLOC(cur_ptr, arg_size, arg_align);
-        HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(DEC_PTR(cur_arg), DEC_PTR(cur_arg) + arg_size));
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
-        break;
-      case FFI_TYPE_FLOAT:
-        STACK_ALLOC(cur_ptr, 4, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ڈھیر_ALLOC(cur_ptr, arg_سائز, arg_align);
+        HEAP8.subarray(cur_ptr, cur_ptr + arg_سائز).سیٹ(HEAP8.subarray(DEC_PTR(cur_arg), DEC_PTR(cur_arg) + arg_سائز));
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        توڑو;
+      حالت FFI_TYPE_FLOAT:
+        ڈھیر_ALLOC(cur_ptr, 4, 4);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F32(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_DOUBLE:
-        STACK_ALLOC(cur_ptr, 8, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        توڑو;
+      حالت FFI_TYPE_DOUBLE:
+        ڈھیر_ALLOC(cur_ptr, 8, 8);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F64(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-        STACK_ALLOC(cur_ptr, 8, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        توڑو;
+      حالت FFI_TYPE_UINT64:
+      حالت FFI_TYPE_SINT64:
+        ڈھیر_ALLOC(cur_ptr, 8, 8);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_LONGDOUBLE:
-        STACK_ALLOC(cur_ptr, 16, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        توڑو;
+      حالت FFI_TYPE_LONGDOUBLE:
+        ڈھیر_ALLOC(cur_ptr, 16, 8);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
-        cur_arg = args[jsarg_idx++];
+        cur_arg = دلائل[jsarg_idx++];
         DEREF_U64(cur_ptr, 1) = cur_arg;
-        break;
-      case FFI_TYPE_POINTER:
-        STACK_ALLOC(cur_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        توڑو;
+      حالت FFI_TYPE_اشارہ_گر:
+        ڈھیر_ALLOC(cur_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_PTR(cur_ptr, 0) = cur_arg;
-        break;
+        توڑو;
       }
     }
     // If its a varargs call, last js argument is a pointer to the varargs.
-    var varargs = DEC_PTR(args[args.length - 1]);
+    var varargs = DEC_PTR(دلائل[دلائل.لمبائی - 1]);
     // We have no way of knowing how many varargs were actually provided, this
     // fills the rest of the stack space allocated with nonsense. The onward
     // call will know to ignore the nonsense.
@@ -879,103 +879,103 @@ function ffi_closure_prelude(
     // We either have a pointer to the argument if the argument is not a struct
     // or a pointer to pointer to struct. We need to store a pointer to the
     // argument into args_ptr[i]
-    for (; carg_idx < nargs; carg_idx++) {
+    برائے (; carg_idx < nargs; carg_idx++) {
       var arg_type_id = unboxed_arg_type_id_list[carg_idx];
       var arg_type_info = unboxed_arg_type_info_list[carg_idx];
-      var arg_size = arg_type_info[0];
+      var arg_سائز = arg_type_info[0];
       var arg_align = arg_type_info[1];
-      if (arg_type_id === FFI_TYPE_STRUCT) {
+      اگر (arg_type_id === FFI_TYPE_STRUCT) {
         // In this case varargs is a pointer to pointer to struct so we need to
         // deref once
-        var struct_ptr = DEREF_PTR_NUMBER(varargs, 0);
-        STACK_ALLOC(cur_ptr, arg_size, arg_align);
-        HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(struct_ptr, struct_ptr + arg_size));
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
-      } else {
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(varargs);
+        var struct_ptr = DEREF_PTR_نمبر(varargs, 0);
+        ڈھیر_ALLOC(cur_ptr, arg_سائز, arg_align);
+        HEAP8.subarray(cur_ptr, cur_ptr + arg_سائز).سیٹ(HEAP8.subarray(struct_ptr, struct_ptr + arg_سائز));
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(cur_ptr);
+      } ورنہ {
+        DEREF_PTR(دلائل_ptr, carg_idx) = ENC_PTR(varargs);
       }
       varargs += __SIZEOF_POINTER__;
     }
-    stackRestore(cur_ptr);
-    stackAlloc(0); // stackAlloc enforces alignment invariants on the stack pointer
-    LOG_DEBUG("CALL_CLOSURE", "closure:", closure, "fptr", CLOSURE__fun(closure), "cif", CLOSURE__cif(closure));
+    ڈھیر_Restore(cur_ptr);
+    ڈھیر_Alloc(0); // stackAlloc enforces alignment invariants on the stack pointer
+    LOG_DEBUG("CALL_CLOSURE", "closure:", احاطہ, "fptr", احاطہ_fun(احاطہ), "cif", احاطہ_cif(احاطہ));
     // The trampoline now does
     //    fun(cif, ret_ptr, args_ptr, user_data);
     //    return epilogue(ret_ptr, orig_stack_ptr);
     //
     // We return these arguments in reverse order because stack is LIFO.
-    return [
+    واپس [
       ENC_PTR(ret_ptr),          // epilogue args (in correct order)
-      ENC_PTR(orig_stack_ptr),
+      ENC_PTR(orig_ڈھیر_ptr),
 
-      CLOSURE__cif(closure),     // call_indirect args (in correct order)
+      احاطہ_cif(احاطہ),     // call_indirect args (in correct order)
       ENC_PTR(ret_ptr),
-      ENC_PTR(args_ptr),
-      CLOSURE__user_data(closure),
+      ENC_PTR(دلائل_ptr),
+      احاطہ_user_ڈیٹا(احاطہ),
 
-      CLOSURE__fun(closure),     // ...and the table index for call_indirect
+      احاطہ_fun(احاطہ),     // ...and the table index for call_indirect
     ];
   }
 }
 
 // Returns function which restores the stack pointer and loads the closure's
 // return value from ret_ptr.
-function ffi_closure_epilogue(sig) {
-  var load;
-  switch (sig[0]) {
-  case 'i': load = (ptr) => DEREF_S32(ptr, 0); break;
-  case 'j': load = (ptr) => DEREF_U64(ptr, 0); break;
-  case 'f': load = (ptr) => DEREF_F32(ptr, 0); break;
-  case 'd': load = (ptr) => DEREF_F64(ptr, 0); break;
-  default:  load = (ptr) => undefined; break;
+function ffi_احاطہ_epilogue(sig) {
+  var بھرو;
+  انتخاب (sig[0]) {
+  حالت 'i': بھرو = (ptr) => DEREF_S32(ptr, 0); توڑو;
+  حالت 'j': بھرو = (ptr) => DEREF_U64(ptr, 0); توڑو;
+  حالت 'f': بھرو = (ptr) => DEREF_F32(ptr, 0); توڑو;
+  حالت 'd': بھرو = (ptr) => DEREF_F64(ptr, 0); توڑو;
+  طےشدہ:  بھرو = (ptr) => undefined; توڑو;
   }
-  return function epilogue(ret_ptr, orig_stack_ptr) {
-    stackRestore(DEC_PTR(orig_stack_ptr));
-    return load(DEC_PTR(ret_ptr));
+  واپس function epilogue(ret_ptr, orig_ڈھیر_ptr) {
+    ڈھیر_Restore(DEC_PTR(orig_ڈھیر_ptr));
+    واپس بھرو(DEC_PTR(ret_ptr));
   };
 }
 
-var ffi_closure_trampoline_module_cache = new Map();
-function ffi_closure_trampoline_module(sig) {
-  var cache = ffi_closure_trampoline_module_cache;
+var ffi_احاطہ_trampoline_module_cache = new Map();
+function ffi_احاطہ_trampoline_module(sig) {
+  var cache = ffi_احاطہ_trampoline_module_cache;
   var module = cache.get(sig);
-  if (module) {
-    return module;
+  اگر (module) {
+    واپس module;
   }
 
   function uleb128(n) {
-    var result = [];
-    do {
+    var نتیجہ = [];
+    کرو {
       var byte = n & 0x7f;
       n >>>= 7;
-      if (n) {
+      اگر (n) {
         byte |= 0x80;
       }
-      result.push(byte);
-    } while (n);
-    return result;
+      نتیجہ.ڈالو(byte);
+    } جب (n);
+    واپس نتیجہ;
   }
   // A vector of single-byte items
-  function vec(bytes) {
-    return [...uleb128(bytes.length), ...bytes];
+  function vec(بائٹیں) {
+    واپس [...uleb128(بائٹیں.لمبائی), ...بائٹیں];
   }
-  function section(id, bytes) {
-    return [id, ...vec(bytes)];
+  function section(id, بائٹیں) {
+    واپس [id, ...vec(بائٹیں)];
   }
   function funcType(params, results) {
-    return [0x60, ...vec(params), ...vec(results)];
+    واپس [0x60, ...vec(params), ...vec(results)];
   }
 
   var typeCodes = { 'i': 0x7f, 'j': 0x7e, 'f': 0x7d, 'd': 0x7c };
   var P = PTR_WASM_TYPE;
-  var params = Array.from(sig.slice(1), (c) => typeCodes[c]);
+  var params = Array.from(sig.قاش(1), (c) => typeCodes[c]);
   var results = sig[0] === 'v' ? [] : [typeCodes[sig[0]]];
-  var nparams = params.length;
+  var nparams = params.لمبائی;
 
   // Is the function table 64-bit indexed?
   // -sMEMORY64=2 compiles with 64-bit pointers but uses a 32-bit memory and
   // table, so we have to i32.wrap_i64 pointers.
-  var idx64 = typeof wasmTable.length === 'bigint';
+  var idx64 = typeof wasm_جدول.لمبائی === 'bigint';
   var idxFlag = idx64 ? 0x04 : 0x00;
   // Pointers are wrapped to i32 to be used as a table index.
   var wrapPtr = (P === 0x7e && !idx64) ? [0xa7] : []; // i32.wrap_i64
@@ -1003,42 +1003,42 @@ function ffi_closure_trampoline_module(sig) {
 
   // Function body
   var body = [0x00]; // no locals
-  for (var i = 0; i < nparams; i++) {
-    body.push(0x20, ...uleb128(i)); // local.get i
+  برائے (var i = 0; i < nparams; i++) {
+    body.ڈالو(0x20, ...uleb128(i)); // local.get i
   }
-  body.push(0x10, 0x00); // call prelude
+  body.ڈالو(0x10, 0x00); // call prelude
   // Operand stack is now: ret_ptr, orig_sp, cif, ret_ptr, args_ptr, user_data, fun
-  body.push(...wrapPtr); // fun is used as a table index
-  body.push(0x11, 0x02, 0x00); // call_indirect (type 2) (table 0), consumes the top 5
+  body.ڈالو(...wrapPtr); // fun is used as a table index
+  body.ڈالو(0x11, 0x02, 0x00); // call_indirect (type 2) (table 0), consumes the top 5
   // Operand stack: ret_ptr, orig_sp
-  body.push(0x10, 0x01); // call epilogue, consumes both and leaves the result (if any)
-  body.push(0x0b); // end
-  var codeSection = section(0x0a, [...uleb128(1), ...vec(body)]);
+  body.ڈالو(0x10, 0x01); // call epilogue, consumes both and leaves the result (if any)
+  body.ڈالو(0x0b); //انتہا
+  var رمز_Section = section(0x0a, [...uleb128(1), ...vec(body)]);
 
-  var bytes = new Uint8Array([
+  var بائٹیں = new Uint8Array([
     0x00, 0x61, 0x73, 0x6d, // magic
-    0x01, 0x00, 0x00, 0x00, // version
+    0x01, 0x00, 0x00, 0x00, //نسخہ
     ...typeSection,
     ...importSection,
     ...functionSection,
     ...exportSection,
-    ...codeSection,
+    ...رمز_Section,
   ]);
-  LOG_DEBUG("CLOSURE_MODULE", "sig:", sig, "bytes:", bytes);
+  LOG_DEBUG("CLOSURE_MODULE", "sig:", sig, "bytes:", بائٹیں);
   // The module is tiny so compiling synchronously is fine.
-  module = new WebAssembly.Module(bytes);
-  cache.set(sig, module);
-  return module;
+  module = new WebAssembly.Module(بائٹیں);
+  cache.سیٹ(sig, module);
+  واپس module;
 }
 )
 
 // EM_JS does not correctly handle function pointer arguments, so we need a
 // helper
-ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif,
-                                void (*fun)(ffi_cif *, void *, void **, void *),
-                                void *user_data, void *codeloc) {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
-  return ffi_prep_closure_loc_js(closure, cif, (void *)fun, user_data,
+ffi_حالت ffi_prep_احاطہ_loc(ffi_احاطہ *احاطہ, ffi_cif *cif,
+                                خالی (*fun)(ffi_cif *, خالی *, خالی **, خالی *),
+                                خالی *user_ڈیٹا, خالی *codeloc) {
+  اگر (cif->abi != FFI_EMSCRIPTEN_ABI)
+    واپس FFI_BAD_ABI;
+  واپس ffi_prep_احاطہ_loc_js(احاطہ, cif, (خالی *)fun, user_ڈیٹا,
                                      codeloc);
 }

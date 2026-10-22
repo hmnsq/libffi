@@ -25,177 +25,177 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#شامل <ffi.h>
+#شامل <ffi_common.h>
+#شامل <stdlib.h>
+#شامل "internal.h"
 
-#ifndef SPARC64
+#اگر_غیر_تعریف_شدہ SPARC64
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+#اگر FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# اگر FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE برآمد کا date
 # endif
-#else
+#ورنہ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#اگر_ختم
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
-  size_t bytes;
-  int i, n, flags;
+  صحیح rtt = rtype->type;
+  size_t بائٹیں;
+  صحیح i, n, flags;
 
   /* Set the return type flag */
-  switch (rtt)
+  انتخاب (rtt)
     {
-    case FFI_TYPE_VOID:
+    حالت FFI_TYPE_VOID:
       flags = SPARC_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      توڑو;
+    حالت FFI_TYPE_FLOAT:
       flags = SPARC_RET_F_1;
-      break;
-    case FFI_TYPE_DOUBLE:
+      توڑو;
+    حالت FFI_TYPE_DOUBLE:
       flags = SPARC_RET_F_2;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
-      flags = (rtype->size & 0xfff) << SPARC_SIZEMASK_SHIFT;
+      توڑو;
+    حالت FFI_TYPE_LONGDOUBLE:
+    حالت FFI_TYPE_STRUCT:
+      flags = (rtype->سائز & 0xfff) << SPARC_SIZEMASK_سرکاؤ;
       flags |= SPARC_RET_STRUCT;
-      break;
-    case FFI_TYPE_SINT8:
+      توڑو;
+    حالت FFI_TYPE_SINT8:
       flags = SPARC_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT8:
+      توڑو;
+    حالت FFI_TYPE_UINT8:
       flags = SPARC_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      توڑو;
+    حالت FFI_TYPE_SINT16:
       flags = SPARC_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT16:
+      توڑو;
+    حالت FFI_TYPE_UINT16:
       flags = SPARC_RET_UINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      توڑو;
+    حالت FFI_TYPE_INT:
+    حالت FFI_TYPE_SINT32:
+    حالت FFI_TYPE_UINT32:
+    حالت FFI_TYPE_اشارہ_گر:
       flags = SPARC_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      توڑو;
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
       flags = SPARC_RET_INT64;
-      break;
-    case FFI_TYPE_COMPLEX:
+      توڑو;
+    حالت FFI_TYPE_COMPLEX:
       rtt = rtype->elements[0]->type;
-      switch (rtt)
+      انتخاب (rtt)
 	{
-	case FFI_TYPE_FLOAT:
+	حالت FFI_TYPE_FLOAT:
 	  flags = SPARC_RET_F_2;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  توڑو;
+	حالت FFI_TYPE_DOUBLE:
 	  flags = SPARC_RET_F_4;
-	  break;
-	case FFI_TYPE_LONGDOUBLE:
+	  توڑو;
+	حالت FFI_TYPE_LONGDOUBLE:
 	  flags = SPARC_RET_F_8;
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	  توڑو;
+	حالت FFI_TYPE_SINT64:
+	حالت FFI_TYPE_UINT64:
 	  flags = SPARC_RET_INT128;
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	  توڑو;
+	حالت FFI_TYPE_INT:
+	حالت FFI_TYPE_SINT32:
+	حالت FFI_TYPE_UINT32:
 	  flags = SPARC_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  توڑو;
+	حالت FFI_TYPE_SINT16:
+	حالت FFI_TYPE_UINT16:
 	  flags = SP_V8_RET_CPLX16;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  توڑو;
+	حالت FFI_TYPE_SINT8:
+	حالت FFI_TYPE_UINT8:
 	  flags = SP_V8_RET_CPLX8;
-	  break;
-	default:
+	  توڑو;
+	طےشدہ:
 	  abort();
 	}
-      break;
-    default:
+      توڑو;
+    طےشدہ:
       abort();
     }
   cif->flags = flags;
 
-  bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  بائٹیں = 0;
+  برائے (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
-      size_t z = ty->size;
-      int tt = ty->type;
+      size_t z = ty->سائز;
+      صحیح tt = ty->type;
 
-      switch (tt)
+      انتخاب (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	حالت FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Passed by reference.  */
 	  z = 4;
-	  break;
+	  توڑو;
 
-	case FFI_TYPE_COMPLEX:
+	حالت FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
+	  اگر (tt == FFI_TYPE_FLOAT || z > 8)
+	    جاؤ by_reference;
 	  /* FALLTHRU */
 
-	default:
+	طےشدہ:
 	  z = FFI_ALIGN(z, 4);
 	}
-      bytes += z;
+      بائٹیں += z;
     }
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary.  */
-  if (bytes < 6 * 4)
-    bytes = 6 * 4;
+  اگر (بائٹیں < 6 * 4)
+    بائٹیں = 6 * 4;
 
   /* The ABI always requires space for the struct return pointer.  */
-  bytes += 4;
+  بائٹیں += 4;
 
   /* The stack must be 2 word aligned, so round bytes up appropriately. */
-  bytes = FFI_ALIGN(bytes, 2 * 4);
+  بائٹیں = FFI_ALIGN(بائٹیں, 2 * 4);
 
   /* Include the call frame to prep_args.  */
-  bytes += 4*16 + 4*8;
-  cif->bytes = bytes;
+  بائٹیں += 4*16 + 4*8;
+  cif->بائٹیں = بائٹیں;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
-extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
-			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
+خارجی خالی ffi_call_v8(ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue,
+			خالی **avalue, size_t بائٹیں, خالی *احاطہ) FFI_HIDDEN;
 
-int FFI_HIDDEN
-ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
+صحیح FFI_HIDDEN
+ffi_prep_دلائل_v8(ffi_cif *cif, غیرعلامتی طویل *argp, خالی *rvalue, خالی **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  صحیح flags = cif->flags;
+  صحیح i, nargs;
 
-  if (rvalue == NULL)
+  اگر (rvalue == تہی)
     {
-      if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+      اگر ((flags & SPARC_FLAG_RET_نقاب) == SPARC_RET_STRUCT)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
-	  rvalue = (char *)argp + cif->bytes;
+	  rvalue = (حرف *)argp + cif->بائٹیں;
 	}
-      else
+      ورنہ
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -204,216 +204,216 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 
   /* This could only really be done when we are returning a structure.
      However, the space is reserved so we can do it unconditionally.  */
-  *argp++ = (unsigned long)rvalue;
+  *argp++ = (غیرعلامتی طویل)rvalue;
 
-#ifdef USING_PURIFY
+#اگر_تعریف_شدہ USING_PURIFY
   /* Purify will probably complain in our assembly routine,
      unless we zero out this memory. */
   memset(argp, 0, 6*4);
-#endif
+#اگر_ختم
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  برائے (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
-      void *a = avalue[i];
-      int tt = ty->type;
+      خالی *a = avalue[i];
+      صحیح tt = ty->type;
       size_t z;
 
-      switch (tt)
+      انتخاب (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	حالت FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_LONGDOUBLE:
 	by_reference:
-	  *argp++ = (unsigned long)a;
-	  break;
+	  *argp++ = (غیرعلامتی طویل)a;
+	  توڑو;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	  memcpy(argp, a, 8);
+	حالت FFI_TYPE_DOUBLE:
+	حالت FFI_TYPE_UINT64:
+	حالت FFI_TYPE_SINT64:
+	  حافظہ_نقل(argp, a, 8);
 	  argp += 2;
-	  break;
+	  توڑو;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  *argp++ = *(unsigned *)a;
-	  break;
+	حالت FFI_TYPE_INT:
+	حالت FFI_TYPE_FLOAT:
+	حالت FFI_TYPE_UINT32:
+	حالت FFI_TYPE_SINT32:
+	حالت FFI_TYPE_اشارہ_گر:
+	  *argp++ = *(غیرعلامتی *)a;
+	  توڑو;
 
-	case FFI_TYPE_UINT8:
+	حالت FFI_TYPE_UINT8:
 	  *argp++ = *(UINT8 *)a;
-	  break;
-	case FFI_TYPE_SINT8:
+	  توڑو;
+	حالت FFI_TYPE_SINT8:
 	  *argp++ = *(SINT8 *)a;
-	  break;
-	case FFI_TYPE_UINT16:
+	  توڑو;
+	حالت FFI_TYPE_UINT16:
 	  *argp++ = *(UINT16 *)a;
-	  break;
-	case FFI_TYPE_SINT16:
+	  توڑو;
+	حالت FFI_TYPE_SINT16:
 	  *argp++ = *(SINT16 *)a;
-	  break;
+	  توڑو;
 
-        case FFI_TYPE_COMPLEX:
+        حالت FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->سائز;
+	  اگر (tt == FFI_TYPE_FLOAT || z > 8)
+	    جاؤ by_reference;
+	  اگر (z < 4)
 	    {
-	      memcpy((char *)argp + 4 - z, a, z);
+	      حافظہ_نقل((حرف *)argp + 4 - z, a, z);
 	      argp++;
 	    }
-	  else
+	  ورنہ
 	    {
-	      memcpy(argp, a, z);
+	      حافظہ_نقل(argp, a, z);
 	      argp += z / 4;
 	    }
-	  break;
+	  توڑو;
 
-	default:
+	طےشدہ:
 	  abort();
 	}
     }
 
-  return flags;
+  واپس flags;
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ساکن خالی
+ffi_call_int (ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue,
+	      خالی **avalue, خالی *احاطہ)
 {
-  size_t bytes = cif->bytes;
+  size_t بائٹیں = cif->بائٹیں;
   size_t i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  خالی **avalue_copy = تہی;
 
   FFI_ASSERT (cif->abi == FFI_V8);
 
   /* If we've not got a return value, we need to create one if we've
      got to pass the return value to the callee.  Otherwise ignore it.  */
-  if (rvalue == NULL
-      && (cif->flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
-    bytes += FFI_ALIGN (cif->rtype->size, 8);
+  اگر (rvalue == تہی
+      && (cif->flags & SPARC_FLAG_RET_نقاب) == SPARC_RET_STRUCT)
+    بائٹیں += FFI_ALIGN (cif->rtype->سائز, 8);
 
   /* If we have any structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  برائے (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT)
+      صحیح سائز = at->سائز;
+      اگر (at->type == FFI_TYPE_STRUCT)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          حرف *argcopy = alloca (سائز);
+          اگر (avalue_copy == تہی)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * حجم (خالی *));
+              حافظہ_نقل (avalue_copy, avalue, nargs * حجم (خالی *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          حافظہ_نقل (argcopy, avalue[i], سائز);
           avalue[i] = argcopy;
         }
     }
 
-  ffi_call_v8(cif, fn, rvalue, avalue, -bytes, closure);
+  ffi_call_v8(cif, fn, rvalue, avalue, -بائٹیں, احاطہ);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+خالی
+ffi_call (ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue, خالی **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, تہی);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+خالی
+ffi_call_go (ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue,
+	     خالی **avalue, خالی *احاطہ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, احاطہ);
 }
 
-#ifdef __GNUC__
-static inline void
-ffi_flush_icache (void *p)
+#اگر_تعریف_شدہ __GNUC__
+ساکن اندرونی خالی
+ffi_flush_icache (خالی *p)
 {
   /* SPARC v8 requires 5 instructions for flush to be visible */
-  __asm__ volatile ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
+  __asm__ متلون ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
 		: : "r" (p) : "memory");
 }
-#else
-extern void ffi_flush_icache (void *) FFI_HIDDEN;
-#endif
+#ورنہ
+خارجی خالی ffi_flush_icache (خالی *) FFI_HIDDEN;
+#اگر_ختم
 
-extern void ffi_closure_v8(void) FFI_HIDDEN;
-extern void ffi_go_closure_v8(void) FFI_HIDDEN;
+خارجی خالی ffi_احاطہ_v8(خالی) FFI_HIDDEN;
+خارجی خالی ffi_go_احاطہ_v8(خالی) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ *احاطہ,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      خالی (*fun)(ffi_cif*, خالی*, خالی**, خالی*),
+		      خالی *user_ڈیٹا,
+		      خالی *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
-  unsigned long ctx = (unsigned long) closure;
-  unsigned long fn = (unsigned long) ffi_closure_v8;
+  غیرعلامتی صحیح *tramp = (غیرعلامتی صحیح *) &احاطہ->tramp[0];
+  غیرعلامتی طویل ctx = (غیرعلامتی طویل) احاطہ;
+  غیرعلامتی طویل fn = (غیرعلامتی طویل) ffi_احاطہ_v8;
 
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_V8)
+    واپس FFI_BAD_ABI;
 
   tramp[0] = 0x03000000 | fn >> 10;	/* sethi %hi(fn), %g1	*/
   tramp[1] = 0x05000000 | ctx >> 10;	/* sethi %hi(ctx), %g2	*/
   tramp[2] = 0x81c06000 | (fn & 0x3ff);	/* jmp   %g1+%lo(fn)	*/
   tramp[3] = 0x8410a000 | (ctx & 0x3ff);/* or    %g2, %lo(ctx)	*/
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
 
-  ffi_flush_icache (closure);
+  ffi_flush_icache (احاطہ);
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+ffi_حالت
+ffi_prep_go_احاطہ (ffi_go_احاطہ *احاطہ, ffi_cif *cif,
+		     خالی (*fun)(ffi_cif*, خالی*, خالی**, خالی*))
 {
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  اگر (cif->abi != FFI_V8)
+    واپس FFI_BAD_ABI;
 
-  closure->tramp = ffi_go_closure_v8;
-  closure->cif = cif;
-  closure->fun = fun;
+  احاطہ->tramp = ffi_go_احاطہ_v8;
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
-int FFI_HIDDEN
-ffi_closure_sparc_inner_v8(ffi_cif *cif, 
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data, void *rvalue,
-			   unsigned long *argp)
+صحیح FFI_HIDDEN
+ffi_احاطہ_sparc_inner_v8(ffi_cif *cif, 
+			   خالی (*fun)(ffi_cif*, خالی*, خالی**, خالی*),
+			   خالی *user_ڈیٹا, خالی *rvalue,
+			   غیرعلامتی طویل *argp)
 {
   ffi_type **arg_types;
-  void **avalue;
-  int i, nargs, flags;
+  خالی **avalue;
+  صحیح i, nargs, flags;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
   flags = cif->flags;
-  avalue = alloca(nargs * sizeof(void *));
+  avalue = alloca(nargs * حجم(خالی *));
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  Also install it so we
      can return the address in %o0.  */
-  if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+  اگر ((flags & SPARC_FLAG_RET_نقاب) == SPARC_RET_STRUCT)
     {
-      void *new_rvalue = (void *)*argp;
-      *(void **)rvalue = new_rvalue;
+      خالی *new_rvalue = (خالی *)*argp;
+      *(خالی **)rvalue = new_rvalue;
       rvalue = new_rvalue;
     }
 
@@ -421,26 +421,26 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   argp++;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++)
+  برائے (i = 0; i < nargs; i++)
     {
       ffi_type *ty = arg_types[i];
-      int tt = ty->type;
-      void *a = argp;
+      صحیح tt = ty->type;
+      خالی *a = argp;
       size_t z;
 
-      switch (tt)
+      انتخاب (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	حالت FFI_TYPE_STRUCT:
+	حالت FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Straight copy of invisible reference.  */
-	  a = (void *)*argp;
-	  break;
+	  a = (خالی *)*argp;
+	  توڑو;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  if ((unsigned long)a & 7)
+	حالت FFI_TYPE_DOUBLE:
+	حالت FFI_TYPE_SINT64:
+	حالت FFI_TYPE_UINT64:
+	  اگر ((غیرعلامتی طویل)a & 7)
 	    {
 	      /* Align on a 8-byte boundary.  */
 	      UINT64 *tmp = alloca(8);
@@ -448,35 +448,35 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 	      a = tmp;
 	    }
 	  argp++;
-	  break;
+	  توڑو;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  break;
-        case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT16:
+	حالت FFI_TYPE_INT:
+	حالت FFI_TYPE_FLOAT:
+	حالت FFI_TYPE_UINT32:
+	حالت FFI_TYPE_SINT32:
+	حالت FFI_TYPE_اشارہ_گر:
+	  توڑو;
+        حالت FFI_TYPE_UINT16:
+        حالت FFI_TYPE_SINT16:
 	  a += 2;
-	  break;
-        case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT8:
+	  توڑو;
+        حالت FFI_TYPE_UINT8:
+        حالت FFI_TYPE_SINT8:
 	  a += 3;
-	  break;
+	  توڑو;
 
-        case FFI_TYPE_COMPLEX:
+        حالت FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->سائز;
+	  اگر (tt == FFI_TYPE_FLOAT || z > 8)
+	    جاؤ by_reference;
+	  اگر (z < 4)
 	    a += 4 - z;
-	  else if (z > 4)
+	  ورنہ اگر (z > 4)
 	    argp++;
-	  break;
+	  توڑو;
 
-	default:
+	طےشدہ:
 	  abort();
 	}
       argp++;
@@ -484,9 +484,9 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_ڈیٹا);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  واپس flags;
 }
-#endif /* !SPARC64 */
+#اگر_ختم /* !SPARC64 */

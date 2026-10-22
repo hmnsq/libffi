@@ -28,56 +28,56 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
-#include "internal.h"
-#include <tramp.h>
+#شامل "ffi.h"
+#شامل "ffi_common.h"
+#شامل "ffi_powerpc.h"
+#شامل "internal.h"
+#شامل <tramp.h>
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#اگر HAVE_LONG_DOUBLE_VARIANT
 /* Adjust ffi_type_longdouble.  */
-void FFI_HIDDEN
+خالی FFI_HIDDEN
 ffi_prep_types (ffi_abi abi)
 {
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# اگر FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 #  ifdef POWERPC64
   ffi_prep_types_linux64 (abi);
-#  else
+#  ورنہ
   ffi_prep_types_sysv (abi);
 #  endif
 # endif
 }
-#endif
+#اگر_ختم
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64 (cif);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#اگر_تعریف_شدہ POWERPC64
+  واپس ffi_prep_cif_linux64 (cif);
+#ورنہ
+  واپس ffi_prep_cif_sysv (cif);
+#اگر_ختم
 }
 
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif *cif,
-			  unsigned int nfixedargs MAYBE_UNUSED,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  غیرعلامتی صحیح nfixedargs MAYBE_غیر_مستعمل,
+			  غیرعلامتی صحیح ntotalargs MAYBE_غیر_مستعمل)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#اگر_تعریف_شدہ POWERPC64
+  واپس ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
+#ورنہ
+  واپس ffi_prep_cif_sysv (cif);
+#اگر_ختم
 }
 
-static void
+ساکن خالی
 ffi_call_int (ffi_cif *cif,
-	      void (*fn) (void),
-	      void *rvalue,
-	      void **avalue,
-	      void *closure)
+	      خالی (*fn) (خالی),
+	      خالی *rvalue,
+	      خالی **avalue,
+	      خالی *احاطہ)
 {
   /* The final SYSV ABI says that structures smaller or equal 8 bytes
      are returned in r3/r4.  A draft ABI used by linux instead returns
@@ -89,126 +89,126 @@ ffi_call_int (ffi_cif *cif,
      For ELFv2 ABI, use a bounce buffer for homogeneous structs too,
      for similar reasons. This bounce buffer must be aligned to 16
      bytes for use with homogeneous structs of vectors (float128).  */
-  float128 smst_buffer[8];
+  float128 smst_بفر[8];
   extended_cif ecif;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
   ecif.rvalue = rvalue;
-  if ((cif->flags & FLAG_RETURNS_SMST) != 0)
-    ecif.rvalue = smst_buffer;
+  اگر ((cif->flags & FLAG_RETURNS_SMST) != 0)
+    ecif.rvalue = smst_بفر;
   /* Ensure that we have a valid struct return value.
      FIXME: Isn't this just papering over a user problem?  */
-  else if (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
-    ecif.rvalue = alloca (cif->rtype->size);
+  ورنہ اگر (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
+    ecif.rvalue = alloca (cif->rtype->سائز);
 
-#ifdef POWERPC64
-  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, closure,
-		    -(long) cif->bytes);
-#else
-  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, closure, -cif->bytes);
-#endif
+#اگر_تعریف_شدہ POWERPC64
+  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, احاطہ,
+		    -(طویل) cif->بائٹیں);
+#ورنہ
+  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, احاطہ, -cif->بائٹیں);
+#اگر_ختم
 
   /* Check for a bounce-buffered return value */
-  if (rvalue && ecif.rvalue == smst_buffer)
+  اگر (rvalue && ecif.rvalue == smst_بفر)
     {
-      unsigned int rsize = cif->rtype->size;
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
+      غیرعلامتی صحیح rsize = cif->rtype->سائز;
+#اگر_تعریف_شدہ FFI_ہدف_HAS_COMPLEX_TYPE
       /* Integer-typed _Complex: the .Lsmall_struct return path stored
 	 r3 at buffer offset 0 and r4 at offset 8.  Extract one inner-
 	 sized half from each slot — right-justified on BE, low-address
 	 on LE — and lay them out as the natural packed complex value
 	 the caller expects (real@0, imag@hsize).  */
-      if (cif->rtype->type == FFI_TYPE_COMPLEX
+      اگر (cif->rtype->type == FFI_TYPE_COMPLEX
 	  && (cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	{
-	  size_t hsize = cif->rtype->elements[0]->size;
-#ifndef __LITTLE_ENDIAN__
+	  size_t hsize = cif->rtype->elements[0]->سائز;
+#اگر_غیر_تعریف_شدہ __LITTLE_ENDIAN__
 	  size_t off = 8 - hsize;
-#else
+#ورنہ
 	  size_t off = 0;
-#endif
-	  memcpy ((char *) rvalue,         (char *) smst_buffer + off, hsize);
-	  memcpy ((char *) rvalue + hsize, (char *) smst_buffer + 8 + off, hsize);
+#اگر_ختم
+	  حافظہ_نقل ((حرف *) rvalue,         (حرف *) smst_بفر + off, hsize);
+	  حافظہ_نقل ((حرف *) rvalue + hsize, (حرف *) smst_بفر + 8 + off, hsize);
 	}
-      else
-#endif
-#ifndef __LITTLE_ENDIAN__
+      ورنہ
+#اگر_ختم
+#اگر_غیر_تعریف_شدہ __LITTLE_ENDIAN__
       /* The SYSV ABI returns a structure of up to 4 bytes in size
 	 left-padded in r3.  */
 # ifndef POWERPC64
-      if (rsize <= 4)
-	memcpy (rvalue, (char *) smst_buffer + 4 - rsize, rsize);
-      else
+      اگر (rsize <= 4)
+	حافظہ_نقل (rvalue, (حرف *) smst_بفر + 4 - rsize, rsize);
+      ورنہ
 # endif
 	/* The SYSV ABI returns a structure of up to 8 bytes in size
 	   left-padded in r3/r4, and the ELFv2 ABI similarly returns a
 	   structure of up to 8 bytes in size left-padded in r3. But
 	   note that a structure of a single float is not paddded.  */
-	if (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
-	  memcpy (rvalue, (char *) smst_buffer + 8 - rsize, rsize);
-	else
-#endif
-	  memcpy (rvalue, smst_buffer, rsize);
+	اگر (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
+	  حافظہ_نقل (rvalue, (حرف *) smst_بفر + 8 - rsize, rsize);
+	ورنہ
+#اگر_ختم
+	  حافظہ_نقل (rvalue, smst_بفر, rsize);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+خالی
+ffi_call (ffi_cif *cif, خالی (*fn) (خالی), خالی *rvalue, خالی **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, تہی);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+خالی
+ffi_call_go (ffi_cif *cif, خالی (*fn) (خالی), خالی *rvalue, خالی **avalue,
+	     خالی *احاطہ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, احاطہ);
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ *احاطہ,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      خالی (*fun) (ffi_cif *, خالی *, خالی **, خالی *),
+		      خالی *user_ڈیٹا,
+		      خالی *codeloc)
 {
-#ifdef POWERPC64
-  return ffi_prep_closure_loc_linux64 (closure, cif, fun, user_data, codeloc);
-#else
-  return ffi_prep_closure_loc_sysv (closure, cif, fun, user_data, codeloc);
-#endif
+#اگر_تعریف_شدہ POWERPC64
+  واپس ffi_prep_احاطہ_loc_linux64 (احاطہ, cif, fun, user_ڈیٹا, codeloc);
+#ورنہ
+  واپس ffi_prep_احاطہ_loc_sysv (احاطہ, cif, fun, user_ڈیٹا, codeloc);
+#اگر_ختم
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure,
+ffi_حالت
+ffi_prep_go_احاطہ (ffi_go_احاطہ *احاطہ,
 		     ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     خالی (*fun) (ffi_cif *, خالی *, خالی **, خالی *))
 {
-#ifdef POWERPC64
-  closure->tramp = ffi_go_closure_linux64;
-#else
-  closure->tramp = ffi_go_closure_sysv;
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  return FFI_OK;
+#اگر_تعریف_شدہ POWERPC64
+  احاطہ->tramp = ffi_go_احاطہ_linux64;
+#ورنہ
+  احاطہ->tramp = ffi_go_احاطہ_sysv;
+#اگر_ختم
+  احاطہ->cif = cif;
+  احاطہ->fun = fun;
+  واپس FFI_OK;
 }
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#اگر_تعریف_شدہ FFI_EXEC_STATIC_TRAMP
+خالی *
+ffi_tramp_arch (size_t *tramp_سائز, size_t *map_سائز)
 {
-  extern void *trampoline_code_table;
-  *tramp_size = PPC_TRAMP_SIZE;
-  *map_size = PPC_TRAMP_MAP_SIZE;
-#if defined (_CALL_AIX) || _CALL_ELF == 1
+  خارجی خالی *trampoline_رمز_جدول;
+  *tramp_سائز = PPC_TRAMP_سائز;
+  *map_سائز = PPC_TRAMP_MAP_سائز;
+#اگر defined (_CALL_AIX) || _CALL_ELF == 1
   /* The caller wants the entry point address of the trampoline code,
      not the address of the function descriptor.  */
-  return *(void **)trampoline_code_table;
-#else
-  return &trampoline_code_table;
-#endif
+  واپس *(خالی **)trampoline_رمز_جدول;
+#ورنہ
+  واپس &trampoline_رمز_جدول;
+#اگر_ختم
 }
-#endif
+#اگر_ختم

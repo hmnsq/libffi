@@ -24,77 +24,77 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-extern void ffi_call_SYSV(void (*)(void*, extended_cif*), extended_cif*,
-		unsigned int, unsigned int, unsigned int*, void (*fn)(void),
-		unsigned int, unsigned int);
+خارجی خالی ffi_call_SYSV(خالی (*)(خالی*, extended_cif*), extended_cif*,
+		غیرعلامتی صحیح, غیرعلامتی صحیح, غیرعلامتی صحیح*, خالی (*fn)(خالی),
+		غیرعلامتی صحیح, غیرعلامتی صحیح);
 
-extern void ffi_closure_SYSV(void);
+خارجی خالی ffi_احاطہ_SYSV(خالی);
 
-#define WORD_SIZE			sizeof(unsigned int)
-#define ARGS_REGISTER_SIZE	(WORD_SIZE * 6)
-#define WORD_FFI_ALIGN(x)		FFI_ALIGN(x, WORD_SIZE)
+#تعریف_کرو لفظ_سائز			حجم(غیرعلامتی صحیح)
+#تعریف_کرو دلائل_رجسٹر_سائز	(لفظ_سائز * 6)
+#تعریف_کرو لفظ_FFI_ALIGN(x)		FFI_ALIGN(x, لفظ_سائز)
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
-void ffi_prep_args(void* stack, extended_cif* ecif)
+خالی ffi_prep_دلائل(خالی* ڈھیر, extended_cif* ecif)
 {
-	unsigned int i;
+	غیرعلامتی صحیح i;
 	ffi_type** p_arg;
-	void** p_argv;
-	void* stack_args_p = stack;
+	خالی** p_argv;
+	خالی* ڈھیر_دلائل_p = ڈھیر;
 
-	if (ecif == NULL || ecif->cif == NULL) {
-		return; /* no description to prepare */
+	اگر (ecif == تہی || ecif->cif == تہی) {
+		واپس; /* no description to prepare */
 	}
 
 	p_argv = ecif->avalue;
 
-	if ((ecif->cif->rtype != NULL) &&
+	اگر ((ecif->cif->rtype != تہی) &&
 			(ecif->cif->rtype->type == FFI_TYPE_STRUCT))
 	{
 		/* if return type is a struct which is referenced on the stack/reg5,
 		 * by a pointer. Stored the return value pointer in r5.
 		 */
-		char* addr = stack_args_p;
-		memcpy(addr, &(ecif->rvalue), WORD_SIZE);
-		stack_args_p += WORD_SIZE;
+		حرف* addr = ڈھیر_دلائل_p;
+		حافظہ_نقل(addr, &(ecif->rvalue), لفظ_سائز);
+		ڈھیر_دلائل_p += لفظ_سائز;
 	}
 
-	if (ecif->avalue == NULL) {
-		return; /* no arguments to prepare */
+	اگر (ecif->avalue == تہی) {
+		واپس; /* no arguments to prepare */
 	}
 
-	for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+	برائے (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
 			i++, p_arg++)
 	{
-		size_t size = (*p_arg)->size;
-		int type = (*p_arg)->type;
-		void* value = p_argv[i];
-		char* addr = stack_args_p;
-		int aligned_size = WORD_FFI_ALIGN(size);
+		size_t سائز = (*p_arg)->سائز;
+		صحیح type = (*p_arg)->type;
+		خالی* قدر = p_argv[i];
+		حرف* addr = ڈھیر_دلائل_p;
+		صحیح aligned_سائز = لفظ_FFI_ALIGN(سائز);
 
 		/* force word alignment on the stack */
-		stack_args_p += aligned_size;
+		ڈھیر_دلائل_p += aligned_سائز;
 		
-		switch (type)
+		انتخاب (type)
 		{
-			case FFI_TYPE_UINT8:
-				*(unsigned int *)addr = (unsigned int)*(UINT8*)(value);
-				break;
-			case FFI_TYPE_SINT8:
-				*(signed int *)addr = (signed int)*(SINT8*)(value);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *)addr = (unsigned int)*(UINT16*)(value);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *)addr = (signed int)*(SINT16*)(value);
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+			حالت FFI_TYPE_UINT8:
+				*(غیرعلامتی صحیح *)addr = (غیرعلامتی صحیح)*(UINT8*)(قدر);
+				توڑو;
+			حالت FFI_TYPE_SINT8:
+				*(علامتی صحیح *)addr = (علامتی صحیح)*(SINT8*)(قدر);
+				توڑو;
+			حالت FFI_TYPE_UINT16:
+				*(غیرعلامتی صحیح *)addr = (غیرعلامتی صحیح)*(UINT16*)(قدر);
+				توڑو;
+			حالت FFI_TYPE_SINT16:
+				*(علامتی صحیح *)addr = (علامتی صحیح)*(SINT16*)(قدر);
+				توڑو;
+			حالت FFI_TYPE_STRUCT:
+#اگر __BIG_ENDIAN__
 				/*
 				 * MicroBlaze toolchain appears to emit:
 				 * bsrli r5, r5, 8 (caller)
@@ -117,38 +117,38 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 				 * above mentioned case, it will re-align the contents of a
 				 * <= 3-byte struct value.
 				 */
-				if (size < WORD_SIZE)
+				اگر (سائز < لفظ_سائز)
 				{
-				  memcpy (addr + (WORD_SIZE - size), value, size);
-				  break;
+				  حافظہ_نقل (addr + (لفظ_سائز - سائز), قدر, سائز);
+				  توڑو;
 				}
-#endif
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_DOUBLE:
-			default:
-				memcpy(addr, value, aligned_size);
+#اگر_ختم
+			حالت FFI_TYPE_SINT32:
+			حالت FFI_TYPE_UINT32:
+			حالت FFI_TYPE_FLOAT:
+			حالت FFI_TYPE_SINT64:
+			حالت FFI_TYPE_UINT64:
+			حالت FFI_TYPE_DOUBLE:
+			طےشدہ:
+				حافظہ_نقل(addr, قدر, aligned_سائز);
 		}
 	}
 }
 
-ffi_status ffi_prep_cif_machdep(ffi_cif* cif)
+ffi_حالت ffi_prep_cif_machdep(ffi_cif* cif)
 {
 	/* check ABI */
-	switch (cif->abi)
+	انتخاب (cif->abi)
 	{
-		case FFI_SYSV:
-			break;
-		default:
-			return FFI_BAD_ABI;
+		حالت FFI_SYSV:
+			توڑو;
+		طےشدہ:
+			واپس FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	واپس FFI_OK;
 }
 
-void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
+خالی ffi_call(ffi_cif* cif, خالی (*fn)(خالی), خالی* rvalue, خالی** avalue)
 {
 	extended_cif ecif;
 	ecif.cif = cif;
@@ -156,30 +156,30 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 
 	/* If the return value is a struct and we don't have a return */
 	/* value address then we need to make one */
-	if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		ecif.rvalue = alloca(cif->rtype->size);
-	} else {
+	اگر ((rvalue == تہی) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		ecif.rvalue = alloca(cif->rtype->سائز);
+	} ورنہ {
 		ecif.rvalue = rvalue;
 	}
 
-	switch (cif->abi)
+	انتخاب (cif->abi)
 	{
-	case FFI_SYSV:
-		ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags,
-				ecif.rvalue, fn, cif->rtype->type, cif->rtype->size);
-		break;
-	default:
+	حالت FFI_SYSV:
+		ffi_call_SYSV(ffi_prep_دلائل, &ecif, cif->بائٹیں, cif->flags,
+				ecif.rvalue, fn, cif->rtype->type, cif->rtype->سائز);
+		توڑو;
+	طےشدہ:
 		FFI_ASSERT(0);
-		break;
+		توڑو;
 	}
 }
 
-void ffi_closure_call_SYSV(void* register_args, void* stack_args,
-			ffi_closure* closure, void* rvalue,
-			unsigned int* rtype, unsigned int* rsize)
+خالی ffi_احاطہ_call_SYSV(خالی* رجسٹر_دلائل, خالی* ڈھیر_دلائل,
+			ffi_احاطہ* احاطہ, خالی* rvalue,
+			غیرعلامتی صحیح* rtype, غیرعلامتی صحیح* rsize)
 {
 	/* prepare arguments for closure call */
-	ffi_cif* cif = closure->cif;
+	ffi_cif* cif = احاطہ->cif;
 	ffi_type** arg_types = cif->arg_types;
 
 	/* re-allocate data for the args. This needs to be done in order to keep
@@ -187,111 +187,111 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	 * required to store the value of args in the lower 6 words in the stack
 	 * (although they are allocated in the stack).
 	 */
-	char* stackclone = alloca(cif->bytes);
-	void** avalue = alloca(cif->nargs * sizeof(void*));
-	void* struct_rvalue = NULL;
-	char* ptr = stackclone;
-	int i;
+	حرف* stackclone = alloca(cif->بائٹیں);
+	خالی** avalue = alloca(cif->nargs * حجم(خالی*));
+	خالی* struct_rvalue = تہی;
+	حرف* ptr = stackclone;
+	صحیح i;
 
 	/* copy registers into stack clone */
-	int registers_used = cif->bytes;
-	if (registers_used > ARGS_REGISTER_SIZE) {
-		registers_used = ARGS_REGISTER_SIZE;
+	صحیح registers_مستعمل = cif->بائٹیں;
+	اگر (registers_مستعمل > دلائل_رجسٹر_سائز) {
+		registers_مستعمل = دلائل_رجسٹر_سائز;
 	}
-	memcpy(stackclone, register_args, registers_used);
+	حافظہ_نقل(stackclone, رجسٹر_دلائل, registers_مستعمل);
 
 	/* copy stack allocated args into stack clone */
-	if (cif->bytes > ARGS_REGISTER_SIZE) {
-		int stack_used = cif->bytes - ARGS_REGISTER_SIZE;
-		memcpy(stackclone + ARGS_REGISTER_SIZE, stack_args, stack_used);
+	اگر (cif->بائٹیں > دلائل_رجسٹر_سائز) {
+		صحیح ڈھیر_مستعمل = cif->بائٹیں - دلائل_رجسٹر_سائز;
+		حافظہ_نقل(stackclone + دلائل_رجسٹر_سائز, ڈھیر_دلائل, ڈھیر_مستعمل);
 	}
 
 	/* preserve struct type return pointer passing */
-	if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		struct_rvalue = *((void**)ptr);
-		ptr += WORD_SIZE;
+	اگر ((cif->rtype != تہی) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		struct_rvalue = *((خالی**)ptr);
+		ptr += لفظ_سائز;
 	}
 
 	/* populate arg pointer list */
-	for (i = 0; i < cif->nargs; i++)
+	برائے (i = 0; i < cif->nargs; i++)
 	{
-		switch (arg_types[i]->type)
+		انتخاب (arg_types[i]->type)
 		{
-			case FFI_TYPE_SINT8:
-			case FFI_TYPE_UINT8:
-#ifdef __BIG_ENDIAN__
+			حالت FFI_TYPE_SINT8:
+			حالت FFI_TYPE_UINT8:
+#اگر_تعریف_شدہ __BIG_ENDIAN__
 				avalue[i] = ptr + 3;
-#else
+#ورنہ
 				avalue[i] = ptr;
-#endif
-				break;
-			case FFI_TYPE_SINT16:
-			case FFI_TYPE_UINT16:
-#ifdef __BIG_ENDIAN__
+#اگر_ختم
+				توڑو;
+			حالت FFI_TYPE_SINT16:
+			حالت FFI_TYPE_UINT16:
+#اگر_تعریف_شدہ __BIG_ENDIAN__
 				avalue[i] = ptr + 2;
-#else
+#ورنہ
 				avalue[i] = ptr;
-#endif
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+#اگر_ختم
+				توڑو;
+			حالت FFI_TYPE_STRUCT:
+#اگر __BIG_ENDIAN__
 				/*
 				 * Work around strange ABI behaviour.
 				 * (see info in ffi_prep_args)
 				 */
-				if (arg_types[i]->size < WORD_SIZE)
+				اگر (arg_types[i]->سائز < لفظ_سائز)
 				{
-				  memcpy (ptr, ptr + (WORD_SIZE - arg_types[i]->size), arg_types[i]->size);
+				  حافظہ_نقل (ptr, ptr + (لفظ_سائز - arg_types[i]->سائز), arg_types[i]->سائز);
 				}
-#endif
-				avalue[i] = (void*)ptr;
-				break;
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_DOUBLE:
+#اگر_ختم
+				avalue[i] = (خالی*)ptr;
+				توڑو;
+			حالت FFI_TYPE_UINT64:
+			حالت FFI_TYPE_SINT64:
+			حالت FFI_TYPE_DOUBLE:
 				avalue[i] = ptr;
-				break;
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			default:
+				توڑو;
+			حالت FFI_TYPE_SINT32:
+			حالت FFI_TYPE_UINT32:
+			حالت FFI_TYPE_FLOAT:
+			طےشدہ:
 				/* default 4-byte argument */
 				avalue[i] = ptr;
-				break;
+				توڑو;
 		}
-		ptr += WORD_FFI_ALIGN(arg_types[i]->size);
+		ptr += لفظ_FFI_ALIGN(arg_types[i]->سائز);
 	}
 
 	/* set the return type info passed back to the wrapper */
-	*rsize = cif->rtype->size;
+	*rsize = cif->rtype->سائز;
 	*rtype = cif->rtype->type;
-	if (struct_rvalue != NULL) {
-		closure->fun(cif, struct_rvalue, avalue, closure->user_data);
+	اگر (struct_rvalue != تہی) {
+		احاطہ->fun(cif, struct_rvalue, avalue, احاطہ->user_ڈیٹا);
 		/* copy struct return pointer value into function return value */
-		*((void**)rvalue) = struct_rvalue;
-	} else {
-		closure->fun(cif, rvalue, avalue, closure->user_data);
+		*((خالی**)rvalue) = struct_rvalue;
+	} ورنہ {
+		احاطہ->fun(cif, rvalue, avalue, احاطہ->user_ڈیٹا);
 	}
 }
 
-ffi_status ffi_prep_closure_loc(
-		ffi_closure* closure, ffi_cif* cif,
-		void (*fun)(ffi_cif*, void*, void**, void*),
-		void* user_data, void* codeloc)
+ffi_حالت ffi_prep_احاطہ_loc(
+		ffi_احاطہ* احاطہ, ffi_cif* cif,
+		خالی (*fun)(ffi_cif*, خالی*, خالی**, خالی*),
+		خالی* user_ڈیٹا, خالی* codeloc)
 {
-	unsigned long* tramp = (unsigned long*)&(closure->tramp[0]);
-	unsigned long cls = (unsigned long)codeloc;
-	unsigned long fn = 0;
-	unsigned long fn_closure_call_sysv = (unsigned long)ffi_closure_call_SYSV;
+	غیرعلامتی طویل* tramp = (غیرعلامتی طویل*)&(احاطہ->tramp[0]);
+	غیرعلامتی طویل cls = (غیرعلامتی طویل)codeloc;
+	غیرعلامتی طویل fn = 0;
+	غیرعلامتی طویل fn_احاطہ_call_sysv = (غیرعلامتی طویل)ffi_احاطہ_call_SYSV;
 
-	closure->cif = cif;
-	closure->fun = fun;
-	closure->user_data = user_data;
+	احاطہ->cif = cif;
+	احاطہ->fun = fun;
+	احاطہ->user_ڈیٹا = user_ڈیٹا;
 
-	switch (cif->abi)
+	انتخاب (cif->abi)
 	{
-	case FFI_SYSV:
-		fn = (unsigned long)ffi_closure_SYSV;
+	حالت FFI_SYSV:
+		fn = (غیرعلامتی طویل)ffi_احاطہ_SYSV;
 
 		/* load r11 (temp) with fn */
 		/* imm fn(upper) */
@@ -307,15 +307,15 @@ ffi_status ffi_prep_closure_loc(
 
 		/* load r3 (temp) with ffi_closure_call_SYSV */
 		/* imm fn_closure_call_sysv(upper) */
-		tramp[4] = 0xb0000000 | ((fn_closure_call_sysv >> 16) & 0xffff);
+		tramp[4] = 0xb0000000 | ((fn_احاطہ_call_sysv >> 16) & 0xffff);
 		/* addik r3, r0, fn_closure_call_sysv(lower) */
-		tramp[5] = 0x30600000 | (fn_closure_call_sysv & 0xffff);
+		tramp[5] = 0x30600000 | (fn_احاطہ_call_sysv & 0xffff);
 		/* branch/jump to address stored in r11 (fn) */
 		tramp[6] = 0x98085800; /* bra r11 */
 
-		break;
-	default:
-		return FFI_BAD_ABI;
+		توڑو;
+	طےشدہ:
+		واپس FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	واپس FFI_OK;
 }

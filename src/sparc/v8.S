@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS یا IMPLIED, INCLUDING BUT نہیں LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE اور
+   NONINFRINGEMENT.  میں NO EVENT SHALL THE AUTHORS یا COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES یا OTHER LIABILITY,
+   WHETHER میں AN ACTION OF CONTRACT, TORT یا OTHERWISE, ARISING FROM,
+   OUT OF یا میں CONNECTION WITH THE SOFTWARE یا THE USE یا OTHER
+   DEALINGS میں THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -82,7 +82,7 @@ C(ffi_call_v8):
 	mov	%i0, %o0		! copy cif
 	add	%sp, 64+32, %o1		! load args area
 	mov	%i2, %o2		! copy rvalue
-	call	C(ffi_prep_args_v8)
+	بلاؤ	C(ffi_prep_args_v8)
 	 mov	%i3, %o3		! copy avalue
 
 	add	%sp, 32, %sp		! deallocate prep frame
@@ -98,10 +98,10 @@ C(ffi_call_v8):
 	 ld	[%sp+64+24], %o5
 
 	! Call foreign function
-	call	%i1
+	بلاؤ	%i1
 	 mov	%i5, %g2		! load static chain
 
-0:	call	1f		! load pc in %o7
+0:	بلاؤ	1f		! load pc in %o7
 	 sll	%l0, 4, %l0
 1:	add	%o7, %l0, %o7	! o7 = 0b + ret_type*16
 	jmp	%o7+(2f-0b)
@@ -193,7 +193,7 @@ E(SPARC_RET_F_1)
 	! make sure the low 12 bits of the unimp match the size of
 	! the struct being returned.
 	.align	8
-8:	call	1f				! load pc in %o7
+8:	بلاؤ	1f				! load pc in %o7
 	 sll	%l1, 2, %l0			! size * 4
 1:	sll	%l1, 4, %l1			! size * 16
 	add	%l0, %l1, %l0			! size * 20
@@ -204,7 +204,7 @@ E(SPARC_RET_F_1)
 
 /* The Sun assembler doesn't understand .rept 0x1000.  */
 #define rept1			\
-	call	%i1;		\
+	بلاؤ	%i1;		\
 	 nop;			\
 	unimp	(. - 2b) / 20;	\
 	ret;			\
@@ -282,10 +282,10 @@ C(ffi_closure_v8):
 
 	! Call ffi_closure_sparc_inner to do the bulk of the work.
 	add	%fp, -8*4, %o3
-	call	ffi_closure_sparc_inner_v8
+	بلاؤ	ffi_closure_sparc_inner_v8
 	 add	%fp,  64, %o4
 
-0:	call	1f
+0:	بلاؤ	1f
 	 and	%o0, SPARC_FLAG_RET_MASK, %o0
 1:	sll	%o0, 4, %o0	! o0 = o0 * 16
 	add	%o7, %o0, %o7	! o7 = 0b + o0*16

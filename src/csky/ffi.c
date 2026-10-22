@@ -24,31 +24,31 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#شامل <ffi.h>
+#شامل <ffi_common.h>
 
-#include <stdlib.h>
+#شامل <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments
 */
-void ffi_prep_args(char *stack, extended_cif *ecif)
+خالی ffi_prep_دلائل(حرف *ڈھیر, extended_cif *ecif)
 {
- register unsigned int i;
- register void **p_argv;
- register char *argp;
- register ffi_type **p_arg;
+ اندراج غیرعلامتی صحیح i;
+ اندراج خالی **p_argv;
+ اندراج حرف *argp;
+ اندراج ffi_type **p_arg;
 
- argp = stack;
+ argp = ڈھیر;
 
- if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
-  *(void **) argp = ecif->rvalue;
+ اگر ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
+  *(خالی **) argp = ecif->rvalue;
   argp += 4;
  }
 
  p_argv = ecif->avalue;
 
- for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+ برائے (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
    (i != 0);
    i--, p_arg++)
  {
@@ -57,187 +57,187 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 
   /* Align if necessary */
   alignment = (*p_arg)->alignment;
-#ifdef __CSKYABIV1__
+#اگر_تعریف_شدہ __CSKYABIV1__
   /*
    * Adapt ABIV1 bug.
    * If struct's size is larger than 8 bytes, then it always alignment as 4 bytes.
    */
-  if (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->size > 8) && (alignment == 8)) {
+  اگر (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->سائز > 8) && (alignment == 8)) {
    alignment = 4;
   }
-#endif
+#اگر_ختم
 
-  if ((alignment - 1) & (unsigned) argp) {
-   argp = (char *) FFI_ALIGN(argp, alignment);
+  اگر ((alignment - 1) & (غیرعلامتی) argp) {
+   argp = (حرف *) FFI_ALIGN(argp, alignment);
   }
 
-  if ((*p_arg)->type == FFI_TYPE_STRUCT)
-   argp = (char *) FFI_ALIGN(argp, 4);
+  اگر ((*p_arg)->type == FFI_TYPE_STRUCT)
+   argp = (حرف *) FFI_ALIGN(argp, 4);
 
-  z = (*p_arg)->size;
-  if (z < sizeof(int))
+  z = (*p_arg)->سائز;
+  اگر (z < حجم(صحیح))
   {
-   z = sizeof(int);
-   switch ((*p_arg)->type)
+   z = حجم(صحیح);
+   انتخاب ((*p_arg)->type)
    {
-   case FFI_TYPE_SINT8:
-    *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-    break;
+   حالت FFI_TYPE_SINT8:
+    *(علامتی صحیح *) argp = (علامتی صحیح)*(SINT8 *)(* p_argv);
+    توڑو;
 
-   case FFI_TYPE_UINT8:
-    *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-    break;
+   حالت FFI_TYPE_UINT8:
+    *(غیرعلامتی صحیح *) argp = (غیرعلامتی صحیح)*(UINT8 *)(* p_argv);
+    توڑو;
 
-   case FFI_TYPE_SINT16:
-    *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-    break;
+   حالت FFI_TYPE_SINT16:
+    *(علامتی صحیح *) argp = (علامتی صحیح)*(SINT16 *)(* p_argv);
+    توڑو;
 
-   case FFI_TYPE_UINT16:
-    *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-    break;
+   حالت FFI_TYPE_UINT16:
+    *(غیرعلامتی صحیح *) argp = (غیرعلامتی صحیح)*(UINT16 *)(* p_argv);
+    توڑو;
 
-   case FFI_TYPE_STRUCT:
-#ifdef __CSKYBE__
-    memcpy((argp + 4 - (*p_arg)->size), *p_argv, (*p_arg)->size);
-#else
-    memcpy(argp, *p_argv, (*p_arg)->size);
-#endif
-    break;
+   حالت FFI_TYPE_STRUCT:
+#اگر_تعریف_شدہ __CSKYBE__
+    حافظہ_نقل((argp + 4 - (*p_arg)->سائز), *p_argv, (*p_arg)->سائز);
+#ورنہ
+    حافظہ_نقل(argp, *p_argv, (*p_arg)->سائز);
+#اگر_ختم
+    توڑو;
 
-   default:
+   طےشدہ:
     FFI_ASSERT(0);
    }
   }
-  else if (z == sizeof(int))
+  ورنہ اگر (z == حجم(صحیح))
   {
-   *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+   *(غیرعلامتی صحیح *) argp = (غیرعلامتی صحیح)*(UINT32 *)(* p_argv);
   }
-  else
+  ورنہ
   {
-   memcpy(argp, *p_argv, z);
+   حافظہ_نقل(argp, *p_argv, z);
   }
   p_argv++;
   argp += z;
  }
 
- return;
+ واپس;
 }
 
 /* Perform machine dependent cif processing */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_حالت ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Round the stack up to a multiple of 8 bytes.  This isn't needed
      everywhere, but it is on some platforms, and it doesn't hcsky anything
      when it isn't needed.  */
-  cif->bytes = (cif->bytes + 7) & ~7;
+  cif->بائٹیں = (cif->بائٹیں + 7) & ~7;
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  انتخاب (cif->rtype->type)
     {
 
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      cif->flags = (unsigned) FFI_TYPE_SINT64;
-      break;
+    حالت FFI_TYPE_DOUBLE:
+    حالت FFI_TYPE_SINT64:
+    حالت FFI_TYPE_UINT64:
+      cif->flags = (غیرعلامتی) FFI_TYPE_SINT64;
+      توڑو;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    حالت FFI_TYPE_STRUCT:
+      اگر (cif->rtype->سائز <= 4)
  /* A Composite Type not larger than 4 bytes is returned in r0.  */
- cif->flags = (unsigned)FFI_TYPE_INT;
-      else if (cif->rtype->size <= 8)
+ cif->flags = (غیرعلامتی)FFI_TYPE_INT;
+      ورنہ اگر (cif->rtype->سائز <= 8)
  /* A Composite Type not larger than 8 bytes is returned in r0, r1.  */
- cif->flags = (unsigned)FFI_TYPE_SINT64;
-      else
+ cif->flags = (غیرعلامتی)FFI_TYPE_SINT64;
+      ورنہ
  /* A Composite Type larger than 8 bytes, or whose size cannot
     be determined statically ... is stored in memory at an
     address passed [in r0].  */
- cif->flags = (unsigned)FFI_TYPE_STRUCT;
-      break;
+ cif->flags = (غیرعلامتی)FFI_TYPE_STRUCT;
+      توڑو;
 
-    default:
+    طےشدہ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      توڑو;
     }
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 /* Perform machine dependent cif processing for variadic calls */
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-        unsigned int nfixedargs,
-        unsigned int ntotalargs)
+ffi_حالت ffi_prep_cif_machdep_var(ffi_cif *cif,
+        غیرعلامتی صحیح nfixedargs,
+        غیرعلامتی صحیح ntotalargs)
 {
-  return ffi_prep_cif_machdep(cif);
+  واپس ffi_prep_cif_machdep(cif);
 }
 
 /* Prototypes for assembly functions, in sysv.S */
-extern void ffi_call_SYSV (void (*fn)(void), extended_cif *, unsigned, unsigned, unsigned *);
+خارجی خالی ffi_call_SYSV (خالی (*fn)(خالی), extended_cif *, غیرعلامتی, غیرعلامتی, غیرعلامتی *);
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+خالی ffi_call(ffi_cif *cif, خالی (*fn)(خالی), خالی *rvalue, خالی **avalue)
 {
   extended_cif ecif;
 
-  int small_struct = (cif->flags == FFI_TYPE_INT
+  صحیح small_struct = (cif->flags == FFI_TYPE_INT
         && cif->rtype->type == FFI_TYPE_STRUCT);
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
-  unsigned int temp;
+  غیرعلامتی صحیح عارضی;
 
   /* If the return value is a struct and we don't have a return */
   /* value address then we need to make one          */
 
-  if ((rvalue == NULL) &&
+  اگر ((rvalue == تہی) &&
       (cif->flags == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca(cif->rtype->size);
+      ecif.rvalue = alloca(cif->rtype->سائز);
     }
-  else if (small_struct)
-    ecif.rvalue = &temp;
-  else
+  ورنہ اگر (small_struct)
+    ecif.rvalue = &عارضی;
+  ورنہ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  انتخاب (cif->abi)
     {
-    case FFI_SYSV:
-      ffi_call_SYSV (fn, &ecif, cif->bytes, cif->flags, ecif.rvalue);
-      break;
+    حالت FFI_SYSV:
+      ffi_call_SYSV (fn, &ecif, cif->بائٹیں, cif->flags, ecif.rvalue);
+      توڑو;
 
-    default:
+    طےشدہ:
       FFI_ASSERT(0);
-      break;
+      توڑو;
     }
-  if (small_struct)
-#ifdef __CSKYBE__
-    memcpy (rvalue, ((unsigned char *)&temp + (4 - cif->rtype->size)), cif->rtype->size);
-#else
-    memcpy (rvalue, &temp, cif->rtype->size);
-#endif
+  اگر (small_struct)
+#اگر_تعریف_شدہ __CSKYBE__
+    حافظہ_نقل (rvalue, ((غیرعلامتی حرف *)&عارضی + (4 - cif->rtype->سائز)), cif->rtype->سائز);
+#ورنہ
+    حافظہ_نقل (rvalue, &عارضی, cif->rtype->سائز);
+#اگر_ختم
 }
 
 /** private members **/
 
-static void ffi_prep_incoming_args_SYSV (char *stack, void **ret,
-      void** args, ffi_cif* cif);
+ساکن خالی ffi_prep_incoming_دلائل_SYSV (حرف *ڈھیر, خالی **ret,
+      خالی** دلائل, ffi_cif* cif);
 
-void ffi_closure_SYSV (ffi_closure *);
+خالی ffi_احاطہ_SYSV (ffi_احاطہ *);
 
 /* This function is jumped to by the trampoline */
 
-unsigned int
-ffi_closure_SYSV_inner (closure, respp, args)
-     ffi_closure *closure;
-     void **respp;
-     void *args;
+غیرعلامتی صحیح
+ffi_احاطہ_SYSV_inner (احاطہ, respp, دلائل)
+     ffi_احاطہ *احاطہ;
+     خالی **respp;
+     خالی *دلائل;
 {
   // our various things...
   ffi_cif       *cif;
-  void         **arg_area;
+  خالی         **arg_area;
 
-  cif         = closure->cif;
-  arg_area    = (void**) alloca (cif->nargs * sizeof (void*));
+  cif         = احاطہ->cif;
+  arg_area    = (خالی**) alloca (cif->nargs * حجم (خالی*));
 
   /* this call will initialize ARG_AREA, such that each
    * element in that array points to the corresponding
@@ -245,151 +245,151 @@ ffi_closure_SYSV_inner (closure, respp, args)
    * a structure, it will re-set RESP to point to the
    * structure return address.  */
 
-  ffi_prep_incoming_args_SYSV(args, respp, arg_area, cif);
+  ffi_prep_incoming_دلائل_SYSV(دلائل, respp, arg_area, cif);
 
-  (closure->fun) (cif, *respp, arg_area, closure->user_data);
+  (احاطہ->fun) (cif, *respp, arg_area, احاطہ->user_ڈیٹا);
 
-#ifdef __CSKYBE__
-  if (cif->flags == FFI_TYPE_INT && cif->rtype->type == FFI_TYPE_STRUCT) {
-      unsigned int tmp = 0;
-      tmp = *(unsigned int *)(*respp);
-      *(unsigned int *)(*respp) = (tmp >> ((4 - cif->rtype->size) * 8));
+#اگر_تعریف_شدہ __CSKYBE__
+  اگر (cif->flags == FFI_TYPE_INT && cif->rtype->type == FFI_TYPE_STRUCT) {
+      غیرعلامتی صحیح tmp = 0;
+      tmp = *(غیرعلامتی صحیح *)(*respp);
+      *(غیرعلامتی صحیح *)(*respp) = (tmp >> ((4 - cif->rtype->سائز) * 8));
   }
-#endif
+#اگر_ختم
 
-  return cif->flags;
+  واپس cif->flags;
 }
 
 
-static void
-ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
-       void **avalue, ffi_cif *cif)
+ساکن خالی
+ffi_prep_incoming_دلائل_SYSV(حرف *ڈھیر, خالی **rvalue,
+       خالی **avalue, ffi_cif *cif)
 {
-  register unsigned int i;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
+  اندراج غیرعلامتی صحیح i;
+  اندراج خالی **p_argv;
+  اندراج حرف *argp;
+  اندراج ffi_type **p_arg;
 
-  argp = stack;
+  argp = ڈھیر;
 
-  if ( cif->flags == FFI_TYPE_STRUCT ) {
-    *rvalue = *(void **) argp;
+  اگر ( cif->flags == FFI_TYPE_STRUCT ) {
+    *rvalue = *(خالی **) argp;
     argp += 4;
   }
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
+  برائے (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
     {
       size_t z;
       size_t alignment;
 
       alignment = (*p_arg)->alignment;
-      if (alignment < 4)
+      اگر (alignment < 4)
  alignment = 4;
 
-#ifdef __CSKYABIV1__
+#اگر_تعریف_شدہ __CSKYABIV1__
       /*
        * Adapt ABIV1 bug.
        * If struct's size is larger than 8 bytes, then it always alignment as 4 bytes.
        */
-      if (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->size > 8) && (alignment == 8)) {
+      اگر (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->سائز > 8) && (alignment == 8)) {
         alignment = 4;
       }
-#endif
+#اگر_ختم
 
       /* Align if necessary */
-      if ((alignment - 1) & (unsigned) argp) {
- argp = (char *) FFI_ALIGN(argp, alignment);
+      اگر ((alignment - 1) & (غیرعلامتی) argp) {
+ argp = (حرف *) FFI_ALIGN(argp, alignment);
       }
 
-      z = (*p_arg)->size;
+      z = (*p_arg)->سائز;
 
-#ifdef __CSKYBE__
-      unsigned int tmp = 0;
-      if ((*p_arg)->size < 4) {
-        tmp = *(unsigned int *)argp;
-        memcpy(argp, ((unsigned char *)&tmp + (4 - (*p_arg)->size)), (*p_arg)->size);
+#اگر_تعریف_شدہ __CSKYBE__
+      غیرعلامتی صحیح tmp = 0;
+      اگر ((*p_arg)->سائز < 4) {
+        tmp = *(غیرعلامتی صحیح *)argp;
+        حافظہ_نقل(argp, ((غیرعلامتی حرف *)&tmp + (4 - (*p_arg)->سائز)), (*p_arg)->سائز);
       }
-#else
+#ورنہ
       /* because we're little endian, this is what it turns into.   */
-#endif
-      *p_argv = (void*) argp;
+#اگر_ختم
+      *p_argv = (خالی*) argp;
 
       p_argv++;
       argp += z;
     }
 
-  return;
+  واپس;
 }
 
 /* How to make a trampoline.  */
 
-extern unsigned char ffi_csky_trampoline[TRAMPOLINE_SIZE];
+خارجی غیرعلامتی حرف ffi_csky_trampoline[TRAMPOLINE_سائز];
 
 /*
  * Since there is no __clear_cache in libgcc in csky toolchain.
  * define ffi_csky_cacheflush in sysv.S.
  * void ffi_csky_cacheflush(uint32 start_addr, uint32 size, int cache)
  */
-#define CACHEFLUSH_IN_FFI 1
-#if CACHEFLUSH_IN_FFI
-extern void ffi_csky_cacheflush(unsigned char *__tramp, unsigned int k,
-  int i);
-#define FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
-({ unsigned char *__tramp = (unsigned char*)(TRAMP);                    \
-   unsigned int  __fun = (unsigned int)(FUN);                           \
-   unsigned int  __ctx = (unsigned int)(CTX);                           \
-   unsigned char *insns = (unsigned char *)(CTX);                       \
-   memcpy (__tramp, ffi_csky_trampoline, TRAMPOLINE_SIZE);              \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE] = __ctx;                  \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE + 4] = __fun;              \
-   ffi_csky_cacheflush(&__tramp[0], TRAMPOLINE_SIZE, 3); /* Clear data mapping.  */ \
-   ffi_csky_cacheflush(insns, TRAMPOLINE_SIZE, 3);                       \
+#تعریف_کرو CACHEFLUSH_اندر_FFI 1
+#اگر CACHEFLUSH_اندر_FFI
+خارجی خالی ffi_csky_cacheflush(غیرعلامتی حرف *__tramp, غیرعلامتی صحیح k,
+  صحیح i);
+#تعریف_کرو FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
+({ غیرعلامتی حرف *__tramp = (غیرعلامتی حرف*)(TRAMP);                    \
+   غیرعلامتی صحیح  __fun = (غیرعلامتی صحیح)(FUN);                           \
+   غیرعلامتی صحیح  __ctx = (غیرعلامتی صحیح)(CTX);                           \
+   غیرعلامتی حرف *insns = (غیرعلامتی حرف *)(CTX);                       \
+   حافظہ_نقل (__tramp, ffi_csky_trampoline, TRAMPOLINE_سائز);              \
+   *(غیرعلامتی صحیح*) &__tramp[TRAMPOLINE_سائز] = __ctx;                  \
+   *(غیرعلامتی صحیح*) &__tramp[TRAMPOLINE_سائز + 4] = __fun;              \
+   ffi_csky_cacheflush(&__tramp[0], TRAMPOLINE_سائز, 3); /* Clear data mapping.  */ \
+   ffi_csky_cacheflush(insns, TRAMPOLINE_سائز, 3);                       \
                                                  /* Clear instruction   \
                                                     mapping.  */        \
  })
-#else
-#define FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
-({ unsigned char *__tramp = (unsigned char*)(TRAMP);                    \
-   unsigned int  __fun = (unsigned int)(FUN);                           \
-   unsigned int  __ctx = (unsigned int)(CTX);                           \
-   unsigned char *insns = (unsigned char *)(CTX);                       \
-   memcpy (__tramp, ffi_csky_trampoline, TRAMPOLINE_SIZE);              \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE] = __ctx;                  \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE + 4] = __fun;              \
-   __clear_cache((&__tramp[0]), (&__tramp[TRAMPOLINE_SIZE-1])); /* Clear data mapping.  */ \
-   __clear_cache(insns, insns + TRAMPOLINE_SIZE);                       \
+#ورنہ
+#تعریف_کرو FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
+({ غیرعلامتی حرف *__tramp = (غیرعلامتی حرف*)(TRAMP);                    \
+   غیرعلامتی صحیح  __fun = (غیرعلامتی صحیح)(FUN);                           \
+   غیرعلامتی صحیح  __ctx = (غیرعلامتی صحیح)(CTX);                           \
+   غیرعلامتی حرف *insns = (غیرعلامتی حرف *)(CTX);                       \
+   حافظہ_نقل (__tramp, ffi_csky_trampoline, TRAMPOLINE_سائز);              \
+   *(غیرعلامتی صحیح*) &__tramp[TRAMPOLINE_سائز] = __ctx;                  \
+   *(غیرعلامتی صحیح*) &__tramp[TRAMPOLINE_سائز + 4] = __fun;              \
+   __clear_cache((&__tramp[0]), (&__tramp[TRAMPOLINE_سائز-1])); /* Clear data mapping.  */ \
+   __clear_cache(insns, insns + TRAMPOLINE_سائز);                       \
                                                  /* Clear instruction   \
                                                     mapping.  */        \
  })
-#endif
+#اگر_ختم
 
 /* the cif must already be prep'ed */
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_حالت
+ffi_prep_احاطہ_loc (ffi_احاطہ* احاطہ,
         ffi_cif* cif,
-        void (*fun)(ffi_cif*,void*,void**,void*),
-        void *user_data,
-        void *codeloc)
+        خالی (*fun)(ffi_cif*,خالی*,خالی**,خالی*),
+        خالی *user_ڈیٹا,
+        خالی *codeloc)
 {
-  void (*closure_func)(ffi_closure*) = NULL;
+  خالی (*احاطہ_func)(ffi_احاطہ*) = تہی;
 
-  if (cif->abi == FFI_SYSV)
-    closure_func = &ffi_closure_SYSV;
-  else
-    return FFI_BAD_ABI;
+  اگر (cif->abi == FFI_SYSV)
+    احاطہ_func = &ffi_احاطہ_SYSV;
+  ورنہ
+    واپس FFI_BAD_ABI;
 
-  FFI_INIT_TRAMPOLINE (&closure->tramp[0], \
-         closure_func,  \
+  FFI_INIT_TRAMPOLINE (&احاطہ->tramp[0], \
+         احاطہ_func,  \
          codeloc);
 
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
+  احاطہ->cif  = cif;
+  احاطہ->user_ڈیٹا = user_ڈیٹا;
+  احاطہ->fun  = fun;
 
-  return FFI_OK;
+  واپس FFI_OK;
 }
 
 

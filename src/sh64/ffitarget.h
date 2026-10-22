@@ -25,34 +25,34 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#اگر_غیر_تعریف_شدہ LIBFFI_ہدف_H
+#تعریف_کرو LIBFFI_ہدف_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#اگر_غیر_تعریف_شدہ LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#اگر_ختم
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#اگر_غیر_تعریف_شدہ LIBFFI_ASM
+قسمتعریف غیرعلامتی طویل          ffi_arg;
+قسمتعریف علامتی طویل            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+قسمتعریف شمار ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخری_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
-#define FFI_EXTRA_CIF_FIELDS long long flags2
-#endif
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS طویل طویل flags2
+#اگر_ختم
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 32
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_TRAMPOLINE_سائز 32
+#تعریف_کرو FFI_NATIVE_RAW_API 0
 
-#endif
+#اگر_ختم
 

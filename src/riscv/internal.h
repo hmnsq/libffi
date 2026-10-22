@@ -1,7 +1,7 @@
-#ifdef FFI_EXEC_STATIC_TRAMP
+#اگر_تعریف_شدہ FFI_EXEC_STATIC_TRAMP
 /* For the trampoline table mapping, a mapping size of 4K (base page size)
    is chosen.  */
-#define RISCV_TRAMP_MAP_SHIFT	12
-#define RISCV_TRAMP_MAP_SIZE	(1 << RISCV_TRAMP_MAP_SHIFT)
-#define RISCV_TRAMP_SIZE	16
-#endif /* FFI_EXEC_STATIC_TRAMP */
+#تعریف_کرو RISCV_TRAMP_MAP_سرکاؤ	12
+#تعریف_کرو RISCV_TRAMP_MAP_سائز	(1 << RISCV_TRAMP_MAP_سرکاؤ)
+#تعریف_کرو RISCV_TRAMP_سائز	16
+#اگر_ختم /* FFI_EXEC_STATIC_TRAMP */
