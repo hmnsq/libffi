@@ -28,139 +28,139 @@
  * be implemented in C.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
 
-#define CIF_FLAGS_CHAR		1	/* for struct only */
-#define CIF_FLAGS_SHORT		2	/* for struct only */
-#define CIF_FLAGS_INT		4
-#define CIF_FLAGS_DINT		8
+#ವ್ಯಾಖ್ಯಾನಿಸು CIF_FLAGS_CHAR		1	/* for struct only */
+#ವ್ಯಾಖ್ಯಾನಿಸು CIF_FLAGS_SHORT		2	/* for struct only */
+#ವ್ಯಾಖ್ಯಾನಿಸು CIF_FLAGS_INT		4
+#ವ್ಯಾಖ್ಯಾನಿಸು CIF_FLAGS_DINT		8
 
 /*
  * Foreign Function Interface API
  */
 
-void ffi_call_elfbsd (extended_cif *, unsigned, unsigned, void *,
-		       void (*) ());
-void *ffi_prep_args (extended_cif *ecif, void *stack);
+ಶೂನ್ಯ ffi_call_elfbsd (extended_cif *, ಚಿಹ್ನೆರಹಿತ, ಚಿಹ್ನೆರಹಿತ, ಶೂನ್ಯ *,
+		       ಶೂನ್ಯ (*) ());
+ಶೂನ್ಯ *ffi_prep_ವಾದಗಳು (extended_cif *ecif, ಶೂನ್ಯ *ರಾಶಿ);
 
-void *
-ffi_prep_args (extended_cif *ecif, void *stack)
+ಶೂನ್ಯ *
+ffi_prep_ವಾದಗಳು (extended_cif *ecif, ಶೂನ್ಯ *ರಾಶಿ)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ i;
+  ಶೂನ್ಯ **p_argv;
+  ಅಕ್ಷರ *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  ಶೂನ್ಯ *struct_ಮೌಲ್ಯ_ptr;
 
-  argp = stack;
+  argp = ರಾಶಿ;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  ಆದರೆ (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_ಮೌಲ್ಯ_ptr = ecif->rvalue;
+  ಇಲ್ಲದಿದ್ದರೆ
+    struct_ಮೌಲ್ಯ_ptr = ಖಾಲಿ;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  ಗಾಗಿ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof (int))
+      z = (*p_arg)->ಗಾತ್ರ_2;
+      ಆದರೆ (z < ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ))
 	{
-	  switch ((*p_arg)->type)
+	  ಆಯ್ಕೆ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	      *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ) *(SINT8 *) *p_argv;
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ) *(UINT8 *) *p_argv;
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	      *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ) *(SINT16 *) *p_argv;
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ) *(UINT16 *) *p_argv;
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_STRUCT:
-	      memcpy (argp, *p_argv, z);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+	      ಸ್ಮರಣೆ_ನಕಲು (argp, *p_argv, z);
+	      ನಿಲ್ಲಿಸು;
 
-	    default:
+	    ಪೂರ್ವನಿಯೋಜಿತ:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
 	}
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
-	  memcpy (argp, *p_argv, z);
+	  ಸ್ಮರಣೆ_ನಕಲು (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  ಆದರೆ ((ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ) - 1) & z)
+	    z = FFI_ALIGN(z, ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  ಹಿಂತಿರುಗಿ struct_ಮೌಲ್ಯ_ptr;
 }
 
-ffi_status
+ffi_ಸ್ಥಿತಿ
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ಆಯ್ಕೆ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ಸ್ಥಿತಿ FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      ನಿಲ್ಲಿಸು;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+      ಆದರೆ (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
 	  cif->rtype->elements[1])
 	{
 	  cif->flags = 0;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 	}
 
-      if (cif->rtype->size == sizeof (char))
+      ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 == ಗಾತ್ರ (ಅಕ್ಷರ))
 	cif->flags = CIF_FLAGS_CHAR;
-      else if (cif->rtype->size == sizeof (short))
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 == ಗಾತ್ರ (ಗಿಡ್ಡ))
 	cif->flags = CIF_FLAGS_SHORT;
-      else if (cif->rtype->size == sizeof (int))
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 == ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ))
 	cif->flags = CIF_FLAGS_INT;
-      else if (cif->rtype->size == 2 * sizeof (int))
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 == 2 * ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ))
 	cif->flags = CIF_FLAGS_DINT;
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
 	cif->flags = 0;
-      break;
+      ನಿಲ್ಲಿಸು;
 
-    default:
-      if (cif->rtype->size <= sizeof (int))
+    ಪೂರ್ವನಿಯೋಜಿತ:
+      ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 <= ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
 	cif->flags = CIF_FLAGS_DINT;
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+ಶೂನ್ಯ
+ffi_call (ffi_cif *cif, ಶೂನ್ಯ (*fn) (), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
   extended_cif ecif;
 
@@ -170,22 +170,22 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  ಆದರೆ (rvalue == ಖಾಲಿ
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->flags == 0)
-    ecif.rvalue = alloca (cif->rtype->size);
-  else
+    ecif.rvalue = alloca (cif->rtype->ಗಾತ್ರ_2);
+  ಇಲ್ಲದಿದ್ದರೆ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ಆಯ್ಕೆ (cif->abi)
     {
-    case FFI_ELFBSD:
-      ffi_call_elfbsd (&ecif, cif->bytes, cif->flags, ecif.rvalue, fn);
-      break;
+    ಸ್ಥಿತಿ FFI_ELFBSD:
+      ffi_call_elfbsd (&ecif, cif->ಬೈಟುಗಳು, cif->flags, ecif.rvalue, fn);
+      ನಿಲ್ಲಿಸು;
 
-    default:
+    ಪೂರ್ವನಿಯೋಜಿತ:
       FFI_ASSERT (0);
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 }
 
@@ -193,84 +193,84 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-void ffi_closure_elfbsd (void);
-void ffi_closure_struct_elfbsd (void);
-unsigned int ffi_closure_elfbsd_inner (ffi_closure *, void *, char *);
+ಶೂನ್ಯ ffi_ಆವರಣ_elfbsd (ಶೂನ್ಯ);
+ಶೂನ್ಯ ffi_ಆವರಣ_struct_elfbsd (ಶೂನ್ಯ);
+ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ ffi_ಆವರಣ_elfbsd_inner (ffi_ಆವರಣ *, ಶೂನ್ಯ *, ಅಕ್ಷರ *);
 
-static void
-ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_prep_ಆವರಣ_elfbsd (ffi_cif *cif, ಶೂನ್ಯ **avalue, ಅಕ್ಷರ *stackp)
 {
-  unsigned int i;
-  void **p_argv;
+  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ i;
+  ಶೂನ್ಯ **p_argv;
   ffi_type **p_arg;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  ಗಾಗಿ (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
+      z = (*p_arg)->ಗಾತ್ರ_2;
       *p_argv = stackp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      ಆದರೆ ((ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ) - 1) & z)
+	z = FFI_ALIGN(z, ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ));
 
       p_argv++;
       stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ
+ffi_ಆವರಣ_elfbsd_inner (ffi_ಆವರಣ *ಆವರಣ, ಶೂನ್ಯ *resp, ಅಕ್ಷರ *ರಾಶಿ)
 {
   ffi_cif *cif;
-  void **arg_area;
+  ಶೂನ್ಯ **arg_area;
 
-  cif = closure->cif;
-  arg_area = (void **) alloca (cif->nargs * sizeof (void *));
+  cif = ಆವರಣ->cif;
+  arg_area = (ಶೂನ್ಯ **) alloca (cif->nargs * ಗಾತ್ರ (ಶೂನ್ಯ *));
 
-  ffi_prep_closure_elfbsd (cif, arg_area, stack);
+  ffi_prep_ಆವರಣ_elfbsd (cif, arg_area, ರಾಶಿ);
 
-  (closure->fun) (cif, resp, arg_area, closure->user_data);
+  (ಆವರಣ->fun) (cif, resp, arg_area, ಆವರಣ->user_ದತ್ತಾಂಶ);
 
-  return cif->flags;
+  ಹಿಂತಿರುಗಿ cif->flags;
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun)(ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ *ಆವರಣ, ffi_cif *cif,
+		      ಶೂನ್ಯ (*fun)(ffi_cif *, ಶೂನ್ಯ *, ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+		      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ, ಶೂನ್ಯ *codeloc)
 {
-  char *tramp = (char *) codeloc;
-  void *fn;
+  ಅಕ್ಷರ *tramp = (ಅಕ್ಷರ *) codeloc;
+  ಶೂನ್ಯ *fn;
 
   FFI_ASSERT (cif->abi == FFI_ELFBSD);
 
   /* entry mask */
-  *(unsigned short *)(tramp + 0) = 0x0000;
+  *(ಚಿಹ್ನೆರಹಿತ ಗಿಡ್ಡ *)(tramp + 0) = 0x0000;
   /* movl #closure, r0 */
   tramp[2] = 0xd0;
   tramp[3] = 0x8f;
-  *(unsigned int *)(tramp + 4) = (unsigned int) closure;
+  *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *)(tramp + 4) = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ) ಆವರಣ;
   tramp[8] = 0x50;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  ಆದರೆ (cif->rtype->type == FFI_TYPE_STRUCT
       && !cif->flags)
-    fn = &ffi_closure_struct_elfbsd;
-  else
-    fn = &ffi_closure_elfbsd;
+    fn = &ffi_ಆವರಣ_struct_elfbsd;
+  ಇಲ್ಲದಿದ್ದರೆ
+    fn = &ffi_ಆವರಣ_elfbsd;
 
   /* jmpl #fn */
   tramp[9] = 0x17;
   tramp[10] = 0xef;
-  *(unsigned int *)(tramp + 11) = (unsigned int)fn + 2 -
-				  (unsigned int)tramp - 9 - 6;
+  *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *)(tramp + 11) = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)fn + 2 -
+				  (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)tramp - 9 - 6;
 
-  closure->cif = cif;
-  closure->user_data = user_data;
-  closure->fun = fun;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
+  ಆವರಣ->fun = fun;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }

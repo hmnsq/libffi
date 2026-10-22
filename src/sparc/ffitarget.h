@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_H
+#ದೋಷ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#ಆದರೆ defined(__arch64__) || defined(__sparcv9)
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ SPARC64
+#ವ್ಯಾಖ್ಯಾನಿಸು SPARC64
+#ಆದರೆ_ಅಂತ್ಯ
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ASM
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ          ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi {
+  FFI_ಮೊದಲ_ABI = 0,
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
-  FFI_LAST_ABI
+#ಆದರೆ_ಅಂತ್ಯ
+  FFI_ಕೊನೆಯ_ABI
 } ffi_abi;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_SPECIFIC_ರಾಶಿ_SPACE_ಹಂಚಿಕೆ 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ SPARC64
+# define FFI_ಗುರಿ_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ nfixedargs
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_GO_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ SPARC64
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ 24
+#ಇಲ್ಲದಿದ್ದರೆ
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ 16
+#ಆದರೆ_ಅಂತ್ಯ
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 

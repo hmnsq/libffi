@@ -24,31 +24,31 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-#include <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments
 */
-void ffi_prep_args(char *stack, extended_cif *ecif)
+ಶೂನ್ಯ ffi_prep_ವಾದಗಳು(ಅಕ್ಷರ *ರಾಶಿ, extended_cif *ecif)
 {
- register unsigned int i;
- register void **p_argv;
- register char *argp;
- register ffi_type **p_arg;
+ ನೋಂದಣಿ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ i;
+ ನೋಂದಣಿ ಶೂನ್ಯ **p_argv;
+ ನೋಂದಣಿ ಅಕ್ಷರ *argp;
+ ನೋಂದಣಿ ffi_type **p_arg;
 
- argp = stack;
+ argp = ರಾಶಿ;
 
- if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
-  *(void **) argp = ecif->rvalue;
+ ಆದರೆ ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
+  *(ಶೂನ್ಯ **) argp = ecif->rvalue;
   argp += 4;
  }
 
  p_argv = ecif->avalue;
 
- for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+ ಗಾಗಿ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
    (i != 0);
    i--, p_arg++)
  {
@@ -57,187 +57,187 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 
   /* Align if necessary */
   alignment = (*p_arg)->alignment;
-#ifdef __CSKYABIV1__
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __CSKYABIV1__
   /*
    * Adapt ABIV1 bug.
    * If struct's size is larger than 8 bytes, then it always alignment as 4 bytes.
    */
-  if (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->size > 8) && (alignment == 8)) {
+  ಆದರೆ (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->ಗಾತ್ರ_2 > 8) && (alignment == 8)) {
    alignment = 4;
   }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-  if ((alignment - 1) & (unsigned) argp) {
-   argp = (char *) FFI_ALIGN(argp, alignment);
+  ಆದರೆ ((alignment - 1) & (ಚಿಹ್ನೆರಹಿತ) argp) {
+   argp = (ಅಕ್ಷರ *) FFI_ALIGN(argp, alignment);
   }
 
-  if ((*p_arg)->type == FFI_TYPE_STRUCT)
-   argp = (char *) FFI_ALIGN(argp, 4);
+  ಆದರೆ ((*p_arg)->type == FFI_TYPE_STRUCT)
+   argp = (ಅಕ್ಷರ *) FFI_ALIGN(argp, 4);
 
-  z = (*p_arg)->size;
-  if (z < sizeof(int))
+  z = (*p_arg)->ಗಾತ್ರ_2;
+  ಆದರೆ (z < ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
   {
-   z = sizeof(int);
-   switch ((*p_arg)->type)
+   z = ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ);
+   ಆಯ್ಕೆ ((*p_arg)->type)
    {
-   case FFI_TYPE_SINT8:
-    *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-    break;
+   ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+    *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT8 *)(* p_argv);
+    ನಿಲ್ಲಿಸು;
 
-   case FFI_TYPE_UINT8:
-    *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-    break;
+   ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+    *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT8 *)(* p_argv);
+    ನಿಲ್ಲಿಸು;
 
-   case FFI_TYPE_SINT16:
-    *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-    break;
+   ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+    *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT16 *)(* p_argv);
+    ನಿಲ್ಲಿಸು;
 
-   case FFI_TYPE_UINT16:
-    *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-    break;
+   ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+    *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT16 *)(* p_argv);
+    ನಿಲ್ಲಿಸು;
 
-   case FFI_TYPE_STRUCT:
-#ifdef __CSKYBE__
-    memcpy((argp + 4 - (*p_arg)->size), *p_argv, (*p_arg)->size);
-#else
-    memcpy(argp, *p_argv, (*p_arg)->size);
-#endif
-    break;
+   ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __CSKYBE__
+    ಸ್ಮರಣೆ_ನಕಲು((argp + 4 - (*p_arg)->ಗಾತ್ರ_2), *p_argv, (*p_arg)->ಗಾತ್ರ_2);
+#ಇಲ್ಲದಿದ್ದರೆ
+    ಸ್ಮರಣೆ_ನಕಲು(argp, *p_argv, (*p_arg)->ಗಾತ್ರ_2);
+#ಆದರೆ_ಅಂತ್ಯ
+    ನಿಲ್ಲಿಸು;
 
-   default:
+   ಪೂರ್ವನಿಯೋಜಿತ:
     FFI_ASSERT(0);
    }
   }
-  else if (z == sizeof(int))
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (z == ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
   {
-   *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+   *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT32 *)(* p_argv);
   }
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
   {
-   memcpy(argp, *p_argv, z);
+   ಸ್ಮರಣೆ_ನಕಲು(argp, *p_argv, z);
   }
   p_argv++;
   argp += z;
  }
 
- return;
+ ಹಿಂತಿರುಗಿ;
 }
 
 /* Perform machine dependent cif processing */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_ಸ್ಥಿತಿ ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Round the stack up to a multiple of 8 bytes.  This isn't needed
      everywhere, but it is on some platforms, and it doesn't hcsky anything
      when it isn't needed.  */
-  cif->bytes = (cif->bytes + 7) & ~7;
+  cif->ಬೈಟುಗಳು = (cif->ಬೈಟುಗಳು + 7) & ~7;
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ಆಯ್ಕೆ (cif->rtype->type)
     {
 
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      cif->flags = (unsigned) FFI_TYPE_SINT64;
-      break;
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+      cif->flags = (ಚಿಹ್ನೆರಹಿತ) FFI_TYPE_SINT64;
+      ನಿಲ್ಲಿಸು;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+      ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 <= 4)
  /* A Composite Type not larger than 4 bytes is returned in r0.  */
- cif->flags = (unsigned)FFI_TYPE_INT;
-      else if (cif->rtype->size <= 8)
+ cif->flags = (ಚಿಹ್ನೆರಹಿತ)FFI_TYPE_INT;
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 <= 8)
  /* A Composite Type not larger than 8 bytes is returned in r0, r1.  */
- cif->flags = (unsigned)FFI_TYPE_SINT64;
-      else
+ cif->flags = (ಚಿಹ್ನೆರಹಿತ)FFI_TYPE_SINT64;
+      ಇಲ್ಲದಿದ್ದರೆ
  /* A Composite Type larger than 8 bytes, or whose size cannot
     be determined statically ... is stored in memory at an
     address passed [in r0].  */
- cif->flags = (unsigned)FFI_TYPE_STRUCT;
-      break;
+ cif->flags = (ಚಿಹ್ನೆರಹಿತ)FFI_TYPE_STRUCT;
+      ನಿಲ್ಲಿಸು;
 
-    default:
+    ಪೂರ್ವನಿಯೋಜಿತ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 /* Perform machine dependent cif processing for variadic calls */
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-        unsigned int nfixedargs,
-        unsigned int ntotalargs)
+ffi_ಸ್ಥಿತಿ ffi_prep_cif_machdep_var(ffi_cif *cif,
+        ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ nfixedargs,
+        ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ ntotalargs)
 {
-  return ffi_prep_cif_machdep(cif);
+  ಹಿಂತಿರುಗಿ ffi_prep_cif_machdep(cif);
 }
 
 /* Prototypes for assembly functions, in sysv.S */
-extern void ffi_call_SYSV (void (*fn)(void), extended_cif *, unsigned, unsigned, unsigned *);
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_SYSV (ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), extended_cif *, ಚಿಹ್ನೆರಹಿತ, ಚಿಹ್ನೆರಹಿತ, ಚಿಹ್ನೆರಹಿತ *);
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ಶೂನ್ಯ ffi_call(ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
   extended_cif ecif;
 
-  int small_struct = (cif->flags == FFI_TYPE_INT
+  ಪೂರ್ಣಾಂಕ small_struct = (cif->flags == FFI_TYPE_INT
         && cif->rtype->type == FFI_TYPE_STRUCT);
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
-  unsigned int temp;
+  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ ತಾತ್ಕಾಲಿಕ;
 
   /* If the return value is a struct and we don't have a return */
   /* value address then we need to make one          */
 
-  if ((rvalue == NULL) &&
+  ಆದರೆ ((rvalue == ಖಾಲಿ) &&
       (cif->flags == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca(cif->rtype->size);
+      ecif.rvalue = alloca(cif->rtype->ಗಾತ್ರ_2);
     }
-  else if (small_struct)
-    ecif.rvalue = &temp;
-  else
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (small_struct)
+    ecif.rvalue = &ತಾತ್ಕಾಲಿಕ;
+  ಇಲ್ಲದಿದ್ದರೆ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ಆಯ್ಕೆ (cif->abi)
     {
-    case FFI_SYSV:
-      ffi_call_SYSV (fn, &ecif, cif->bytes, cif->flags, ecif.rvalue);
-      break;
+    ಸ್ಥಿತಿ FFI_SYSV:
+      ffi_call_SYSV (fn, &ecif, cif->ಬೈಟುಗಳು, cif->flags, ecif.rvalue);
+      ನಿಲ್ಲಿಸು;
 
-    default:
+    ಪೂರ್ವನಿಯೋಜಿತ:
       FFI_ASSERT(0);
-      break;
+      ನಿಲ್ಲಿಸು;
     }
-  if (small_struct)
-#ifdef __CSKYBE__
-    memcpy (rvalue, ((unsigned char *)&temp + (4 - cif->rtype->size)), cif->rtype->size);
-#else
-    memcpy (rvalue, &temp, cif->rtype->size);
-#endif
+  ಆದರೆ (small_struct)
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __CSKYBE__
+    ಸ್ಮರಣೆ_ನಕಲು (rvalue, ((ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *)&ತಾತ್ಕಾಲಿಕ + (4 - cif->rtype->ಗಾತ್ರ_2)), cif->rtype->ಗಾತ್ರ_2);
+#ಇಲ್ಲದಿದ್ದರೆ
+    ಸ್ಮರಣೆ_ನಕಲು (rvalue, &ತಾತ್ಕಾಲಿಕ, cif->rtype->ಗಾತ್ರ_2);
+#ಆದರೆ_ಅಂತ್ಯ
 }
 
 /** private members **/
 
-static void ffi_prep_incoming_args_SYSV (char *stack, void **ret,
-      void** args, ffi_cif* cif);
+ಸ್ಥಿರ ಶೂನ್ಯ ffi_prep_incoming_ವಾದಗಳು_SYSV (ಅಕ್ಷರ *ರಾಶಿ, ಶೂನ್ಯ **ret,
+      ಶೂನ್ಯ** ವಾದಗಳು, ffi_cif* cif);
 
-void ffi_closure_SYSV (ffi_closure *);
+ಶೂನ್ಯ ffi_ಆವರಣ_SYSV (ffi_ಆವರಣ *);
 
 /* This function is jumped to by the trampoline */
 
-unsigned int
-ffi_closure_SYSV_inner (closure, respp, args)
-     ffi_closure *closure;
-     void **respp;
-     void *args;
+ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ
+ffi_ಆವರಣ_SYSV_inner (ಆವರಣ, respp, ವಾದಗಳು)
+     ffi_ಆವರಣ *ಆವರಣ;
+     ಶೂನ್ಯ **respp;
+     ಶೂನ್ಯ *ವಾದಗಳು;
 {
   // our various things...
   ffi_cif       *cif;
-  void         **arg_area;
+  ಶೂನ್ಯ         **arg_area;
 
-  cif         = closure->cif;
-  arg_area    = (void**) alloca (cif->nargs * sizeof (void*));
+  cif         = ಆವರಣ->cif;
+  arg_area    = (ಶೂನ್ಯ**) alloca (cif->nargs * ಗಾತ್ರ (ಶೂನ್ಯ*));
 
   /* this call will initialize ARG_AREA, such that each
    * element in that array points to the corresponding
@@ -245,151 +245,151 @@ ffi_closure_SYSV_inner (closure, respp, args)
    * a structure, it will re-set RESP to point to the
    * structure return address.  */
 
-  ffi_prep_incoming_args_SYSV(args, respp, arg_area, cif);
+  ffi_prep_incoming_ವಾದಗಳು_SYSV(ವಾದಗಳು, respp, arg_area, cif);
 
-  (closure->fun) (cif, *respp, arg_area, closure->user_data);
+  (ಆವರಣ->fun) (cif, *respp, arg_area, ಆವರಣ->user_ದತ್ತಾಂಶ);
 
-#ifdef __CSKYBE__
-  if (cif->flags == FFI_TYPE_INT && cif->rtype->type == FFI_TYPE_STRUCT) {
-      unsigned int tmp = 0;
-      tmp = *(unsigned int *)(*respp);
-      *(unsigned int *)(*respp) = (tmp >> ((4 - cif->rtype->size) * 8));
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __CSKYBE__
+  ಆದರೆ (cif->flags == FFI_TYPE_INT && cif->rtype->type == FFI_TYPE_STRUCT) {
+      ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ tmp = 0;
+      tmp = *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *)(*respp);
+      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *)(*respp) = (tmp >> ((4 - cif->rtype->ಗಾತ್ರ_2) * 8));
   }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-  return cif->flags;
+  ಹಿಂತಿರುಗಿ cif->flags;
 }
 
 
-static void
-ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
-       void **avalue, ffi_cif *cif)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_prep_incoming_ವಾದಗಳು_SYSV(ಅಕ್ಷರ *ರಾಶಿ, ಶೂನ್ಯ **rvalue,
+       ಶೂನ್ಯ **avalue, ffi_cif *cif)
 {
-  register unsigned int i;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
+  ನೋಂದಣಿ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ i;
+  ನೋಂದಣಿ ಶೂನ್ಯ **p_argv;
+  ನೋಂದಣಿ ಅಕ್ಷರ *argp;
+  ನೋಂದಣಿ ffi_type **p_arg;
 
-  argp = stack;
+  argp = ರಾಶಿ;
 
-  if ( cif->flags == FFI_TYPE_STRUCT ) {
-    *rvalue = *(void **) argp;
+  ಆದರೆ ( cif->flags == FFI_TYPE_STRUCT ) {
+    *rvalue = *(ಶೂನ್ಯ **) argp;
     argp += 4;
   }
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
+  ಗಾಗಿ (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
     {
       size_t z;
       size_t alignment;
 
       alignment = (*p_arg)->alignment;
-      if (alignment < 4)
+      ಆದರೆ (alignment < 4)
  alignment = 4;
 
-#ifdef __CSKYABIV1__
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __CSKYABIV1__
       /*
        * Adapt ABIV1 bug.
        * If struct's size is larger than 8 bytes, then it always alignment as 4 bytes.
        */
-      if (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->size > 8) && (alignment == 8)) {
+      ಆದರೆ (((*p_arg)->type == FFI_TYPE_STRUCT) && ((*p_arg)->ಗಾತ್ರ_2 > 8) && (alignment == 8)) {
         alignment = 4;
       }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
       /* Align if necessary */
-      if ((alignment - 1) & (unsigned) argp) {
- argp = (char *) FFI_ALIGN(argp, alignment);
+      ಆದರೆ ((alignment - 1) & (ಚಿಹ್ನೆರಹಿತ) argp) {
+ argp = (ಅಕ್ಷರ *) FFI_ALIGN(argp, alignment);
       }
 
-      z = (*p_arg)->size;
+      z = (*p_arg)->ಗಾತ್ರ_2;
 
-#ifdef __CSKYBE__
-      unsigned int tmp = 0;
-      if ((*p_arg)->size < 4) {
-        tmp = *(unsigned int *)argp;
-        memcpy(argp, ((unsigned char *)&tmp + (4 - (*p_arg)->size)), (*p_arg)->size);
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __CSKYBE__
+      ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ tmp = 0;
+      ಆದರೆ ((*p_arg)->ಗಾತ್ರ_2 < 4) {
+        tmp = *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *)argp;
+        ಸ್ಮರಣೆ_ನಕಲು(argp, ((ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *)&tmp + (4 - (*p_arg)->ಗಾತ್ರ_2)), (*p_arg)->ಗಾತ್ರ_2);
       }
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
       /* because we're little endian, this is what it turns into.   */
-#endif
-      *p_argv = (void*) argp;
+#ಆದರೆ_ಅಂತ್ಯ
+      *p_argv = (ಶೂನ್ಯ*) argp;
 
       p_argv++;
       argp += z;
     }
 
-  return;
+  ಹಿಂತಿರುಗಿ;
 }
 
 /* How to make a trampoline.  */
 
-extern unsigned char ffi_csky_trampoline[TRAMPOLINE_SIZE];
+ಬಾಹ್ಯ ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ ffi_csky_trampoline[TRAMPOLINE_ಗಾತ್ರ];
 
 /*
  * Since there is no __clear_cache in libgcc in csky toolchain.
  * define ffi_csky_cacheflush in sysv.S.
  * void ffi_csky_cacheflush(uint32 start_addr, uint32 size, int cache)
  */
-#define CACHEFLUSH_IN_FFI 1
-#if CACHEFLUSH_IN_FFI
-extern void ffi_csky_cacheflush(unsigned char *__tramp, unsigned int k,
-  int i);
-#define FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
-({ unsigned char *__tramp = (unsigned char*)(TRAMP);                    \
-   unsigned int  __fun = (unsigned int)(FUN);                           \
-   unsigned int  __ctx = (unsigned int)(CTX);                           \
-   unsigned char *insns = (unsigned char *)(CTX);                       \
-   memcpy (__tramp, ffi_csky_trampoline, TRAMPOLINE_SIZE);              \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE] = __ctx;                  \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE + 4] = __fun;              \
-   ffi_csky_cacheflush(&__tramp[0], TRAMPOLINE_SIZE, 3); /* Clear data mapping.  */ \
-   ffi_csky_cacheflush(insns, TRAMPOLINE_SIZE, 3);                       \
+#ವ್ಯಾಖ್ಯಾನಿಸು CACHEFLUSH_ಒಳ_FFI 1
+#ಆದರೆ CACHEFLUSH_ಒಳ_FFI
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_csky_cacheflush(ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *__tramp, ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ k,
+  ಪೂರ್ಣಾಂಕ i);
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
+({ ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *__tramp = (ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ*)(TRAMP);                    \
+   ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ  __fun = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)(FUN);                           \
+   ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ  __ctx = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)(CTX);                           \
+   ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *insns = (ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *)(CTX);                       \
+   ಸ್ಮರಣೆ_ನಕಲು (__tramp, ffi_csky_trampoline, TRAMPOLINE_ಗಾತ್ರ);              \
+   *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ*) &__tramp[TRAMPOLINE_ಗಾತ್ರ] = __ctx;                  \
+   *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ*) &__tramp[TRAMPOLINE_ಗಾತ್ರ + 4] = __fun;              \
+   ffi_csky_cacheflush(&__tramp[0], TRAMPOLINE_ಗಾತ್ರ, 3); /* Clear data mapping.  */ \
+   ffi_csky_cacheflush(insns, TRAMPOLINE_ಗಾತ್ರ, 3);                       \
                                                  /* Clear instruction   \
                                                     mapping.  */        \
  })
-#else
-#define FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
-({ unsigned char *__tramp = (unsigned char*)(TRAMP);                    \
-   unsigned int  __fun = (unsigned int)(FUN);                           \
-   unsigned int  __ctx = (unsigned int)(CTX);                           \
-   unsigned char *insns = (unsigned char *)(CTX);                       \
-   memcpy (__tramp, ffi_csky_trampoline, TRAMPOLINE_SIZE);              \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE] = __ctx;                  \
-   *(unsigned int*) &__tramp[TRAMPOLINE_SIZE + 4] = __fun;              \
-   __clear_cache((&__tramp[0]), (&__tramp[TRAMPOLINE_SIZE-1])); /* Clear data mapping.  */ \
-   __clear_cache(insns, insns + TRAMPOLINE_SIZE);                       \
+#ಇಲ್ಲದಿದ್ದರೆ
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_INIT_TRAMPOLINE(TRAMP,FUN,CTX)                              \
+({ ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *__tramp = (ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ*)(TRAMP);                    \
+   ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ  __fun = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)(FUN);                           \
+   ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ  __ctx = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)(CTX);                           \
+   ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *insns = (ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *)(CTX);                       \
+   ಸ್ಮರಣೆ_ನಕಲು (__tramp, ffi_csky_trampoline, TRAMPOLINE_ಗಾತ್ರ);              \
+   *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ*) &__tramp[TRAMPOLINE_ಗಾತ್ರ] = __ctx;                  \
+   *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ*) &__tramp[TRAMPOLINE_ಗಾತ್ರ + 4] = __fun;              \
+   __clear_cache((&__tramp[0]), (&__tramp[TRAMPOLINE_ಗಾತ್ರ-1])); /* Clear data mapping.  */ \
+   __clear_cache(insns, insns + TRAMPOLINE_ಗಾತ್ರ);                       \
                                                  /* Clear instruction   \
                                                     mapping.  */        \
  })
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* the cif must already be prep'ed */
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ* ಆವರಣ,
         ffi_cif* cif,
-        void (*fun)(ffi_cif*,void*,void**,void*),
-        void *user_data,
-        void *codeloc)
+        ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ಶೂನ್ಯ**,ಶೂನ್ಯ*),
+        ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+        ಶೂನ್ಯ *codeloc)
 {
-  void (*closure_func)(ffi_closure*) = NULL;
+  ಶೂನ್ಯ (*ಆವರಣ_func)(ffi_ಆವರಣ*) = ಖಾಲಿ;
 
-  if (cif->abi == FFI_SYSV)
-    closure_func = &ffi_closure_SYSV;
-  else
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi == FFI_SYSV)
+    ಆವರಣ_func = &ffi_ಆವರಣ_SYSV;
+  ಇಲ್ಲದಿದ್ದರೆ
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-  FFI_INIT_TRAMPOLINE (&closure->tramp[0], \
-         closure_func,  \
+  FFI_INIT_TRAMPOLINE (&ಆವರಣ->tramp[0], \
+         ಆವರಣ_func,  \
          codeloc);
 
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
+  ಆವರಣ->cif  = cif;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
+  ಆವರಣ->fun  = fun;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 

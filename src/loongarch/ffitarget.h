@@ -26,72 +26,72 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_H
-#error \
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_H
+#ದೋಷ \
   "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifndef __loongarch__
-#error \
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ __loongarch__
+#ದೋಷ \
   "libffi was configured for a LoongArch target but this does not appear to be a LoongArch compiler."
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifndef LIBFFI_ASM
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ ffi_sarg;
 
-typedef enum ffi_abi
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi
 {
-  FFI_FIRST_ABI = 0,
+  FFI_ಮೊದಲ_ABI = 0,
   FFI_LP64S,
   FFI_LP64F,
   FFI_LP64D,
   FFI_ILP32S,
   FFI_ILP32F,
   FFI_ILP32D,
-  FFI_LAST_ABI,
+  FFI_ಕೊನೆಯ_ABI,
 
-#if __loongarch_grlen == 64
-  #if defined(__loongarch_soft_float)
+#ಆದರೆ __loongarch_grlen == 64
+  #ಆದರೆ defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_LP64S
-  #elif defined(__loongarch_single_float)
+  #ಅಥವಾಆದರೆ defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_LP64F
-  #elif defined(__loongarch_double_float)
+  #ಅಥವಾಆದರೆ defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_LP64D
-  #else
-    #error unsupported LoongArch floating-point ABI
-  #endif
-#elif __loongarch_grlen == 32
-  #if defined(__loongarch_soft_float)
+  #ಇಲ್ಲದಿದ್ದರೆ
+    #ದೋಷ unsupported LoongArch floating-ಬಿಂದು ABI
+  #ಆದರೆ_ಅಂತ್ಯ
+#ಅಥವಾಆದರೆ __loongarch_grlen == 32
+  #ಆದರೆ defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_ILP32S
-  #elif defined(__loongarch_single_float)
+  #ಅಥವಾಆದರೆ defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_ILP32F
-  #elif defined(__loongarch_double_float)
+  #ಅಥವಾಆದರೆ defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_ILP32D
-  #else
-    #error unsupported LoongArch floating-point ABI
-  #endif
-#else
-  #error unsupported LoongArch base architecture
-#endif
+  #ಇಲ್ಲದಿದ್ದರೆ
+    #ದೋಷ unsupported LoongArch floating-ಬಿಂದು ABI
+  #ಆದರೆ_ಅಂತ್ಯ
+#ಇಲ್ಲದಿದ್ದರೆ
+  #ದೋಷ unsupported LoongArch ತಳ architecture
+#ಆದರೆ_ಅಂತ್ಯ
 } ffi_abi;
 
-#endif /* LIBFFI_ASM */
+#ಆದರೆ_ಅಂತ್ಯ /* LIBFFI_ASM */
 
-#define FFI_TARGET_HAS_INT128
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
-#define FFI_EXTRA_CIF_FIELDS \
-  unsigned loongarch_nfixedargs; \
-  unsigned loongarch_unused
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#endif
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_GO_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ 24
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_NATIVE_RAW_API 0
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_EXTRA_CIF_FIELDS \
+  ಚಿಹ್ನೆರಹಿತ loongarch_nfixedargs; \
+  ಚಿಹ್ನೆರಹಿತ loongarch_ಬಳಸದ
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_SPECIFIC_VARIADIC
+#ಆದರೆ_ಅಂತ್ಯ

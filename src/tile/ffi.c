@@ -24,256 +24,256 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <arch/abi.h>
-#include <arch/icache.h>
-#include <arch/opcode.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
+#ಅನ್ತರ್ಭಾವ <arch/abi.h>
+#ಅನ್ತರ್ಭಾವ <arch/icache.h>
+#ಅನ್ತರ್ಭಾವ <arch/opcode.h>
 
 
 /* The first 10 registers are used to pass arguments and return values. */
-#define NUM_ARG_REGS 10
+#ವ್ಯಾಖ್ಯಾನಿಸು ಅಂಕೆ_ARG_REGS 10
 
 /* Performs a raw function call with the given NUM_ARG_REGS register arguments
    and the specified additional stack arguments (if any). */
-extern void ffi_call_tile(ffi_sarg reg_args[NUM_ARG_REGS],
-                          const ffi_sarg *stack_args,
-                          size_t stack_args_bytes,
-                          void (*fnaddr)(void))
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_tile(ffi_sarg reg_ವಾದಗಳು[ಅಂಕೆ_ARG_REGS],
+                          ಸ್ಥಿರಾಂಕ ffi_sarg *ರಾಶಿ_ವಾದಗಳು,
+                          size_t ರಾಶಿ_ವಾದಗಳು_ಬೈಟುಗಳು,
+                          ಶೂನ್ಯ (*fnaddr)(ಶೂನ್ಯ))
   FFI_HIDDEN;
 
 /* This handles the raw call from the closure stub, cleaning up the
    parameters and delegating to ffi_closure_tile_inner. */
-extern void ffi_closure_tile(void) FFI_HIDDEN;
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_ಆವರಣ_tile(ಶೂನ್ಯ) FFI_HIDDEN;
 
 
-ffi_status
+ffi_ಸ್ಥಿತಿ
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* We always allocate room for all registers. Even if we don't
      use them as parameters, they get returned in the same array
      as struct return values so we need to make room. */
-  if (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
-    cif->bytes = NUM_ARG_REGS * FFI_SIZEOF_ARG;
+  ಆದರೆ (cif->ಬೈಟುಗಳು < ಅಂಕೆ_ARG_REGS * FFI_SIZEOF_ARG)
+    cif->ಬೈಟುಗಳು = ಅಂಕೆ_ARG_REGS * FFI_SIZEOF_ARG;
 
-  if (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 > ಅಂಕೆ_ARG_REGS * FFI_SIZEOF_ARG)
     cif->flags = FFI_TYPE_STRUCT;
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
     cif->flags = FFI_TYPE_INT;
 
   /* Nothing to do. */
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 
-static long
-assign_to_ffi_arg(ffi_sarg *out, void *in, const ffi_type *type,
-                  int write_to_reg)
+ಸ್ಥಿರ ದೀರ್ಘ
+ನಿಯೋಜಿಸು_ಗಮ್ಯ_ffi_arg(ffi_sarg *ಹೊರಹೋಗು, ಶೂನ್ಯ *ಒಳ, ಸ್ಥಿರಾಂಕ ffi_type *type,
+                  ಪೂರ್ಣಾಂಕ write_ಗಮ್ಯ_reg)
 {
-  switch (type->type)
+  ಆಯ್ಕೆ (type->type)
     {
-    case FFI_TYPE_SINT8:
-      *out = *(SINT8 *)in;
-      return 1;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+      *ಹೊರಹೋಗು = *(SINT8 *)ಒಳ;
+      ಹಿಂತಿರುಗಿ 1;
 
-    case FFI_TYPE_UINT8:
-      *out = *(UINT8 *)in;
-      return 1;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+      *ಹೊರಹೋಗು = *(UINT8 *)ಒಳ;
+      ಹಿಂತಿರುಗಿ 1;
 
-    case FFI_TYPE_SINT16:
-      *out = *(SINT16 *)in;
-      return 1;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+      *ಹೊರಹೋಗು = *(SINT16 *)ಒಳ;
+      ಹಿಂತಿರುಗಿ 1;
 
-    case FFI_TYPE_UINT16:
-      *out = *(UINT16 *)in;
-      return 1;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+      *ಹೊರಹೋಗು = *(UINT16 *)ಒಳ;
+      ಹಿಂತಿರುಗಿ 1;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-#ifndef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
+    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ __LP64__
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+#ಆದರೆ_ಅಂತ್ಯ
       /* Note that even unsigned 32-bit quantities are sign extended
          on tilegx when stored in a register.  */
-      *out = *(SINT32 *)in;
-      return 1;
+      *ಹೊರಹೋಗು = *(SINT32 *)ಒಳ;
+      ಹಿಂತಿರುಗಿ 1;
 
-    case FFI_TYPE_FLOAT:
-#ifdef __tilegx__
-      if (write_to_reg)
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __tilegx__
+      ಆದರೆ (write_ಗಮ್ಯ_reg)
         {
           /* Properly sign extend the value.  */
-          union { float f; SINT32 s32; } val;
-          val.f = *(float *)in;
-          *out = val.s32;
+          ಒಕ್ಕೂಟ { ದಶಮಾಂಶ f; SINT32 s32; } val;
+          val.f = *(ದಶಮಾಂಶ *)ಒಳ;
+          *ಹೊರಹೋಗು = val.s32;
         }
-      else
-#endif
+      ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
         {
-          *(float *)out = *(float *)in;
+          *(ದಶಮಾಂಶ *)ಹೊರಹೋಗು = *(ದಶಮಾಂಶ *)ಒಳ;
         }
-      return 1;
+      ಹಿಂತಿರುಗಿ 1;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
-#ifdef __LP64__
-    case FFI_TYPE_POINTER:
-#endif
-      *(UINT64 *)out = *(UINT64 *)in;
-      return sizeof(UINT64) / FFI_SIZEOF_ARG;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __LP64__
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+#ಆದರೆ_ಅಂತ್ಯ
+      *(UINT64 *)ಹೊರಹೋಗು = *(UINT64 *)ಒಳ;
+      ಹಿಂತಿರುಗಿ ಗಾತ್ರ(UINT64) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_STRUCT:
-      memcpy(out, in, type->size);
-      return (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+      ಸ್ಮರಣೆ_ನಕಲು(ಹೊರಹೋಗು, ಒಳ, type->ಗಾತ್ರ_2);
+      ಹಿಂತಿರುಗಿ (type->ಗಾತ್ರ_2 + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_VOID:
+    ಸ್ಥಿತಿ FFI_TYPE_VOID:
       /* Must be a return type. Nothing to do. */
-      return 0;
+      ಹಿಂತಿರುಗಿ 0;
 
-    default:
+    ಪೂರ್ವನಿಯೋಜಿತ:
       FFI_ASSERT(0);
-      return -1;
+      ಹಿಂತಿರುಗಿ -1;
     }
 }
 
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ಶೂನ್ಯ
+ffi_call(ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
-  ffi_sarg * const arg_mem = alloca(cif->bytes);
-  ffi_sarg * const reg_args = arg_mem;
-  ffi_sarg * const stack_args = &reg_args[NUM_ARG_REGS];
+  ffi_sarg * ಸ್ಥಿರಾಂಕ arg_mem = alloca(cif->ಬೈಟುಗಳು);
+  ffi_sarg * ಸ್ಥಿರಾಂಕ reg_ವಾದಗಳು = arg_mem;
+  ffi_sarg * ಸ್ಥಿರಾಂಕ ರಾಶಿ_ವಾದಗಳು = &reg_ವಾದಗಳು[ಅಂಕೆ_ARG_REGS];
   ffi_sarg *argp = arg_mem;
-  ffi_type ** const arg_types = cif->arg_types;
-  const long num_args = cif->nargs;
-  long i;
+  ffi_type ** ಸ್ಥಿರಾಂಕ arg_types = cif->arg_types;
+  ಸ್ಥಿರಾಂಕ ದೀರ್ಘ ಅಂಕೆ_ವಾದಗಳು = cif->nargs;
+  ದೀರ್ಘ i;
 
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ಆದರೆ (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Pass a hidden pointer to the return value. We make sure there
          is scratch space for the callee to store the return value even if
          our caller doesn't care about it. */
-      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->size));
+      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->ಗಾತ್ರ_2));
 
       /* No more work needed to return anything. */
-      rvalue = NULL;
+      rvalue = ಖಾಲಿ;
     }
 
-  for (i = 0; i < num_args; i++)
+  ಗಾಗಿ (i = 0; i < ಅಂಕೆ_ವಾದಗಳು; i++)
     {
       ffi_type *type = arg_types[i];
-      void * const arg_in = avalue[i];
-      ptrdiff_t arg_word = argp - arg_mem;
+      ಶೂನ್ಯ * ಸ್ಥಿರಾಂಕ arg_ಒಳ = avalue[i];
+      ptrdiff_t arg_ಶಬ್ದ = argp - arg_mem;
 
-#ifndef __tilegx__
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      ದೀರ್ಘ align = arg_ಶಬ್ದ & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
-      arg_word += align;
-#endif
+      arg_ಶಬ್ದ += align;
+#ಆದರೆ_ಅಂತ್ಯ
 
-      if (type->type == FFI_TYPE_STRUCT)
+      ಆದರೆ (type->type == FFI_TYPE_STRUCT)
         {
-          const size_t arg_size_in_words =
-            (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+          ಸ್ಥಿರಾಂಕ size_t arg_ಗಾತ್ರ_ಒಳ_ಪದಗಳು =
+            (type->ಗಾತ್ರ_2 + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-          if (arg_word < NUM_ARG_REGS &&
-              arg_word + arg_size_in_words > NUM_ARG_REGS)
+          ಆದರೆ (arg_ಶಬ್ದ < ಅಂಕೆ_ARG_REGS &&
+              arg_ಶಬ್ದ + arg_ಗಾತ್ರ_ಒಳ_ಪದಗಳು > ಅಂಕೆ_ARG_REGS)
             {
               /* Args are not allowed to span registers and the stack. */
-              argp = stack_args;
+              argp = ರಾಶಿ_ವಾದಗಳು;
             }
 
-          memcpy(argp, arg_in, type->size);
-          argp += arg_size_in_words;
+          ಸ್ಮರಣೆ_ನಕಲು(argp, arg_ಒಳ, type->ಗಾತ್ರ_2);
+          argp += arg_ಗಾತ್ರ_ಒಳ_ಪದಗಳು;
         }
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
         {
-          argp += assign_to_ffi_arg(argp, arg_in, arg_types[i], 1);
+          argp += ನಿಯೋಜಿಸು_ಗಮ್ಯ_ffi_arg(argp, arg_ಒಳ, arg_types[i], 1);
         }
     }
 
   /* Actually do the call. */
-  ffi_call_tile(reg_args, stack_args,
-                cif->bytes - (NUM_ARG_REGS * FFI_SIZEOF_ARG), fn);
+  ffi_call_tile(reg_ವಾದಗಳು, ರಾಶಿ_ವಾದಗಳು,
+                cif->ಬೈಟುಗಳು - (ಅಂಕೆ_ARG_REGS * FFI_SIZEOF_ARG), fn);
 
-  if (rvalue != NULL)
-    assign_to_ffi_arg(rvalue, reg_args, cif->rtype, 0);
+  ಆದರೆ (rvalue != ಖಾಲಿ)
+    ನಿಯೋಜಿಸು_ಗಮ್ಯ_ffi_arg(rvalue, reg_ವಾದಗಳು, cif->rtype, 0);
 }
 
 
 /* Template code for closure. */
-extern const UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
+ಬಾಹ್ಯ ಸ್ಥಿರಾಂಕ UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
 
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ *ಆವರಣ,
                       ffi_cif *cif,
-                      void (*fun)(ffi_cif*, void*, void**, void*),
-                      void *user_data,
-                      void *codeloc)
+                      ಶೂನ್ಯ (*fun)(ffi_cif*, ಶೂನ್ಯ*, ಶೂನ್ಯ**, ಶೂನ್ಯ*),
+                      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+                      ಶೂನ್ಯ *codeloc)
 {
-#ifdef __tilegx__
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __tilegx__
   /* TILE-Gx */
   SINT64 c;
   SINT64 h;
-  int s;
-  UINT64 *out;
+  ಪೂರ್ಣಾಂಕ s;
+  UINT64 *ಹೊರಹೋಗು;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi != FFI_UNIX)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-  out = (UINT64 *)closure->tramp;
+  ಹೊರಹೋಗು = (UINT64 *)ಆವರಣ->tramp;
 
-  c = (intptr_t)closure;
-  h = (intptr_t)ffi_closure_tile;
+  c = (intptr_t)ಆವರಣ;
+  h = (intptr_t)ffi_ಆವರಣ_tile;
   s = 0;
 
   /* Find the smallest shift count that doesn't lose information
      (i.e. no need to explicitly insert high bits of the address that
      are just the sign extension of the low bits). */
-  while ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
+  ಆಗ ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
     s += 16;
 
-#define OPS(a, b, shift) \
+#ವ್ಯಾಖ್ಯಾನಿಸು OPS(a, b, shift) \
   (create_Imm16_X0((a) >> (shift)) | create_Imm16_X1((b) >> (shift)))
 
   /* Emit the moveli. */
-  *out++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
-  for (s -= 16; s >= 0; s -= 16)
-    *out++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
+  *ಹೊರಹೋಗು++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
+  ಗಾಗಿ (s -= 16; s >= 0; s -= 16)
+    *ಹೊರಹೋಗು++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
 
-#undef OPS
+#ವ್ಯಾಖ್ಯಾನ_ರದ್ದು OPS
 
-  *out++ = ffi_template_tramp_tile[2];
+  *ಹೊರಹೋಗು++ = ffi_template_tramp_tile[2];
 
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
   /* TILEPro */
-  UINT64 *out;
+  UINT64 *ಹೊರಹೋಗು;
   intptr_t delta;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi != FFI_UNIX)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-  out = (UINT64 *)closure->tramp;
-  delta = (intptr_t)ffi_closure_tile - (intptr_t)codeloc;
+  ಹೊರಹೋಗು = (UINT64 *)ಆವರಣ->tramp;
+  delta = (intptr_t)ffi_ಆವರಣ_tile - (intptr_t)codeloc;
 
-  *out++ = ffi_template_tramp_tile[0] | create_JOffLong_X1(delta >> 3);
-#endif
+  *ಹೊರಹೋಗು++ = ffi_template_tramp_tile[0] | create_JOffLong_X1(delta >> 3);
+#ಆದರೆ_ಅಂತ್ಯ
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
 
-  invalidate_icache(closure->tramp, (char *)out - closure->tramp,
+  invalidate_icache(ಆವರಣ->tramp, (ಅಕ್ಷರ *)ಹೊರಹೋಗು - ಆವರಣ->tramp,
                     getpagesize());
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 
@@ -281,75 +281,75 @@ ffi_prep_closure_loc (ffi_closure *closure,
    all of the work. On entry reg_args[0] holds the values the registers
    had when the closure was invoked. On return reg_args[1] holds the register
    values to be returned to the caller (many of which may be garbage). */
-void FFI_HIDDEN
-ffi_closure_tile_inner(ffi_closure *closure,
-                       ffi_sarg reg_args[2][NUM_ARG_REGS],
-                       ffi_sarg *stack_args)
+ಶೂನ್ಯ FFI_HIDDEN
+ffi_ಆವರಣ_tile_inner(ffi_ಆವರಣ *ಆವರಣ,
+                       ffi_sarg reg_ವಾದಗಳು[2][ಅಂಕೆ_ARG_REGS],
+                       ffi_sarg *ರಾಶಿ_ವಾದಗಳು)
 {
-  ffi_cif * const cif = closure->cif;
-  void ** const avalue = alloca(cif->nargs * sizeof(void *));
-  void *rvalue;
-  ffi_type ** const arg_types = cif->arg_types;
-  ffi_sarg * const reg_args_in = reg_args[0];
-  ffi_sarg * const reg_args_out = reg_args[1];
+  ffi_cif * ಸ್ಥಿರಾಂಕ cif = ಆವರಣ->cif;
+  ಶೂನ್ಯ ** ಸ್ಥಿರಾಂಕ avalue = alloca(cif->nargs * ಗಾತ್ರ(ಶೂನ್ಯ *));
+  ಶೂನ್ಯ *rvalue;
+  ffi_type ** ಸ್ಥಿರಾಂಕ arg_types = cif->arg_types;
+  ffi_sarg * ಸ್ಥಿರಾಂಕ reg_ವಾದಗಳು_ಒಳ = reg_ವಾದಗಳು[0];
+  ffi_sarg * ಸ್ಥಿರಾಂಕ reg_ವಾದಗಳು_ಹೊರಹೋಗು = reg_ವಾದಗಳು[1];
   ffi_sarg * argp;
-  long i, arg_word, nargs = cif->nargs;
+  ದೀರ್ಘ i, arg_ಶಬ್ದ, nargs = cif->nargs;
   /* Use a union to guarantee proper alignment for double. */
-  union { ffi_sarg arg[NUM_ARG_REGS]; double d; UINT64 u64; } closure_ret;
+  ಒಕ್ಕೂಟ { ffi_sarg arg[ಅಂಕೆ_ARG_REGS]; ದ್ವಿಗುಣ d; UINT64 u64; } ಆವರಣ_ret;
 
   /* Start out reading register arguments. */
-  argp = reg_args_in;
+  argp = reg_ವಾದಗಳು_ಒಳ;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ಆದರೆ (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Return by reference via hidden pointer. */
-      rvalue = (void *)(intptr_t)*argp++;
-      arg_word = 1;
+      rvalue = (ಶೂನ್ಯ *)(intptr_t)*argp++;
+      arg_ಶಬ್ದ = 1;
     }
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
     {
       /* Return the value in registers. */
-      rvalue = &closure_ret;
-      arg_word = 0;
+      rvalue = &ಆವರಣ_ret;
+      arg_ಶಬ್ದ = 0;
     }
 
   /* Grab the addresses of the arguments. */
-  for (i = 0; i < nargs; i++)
+  ಗಾಗಿ (i = 0; i < nargs; i++)
     {
-      ffi_type * const type = arg_types[i];
-      const size_t arg_size_in_words =
-        (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+      ffi_type * ಸ್ಥಿರಾಂಕ type = arg_types[i];
+      ಸ್ಥಿರಾಂಕ size_t arg_ಗಾತ್ರ_ಒಳ_ಪದಗಳು =
+        (type->ಗಾತ್ರ_2 + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-#ifndef __tilegx__
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ __tilegx__
       /* Doubleword-aligned values are always in an even-number register
          pair, or doubleword-aligned stack slot if out of registers. */
-      long align = arg_word & (type->alignment > FFI_SIZEOF_ARG);
+      ದೀರ್ಘ align = arg_ಶಬ್ದ & (type->alignment > FFI_SIZEOF_ARG);
       argp += align;
-      arg_word += align;
-#endif
+      arg_ಶಬ್ದ += align;
+#ಆದರೆ_ಅಂತ್ಯ
 
-      if (arg_word == NUM_ARG_REGS ||
-          (arg_word < NUM_ARG_REGS &&
-           arg_word + arg_size_in_words > NUM_ARG_REGS))
+      ಆದರೆ (arg_ಶಬ್ದ == ಅಂಕೆ_ARG_REGS ||
+          (arg_ಶಬ್ದ < ಅಂಕೆ_ARG_REGS &&
+           arg_ಶಬ್ದ + arg_ಗಾತ್ರ_ಒಳ_ಪದಗಳು > ಅಂಕೆ_ARG_REGS))
         {
           /* Switch to reading arguments from the stack. */
-          argp = stack_args;
-          arg_word = NUM_ARG_REGS;
+          argp = ರಾಶಿ_ವಾದಗಳು;
+          arg_ಶಬ್ದ = ಅಂಕೆ_ARG_REGS;
         }
 
       avalue[i] = argp;
-      argp += arg_size_in_words;
-      arg_word += arg_size_in_words;
+      argp += arg_ಗಾತ್ರ_ಒಳ_ಪದಗಳು;
+      arg_ಶಬ್ದ += arg_ಗಾತ್ರ_ಒಳ_ಪದಗಳು;
     }
 
   /* Invoke the closure.  */
-  closure->fun(cif, rvalue, avalue, closure->user_data);
+  ಆವರಣ->fun(cif, rvalue, avalue, ಆವರಣ->user_ದತ್ತಾಂಶ);
 
-  if (cif->flags != FFI_TYPE_STRUCT)
+  ಆದರೆ (cif->flags != FFI_TYPE_STRUCT)
     {
       /* Canonicalize for register representation. */
-      assign_to_ffi_arg(reg_args_out, &closure_ret, cif->rtype, 1);
+      ನಿಯೋಜಿಸು_ಗಮ್ಯ_ffi_arg(reg_ವಾದಗಳು_ಹೊರಹೋಗು, &ಆವರಣ_ret, cif->rtype, 1);
     }
 }

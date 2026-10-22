@@ -25,38 +25,38 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_H
+#ದೋಷ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ASM
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ          ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi {
+  FFI_ಮೊದಲ_ABI = 0,
   FFI_EABI,
-  FFI_LAST_ABI,
+  FFI_ಕೊನೆಯ_ABI,
   FFI_DEFAULT_ABI = FFI_EABI
 } ffi_abi;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_NATIVE_RAW_API 0
 
-#ifdef __FRV_FDPIC__
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __FRV_FDPIC__
 /* Trampolines are 8 4-byte instructions long.  */
-#define FFI_TRAMPOLINE_SIZE (8*4)
-#else
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ (8*4)
+#ಇಲ್ಲದಿದ್ದರೆ
 /* Trampolines are 5 4-byte instructions long.  */
-#define FFI_TRAMPOLINE_SIZE (5*4)
-#endif
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ (5*4)
+#ಆದರೆ_ಅಂತ್ಯ
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ

@@ -19,85 +19,85 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_H
+#ದೋಷ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifndef LIBFFI_ASM
-#ifdef __ILP32__
-#define FFI_SIZEOF_ARG 8
-#define FFI_SIZEOF_JAVA_RAW  4
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#elif defined(_WIN32)
-#define FFI_SIZEOF_ARG 8
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#else
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ASM
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __ILP32__
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_SIZEOF_ARG 8
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_SIZEOF_JAVA_RAW  4
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ದೀರ್ಘ ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ ದೀರ್ಘ ffi_sarg;
+#ಅಥವಾಆದರೆ defined(_WIN32)
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_SIZEOF_ARG 8
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ದೀರ್ಘ ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ ದೀರ್ಘ ffi_sarg;
+#ಇಲ್ಲದಿದ್ದರೆ
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ ffi_sarg;
+#ಆದರೆ_ಅಂತ್ಯ
 
-typedef enum ffi_abi
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi
   {
-    FFI_FIRST_ABI = 0,
+    FFI_ಮೊದಲ_ABI = 0,
     FFI_SYSV,
     FFI_WIN64,
-    FFI_LAST_ABI,
-#if defined(_WIN32)
+    FFI_ಕೊನೆಯ_ABI,
+#ಆದರೆ defined(_WIN32)
     FFI_DEFAULT_ABI = FFI_WIN64
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
     FFI_DEFAULT_ABI = FFI_SYSV
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
   } ffi_abi;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#ಆದರೆ defined (FFI_EXEC_TRAMPOLINE_ಕೋಷ್ಟಕ) && FFI_EXEC_TRAMPOLINE_ಕೋಷ್ಟಕ
 
-#ifdef __MACH__
-#define FFI_TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET 16
-#else
-#error "No trampoline table implementation"
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __MACH__
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ 16
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಆವರಣ_ಸ್ಥಾನಾಂತರ 16
+#ಇಲ್ಲದಿದ್ದರೆ
+#ದೋಷ "No trampoline table implementation"
+#ಆದರೆ_ಅಂತ್ಯ
 
-#else
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
-#endif
+#ಇಲ್ಲದಿದ್ದರೆ
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ 24
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಆವರಣ_ಸ್ಥಾನಾಂತರ FFI_TRAMPOLINE_ಗಾತ್ರ
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifdef _WIN32
-#define FFI_EXTRA_CIF_FIELDS unsigned is_variadic
-#endif
-#define FFI_TARGET_SPECIFIC_VARIADIC
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ _WIN32
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_EXTRA_CIF_FIELDS ಚಿಹ್ನೆರಹಿತ is_variadic
+#ಆದರೆ_ಅಂತ್ಯ
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_SPECIFIC_VARIADIC
 
 /* ---- Internal ---- */
 
-#if defined (__APPLE__)
-#define FFI_EXTRA_CIF_FIELDS unsigned aarch64_nfixedargs
-#elif !defined(_WIN32) && !defined(__ANDROID__)
+#ಆದರೆ defined (__APPLE__)
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_EXTRA_CIF_FIELDS ಚಿಹ್ನೆರಹಿತ aarch64_nfixedargs
+#ಅಥವಾಆದರೆ !defined(_WIN32) && !defined(__ANDROID__)
 /* iOS, Windows and Android reserve x18 for the system.  Disable Go closures until
    a new static chain is chosen.  */
-#define FFI_GO_CLOSURES 1
-#endif
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_GO_CLOSURES 1
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifndef _WIN32
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ _WIN32
 /* No complex type on Windows */
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_HAS_COMPLEX_TYPE
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* AAPCS64 passes 8- and 16-byte vectors in V/Q registers and homogeneous
    vector aggregates in consecutive V/Q registers; see is_vfp_type.  */
-#define FFI_TARGET_HAS_VECTOR_TYPE
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_HAS_ಸದಿಶ_TYPE
 
-#define FFI_TARGET_HAS_INT128 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_HAS_INT128 1
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ

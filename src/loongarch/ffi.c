@@ -26,28 +26,28 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <tramp.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <tramp.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
 
-#if defined(__loongarch_soft_float)
+#ಆದರೆ defined(__loongarch_soft_float)
 # define ABI_FRLEN 0
-#elif defined(__loongarch_single_float)
+#ಅಥವಾಆದರೆ defined(__loongarch_single_float)
 # define ABI_FRLEN 32
-# define ABI_FLOAT float
-#elif defined(__loongarch_double_float)
+# define ABI_FLOAT ದಶಮಾಂಶ
+#ಅಥವಾಆದರೆ defined(__loongarch_double_float)
 # define ABI_FRLEN 64
-# define ABI_FLOAT double
-#else
-#error unsupported LoongArch floating-point ABI
-#endif
+# define ABI_FLOAT ದ್ವಿಗುಣ
+#ಇಲ್ಲದಿದ್ದರೆ
+#ದೋಷ unsupported LoongArch floating-ಬಿಂದು ABI
+#ಆದರೆ_ಅಂತ್ಯ
 
-#define NARGREG 8
-#define STKALIGN 16
-#define MAXCOPYARG (2 * sizeof (double))
+#ವ್ಯಾಖ್ಯಾನಿಸು NARGREG 8
+#ವ್ಯಾಖ್ಯಾನಿಸು STKALIGN 16
+#ವ್ಯಾಖ್ಯಾನಿಸು MAXCOPYARG (2 * ಗಾತ್ರ (ದ್ವಿಗುಣ))
 
 /* call_context registers
    - 8 floating point parameter/result registers.
@@ -57,482 +57,482 @@
      - frame register
      - return register
 */
-typedef struct call_context
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ರಚನೆ call_context
 {
-#if !defined(__loongarch_soft_float)
+#ಆದರೆ !defined(__loongarch_soft_float)
   ABI_FLOAT fa[8];
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
   size_t a[10];
 } call_context;
 
-typedef struct call_builder
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ರಚನೆ call_builder
 {
   call_context *aregs;
-  int used_integer;
-  int used_float;
-  size_t *used_stack;	    /* Stack pointer.  */
-  size_t *stack;	    /* Place for arguments pass by reference.  */
-  size_t next_struct_area;  /* Offset for arguments pass by reference.  */
+  ಪೂರ್ಣಾಂಕ ಬಳಸಿದ_integer;
+  ಪೂರ್ಣಾಂಕ ಬಳಸಿದ_float;
+  size_t *ಬಳಸಿದ_ರಾಶಿ;	    /* Stack pointer.  */
+  size_t *ರಾಶಿ;	    /* Place for arguments pass by reference.  */
+  size_t ಮುಂದಿನ_struct_area;  /* Offset for arguments pass by reference.  */
 } call_builder;
 
 /* Integer (not pointer) less than ABI GRLEN.  */
 /* FFI_TYPE_INT does not appear to be used.  */
-#if __SIZEOF_POINTER__ == 8
+#ಆದರೆ __SIZEOF_POINTER__ == 8
 # define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 # define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#if ABI_FRLEN
-typedef struct float_struct_info
+#ಆದರೆ ABI_FRLEN
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ರಚನೆ float_struct_info
 {
-  char as_elements;
-  char type1;
-  char offset2;
-  char type2;
+  ಅಕ್ಷರ as_elements;
+  ಅಕ್ಷರ type1;
+  ಅಕ್ಷರ offset2;
+  ಅಕ್ಷರ type2;
 } float_struct_info;
 
-#if ABI_FRLEN >= 64
+#ಆದರೆ ABI_FRLEN >= 64
 # define IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 # define IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-static ffi_type **
-flatten_struct (ffi_type *in, ffi_type **out, ffi_type **out_end)
+ಸ್ಥಿರ ffi_type **
+flatten_struct (ffi_type *ಒಳ, ffi_type **ಹೊರಹೋಗು, ffi_type **ಹೊರಹೋಗು_ಕೊನೆ)
 {
-  int i;
+  ಪೂರ್ಣಾಂಕ i;
 
-  if (out == out_end)
-    return out;
-  if (in->type != FFI_TYPE_STRUCT)
-    *(out++) = in;
-  else
-    for (i = 0; in->elements[i]; i++)
-      out = flatten_struct (in->elements[i], out, out_end);
-  return out;
+  ಆದರೆ (ಹೊರಹೋಗು == ಹೊರಹೋಗು_ಕೊನೆ)
+    ಹಿಂತಿರುಗಿ ಹೊರಹೋಗು;
+  ಆದರೆ (ಒಳ->type != FFI_TYPE_STRUCT)
+    *(ಹೊರಹೋಗು++) = ಒಳ;
+  ಇಲ್ಲದಿದ್ದರೆ
+    ಗಾಗಿ (i = 0; ಒಳ->elements[i]; i++)
+      ಹೊರಹೋಗು = flatten_struct (ಒಳ->elements[i], ಹೊರಹೋಗು, ಹೊರಹೋಗು_ಕೊನೆ);
+  ಹಿಂತಿರುಗಿ ಹೊರಹೋಗು;
 }
 
 /* Structs with at most two fields after flattening, one of which is of
    floating point type, are passed in multiple registers if sufficient
    registers are available.  */
-static float_struct_info
-struct_passed_as_elements (call_builder *cb, ffi_type *top)
+ಸ್ಥಿರ float_struct_info
+struct_passed_as_elements (call_builder *cb, ffi_type *ತುದಿ)
 {
   float_struct_info ret = {0, 0, 0, 0};
   ffi_type *fields[3];
-  int num_floats, num_ints;
-  int num_fields = flatten_struct (top, fields, fields + 3) - fields;
+  ಪೂರ್ಣಾಂಕ ಅಂಕೆ_floats, ಅಂಕೆ_ints;
+  ಪೂರ್ಣಾಂಕ ಅಂಕೆ_fields = flatten_struct (ತುದಿ, fields, fields + 3) - fields;
 
-  if (num_fields == 1)
+  ಆದರೆ (ಅಂಕೆ_fields == 1)
     {
-      if (IS_FLOAT (fields[0]->type))
+      ಆದರೆ (IS_FLOAT (fields[0]->type))
 	{
 	  ret.as_elements = 1;
 	  ret.type1 = fields[0]->type;
 	}
     }
-  else if (num_fields == 2)
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಅಂಕೆ_fields == 2)
     {
-      num_floats = IS_FLOAT (fields[0]->type) + IS_FLOAT (fields[1]->type);
-      num_ints = IS_INT (fields[0]->type) + IS_INT (fields[1]->type);
-      if (num_floats == 0 || num_floats + num_ints != 2)
-	return ret;
-      if (cb->used_float + num_floats > NARGREG
-	  || cb->used_integer + (2 - num_floats) > NARGREG)
-	return ret;
-      if (!IS_FLOAT (fields[0]->type) && !IS_FLOAT (fields[1]->type))
-	return ret;
+      ಅಂಕೆ_floats = IS_FLOAT (fields[0]->type) + IS_FLOAT (fields[1]->type);
+      ಅಂಕೆ_ints = IS_INT (fields[0]->type) + IS_INT (fields[1]->type);
+      ಆದರೆ (ಅಂಕೆ_floats == 0 || ಅಂಕೆ_floats + ಅಂಕೆ_ints != 2)
+	ಹಿಂತಿರುಗಿ ret;
+      ಆದರೆ (cb->ಬಳಸಿದ_float + ಅಂಕೆ_floats > NARGREG
+	  || cb->ಬಳಸಿದ_integer + (2 - ಅಂಕೆ_floats) > NARGREG)
+	ಹಿಂತಿರುಗಿ ret;
+      ಆದರೆ (!IS_FLOAT (fields[0]->type) && !IS_FLOAT (fields[1]->type))
+	ಹಿಂತಿರುಗಿ ret;
 
       ret.type1 = fields[0]->type;
       ret.type2 = fields[1]->type;
-      ret.offset2 = FFI_ALIGN (fields[0]->size, fields[1]->alignment);
+      ret.offset2 = FFI_ALIGN (fields[0]->ಗಾತ್ರ_2, fields[1]->alignment);
       ret.as_elements = 1;
     }
-  return ret;
+  ಹಿಂತಿರುಗಿ ret;
 }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* Allocates a single register, float register, or GRLEN-sized stack slot to a
    datum.  */
-static void
-marshal_atom (call_builder *cb, int type, void *data)
+ಸ್ಥಿರ ಶೂನ್ಯ
+marshal_atom (call_builder *cb, ಪೂರ್ಣಾಂಕ type, ಶೂನ್ಯ *ದತ್ತಾಂಶ)
 {
-  size_t value = 0;
-  switch (type)
+  size_t ಮೌಲ್ಯ = 0;
+  ಆಯ್ಕೆ (type)
     {
-    case FFI_TYPE_UINT8:
-      value = *(uint8_t *) data;
-      break;
-    case FFI_TYPE_SINT8:
-      value = *(int8_t *) data;
-      break;
-    case FFI_TYPE_UINT16:
-      value = *(uint16_t *) data;
-      break;
-    case FFI_TYPE_SINT16:
-      value = *(int16_t *) data;
-      break;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+      ಮೌಲ್ಯ = *(uint8_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+      ಮೌಲ್ಯ = *(int8_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+      ಮೌಲ್ಯ = *(uint16_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+      ಮೌಲ್ಯ = *(int16_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
     /* 32-bit quantities are always sign-extended in the ABI.  */
-    case FFI_TYPE_UINT32:
-      value = *(int32_t *) data;
-      break;
-    case FFI_TYPE_SINT32:
-      value = *(int32_t *) data;
-      break;
-#if __SIZEOF_POINTER__ == 8
-    case FFI_TYPE_UINT64:
-      value = *(uint64_t *) data;
-      break;
-    case FFI_TYPE_SINT64:
-      value = *(int64_t *) data;
-      break;
-#endif
-    case FFI_TYPE_POINTER:
-      value = *(size_t *) data;
-      break;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+      ಮೌಲ್ಯ = *(int32_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+      ಮೌಲ್ಯ = *(int32_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
+#ಆದರೆ __SIZEOF_POINTER__ == 8
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+      ಮೌಲ್ಯ = *(uint64_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+      ಮೌಲ್ಯ = *(int64_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
+#ಆದರೆ_ಅಂತ್ಯ
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+      ಮೌಲ್ಯ = *(size_t *) ದತ್ತಾಂಶ;
+      ನಿಲ್ಲಿಸು;
 
-#if ABI_FRLEN >= 32
-    case FFI_TYPE_FLOAT:
-      *(float *)(cb->aregs->fa + cb->used_float++) = *(float *) data;
-      return;
-#endif
-#if ABI_FRLEN >= 64
-    case FFI_TYPE_DOUBLE:
-      (cb->aregs->fa[cb->used_float++]) = *(double *) data;
-      return;
-#endif
-    default:
+#ಆದರೆ ABI_FRLEN >= 32
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+      *(ದಶಮಾಂಶ *)(cb->aregs->fa + cb->ಬಳಸಿದ_float++) = *(ದಶಮಾಂಶ *) ದತ್ತಾಂಶ;
+      ಹಿಂತಿರುಗಿ;
+#ಆದರೆ_ಅಂತ್ಯ
+#ಆದರೆ ABI_FRLEN >= 64
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+      (cb->aregs->fa[cb->ಬಳಸಿದ_float++]) = *(ದ್ವಿಗುಣ *) ದತ್ತಾಂಶ;
+      ಹಿಂತಿರುಗಿ;
+#ಆದರೆ_ಅಂತ್ಯ
+    ಪೂರ್ವನಿಯೋಜಿತ:
       FFI_ASSERT (0);
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 
-  if (cb->used_integer == NARGREG)
-    *cb->used_stack++ = value;
-  else
-    cb->aregs->a[cb->used_integer++] = value;
+  ಆದರೆ (cb->ಬಳಸಿದ_integer == NARGREG)
+    *cb->ಬಳಸಿದ_ರಾಶಿ++ = ಮೌಲ್ಯ;
+  ಇಲ್ಲದಿದ್ದರೆ
+    cb->aregs->a[cb->ಬಳಸಿದ_integer++] = ಮೌಲ್ಯ;
 }
 
-static void
-unmarshal_atom (call_builder *cb, int type, void *data)
+ಸ್ಥಿರ ಶೂನ್ಯ
+unmarshal_atom (call_builder *cb, ಪೂರ್ಣಾಂಕ type, ಶೂನ್ಯ *ದತ್ತಾಂಶ)
 {
-  size_t value;
-  switch (type)
+  size_t ಮೌಲ್ಯ;
+  ಆಯ್ಕೆ (type)
     {
-#if ABI_FRLEN >= 32
-    case FFI_TYPE_FLOAT:
-      *(float *) data = *(float *)(cb->aregs->fa + cb->used_float++);
-      return;
-#endif
-#if ABI_FRLEN >= 64
-    case FFI_TYPE_DOUBLE:
-      *(double *) data = cb->aregs->fa[cb->used_float++];
-      return;
-#endif
+#ಆದರೆ ABI_FRLEN >= 32
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+      *(ದಶಮಾಂಶ *) ದತ್ತಾಂಶ = *(ದಶಮಾಂಶ *)(cb->aregs->fa + cb->ಬಳಸಿದ_float++);
+      ಹಿಂತಿರುಗಿ;
+#ಆದರೆ_ಅಂತ್ಯ
+#ಆದರೆ ABI_FRLEN >= 64
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+      *(ದ್ವಿಗುಣ *) ದತ್ತಾಂಶ = cb->aregs->fa[cb->ಬಳಸಿದ_float++];
+      ಹಿಂತಿರುಗಿ;
+#ಆದರೆ_ಅಂತ್ಯ
     }
 
-  if (cb->used_integer == NARGREG)
-    value = *cb->used_stack++;
-  else
-    value = cb->aregs->a[cb->used_integer++];
+  ಆದರೆ (cb->ಬಳಸಿದ_integer == NARGREG)
+    ಮೌಲ್ಯ = *cb->ಬಳಸಿದ_ರಾಶಿ++;
+  ಇಲ್ಲದಿದ್ದರೆ
+    ಮೌಲ್ಯ = cb->aregs->a[cb->ಬಳಸಿದ_integer++];
 
-  switch (type)
+  ಆಯ್ಕೆ (type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-#if __SIZEOF_POINTER__ == 8
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-#endif
-    case FFI_TYPE_POINTER:
-      *(ffi_arg *)data = value;
-      break;
-    default:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+#ಆದರೆ __SIZEOF_POINTER__ == 8
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+#ಆದರೆ_ಅಂತ್ಯ
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+      *(ffi_arg *)ದತ್ತಾಂಶ = ಮೌಲ್ಯ;
+      ನಿಲ್ಲಿಸು;
+    ಪೂರ್ವನಿಯೋಜಿತ:
       FFI_ASSERT (0);
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 }
 
 /* Allocate and copy a structure that is passed by value on the stack and
    return a pointer to it.  */
-static void *
-allocate_and_copy_struct_to_stack (call_builder *cb, void *data,
+ಸ್ಥಿರ ಶೂನ್ಯ *
+allocate_and_copy_struct_ಗಮ್ಯ_ರಾಶಿ (call_builder *cb, ಶೂನ್ಯ *ದತ್ತಾಂಶ,
 				   ffi_type *type)
 {
-  size_t dest = cb->next_struct_area - type->size;
+  size_t dest = cb->ಮುಂದಿನ_struct_area - type->ಗಾತ್ರ_2;
 
-  dest = FFI_ALIGN_DOWN (dest, type->alignment);
-  cb->next_struct_area = dest;
+  dest = FFI_ALIGN_ಕೆಳಕ್ಕೆ (dest, type->alignment);
+  cb->ಮುಂದಿನ_struct_area = dest;
 
-  return memcpy ((char *)cb->stack + dest, data, type->size);
+  ಹಿಂತಿರುಗಿ ಸ್ಮರಣೆ_ನಕಲು ((ಅಕ್ಷರ *)cb->ರಾಶಿ + dest, ದತ್ತಾಂಶ, type->ಗಾತ್ರ_2);
 }
 
 /* Adds an argument to a call, or a not by reference return value.  */
-static void
-marshal (call_builder *cb, ffi_type *type, int var, void *data)
+ಸ್ಥಿರ ಶೂನ್ಯ
+marshal (call_builder *cb, ffi_type *type, ಪೂರ್ಣಾಂಕ var, ಶೂನ್ಯ *ದತ್ತಾಂಶ)
 {
   size_t realign[2];
 
-#if ABI_FRLEN
-  if (!var && type->type == FFI_TYPE_STRUCT)
+#ಆದರೆ ABI_FRLEN
+  ಆದರೆ (!var && type->type == FFI_TYPE_STRUCT)
     {
       float_struct_info fsi = struct_passed_as_elements (cb, type);
-      if (fsi.as_elements)
+      ಆದರೆ (fsi.as_elements)
 	{
-	  marshal_atom (cb, fsi.type1, data);
-	  if (fsi.offset2)
-	    marshal_atom (cb, fsi.type2, ((char *) data) + fsi.offset2);
-	  return;
+	  marshal_atom (cb, fsi.type1, ದತ್ತಾಂಶ);
+	  ಆದರೆ (fsi.offset2)
+	    marshal_atom (cb, fsi.type2, ((ಅಕ್ಷರ *) ದತ್ತಾಂಶ) + fsi.offset2);
+	  ಹಿಂತಿರುಗಿ;
 	}
     }
 
-  if (!var && cb->used_float < NARGREG
+  ಆದರೆ (!var && cb->ಬಳಸಿದ_float < NARGREG
       && IS_FLOAT (type->type))
     {
-      marshal_atom (cb, type->type, data);
-      return;
+      marshal_atom (cb, type->type, ದತ್ತಾಂಶ);
+      ಹಿಂತಿರುಗಿ;
     }
 
-  double promoted;
-  if (var && type->type == FFI_TYPE_FLOAT)
+  ದ್ವಿಗುಣ promoted;
+  ಆದರೆ (var && type->type == FFI_TYPE_FLOAT)
     {
       /* C standard requires promoting float -> double for variable arg.  */
-      promoted = *(float *) data;
+      promoted = *(ದಶಮಾಂಶ *) ದತ್ತಾಂಶ;
       type = &ffi_type_double;
-      data = &promoted;
+      ದತ್ತಾಂಶ = &promoted;
     }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-  if (type->size > 2 * __SIZEOF_POINTER__)
+  ಆದರೆ (type->ಗಾತ್ರ_2 > 2 * __SIZEOF_POINTER__)
     /* Pass by reference.  */
     {
-      allocate_and_copy_struct_to_stack (cb, data, type);
-      data = (char *)cb->stack + cb->next_struct_area;
-      marshal_atom (cb, FFI_TYPE_POINTER, &data);
+      allocate_and_copy_struct_ಗಮ್ಯ_ರಾಶಿ (cb, ದತ್ತಾಂಶ, type);
+      ದತ್ತಾಂಶ = (ಅಕ್ಷರ *)cb->ರಾಶಿ + cb->ಮುಂದಿನ_struct_area;
+      marshal_atom (cb, FFI_TYPE_ಸೂಚಕ, &ದತ್ತಾಂಶ);
     }
-  else if (IS_INT (type->type) || type->type == FFI_TYPE_POINTER)
-    marshal_atom (cb, type->type, data);
-  else
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (IS_INT (type->type) || type->type == FFI_TYPE_ಸೂಚಕ)
+    marshal_atom (cb, type->type, ದತ್ತಾಂಶ);
+  ಇಲ್ಲದಿದ್ದರೆ
     {
       /* Overlong integers, soft-float floats, and structs without special
 	 float handling are treated identically from this point on.  */
 
       /* Variadics are aligned even in registers.  */
-      if (type->alignment > __SIZEOF_POINTER__)
+      ಆದರೆ (type->alignment > __SIZEOF_POINTER__)
 	{
-	  if (var)
-	    cb->used_integer = FFI_ALIGN (cb->used_integer, 2);
-	  cb->used_stack
-	    = (size_t *) FFI_ALIGN (cb->used_stack, 2 * __SIZEOF_POINTER__);
+	  ಆದರೆ (var)
+	    cb->ಬಳಸಿದ_integer = FFI_ALIGN (cb->ಬಳಸಿದ_integer, 2);
+	  cb->ಬಳಸಿದ_ರಾಶಿ
+	    = (size_t *) FFI_ALIGN (cb->ಬಳಸಿದ_ರಾಶಿ, 2 * __SIZEOF_POINTER__);
 	}
 
-      memcpy (realign, data, type->size);
-      if (type->size > 0)
-	marshal_atom (cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
-	marshal_atom (cb, FFI_TYPE_POINTER, realign + 1);
+      ಸ್ಮರಣೆ_ನಕಲು (realign, ದತ್ತಾಂಶ, type->ಗಾತ್ರ_2);
+      ಆದರೆ (type->ಗಾತ್ರ_2 > 0)
+	marshal_atom (cb, FFI_TYPE_ಸೂಚಕ, realign);
+      ಆದರೆ (type->ಗಾತ್ರ_2 > __SIZEOF_POINTER__)
+	marshal_atom (cb, FFI_TYPE_ಸೂಚಕ, realign + 1);
     }
 }
 
 /* For arguments passed by reference returns the pointer, otherwise the arg
    is copied (up to MAXCOPYARG bytes).  */
-static void *
-unmarshal (call_builder *cb, ffi_type *type, int var, void *data)
+ಸ್ಥಿರ ಶೂನ್ಯ *
+unmarshal (call_builder *cb, ffi_type *type, ಪೂರ್ಣಾಂಕ var, ಶೂನ್ಯ *ದತ್ತಾಂಶ)
 {
   size_t realign[2];
-  void *pointer;
+  ಶೂನ್ಯ *ಸೂಚಕ_2;
 
-#if ABI_FRLEN
-  if (!var && type->type == FFI_TYPE_STRUCT)
+#ಆದರೆ ABI_FRLEN
+  ಆದರೆ (!var && type->type == FFI_TYPE_STRUCT)
     {
       float_struct_info fsi = struct_passed_as_elements (cb, type);
-      if (fsi.as_elements)
+      ಆದರೆ (fsi.as_elements)
 	{
-	  unmarshal_atom (cb, fsi.type1, data);
-	  if (fsi.offset2)
-	    unmarshal_atom (cb, fsi.type2, ((char *) data) + fsi.offset2);
-	  return data;
+	  unmarshal_atom (cb, fsi.type1, ದತ್ತಾಂಶ);
+	  ಆದರೆ (fsi.offset2)
+	    unmarshal_atom (cb, fsi.type2, ((ಅಕ್ಷರ *) ದತ್ತಾಂಶ) + fsi.offset2);
+	  ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ;
 	}
     }
 
-  if (!var && cb->used_float < NARGREG
+  ಆದರೆ (!var && cb->ಬಳಸಿದ_float < NARGREG
       && IS_FLOAT (type->type))
     {
-      unmarshal_atom (cb, type->type, data);
-      return data;
+      unmarshal_atom (cb, type->type, ದತ್ತಾಂಶ);
+      ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ;
     }
 
-  if (var && type->type == FFI_TYPE_FLOAT)
+  ಆದರೆ (var && type->type == FFI_TYPE_FLOAT)
     {
-      int m = cb->used_integer;
-      void *promoted
-	= m < NARGREG ? cb->aregs->a + m : cb->used_stack + m - NARGREG + 1;
-      *(float *) promoted = *(double *) promoted;
+      ಪೂರ್ಣಾಂಕ m = cb->ಬಳಸಿದ_integer;
+      ಶೂನ್ಯ *promoted
+	= m < NARGREG ? cb->aregs->a + m : cb->ಬಳಸಿದ_ರಾಶಿ + m - NARGREG + 1;
+      *(ದಶಮಾಂಶ *) promoted = *(ದ್ವಿಗುಣ *) promoted;
     }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-  if (type->size > 2 * __SIZEOF_POINTER__)
+  ಆದರೆ (type->ಗಾತ್ರ_2 > 2 * __SIZEOF_POINTER__)
     {
       /* Pass by reference.  */
-      unmarshal_atom (cb, FFI_TYPE_POINTER, (char *) &pointer);
-      return pointer;
+      unmarshal_atom (cb, FFI_TYPE_ಸೂಚಕ, (ಅಕ್ಷರ *) &ಸೂಚಕ_2);
+      ಹಿಂತಿರುಗಿ ಸೂಚಕ_2;
     }
-  else if (IS_INT (type->type) || type->type == FFI_TYPE_POINTER)
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (IS_INT (type->type) || type->type == FFI_TYPE_ಸೂಚಕ)
     {
-      unmarshal_atom (cb, type->type, data);
-      return data;
+      unmarshal_atom (cb, type->type, ದತ್ತಾಂಶ);
+      ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ;
     }
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
     {
       /* Overlong integers, soft-float floats, and structs without special
 	 float handling are treated identically from this point on.  */
 
       /* Variadics are aligned even in registers.  */
-      if (type->alignment > __SIZEOF_POINTER__)
+      ಆದರೆ (type->alignment > __SIZEOF_POINTER__)
 	{
-	  if (var)
-	    cb->used_integer = FFI_ALIGN (cb->used_integer, 2);
-	  cb->used_stack
-	    = (size_t *) FFI_ALIGN (cb->used_stack, 2 * __SIZEOF_POINTER__);
+	  ಆದರೆ (var)
+	    cb->ಬಳಸಿದ_integer = FFI_ALIGN (cb->ಬಳಸಿದ_integer, 2);
+	  cb->ಬಳಸಿದ_ರಾಶಿ
+	    = (size_t *) FFI_ALIGN (cb->ಬಳಸಿದ_ರಾಶಿ, 2 * __SIZEOF_POINTER__);
 	}
 
-      if (type->size > 0)
-	unmarshal_atom (cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
-	unmarshal_atom (cb, FFI_TYPE_POINTER, realign + 1);
-      memcpy (data, realign, type->size);
-      return data;
+      ಆದರೆ (type->ಗಾತ್ರ_2 > 0)
+	unmarshal_atom (cb, FFI_TYPE_ಸೂಚಕ, realign);
+      ಆದರೆ (type->ಗಾತ್ರ_2 > __SIZEOF_POINTER__)
+	unmarshal_atom (cb, FFI_TYPE_ಸೂಚಕ, realign + 1);
+      ಸ್ಮರಣೆ_ನಕಲು (ದತ್ತಾಂಶ, realign, type->ಗಾತ್ರ_2);
+      ಹಿಂತಿರುಗಿ ದತ್ತಾಂಶ;
     }
 }
 
-static int
-passed_by_ref (call_builder *cb, ffi_type *type, int var)
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
+passed_by_ref (call_builder *cb, ffi_type *type, ಪೂರ್ಣಾಂಕ var)
 {
-#if ABI_FRLEN
-  if (!var && type->type == FFI_TYPE_STRUCT)
+#ಆದರೆ ABI_FRLEN
+  ಆದರೆ (!var && type->type == FFI_TYPE_STRUCT)
     {
       float_struct_info fsi = struct_passed_as_elements (cb, type);
-      if (fsi.as_elements)
-	return 0;
+      ಆದರೆ (fsi.as_elements)
+	ಹಿಂತಿರುಗಿ 0;
     }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-  return type->size > 2 * __SIZEOF_POINTER__;
+  ಹಿಂತಿರುಗಿ type->ಗಾತ್ರ_2 > 2 * __SIZEOF_POINTER__;
 }
 
 /* Perform machine dependent cif processing.  */
-ffi_status
+ffi_ಸ್ಥಿತಿ
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   cif->loongarch_nfixedargs = cif->nargs;
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 /* Perform machine dependent cif processing when we have a variadic
    function.  */
-ffi_status
-ffi_prep_cif_machdep_var (ffi_cif *cif, unsigned int nfixedargs,
-			  unsigned int ntotalargs)
+ffi_ಸ್ಥಿತಿ
+ffi_prep_cif_machdep_var (ffi_cif *cif, ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ nfixedargs,
+			  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ ntotalargs)
 {
   cif->loongarch_nfixedargs = nfixedargs;
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 /* Low level routine for calling functions.  */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_asm (ಶೂನ್ಯ *ರಾಶಿ, ರಚನೆ call_context *regs,
+			  ಶೂನ್ಯ (*fn) (ಶೂನ್ಯ), ಶೂನ್ಯ *ಆವರಣ) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_call_int (ffi_cif *cif, ಶೂನ್ಯ (*fn) (ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue,
+	      ಶೂನ್ಯ *ಆವರಣ)
 {
-  size_t arg_bytes = FFI_ALIGN (cif->bytes, STKALIGN);
+  size_t arg_ಬೈಟುಗಳು = FFI_ALIGN (cif->ಬೈಟುಗಳು, STKALIGN);
 
   /* This is a conservative estimate, assuming a complex return value and
      that all remaining arguments are long long / __int128 */
-  size_t extra_bytes = cif->nargs <= 3 ? 0 :
-      FFI_ALIGN(2 * sizeof(size_t) * (cif->nargs - 3), STKALIGN);
+  size_t extra_ಬೈಟುಗಳು = cif->nargs <= 3 ? 0 :
+      FFI_ALIGN(2 * ಗಾತ್ರ(size_t) * (cif->nargs - 3), STKALIGN);
 
-  size_t rval_bytes = 0;
-  if (rvalue == NULL && cif->rtype->size > 2 * __SIZEOF_POINTER__)
-    rval_bytes = FFI_ALIGN (cif->rtype->size, STKALIGN);
-  size_t alloc_size = arg_bytes + extra_bytes + rval_bytes + sizeof (call_context);
+  size_t rval_ಬೈಟುಗಳು = 0;
+  ಆದರೆ (rvalue == ಖಾಲಿ && cif->rtype->ಗಾತ್ರ_2 > 2 * __SIZEOF_POINTER__)
+    rval_ಬೈಟುಗಳು = FFI_ALIGN (cif->rtype->ಗಾತ್ರ_2, STKALIGN);
+  size_t alloc_ಗಾತ್ರ = arg_ಬೈಟುಗಳು + extra_ಬೈಟುಗಳು + rval_ಬೈಟುಗಳು + ಗಾತ್ರ (call_context);
 
   /* The assembly code will deallocate all stack data at lower addresses
      than the argument region, so we need to allocate the frame and the
      return value after the arguments in a single allocation.  */
-  size_t alloc_base;
+  size_t alloc_ತಳ;
   /* Argument region must be 16-byte aligned in LP64 ABIs.  */
-  if (_Alignof(max_align_t) >= STKALIGN)
+  ಆದರೆ (_Alignof(max_align_t) >= STKALIGN)
     /* Since sizeof long double is normally 16, the compiler will
        guarantee alloca alignment to at least that much.  */
-    alloc_base = (size_t) alloca (alloc_size);
-  else
-    alloc_base = FFI_ALIGN (alloca (alloc_size + STKALIGN - 1), STKALIGN);
+    alloc_ತಳ = (size_t) alloca (alloc_ಗಾತ್ರ);
+  ಇಲ್ಲದಿದ್ದರೆ
+    alloc_ತಳ = FFI_ALIGN (alloca (alloc_ಗಾತ್ರ + STKALIGN - 1), STKALIGN);
 
-  if (rval_bytes)
-    rvalue = (void *) (alloc_base + arg_bytes);
+  ಆದರೆ (rval_ಬೈಟುಗಳು)
+    rvalue = (ಶೂನ್ಯ *) (alloc_ತಳ + arg_ಬೈಟುಗಳು);
 
   call_builder cb;
-  cb.used_float = cb.used_integer = 0;
-  cb.aregs = (call_context *) (alloc_base + arg_bytes + extra_bytes + rval_bytes);
-  cb.used_stack = (size_t *)((char *) alloc_base);
-  cb.stack = (size_t *)((char *) alloc_base + extra_bytes + rval_bytes);
-  cb.next_struct_area = arg_bytes;
+  cb.ಬಳಸಿದ_float = cb.ಬಳಸಿದ_integer = 0;
+  cb.aregs = (call_context *) (alloc_ತಳ + arg_ಬೈಟುಗಳು + extra_ಬೈಟುಗಳು + rval_ಬೈಟುಗಳು);
+  cb.ಬಳಸಿದ_ರಾಶಿ = (size_t *)((ಅಕ್ಷರ *) alloc_ತಳ);
+  cb.ರಾಶಿ = (size_t *)((ಅಕ್ಷರ *) alloc_ತಳ + extra_ಬೈಟುಗಳು + rval_ಬೈಟುಗಳು);
+  cb.ಮುಂದಿನ_struct_area = arg_ಬೈಟುಗಳು;
 
-  int return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
-  if (return_by_ref)
-    cb.aregs->a[cb.used_integer++] = (size_t)rvalue;
+  ಪೂರ್ಣಾಂಕ return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
+  ಆದರೆ (return_by_ref)
+    cb.aregs->a[cb.ಬಳಸಿದ_integer++] = (size_t)rvalue;
 
-  int i;
-  for (i = 0; i < cif->nargs; i++)
+  ಪೂರ್ಣಾಂಕ i;
+  ಗಾಗಿ (i = 0; i < cif->nargs; i++)
     marshal (&cb, cif->arg_types[i], i >= cif->loongarch_nfixedargs,
 	     avalue[i]);
 
-  ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+  ffi_call_asm ((ಶೂನ್ಯ *) alloc_ತಳ, cb.aregs, fn, ಆವರಣ);
 
-  cb.used_float = cb.used_integer = 0;
-  if (!return_by_ref && rvalue)
+  cb.ಬಳಸಿದ_float = cb.ಬಳಸಿದ_integer = 0;
+  ಆದರೆ (!return_by_ref && rvalue)
     unmarshal (&cb, cif->rtype, 0, rvalue);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+ಶೂನ್ಯ
+ffi_call (ffi_cif *cif, ಶೂನ್ಯ (*fn) (ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ಖಾಲಿ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+ಶೂನ್ಯ
+ffi_call_go (ffi_cif *cif, ಶೂನ್ಯ (*fn) (ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue,
+	     ಶೂನ್ಯ *ಆವರಣ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, ಆವರಣ);
 }
 
-extern void ffi_closure_asm (void) FFI_HIDDEN;
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_ಆವರಣ_asm (ಶೂನ್ಯ) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ *ಆವರಣ, ffi_cif *cif,
+		      ಶೂನ್ಯ (*fun) (ffi_cif *, ಶೂನ್ಯ *, ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+		      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ, ಶೂನ್ಯ *codeloc)
 {
-  uint32_t *tramp = (uint32_t *) &closure->tramp[0];
-  uint64_t fn = (uint64_t) (uintptr_t) ffi_closure_asm;
+  uint32_t *tramp = (uint32_t *) &ಆವರಣ->tramp[0];
+  uint64_t fn = (uint64_t) (uintptr_t) ffi_ಆವರಣ_asm;
 
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi <= FFI_ಮೊದಲ_ABI || cif->abi >= FFI_ಕೊನೆಯ_ABI)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ಆದರೆ defined(FFI_EXEC_STATIC_TRAMP)
+  ಆದರೆ (ffi_tramp_is_present(ಆವರಣ))
     {
-      ffi_tramp_set_parms (closure->ftramp, ffi_closure_asm, closure);
-      goto out;
+      ffi_tramp_ಗಣ_parms (ಆವರಣ->ftramp, ffi_ಆವರಣ_asm, ಆವರಣ);
+      ಹೋಗು ಹೊರಹೋಗು;
     }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
   /* Fill the dynamic trampoline.  We will call ffi_closure_inner with codeloc,
      not closure, but as long as the memory is readable it should work.  */
@@ -543,86 +543,86 @@ ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
   tramp[4] = fn;
   tramp[5] = fn >> 32;
 
-  __builtin___clear_cache (codeloc, codeloc + FFI_TRAMPOLINE_SIZE);
+  __builtin___clear_cache (codeloc, codeloc + FFI_TRAMPOLINE_ಗಾತ್ರ);
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-out:
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+#ಆದರೆ defined(FFI_EXEC_STATIC_TRAMP)
+ಹೊರಹೋಗು:
+#ಆದರೆ_ಅಂತ್ಯ
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_go_ಆವರಣ_asm (ಶೂನ್ಯ) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+ffi_ಸ್ಥಿತಿ
+ffi_prep_go_ಆವರಣ (ffi_go_ಆವರಣ *ಆವರಣ, ffi_cif *cif,
+		     ಶೂನ್ಯ (*fun) (ffi_cif *, ಶೂನ್ಯ *, ಶೂನ್ಯ **, ಶೂನ್ಯ *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi <= FFI_ಮೊದಲ_ABI || cif->abi >= FFI_ಕೊನೆಯ_ABI)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
-  closure->cif = cif;
-  closure->fun = fun;
-  return FFI_OK;
+  ಆವರಣ->tramp = (ಶೂನ್ಯ *) ffi_go_ಆವರಣ_asm;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs.  */
-void FFI_HIDDEN
-ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data, size_t *stack, call_context *aregs)
+ಶೂನ್ಯ FFI_HIDDEN
+ffi_ಆವರಣ_inner (ffi_cif *cif,
+		   ಶೂನ್ಯ (*fun) (ffi_cif *, ಶೂನ್ಯ *, ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+		   ಶೂನ್ಯ *user_ದತ್ತಾಂಶ, size_t *ರಾಶಿ, call_context *aregs)
 {
-  void **avalue = alloca (cif->nargs * sizeof (void *));
+  ಶೂನ್ಯ **avalue = alloca (cif->nargs * ಗಾತ್ರ (ಶೂನ್ಯ *));
   /* Storage for arguments which will be copied by unmarshal().  We could
      theoretically avoid the copies in many cases and use at most 128 bytes
      of memory, but allocating disjoint storage for each argument is
      simpler.  */
-  char *astorage = alloca (cif->nargs * MAXCOPYARG);
-  void *rvalue;
+  ಅಕ್ಷರ *astorage = alloca (cif->nargs * MAXCOPYARG);
+  ಶೂನ್ಯ *rvalue;
   call_builder cb;
-  int return_by_ref;
-  int i;
+  ಪೂರ್ಣಾಂಕ return_by_ref;
+  ಪೂರ್ಣಾಂಕ i;
 
   cb.aregs = aregs;
-  cb.used_integer = cb.used_float = 0;
-  cb.used_stack = stack;
+  cb.ಬಳಸಿದ_integer = cb.ಬಳಸಿದ_float = 0;
+  cb.ಬಳಸಿದ_ರಾಶಿ = ರಾಶಿ;
 
   return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
-  if (return_by_ref)
-    unmarshal (&cb, &ffi_type_pointer, 0, &rvalue);
-  else
-    rvalue = alloca (cif->rtype->size);
+  ಆದರೆ (return_by_ref)
+    unmarshal (&cb, &ffi_type_ಸೂಚಕ, 0, &rvalue);
+  ಇಲ್ಲದಿದ್ದರೆ
+    rvalue = alloca (cif->rtype->ಗಾತ್ರ_2);
 
-  for (i = 0; i < cif->nargs; i++)
+  ಗಾಗಿ (i = 0; i < cif->nargs; i++)
     avalue[i]
       = unmarshal (&cb, cif->arg_types[i], i >= cif->loongarch_nfixedargs,
 		   astorage + i * MAXCOPYARG);
 
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_ದತ್ತಾಂಶ);
 
-  if (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID)
+  ಆದರೆ (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID)
     {
-      cb.used_integer = cb.used_float = 0;
+      cb.ಬಳಸಿದ_integer = cb.ಬಳಸಿದ_float = 0;
       marshal (&cb, cif->rtype, 0, rvalue);
     }
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#ಆದರೆ defined(FFI_EXEC_STATIC_TRAMP)
+ಶೂನ್ಯ *
+ffi_tramp_arch (size_t *tramp_ಗಾತ್ರ, size_t *map_ಗಾತ್ರ)
 {
-  extern void *trampoline_code_table;
+  ಬಾಹ್ಯ ಶೂನ್ಯ *trampoline_ಸಂಕೇತ_ಕೋಷ್ಟಕ;
 
-  *tramp_size = 16;
+  *tramp_ಗಾತ್ರ = 16;
   /* A mapping size of 64K is chosen to cover the page sizes of 4K, 16K, and
      64K.  */
-  *map_size = 1 << 16;
-  return &trampoline_code_table;
+  *map_ಗಾತ್ರ = 1 << 16;
+  ಹಿಂತಿರುಗಿ &trampoline_ಸಂಕೇತ_ಕೋಷ್ಟಕ;
 }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ

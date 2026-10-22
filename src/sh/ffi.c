@@ -25,112 +25,112 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-#include <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
 
-#define NGREGARG 4
-#if defined(__SH4__)
-#define NFREGARG 8
-#endif
+#ವ್ಯಾಖ್ಯಾನಿಸು NGREGARG 4
+#ಆದರೆ defined(__SH4__)
+#ವ್ಯಾಖ್ಯಾನಿಸು NFREGARG 8
+#ಆದರೆ_ಅಂತ್ಯ
 
-#if defined(__HITACHI__)
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 1
-#else
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 0
-#endif
+#ಆದರೆ defined(__HITACHI__)
+#ವ್ಯಾಖ್ಯಾನಿಸು STRUCT_ಮೌಲ್ಯ_ವಿಳಾಸ_WITH_ARG 1
+#ಇಲ್ಲದಿದ್ದರೆ
+#ವ್ಯಾಖ್ಯಾನಿಸು STRUCT_ಮೌಲ್ಯ_ವಿಳಾಸ_WITH_ARG 0
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* If the structure has essentially an unique element, return its type.  */
-static int
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
 simple_type (ffi_type *arg)
 {
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
-  else if (arg->elements[1])
-    return FFI_TYPE_STRUCT;
+  ಆದರೆ (arg->type != FFI_TYPE_STRUCT)
+    ಹಿಂತಿರುಗಿ arg->type;
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (arg->elements[1])
+    ಹಿಂತಿರುಗಿ FFI_TYPE_STRUCT;
 
-  return simple_type (arg->elements[0]);
+  ಹಿಂತಿರುಗಿ simple_type (arg->elements[0]);
 }
 
-static int
+ಸ್ಥಿರ ಪೂರ್ಣಾಂಕ
 return_type (ffi_type *arg)
 {
-  unsigned short type;
+  ಚಿಹ್ನೆರಹಿತ ಗಿಡ್ಡ type;
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  ಆದರೆ (arg->type != FFI_TYPE_STRUCT)
+    ಹಿಂತಿರುಗಿ arg->type;
 
   type = simple_type (arg->elements[0]);
-  if (! arg->elements[1])
+  ಆದರೆ (! arg->elements[1])
     {
-      switch (type)
+      ಆಯ್ಕೆ (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  return FFI_TYPE_INT;
+	ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+	  ಹಿಂತಿರುಗಿ FFI_TYPE_INT;
 
-	default:
-	  return type;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+	  ಹಿಂತಿರುಗಿ type;
 	}
     }
 
   /* gcc uses r0/r1 pair for some kind of structures.  */
-  if (arg->size <= 2 * sizeof (int))
+  ಆದರೆ (arg->ಗಾತ್ರ_2 <= 2 * ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ))
     {
-      int i = 0;
+      ಪೂರ್ಣಾಂಕ i = 0;
       ffi_type *e;
 
-      while ((e = arg->elements[i++]))
+      ಆಗ ((e = arg->elements[i++]))
 	{
 	  type = simple_type (e);
-	  switch (type)
+	  ಆಯ್ಕೆ (type)
 	    {
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_FLOAT:
-	      return FFI_TYPE_UINT64;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+	    ಸ್ಥಿತಿ FFI_TYPE_INT:
+	    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+	      ಹಿಂತಿರುಗಿ FFI_TYPE_UINT64;
 
-	    default:
-	      break;
+	    ಪೂರ್ವನಿಯೋಜಿತ:
+	      ನಿಲ್ಲಿಸು;
 	    }
 	}
     }
 
-  return FFI_TYPE_STRUCT;
+  ಹಿಂತಿರುಗಿ FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+ಶೂನ್ಯ ffi_prep_ವಾದಗಳು(ಅಕ್ಷರ *ರಾಶಿ, extended_cif *ecif)
 {
-  register unsigned int i;
-  register int tmp;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
-  int greg, ireg;
-#if defined(__SH4__)
-  int freg = 0;
-#endif
+  ನೋಂದಣಿ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ i;
+  ನೋಂದಣಿ ಪೂರ್ಣಾಂಕ tmp;
+  ನೋಂದಣಿ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ avn;
+  ನೋಂದಣಿ ಶೂನ್ಯ **p_argv;
+  ನೋಂದಣಿ ಅಕ್ಷರ *argp;
+  ನೋಂದಣಿ ffi_type **p_arg;
+  ಪೂರ್ಣಾಂಕ greg, ireg;
+#ಆದರೆ defined(__SH4__)
+  ಪೂರ್ಣಾಂಕ freg = 0;
+#ಆದರೆ_ಅಂತ್ಯ
 
   tmp = 0;
-  argp = stack;
+  argp = ರಾಶಿ;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  ಆದರೆ (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
-      *(void **) argp = ecif->rvalue;
+      *(ಶೂನ್ಯ **) argp = ecif->rvalue;
       argp += 4;
-      ireg = STRUCT_VALUE_ADDRESS_WITH_ARG ? 1 : 0;
+      ireg = STRUCT_ಮೌಲ್ಯ_ವಿಳಾಸ_WITH_ARG ? 1 : 0;
     }
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
     ireg = 0;
 
   /* Set arguments for registers.  */
@@ -138,278 +138,278 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  ಗಾಗಿ (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->ಗಾತ್ರ_2;
+      ಆದರೆ (z < ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  ಆದರೆ (greg++ >= NGREGARG)
+	    ಮುಂದುವರಿ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ);
+	  ಆಯ್ಕೆ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	      *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT8 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT8 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	      *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT16 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT16 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT32 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
 
-	    default:
+	    ಪೂರ್ವನಿಯೋಜಿತ:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (z == ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#ಆದರೆ defined(__SH4__)
+	  ಆದರೆ ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      ಆದರೆ (freg++ >= NFREGARG)
+		ಮುಂದುವರಿ;
 	    }
-	  else
-#endif
+	  ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      ಆದರೆ (greg++ >= NGREGARG)
+		ಮುಂದುವರಿ;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#ಆದರೆ defined(__SH4__)
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
+	  ಆದರೆ (freg + 1 >= NFREGARG)
+	    ಮುಂದುವರಿ;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
-	  memcpy (argp, *p_argv, z);
+	  ಸ್ಮರಣೆ_ನಕಲು (argp, *p_argv, z);
 	  argp += z;
 	}
-#endif
-      else
+#ಆದರೆ_ಅಂತ್ಯ
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
-#endif
+	  ಪೂರ್ಣಾಂಕ n = (z + ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ) - 1) / ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
+#ಆದರೆ defined(__SH4__)
+	  ಆದರೆ (greg + n - 1 >= NGREGARG)
+	    ಮುಂದುವರಿ;
+#ಇಲ್ಲದಿದ್ದರೆ
+	  ಆದರೆ (greg >= NGREGARG)
+	    ಮುಂದುವರಿ;
+#ಆದರೆ_ಅಂತ್ಯ
 	  greg += n;
-	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  ಸ್ಮರಣೆ_ನಕಲು (argp, *p_argv, z);
+	  argp += n * ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
 	}
     }
 
   /* Set arguments on stack.  */
   greg = ireg;
-#if defined(__SH4__)
+#ಆದರೆ defined(__SH4__)
   freg = 0;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  ಗಾಗಿ (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->ಗಾತ್ರ_2;
+      ಆದರೆ (z < ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  ಆದರೆ (greg++ < NGREGARG)
+	    ಮುಂದುವರಿ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ);
+	  ಆಯ್ಕೆ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	      *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT8 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT8 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	      *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT16 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT16 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+	      *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT32 *)(* p_argv);
+	      ನಿಲ್ಲಿಸು;
 
-	    default:
+	    ಪೂರ್ವನಿಯೋಜಿತ:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (z == ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#ಆದರೆ defined(__SH4__)
+	  ಆದರೆ ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      ಆದರೆ (freg++ < NFREGARG)
+		ಮುಂದುವರಿ;
 	    }
-	  else
-#endif
+	  ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      ಆದರೆ (greg++ < NGREGARG)
+		ಮುಂದುವರಿ;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#ಆದರೆ defined(__SH4__)
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  ಆದರೆ (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      ಮುಂದುವರಿ;
 	    }
-	  memcpy (argp, *p_argv, z);
+	  ಸ್ಮರಣೆ_ನಕಲು (argp, *p_argv, z);
 	  argp += z;
 	}
-#endif
-      else
+#ಆದರೆ_ಅಂತ್ಯ
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  ಪೂರ್ಣಾಂಕ n = (z + ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ) - 1) / ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
+	  ಆದರೆ (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      ಮುಂದುವರಿ;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#ಆದರೆ (! defined(__SH4__))
+	  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (greg < NGREGARG)
 	    {
 	      greg = NGREGARG;
-	      continue;
+	      ಮುಂದುವರಿ;
 	    }
-#endif
-	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+#ಆದರೆ_ಅಂತ್ಯ
+	  ಸ್ಮರಣೆ_ನಕಲು (argp, *p_argv, z);
+	  argp += n * ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
 	}
     }
 
-  return;
+  ಹಿಂತಿರುಗಿ;
 }
 
 /* Perform machine dependent cif processing */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_ಸ್ಥಿತಿ ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-#if defined(__SH4__)
-  int freg = 0;
-#endif
+  ಪೂರ್ಣಾಂಕ i, j;
+  ಪೂರ್ಣಾಂಕ ಗಾತ್ರ_2, type;
+  ಪೂರ್ಣಾಂಕ n, m;
+  ಪೂರ್ಣಾಂಕ greg;
+#ಆದರೆ defined(__SH4__)
+  ಪೂರ್ಣಾಂಕ freg = 0;
+#ಆದರೆ_ಅಂತ್ಯ
 
   cif->flags = 0;
 
   greg = ((return_type (cif->rtype) == FFI_TYPE_STRUCT) &&
-	  STRUCT_VALUE_ADDRESS_WITH_ARG) ? 1 : 0;
+	  STRUCT_ಮೌಲ್ಯ_ವಿಳಾಸ_WITH_ARG) ? 1 : 0;
 
-#if defined(__SH4__)
-  for (i = j = 0; i < cif->nargs && j < 12; i++)
+#ಆದರೆ defined(__SH4__)
+  ಗಾಗಿ (i = j = 0; i < cif->nargs && j < 12; i++)
     {
       type = (cif->arg_types)[i]->type;
-      switch (type)
+      ಆಯ್ಕೆ (type)
 	{
-	case FFI_TYPE_FLOAT:
-	  if (freg >= NFREGARG)
-	    continue;
+	ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+	  ಆದರೆ (freg >= NFREGARG)
+	    ಮುಂದುವರಿ;
 	  freg++;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_DOUBLE:
-	  if ((freg + 1) >= NFREGARG)
-	    continue;
+	ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+	  ಆದರೆ ((freg + 1) >= NFREGARG)
+	    ಮುಂದುವರಿ;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 	      
-	default:
-	  size = (cif->arg_types)[i]->size;
-	  n = (size + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 >= NGREGARG)
-		continue;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+	  ಗಾತ್ರ_2 = (cif->arg_types)[i]->ಗಾತ್ರ_2;
+	  n = (ಗಾತ್ರ_2 + ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ) - 1) / ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
+	  ಆದರೆ (greg + n - 1 >= NGREGARG)
+		ಮುಂದುವರಿ;
 	  greg += n;
-	  for (m = 0; m < n; m++)
+	  ಗಾಗಿ (m = 0; m < n; m++)
 	    cif->flags += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  ನಿಲ್ಲಿಸು;
 	}
     }
-#else
-  for (i = j = 0; i < cif->nargs && j < 4; i++)
+#ಇಲ್ಲದಿದ್ದರೆ
+  ಗಾಗಿ (i = j = 0; i < cif->nargs && j < 4; i++)
     {
-      size = (cif->arg_types)[i]->size;
-      n = (size + sizeof (int) - 1) / sizeof (int);
-      if (greg >= NGREGARG)
-	continue;
-      else if (greg + n - 1 >= NGREGARG)
+      ಗಾತ್ರ_2 = (cif->arg_types)[i]->ಗಾತ್ರ_2;
+      n = (ಗಾತ್ರ_2 + ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ) - 1) / ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
+      ಆದರೆ (greg >= NGREGARG)
+	ಮುಂದುವರಿ;
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (greg + n - 1 >= NGREGARG)
 	n = NGREGARG - greg;
       greg += n;
-      for (m = 0; m < n; m++)
+      ಗಾಗಿ (m = 0; m < n; m++)
         cif->flags += FFI_TYPE_INT << (2 * j++);
     }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ಆಯ್ಕೆ (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
-      cif->flags += (unsigned) (return_type (cif->rtype)) << 24;
-      break;
+    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+      cif->flags += (ಚಿಹ್ನೆರಹಿತ) (return_type (cif->rtype)) << 24;
+      ನಿಲ್ಲಿಸು;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      cif->flags += (unsigned) cif->rtype->type << 24;
-      break;
+    ಸ್ಥಿತಿ FFI_TYPE_VOID:
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+      cif->flags += (ಚಿಹ್ನೆರಹಿತ) cif->rtype->type << 24;
+      ನಿಲ್ಲಿಸು;
 
-    default:
+    ಪೂರ್ವನಿಯೋಜಿತ:
       cif->flags += FFI_TYPE_INT << 24;
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_SYSV(ಶೂನ್ಯ (*)(ಅಕ್ಷರ *, extended_cif *), extended_cif *,
+			  ಚಿಹ್ನೆರಹಿತ, ಚಿಹ್ನೆರಹಿತ, ಚಿಹ್ನೆರಹಿತ *, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ಶೂನ್ಯ ffi_call(ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
   extended_cif ecif;
   UINT64 trvalue;
@@ -420,78 +420,78 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  ಆದರೆ (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ ((rvalue == ಖಾಲಿ) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca(cif->rtype->size);
+      ecif.rvalue = alloca(cif->rtype->ಗಾತ್ರ_2);
     }
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
     ecif.rvalue = rvalue;
 
-  switch (cif->abi) 
+  ಆಯ್ಕೆ (cif->abi) 
     {
-    case FFI_SYSV:
-      ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, ecif.rvalue,
+    ಸ್ಥಿತಿ FFI_SYSV:
+      ffi_call_SYSV(ffi_prep_ವಾದಗಳು, &ecif, cif->ಬೈಟುಗಳು, cif->flags, ecif.rvalue,
 		    fn);
-      break;
-    default:
+      ನಿಲ್ಲಿಸು;
+    ಪೂರ್ವನಿಯೋಜಿತ:
       FFI_ASSERT(0);
-      break;
+      ನಿಲ್ಲಿಸು;
     }
 
-  if (rvalue
+  ಆದರೆ (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
-    memcpy (rvalue, &trvalue, cif->rtype->size);
+    ಸ್ಮರಣೆ_ನಕಲು (rvalue, &trvalue, cif->rtype->ಗಾತ್ರ_2);
 }
 
-extern void ffi_closure_SYSV (void);
-#if defined(__SH4__)
-extern void __ic_invalidate (void *line);
-#endif
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_ಆವರಣ_SYSV (ಶೂನ್ಯ);
+#ಆದರೆ defined(__SH4__)
+ಬಾಹ್ಯ ಶೂನ್ಯ __ic_invalidate (ಶೂನ್ಯ *ಸಾಲು);
+#ಆದರೆ_ಅಂತ್ಯ
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ* ಆವರಣ,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ಶೂನ್ಯ (*fun)(ffi_cif*, ಶೂನ್ಯ*, ಶೂನ್ಯ**, ಶೂನ್ಯ*),
+		      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+		      ಶೂನ್ಯ *codeloc)
 {
-  unsigned int *tramp;
-  unsigned int insn;
+  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *tramp;
+  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ insn;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi != FFI_SYSV)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) &ಆವರಣ->tramp[0];
   /* Set T bit if the function returns a struct pointed with R2.  */
   insn = (return_type (cif->rtype) == FFI_TYPE_STRUCT
 	  ? 0x0018 /* sett */
 	  : 0x0008 /* clrt */);
 
-#ifdef __LITTLE_ENDIAN__
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __LITTLE_ENDIAN__
   tramp[0] = 0xd301d102;
   tramp[1] = 0x0000412b | (insn << 16);
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
   tramp[0] = 0xd102d301;
   tramp[1] = 0x412b0000 | insn;
-#endif
-  *(void **) &tramp[2] = (void *)codeloc;          /* ctx */
-  *(void **) &tramp[3] = (void *)ffi_closure_SYSV; /* funaddr */
+#ಆದರೆ_ಅಂತ್ಯ
+  *(ಶೂನ್ಯ **) &tramp[2] = (ಶೂನ್ಯ *)codeloc;          /* ctx */
+  *(ಶೂನ್ಯ **) &tramp[3] = (ಶೂನ್ಯ *)ffi_ಆವರಣ_SYSV; /* funaddr */
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
 
-#if defined(__SH4__)
+#ಆದರೆ defined(__SH4__)
   /* Flush the icache.  */
   __ic_invalidate(codeloc);
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -502,120 +502,120 @@ ffi_prep_closure_loc (ffi_closure* closure,
  * following helper function to do most of the work.
  */
 
-#ifdef __LITTLE_ENDIAN__
-#define OFS_INT8	0
-#define OFS_INT16	0
-#else
-#define OFS_INT8	3
-#define OFS_INT16	2
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __LITTLE_ENDIAN__
+#ವ್ಯಾಖ್ಯಾನಿಸು OFS_INT8	0
+#ವ್ಯಾಖ್ಯಾನಿಸು OFS_INT16	0
+#ಇಲ್ಲದಿದ್ದರೆ
+#ವ್ಯಾಖ್ಯಾನಿಸು OFS_INT8	3
+#ವ್ಯಾಖ್ಯಾನಿಸು OFS_INT16	2
+#ಆದರೆ_ಅಂತ್ಯ
 
-int
-ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue, 
-			 unsigned long *pgr, unsigned long *pfr, 
-			 unsigned long *pst)
+ಪೂರ್ಣಾಂಕ
+ffi_ಆವರಣ_helper_SYSV (ffi_ಆವರಣ *ಆವರಣ, ಶೂನ್ಯ *rvalue, 
+			 ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ *pgr, ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ *pfr, 
+			 ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ *pst)
 {
-  void **avalue;
+  ಶೂನ್ಯ **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int ireg, greg = 0;
-#if defined(__SH4__)
-  int freg = 0;
-#endif
+  ಪೂರ್ಣಾಂಕ i, avn;
+  ಪೂರ್ಣಾಂಕ ireg, greg = 0;
+#ಆದರೆ defined(__SH4__)
+  ಪೂರ್ಣಾಂಕ freg = 0;
+#ಆದರೆ_ಅಂತ್ಯ
   ffi_cif *cif; 
 
-  cif = closure->cif;
-  avalue = alloca(cif->nargs * sizeof(void *));
+  cif = ಆವರಣ->cif;
+  avalue = alloca(cif->nargs * ಗಾತ್ರ(ಶೂನ್ಯ *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_VALUE_ADDRESS_WITH_ARG)
+  ಆದರೆ (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_ಮೌಲ್ಯ_ವಿಳಾಸ_WITH_ARG)
     {
-      rvalue = (void *) *pgr++;
+      rvalue = (ಶೂನ್ಯ *) *pgr++;
       ireg = 1;
     }
-  else
+  ಇಲ್ಲದಿದ್ದರೆ
     ireg = 0;
 
-  cif = closure->cif;
+  cif = ಆವರಣ->cif;
   greg = ireg;
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  ಗಾಗಿ (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->ಗಾತ್ರ_2;
+      ಆದರೆ (z < ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  ಆದರೆ (greg++ >= NGREGARG)
+	    ಮುಂದುವರಿ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ);
+	  ಆಯ್ಕೆ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pgr) + OFS_INT8);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	      avalue[i] = (((ಅಕ್ಷರ *)pgr) + OFS_INT8);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pgr) + OFS_INT16);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	      avalue[i] = (((ಅಕ್ಷರ *)pgr) + OFS_INT16);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_STRUCT:
+	    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
 	      avalue[i] = pgr;
-	      break;
+	      ನಿಲ್ಲಿಸು;
 
-	    default:
+	    ಪೂರ್ವನಿಯೋಜಿತ:
 	      FFI_ASSERT(0);
 	    }
 	  pgr++;
 	}
-      else if (z == sizeof(int))
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (z == ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#ಆದರೆ defined(__SH4__)
+	  ಆದರೆ ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      ಆದರೆ (freg++ >= NFREGARG)
+		ಮುಂದುವರಿ;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
-#endif
+	  ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      ಆದರೆ (greg++ >= NGREGARG)
+		ಮುಂದುವರಿ;
 	      avalue[i] = pgr;
 	      pgr++;
 	    }
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#ಆದರೆ defined(__SH4__)
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
-	  if (freg & 1)
+	  ಆದರೆ (freg + 1 >= NFREGARG)
+	    ಮುಂದುವರಿ;
+	  ಆದರೆ (freg & 1)
 	    pfr++;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  avalue[i] = pfr;
 	  pfr += 2;
 	}
-#endif
-      else
+#ಆದರೆ_ಅಂತ್ಯ
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
-#endif
+	  ಪೂರ್ಣಾಂಕ n = (z + ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ) - 1) / ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
+#ಆದರೆ defined(__SH4__)
+	  ಆದರೆ (greg + n - 1 >= NGREGARG)
+	    ಮುಂದುವರಿ;
+#ಇಲ್ಲದಿದ್ದರೆ
+	  ಆದರೆ (greg >= NGREGARG)
+	    ಮುಂದುವರಿ;
+#ಆದರೆ_ಅಂತ್ಯ
 	  greg += n;
 	  avalue[i] = pgr;
 	  pgr += n;
@@ -623,95 +623,95 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
     }
 
   greg = ireg;
-#if defined(__SH4__)
+#ಆದರೆ defined(__SH4__)
   freg = 0;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  ಗಾಗಿ (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->ಗಾತ್ರ_2;
+      ಆದರೆ (z < ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  ಆದರೆ (greg++ < NGREGARG)
+	    ಮುಂದುವರಿ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ);
+	  ಆಯ್ಕೆ ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pst) + OFS_INT8);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	      avalue[i] = (((ಅಕ್ಷರ *)pst) + OFS_INT8);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pst) + OFS_INT16);
-	      break;
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	      avalue[i] = (((ಅಕ್ಷರ *)pst) + OFS_INT16);
+	      ನಿಲ್ಲಿಸು;
   
-	    case FFI_TYPE_STRUCT:
+	    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
 	      avalue[i] = pst;
-	      break;
+	      ನಿಲ್ಲಿಸು;
 
-	    default:
+	    ಪೂರ್ವನಿಯೋಜಿತ:
 	      FFI_ASSERT(0);
 	    }
 	  pst++;
 	}
-      else if (z == sizeof(int))
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (z == ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#ಆದರೆ defined(__SH4__)
+	  ಆದರೆ ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      ಆದರೆ (freg++ < NFREGARG)
+		ಮುಂದುವರಿ;
 	    }
-	  else
-#endif
+	  ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      ಆದರೆ (greg++ < NGREGARG)
+		ಮುಂದುವರಿ;
 	    }
 	  avalue[i] = pst;
 	  pst++;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#ಆದರೆ defined(__SH4__)
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  ಆದರೆ (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      ಮುಂದುವರಿ;
 	    }
 	  avalue[i] = pst;
 	  pst += 2;
 	}
-#endif
-      else
+#ಆದರೆ_ಅಂತ್ಯ
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  ಪೂರ್ಣಾಂಕ n = (z + ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ) - 1) / ಗಾತ್ರ (ಪೂರ್ಣಾಂಕ);
+	  ಆದರೆ (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      ಮುಂದುವರಿ;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#ಆದರೆ (! defined(__SH4__))
+	  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (greg < NGREGARG)
 	    {
 	      greg += n;
 	      pst += greg - NGREGARG;
-	      continue;
+	      ಮುಂದುವರಿ;
 	    }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 	  avalue[i] = pst;
 	  pst += n;
 	}
     }
 
-  (closure->fun) (cif, rvalue, avalue, closure->user_data);
+  (ಆವರಣ->fun) (cif, rvalue, avalue, ಆವರಣ->user_ದತ್ತಾಂಶ);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  ಹಿಂತಿರುಗಿ return_type (cif->rtype);
 }

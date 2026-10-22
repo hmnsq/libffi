@@ -23,43 +23,43 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_H
+#ದೋಷ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifndef LIBFFI_ASM
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ASM
 
-#include <arch/abi.h>
+#ಅನ್ತರ್ಭಾವ <arch/abi.h>
 
-typedef uint_reg_t ffi_arg;
-typedef int_reg_t  ffi_sarg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ uint_reg_t ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ int_reg_t  ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi {
+  FFI_ಮೊದಲ_ABI = 0,
   FFI_UNIX,
-  FFI_LAST_ABI,
+  FFI_ಕೊನೆಯ_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX
 } ffi_abi;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- Definitions for closures ----------------------------------------- */
-#define FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
 
-#ifdef __tilegx__
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __tilegx__
 /* We always pass 8-byte values, even in -m32 mode. */
 # define FFI_SIZEOF_ARG 8
 # ifdef __LP64__
-#  define FFI_TRAMPOLINE_SIZE (8 * 5)  /* 5 bundles */
-# else
-#  define FFI_TRAMPOLINE_SIZE (8 * 3)  /* 3 bundles */
+#  define FFI_TRAMPOLINE_ಗಾತ್ರ (8 * 5)  /* 5 bundles */
+# ಇಲ್ಲದಿದ್ದರೆ
+#  define FFI_TRAMPOLINE_ಗಾತ್ರ (8 * 3)  /* 3 bundles */
 # endif
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 # define FFI_SIZEOF_ARG 4
-# define FFI_TRAMPOLINE_SIZE 8 /* 1 bundle */
-#endif
-#define FFI_NATIVE_RAW_API 0
+# define FFI_TRAMPOLINE_ಗಾತ್ರ 8 /* 1 bundle */
+#ಆದರೆ_ಅಂತ್ಯ
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_NATIVE_RAW_API 0
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ

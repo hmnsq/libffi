@@ -29,260 +29,260 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__i386__) || defined(_M_IX86)
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <tramp.h>
-#include "internal.h"
+#ಆದರೆ defined(__i386__) || defined(_M_IX86)
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <tramp.h>
+#ಅನ್ತರ್ಭಾವ "internal.h"
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 80-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+#ಆದರೆ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ಆದರೆ FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE ಹೊರಹೋಗು ದ date
 # endif
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#if defined(__GNUC__) && !defined(__declspec)
+#ಆದರೆ defined(__GNUC__) && !defined(__declspec)
 # define __declspec(x)  __attribute__((x))
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#if defined(_MSC_VER) && defined(_M_IX86)
+#ಆದರೆ defined(_MSC_VER) && defined(_M_IX86)
 /* Stack is not 16-byte aligned on Windows.  */
-#define STACK_ALIGN(bytes) (bytes)
-#else
-#define STACK_ALIGN(bytes) FFI_ALIGN (bytes, 16)
-#endif
+#ವ್ಯಾಖ್ಯಾನಿಸು ರಾಶಿ_ALIGN(ಬೈಟುಗಳು) (ಬೈಟುಗಳು)
+#ಇಲ್ಲದಿದ್ದರೆ
+#ವ್ಯಾಖ್ಯಾನಿಸು ರಾಶಿ_ALIGN(ಬೈಟುಗಳು) FFI_ALIGN (ಬೈಟುಗಳು, 16)
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* Perform machine dependent cif processing.  */
-ffi_status FFI_HIDDEN
+ffi_ಸ್ಥಿತಿ FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  size_t bytes = 0;
-  int i, n, flags, cabi = cif->abi;
+  size_t ಬೈಟುಗಳು = 0;
+  ಪೂರ್ಣಾಂಕ i, n, flags, cabi = cif->abi;
 
-  switch (cabi)
+  ಆಯ್ಕೆ (cabi)
     {
-    case FFI_SYSV:
-    case FFI_STDCALL:
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
-    case FFI_MS_CDECL:
-    case FFI_PASCAL:
-    case FFI_REGISTER:
-      break;
-    default:
-      return FFI_BAD_ABI;
+    ಸ್ಥಿತಿ FFI_SYSV:
+    ಸ್ಥಿತಿ FFI_STDCALL:
+    ಸ್ಥಿತಿ FFI_THISCALL:
+    ಸ್ಥಿತಿ FFI_FASTCALL:
+    ಸ್ಥಿತಿ FFI_MS_CDECL:
+    ಸ್ಥಿತಿ FFI_PASCAL:
+    ಸ್ಥಿತಿ FFI_ರಿಜಿಸ್ಟರ್:
+      ನಿಲ್ಲಿಸು;
+    ಪೂರ್ವನಿಯೋಜಿತ:
+      ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
     }
 
-  switch (cif->rtype->type)
+  ಆಯ್ಕೆ (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ಸ್ಥಿತಿ FFI_TYPE_VOID:
       flags = X86_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
       flags = X86_RET_FLOAT;
-      break;
-    case FFI_TYPE_DOUBLE:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
       flags = X86_RET_DOUBLE;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
       flags = X86_RET_LDOUBLE;
-      break;
-    case FFI_TYPE_UINT8:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
       flags = X86_RET_UINT8;
-      break;
-    case FFI_TYPE_UINT16:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
       flags = X86_RET_UINT16;
-      break;
-    case FFI_TYPE_SINT8:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
       flags = X86_RET_SINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
       flags = X86_RET_SINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_INT:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
       flags = X86_RET_INT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
       flags = X86_RET_INT64;
-      break;
-    case FFI_TYPE_STRUCT:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
       {
-#if defined(X86_WIN32) || defined(X86_DARWIN) || defined(X86_FREEBSD)
-        size_t size = cif->rtype->size;
-        if (size == 1)
+#ಆದರೆ defined(X86_WIN32) || defined(X86_DARWIN) || defined(X86_FREEBSD)
+        size_t ಗಾತ್ರ_2 = cif->rtype->ಗಾತ್ರ_2;
+        ಆದರೆ (ಗಾತ್ರ_2 == 1)
           flags = X86_RET_STRUCT_1B;
-        else if (size == 2)
+        ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಗಾತ್ರ_2 == 2)
           flags = X86_RET_STRUCT_2B;
-        else if (size == 4)
+        ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಗಾತ್ರ_2 == 4)
           flags = X86_RET_INT32;
-        else if (size == 8)
+        ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (ಗಾತ್ರ_2 == 8)
           flags = X86_RET_INT64;
-        else
-#endif
+        ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
           {
           do_struct:
-            switch (cabi)
+            ಆಯ್ಕೆ (cabi)
               {
-              case FFI_THISCALL:
-              case FFI_FASTCALL:
-              case FFI_STDCALL:
-              case FFI_MS_CDECL:
+              ಸ್ಥಿತಿ FFI_THISCALL:
+              ಸ್ಥಿತಿ FFI_FASTCALL:
+              ಸ್ಥಿತಿ FFI_STDCALL:
+              ಸ್ಥಿತಿ FFI_MS_CDECL:
                 flags = X86_RET_STRUCTARG;
-                break;
-              default:
+                ನಿಲ್ಲಿಸು;
+              ಪೂರ್ವನಿಯೋಜಿತ:
                 flags = X86_RET_STRUCTPOP;
-                break;
+                ನಿಲ್ಲಿಸು;
               }
             /* Allocate space for return value pointer.  */
-            bytes += FFI_ALIGN (sizeof(void*), FFI_SIZEOF_ARG);
+            ಬೈಟುಗಳು += FFI_ALIGN (ಗಾತ್ರ(ಶೂನ್ಯ*), FFI_SIZEOF_ARG);
           }
       }
-      break;
-    case FFI_TYPE_COMPLEX:
-      switch (cif->rtype->elements[0]->type)
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_COMPLEX:
+      ಆಯ್ಕೆ (cif->rtype->elements[0]->type)
 	{
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  goto do_struct;
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+	ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+	  ಹೋಗು do_struct;
+	ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+	ಸ್ಥಿತಿ FFI_TYPE_INT:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT32:
 	  flags = X86_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  ನಿಲ್ಲಿಸು;
+	ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT16:
 	  flags = X86_RET_INT32;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  ನಿಲ್ಲಿಸು;
+	ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT8:
 	  flags = X86_RET_STRUCT_2B;
-	  break;
-	default:
-	  return FFI_BAD_TYPEDEF;
+	  ನಿಲ್ಲಿಸು;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+	  ಹಿಂತಿರುಗಿ FFI_BAD_TYPEDEF;
 	}
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+      ನಿಲ್ಲಿಸು;
+    ಪೂರ್ವನಿಯೋಜಿತ:
+      ಹಿಂತಿರುಗಿ FFI_BAD_TYPEDEF;
     }
   cif->flags = flags;
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  ಗಾಗಿ (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *t = cif->arg_types[i];
 
-#if defined(X86_WIN32)
-      if (cabi == FFI_STDCALL)
-        bytes = FFI_ALIGN (bytes, FFI_SIZEOF_ARG);
-      else
-#endif
-        bytes = FFI_ALIGN (bytes, t->alignment);
-      bytes += FFI_ALIGN (t->size, FFI_SIZEOF_ARG);
+#ಆದರೆ defined(X86_WIN32)
+      ಆದರೆ (cabi == FFI_STDCALL)
+        ಬೈಟುಗಳು = FFI_ALIGN (ಬೈಟುಗಳು, FFI_SIZEOF_ARG);
+      ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
+        ಬೈಟುಗಳು = FFI_ALIGN (ಬೈಟುಗಳು, t->alignment);
+      ಬೈಟುಗಳು += FFI_ALIGN (t->ಗಾತ್ರ_2, FFI_SIZEOF_ARG);
     }
-  cif->bytes = bytes;
+  cif->ಬೈಟುಗಳು = ಬೈಟುಗಳು;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-static ffi_arg
-extend_basic_type(void *arg, int type)
+ಸ್ಥಿರ ffi_arg
+extend_basic_type(ಶೂನ್ಯ *arg, ಪೂರ್ಣಾಂಕ type)
 {
-  switch (type)
+  ಆಯ್ಕೆ (type)
     {
-    case FFI_TYPE_SINT8:
-      return *(SINT8 *)arg;
-    case FFI_TYPE_UINT8:
-      return *(UINT8 *)arg;
-    case FFI_TYPE_SINT16:
-      return *(SINT16 *)arg;
-    case FFI_TYPE_UINT16:
-      return *(UINT16 *)arg;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+      ಹಿಂತಿರುಗಿ *(SINT8 *)arg;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+      ಹಿಂತಿರುಗಿ *(UINT8 *)arg;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+      ಹಿಂತಿರುಗಿ *(SINT16 *)arg;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+      ಹಿಂತಿರುಗಿ *(UINT16 *)arg;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_FLOAT:
-      return *(UINT32 *)arg;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+      ಹಿಂತಿರುಗಿ *(UINT32 *)arg;
 
-    default:
+    ಪೂರ್ವನಿಯೋಜಿತ:
       abort();
     }
 }
 
-struct call_frame
+ರಚನೆ call_ಚೌಕಟ್ಟು
 {
-  void *ebp;		/* 0 */
-  void *retaddr;	/* 4 */
-  void (*fn)(void);	/* 8 */
-  int flags;		/* 12 */
-  void *rvalue;		/* 16 */
-  unsigned regs[3];	/* 20-28 */
+  ಶೂನ್ಯ *ebp;		/* 0 */
+  ಶೂನ್ಯ *retaddr;	/* 4 */
+  ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ);	/* 8 */
+  ಪೂರ್ಣಾಂಕ flags;		/* 12 */
+  ಶೂನ್ಯ *rvalue;		/* 16 */
+  ಚಿಹ್ನೆರಹಿತ regs[3];	/* 20-28 */
 };
 
-struct abi_params
+ರಚನೆ abi_params
 {
-  int dir;		/* parameter growth direction */
-  int static_chain;	/* the static chain register used by gcc */
-  int nregs;		/* number of register parameters */
-  int regs[3];
+  ಪೂರ್ಣಾಂಕ dir;		/* parameter growth direction */
+  ಪೂರ್ಣಾಂಕ static_chain;	/* the static chain register used by gcc */
+  ಪೂರ್ಣಾಂಕ nregs;		/* number of register parameters */
+  ಪೂರ್ಣಾಂಕ regs[3];
 };
 
-static const struct abi_params abi_params[FFI_LAST_ABI] = {
+ಸ್ಥಿರ ಸ್ಥಿರಾಂಕ ರಚನೆ abi_params abi_params[FFI_ಕೊನೆಯ_ABI] = {
   [FFI_SYSV] = { 1, R_ECX, 0 },
   [FFI_THISCALL] = { 1, R_EAX, 1, { R_ECX } },
   [FFI_FASTCALL] = { 1, R_EAX, 2, { R_ECX, R_EDX } },
   [FFI_STDCALL] = { 1, R_ECX, 0 },
   [FFI_PASCAL] = { -1, R_ECX, 0 },
   /* ??? No defined static chain; gcc does not support REGISTER.  */
-  [FFI_REGISTER] = { -1, R_ECX, 3, { R_EAX, R_EDX, R_ECX } },
+  [FFI_ರಿಜಿಸ್ಟರ್] = { -1, R_ECX, 3, { R_EAX, R_EDX, R_ECX } },
   [FFI_MS_CDECL] = { 1, R_ECX, 0 }
 };
 
-#ifdef HAVE_FASTCALL
-  #ifdef _MSC_VER
-    #define FFI_DECLARE_FASTCALL __fastcall
-  #else
-    #define FFI_DECLARE_FASTCALL __declspec(fastcall)
-  #endif
-#else
-  #define FFI_DECLARE_FASTCALL
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ HAVE_FASTCALL
+  #ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ _MSC_VER
+    #ವ್ಯಾಖ್ಯಾನಿಸು FFI_DECLARE_FASTCALL __fastcall
+  #ಇಲ್ಲದಿದ್ದರೆ
+    #ವ್ಯಾಖ್ಯಾನಿಸು FFI_DECLARE_FASTCALL __declspec(fastcall)
+  #ಆದರೆ_ಅಂತ್ಯ
+#ಇಲ್ಲದಿದ್ದರೆ
+  #ವ್ಯಾಖ್ಯಾನಿಸು FFI_DECLARE_FASTCALL
+#ಆದರೆ_ಅಂತ್ಯ
 
-extern void FFI_DECLARE_FASTCALL ffi_call_i386(struct call_frame *, char *) FFI_HIDDEN;
+ಬಾಹ್ಯ ಶೂನ್ಯ FFI_DECLARE_FASTCALL ffi_call_i386(ರಚನೆ call_ಚೌಕಟ್ಟು *, ಅಕ್ಷರ *) FFI_HIDDEN;
 
 /* We perform some black magic here to use some of the parent's stack frame in
  * ffi_call_i386() that breaks with the MSVC compiler with the /RTCs or /GZ
  * flags.  Disable the 'Stack frame run time error checking' for this function
  * so we don't hit weird exceptions in debug builds. */
-#if defined(_MSC_VER)
-#pragma runtime_checks("s", off)
-#endif
+#ಆದರೆ defined(_MSC_VER)
+#ಸೂಚನೆ runtime_checks("s", off)
+#ಆದರೆ_ಅಂತ್ಯ
 /* n.b. ffi_call_unix64 will steal the alloca'd `stack` variable here for use
    _as its own stack_ - so we need to compile this function without ASAN */
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_call_int (ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue,
+	      ಶೂನ್ಯ **avalue, ಶೂನ್ಯ *ಆವರಣ)
 {
-  size_t rsize, bytes;
-  struct call_frame *frame;
-  char *stack, *argp;
+  size_t rsize, ಬೈಟುಗಳು;
+  ರಚನೆ call_ಚೌಕಟ್ಟು *ಚೌಕಟ್ಟು;
+  ಅಕ್ಷರ *ರಾಶಿ, *argp;
   ffi_type **arg_types;
-  int flags, cabi, i, n, dir, narg_reg;
-  const struct abi_params *pabi;
+  ಪೂರ್ಣಾಂಕ flags, cabi, i, n, dir, narg_reg;
+  ಸ್ಥಿರಾಂಕ ರಚನೆ abi_params *pabi;
 
   flags = cif->flags;
   cabi = cif->abi;
@@ -290,82 +290,82 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   dir = pabi->dir;
 
   rsize = 0;
-  if (rvalue == NULL)
+  ಆದರೆ (rvalue == ಖಾಲಿ)
     {
-      switch (flags)
+      ಆಯ್ಕೆ (flags)
 	{
-	case X86_RET_FLOAT:
-	case X86_RET_DOUBLE:
-	case X86_RET_LDOUBLE:
-	case X86_RET_STRUCTPOP:
-	case X86_RET_STRUCTARG:
+	ಸ್ಥಿತಿ X86_RET_FLOAT:
+	ಸ್ಥಿತಿ X86_RET_DOUBLE:
+	ಸ್ಥಿತಿ X86_RET_LDOUBLE:
+	ಸ್ಥಿತಿ X86_RET_STRUCTPOP:
+	ಸ್ಥಿತಿ X86_RET_STRUCTARG:
 	  /* The float cases need to pop the 387 stack.
 	     The struct cases need to pass a valid pointer to the callee.  */
-	  rsize = cif->rtype->size;
-	  break;
-	default:
+	  rsize = cif->rtype->ಗಾತ್ರ_2;
+	  ನಿಲ್ಲಿಸು;
+	ಪೂರ್ವನಿಯೋಜಿತ:
 	  /* We can pretend that the callee returns nothing.  */
 	  flags = X86_RET_VOID;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 	}
     }
 
-  bytes = STACK_ALIGN (cif->bytes);
-  stack = alloca(bytes + sizeof(*frame) + rsize);
-  argp = (dir < 0 ? stack + bytes : stack);
-  frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
-    rvalue = frame + 1;
+  ಬೈಟುಗಳು = ರಾಶಿ_ALIGN (cif->ಬೈಟುಗಳು);
+  ರಾಶಿ = alloca(ಬೈಟುಗಳು + ಗಾತ್ರ(*ಚೌಕಟ್ಟು) + rsize);
+  argp = (dir < 0 ? ರಾಶಿ + ಬೈಟುಗಳು : ರಾಶಿ);
+  ಚೌಕಟ್ಟು = (ರಚನೆ call_ಚೌಕಟ್ಟು *)(ರಾಶಿ + ಬೈಟುಗಳು);
+  ಆದರೆ (rsize)
+    rvalue = ಚೌಕಟ್ಟು + 1;
 
-  frame->fn = fn;
-  frame->flags = flags;
-  frame->rvalue = rvalue;
-  frame->regs[pabi->static_chain] = (unsigned)closure;
+  ಚೌಕಟ್ಟು->fn = fn;
+  ಚೌಕಟ್ಟು->flags = flags;
+  ಚೌಕಟ್ಟು->rvalue = rvalue;
+  ಚೌಕಟ್ಟು->regs[pabi->static_chain] = (ಚಿಹ್ನೆರಹಿತ)ಆವರಣ;
 
   narg_reg = 0;
-  switch (flags)
+  ಆಯ್ಕೆ (flags)
     {
-    case X86_RET_STRUCTARG:
+    ಸ್ಥಿತಿ X86_RET_STRUCTARG:
       /* The pointer is passed as the first argument.  */
-      if (pabi->nregs > 0)
+      ಆದರೆ (pabi->nregs > 0)
 	{
-	  frame->regs[pabi->regs[0]] = (unsigned)rvalue;
+	  ಚೌಕಟ್ಟು->regs[pabi->regs[0]] = (ಚಿಹ್ನೆರಹಿತ)rvalue;
 	  narg_reg = 1;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 	}
       /* fallthru */
-    case X86_RET_STRUCTPOP:
-      *(void **)argp = rvalue;
-      argp += sizeof(void *);
-      break;
+    ಸ್ಥಿತಿ X86_RET_STRUCTPOP:
+      *(ಶೂನ್ಯ **)argp = rvalue;
+      argp += ಗಾತ್ರ(ಶೂನ್ಯ *);
+      ನಿಲ್ಲಿಸು;
     }
 
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; i < n; i++)
+  ಗಾಗಿ (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *valp = avalue[i];
-      size_t z = ty->size;
-      int t = ty->type;
+      ಶೂನ್ಯ *valp = avalue[i];
+      size_t z = ty->ಗಾತ್ರ_2;
+      ಪೂರ್ಣಾಂಕ t = ty->type;
 
-      if (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
+      ಆದರೆ (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
         {
 	  ffi_arg val = extend_basic_type (valp, t);
 
-	  if (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
-	    frame->regs[pabi->regs[narg_reg++]] = val;
-	  else if (dir < 0)
+	  ಆದರೆ (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
+	    ಚೌಕಟ್ಟು->regs[pabi->regs[narg_reg++]] = val;
+	  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (dir < 0)
 	    {
 	      argp -= 4;
 	      *(ffi_arg *)argp = val;
 	    }
-	  else
+	  ಇಲ್ಲದಿದ್ದರೆ
 	    {
 	      *(ffi_arg *)argp = val;
 	      argp += 4;
 	    }
 	}
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
 	  size_t za = FFI_ALIGN (z, FFI_SIZEOF_ARG);
 	  size_t align = FFI_SIZEOF_ARG;
@@ -373,7 +373,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	  /* Issue 434: For thiscall and fastcall, if the parameter passed
 	     as 64-bit integer or struct, all following integer parameters
 	     will be passed on stack.  */
-	  if ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
+	  ಆದರೆ ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
 	      && (t == FFI_TYPE_SINT64
 		  || t == FFI_TYPE_UINT64
 		  || t == FFI_TYPE_STRUCT))
@@ -386,158 +386,158 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	     inside, however, would get 16 byte alignment.  Since libffi does
 	     not support vectors, we need non concern ourselves with other
 	     cases.  */
-	  if (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
+	  ಆದರೆ (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
 	    align = 16;
 
-	  if (dir < 0)
+	  ಆದರೆ (dir < 0)
 	    {
 	      /* ??? These reverse argument ABIs are probably too old
 		 to have cared about alignment.  Someone should check.  */
 	      argp -= za;
-	      memcpy (argp, valp, z);
+	      ಸ್ಮರಣೆ_ನಕಲು (argp, valp, z);
 	    }
-	  else
+	  ಇಲ್ಲದಿದ್ದರೆ
 	    {
-	      argp = (char *)FFI_ALIGN (argp, align);
-	      memcpy (argp, valp, z);
+	      argp = (ಅಕ್ಷರ *)FFI_ALIGN (argp, align);
+	      ಸ್ಮರಣೆ_ನಕಲು (argp, valp, z);
 	      argp += za;
 	    }
 	}
     }
-  FFI_ASSERT (dir > 0 || argp == stack);
+  FFI_ASSERT (dir > 0 || argp == ರಾಶಿ);
 
-  ffi_call_i386 (frame, stack);
+  ffi_call_i386 (ಚೌಕಟ್ಟು, ರಾಶಿ);
 }
-#if defined(_MSC_VER)
-#pragma runtime_checks("s", restore)
-#endif
+#ಆದರೆ defined(_MSC_VER)
+#ಸೂಚನೆ runtime_checks("s", restore)
+#ಆದರೆ_ಅಂತ್ಯ
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ಶೂನ್ಯ
+ffi_call (ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ಖಾಲಿ);
 }
 
-#ifdef FFI_GO_CLOSURES
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ FFI_GO_CLOSURES
+ಶೂನ್ಯ
+ffi_call_go (ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue,
+	     ಶೂನ್ಯ **avalue, ಶೂನ್ಯ *ಆವರಣ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, ಆವರಣ);
 }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /** private members **/
 
-void FFI_HIDDEN ffi_closure_i386(void);
-void FFI_HIDDEN ffi_closure_STDCALL(void);
-void FFI_HIDDEN ffi_closure_REGISTER(void);
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void FFI_HIDDEN ffi_closure_i386_alt(void);
-void FFI_HIDDEN ffi_closure_STDCALL_alt(void);
-void FFI_HIDDEN ffi_closure_REGISTER_alt(void);
-#endif
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_i386(ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_STDCALL(ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_ರಿಜಿಸ್ಟರ್(ಶೂನ್ಯ);
+#ಆದರೆ defined(FFI_EXEC_STATIC_TRAMP)
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_i386_alt(ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_STDCALL_alt(ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_ರಿಜಿಸ್ಟರ್_alt(ಶೂನ್ಯ);
+#ಆದರೆ_ಅಂತ್ಯ
 
-struct closure_frame
+ರಚನೆ ಆವರಣ_ಚೌಕಟ್ಟು
 {
-  unsigned rettemp[4];				/* 0 */
-  unsigned regs[3];				/* 16-24 */
+  ಚಿಹ್ನೆರಹಿತ rettemp[4];				/* 0 */
+  ಚಿಹ್ನೆರಹಿತ regs[3];				/* 16-24 */
   ffi_cif *cif;					/* 28 */
-  void (*fun)(ffi_cif*,void*,void**,void*);	/* 32 */
-  void *user_data;				/* 36 */
+  ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ಶೂನ್ಯ**,ಶೂನ್ಯ*);	/* 32 */
+  ಶೂನ್ಯ *user_ದತ್ತಾಂಶ;				/* 36 */
 };
 
-int FFI_HIDDEN FFI_DECLARE_FASTCALL
-ffi_closure_inner (struct closure_frame *frame, char *stack)
+ಪೂರ್ಣಾಂಕ FFI_HIDDEN FFI_DECLARE_FASTCALL
+ffi_ಆವರಣ_inner (ರಚನೆ ಆವರಣ_ಚೌಕಟ್ಟು *ಚೌಕಟ್ಟು, ಅಕ್ಷರ *ರಾಶಿ)
 {
-  ffi_cif *cif = frame->cif;
-  int cabi, i, n, flags, dir, narg_reg;
-  const struct abi_params *pabi;
+  ffi_cif *cif = ಚೌಕಟ್ಟು->cif;
+  ಪೂರ್ಣಾಂಕ cabi, i, n, flags, dir, narg_reg;
+  ಸ್ಥಿರಾಂಕ ರಚನೆ abi_params *pabi;
   ffi_type **arg_types;
-  char *argp;
-  void *rvalue;
-  void **avalue;
+  ಅಕ್ಷರ *argp;
+  ಶೂನ್ಯ *rvalue;
+  ಶೂನ್ಯ **avalue;
 
   cabi = cif->abi;
   flags = cif->flags;
   narg_reg = 0;
-  rvalue = frame->rettemp;
+  rvalue = ಚೌಕಟ್ಟು->rettemp;
   pabi = &abi_params[cabi];
   dir = pabi->dir;
-  argp = (dir < 0 ? stack + STACK_ALIGN (cif->bytes) : stack);
+  argp = (dir < 0 ? ರಾಶಿ + ರಾಶಿ_ALIGN (cif->ಬೈಟುಗಳು) : ರಾಶಿ);
 
-  switch (flags)
+  ಆಯ್ಕೆ (flags)
     {
-    case X86_RET_STRUCTARG:
-      if (pabi->nregs > 0)
+    ಸ್ಥಿತಿ X86_RET_STRUCTARG:
+      ಆದರೆ (pabi->nregs > 0)
 	{
-	  rvalue = (void *)frame->regs[pabi->regs[0]];
+	  rvalue = (ಶೂನ್ಯ *)ಚೌಕಟ್ಟು->regs[pabi->regs[0]];
 	  narg_reg = 1;
-	  frame->rettemp[0] = (unsigned)rvalue;
-	  break;
+	  ಚೌಕಟ್ಟು->rettemp[0] = (ಚಿಹ್ನೆರಹಿತ)rvalue;
+	  ನಿಲ್ಲಿಸು;
 	}
       /* fallthru */
-    case X86_RET_STRUCTPOP:
-      rvalue = *(void **)argp;
-      argp += sizeof(void *);
-      frame->rettemp[0] = (unsigned)rvalue;
-      break;
+    ಸ್ಥಿತಿ X86_RET_STRUCTPOP:
+      rvalue = *(ಶೂನ್ಯ **)argp;
+      argp += ಗಾತ್ರ(ಶೂನ್ಯ *);
+      ಚೌಕಟ್ಟು->rettemp[0] = (ಚಿಹ್ನೆರಹಿತ)rvalue;
+      ನಿಲ್ಲಿಸು;
     }
 
   n = cif->nargs;
-  avalue = alloca(sizeof(void *) * n);
+  avalue = alloca(ಗಾತ್ರ(ಶೂನ್ಯ *) * n);
 
   arg_types = cif->arg_types;
-  for (i = 0; i < n; ++i)
+  ಗಾಗಿ (i = 0; i < n; ++i)
     {
       ffi_type *ty = arg_types[i];
-      size_t z = ty->size;
-      int t = ty->type;
-      void *valp;
+      size_t z = ty->ಗಾತ್ರ_2;
+      ಪೂರ್ಣಾಂಕ t = ty->type;
+      ಶೂನ್ಯ *valp;
 
-      if (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
+      ಆದರೆ (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT)
 	{
-	  if (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
-	    valp = &frame->regs[pabi->regs[narg_reg++]];
-	  else if (dir < 0)
+	  ಆದರೆ (t != FFI_TYPE_FLOAT && narg_reg < pabi->nregs)
+	    valp = &ಚೌಕಟ್ಟು->regs[pabi->regs[narg_reg++]];
+	  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (dir < 0)
 	    {
 	      argp -= 4;
 	      valp = argp;
 	    }
-	  else
+	  ಇಲ್ಲದಿದ್ದರೆ
 	    {
 	      valp = argp;
 	      argp += 4;
 	    }
 	}
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
 	  size_t za = FFI_ALIGN (z, FFI_SIZEOF_ARG);
 	  size_t align = FFI_SIZEOF_ARG;
 
 	  /* See the comment in ffi_call_int.  */
-	  if (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
+	  ಆದರೆ (t == FFI_TYPE_STRUCT && ty->alignment >= 16)
 	    align = 16;
 
 	  /* Issue 434: For thiscall and fastcall, if the parameter passed
 	     as 64-bit integer or struct, all following integer parameters
 	     will be passed on stack.  */
-	  if ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
+	  ಆದರೆ ((cabi == FFI_THISCALL || cabi == FFI_FASTCALL)
 	      && (t == FFI_TYPE_SINT64
 		  || t == FFI_TYPE_UINT64
 		  || t == FFI_TYPE_STRUCT))
 	    narg_reg = 2;
 
-	  if (dir < 0)
+	  ಆದರೆ (dir < 0)
 	    {
 	      /* ??? These reverse argument ABIs are probably too old
 		 to have cared about alignment.  Someone should check.  */
 	      argp -= za;
 	      valp = argp;
 	    }
-	  else
+	  ಇಲ್ಲದಿದ್ದರೆ
 	    {
-	      argp = (char *)FFI_ALIGN (argp, align);
+	      argp = (ಅಕ್ಷರ *)FFI_ALIGN (argp, align);
 	      valp = argp;
 	      argp += za;
 	    }
@@ -546,14 +546,14 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
       avalue[i] = valp;
     }
 
-  frame->fun (cif, rvalue, avalue, frame->user_data);
+  ಚೌಕಟ್ಟು->fun (cif, rvalue, avalue, ಚೌಕಟ್ಟು->user_ದತ್ತಾಂಶ);
 
-  switch (cabi)
+  ಆಯ್ಕೆ (cabi)
     {
-    case FFI_STDCALL:
-      return flags | (cif->bytes << X86_RET_POP_SHIFT);
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
+    ಸ್ಥಿತಿ FFI_STDCALL:
+      ಹಿಂತಿರುಗಿ flags | (cif->ಬೈಟುಗಳು << X86_RET_ತೆಗೆ_ಸರಿಸು);
+    ಸ್ಥಿತಿ FFI_THISCALL:
+    ಸ್ಥಿತಿ FFI_FASTCALL:
       /* The callee must pop exactly the bytes that were passed on the
 	 stack.  Deriving that from cif->bytes minus narg_reg * 4 is wrong
 	 once narg_reg has been force-bumped to 2 (above) for a 64-bit or
@@ -561,57 +561,57 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
 	 then discounts register slots that were never used, under-popping
 	 the stack.  argp has advanced past exactly the stack-resident
 	 arguments (dir == 1 for these ABIs), so use that directly.  */
-      return flags | (((unsigned) (argp - stack)) << X86_RET_POP_SHIFT);
-    default:
-      return flags;
+      ಹಿಂತಿರುಗಿ flags | (((ಚಿಹ್ನೆರಹಿತ) (argp - ರಾಶಿ)) << X86_RET_ತೆಗೆ_ಸರಿಸು);
+    ಪೂರ್ವನಿಯೋಜಿತ:
+      ಹಿಂತಿರುಗಿ flags;
     }
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ* ಆವರಣ,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ಶೂನ್ಯ**,ಶೂನ್ಯ*),
+                      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+                      ಶೂನ್ಯ *codeloc)
 {
-  char *tramp = closure->tramp;
-  void (*dest)(void);
-  int op = 0xb8;  /* movl imm, %eax */
+  ಅಕ್ಷರ *tramp = ಆವರಣ->tramp;
+  ಶೂನ್ಯ (*dest)(ಶೂನ್ಯ);
+  ಪೂರ್ಣಾಂಕ op = 0xb8;  /* movl imm, %eax */
 
-  switch (cif->abi)
+  ಆಯ್ಕೆ (cif->abi)
     {
-    case FFI_SYSV:
-    case FFI_MS_CDECL:
-      dest = ffi_closure_i386;
-      break;
-    case FFI_STDCALL:
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
-    case FFI_PASCAL:
-      dest = ffi_closure_STDCALL;
-      break;
-    case FFI_REGISTER:
-      dest = ffi_closure_REGISTER;
+    ಸ್ಥಿತಿ FFI_SYSV:
+    ಸ್ಥಿತಿ FFI_MS_CDECL:
+      dest = ffi_ಆವರಣ_i386;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_STDCALL:
+    ಸ್ಥಿತಿ FFI_THISCALL:
+    ಸ್ಥಿತಿ FFI_FASTCALL:
+    ಸ್ಥಿತಿ FFI_PASCAL:
+      dest = ffi_ಆವರಣ_STDCALL;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_ರಿಜಿಸ್ಟರ್:
+      dest = ffi_ಆವರಣ_ರಿಜಿಸ್ಟರ್;
       op = 0x68;  /* pushl imm */
-      break;
-    default:
-      return FFI_BAD_ABI;
+      ನಿಲ್ಲಿಸು;
+    ಪೂರ್ವನಿಯೋಜಿತ:
+      ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
     }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ಆದರೆ defined(FFI_EXEC_STATIC_TRAMP)
+  ಆದರೆ (ffi_tramp_is_present(ಆವರಣ))
     {
       /* Initialize the static trampoline's parameters. */
-      if (dest == ffi_closure_i386)
-        dest = ffi_closure_i386_alt;
-      else if (dest == ffi_closure_STDCALL)
-        dest = ffi_closure_STDCALL_alt;
-      else
-        dest = ffi_closure_REGISTER_alt;
-      ffi_tramp_set_parms (closure->ftramp, dest, closure);
-      goto out;
+      ಆದರೆ (dest == ffi_ಆವರಣ_i386)
+        dest = ffi_ಆವರಣ_i386_alt;
+      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (dest == ffi_ಆವರಣ_STDCALL)
+        dest = ffi_ಆವರಣ_STDCALL_alt;
+      ಇಲ್ಲದಿದ್ದರೆ
+        dest = ffi_ಆವರಣ_ರಿಜಿಸ್ಟರ್_alt;
+      ffi_tramp_ಗಣ_parms (ಆವರಣ->ftramp, dest, ಆವರಣ);
+      ಹೋಗು ಹೊರಹೋಗು;
     }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
   /* Initialize the dynamic trampoline. */
   /* endbr32.  */
@@ -619,223 +619,223 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
   /* movl or pushl immediate.  */
   tramp[4] = op;
-  *(void **)(tramp + 5) = codeloc;
+  *(ಶೂನ್ಯ **)(tramp + 5) = codeloc;
 
   /* jmp dest */
   tramp[9] = 0xe9;
-  *(unsigned *)(tramp + 10) = (unsigned)dest - ((unsigned)codeloc + 14);
+  *(ಚಿಹ್ನೆರಹಿತ *)(tramp + 10) = (ಚಿಹ್ನೆರಹಿತ)dest - ((ಚಿಹ್ನೆರಹಿತ)codeloc + 14);
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-out:
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+#ಆದರೆ defined(FFI_EXEC_STATIC_TRAMP)
+ಹೊರಹೋಗು:
+#ಆದರೆ_ಅಂತ್ಯ
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-#ifdef FFI_GO_CLOSURES
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ FFI_GO_CLOSURES
 
-void FFI_HIDDEN ffi_go_closure_EAX(void);
-void FFI_HIDDEN ffi_go_closure_ECX(void);
-void FFI_HIDDEN ffi_go_closure_STDCALL(void);
+ಶೂನ್ಯ FFI_HIDDEN ffi_go_ಆವರಣ_EAX(ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_go_ಆವರಣ_ECX(ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_go_ಆವರಣ_STDCALL(ಶೂನ್ಯ);
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*,void*,void**,void*))
+ffi_ಸ್ಥಿತಿ
+ffi_prep_go_ಆವರಣ (ffi_go_ಆವರಣ* ಆವರಣ, ffi_cif* cif,
+		     ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ಶೂನ್ಯ**,ಶೂನ್ಯ*))
 {
-  void (*dest)(void);
+  ಶೂನ್ಯ (*dest)(ಶೂನ್ಯ);
 
-  switch (cif->abi)
+  ಆಯ್ಕೆ (cif->abi)
     {
-    case FFI_SYSV:
-    case FFI_MS_CDECL:
-      dest = ffi_go_closure_ECX;
-      break;
-    case FFI_THISCALL:
-    case FFI_FASTCALL:
-      dest = ffi_go_closure_EAX;
-      break;
-    case FFI_STDCALL:
-    case FFI_PASCAL:
-      dest = ffi_go_closure_STDCALL;
-      break;
-    case FFI_REGISTER:
-    default:
-      return FFI_BAD_ABI;
+    ಸ್ಥಿತಿ FFI_SYSV:
+    ಸ್ಥಿತಿ FFI_MS_CDECL:
+      dest = ffi_go_ಆವರಣ_ECX;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_THISCALL:
+    ಸ್ಥಿತಿ FFI_FASTCALL:
+      dest = ffi_go_ಆವರಣ_EAX;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_STDCALL:
+    ಸ್ಥಿತಿ FFI_PASCAL:
+      dest = ffi_go_ಆವರಣ_STDCALL;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_ರಿಜಿಸ್ಟರ್:
+    ಪೂರ್ವನಿಯೋಜಿತ:
+      ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
     }
 
-  closure->tramp = dest;
-  closure->cif = cif;
-  closure->fun = fun;
+  ಆವರಣ->tramp = dest;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-#endif /* FFI_GO_CLOSURES */
+#ಆದರೆ_ಅಂತ್ಯ /* FFI_GO_CLOSURES */
 
 /* ------- Native raw API support -------------------------------- */
 
-#if !FFI_NO_RAW_API
+#ಆದರೆ !FFI_NO_RAW_API
 
-void FFI_HIDDEN ffi_closure_raw_SYSV(void);
-void FFI_HIDDEN ffi_closure_raw_THISCALL(void);
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_raw_SYSV(ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_ಆವರಣ_raw_THISCALL(ಶೂನ್ಯ);
 
-ffi_status
-ffi_prep_raw_closure_loc (ffi_raw_closure *closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_raw_ಆವರಣ_loc (ffi_raw_ಆವರಣ *ಆವರಣ,
                           ffi_cif *cif,
-                          void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-                          void *user_data,
-                          void *codeloc)
+                          ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ffi_raw*,ಶೂನ್ಯ*),
+                          ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+                          ಶೂನ್ಯ *codeloc)
 {
-  char *tramp = closure->tramp;
-  void (*dest)(void);
-  int i;
+  ಅಕ್ಷರ *tramp = ಆವರಣ->tramp;
+  ಶೂನ್ಯ (*dest)(ಶೂನ್ಯ);
+  ಪೂರ್ಣಾಂಕ i;
 
   /* We currently don't support certain kinds of arguments for raw
      closures.  This should be implemented by a separate assembly
      language routine, since it would require argument processing,
      something we don't do now for performance.  */
-  for (i = cif->nargs-1; i >= 0; i--)
-    switch (cif->arg_types[i]->type)
+  ಗಾಗಿ (i = cif->nargs-1; i >= 0; i--)
+    ಆಯ್ಕೆ (cif->arg_types[i]->type)
       {
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_LONGDOUBLE:
-	return FFI_BAD_TYPEDEF;
+      ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+      ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
+	ಹಿಂತಿರುಗಿ FFI_BAD_TYPEDEF;
       }
 
-  switch (cif->abi)
+  ಆಯ್ಕೆ (cif->abi)
     {
-    case FFI_THISCALL:
-      dest = ffi_closure_raw_THISCALL;
-      break;
-    case FFI_SYSV:
-      dest = ffi_closure_raw_SYSV;
-      break;
-    default:
-      return FFI_BAD_ABI;
+    ಸ್ಥಿತಿ FFI_THISCALL:
+      dest = ffi_ಆವರಣ_raw_THISCALL;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_SYSV:
+      dest = ffi_ಆವರಣ_raw_SYSV;
+      ನಿಲ್ಲಿಸು;
+    ಪೂರ್ವನಿಯೋಜಿತ:
+      ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
     }
 
   /* movl imm, %eax.  */
   tramp[0] = 0xb8;
-  *(void **)(tramp + 1) = codeloc;
+  *(ಶೂನ್ಯ **)(tramp + 1) = codeloc;
 
   /* jmp dest */
   tramp[5] = 0xe9;
-  *(unsigned *)(tramp + 6) = (unsigned)dest - ((unsigned)codeloc + 10);
+  *(ಚಿಹ್ನೆರಹಿತ *)(tramp + 6) = (ಚಿಹ್ನೆರಹಿತ)dest - ((ಚಿಹ್ನೆರಹಿತ)codeloc + 10);
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-void
-ffi_raw_call(ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *avalue)
+ಶೂನ್ಯ
+ffi_raw_call(ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ffi_raw *avalue)
 {
-  size_t rsize, bytes;
-  struct call_frame *frame;
-  char *stack, *argp;
+  size_t rsize, ಬೈಟುಗಳು;
+  ರಚನೆ call_ಚೌಕಟ್ಟು *ಚೌಕಟ್ಟು;
+  ಅಕ್ಷರ *ರಾಶಿ, *argp;
   ffi_type **arg_types;
-  int flags, cabi, i, n, narg_reg;
-  const struct abi_params *pabi;
+  ಪೂರ್ಣಾಂಕ flags, cabi, i, n, narg_reg;
+  ಸ್ಥಿರಾಂಕ ರಚನೆ abi_params *pabi;
 
   flags = cif->flags;
   cabi = cif->abi;
   pabi = &abi_params[cabi];
 
   rsize = 0;
-  if (rvalue == NULL)
+  ಆದರೆ (rvalue == ಖಾಲಿ)
     {
-      switch (flags)
+      ಆಯ್ಕೆ (flags)
 	{
-	case X86_RET_FLOAT:
-	case X86_RET_DOUBLE:
-	case X86_RET_LDOUBLE:
-	case X86_RET_STRUCTPOP:
-	case X86_RET_STRUCTARG:
+	ಸ್ಥಿತಿ X86_RET_FLOAT:
+	ಸ್ಥಿತಿ X86_RET_DOUBLE:
+	ಸ್ಥಿತಿ X86_RET_LDOUBLE:
+	ಸ್ಥಿತಿ X86_RET_STRUCTPOP:
+	ಸ್ಥಿತಿ X86_RET_STRUCTARG:
 	  /* The float cases need to pop the 387 stack.
 	     The struct cases need to pass a valid pointer to the callee.  */
-	  rsize = cif->rtype->size;
-	  break;
-	default:
+	  rsize = cif->rtype->ಗಾತ್ರ_2;
+	  ನಿಲ್ಲಿಸು;
+	ಪೂರ್ವನಿಯೋಜಿತ:
 	  /* We can pretend that the callee returns nothing.  */
 	  flags = X86_RET_VOID;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 	}
     }
 
-  bytes = STACK_ALIGN (cif->bytes);
-  argp = stack =
-      (void *)((uintptr_t)alloca(bytes + sizeof(*frame) + rsize + 15) & ~16);
-  frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
-    rvalue = frame + 1;
+  ಬೈಟುಗಳು = ರಾಶಿ_ALIGN (cif->ಬೈಟುಗಳು);
+  argp = ರಾಶಿ =
+      (ಶೂನ್ಯ *)((uintptr_t)alloca(ಬೈಟುಗಳು + ಗಾತ್ರ(*ಚೌಕಟ್ಟು) + rsize + 15) & ~16);
+  ಚೌಕಟ್ಟು = (ರಚನೆ call_ಚೌಕಟ್ಟು *)(ರಾಶಿ + ಬೈಟುಗಳು);
+  ಆದರೆ (rsize)
+    rvalue = ಚೌಕಟ್ಟು + 1;
 
-  frame->fn = fn;
-  frame->flags = flags;
-  frame->rvalue = rvalue;
+  ಚೌಕಟ್ಟು->fn = fn;
+  ಚೌಕಟ್ಟು->flags = flags;
+  ಚೌಕಟ್ಟು->rvalue = rvalue;
 
   narg_reg = 0;
-  switch (flags)
+  ಆಯ್ಕೆ (flags)
     {
-    case X86_RET_STRUCTARG:
+    ಸ್ಥಿತಿ X86_RET_STRUCTARG:
       /* The pointer is passed as the first argument.  */
-      if (pabi->nregs > 0)
+      ಆದರೆ (pabi->nregs > 0)
 	{
-	  frame->regs[pabi->regs[0]] = (unsigned)rvalue;
+	  ಚೌಕಟ್ಟು->regs[pabi->regs[0]] = (ಚಿಹ್ನೆರಹಿತ)rvalue;
 	  narg_reg = 1;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 	}
       /* fallthru */
-    case X86_RET_STRUCTPOP:
-      *(void **)argp = rvalue;
-      argp += sizeof(void *);
-      bytes -= sizeof(void *);
-      break;
+    ಸ್ಥಿತಿ X86_RET_STRUCTPOP:
+      *(ಶೂನ್ಯ **)argp = rvalue;
+      argp += ಗಾತ್ರ(ಶೂನ್ಯ *);
+      ಬೈಟುಗಳು -= ಗಾತ್ರ(ಶೂನ್ಯ *);
+      ನಿಲ್ಲಿಸು;
     }
 
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; narg_reg < pabi->nregs && i < n; i++)
+  ಗಾಗಿ (i = 0, n = cif->nargs; narg_reg < pabi->nregs && i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      size_t z = ty->size;
-      int t = ty->type;
+      size_t z = ty->ಗಾತ್ರ_2;
+      ಪೂರ್ಣಾಂಕ t = ty->type;
 
-      if (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT && t != FFI_TYPE_FLOAT)
+      ಆದರೆ (z <= FFI_SIZEOF_ARG && t != FFI_TYPE_STRUCT && t != FFI_TYPE_FLOAT)
 	{
 	  ffi_arg val = extend_basic_type (avalue, t);
-	  frame->regs[pabi->regs[narg_reg++]] = val;
+	  ಚೌಕಟ್ಟು->regs[pabi->regs[narg_reg++]] = val;
 	  z = FFI_SIZEOF_ARG;
 	}
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
-	  memcpy (argp, avalue, z);
+	  ಸ್ಮರಣೆ_ನಕಲು (argp, avalue, z);
 	  z = FFI_ALIGN (z, FFI_SIZEOF_ARG);
 	  argp += z;
 	}
       avalue += z;
-      bytes -= z;
+      ಬೈಟುಗಳು -= z;
     }
-  if (i < n)
-    memcpy (argp, avalue, bytes);
+  ಆದರೆ (i < n)
+    ಸ್ಮರಣೆ_ನಕಲು (argp, avalue, ಬೈಟುಗಳು);
 
-  ffi_call_i386 (frame, stack);
+  ffi_call_i386 (ಚೌಕಟ್ಟು, ರಾಶಿ);
 }
-#endif /* !FFI_NO_RAW_API */
+#ಆದರೆ_ಅಂತ್ಯ /* !FFI_NO_RAW_API */
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#ಆದರೆ defined(FFI_EXEC_STATIC_TRAMP)
+ಶೂನ್ಯ *
+ffi_tramp_arch (size_t *tramp_ಗಾತ್ರ, size_t *map_ಗಾತ್ರ)
 {
-  extern void *trampoline_code_table;
+  ಬಾಹ್ಯ ಶೂನ್ಯ *trampoline_ಸಂಕೇತ_ಕೋಷ್ಟಕ;
 
-  *map_size = X86_TRAMP_MAP_SIZE;
-  *tramp_size = X86_TRAMP_SIZE;
-  return &trampoline_code_table;
+  *map_ಗಾತ್ರ = X86_TRAMP_MAP_ಗಾತ್ರ;
+  *tramp_ಗಾತ್ರ = X86_TRAMP_ಗಾತ್ರ;
+  ಹಿಂತಿರುಗಿ &trampoline_ಸಂಕೇತ_ಕೋಷ್ಟಕ;
 }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#endif /* __i386__ */
+#ಆದರೆ_ಅಂತ್ಯ /* __i386__ */

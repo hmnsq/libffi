@@ -24,77 +24,77 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-extern void ffi_call_SYSV(void (*)(void*, extended_cif*), extended_cif*,
-		unsigned int, unsigned int, unsigned int*, void (*fn)(void),
-		unsigned int, unsigned int);
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_SYSV(ಶೂನ್ಯ (*)(ಶೂನ್ಯ*, extended_cif*), extended_cif*,
+		ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ, ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ, ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ*, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ),
+		ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ, ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ);
 
-extern void ffi_closure_SYSV(void);
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_ಆವರಣ_SYSV(ಶೂನ್ಯ);
 
-#define WORD_SIZE			sizeof(unsigned int)
-#define ARGS_REGISTER_SIZE	(WORD_SIZE * 6)
-#define WORD_FFI_ALIGN(x)		FFI_ALIGN(x, WORD_SIZE)
+#ವ್ಯಾಖ್ಯಾನಿಸು ಶಬ್ದ_ಗಾತ್ರ			ಗಾತ್ರ(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)
+#ವ್ಯಾಖ್ಯಾನಿಸು ವಾದಗಳು_ರಿಜಿಸ್ಟರ್_ಗಾತ್ರ	(ಶಬ್ದ_ಗಾತ್ರ * 6)
+#ವ್ಯಾಖ್ಯಾನಿಸು ಶಬ್ದ_FFI_ALIGN(x)		FFI_ALIGN(x, ಶಬ್ದ_ಗಾತ್ರ)
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
-void ffi_prep_args(void* stack, extended_cif* ecif)
+ಶೂನ್ಯ ffi_prep_ವಾದಗಳು(ಶೂನ್ಯ* ರಾಶಿ, extended_cif* ecif)
 {
-	unsigned int i;
+	ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ i;
 	ffi_type** p_arg;
-	void** p_argv;
-	void* stack_args_p = stack;
+	ಶೂನ್ಯ** p_argv;
+	ಶೂನ್ಯ* ರಾಶಿ_ವಾದಗಳು_p = ರಾಶಿ;
 
-	if (ecif == NULL || ecif->cif == NULL) {
-		return; /* no description to prepare */
+	ಆದರೆ (ecif == ಖಾಲಿ || ecif->cif == ಖಾಲಿ) {
+		ಹಿಂತಿರುಗಿ; /* no description to prepare */
 	}
 
 	p_argv = ecif->avalue;
 
-	if ((ecif->cif->rtype != NULL) &&
+	ಆದರೆ ((ecif->cif->rtype != ಖಾಲಿ) &&
 			(ecif->cif->rtype->type == FFI_TYPE_STRUCT))
 	{
 		/* if return type is a struct which is referenced on the stack/reg5,
 		 * by a pointer. Stored the return value pointer in r5.
 		 */
-		char* addr = stack_args_p;
-		memcpy(addr, &(ecif->rvalue), WORD_SIZE);
-		stack_args_p += WORD_SIZE;
+		ಅಕ್ಷರ* addr = ರಾಶಿ_ವಾದಗಳು_p;
+		ಸ್ಮರಣೆ_ನಕಲು(addr, &(ecif->rvalue), ಶಬ್ದ_ಗಾತ್ರ);
+		ರಾಶಿ_ವಾದಗಳು_p += ಶಬ್ದ_ಗಾತ್ರ;
 	}
 
-	if (ecif->avalue == NULL) {
-		return; /* no arguments to prepare */
+	ಆದರೆ (ecif->avalue == ಖಾಲಿ) {
+		ಹಿಂತಿರುಗಿ; /* no arguments to prepare */
 	}
 
-	for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+	ಗಾಗಿ (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
 			i++, p_arg++)
 	{
-		size_t size = (*p_arg)->size;
-		int type = (*p_arg)->type;
-		void* value = p_argv[i];
-		char* addr = stack_args_p;
-		int aligned_size = WORD_FFI_ALIGN(size);
+		size_t ಗಾತ್ರ_2 = (*p_arg)->ಗಾತ್ರ_2;
+		ಪೂರ್ಣಾಂಕ type = (*p_arg)->type;
+		ಶೂನ್ಯ* ಮೌಲ್ಯ = p_argv[i];
+		ಅಕ್ಷರ* addr = ರಾಶಿ_ವಾದಗಳು_p;
+		ಪೂರ್ಣಾಂಕ aligned_ಗಾತ್ರ = ಶಬ್ದ_FFI_ALIGN(ಗಾತ್ರ_2);
 
 		/* force word alignment on the stack */
-		stack_args_p += aligned_size;
+		ರಾಶಿ_ವಾದಗಳು_p += aligned_ಗಾತ್ರ;
 		
-		switch (type)
+		ಆಯ್ಕೆ (type)
 		{
-			case FFI_TYPE_UINT8:
-				*(unsigned int *)addr = (unsigned int)*(UINT8*)(value);
-				break;
-			case FFI_TYPE_SINT8:
-				*(signed int *)addr = (signed int)*(SINT8*)(value);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *)addr = (unsigned int)*(UINT16*)(value);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *)addr = (signed int)*(SINT16*)(value);
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+			ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+				*(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *)addr = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT8*)(ಮೌಲ್ಯ);
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+				*(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *)addr = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT8*)(ಮೌಲ್ಯ);
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+				*(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *)addr = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ)*(UINT16*)(ಮೌಲ್ಯ);
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+				*(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *)addr = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ)*(SINT16*)(ಮೌಲ್ಯ);
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+#ಆದರೆ __BIG_ENDIAN__
 				/*
 				 * MicroBlaze toolchain appears to emit:
 				 * bsrli r5, r5, 8 (caller)
@@ -117,38 +117,38 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 				 * above mentioned case, it will re-align the contents of a
 				 * <= 3-byte struct value.
 				 */
-				if (size < WORD_SIZE)
+				ಆದರೆ (ಗಾತ್ರ_2 < ಶಬ್ದ_ಗಾತ್ರ)
 				{
-				  memcpy (addr + (WORD_SIZE - size), value, size);
-				  break;
+				  ಸ್ಮರಣೆ_ನಕಲು (addr + (ಶಬ್ದ_ಗಾತ್ರ - ಗಾತ್ರ_2), ಮೌಲ್ಯ, ಗಾತ್ರ_2);
+				  ನಿಲ್ಲಿಸು;
 				}
-#endif
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_DOUBLE:
-			default:
-				memcpy(addr, value, aligned_size);
+#ಆದರೆ_ಅಂತ್ಯ
+			ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+			ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+			ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+			ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+			ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+			ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+			ಪೂರ್ವನಿಯೋಜಿತ:
+				ಸ್ಮರಣೆ_ನಕಲು(addr, ಮೌಲ್ಯ, aligned_ಗಾತ್ರ);
 		}
 	}
 }
 
-ffi_status ffi_prep_cif_machdep(ffi_cif* cif)
+ffi_ಸ್ಥಿತಿ ffi_prep_cif_machdep(ffi_cif* cif)
 {
 	/* check ABI */
-	switch (cif->abi)
+	ಆಯ್ಕೆ (cif->abi)
 	{
-		case FFI_SYSV:
-			break;
-		default:
-			return FFI_BAD_ABI;
+		ಸ್ಥಿತಿ FFI_SYSV:
+			ನಿಲ್ಲಿಸು;
+		ಪೂರ್ವನಿಯೋಜಿತ:
+			ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
+ಶೂನ್ಯ ffi_call(ffi_cif* cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ* rvalue, ಶೂನ್ಯ** avalue)
 {
 	extended_cif ecif;
 	ecif.cif = cif;
@@ -156,30 +156,30 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 
 	/* If the return value is a struct and we don't have a return */
 	/* value address then we need to make one */
-	if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		ecif.rvalue = alloca(cif->rtype->size);
-	} else {
+	ಆದರೆ ((rvalue == ಖಾಲಿ) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		ecif.rvalue = alloca(cif->rtype->ಗಾತ್ರ_2);
+	} ಇಲ್ಲದಿದ್ದರೆ {
 		ecif.rvalue = rvalue;
 	}
 
-	switch (cif->abi)
+	ಆಯ್ಕೆ (cif->abi)
 	{
-	case FFI_SYSV:
-		ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags,
-				ecif.rvalue, fn, cif->rtype->type, cif->rtype->size);
-		break;
-	default:
+	ಸ್ಥಿತಿ FFI_SYSV:
+		ffi_call_SYSV(ffi_prep_ವಾದಗಳು, &ecif, cif->ಬೈಟುಗಳು, cif->flags,
+				ecif.rvalue, fn, cif->rtype->type, cif->rtype->ಗಾತ್ರ_2);
+		ನಿಲ್ಲಿಸು;
+	ಪೂರ್ವನಿಯೋಜಿತ:
 		FFI_ASSERT(0);
-		break;
+		ನಿಲ್ಲಿಸು;
 	}
 }
 
-void ffi_closure_call_SYSV(void* register_args, void* stack_args,
-			ffi_closure* closure, void* rvalue,
-			unsigned int* rtype, unsigned int* rsize)
+ಶೂನ್ಯ ffi_ಆವರಣ_call_SYSV(ಶೂನ್ಯ* ರಿಜಿಸ್ಟರ್_ವಾದಗಳು, ಶೂನ್ಯ* ರಾಶಿ_ವಾದಗಳು,
+			ffi_ಆವರಣ* ಆವರಣ, ಶೂನ್ಯ* rvalue,
+			ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ* rtype, ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ* rsize)
 {
 	/* prepare arguments for closure call */
-	ffi_cif* cif = closure->cif;
+	ffi_cif* cif = ಆವರಣ->cif;
 	ffi_type** arg_types = cif->arg_types;
 
 	/* re-allocate data for the args. This needs to be done in order to keep
@@ -187,111 +187,111 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	 * required to store the value of args in the lower 6 words in the stack
 	 * (although they are allocated in the stack).
 	 */
-	char* stackclone = alloca(cif->bytes);
-	void** avalue = alloca(cif->nargs * sizeof(void*));
-	void* struct_rvalue = NULL;
-	char* ptr = stackclone;
-	int i;
+	ಅಕ್ಷರ* stackclone = alloca(cif->ಬೈಟುಗಳು);
+	ಶೂನ್ಯ** avalue = alloca(cif->nargs * ಗಾತ್ರ(ಶೂನ್ಯ*));
+	ಶೂನ್ಯ* struct_rvalue = ಖಾಲಿ;
+	ಅಕ್ಷರ* ptr = stackclone;
+	ಪೂರ್ಣಾಂಕ i;
 
 	/* copy registers into stack clone */
-	int registers_used = cif->bytes;
-	if (registers_used > ARGS_REGISTER_SIZE) {
-		registers_used = ARGS_REGISTER_SIZE;
+	ಪೂರ್ಣಾಂಕ registers_ಬಳಸಿದ = cif->ಬೈಟುಗಳು;
+	ಆದರೆ (registers_ಬಳಸಿದ > ವಾದಗಳು_ರಿಜಿಸ್ಟರ್_ಗಾತ್ರ) {
+		registers_ಬಳಸಿದ = ವಾದಗಳು_ರಿಜಿಸ್ಟರ್_ಗಾತ್ರ;
 	}
-	memcpy(stackclone, register_args, registers_used);
+	ಸ್ಮರಣೆ_ನಕಲು(stackclone, ರಿಜಿಸ್ಟರ್_ವಾದಗಳು, registers_ಬಳಸಿದ);
 
 	/* copy stack allocated args into stack clone */
-	if (cif->bytes > ARGS_REGISTER_SIZE) {
-		int stack_used = cif->bytes - ARGS_REGISTER_SIZE;
-		memcpy(stackclone + ARGS_REGISTER_SIZE, stack_args, stack_used);
+	ಆದರೆ (cif->ಬೈಟುಗಳು > ವಾದಗಳು_ರಿಜಿಸ್ಟರ್_ಗಾತ್ರ) {
+		ಪೂರ್ಣಾಂಕ ರಾಶಿ_ಬಳಸಿದ = cif->ಬೈಟುಗಳು - ವಾದಗಳು_ರಿಜಿಸ್ಟರ್_ಗಾತ್ರ;
+		ಸ್ಮರಣೆ_ನಕಲು(stackclone + ವಾದಗಳು_ರಿಜಿಸ್ಟರ್_ಗಾತ್ರ, ರಾಶಿ_ವಾದಗಳು, ರಾಶಿ_ಬಳಸಿದ);
 	}
 
 	/* preserve struct type return pointer passing */
-	if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		struct_rvalue = *((void**)ptr);
-		ptr += WORD_SIZE;
+	ಆದರೆ ((cif->rtype != ಖಾಲಿ) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		struct_rvalue = *((ಶೂನ್ಯ**)ptr);
+		ptr += ಶಬ್ದ_ಗಾತ್ರ;
 	}
 
 	/* populate arg pointer list */
-	for (i = 0; i < cif->nargs; i++)
+	ಗಾಗಿ (i = 0; i < cif->nargs; i++)
 	{
-		switch (arg_types[i]->type)
+		ಆಯ್ಕೆ (arg_types[i]->type)
 		{
-			case FFI_TYPE_SINT8:
-			case FFI_TYPE_UINT8:
-#ifdef __BIG_ENDIAN__
+			ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+			ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __BIG_ENDIAN__
 				avalue[i] = ptr + 3;
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 				avalue[i] = ptr;
-#endif
-				break;
-			case FFI_TYPE_SINT16:
-			case FFI_TYPE_UINT16:
-#ifdef __BIG_ENDIAN__
+#ಆದರೆ_ಅಂತ್ಯ
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+			ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __BIG_ENDIAN__
 				avalue[i] = ptr + 2;
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 				avalue[i] = ptr;
-#endif
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+#ಆದರೆ_ಅಂತ್ಯ
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+#ಆದರೆ __BIG_ENDIAN__
 				/*
 				 * Work around strange ABI behaviour.
 				 * (see info in ffi_prep_args)
 				 */
-				if (arg_types[i]->size < WORD_SIZE)
+				ಆದರೆ (arg_types[i]->ಗಾತ್ರ_2 < ಶಬ್ದ_ಗಾತ್ರ)
 				{
-				  memcpy (ptr, ptr + (WORD_SIZE - arg_types[i]->size), arg_types[i]->size);
+				  ಸ್ಮರಣೆ_ನಕಲು (ptr, ptr + (ಶಬ್ದ_ಗಾತ್ರ - arg_types[i]->ಗಾತ್ರ_2), arg_types[i]->ಗಾತ್ರ_2);
 				}
-#endif
-				avalue[i] = (void*)ptr;
-				break;
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_DOUBLE:
+#ಆದರೆ_ಅಂತ್ಯ
+				avalue[i] = (ಶೂನ್ಯ*)ptr;
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+			ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+			ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
 				avalue[i] = ptr;
-				break;
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			default:
+				ನಿಲ್ಲಿಸು;
+			ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+			ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+			ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+			ಪೂರ್ವನಿಯೋಜಿತ:
 				/* default 4-byte argument */
 				avalue[i] = ptr;
-				break;
+				ನಿಲ್ಲಿಸು;
 		}
-		ptr += WORD_FFI_ALIGN(arg_types[i]->size);
+		ptr += ಶಬ್ದ_FFI_ALIGN(arg_types[i]->ಗಾತ್ರ_2);
 	}
 
 	/* set the return type info passed back to the wrapper */
-	*rsize = cif->rtype->size;
+	*rsize = cif->rtype->ಗಾತ್ರ_2;
 	*rtype = cif->rtype->type;
-	if (struct_rvalue != NULL) {
-		closure->fun(cif, struct_rvalue, avalue, closure->user_data);
+	ಆದರೆ (struct_rvalue != ಖಾಲಿ) {
+		ಆವರಣ->fun(cif, struct_rvalue, avalue, ಆವರಣ->user_ದತ್ತಾಂಶ);
 		/* copy struct return pointer value into function return value */
-		*((void**)rvalue) = struct_rvalue;
-	} else {
-		closure->fun(cif, rvalue, avalue, closure->user_data);
+		*((ಶೂನ್ಯ**)rvalue) = struct_rvalue;
+	} ಇಲ್ಲದಿದ್ದರೆ {
+		ಆವರಣ->fun(cif, rvalue, avalue, ಆವರಣ->user_ದತ್ತಾಂಶ);
 	}
 }
 
-ffi_status ffi_prep_closure_loc(
-		ffi_closure* closure, ffi_cif* cif,
-		void (*fun)(ffi_cif*, void*, void**, void*),
-		void* user_data, void* codeloc)
+ffi_ಸ್ಥಿತಿ ffi_prep_ಆವರಣ_loc(
+		ffi_ಆವರಣ* ಆವರಣ, ffi_cif* cif,
+		ಶೂನ್ಯ (*fun)(ffi_cif*, ಶೂನ್ಯ*, ಶೂನ್ಯ**, ಶೂನ್ಯ*),
+		ಶೂನ್ಯ* user_ದತ್ತಾಂಶ, ಶೂನ್ಯ* codeloc)
 {
-	unsigned long* tramp = (unsigned long*)&(closure->tramp[0]);
-	unsigned long cls = (unsigned long)codeloc;
-	unsigned long fn = 0;
-	unsigned long fn_closure_call_sysv = (unsigned long)ffi_closure_call_SYSV;
+	ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ* tramp = (ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ*)&(ಆವರಣ->tramp[0]);
+	ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ cls = (ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ)codeloc;
+	ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ fn = 0;
+	ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ fn_ಆವರಣ_call_sysv = (ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ)ffi_ಆವರಣ_call_SYSV;
 
-	closure->cif = cif;
-	closure->fun = fun;
-	closure->user_data = user_data;
+	ಆವರಣ->cif = cif;
+	ಆವರಣ->fun = fun;
+	ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
 
-	switch (cif->abi)
+	ಆಯ್ಕೆ (cif->abi)
 	{
-	case FFI_SYSV:
-		fn = (unsigned long)ffi_closure_SYSV;
+	ಸ್ಥಿತಿ FFI_SYSV:
+		fn = (ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ)ffi_ಆವರಣ_SYSV;
 
 		/* load r11 (temp) with fn */
 		/* imm fn(upper) */
@@ -307,15 +307,15 @@ ffi_status ffi_prep_closure_loc(
 
 		/* load r3 (temp) with ffi_closure_call_SYSV */
 		/* imm fn_closure_call_sysv(upper) */
-		tramp[4] = 0xb0000000 | ((fn_closure_call_sysv >> 16) & 0xffff);
+		tramp[4] = 0xb0000000 | ((fn_ಆವರಣ_call_sysv >> 16) & 0xffff);
 		/* addik r3, r0, fn_closure_call_sysv(lower) */
-		tramp[5] = 0x30600000 | (fn_closure_call_sysv & 0xffff);
+		tramp[5] = 0x30600000 | (fn_ಆವರಣ_call_sysv & 0xffff);
 		/* branch/jump to address stored in r11 (fn) */
 		tramp[6] = 0x98085800; /* bra r11 */
 
-		break;
-	default:
-		return FFI_BAD_ABI;
+		ನಿಲ್ಲಿಸು;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+		ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	ಹಿಂತಿರುಗಿ FFI_OK;
 }

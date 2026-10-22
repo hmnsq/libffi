@@ -25,55 +25,55 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_H
+#ದೋಷ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ ffi_sarg;
 
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
-typedef void (*ffi_fp)(void);
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಶೂನ್ಯ (*ffi_fp)(ಶೂನ್ಯ);
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi {
+  FFI_ಮೊದಲ_ABI = 0,
+#ಆದರೆ __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
-#elif __SIZEOF_POINTER__ == 8
+#ಅಥವಾಆದರೆ __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
-#error "Unknown pointer size"
-#endif
-  FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
-#ifdef __EMSCRIPTEN__
+#ಇಲ್ಲದಿದ್ದರೆ
+#ದೋಷ "Unknown pointer size"
+#ಆದರೆ_ಅಂತ್ಯ
+  FFI_ಕೊನೆಯ_ABI,
+#ಆದರೆ __SIZEOF_POINTER__ == 4
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
   FFI_DEFAULT_ABI = FFI_WASM32
-#endif
-#elif __SIZEOF_POINTER__ == 8
-#ifdef __EMSCRIPTEN__
+#ಆದರೆ_ಅಂತ್ಯ
+#ಅಥವಾಆದರೆ __SIZEOF_POINTER__ == 8
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
   FFI_DEFAULT_ABI = FFI_WASM64
-#endif
-#else
-#error "Unknown pointer size"
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
+#ಇಲ್ಲದಿದ್ದರೆ
+#ದೋಷ "Unknown pointer size"
+#ಆದರೆ_ಅಂತ್ಯ
 } ffi_abi;
 
-#define FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
 // #define FFI_GO_CLOSURES 0
-#define FFI_TRAMPOLINE_SIZE 4
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ 4
 // #define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_SPECIFIC_VARIADIC 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_EXTRA_CIF_FIELDS  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ nfixedargs
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ

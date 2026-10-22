@@ -25,331 +25,331 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ "internal.h"
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if defined(__LONG_DOUBLE_128__)
-# if FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+#ಆದರೆ defined(__LONG_DOUBLE_128__)
+# ಆದರೆ FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE ಹೊರಹೋಗು ದ date
 # endif
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-extern void ffi_call_osf(void *stack, void *frame, unsigned flags,
-			 void *raddr, void (*fn)(void), void *closure)
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_osf(ಶೂನ್ಯ *ರಾಶಿ, ಶೂನ್ಯ *ಚೌಕಟ್ಟು, ಚಿಹ್ನೆರಹಿತ flags,
+			 ಶೂನ್ಯ *raddr, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *ಆವರಣ)
 	FFI_HIDDEN;
-extern void ffi_closure_osf(void) FFI_HIDDEN;
-extern void ffi_go_closure_osf(void) FFI_HIDDEN;
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_ಆವರಣ_osf(ಶೂನ್ಯ) FFI_HIDDEN;
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_go_ಆವರಣ_osf(ಶೂನ್ಯ) FFI_HIDDEN;
 
 /* Promote a float value to its in-register double representation.
    Unlike actually casting to double, this does not trap on NaN.  */
-static inline UINT64 lds(void *ptr)
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ UINT64 lds(ಶೂನ್ಯ *ptr)
 {
   UINT64 ret;
   __asm__("lds %0,%1" : "=f"(ret) : "m"(*(UINT32 *)ptr));
-  return ret;
+  ಹಿಂತಿರುಗಿ ret;
 }
 
 /* And the reverse.  */
-static inline void sts(void *ptr, UINT64 val)
+ಸ್ಥಿರ ಸಾಲೊಳಗೆ ಶೂನ್ಯ sts(ಶೂನ್ಯ *ptr, UINT64 val)
 {
   __asm__("sts %1,%0" : "=m"(*(UINT32 *)ptr) : "f"(val));
 }
 
-ffi_status FFI_HIDDEN
+ffi_ಸ್ಥಿತಿ FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  size_t bytes = 0;
-  int flags, i, avn;
+  size_t ಬೈಟುಗಳು = 0;
+  ಪೂರ್ಣಾಂಕ flags, i, avn;
   ffi_type *rtype, *itype;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi != FFI_OSF)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
   /* Compute the size of the argument area.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  ಗಾಗಿ (i = 0, avn = cif->nargs; i < avn; i++)
     {
       itype = cif->arg_types[i];
-      switch (itype->type)
+      ಆಯ್ಕೆ (itype->type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	ಸ್ಥಿತಿ FFI_TYPE_INT:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+	ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+	ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+	ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+	ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
 	  /* All take one 8 byte slot.  */
-	  bytes += 8;
-	  break;
+	  ಬೈಟುಗಳು += 8;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT128:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT128:
+	ಸ್ಥಿತಿ FFI_TYPE_VOID:
+	ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
 	  /* Passed by value in N slots.  */
-	  bytes += FFI_ALIGN(itype->size, FFI_SIZEOF_ARG);
-	  break;
+	  ಬೈಟುಗಳು += FFI_ALIGN(itype->ಗಾತ್ರ_2, FFI_SIZEOF_ARG);
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_COMPLEX:
+	ಸ್ಥಿತಿ FFI_TYPE_COMPLEX:
 	  /* _Complex long double passed by reference; others in 2 slots.  */
-	  if (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
-	    bytes += 8;
-	  else
-	    bytes += 16;
-	  break;
+	  ಆದರೆ (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+	    ಬೈಟುಗಳು += 8;
+	  ಇಲ್ಲದಿದ್ದರೆ
+	    ಬೈಟುಗಳು += 16;
+	  ನಿಲ್ಲಿಸು;
 
-	default:
+	ಪೂರ್ವನಿಯೋಜಿತ:
 	  abort();
 	}
     }
 
   /* Set the return type flag */
   rtype = cif->rtype;
-  switch (rtype->type)
+  ಆಯ್ಕೆ (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ಸ್ಥಿತಿ FFI_TYPE_VOID:
       flags = ALPHA_FLAGS(ALPHA_ST_VOID, ALPHA_LD_VOID);
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_INT:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT32);
-      break;
-    case FFI_TYPE_FLOAT:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
       flags = ALPHA_FLAGS(ALPHA_ST_FLOAT, ALPHA_LD_FLOAT);
-      break;
-    case FFI_TYPE_DOUBLE:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
       flags = ALPHA_FLAGS(ALPHA_ST_DOUBLE, ALPHA_LD_DOUBLE);
-      break;
-    case FFI_TYPE_UINT8:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT8);
-      break;
-    case FFI_TYPE_SINT8:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT8);
-      break;
-    case FFI_TYPE_UINT16:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT16);
-      break;
-    case FFI_TYPE_SINT16:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT16);
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-      break;
-    case FFI_TYPE_SINT128:
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT128:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT128:
+    ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
+    ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
       /* Passed in memory, with a hidden pointer.  */
-      flags = ALPHA_RET_IN_MEM;
-      break;
-    case FFI_TYPE_COMPLEX:
+      flags = ALPHA_RET_ಒಳ_MEM;
+      ನಿಲ್ಲಿಸು;
+    ಸ್ಥಿತಿ FFI_TYPE_COMPLEX:
       itype = rtype->elements[0];
-      switch (itype->type)
+      ಆಯ್ಕೆ (itype->type)
 	{
-	case FFI_TYPE_FLOAT:
+	ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXF, ALPHA_LD_CPLXF);
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  ನಿಲ್ಲಿಸು;
+	ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXD, ALPHA_LD_CPLXD);
-	  break;
-	default:
-	  if (rtype->size <= 8)
+	  ನಿಲ್ಲಿಸು;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+	  ಆದರೆ (rtype->ಗಾತ್ರ_2 <= 8)
 	    flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-	  else
-	    flags = ALPHA_RET_IN_MEM;
-	  break;
+	  ಇಲ್ಲದಿದ್ದರೆ
+	    flags = ALPHA_RET_ಒಳ_MEM;
+	  ನಿಲ್ಲಿಸು;
 	}
-      break;
-    default:
+      ನಿಲ್ಲಿಸು;
+    ಪೂರ್ವನಿಯೋಜಿತ:
       abort();
     }
   cif->flags = flags;
 
   /* Include the hidden structure pointer in args requirement.  */
-  if (flags == ALPHA_RET_IN_MEM)
-    bytes += 8;
+  ಆದರೆ (flags == ALPHA_RET_ಒಳ_MEM)
+    ಬೈಟುಗಳು += 8;
   /* Minimum size is 6 slots, so that ffi_call_osf can pop them.  */
-  if (bytes < 6*8)
-    bytes = 6*8;
-  cif->bytes = bytes;
+  ಆದರೆ (ಬೈಟುಗಳು < 6*8)
+    ಬೈಟುಗಳು = 6*8;
+  cif->ಬೈಟುಗಳು = ಬೈಟುಗಳು;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-static unsigned long
-extend_basic_type(void *valp, int type, int argn)
+ಸ್ಥಿರ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ
+extend_basic_type(ಶೂನ್ಯ *valp, ಪೂರ್ಣಾಂಕ type, ಪೂರ್ಣಾಂಕ argn)
 {
-  switch (type)
+  ಆಯ್ಕೆ (type)
     {
-    case FFI_TYPE_SINT8:
-      return *(SINT8 *)valp;
-    case FFI_TYPE_UINT8:
-      return *(UINT8 *)valp;
-    case FFI_TYPE_SINT16:
-      return *(SINT16 *)valp;
-    case FFI_TYPE_UINT16:
-      return *(UINT16 *)valp;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+      ಹಿಂತಿರುಗಿ *(SINT8 *)valp;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+      ಹಿಂತಿರುಗಿ *(UINT8 *)valp;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+      ಹಿಂತಿರುಗಿ *(SINT16 *)valp;
+    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+      ಹಿಂತಿರುಗಿ *(UINT16 *)valp;
 
-    case FFI_TYPE_FLOAT:
-      if (argn < 6)
-	return lds(valp);
+    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+      ಆದರೆ (argn < 6)
+	ಹಿಂತಿರುಗಿ lds(valp);
       /* FALLTHRU */
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_INT:
+    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
       /* Note that unsigned 32-bit quantities are sign extended.  */
-      return *(SINT32 *)valp;
+      ಹಿಂತಿರುಗಿ *(SINT32 *)valp;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_DOUBLE:
-      return *(UINT64 *)valp;
+    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+    ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+      ಹಿಂತಿರುಗಿ *(UINT64 *)valp;
 
-    default:
+    ಪೂರ್ವನಿಯೋಜಿತ:
       abort();
     }
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_call_int (ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue,
+	      ಶೂನ್ಯ **avalue, ಶೂನ್ಯ *ಆವರಣ)
 {
-  unsigned long *argp;
-  long i, avn, argn, flags = cif->flags;
+  ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ *argp;
+  ದೀರ್ಘ i, avn, argn, flags = cif->flags;
   ffi_type **arg_types;
-  void *frame;
+  ಶೂನ್ಯ *ಚೌಕಟ್ಟು;
 
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
-  if (rvalue == NULL && flags == ALPHA_RET_IN_MEM)
-    rvalue = alloca(cif->rtype->size);
+  ಆದರೆ (rvalue == ಖಾಲಿ && flags == ALPHA_RET_ಒಳ_MEM)
+    rvalue = alloca(cif->rtype->ಗಾತ್ರ_2);
 
   /* Allocate the space for the arguments, plus 4 words of temp
      space for ffi_call_osf.  */
-  argp = frame = alloca(cif->bytes + 4*FFI_SIZEOF_ARG);
-  frame += cif->bytes;
+  argp = ಚೌಕಟ್ಟು = alloca(cif->ಬೈಟುಗಳು + 4*FFI_SIZEOF_ARG);
+  ಚೌಕಟ್ಟು += cif->ಬೈಟುಗಳು;
 
   argn = 0;
-  if (flags == ALPHA_RET_IN_MEM)
-    argp[argn++] = (unsigned long)rvalue;
+  ಆದರೆ (flags == ALPHA_RET_ಒಳ_MEM)
+    argp[argn++] = (ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ)rvalue;
 
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  ಗಾಗಿ (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *valp = avalue[i];
-      int type = ty->type;
-      size_t size;
+      ಶೂನ್ಯ *valp = avalue[i];
+      ಪೂರ್ಣಾಂಕ type = ty->type;
+      size_t ಗಾತ್ರ_2;
 
-      switch (type)
+      ಆಯ್ಕೆ (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	ಸ್ಥಿತಿ FFI_TYPE_INT:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+	ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+	ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+	ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argn++;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_LONGDOUBLE:
+	ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Note that 128-bit long double is passed by reference.  */
-	  argp[argn++] = (unsigned long)valp;
-	  break;
+	  argp[argn++] = (ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ)valp;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
-	  size = ty->size;
-	  memcpy(argp + argn, valp, size);
-	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_SINT128:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT128:
+	ಸ್ಥಿತಿ FFI_TYPE_VOID:
+	ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+	  ಗಾತ್ರ_2 = ty->ಗಾತ್ರ_2;
+	  ಸ್ಮರಣೆ_ನಕಲು(argp + argn, valp, ಗಾತ್ರ_2);
+	  argn += FFI_ALIGN(ಗಾತ್ರ_2, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_COMPLEX:
+	ಸ್ಥಿತಿ FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  if (type == FFI_TYPE_LONGDOUBLE)
-	    goto by_reference;
+	  ಆದರೆ (type == FFI_TYPE_LONGDOUBLE)
+	    ಹೋಗು by_reference;
 
 	  /* Most complex types passed as two separate arguments.  */
-	  size = ty->elements[0]->size;
+	  ಗಾತ್ರ_2 = ty->elements[0]->ಗಾತ್ರ_2;
 	  argp[argn] = extend_basic_type(valp, type, argn);
-	  argp[argn + 1] = extend_basic_type(valp + size, type, argn + 1);
+	  argp[argn + 1] = extend_basic_type(valp + ಗಾತ್ರ_2, type, argn + 1);
 	  argn += 2;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	default:
+	ಪೂರ್ವನಿಯೋಜಿತ:
 	  abort();
 	}
     }
 
-  flags = (flags >> ALPHA_ST_SHIFT) & 0xff;
-  ffi_call_osf(argp, frame, flags, rvalue, fn, closure);
+  flags = (flags >> ALPHA_ST_ಸರಿಸು) & 0xff;
+  ffi_call_osf(argp, ಚೌಕಟ್ಟು, flags, rvalue, fn, ಆವರಣ);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ಶೂನ್ಯ
+ffi_call (ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, ಖಾಲಿ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+ಶೂನ್ಯ
+ffi_call_go (ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue,
+	     ಶೂನ್ಯ **avalue, ಶೂನ್ಯ *ಆವರಣ)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, closure);
+  ffi_call_int(cif, fn, rvalue, avalue, ಆವರಣ);
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ* ಆವರಣ,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      ಶೂನ್ಯ (*fun)(ffi_cif*, ಶೂನ್ಯ*, ಶೂನ್ಯ**, ಶೂನ್ಯ*),
+		      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+		      ಶೂನ್ಯ *codeloc)
 {
-  unsigned int *tramp;
+  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *tramp;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi != FFI_OSF)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) &ಆವರಣ->tramp[0];
   tramp[0] = 0x47fb0401;	/* mov $27,$1		*/
   tramp[1] = 0xa77b0010;	/* ldq $27,16($27)	*/
   tramp[2] = 0x6bfb0000;	/* jmp $31,($27),0	*/
   tramp[3] = 0x47ff041f;	/* nop			*/
-  *(void **) &tramp[4] = ffi_closure_osf;
+  *(ಶೂನ್ಯ **) &tramp[4] = ffi_ಆವರಣ_osf;
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಆವರಣ->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
 
   /* Flush the Icache.
 
@@ -357,164 +357,164 @@ ffi_prep_closure_loc (ffi_closure* closure,
      instead, since both Compaq as and gas can handle it.
 
      0x86 is PAL_imb in Tru64 UNIX <alpha/pal.h>.  */
-  __asm__ volatile ("call_pal 0x86" : : : "memory");
+  __asm__ ಅಸ್ಥಿರ ("call_pal 0x86" : : : "memory");
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure* closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_go_ಆವರಣ (ffi_go_ಆವರಣ* ಆವರಣ,
 		     ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     ಶೂನ್ಯ (*fun)(ffi_cif*, ಶೂನ್ಯ*, ಶೂನ್ಯ**, ಶೂನ್ಯ*))
 {
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ಆದರೆ (cif->abi != FFI_OSF)
+    ಹಿಂತಿರುಗಿ FFI_BAD_ABI;
 
-  closure->tramp = (void *)ffi_go_closure_osf;
-  closure->cif = cif;
-  closure->fun = fun;
+  ಆವರಣ->tramp = (ಶೂನ್ಯ *)ffi_go_ಆವರಣ_osf;
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
 
-  return FFI_OK;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-long FFI_HIDDEN
-ffi_closure_osf_inner (ffi_cif *cif,
-		       void (*fun)(ffi_cif*, void*, void**, void*),
-		       void *user_data,
-		       void *rvalue, unsigned long *argp)
+ದೀರ್ಘ FFI_HIDDEN
+ffi_ಆವರಣ_osf_inner (ffi_cif *cif,
+		       ಶೂನ್ಯ (*fun)(ffi_cif*, ಶೂನ್ಯ*, ಶೂನ್ಯ**, ಶೂನ್ಯ*),
+		       ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+		       ಶೂನ್ಯ *rvalue, ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ *argp)
 {
-  void **avalue;
+  ಶೂನ್ಯ **avalue;
   ffi_type **arg_types;
-  long i, avn, argn, flags;
+  ದೀರ್ಘ i, avn, argn, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * ಗಾತ್ರ(ಶೂನ್ಯ *));
   flags = cif->flags;
   argn = 0;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  ಆದರೆ (flags == ALPHA_RET_ಒಳ_MEM)
     {
-      rvalue = (void *) argp[0];
+      rvalue = (ಶೂನ್ಯ *) argp[0];
       argn = 1;
     }
 
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  ಗಾಗಿ (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      int type = ty->type;
-      void *valp = &argp[argn];
-      size_t size;
+      ಪೂರ್ಣಾಂಕ type = ty->type;
+      ಶೂನ್ಯ *valp = &argp[argn];
+      size_t ಗಾತ್ರ_2;
 
-      switch (type)
+      ಆಯ್ಕೆ (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	ಸ್ಥಿತಿ FFI_TYPE_INT:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+	ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
 	  argn += 1;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
-	  size = ty->size;
-	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_SINT128:
+	ಸ್ಥಿತಿ FFI_TYPE_UINT128:
+	ಸ್ಥಿತಿ FFI_TYPE_VOID:
+	ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+	  ಗಾತ್ರ_2 = ty->ಗಾತ್ರ_2;
+	  argn += FFI_ALIGN(ಗಾತ್ರ_2, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_FLOAT:
+	ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
 	  /* Floats coming from registers need conversion from double
 	     back to float format.  */
-	  if (argn < 6)
+	  ಆದರೆ (argn < 6)
 	    {
 	      valp = &argp[argn - 6];
 	      sts(valp, argp[argn - 6]);
 	    }
 	  argn += 1;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_DOUBLE:
-	  if (argn < 6)
+	ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
+	  ಆದರೆ (argn < 6)
 	    valp = &argp[argn - 6];
 	  argn += 1;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_LONGDOUBLE:
+	ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* 128-bit long double is passed by reference.  */
-	  valp = (void *)argp[argn];
+	  valp = (ಶೂನ್ಯ *)argp[argn];
 	  argn += 1;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_COMPLEX:
+	ಸ್ಥಿತಿ FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  switch (type)
+	  ಆಯ್ಕೆ (type)
 	    {
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT64:
 	      /* Passed as separate arguments, but they wind up sequential.  */
-	      break;
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
+	    ಸ್ಥಿತಿ FFI_TYPE_INT:
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	    ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	    ಸ್ಥಿತಿ FFI_TYPE_UINT32:
 	      /* Passed as separate arguments.  Disjoint, but there's room
 		 enough in one slot to hold the pair.  */
-	      size = ty->elements[0]->size;
-	      memcpy(valp + size, valp + 8, size);
-	      break;
+	      ಗಾತ್ರ_2 = ty->elements[0]->ಗಾತ್ರ_2;
+	      ಸ್ಮರಣೆ_ನಕಲು(valp + ಗಾತ್ರ_2, valp + 8, ಗಾತ್ರ_2);
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_FLOAT:
+	    ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
 	      /* Passed as separate arguments.  Disjoint, and each piece
 		 may need conversion back to float.  */
-	      if (argn < 6)
+	      ಆದರೆ (argn < 6)
 		{
 		  valp = &argp[argn - 6];
 		  sts(valp, argp[argn - 6]);
 		}
-	      if (argn + 1 < 6)
+	      ಆದರೆ (argn + 1 < 6)
 		sts(valp + 4, argp[argn + 1 - 6]);
-	      else
+	      ಇಲ್ಲದಿದ್ದರೆ
 		*(UINT32 *)(valp + 4) = argp[argn + 1];
-	      break;
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_DOUBLE:
+	    ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
 	      /* Passed as separate arguments.  Only disjoint if one part
 		 is in fp regs and the other is on the stack.  */
-	      if (argn < 5)
+	      ಆದರೆ (argn < 5)
 		valp = &argp[argn - 6];
-	      else if (argn == 5)
+	      ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (argn == 5)
 		{
 		  valp = alloca(16);
 		  ((UINT64 *)valp)[0] = argp[5 - 6];
 		  ((UINT64 *)valp)[1] = argp[6];
 		}
-	      break;
+	      ನಿಲ್ಲಿಸು;
 
-	    case FFI_TYPE_LONGDOUBLE:
-	      goto by_reference;
+	    ಸ್ಥಿತಿ FFI_TYPE_LONGDOUBLE:
+	      ಹೋಗು by_reference;
 
-	    default:
+	    ಪೂರ್ವನಿಯೋಜಿತ:
 	      abort();
 	    }
 	  argn += 2;
-	  break;
+	  ನಿಲ್ಲಿಸು;
 
-	default:
+	ಪೂರ್ವನಿಯೋಜಿತ:
 	  abort ();
 	}
 
@@ -522,8 +522,8 @@ ffi_closure_osf_inner (ffi_cif *cif,
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_ದತ್ತಾಂಶ);
 
   /* Tell ffi_closure_osf how to perform return type promotions.  */
-  return (flags >> ALPHA_LD_SHIFT) & 0xff;
+  ಹಿಂತಿರುಗಿ (flags >> ALPHA_LD_ಸರಿಸು) & 0xff;
 }

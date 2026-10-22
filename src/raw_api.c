@@ -26,174 +26,174 @@
 
 /* This file defines generic functions for use with the raw api. */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#ಆದರೆ !FFI_NO_RAW_API
 
 size_t
-ffi_raw_size (ffi_cif *cif)
+ffi_raw_ಗಾತ್ರ (ffi_cif *cif)
 {
-  size_t result = 0;
-  int i;
+  size_t ಫಲಿತಾಂಶ = 0;
+  ಪೂರ್ಣಾಂಕ i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  ಗಾಗಿ (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
-#endif
-	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
+#ಆದರೆ !FFI_NO_STRUCTS
+      ಆದರೆ ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_ಸದಿಶ)
+	ಫಲಿತಾಂಶ += FFI_ALIGN (ಗಾತ್ರ (ಶೂನ್ಯ*), FFI_SIZEOF_ARG);
+      ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
+	ಫಲಿತಾಂಶ += FFI_ALIGN ((*at)->ಗಾತ್ರ_2, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  ಹಿಂತಿರುಗಿ ಫಲಿತಾಂಶ;
 }
 
 
-void
-ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
+ಶೂನ್ಯ
+ffi_raw_ಗಮ್ಯ_ptrarray (ffi_cif *cif, ffi_raw *raw, ಶೂನ್ಯ **ವಾದಗಳು)
 {
-  unsigned i;
+  ಚಿಹ್ನೆರಹಿತ i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#ಆದರೆ ಪದಗಳು_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  ಗಾಗಿ (i = 0; i < cif->nargs; i++, tp++, ವಾದಗಳು++)
     {	  
-      switch ((*tp)->type)
+      ಆಯ್ಕೆ ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	  *ವಾದಗಳು = (ಶೂನ್ಯ*) ((ಅಕ್ಷರ*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  ನಿಲ್ಲಿಸು;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	  *ವಾದಗಳು = (ಶೂನ್ಯ*) ((ಅಕ್ಷರ*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  ನಿಲ್ಲಿಸು;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
-#endif
+#ಆದರೆ FFI_SIZEOF_ARG >= 4	  
+	ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+	ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	  *ವಾದಗಳು = (ಶೂನ್ಯ*) ((ಅಕ್ಷರ*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  ನಿಲ್ಲಿಸು;
+#ಆದರೆ_ಅಂತ್ಯ
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  *args = (raw++)->ptr;
-	  break;
-#endif
+#ಆದರೆ !FFI_NO_STRUCTS
+	ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+	ಸ್ಥಿತಿ FFI_TYPE_ಸದಿಶ:
+	  *ವಾದಗಳು = (raw++)->ptr;
+	  ನಿಲ್ಲಿಸು;
+#ಆದರೆ_ಅಂತ್ಯ
 
-	case FFI_TYPE_COMPLEX:
-	  *args = (raw++)->ptr;
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_COMPLEX:
+	  *ವಾದಗಳು = (raw++)->ptr;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+	  *ವಾದಗಳು = (ಶೂನ್ಯ*) &(raw++)->ptr;
+	  ನಿಲ್ಲಿಸು;
 	  
-	default:
-	  *args = raw;
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+	  *ವಾದಗಳು = raw;
+	  raw += FFI_ALIGN ((*tp)->ಗಾತ್ರ_2, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#ಇಲ್ಲದಿದ್ದರೆ /* WORDS_BIGENDIAN */
 
-#if !PDP
+#ಆದರೆ !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  ಗಾಗಿ (i = 0; i < cif->nargs; i++, tp++, ವಾದಗಳು++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#ಆದರೆ !FFI_NO_STRUCTS
+      ಆದರೆ ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_ಸದಿಶ)
 	{
-	  *args = (raw++)->ptr;
+	  *ವಾದಗಳು = (raw++)->ptr;
 	}
-      else
-#endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
+      ಆದರೆ ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
-	  *args = (raw++)->ptr;
+	  *ವಾದಗಳು = (raw++)->ptr;
 	}
-      else
+      ಇಲ್ಲದಿದ್ದರೆ
 	{
-	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  *ವಾದಗಳು = (ಶೂನ್ಯ*) raw;
+	  raw += FFI_ALIGN ((*tp)->ಗಾತ್ರ_2, ಗಾತ್ರ (ಶೂನ್ಯ*)) / ಗಾತ್ರ (ಶೂನ್ಯ*);
 	}
     }
 
-#else
-#error "pdp endian not supported"
-#endif /* ! PDP */
+#ಇಲ್ಲದಿದ್ದರೆ
+#ದೋಷ "pdp endian not supported"
+#ಆದರೆ_ಅಂತ್ಯ /* ! PDP */
 
-#endif /* WORDS_BIGENDIAN */
+#ಆದರೆ_ಅಂತ್ಯ /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
+ಶೂನ್ಯ
+ffi_ptrarray_ಗಮ್ಯ_raw (ffi_cif *cif, ಶೂನ್ಯ **ವಾದಗಳು, ffi_raw *raw)
 {
-  unsigned i;
+  ಚಿಹ್ನೆರಹಿತ i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  ಗಾಗಿ (i = 0; i < cif->nargs; i++, tp++, ವಾದಗಳು++)
     {	  
-      switch ((*tp)->type)
+      ಆಯ್ಕೆ ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_UINT8:
+	  (raw++)->uint = *(UINT8*) (*ವಾದಗಳು);
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_SINT8:
-	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_SINT8:
+	  (raw++)->sint = *(SINT8*) (*ವಾದಗಳು);
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_UINT16:
-	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+	  (raw++)->uint = *(UINT16*) (*ವಾದಗಳು);
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_SINT16:
-	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+	  (raw++)->sint = *(SINT16*) (*ವಾದಗಳು);
+	  ನಿಲ್ಲಿಸು;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
-	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+#ಆದರೆ FFI_SIZEOF_ARG >= 4
+	ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+	  (raw++)->uint = *(UINT32*) (*ವಾದಗಳು);
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_SINT32:
-	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
-#endif
+	ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+	  (raw++)->sint = *(SINT32*) (*ವಾದಗಳು);
+	  ನಿಲ್ಲಿಸು;
+#ಆದರೆ_ಅಂತ್ಯ
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  (raw++)->ptr = *args;
-	  break;
-#endif
+#ಆದರೆ !FFI_NO_STRUCTS
+	ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+	ಸ್ಥಿತಿ FFI_TYPE_ಸದಿಶ:
+	  (raw++)->ptr = *ವಾದಗಳು;
+	  ನಿಲ್ಲಿಸು;
+#ಆದರೆ_ಅಂತ್ಯ
 
-	case FFI_TYPE_COMPLEX:
-	  (raw++)->ptr = *args;
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_COMPLEX:
+	  (raw++)->ptr = *ವಾದಗಳು;
+	  ನಿಲ್ಲಿಸು;
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+	  (raw++)->ptr = **(ಶೂನ್ಯ***) ವಾದಗಳು;
+	  ನಿಲ್ಲಿಸು;
 
-	default:
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	ಪೂರ್ವನಿಯೋಜಿತ:
+	  ಸ್ಮರಣೆ_ನಕಲು ((ಶೂನ್ಯ*) raw->ದತ್ತಾಂಶ, (ಶೂನ್ಯ*)*ವಾದಗಳು, (*tp)->ಗಾತ್ರ_2);
+	  raw += FFI_ALIGN ((*tp)->ಗಾತ್ರ_2, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#ಆದರೆ !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -203,67 +203,67 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
+ಶೂನ್ಯ ffi_raw_call (ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  ffi_raw_to_ptrarray (cif, raw, avalue);
+  ಶೂನ್ಯ **avalue = (ಶೂನ್ಯ**) alloca (cif->nargs * ಗಾತ್ರ (ಶೂನ್ಯ*));
+  ffi_raw_ಗಮ್ಯ_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#ಆದರೆ FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_translate_ವಾದಗಳು (ffi_cif *cif, ಶೂನ್ಯ *rvalue,
+		    ಶೂನ್ಯ **avalue, ಶೂನ್ಯ *user_ದತ್ತಾಂಶ)
 {
-  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_size (cif));
-  ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
+  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_ಗಾತ್ರ (cif));
+  ffi_raw_ಆವರಣ *cl = (ffi_raw_ಆವರಣ*)user_ದತ್ತಾಂಶ;
 
-  ffi_ptrarray_to_raw (cif, avalue, raw);
-  (*cl->fun) (cif, rvalue, raw, cl->user_data);
+  ffi_ptrarray_ಗಮ್ಯ_raw (cif, avalue, raw);
+  (*cl->fun) (cif, rvalue, raw, cl->user_ದತ್ತಾಂಶ);
 }
 
-ffi_status
-ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_raw_ಆವರಣ_loc (ffi_raw_ಆವರಣ* cl,
 			  ffi_cif *cif,
-			  void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-			  void *user_data,
-			  void *codeloc)
+			  ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ffi_raw*,ಶೂನ್ಯ*),
+			  ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+			  ಶೂನ್ಯ *codeloc)
 {
-  ffi_status status;
+  ffi_ಸ್ಥಿತಿ status;
 
-  status = ffi_prep_closure_loc ((ffi_closure*) cl,
+  status = ffi_prep_ಆವರಣ_loc ((ffi_ಆವರಣ*) cl,
 				 cif,
-				 &ffi_translate_args,
+				 &ffi_translate_ವಾದಗಳು,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  ಆದರೆ (status == FFI_OK)
     {
       cl->fun       = fun;
-      cl->user_data = user_data;
+      cl->user_ದತ್ತಾಂಶ = user_ದತ್ತಾಂಶ;
     }
 
-  return status;
+  ಹಿಂತಿರುಗಿ status;
 }
 
-#endif /* FFI_CLOSURES */
-#endif /* !FFI_NATIVE_RAW_API */
+#ಆದರೆ_ಅಂತ್ಯ /* FFI_CLOSURES */
+#ಆದರೆ_ಅಂತ್ಯ /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#ಆದರೆ FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
  * the pointer-array format, to the raw format */
 
-ffi_status
-ffi_prep_raw_closure (ffi_raw_closure* cl,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_raw_ಆವರಣ (ffi_raw_ಆವರಣ* cl,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-		      void *user_data)
+		      ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ffi_raw*,ಶೂನ್ಯ*),
+		      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  ಹಿಂತಿರುಗಿ ffi_prep_raw_ಆವರಣ_loc (cl, cif, fun, user_ದತ್ತಾಂಶ, cl);
 }
 
-#endif /* FFI_CLOSURES */
+#ಆದರೆ_ಅಂತ್ಯ /* FFI_CLOSURES */
 
-#endif /* !FFI_NO_RAW_API */
+#ಆದರೆ_ಅಂತ್ಯ /* !FFI_NO_RAW_API */

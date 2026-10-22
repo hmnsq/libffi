@@ -25,25 +25,25 @@
  * m88k Foreign Function Interface
  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ASM
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ದೀರ್ಘ ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ ದೀರ್ಘ ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi {
+  FFI_ಮೊದಲ_ABI = 0,
   FFI_OBSD,
   FFI_DEFAULT_ABI = FFI_OBSD,
-  FFI_LAST_ABI = FFI_DEFAULT_ABI + 1
+  FFI_ಕೊನೆಯ_ABI = FFI_DEFAULT_ABI + 1
 } ffi_abi;
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 0x14
-#define FFI_NATIVE_RAW_API 0
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TRAMPOLINE_ಗಾತ್ರ 0x14
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_NATIVE_RAW_API 0
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ

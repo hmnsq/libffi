@@ -28,56 +28,56 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
-#include "internal.h"
-#include <tramp.h>
+#ಅನ್ತರ್ಭಾವ "ffi.h"
+#ಅನ್ತರ್ಭಾವ "ffi_common.h"
+#ಅನ್ತರ್ಭಾವ "ffi_powerpc.h"
+#ಅನ್ತರ್ಭಾವ "internal.h"
+#ಅನ್ತರ್ಭಾವ <tramp.h>
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#ಆದರೆ HAVE_LONG_DOUBLE_VARIANT
 /* Adjust ffi_type_longdouble.  */
-void FFI_HIDDEN
+ಶೂನ್ಯ FFI_HIDDEN
 ffi_prep_types (ffi_abi abi)
 {
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ಆದರೆ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 #  ifdef POWERPC64
   ffi_prep_types_linux64 (abi);
-#  else
+#  ಇಲ್ಲದಿದ್ದರೆ
   ffi_prep_types_sysv (abi);
 #  endif
 # endif
 }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_ಸ್ಥಿತಿ FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64 (cif);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ POWERPC64
+  ಹಿಂತಿರುಗಿ ffi_prep_cif_linux64 (cif);
+#ಇಲ್ಲದಿದ್ದರೆ
+  ಹಿಂತಿರುಗಿ ffi_prep_cif_sysv (cif);
+#ಆದರೆ_ಅಂತ್ಯ
 }
 
-ffi_status FFI_HIDDEN
+ffi_ಸ್ಥಿತಿ FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif *cif,
-			  unsigned int nfixedargs MAYBE_UNUSED,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ nfixedargs MAYBE_ಬಳಸದ,
+			  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ ntotalargs MAYBE_ಬಳಸದ)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ POWERPC64
+  ಹಿಂತಿರುಗಿ ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
+#ಇಲ್ಲದಿದ್ದರೆ
+  ಹಿಂತಿರುಗಿ ffi_prep_cif_sysv (cif);
+#ಆದರೆ_ಅಂತ್ಯ
 }
 
-static void
+ಸ್ಥಿರ ಶೂನ್ಯ
 ffi_call_int (ffi_cif *cif,
-	      void (*fn) (void),
-	      void *rvalue,
-	      void **avalue,
-	      void *closure)
+	      ಶೂನ್ಯ (*fn) (ಶೂನ್ಯ),
+	      ಶೂನ್ಯ *rvalue,
+	      ಶೂನ್ಯ **avalue,
+	      ಶೂನ್ಯ *ಆವರಣ)
 {
   /* The final SYSV ABI says that structures smaller or equal 8 bytes
      are returned in r3/r4.  A draft ABI used by linux instead returns
@@ -89,126 +89,126 @@ ffi_call_int (ffi_cif *cif,
      For ELFv2 ABI, use a bounce buffer for homogeneous structs too,
      for similar reasons. This bounce buffer must be aligned to 16
      bytes for use with homogeneous structs of vectors (float128).  */
-  float128 smst_buffer[8];
+  float128 smst_ಬಫರ್[8];
   extended_cif ecif;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
   ecif.rvalue = rvalue;
-  if ((cif->flags & FLAG_RETURNS_SMST) != 0)
-    ecif.rvalue = smst_buffer;
+  ಆದರೆ ((cif->flags & FLAG_RETURNS_SMST) != 0)
+    ecif.rvalue = smst_ಬಫರ್;
   /* Ensure that we have a valid struct return value.
      FIXME: Isn't this just papering over a user problem?  */
-  else if (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
-    ecif.rvalue = alloca (cif->rtype->size);
+  ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
+    ecif.rvalue = alloca (cif->rtype->ಗಾತ್ರ_2);
 
-#ifdef POWERPC64
-  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, closure,
-		    -(long) cif->bytes);
-#else
-  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, closure, -cif->bytes);
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ POWERPC64
+  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, ಆವರಣ,
+		    -(ದೀರ್ಘ) cif->ಬೈಟುಗಳು);
+#ಇಲ್ಲದಿದ್ದರೆ
+  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, ಆವರಣ, -cif->ಬೈಟುಗಳು);
+#ಆದರೆ_ಅಂತ್ಯ
 
   /* Check for a bounce-buffered return value */
-  if (rvalue && ecif.rvalue == smst_buffer)
+  ಆದರೆ (rvalue && ecif.rvalue == smst_ಬಫರ್)
     {
-      unsigned int rsize = cif->rtype->size;
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
+      ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ rsize = cif->rtype->ಗಾತ್ರ_2;
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ FFI_ಗುರಿ_HAS_COMPLEX_TYPE
       /* Integer-typed _Complex: the .Lsmall_struct return path stored
 	 r3 at buffer offset 0 and r4 at offset 8.  Extract one inner-
 	 sized half from each slot — right-justified on BE, low-address
 	 on LE — and lay them out as the natural packed complex value
 	 the caller expects (real@0, imag@hsize).  */
-      if (cif->rtype->type == FFI_TYPE_COMPLEX
+      ಆದರೆ (cif->rtype->type == FFI_TYPE_COMPLEX
 	  && (cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	{
-	  size_t hsize = cif->rtype->elements[0]->size;
-#ifndef __LITTLE_ENDIAN__
+	  size_t hsize = cif->rtype->elements[0]->ಗಾತ್ರ_2;
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ __LITTLE_ENDIAN__
 	  size_t off = 8 - hsize;
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 	  size_t off = 0;
-#endif
-	  memcpy ((char *) rvalue,         (char *) smst_buffer + off, hsize);
-	  memcpy ((char *) rvalue + hsize, (char *) smst_buffer + 8 + off, hsize);
+#ಆದರೆ_ಅಂತ್ಯ
+	  ಸ್ಮರಣೆ_ನಕಲು ((ಅಕ್ಷರ *) rvalue,         (ಅಕ್ಷರ *) smst_ಬಫರ್ + off, hsize);
+	  ಸ್ಮರಣೆ_ನಕಲು ((ಅಕ್ಷರ *) rvalue + hsize, (ಅಕ್ಷರ *) smst_ಬಫರ್ + 8 + off, hsize);
 	}
-      else
-#endif
-#ifndef __LITTLE_ENDIAN__
+      ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ __LITTLE_ENDIAN__
       /* The SYSV ABI returns a structure of up to 4 bytes in size
 	 left-padded in r3.  */
 # ifndef POWERPC64
-      if (rsize <= 4)
-	memcpy (rvalue, (char *) smst_buffer + 4 - rsize, rsize);
-      else
+      ಆದರೆ (rsize <= 4)
+	ಸ್ಮರಣೆ_ನಕಲು (rvalue, (ಅಕ್ಷರ *) smst_ಬಫರ್ + 4 - rsize, rsize);
+      ಇಲ್ಲದಿದ್ದರೆ
 # endif
 	/* The SYSV ABI returns a structure of up to 8 bytes in size
 	   left-padded in r3/r4, and the ELFv2 ABI similarly returns a
 	   structure of up to 8 bytes in size left-padded in r3. But
 	   note that a structure of a single float is not paddded.  */
-	if (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
-	  memcpy (rvalue, (char *) smst_buffer + 8 - rsize, rsize);
-	else
-#endif
-	  memcpy (rvalue, smst_buffer, rsize);
+	ಆದರೆ (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
+	  ಸ್ಮರಣೆ_ನಕಲು (rvalue, (ಅಕ್ಷರ *) smst_ಬಫರ್ + 8 - rsize, rsize);
+	ಇಲ್ಲದಿದ್ದರೆ
+#ಆದರೆ_ಅಂತ್ಯ
+	  ಸ್ಮರಣೆ_ನಕಲು (rvalue, smst_ಬಫರ್, rsize);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+ಶೂನ್ಯ
+ffi_call (ffi_cif *cif, ಶೂನ್ಯ (*fn) (ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ಖಾಲಿ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+ಶೂನ್ಯ
+ffi_call_go (ffi_cif *cif, ಶೂನ್ಯ (*fn) (ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue,
+	     ಶೂನ್ಯ *ಆವರಣ)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, ಆವರಣ);
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_ಆವರಣ_loc (ffi_ಆವರಣ *ಆವರಣ,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      ಶೂನ್ಯ (*fun) (ffi_cif *, ಶೂನ್ಯ *, ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+		      ಶೂನ್ಯ *user_ದತ್ತಾಂಶ,
+		      ಶೂನ್ಯ *codeloc)
 {
-#ifdef POWERPC64
-  return ffi_prep_closure_loc_linux64 (closure, cif, fun, user_data, codeloc);
-#else
-  return ffi_prep_closure_loc_sysv (closure, cif, fun, user_data, codeloc);
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ POWERPC64
+  ಹಿಂತಿರುಗಿ ffi_prep_ಆವರಣ_loc_linux64 (ಆವರಣ, cif, fun, user_ದತ್ತಾಂಶ, codeloc);
+#ಇಲ್ಲದಿದ್ದರೆ
+  ಹಿಂತಿರುಗಿ ffi_prep_ಆವರಣ_loc_sysv (ಆವರಣ, cif, fun, user_ದತ್ತಾಂಶ, codeloc);
+#ಆದರೆ_ಅಂತ್ಯ
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure,
+ffi_ಸ್ಥಿತಿ
+ffi_prep_go_ಆವರಣ (ffi_go_ಆವರಣ *ಆವರಣ,
 		     ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     ಶೂನ್ಯ (*fun) (ffi_cif *, ಶೂನ್ಯ *, ಶೂನ್ಯ **, ಶೂನ್ಯ *))
 {
-#ifdef POWERPC64
-  closure->tramp = ffi_go_closure_linux64;
-#else
-  closure->tramp = ffi_go_closure_sysv;
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  return FFI_OK;
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ POWERPC64
+  ಆವರಣ->tramp = ffi_go_ಆವರಣ_linux64;
+#ಇಲ್ಲದಿದ್ದರೆ
+  ಆವರಣ->tramp = ffi_go_ಆವರಣ_sysv;
+#ಆದರೆ_ಅಂತ್ಯ
+  ಆವರಣ->cif = cif;
+  ಆವರಣ->fun = fun;
+  ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ FFI_EXEC_STATIC_TRAMP
+ಶೂನ್ಯ *
+ffi_tramp_arch (size_t *tramp_ಗಾತ್ರ, size_t *map_ಗಾತ್ರ)
 {
-  extern void *trampoline_code_table;
-  *tramp_size = PPC_TRAMP_SIZE;
-  *map_size = PPC_TRAMP_MAP_SIZE;
-#if defined (_CALL_AIX) || _CALL_ELF == 1
+  ಬಾಹ್ಯ ಶೂನ್ಯ *trampoline_ಸಂಕೇತ_ಕೋಷ್ಟಕ;
+  *tramp_ಗಾತ್ರ = PPC_TRAMP_ಗಾತ್ರ;
+  *map_ಗಾತ್ರ = PPC_TRAMP_MAP_ಗಾತ್ರ;
+#ಆದರೆ defined (_CALL_AIX) || _CALL_ELF == 1
   /* The caller wants the entry point address of the trampoline code,
      not the address of the function descriptor.  */
-  return *(void **)trampoline_code_table;
-#else
-  return &trampoline_code_table;
-#endif
+  ಹಿಂತಿರುಗಿ *(ಶೂನ್ಯ **)trampoline_ಸಂಕೇತ_ಕೋಷ್ಟಕ;
+#ಇಲ್ಲದಿದ್ದರೆ
+  ಹಿಂತಿರುಗಿ &trampoline_ಸಂಕೇತ_ಕೋಷ್ಟಕ;
+#ಆದರೆ_ಅಂತ್ಯ
 }
-#endif
+#ಆದರೆ_ಅಂತ್ಯ

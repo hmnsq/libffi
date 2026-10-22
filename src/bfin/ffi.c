@@ -24,35 +24,35 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
 
 /* Maximum number of GPRs available for argument passing.  */
-#define MAX_GPRARGS 3
+#ವ್ಯಾಖ್ಯಾನಿಸು MAX_GPRARGS 3
 
 /*
  * Return types
  */
-#define FFIBFIN_RET_VOID 0
-#define FFIBFIN_RET_BYTE 1
-#define FFIBFIN_RET_HALFWORD 2
-#define FFIBFIN_RET_INT64 3
-#define FFIBFIN_RET_INT32 4
+#ವ್ಯಾಖ್ಯಾನಿಸು FFIBFIN_RET_VOID 0
+#ವ್ಯಾಖ್ಯಾನಿಸು FFIBFIN_RET_BYTE 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFIBFIN_RET_HALFWORD 2
+#ವ್ಯಾಖ್ಯಾನಿಸು FFIBFIN_RET_INT64 3
+#ವ್ಯಾಖ್ಯಾನಿಸು FFIBFIN_RET_INT32 4
 
 /*====================================================================*/
 /*                          PROTOTYPE          *
  /*====================================================================*/
-void ffi_prep_args(unsigned char *, extended_cif *);
+ಶೂನ್ಯ ffi_prep_ವಾದಗಳು(ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *, extended_cif *);
 
 /*====================================================================*/
 /*                          Externals                                 */
 /*                          (Assembly)                                */
 /*====================================================================*/
 
-extern void ffi_call_SYSV(unsigned, extended_cif *, void(*)(unsigned char *, extended_cif *), unsigned, void *, void(*fn)(void));
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_SYSV(ಚಿಹ್ನೆರಹಿತ, extended_cif *, ಶೂನ್ಯ(*)(ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *, extended_cif *), ಚಿಹ್ನೆರಹಿತ, ಶೂನ್ಯ *, ಶೂನ್ಯ(*fn)(ಶೂನ್ಯ));
 
 /*====================================================================*/
 /*                          Implementation                            */
@@ -64,50 +64,50 @@ extern void ffi_call_SYSV(unsigned, extended_cif *, void(*)(unsigned char *, ext
  * This function calculates the return type (size) based on type.
  */
 
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_ಸ್ಥಿತಿ ffi_prep_cif_machdep(ffi_cif *cif)
 {
    /* --------------------------------------*
     *   Return handling                *
     * --------------------------------------*/
-   switch (cif->rtype->type) {
-      case FFI_TYPE_VOID:
+   ಆಯ್ಕೆ (cif->rtype->type) {
+      ಸ್ಥಿತಿ FFI_TYPE_VOID:
          cif->flags = FFIBFIN_RET_VOID;
-         break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+         ನಿಲ್ಲಿಸು;
+      ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+      ಸ್ಥಿತಿ FFI_TYPE_SINT16:
          cif->flags = FFIBFIN_RET_HALFWORD;
-         break;
-      case FFI_TYPE_UINT8:
+         ನಿಲ್ಲಿಸು;
+      ಸ್ಥಿತಿ FFI_TYPE_UINT8:
          cif->flags = FFIBFIN_RET_BYTE;
-         break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_SINT8:
+         ನಿಲ್ಲಿಸು;
+      ಸ್ಥಿತಿ FFI_TYPE_INT:
+      ಸ್ಥಿತಿ FFI_TYPE_UINT32:
+      ಸ್ಥಿತಿ FFI_TYPE_SINT32:
+      ಸ್ಥಿತಿ FFI_TYPE_FLOAT:
+      ಸ್ಥಿತಿ FFI_TYPE_ಸೂಚಕ:
+      ಸ್ಥಿತಿ FFI_TYPE_SINT8:
          cif->flags = FFIBFIN_RET_INT32;
-         break;
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_DOUBLE:
+         ನಿಲ್ಲಿಸು;
+      ಸ್ಥಿತಿ FFI_TYPE_SINT64:
+      ಸ್ಥಿತಿ FFI_TYPE_UINT64:
+      ಸ್ಥಿತಿ FFI_TYPE_DOUBLE:
           cif->flags = FFIBFIN_RET_INT64;
-          break;
-      case FFI_TYPE_STRUCT:
-         if (cif->rtype->size <= 4){
+          ನಿಲ್ಲಿಸು;
+      ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+         ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 <= 4){
         	 cif->flags = FFIBFIN_RET_INT32;
-         }else if (cif->rtype->size == 8){
+         }ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (cif->rtype->ಗಾತ್ರ_2 == 8){
         	 cif->flags = FFIBFIN_RET_INT64;
-         }else{
+         }ಇಲ್ಲದಿದ್ದರೆ{
         	 //it will return via a hidden pointer in P0
         	 cif->flags = FFIBFIN_RET_VOID;
          }
-         break;
-      default:
+         ನಿಲ್ಲಿಸು;
+      ಪೂರ್ವನಿಯೋಜಿತ:
          FFI_ASSERT(0);
-         break;
+         ನಿಲ್ಲಿಸು;
    }
-   return FFI_OK;
+   ಹಿಂತಿರುಗಿ FFI_OK;
 }
 
 /*
@@ -117,21 +117,21 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
  * rvalue = the return value
  * avalue = the arguments
  */
-void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
+ಶೂನ್ಯ ffi_call(ffi_cif *cif, ಶೂನ್ಯ(*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
-   int ret_type = cif->flags;
+   ಪೂರ್ಣಾಂಕ ret_type = cif->flags;
    extended_cif ecif;
    ecif.cif = cif;
    ecif.avalue = avalue;
    ecif.rvalue = rvalue;
 
-   switch (cif->abi) {
-      case FFI_SYSV:
-         ffi_call_SYSV(cif->bytes, &ecif, ffi_prep_args, ret_type, ecif.rvalue, fn);
-         break;
-      default:
+   ಆಯ್ಕೆ (cif->abi) {
+      ಸ್ಥಿತಿ FFI_SYSV:
+         ffi_call_SYSV(cif->ಬೈಟುಗಳು, &ecif, ffi_prep_ವಾದಗಳು, ret_type, ecif.rvalue, fn);
+         ನಿಲ್ಲಿಸು;
+      ಪೂರ್ವನಿಯೋಜಿತ:
          FFI_ASSERT(0);
-         break;
+         ನಿಲ್ಲಿಸು;
    }
 }
 
@@ -141,51 +141,51 @@ void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 *  to call the function (ffi_prep_args is called by the assembly routine in file
 *  sysv.S, which also calls the actual function)
 */
-void ffi_prep_args(unsigned char *stack, extended_cif *ecif)
+ಶೂನ್ಯ ffi_prep_ವಾದಗಳು(ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *ರಾಶಿ, extended_cif *ecif)
 {
-   register unsigned int i = 0;
-   void **p_argv;
-   unsigned char *argp;
+   ನೋಂದಣಿ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ i = 0;
+   ಶೂನ್ಯ **p_argv;
+   ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ *argp;
    ffi_type **p_arg;
-   argp = stack;
+   argp = ರಾಶಿ;
    p_argv = ecif->avalue;
-   for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+   ಗಾಗಿ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
         (i != 0);
         i--, p_arg++) {
       size_t z;
-      z = (*p_arg)->size;
-      if (z < sizeof(int)) {
-         z = sizeof(int);
-         switch ((*p_arg)->type) {
-            case FFI_TYPE_SINT8: {
-                  signed char v = *(SINT8 *)(* p_argv);
-                  signed int t = v;
-                  *(signed int *) argp = t;
+      z = (*p_arg)->ಗಾತ್ರ_2;
+      ಆದರೆ (z < ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ)) {
+         z = ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ);
+         ಆಯ್ಕೆ ((*p_arg)->type) {
+            ಸ್ಥಿತಿ FFI_TYPE_SINT8: {
+                  ಚಿಹ್ನೆಯುಳ್ಳ ಅಕ್ಷರ v = *(SINT8 *)(* p_argv);
+                  ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ t = v;
+                  *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = t;
                }
-               break;
-            case FFI_TYPE_UINT8: {
-                  unsigned char v = *(UINT8 *)(* p_argv);
-                  unsigned int t = v;
-                  *(unsigned int *) argp = t;
+               ನಿಲ್ಲಿಸು;
+            ಸ್ಥಿತಿ FFI_TYPE_UINT8: {
+                  ಚಿಹ್ನೆರಹಿತ ಅಕ್ಷರ v = *(UINT8 *)(* p_argv);
+                  ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ t = v;
+                  *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = t;
                }
-               break;
-            case FFI_TYPE_SINT16:
-               *(signed int *) argp = (signed int) * (SINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_UINT16:
-               *(unsigned int *) argp = (unsigned int) * (UINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_STRUCT:
-               memcpy(argp, *p_argv, (*p_arg)->size);
-               break;
-            default:
+               ನಿಲ್ಲಿಸು;
+            ಸ್ಥಿತಿ FFI_TYPE_SINT16:
+               *(ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆಯುಳ್ಳ ಪೂರ್ಣಾಂಕ) * (SINT16 *)(* p_argv);
+               ನಿಲ್ಲಿಸು;
+            ಸ್ಥಿತಿ FFI_TYPE_UINT16:
+               *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ) * (UINT16 *)(* p_argv);
+               ನಿಲ್ಲಿಸು;
+            ಸ್ಥಿತಿ FFI_TYPE_STRUCT:
+               ಸ್ಮರಣೆ_ನಕಲು(argp, *p_argv, (*p_arg)->ಗಾತ್ರ_2);
+               ನಿಲ್ಲಿಸು;
+            ಪೂರ್ವನಿಯೋಜಿತ:
                FFI_ASSERT(0);
-               break;
+               ನಿಲ್ಲಿಸು;
          }
-      } else if (z == sizeof(int)) {
-         *(unsigned int *) argp = (unsigned int) * (UINT32 *)(* p_argv);
-      } else {
-         memcpy(argp, *p_argv, z);
+      } ಇಲ್ಲದಿದ್ದರೆ ಆದರೆ (z == ಗಾತ್ರ(ಪೂರ್ಣಾಂಕ)) {
+         *(ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ *) argp = (ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ) * (UINT32 *)(* p_argv);
+      } ಇಲ್ಲದಿದ್ದರೆ {
+         ಸ್ಮರಣೆ_ನಕಲು(argp, *p_argv, z);
       }
       p_argv++;
       argp += z;

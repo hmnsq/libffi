@@ -25,23 +25,23 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_ಗುರಿ_H
+#ವ್ಯಾಖ್ಯಾನಿಸು LIBFFI_ಗುರಿ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#ವ್ಯಾಖ್ಯಾನಿತವಾಗದಿದ್ದರೆ LIBFFI_H
+#ದೋಷ "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifdef __rtems__
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __rtems__
 /*
  * Subprogram calling convention - copied from sgidefs.h
  */
-#define _MIPS_SIM_ABI32		1
-#define _MIPS_SIM_NABI32	2
-#define _MIPS_SIM_ABI64		3
-#elif !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__linux__)
+#ವ್ಯಾಖ್ಯಾನಿಸು _MIPS_SIM_ABI32		1
+#ವ್ಯಾಖ್ಯಾನಿಸು _MIPS_SIM_NABI32	2
+#ವ್ಯಾಖ್ಯಾನಿಸು _MIPS_SIM_ABI64		3
+#ಅಥವಾಆದರೆ !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__linux__)
 # include <sgidefs.h>
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
 #  ifndef _ABIN32
 #    define _ABIN32 _MIPS_SIM_NABI32
@@ -53,197 +53,197 @@
 #    define _ABIO32 _MIPS_SIM_ABI32
 #  endif
 
-#if !defined(_MIPS_SIM)
+#ಆದರೆ !defined(_MIPS_SIM)
 # error -- something is very wrong --
-#else
-#  if (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
+#ಇಲ್ಲದಿದ್ದರೆ
+#  ಆದರೆ (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
 #    define FFI_MIPS_N32
-#  else
-#    if (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
+#  ಇಲ್ಲದಿದ್ದರೆ
+#    ಆದರೆ (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
 #      define FFI_MIPS_O32
-#    else
+#    ಇಲ್ಲದಿದ್ದರೆ
 #     error -- this is an unsupported platform --
 #    endif
 #  endif
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifdef FFI_MIPS_O32
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
 #  define FFI_SIZEOF_ARG    4
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 /* N32 and N64 frames have 64bit integer args */
 #  define FFI_SIZEOF_ARG    8
-#  if _MIPS_SIM == _ABIN32
+#  ಆದರೆ _MIPS_SIM == _ABIN32
 #    define FFI_SIZEOF_JAVA_RAW  4
 #  endif
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
-#define FFI_FLAG_BITS 2
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_HAS_COMPLEX_TYPE 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_FLAG_ಬಿಟ್ಟುಗಳು 2
 
 /* SGI's strange assembler requires that we multiply by 4 rather 
    than shift left by FFI_FLAG_BITS */
 
-#define FFI_ARGS_D   FFI_TYPE_DOUBLE
-#define FFI_ARGS_F   FFI_TYPE_FLOAT
-#define FFI_ARGS_DD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_DOUBLE
-#define FFI_ARGS_FF  FFI_TYPE_FLOAT * 4 +  FFI_TYPE_FLOAT
-#define FFI_ARGS_FD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_FLOAT
-#define FFI_ARGS_DF  FFI_TYPE_FLOAT * 4 + FFI_TYPE_DOUBLE
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ವಾದಗಳು_D   FFI_TYPE_DOUBLE
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ವಾದಗಳು_F   FFI_TYPE_FLOAT
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ವಾದಗಳು_DD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_DOUBLE
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ವಾದಗಳು_FF  FFI_TYPE_FLOAT * 4 +  FFI_TYPE_FLOAT
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ವಾದಗಳು_FD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_FLOAT
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ವಾದಗಳು_DF  FFI_TYPE_FLOAT * 4 + FFI_TYPE_DOUBLE
 
 /* Needed for N32 structure returns */
-#define FFI_TYPE_SMALLSTRUCT  FFI_TYPE_UINT8
-#define FFI_TYPE_SMALLSTRUCT2 FFI_TYPE_SINT8
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_SMALLSTRUCT  FFI_TYPE_UINT8
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_SMALLSTRUCT2 FFI_TYPE_SINT8
 
-#if 0
+#ಆದರೆ 0
 /* The SGI assembler can't handle this.. */
-#define FFI_TYPE_STRUCT_DD (( FFI_ARGS_DD ) << 4) + FFI_TYPE_STRUCT
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_DD (( FFI_ವಾದಗಳು_DD ) << 4) + FFI_TYPE_STRUCT
 /* (and so on) */
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
 /* ...so we calculate these by hand! */
-#define FFI_TYPE_STRUCT_D      61
-#define FFI_TYPE_STRUCT_F      45
-#define FFI_TYPE_STRUCT_DD     253
-#define FFI_TYPE_STRUCT_FF     173
-#define FFI_TYPE_STRUCT_FD     237
-#define FFI_TYPE_STRUCT_DF     189
-#define FFI_TYPE_STRUCT_SMALL  93
-#define FFI_TYPE_STRUCT_SMALL2 109
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_D      61
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_F      45
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_DD     253
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_FF     173
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_FD     237
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_DF     189
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_SMALL  93
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_SMALL2 109
 
-#define FFI_TYPE_COMPLEX_SMALL    95
-#define FFI_TYPE_COMPLEX_SMALL2   111
-#define FFI_TYPE_COMPLEX_FF       47
-#define FFI_TYPE_COMPLEX_DD       63
-#define FFI_TYPE_COMPLEX_LDLD     79
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_COMPLEX_SMALL    95
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_COMPLEX_SMALL2   111
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_COMPLEX_FF       47
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_COMPLEX_DD       63
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_COMPLEX_LDLD     79
 
 /* and for n32 soft float, add 16 * 2^4 */
-#define FFI_TYPE_STRUCT_D_SOFT      317
-#define FFI_TYPE_STRUCT_F_SOFT      301
-#define FFI_TYPE_STRUCT_DD_SOFT     509
-#define FFI_TYPE_STRUCT_FF_SOFT     429
-#define FFI_TYPE_STRUCT_FD_SOFT     493
-#define FFI_TYPE_STRUCT_DF_SOFT     445
-#define FFI_TYPE_STRUCT_SOFT        16
-#endif
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_D_SOFT      317
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_F_SOFT      301
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_DD_SOFT     509
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_FF_SOFT     429
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_FD_SOFT     493
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_DF_SOFT     445
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_TYPE_STRUCT_SOFT        16
+#ಆದರೆ_ಅಂತ್ಯ
 
-#ifdef LIBFFI_ASM
-#define v0 $2
-#define v1 $3
-#define a0 $4
-#define a1 $5
-#define a2 $6
-#define a3 $7
-#define a4 $8		
-#define a5 $9		
-#define a6 $10		
-#define a7 $11		
-#define t0 $8
-#define t1 $9
-#define t2 $10
-#define t3 $11
-#define t4 $12		
-#define t5 $13
-#define t6 $14	
-#define t7 $15
-#define t8 $24
-#define t9 $25
-#define ra $31		
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ LIBFFI_ASM
+#ವ್ಯಾಖ್ಯಾನಿಸು v0 $2
+#ವ್ಯಾಖ್ಯಾನಿಸು v1 $3
+#ವ್ಯಾಖ್ಯಾನಿಸು a0 $4
+#ವ್ಯಾಖ್ಯಾನಿಸು a1 $5
+#ವ್ಯಾಖ್ಯಾನಿಸು a2 $6
+#ವ್ಯಾಖ್ಯಾನಿಸು a3 $7
+#ವ್ಯಾಖ್ಯಾನಿಸು a4 $8		
+#ವ್ಯಾಖ್ಯಾನಿಸು a5 $9		
+#ವ್ಯಾಖ್ಯಾನಿಸು a6 $10		
+#ವ್ಯಾಖ್ಯಾನಿಸು a7 $11		
+#ವ್ಯಾಖ್ಯಾನಿಸು t0 $8
+#ವ್ಯಾಖ್ಯಾನಿಸು t1 $9
+#ವ್ಯಾಖ್ಯಾನಿಸು t2 $10
+#ವ್ಯಾಖ್ಯಾನಿಸು t3 $11
+#ವ್ಯಾಖ್ಯಾನಿಸು t4 $12		
+#ವ್ಯಾಖ್ಯಾನಿಸು t5 $13
+#ವ್ಯಾಖ್ಯಾನಿಸು t6 $14	
+#ವ್ಯಾಖ್ಯಾನಿಸು t7 $15
+#ವ್ಯಾಖ್ಯಾನಿಸು t8 $24
+#ವ್ಯಾಖ್ಯಾನಿಸು t9 $25
+#ವ್ಯಾಖ್ಯಾನಿಸು ra $31		
 
-#ifdef FFI_MIPS_O32
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ FFI_MIPS_O32
 # define REG_L	lw
 # define REG_S	sw
 # define SUBU	subu
 # define ADDU	addu
 # define SRL	srl
 # define LI	li
-#else /* !FFI_MIPS_O32 */
+#ಇಲ್ಲದಿದ್ದರೆ /* !FFI_MIPS_O32 */
 # define REG_L	ld
 # define REG_S	sd
 # define SUBU	dsubu
 # define ADDU	daddu
 # define SRL	dsrl
 # define LI 	dli
-# if (_MIPS_SIM==_ABI64)
+# ಆದರೆ (_MIPS_SIM==_ABI64)
 #  define LA dla
-#  define EH_FRAME_ALIGN 3
-#  define FDE_ADDR_BYTES .8byte
-# else
+#  define EH_ಚೌಕಟ್ಟು_ALIGN 3
+#  define FDE_ADDR_ಬೈಟುಗಳು .8byte
+# ಇಲ್ಲದಿದ್ದರೆ
 #  define LA la
-#  define EH_FRAME_ALIGN 2
-#  define FDE_ADDR_BYTES .4byte
+#  define EH_ಚೌಕಟ್ಟು_ALIGN 2
+#  define FDE_ADDR_ಬೈಟುಗಳು .4byte
 # endif /* _MIPS_SIM==_ABI64 */
-#endif /* !FFI_MIPS_O32 */
-#else /* !LIBFFI_ASM */
+#ಆದರೆ_ಅಂತ್ಯ /* !FFI_MIPS_O32 */
+#ಇಲ್ಲದಿದ್ದರೆ /* !LIBFFI_ASM */
 # ifdef __GNUC__
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__SI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__SI__)));
-#else
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ     ffi_arg __attribute__((__mode__(__SI__)));
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ   ಪೂರ್ಣಾಂಕ     ffi_sarg __attribute__((__mode__(__SI__)));
+#ಇಲ್ಲದಿದ್ದರೆ
 /* N32 and N64 frames have 64bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__DI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__DI__)));
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆರಹಿತ ಪೂರ್ಣಾಂಕ     ffi_arg __attribute__((__mode__(__DI__)));
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಚಿಹ್ನೆಯುಳ್ಳ   ಪೂರ್ಣಾಂಕ     ffi_sarg __attribute__((__mode__(__DI__)));
 #  endif
-# else
+# ಇಲ್ಲದಿದ್ದರೆ
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
-typedef __uint32_t ffi_arg;
-typedef __int32_t ffi_sarg;
-#  else
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ __uint32_t ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ __int32_t ffi_sarg;
+#  ಇಲ್ಲದಿದ್ದರೆ
 /* N32 and N64 frames have 64bit integer args */
-typedef __uint64_t ffi_arg;
-typedef __int64_t ffi_sarg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ __uint64_t ffi_arg;
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ __int64_t ffi_sarg;
 #  endif
 # endif /* __GNUC__ */
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+ಪ್ರಕಾರವ್ಯಾಖ್ಯೆ ಎಣಿಕೆ ffi_abi {
+  FFI_ಮೊದಲ_ABI = 0,
   FFI_O32,
   FFI_N32,
   FFI_N64,
   FFI_O32_SOFT_FLOAT,
   FFI_N32_SOFT_FLOAT,
   FFI_N64_SOFT_FLOAT,
-  FFI_LAST_ABI,
+  FFI_ಕೊನೆಯ_ABI,
 
-#ifdef FFI_MIPS_O32
-#ifdef __mips_soft_float
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ FFI_MIPS_O32
+#ವ್ಯಾಖ್ಯಾನಿತವಾದರೆ __mips_soft_float
   FFI_DEFAULT_ABI = FFI_O32_SOFT_FLOAT
-#else
+#ಇಲ್ಲದಿದ್ದರೆ
   FFI_DEFAULT_ABI = FFI_O32
-#endif
-#else
-# if _MIPS_SIM==_ABI64
+#ಆದರೆ_ಅಂತ್ಯ
+#ಇಲ್ಲದಿದ್ದರೆ
+# ಆದರೆ _MIPS_SIM==_ABI64
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N64_SOFT_FLOAT
-#  else
+#  ಇಲ್ಲದಿದ್ದರೆ
   FFI_DEFAULT_ABI = FFI_N64
 #  endif
-# else
+# ಇಲ್ಲದಿದ್ದರೆ
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N32_SOFT_FLOAT
-#  else
+#  ಇಲ್ಲದಿದ್ದರೆ
   FFI_DEFAULT_ABI = FFI_N32
 #  endif
 # endif
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 } ffi_abi;
 
-#define FFI_EXTRA_CIF_FIELDS unsigned rstruct_flag; unsigned mips_nfixedargs
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#endif /* !LIBFFI_ASM */
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_EXTRA_CIF_FIELDS ಚಿಹ್ನೆರಹಿತ rstruct_flag; ಚಿಹ್ನೆರಹಿತ mips_nfixedargs
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_ಗುರಿ_SPECIFIC_VARIADIC
+#ಆದರೆ_ಅಂತ್ಯ /* !LIBFFI_ASM */
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_GO_CLOSURES 1
+#ವ್ಯಾಖ್ಯಾನಿಸು FFI_NATIVE_RAW_API 0
 
-#if defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
-# define FFI_TRAMPOLINE_SIZE 20
-#else
-# define FFI_TRAMPOLINE_SIZE 56
-#endif
+#ಆದರೆ defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
+# define FFI_TRAMPOLINE_ಗಾತ್ರ 20
+#ಇಲ್ಲದಿದ್ದರೆ
+# define FFI_TRAMPOLINE_ಗಾತ್ರ 56
+#ಆದರೆ_ಅಂತ್ಯ
 
-#endif
+#ಆದರೆ_ಅಂತ್ಯ
 
