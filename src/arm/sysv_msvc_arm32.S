@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ܐܘ IMPLIED, INCLUDING BUT ܠܐ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ܘ
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS ܐܘ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ܐܘ OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT ܐܘ OTHERWISE, ARISING FROM,
+   OUT OF ܐܘ في CONNECTION WITH THE SOFTWARE ܐܘ THE USE ܐܘ OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -43,13 +43,13 @@
 
         ; determine the area we will put the function into
 __FuncArea   SETS    "|.text|"
-        IF "$AreaName" != ""
+        ܐܢ "$AreaName" != ""
 __FuncArea   SETS    "$AreaName"
         ENDIF
 
         ; set up the exception handler itself
 __FuncExceptionHandler SETS ""
-        IF "$ExceptHandler" != ""
+        ܐܢ "$ExceptHandler" != ""
 __FuncExceptionHandler SETS    "|$ExceptHandler|"
         ENDIF
 
@@ -308,4 +308,4 @@ thisproc    adr    ip, thisproc
             DCD    0
             ;ENDP
 
-    END
+    ܫܠܡ

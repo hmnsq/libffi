@@ -20,13 +20,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ܐܘ IMPLIED, INCLUDING BUT ܠܐ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ܘ
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS ܐܘ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ܐܘ OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT ܐܘ OTHERWISE, ARISING FROM,
+   OUT OF ܐܘ في CONNECTION WITH THE SOFTWARE ܐܘ THE USE ܐܘ OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -100,7 +100,7 @@ ffi_call_unix:
 	;;
 	ld8	gp = [in2]
 	mov	b6 = r16
-	br.call.sptk.many b0 = b6
+	br.نادي.sptk.many b0 = b6
 	;;
 
 	/* Dispatch to handle return value.  */
@@ -207,7 +207,7 @@ ffi_call_unix:
 	// PLT resolver uses that scratch space at
 	// 'memcpy' symbol reolution time
 	add	sp = -16, sp
-	br.call.sptk.many b0 = memcpy#
+	br.نادي.sptk.many b0 = memcpy#
 	;;
 	mov	ar.pfs = loc0
 	mov	b0 = loc1
@@ -358,7 +358,7 @@ ffi_closure_unix:
 	st8.spill [r17] = in7
 
 	/* Invoke ffi_closure_unix_inner for the hard work.  */
-	br.call.sptk.many b0 = ffi_closure_unix_inner
+	br.نادي.sptk.many b0 = ffi_closure_unix_inner
 	;;
 
 	/* Dispatch to handle return value.  */
