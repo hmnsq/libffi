@@ -25,47 +25,47 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#که_نه_تعریف_شوی LIBFFI_H
+#تېروتنه "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#د_که_پای
 
-#if defined (__s390x__)
-#ifndef S390X
-#define S390X
-#endif
-#endif
+#إذا defined (__s390x__)
+#که_نه_تعریف_شوی S390X
+#تعریف_کړه S390X
+#د_که_پای
+#د_که_پای
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#که_نه_تعریف_شوی LIBFFI_ASM
+تعريفنوع بینښه اوږد          ffi_arg;
+تعريفنوع نښهدار اوږد            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_لومړی_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_وروستی_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#د_که_پای
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#define FFI_TARGET_HAS_INT128
+#تعریف_کړه FFI_موخه_SPECIFIC_ډېری_SPACE_ویش
+#تعریف_کړه FFI_موخه_HAS_COMPLEX_TYPE
+#تعریف_کړه FFI_موخه_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#ifdef S390X
-#define FFI_TRAMPOLINE_SIZE 32
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کړه FFI_CLOSURES 1
+#تعریف_کړه FFI_GO_CLOSURES 1
+#که_تعریف_شوی S390X
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 32
+#وإلا
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 16
+#د_که_پای
+#تعریف_کړه FFI_NATIVE_RAW_API 0
 
-#endif
+#د_که_پای
 

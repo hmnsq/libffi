@@ -24,8 +24,8 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
 
 /*
                                  |----------------------------------------|
@@ -45,159 +45,159 @@
 */
 
 
-#define FFI_TYPE_STRUCT_REGS FFI_TYPE_LAST
+#تعریف_کړه FFI_TYPE_STRUCT_REGS FFI_TYPE_وروستی
 
 
-extern void ffi_call_SYSV(void *rvalue, unsigned rsize, unsigned flags,
-			  void(*fn)(void), unsigned nbytes, extended_cif*);
-extern void ffi_closure_SYSV(void) FFI_HIDDEN;
+خارجي فراغ ffi_call_SYSV(فراغ *rvalue, بینښه rsize, بینښه flags,
+			  فراغ(*fn)(فراغ), بینښه nbytes, extended_cif*);
+خارجي فراغ ffi_تړون_SYSV(فراغ) FFI_HIDDEN;
 
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_حالت ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  switch(cif->rtype->type) {
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT16:
+  بدل(cif->rtype->type) {
+    حالة FFI_TYPE_SINT8:
+    حالة FFI_TYPE_UINT8:
+    حالة FFI_TYPE_SINT16:
+    حالة FFI_TYPE_UINT16:
       cif->flags = cif->rtype->type;
-      break;
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
+      اكسر;
+    حالة FFI_TYPE_VOID:
+    حالة FFI_TYPE_FLOAT:
       cif->flags = FFI_TYPE_UINT32;
-      break;
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      اكسر;
+    حالة FFI_TYPE_DOUBLE:
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
       cif->flags = FFI_TYPE_UINT64; // cif->rtype->type;
-      break;
-    case FFI_TYPE_STRUCT:
+      اكسر;
+    حالة FFI_TYPE_STRUCT:
       cif->flags = FFI_TYPE_STRUCT; //_REGS;
       /* Up to 16 bytes are returned in registers */
-      if (cif->rtype->size > 4 * 4) {
+      إذا (cif->rtype->اندازه > 4 * 4) {
         /* returned structure is referenced by a register; use 8 bytes
            (including 4 bytes for potential additional alignment) */
         cif->flags = FFI_TYPE_STRUCT;	
-        cif->bytes += 8;
+        cif->بایټونه += 8;
       }
-      break;
+      اكسر;
 
-    default:
+    افتراضي:
       cif->flags = FFI_TYPE_UINT32;
-      break;
+      اكسر;
   }
 
   /* Round up stack size needed for arguments.
      Allocate FFI_REGISTER_ARGS_SPACE bytes when there are only arguments
      passed in registers, round space reserved for arguments passed on stack
      up to ABI-specified alignment.  */
-  if (cif->bytes < FFI_REGISTER_NARGS * 4)
-    cif->bytes = FFI_REGISTER_ARGS_SPACE;
-  else
-    cif->bytes = FFI_REGISTER_ARGS_SPACE +
-	    FFI_ALIGN(cif->bytes - FFI_REGISTER_NARGS * 4,
-		      XTENSA_STACK_ALIGNMENT);
-  return FFI_OK;
+  إذا (cif->بایټونه < FFI_ثبتوونکی_NARGS * 4)
+    cif->بایټونه = FFI_ثبتوونکی_دلیلونه_SPACE;
+  وإلا
+    cif->بایټونه = FFI_ثبتوونکی_دلیلونه_SPACE +
+	    FFI_ALIGN(cif->بایټونه - FFI_ثبتوونکی_NARGS * 4,
+		      XTENSA_ډېری_ALIGNMENT);
+  أرجع FFI_OK;
 }
 
-void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
+فراغ ffi_prep_دلیلونه(extended_cif *ecif, بینښه حرف* ډېری)
 {
-  unsigned int i;
-  unsigned long *addr;
+  بینښه صحيح i;
+  بینښه اوږد *addr;
   ffi_type **ptr;
 
-  union {
-    void **v;
-    char **c;
-    signed char **sc;
-    unsigned char **uc;
-    signed short **ss;
-    unsigned short **us;
-    unsigned int **i;
-    long long **ll;
-    float **f;
-    double **d;
+  اتحاد {
+    فراغ **v;
+    حرف **c;
+    نښهدار حرف **sc;
+    بینښه حرف **uc;
+    نښهدار لنډ **ss;
+    بینښه لنډ **us;
+    بینښه صحيح **i;
+    اوږد اوږد **ll;
+    عائم **f;
+    مزدوج **d;
   } p_argv;
 
   /* Verify that everything is aligned up properly */
-  FFI_ASSERT (((unsigned long) stack & 0x7) == 0);
+  FFI_ASSERT (((بینښه اوږد) ډېری & 0x7) == 0);
 
   p_argv.v = ecif->avalue;
-  addr = (unsigned long*)stack;
+  addr = (بینښه اوږد*)ډېری;
 
   /* structures with a size greater than 16 bytes are passed in memory */
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 16)
+  إذا (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->اندازه > 16)
   {
-    *addr++ = (unsigned long)ecif->rvalue;
+    *addr++ = (بینښه اوږد)ecif->rvalue;
   }
 
-  for (i = ecif->cif->nargs, ptr = ecif->cif->arg_types;
+  لكل (i = ecif->cif->nargs, ptr = ecif->cif->arg_types;
        i > 0;
        i--, ptr++, p_argv.v++)
   {
-    switch ((*ptr)->type)
+    بدل ((*ptr)->type)
     {
-      case FFI_TYPE_SINT8:
+      حالة FFI_TYPE_SINT8:
         *addr++ = **p_argv.sc;
-        break;
-      case FFI_TYPE_UINT8:
+        اكسر;
+      حالة FFI_TYPE_UINT8:
         *addr++ = **p_argv.uc;
-        break;
-      case FFI_TYPE_SINT16:
+        اكسر;
+      حالة FFI_TYPE_SINT16:
         *addr++ = **p_argv.ss;
-        break;
-      case FFI_TYPE_UINT16:
+        اكسر;
+      حالة FFI_TYPE_UINT16:
         *addr++ = **p_argv.us;
-        break;
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_POINTER:
+        اكسر;
+      حالة FFI_TYPE_FLOAT:
+      حالة FFI_TYPE_INT:
+      حالة FFI_TYPE_UINT32:
+      حالة FFI_TYPE_SINT32:
+      حالة FFI_TYPE_اشاره_ګر:
         *addr++ = **p_argv.i;
-        break;
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-        if (((unsigned long)addr & 4) != 0)
+        اكسر;
+      حالة FFI_TYPE_DOUBLE:
+      حالة FFI_TYPE_UINT64:
+      حالة FFI_TYPE_SINT64:
+        إذا (((بینښه اوږد)addr & 4) != 0)
           addr++;
-        *(unsigned long long*)addr = **p_argv.ll;
-	addr += sizeof(unsigned long long) / sizeof (addr);
-        break;
+        *(بینښه اوږد اوږد*)addr = **p_argv.ll;
+	addr += حجم(بینښه اوږد اوږد) / حجم (addr);
+        اكسر;
 
-      case FFI_TYPE_STRUCT:
+      حالة FFI_TYPE_STRUCT:
       {
-        unsigned long offs;
-        unsigned long size;
+        بینښه اوږد offs;
+        بینښه اوږد اندازه;
 
-        if (((unsigned long)addr & 4) != 0 && (*ptr)->alignment > 4)
+        إذا (((بینښه اوږد)addr & 4) != 0 && (*ptr)->alignment > 4)
           addr++;
 
-        offs = (unsigned long) addr - (unsigned long) stack;
-        size = (*ptr)->size;
+        offs = (بینښه اوږد) addr - (بینښه اوږد) ډېری;
+        اندازه = (*ptr)->اندازه;
 
         /* Entire structure must fit the argument registers or referenced */
-        if (offs < FFI_REGISTER_NARGS * 4
-            && offs + size > FFI_REGISTER_NARGS * 4)
-          addr = (unsigned long*) (stack + FFI_REGISTER_NARGS * 4);
+        إذا (offs < FFI_ثبتوونکی_NARGS * 4
+            && offs + اندازه > FFI_ثبتوونکی_NARGS * 4)
+          addr = (بینښه اوږد*) (ډېری + FFI_ثبتوونکی_NARGS * 4);
 
-        memcpy((char*) addr, *p_argv.c, size);
-        addr += (size + 3) / 4;
-        break;
+        حافظه_نقل((حرف*) addr, *p_argv.c, اندازه);
+        addr += (اندازه + 3) / 4;
+        اكسر;
       }
 
-      default:
+      افتراضي:
         FFI_ASSERT(0);
     }
   }
 }
 
 
-void ffi_call(ffi_cif* cif, void(*fn)(void), void *rvalue, void **avalue)
+فراغ ffi_call(ffi_cif* cif, فراغ(*fn)(فراغ), فراغ *rvalue, فراغ **avalue)
 {
   extended_cif ecif;
-  unsigned long rsize = cif->rtype->size;
-  int flags = cif->flags;
-  void *alloc = NULL;
+  بینښه اوږد rsize = cif->rtype->اندازه;
+  صحيح flags = cif->flags;
+  فراغ *alloc = عدم;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
@@ -208,99 +208,99 @@ void ffi_call(ffi_cif* cif, void(*fn)(void), void *rvalue, void **avalue)
      the length not a multiple of 4 bytes. Handling all those cases would be
      very complex.  */
 
-  if (flags == FFI_TYPE_STRUCT && (rsize <= 16 || rvalue == NULL))
+  إذا (flags == FFI_TYPE_STRUCT && (rsize <= 16 || rvalue == عدم))
   {
     alloc = alloca(FFI_ALIGN(rsize, 4));
     ecif.rvalue = alloc;
   }
-  else
+  وإلا
   {
     ecif.rvalue = rvalue;
   }
 
-  if (cif->abi != FFI_SYSV)
+  إذا (cif->abi != FFI_SYSV)
     FFI_ASSERT(0);
 
-  ffi_call_SYSV (ecif.rvalue, rsize, cif->flags, fn, cif->bytes, &ecif);
+  ffi_call_SYSV (ecif.rvalue, rsize, cif->flags, fn, cif->بایټونه, &ecif);
 
-  if (alloc != NULL && rvalue != NULL)
-    memcpy(rvalue, alloc, rsize);
+  إذا (alloc != عدم && rvalue != عدم)
+    حافظه_نقل(rvalue, alloc, rsize);
 }
 
-extern void ffi_trampoline();
-extern void ffi_cacheflush(void* start, void* end);
+خارجي فراغ ffi_trampoline();
+خارجي فراغ ffi_cacheflush(فراغ* پیل, فراغ* پای_ټکی);
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_حالت
+ffi_prep_تړون_loc (ffi_تړون* تړون,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*, void*, void**, void*),
-                      void *user_data,
-                      void *codeloc)
+                      فراغ (*fun)(ffi_cif*, فراغ*, فراغ**, فراغ*),
+                      فراغ *user_معلومات,
+                      فراغ *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  إذا (cif->abi != FFI_SYSV)
+    أرجع FFI_BAD_ABI;
 
   /* copye trampoline to stack and patch 'ffi_closure_SYSV' pointer */
-  memcpy(closure->tramp, ffi_trampoline, FFI_TRAMPOLINE_SIZE);
-  *(unsigned int*)(&closure->tramp[8]) = (unsigned int)ffi_closure_SYSV;
+  حافظه_نقل(تړون->tramp, ffi_trampoline, FFI_TRAMPOLINE_اندازه);
+  *(بینښه صحيح*)(&تړون->tramp[8]) = (بینښه صحيح)ffi_تړون_SYSV;
 
   // Do we have this function?
   // __builtin___clear_cache(closer->tramp, closer->tramp + FFI_TRAMPOLINE_SIZE)
-  ffi_cacheflush(closure->tramp, closure->tramp + FFI_TRAMPOLINE_SIZE);
+  ffi_cacheflush(تړون->tramp, تړون->tramp + FFI_TRAMPOLINE_اندازه);
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
-  return FFI_OK; 
+  تړون->cif = cif;
+  تړون->fun = fun;
+  تړون->user_معلومات = user_معلومات;
+  أرجع FFI_OK; 
 }
 
 
-long FFI_HIDDEN
-ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
+اوږد FFI_HIDDEN
+ffi_تړون_SYSV_inner(ffi_تړون *تړون, فراغ **ارزښتونه, فراغ *rvalue)
 {
   ffi_cif *cif;
   ffi_type **arg_types;
-  void **avalue;
-  int i, areg;
+  فراغ **avalue;
+  صحيح i, areg;
 
-  cif = closure->cif;
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  cif = تړون->cif;
+  إذا (cif->abi != FFI_SYSV)
+    أرجع FFI_BAD_ABI;
 
   areg = 0;
 
-  int rtype = cif->rtype->type;
-  if (rtype == FFI_TYPE_STRUCT && cif->rtype->size > 4 * 4)
+  صحيح rtype = cif->rtype->type;
+  إذا (rtype == FFI_TYPE_STRUCT && cif->rtype->اندازه > 4 * 4)
   {
-    rvalue = *values;
+    rvalue = *ارزښتونه;
     areg++;
   }
 
-  cif = closure->cif; 
+  cif = تړون->cif; 
   arg_types = cif->arg_types;
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * حجم(فراغ *));
 
-  for (i = 0; i < cif->nargs; i++)
+  لكل (i = 0; i < cif->nargs; i++)
   {
-    if (arg_types[i]->alignment == 8 && (areg & 1) != 0)
+    إذا (arg_types[i]->alignment == 8 && (areg & 1) != 0)
       areg++;
 
     // skip the entry a1, * framework, see ffi_trampoline
-    if (areg == FFI_REGISTER_NARGS)
-      areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
+    إذا (areg == FFI_ثبتوونکی_NARGS)
+      areg = (FFI_ثبتوونکی_دلیلونه_SPACE + 32) / 4;
 
-    if (arg_types[i]->type == FFI_TYPE_STRUCT)
+    إذا (arg_types[i]->type == FFI_TYPE_STRUCT)
     {
-      int numregs = ((arg_types[i]->size + 3) & ~3) / 4;
-      if (areg < FFI_REGISTER_NARGS && areg + numregs > FFI_REGISTER_NARGS)
-        areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
+      صحيح numregs = ((arg_types[i]->اندازه + 3) & ~3) / 4;
+      إذا (areg < FFI_ثبتوونکی_NARGS && areg + numregs > FFI_ثبتوونکی_NARGS)
+        areg = (FFI_ثبتوونکی_دلیلونه_SPACE + 32) / 4;
     }
 
-    avalue[i] = &values[areg];
-    areg += (arg_types[i]->size + 3) / 4;
+    avalue[i] = &ارزښتونه[areg];
+    areg += (arg_types[i]->اندازه + 3) / 4;
   }
 
-  (closure->fun)(cif, rvalue, avalue, closure->user_data);
+  (تړون->fun)(cif, rvalue, avalue, تړون->user_معلومات);
 
-  return rtype;
+  أرجع rtype;
 }

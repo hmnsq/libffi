@@ -24,44 +24,44 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#که_نه_تعریف_شوی LIBFFI_H
+#تېروتنه "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#د_که_پای
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#که_نه_تعریف_شوی LIBFFI_ASM
+تعريفنوع بینښه اوږد ffi_arg;
+تعريفنوع نښهدار اوږد ffi_sarg;
 
-typedef enum ffi_abi
+تعريفنوع تعداد ffi_abi
 {
-  FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 8
+  FFI_لومړی_ABI = 0,
+#إذا __SIZEOF_POINTER__ == 8
   FFI_ARC64,
-#else
+#وإلا
   FFI_ARCOMPACT,
-#endif
-  FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 8
+#د_که_پای
+  FFI_وروستی_ABI,
+#إذا __SIZEOF_POINTER__ == 8
   FFI_DEFAULT_ABI = FFI_ARC64
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_ARCOMPACT
-#endif
+#د_که_پای
 } ffi_abi;
-#endif
+#د_که_پای
 
-#define FFI_CLOSURES 		1
-#define FFI_GO_CLOSURES 1
-#if __SIZEOF_POINTER__ == 8
-#define FFI_TRAMPOLINE_SIZE	24
-#else
-#define FFI_TRAMPOLINE_SIZE	12
-#endif
+#تعریف_کړه FFI_CLOSURES 		1
+#تعریف_کړه FFI_GO_CLOSURES 1
+#إذا __SIZEOF_POINTER__ == 8
+#تعریف_کړه FFI_TRAMPOLINE_اندازه	24
+#وإلا
+#تعریف_کړه FFI_TRAMPOLINE_اندازه	12
+#د_که_پای
 
-#define FFI_NATIVE_RAW_API 	0
+#تعریف_کړه FFI_NATIVE_RAW_API 	0
 
-#endif
+#د_که_پای

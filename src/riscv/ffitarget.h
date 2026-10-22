@@ -25,46 +25,46 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#که_نه_تعریف_شوی LIBFFI_H
+#تېروتنه "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#د_که_پای
 
-#ifndef __riscv
-#error "libffi was configured for a RISC-V target but this does not appear to be a RISC-V compiler."
-#endif
+#که_نه_تعریف_شوی __riscv
+#تېروتنه "libffi was configured for a RISC-V target but this does not appear to be a RISC-V compiler."
+#د_که_پای
 
-#ifndef LIBFFI_ASM
+#که_نه_تعریف_شوی LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef   signed long ffi_sarg;
+تعريفنوع بینښه اوږد ffi_arg;
+تعريفنوع   نښهدار اوږد ffi_sarg;
 
 /* FFI_UNUSED_NN and riscv_unused are to maintain ABI compatibility with a
    distributed Berkeley patch from 2014, and can be removed at SONAME bump */
-typedef enum ffi_abi {
-    FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+    FFI_لومړی_ABI = 0,
     FFI_SYSV,
-    FFI_UNUSED_1,
-    FFI_UNUSED_2,
-    FFI_UNUSED_3,
-    FFI_LAST_ABI,
+    FFI_ناکارول_شوی_1,
+    FFI_ناکارول_شوی_2,
+    FFI_ناکارول_شوی_3,
+    FFI_وروستی_ABI,
 
     FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
-#endif /* LIBFFI_ASM */
+#د_که_پای /* LIBFFI_ASM */
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
-#define FFI_EXTRA_CIF_FIELDS unsigned riscv_nfixedargs; unsigned riscv_unused
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#define FFI_TARGET_HAS_INT128
+#تعریف_کړه FFI_CLOSURES 1
+#تعریف_کړه FFI_GO_CLOSURES 1
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 24
+#تعریف_کړه FFI_NATIVE_RAW_API 0
+#تعریف_کړه FFI_EXTRA_CIF_FIELDS بینښه riscv_nfixedargs; بینښه riscv_ناکارول_شوی
+#تعریف_کړه FFI_موخه_SPECIFIC_VARIADIC
+#تعریف_کړه FFI_موخه_HAS_INT128
 
-#endif
+#د_که_پای
 

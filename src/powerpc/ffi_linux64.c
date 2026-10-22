@@ -28,40 +28,40 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include <tramp.h>
-#include <stdlib.h>
+#ضمن "ffi.h"
+#ضمن <tramp.h>
+#ضمن <stdlib.h>
 
-#ifdef POWERPC64
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
+#که_تعریف_شوی POWERPC64
+#ضمن "ffi_common.h"
+#ضمن "ffi_powerpc.h"
 
 
 /* About the LINUX64 ABI.  */
-enum {
-  NUM_GPR_ARG_REGISTERS64 = 8,
-  NUM_FPR_ARG_REGISTERS64 = 13,
-  NUM_VEC_ARG_REGISTERS64 = 12,
+تعداد {
+  عدد_GPR_ARG_REGISTERS64 = 8,
+  عدد_FPR_ARG_REGISTERS64 = 13,
+  عدد_VEC_ARG_REGISTERS64 = 12,
 };
-enum { ASM_NEEDS_REGISTERS64 = 4 };
+تعداد { ASM_NEEDS_REGISTERS64 = 4 };
 
 
-#if HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#إذا HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 /* Adjust size of ffi_type_longdouble.  */
-void FFI_HIDDEN
+فراغ FFI_HIDDEN
 ffi_prep_types_linux64 (ffi_abi abi)
 {
-  if ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
+  إذا ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
     {
-      ffi_type_longdouble.size = 8;
+      ffi_type_longdouble.اندازه = 8;
       ffi_type_longdouble.alignment = 8;
     }
-  else
+  وإلا
     {
-      ffi_type_longdouble.size = 16;
+      ffi_type_longdouble.اندازه = 16;
       ffi_type_longdouble.alignment = 16;
     }
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
   /* _Complex long double is two halves of whatever long double just became.
      Its size comes from sizeof(_Complex long double) at build time, which is
      only right for the ABI libffi itself was built for, so keep it in step.
@@ -69,56 +69,56 @@ ffi_prep_types_linux64 (ffi_abi abi)
      that asks for the other long double width would get a return value copied
      at cif->rtype->size (wrong by 16 bytes either way) and structs containing
      the type laid out to the build-time size.  */
-  ffi_type_complex_longdouble.size = 2 * ffi_type_longdouble.size;
+  ffi_type_complex_longdouble.اندازه = 2 * ffi_type_longdouble.اندازه;
   ffi_type_complex_longdouble.alignment = ffi_type_longdouble.alignment;
-#endif
+#د_که_پای
 }
-#endif
+#د_که_پای
 
 
-static unsigned int
+ساكن بینښه صحيح
 discover_homogeneous_aggregate (ffi_abi abi,
-                                const ffi_type *t,
-                                unsigned int *elnum)
+                                ثابت ffi_type *t,
+                                بینښه صحيح *elnum)
 {
-  switch (t->type)
+  بدل (t->type)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    حالة FFI_TYPE_LONGDOUBLE:
       /* 64-bit long doubles are equivalent to doubles. */
-      if ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
+      إذا ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
         {
           *elnum = 1;
-          return FFI_TYPE_DOUBLE;
+          أرجع FFI_TYPE_DOUBLE;
         }
       /* IBM extended precision values use unaligned pairs
          of FPRs, but according to the ABI must be considered
          distinct from doubles. They are also limited to a
          maximum of four members in a homogeneous aggregate. */
-      else if ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
+      وإلا إذا ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
         {
           *elnum = 2;
-          return FFI_TYPE_LONGDOUBLE;
+          أرجع FFI_TYPE_LONGDOUBLE;
         }
       /* Fall through. */
-#endif
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
+#د_که_پای
+    حالة FFI_TYPE_FLOAT:
+    حالة FFI_TYPE_DOUBLE:
       *elnum = 1;
-      return (int) t->type;
+      أرجع (صحيح) t->type;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
+    حالة FFI_TYPE_COMPLEX:
       /* Count complex of an FP base as two elements of that base, so a
 	 struct containing complex members is recognised as an HFA.  This
 	 only affects FFI_TYPE_COMPLEX *inside* structs; the top-level
 	 complex arg path has its own case in the cif/args/closure loops
 	 and never reaches the FFI_TYPE_STRUCT branches.  */
       {
-	unsigned int inner_elnum = 0;
-	unsigned int inner
+	بینښه صحيح inner_elnum = 0;
+	بینښه صحيح inner
 	  = discover_homogeneous_aggregate (abi, t->elements[0], &inner_elnum);
-	if (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
+	إذا (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
 	    || inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* A _Complex of an FP base counts as two of that base: an
@@ -126,159 +126,159 @@ discover_homogeneous_aggregate (ffi_abi abi,
 	       itself two FPRs (inner_elnum == 2), so a _Complex long double
 	       contributes four FPRs.  */
 	    *elnum = 2 * inner_elnum;
-	    return inner;
+	    أرجع inner;
 	  }
-	return 0;
+	أرجع 0;
       }
-#endif
+#د_که_پای
 
-    case FFI_TYPE_STRUCT:;
+    حالة FFI_TYPE_STRUCT:;
       {
-	unsigned int base_elt = 0, total_elnum = 0;
+	بینښه صحيح بنسټ_elt = 0, ټول_elnum = 0;
 	ffi_type **el = t->elements;
-	while (*el)
+	طالما (*el)
 	  {
-	    unsigned int el_elt, el_elnum = 0;
+	    بینښه صحيح el_elt, el_elnum = 0;
 	    el_elt = discover_homogeneous_aggregate (abi, *el, &el_elnum);
-	    if (el_elt == 0
-		|| (base_elt && base_elt != el_elt))
-	      return 0;
-	    base_elt = el_elt;
-	    total_elnum += el_elnum;
-#if _CALL_ELF == 2
-	    if (total_elnum > 8)
-	      return 0;
-#else
-	    if (total_elnum > 1)
-	      return 0;
-#endif
+	    إذا (el_elt == 0
+		|| (بنسټ_elt && بنسټ_elt != el_elt))
+	      أرجع 0;
+	    بنسټ_elt = el_elt;
+	    ټول_elnum += el_elnum;
+#إذا _CALL_ELF == 2
+	    إذا (ټول_elnum > 8)
+	      أرجع 0;
+#وإلا
+	    إذا (ټول_elnum > 1)
+	      أرجع 0;
+#د_که_پای
 	    el++;
 	  }
-	*elnum = total_elnum;
-	return base_elt;
+	*elnum = ټول_elnum;
+	أرجع بنسټ_elt;
       }
 
-    default:
-      return 0;
+    افتراضي:
+      أرجع 0;
     }
 }
 
 
 /* Perform machine dependent cif processing */
-static ffi_status
+ساكن ffi_حالت
 ffi_prep_cif_linux64_core (ffi_cif *cif)
 {
   ffi_type **ptr;
-  unsigned bytes;
-  unsigned i, fparg_count = 0, intarg_count = 0, vecarg_count = 0;
-  unsigned flags = cif->flags;
-  unsigned elt, elnum, rtype;
+  بینښه بایټونه;
+  بینښه i, fparg_شمېر = 0, intarg_شمېر = 0, vecarg_شمېر = 0;
+  بینښه flags = cif->flags;
+  بینښه elt, elnum, rtype;
 
-#if FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
+#إذا FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
   /* If compiled without long double support... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
+  إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#elif !defined(__VEC__)
+    أرجع FFI_BAD_ABI;
+#وإلاإذا !defined(__VEC__)
   /* If compiled without vector register support (used by assembly)... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#else
+  إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+    أرجع FFI_BAD_ABI;
+#وإلا
   /* If the IEEE128 flag is set, but long double is only 64 bits wide... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
+  إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#endif
+    أرجع FFI_BAD_ABI;
+#د_که_پای
 
   /* The machine-independent calculation of cif->bytes doesn't work
      for us.  Redo the calculation.  */
-#if _CALL_ELF == 2
+#إذا _CALL_ELF == 2
   /* Space for backchain, CR, LR, TOC and the asm's temp regs.  */
-  bytes = (4 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  بایټونه = (4 + ASM_NEEDS_REGISTERS64) * حجم (اوږد);
 
   /* Space for the general registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS64 * sizeof (long);
-#else
+  بایټونه += عدد_GPR_ARG_REGISTERS64 * حجم (اوږد);
+#وإلا
   /* Space for backchain, CR, LR, cc/ld doubleword, TOC and the asm's temp
      regs.  */
-  bytes = (6 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  بایټونه = (6 + ASM_NEEDS_REGISTERS64) * حجم (اوږد);
 
   /* Space for the mandatory parm save area and general registers.  */
-  bytes += 2 * NUM_GPR_ARG_REGISTERS64 * sizeof (long);
-#endif
+  بایټونه += 2 * عدد_GPR_ARG_REGISTERS64 * حجم (اوږد);
+#د_که_پای
 
   /* Return value handling.  */
   rtype = cif->rtype->type;
-#if _CALL_ELF == 2
+#إذا _CALL_ELF == 2
 homogeneous:
-#endif
-  switch (rtype)
+#د_که_پای
+  بدل (rtype)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    حالة FFI_TYPE_LONGDOUBLE:
+      إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
         {
           flags |= FLAG_RETURNS_VEC;
-          break;
+          اكسر;
         }
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
-	flags |= FLAG_RETURNS_128BITS;
+      إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	flags |= FLAG_RETURNS_128_بټونه;
       /* Fall through.  */
-#endif
-    case FFI_TYPE_DOUBLE:
-      flags |= FLAG_RETURNS_64BITS;
+#د_که_پای
+    حالة FFI_TYPE_DOUBLE:
+      flags |= FLAG_RETURNS_64_بټونه;
       /* Fall through.  */
-    case FFI_TYPE_FLOAT:
+    حالة FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
-      break;
+      اكسر;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
-      flags |= FLAG_RETURNS_64BITS;
-      break;
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
+    حالة FFI_TYPE_اشاره_ګر:
+      flags |= FLAG_RETURNS_64_بټونه;
+      اكسر;
 
-    case FFI_TYPE_STRUCT:
-#if _CALL_ELF == 2
+    حالة FFI_TYPE_STRUCT:
+#إذا _CALL_ELF == 2
       elt = discover_homogeneous_aggregate (cif->abi, cif->rtype, &elnum);
-      if (elt)
+      إذا (elt)
         {
           flags |= FLAG_RETURNS_SMST;
           rtype = elt;
-          goto homogeneous;
+          اذهب homogeneous;
         }
-      if (cif->rtype->size <= 16)
+      إذا (cif->rtype->اندازه <= 16)
         {
           flags |= FLAG_RETURNS_SMST;
-          break;
+          اكسر;
         }
-#endif
-      intarg_count++;
+#د_که_پای
+      intarg_شمېر++;
       flags |= FLAG_RETVAL_REFERENCE;
       /* Fall through.  */
-    case FFI_TYPE_VOID:
+    حالة FFI_TYPE_VOID:
       flags |= FLAG_RETURNS_NOTHING;
-      break;
+      اكسر;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
+    حالة FFI_TYPE_COMPLEX:
       rtype = cif->rtype->elements[0]->type;
-      switch (rtype)
+      بدل (rtype)
         {
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_DOUBLE:
+        حالة FFI_TYPE_FLOAT:
+        حالة FFI_TYPE_DOUBLE:
           /* float/double _Complex are returned in (f1, f2), matching
              the assembly path for a 2-element FP HFA.  */
           flags |= FLAG_RETURNS_SMST;
-          goto homogeneous;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-        case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+          اذهب homogeneous;
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+        حالة FFI_TYPE_LONGDOUBLE:
+          إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
               /* IEEE-128 _Complex long double: real in v2, imag in v3.
                  Return via the vector-homogeneous small-struct path.  */
               flags |= FLAG_RETURNS_SMST | FLAG_RETURNS_VEC;
-              break;
+              اكسر;
             }
           /* IBM-128 _Complex long double is returned like a homogeneous
              aggregate of doubles: real in f1:f2, imag in f3:f4.  (For a
@@ -286,222 +286,222 @@ homogeneous:
              real in f1 and imag in f2.)  */
           flags |= FLAG_RETURNS_SMST;
           rtype = FFI_TYPE_DOUBLE;
-          goto homogeneous;
-#endif
-        case FFI_TYPE_INT:
-        case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-        case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-        case FFI_TYPE_POINTER:
+          اذهب homogeneous;
+#د_که_پای
+        حالة FFI_TYPE_INT:
+        حالة FFI_TYPE_SINT8:  حالة FFI_TYPE_UINT8:
+        حالة FFI_TYPE_SINT16: حالة FFI_TYPE_UINT16:
+        حالة FFI_TYPE_SINT32: حالة FFI_TYPE_UINT32:
+        حالة FFI_TYPE_SINT64: حالة FFI_TYPE_UINT64:
+        حالة FFI_TYPE_اشاره_ګر:
           /* Integer-typed _Complex: real returned in r3, imag in r4.
              Take the .Lsmall_struct return path (FLAG_RETURNS_SMST
              without FP/VEC) and let the bounce-buffer logic in
              ffi_call_int repack the two halves.  */
           flags |= FLAG_RETURNS_SMST;
-          break;
-        default:
-          return FFI_BAD_TYPEDEF;
+          اكسر;
+        افتراضي:
+          أرجع FFI_BAD_TYPEDEF;
         }
-      break;
-#endif
+      اكسر;
+#د_که_پای
 
-    default:
+    افتراضي:
       /* Returns 32-bit integer, or similar.  Nothing to do here.  */
-      break;
+      اكسر;
     }
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  لكل (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      unsigned int align;
+      بینښه صحيح align;
 
-      switch ((*ptr)->type)
+      بدل ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	حالة FFI_TYPE_LONGDOUBLE:
+          إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count++;
+              vecarg_شمېر++;
               /* Align to 16 bytes, plus the 16-byte argument. */
-              intarg_count = (intarg_count + 3) & ~0x1;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              intarg_شمېر = (intarg_شمېر + 3) & ~0x1;
+              إذا (vecarg_شمېر > عدد_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              اكسر;
             }
-	  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      fparg_count++;
-	      intarg_count++;
+	      fparg_شمېر++;
+	      intarg_شمېر++;
 	    }
 	  /* Fall through.  */
-#endif
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_FLOAT:
-	  fparg_count++;
-	  intarg_count++;
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+#د_که_پای
+	حالة FFI_TYPE_DOUBLE:
+	حالة FFI_TYPE_FLOAT:
+	  fparg_شمېر++;
+	  intarg_شمېر++;
+	  إذا (fparg_شمېر > عدد_FPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	حالة FFI_TYPE_STRUCT:
+	  إذا ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      إذا (align > 16)
 		align = 16;
 	      align = align / 8;
-	      if (align > 1)
-		intarg_count = FFI_ALIGN (intarg_count, align);
+	      إذا (align > 1)
+		intarg_شمېر = FFI_ALIGN (intarg_شمېر, align);
 	    }
-	  intarg_count += ((*ptr)->size + 7) / 8;
+	  intarg_شمېر += ((*ptr)->اندازه + 7) / 8;
 	  elt = discover_homogeneous_aggregate (cif->abi, *ptr, &elnum);
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-          if (elt == FFI_TYPE_LONGDOUBLE &&
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+          إذا (elt == FFI_TYPE_LONGDOUBLE &&
               (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count += elnum;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              vecarg_شمېر += elnum;
+              إذا (vecarg_شمېر > عدد_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              اكسر;
             }
-	  else
-#endif
-	  if (elt)
+	  وإلا
+#د_که_پای
+	  إذا (elt)
 	    {
-	      fparg_count += elnum;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_شمېر += elnum;
+	      إذا (fparg_شمېر > عدد_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  else
+	  وإلا
 	    {
-	      if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	      إذا (intarg_شمېر > عدد_GPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
+	حالة FFI_TYPE_اشاره_ګر:
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT16:
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT8:
+	حالة FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 8-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  intarg_count++;
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  intarg_شمېر++;
+	  إذا (intarg_شمېر > عدد_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  اكسر;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
+	حالة FFI_TYPE_COMPLEX:
 	  /* Each half of a _Complex argument is passed independently: an FP
 	     half in its own FPR (and its own GPR shadow slot); an integer
 	     half in its own GPR slot.  This matches GCC's split_complex_arg
 	     under ELFv2, and is what differentiates _Complex from a
 	     same-sized struct{T;T;} which uses fewer GPR shadow slots.  */
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  إذا (elt == FFI_TYPE_LONGDOUBLE
 	      && (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
-#endif
-	  switch (elt)
+#د_که_پای
+	  بدل (elt)
 	    {
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_DOUBLE:
-	      fparg_count += 2;
-	      intarg_count += 2;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	    حالة FFI_TYPE_FLOAT:
+	    حالة FFI_TYPE_DOUBLE:
+	      fparg_شمېر += 2;
+	      intarg_شمېر += 2;
+	      إذا (fparg_شمېر > عدد_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	    case FFI_TYPE_LONGDOUBLE:
-	      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      اكسر;
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	    حالة FFI_TYPE_LONGDOUBLE:
+	      إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 		{
 		  /* Two IEEE-128 halves: each occupies a vector register plus
 		     two GPR shadow doublewords, the pair 16-byte aligned.  */
-		  vecarg_count += 2;
-		  intarg_count = (intarg_count + 1) & ~0x1;
-		  intarg_count += 4;
-		  if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+		  vecarg_شمېر += 2;
+		  intarg_شمېر = (intarg_شمېر + 1) & ~0x1;
+		  intarg_شمېر += 4;
+		  إذا (vecarg_شمېر > عدد_VEC_ARG_REGISTERS64)
 		    flags |= FLAG_ARG_NEEDS_PSAVE;
-		  break;
+		  اكسر;
 		}
 	      /* IBM-128: each half is a pair of FPRs, and each FPR half
 		 consumes a GPR shadow doubleword -- four of each in total.  */
-	      fparg_count += 4;
-	      intarg_count += 4;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_شمېر += 4;
+	      intarg_شمېر += 4;
+	      إذا (fparg_شمېر > عدد_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
-#endif
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-	    case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	      intarg_count += 2;
-	      break;
-	    default:
-	      return FFI_BAD_TYPEDEF;
+	      اكسر;
+#د_که_پای
+	    حالة FFI_TYPE_INT:
+	    حالة FFI_TYPE_SINT8:  حالة FFI_TYPE_UINT8:
+	    حالة FFI_TYPE_SINT16: حالة FFI_TYPE_UINT16:
+	    حالة FFI_TYPE_SINT32: حالة FFI_TYPE_UINT32:
+	    حالة FFI_TYPE_SINT64: حالة FFI_TYPE_UINT64:
+	    حالة FFI_TYPE_اشاره_ګر:
+	      intarg_شمېر += 2;
+	      اكسر;
+	    افتراضي:
+	      أرجع FFI_BAD_TYPEDEF;
 	    }
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  إذا (intarg_شمېر > عدد_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
-#endif
+	  اكسر;
+#د_که_پای
 
-	default:
+	افتراضي:
 	  FFI_ASSERT (0);
 	}
     }
 
-  if (fparg_count != 0)
+  إذا (fparg_شمېر != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (intarg_count > 4)
+  إذا (intarg_شمېر > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
-  if (vecarg_count != 0)
+  إذا (vecarg_شمېر != 0)
     flags |= FLAG_VEC_ARGUMENTS;
 
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS64 * sizeof (double);
+  إذا (fparg_شمېر != 0)
+    بایټونه += عدد_FPR_ARG_REGISTERS64 * حجم (مزدوج);
   /* Space for the vector registers, if needed, aligned to 16 bytes. */
-  if (vecarg_count != 0) {
-    bytes = (bytes + 15) & ~0xF;
-    bytes += NUM_VEC_ARG_REGISTERS64 * sizeof (float128);
+  إذا (vecarg_شمېر != 0) {
+    بایټونه = (بایټونه + 15) & ~0xF;
+    بایټونه += عدد_VEC_ARG_REGISTERS64 * حجم (float128);
   }
 
   /* Stack space.  */
-#if _CALL_ELF == 2
-  if ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
-    bytes += intarg_count * sizeof (long);
-#else
-  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
-    bytes += (intarg_count - NUM_GPR_ARG_REGISTERS64) * sizeof (long);
-#endif
+#إذا _CALL_ELF == 2
+  إذا ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
+    بایټونه += intarg_شمېر * حجم (اوږد);
+#وإلا
+  إذا (intarg_شمېر > عدد_GPR_ARG_REGISTERS64)
+    بایټونه += (intarg_شمېر - عدد_GPR_ARG_REGISTERS64) * حجم (اوږد);
+#د_که_پای
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
-  bytes = (bytes + 15) & ~0xF;
+  بایټونه = (بایټونه + 15) & ~0xF;
 
   cif->flags = flags;
-  cif->bytes = bytes;
+  cif->بایټونه = بایټونه;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_linux64 (ffi_cif *cif)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  إذا ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = cif->nargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#إذا _CALL_ELF != 2
+  وإلا إذا (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -509,21 +509,21 @@ ffi_prep_cif_linux64 (ffi_cif *cif)
       /* Translate to new abi value.  */
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
-#endif
-  else
-    return FFI_BAD_ABI;
-  return ffi_prep_cif_linux64_core (cif);
+#د_که_پای
+  وإلا
+    أرجع FFI_BAD_ABI;
+  أرجع ffi_prep_cif_linux64_core (cif);
 }
 
-ffi_status FFI_HIDDEN
+ffi_حالت FFI_HIDDEN
 ffi_prep_cif_linux64_var (ffi_cif *cif,
-			  unsigned int nfixedargs,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  بینښه صحيح nfixedargs,
+			  بینښه صحيح ntotalargs MAYBE_ناکارول_شوی)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  إذا ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = nfixedargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#إذا _CALL_ELF != 2
+  وإلا إذا (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -531,13 +531,13 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
       /* Translate to new abi value.  */
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
-#endif
-  else
-    return FFI_BAD_ABI;
-#if _CALL_ELF == 2
+#د_که_پای
+  وإلا
+    أرجع FFI_BAD_ABI;
+#إذا _CALL_ELF == 2
   cif->flags |= FLAG_ARG_NEEDS_PSAVE;
-#endif
-  return ffi_prep_cif_linux64_core (cif);
+#د_که_پای
+  أرجع ffi_prep_cif_linux64_core (cif);
 }
 
 
@@ -577,18 +577,18 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
 
 */
 
-void FFI_HIDDEN
-ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
+فراغ FFI_HIDDEN
+ffi_prep_args64 (extended_cif *ecif, بینښه اوږد *ثابت ډېری)
 {
-  const unsigned long bytes = ecif->cif->bytes;
-  const unsigned long flags = ecif->cif->flags;
+  ثابت بینښه اوږد بایټونه = ecif->cif->بایټونه;
+  ثابت بینښه اوږد flags = ecif->cif->flags;
 
-  typedef union
+  تعريفنوع اتحاد
   {
-    char *c;
-    unsigned long *ul;
-    float *f;
-    double *d;
+    حرف *c;
+    بینښه اوږد *ul;
+    عائم *f;
+    مزدوج *d;
     float128 *f128;
     size_t p;
   } valp;
@@ -598,554 +598,554 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 
   /* 'next_arg' points at the space for gpr3, and grows upwards as
      we use GPR registers, then continues at rest.  */
-  valp gpr_base;
-  valp gpr_end;
+  valp gpr_بنسټ;
+  valp gpr_پای_ټکی;
   valp rest;
-  valp next_arg;
+  valp بل_arg;
 
   /* 'fpr_base' points at the space for f1, and grows upwards as
      we use FPR registers.  */
-  valp fpr_base;
-  unsigned int fparg_count;
+  valp fpr_بنسټ;
+  بینښه صحيح fparg_شمېر;
 
   /* 'vec_base' points at the space for v2, and grows upwards as
      we use vector registers.  */
-  valp vec_base;
-  unsigned int vecarg_count;
+  valp vec_بنسټ;
+  بینښه صحيح vecarg_شمېر;
 
-  unsigned int i, words, nargs, nfixedargs;
+  بینښه صحيح i, ټکي, nargs, nfixedargs;
   ffi_type **ptr;
-  double double_tmp;
-  union
+  مزدوج double_tmp;
+  اتحاد
   {
-    void **v;
-    char **c;
-    signed char **sc;
-    unsigned char **uc;
-    signed short **ss;
-    unsigned short **us;
-    signed int **si;
-    unsigned int **ui;
-    unsigned long **ul;
-    float **f;
-    double **d;
+    فراغ **v;
+    حرف **c;
+    نښهدار حرف **sc;
+    بینښه حرف **uc;
+    نښهدار لنډ **ss;
+    بینښه لنډ **us;
+    نښهدار صحيح **si;
+    بینښه صحيح **ui;
+    بینښه اوږد **ul;
+    عائم **f;
+    مزدوج **d;
     float128 **f128;
   } p_argv;
-  unsigned long gprvalue;
-  unsigned long align;
+  بینښه اوږد gprvalue;
+  بینښه اوږد align;
 
-  stacktop.c = (char *) stack + bytes;
-  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - NUM_GPR_ARG_REGISTERS64;
-  gpr_end.ul = gpr_base.ul + NUM_GPR_ARG_REGISTERS64;
-#if _CALL_ELF == 2
-  rest.ul = stack + 4 + NUM_GPR_ARG_REGISTERS64;
-#else
-  rest.ul = stack + 6 + NUM_GPR_ARG_REGISTERS64;
-#endif
-  fpr_base.d = gpr_base.d - NUM_FPR_ARG_REGISTERS64;
-  fparg_count = 0;
+  stacktop.c = (حرف *) ډېری + بایټونه;
+  gpr_بنسټ.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - عدد_GPR_ARG_REGISTERS64;
+  gpr_پای_ټکی.ul = gpr_بنسټ.ul + عدد_GPR_ARG_REGISTERS64;
+#إذا _CALL_ELF == 2
+  rest.ul = ډېری + 4 + عدد_GPR_ARG_REGISTERS64;
+#وإلا
+  rest.ul = ډېری + 6 + عدد_GPR_ARG_REGISTERS64;
+#د_که_پای
+  fpr_بنسټ.d = gpr_بنسټ.d - عدد_FPR_ARG_REGISTERS64;
+  fparg_شمېر = 0;
   /* Place the vector args below the FPRs, if used, else the GPRs. */
-  if (ecif->cif->flags & FLAG_FP_ARGUMENTS)
-    vec_base.p = fpr_base.p & ~0xF;
-  else
-    vec_base.p = gpr_base.p;
-  vec_base.f128 -= NUM_VEC_ARG_REGISTERS64;
-  vecarg_count = 0;
-  next_arg.ul = gpr_base.ul;
+  إذا (ecif->cif->flags & FLAG_FP_ARGUMENTS)
+    vec_بنسټ.p = fpr_بنسټ.p & ~0xF;
+  وإلا
+    vec_بنسټ.p = gpr_بنسټ.p;
+  vec_بنسټ.f128 -= عدد_VEC_ARG_REGISTERS64;
+  vecarg_شمېر = 0;
+  بل_arg.ul = gpr_بنسټ.ul;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT (((unsigned long) (char *) stack & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) stacktop.c & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) gpr_base.c & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) gpr_end.c  & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) vec_base.c & 0xF) == 0);
-  FFI_ASSERT ((bytes & 0xF) == 0);
+  FFI_ASSERT (((بینښه اوږد) (حرف *) ډېری & 0xF) == 0);
+  FFI_ASSERT (((بینښه اوږد) stacktop.c & 0xF) == 0);
+  FFI_ASSERT (((بینښه اوږد) gpr_بنسټ.c & 0xF) == 0);
+  FFI_ASSERT (((بینښه اوږد) gpr_پای_ټکی.c  & 0xF) == 0);
+  FFI_ASSERT (((بینښه اوږد) vec_بنسټ.c & 0xF) == 0);
+  FFI_ASSERT ((بایټونه & 0xF) == 0);
 
   /* Deal with return values that are actually pass-by-reference.  */
-  if (flags & FLAG_RETVAL_REFERENCE)
-    *next_arg.ul++ = (unsigned long) (char *) ecif->rvalue;
+  إذا (flags & FLAG_RETVAL_REFERENCE)
+    *بل_arg.ul++ = (بینښه اوږد) (حرف *) ecif->rvalue;
 
   /* Now for the arguments.  */
   p_argv.v = ecif->avalue;
   nargs = ecif->cif->nargs;
-#if _CALL_ELF != 2
-  nfixedargs = (unsigned) -1;
-  if ((flags & FLAG_COMPAT) == 0)
-#endif
+#إذا _CALL_ELF != 2
+  nfixedargs = (بینښه) -1;
+  إذا ((flags & FLAG_COMPAT) == 0)
+#د_که_پای
     nfixedargs = ecif->cif->nfixedargs;
-  for (ptr = ecif->cif->arg_types, i = 0;
+  لكل (ptr = ecif->cif->arg_types, i = 0;
        i < nargs;
        i++, ptr++, p_argv.v++)
     {
-      unsigned int elt, elnum;
+      بینښه صحيح elt, elnum;
 
-      switch ((*ptr)->type)
+      بدل ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	حالة FFI_TYPE_LONGDOUBLE:
+          إذا ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              next_arg.p = FFI_ALIGN (next_arg.p, 16);
-              if (next_arg.ul == gpr_end.ul)
-                next_arg.ul = rest.ul;
-              if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		memcpy (vec_base.f128++, *p_argv.f128, sizeof (float128));
-              else
-		memcpy (next_arg.f128, *p_argv.f128, sizeof (float128));
-              if (++next_arg.f128 == gpr_end.f128)
-                next_arg.f128 = rest.f128;
-              vecarg_count++;
+              بل_arg.p = FFI_ALIGN (بل_arg.p, 16);
+              إذا (بل_arg.ul == gpr_پای_ټکی.ul)
+                بل_arg.ul = rest.ul;
+              إذا (vecarg_شمېر < عدد_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		حافظه_نقل (vec_بنسټ.f128++, *p_argv.f128, حجم (float128));
+              وإلا
+		حافظه_نقل (بل_arg.f128, *p_argv.f128, حجم (float128));
+              إذا (++بل_arg.f128 == gpr_پای_ټکی.f128)
+                بل_arg.f128 = rest.f128;
+              vecarg_شمېر++;
               FFI_ASSERT (__LDBL_MANT_DIG__ == 113);
               FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-              break;
+              اكسر;
             }
-	  if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  إذا ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
 	      double_tmp = (*p_argv.d)[0];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
-		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
-		    *next_arg.d = double_tmp;
+		  *fpr_بنسټ.d++ = double_tmp;
+# إذا _CALL_ELF != 2
+		  إذا ((flags & FLAG_COMPAT) != 0)
+		    *بل_arg.d = double_tmp;
 # endif
 		}
-	      else
-		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
-		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      وإلا
+		*بل_arg.d = double_tmp;
+	      إذا (++بل_arg.ul == gpr_پای_ټکی.ul)
+		بل_arg.ul = rest.ul;
+	      fparg_شمېر++;
 	      double_tmp = (*p_argv.d)[1];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
-		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
-		    *next_arg.d = double_tmp;
+		  *fpr_بنسټ.d++ = double_tmp;
+# إذا _CALL_ELF != 2
+		  إذا ((flags & FLAG_COMPAT) != 0)
+		    *بل_arg.d = double_tmp;
 # endif
 		}
-	      else
-		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
-		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      وإلا
+		*بل_arg.d = double_tmp;
+	      إذا (++بل_arg.ul == gpr_پای_ټکی.ul)
+		بل_arg.ul = rest.ul;
+	      fparg_شمېر++;
 	      FFI_ASSERT (__LDBL_MANT_DIG__ == 106);
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      اكسر;
 	    }
 	  /* Fall through.  */
-#endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+#د_که_پای
+	حالة FFI_TYPE_DOUBLE:
+#إذا _CALL_ELF != 2
 	do_double:
-#endif
+#د_که_پای
 	  double_tmp = **p_argv.d;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
-	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
-		*next_arg.d = double_tmp;
-#endif
+	      *fpr_بنسټ.d++ = double_tmp;
+#إذا _CALL_ELF != 2
+	      إذا ((flags & FLAG_COMPAT) != 0)
+		*بل_arg.d = double_tmp;
+#د_که_پای
 	    }
-	  else
-	    *next_arg.d = double_tmp;
-	  if (++next_arg.ul == gpr_end.ul)
-	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  وإلا
+	    *بل_arg.d = double_tmp;
+	  إذا (++بل_arg.ul == gpr_پای_ټکی.ul)
+	    بل_arg.ul = rest.ul;
+	  fparg_شمېر++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	حالة FFI_TYPE_FLOAT:
+#إذا _CALL_ELF != 2
 	do_float:
-#endif
+#د_که_پای
 	  double_tmp = **p_argv.f;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
-	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
+	      *fpr_بنسټ.d++ = double_tmp;
+#إذا _CALL_ELF != 2
+	      إذا ((flags & FLAG_COMPAT) != 0)
 		{
 # ifndef __LITTLE_ENDIAN__
-		  next_arg.f[1] = (float) double_tmp;
-# else
-		  next_arg.f[0] = (float) double_tmp;
+		  بل_arg.f[1] = (عائم) double_tmp;
+# وإلا
+		  بل_arg.f[0] = (عائم) double_tmp;
 # endif
 		}
-#endif
+#د_که_پای
 	    }
-	  else
+	  وإلا
 	    {
 # ifndef __LITTLE_ENDIAN__
-	      next_arg.f[1] = (float) double_tmp;
-# else
-	      next_arg.f[0] = (float) double_tmp;
+	      بل_arg.f[1] = (عائم) double_tmp;
+# وإلا
+	      بل_arg.f[0] = (عائم) double_tmp;
 # endif
 	    }
-	  if (++next_arg.ul == gpr_end.ul)
-	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  إذا (++بل_arg.ul == gpr_پای_ټکی.ul)
+	    بل_arg.ul = rest.ul;
+	  fparg_شمېر++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  اكسر;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
+	حالة FFI_TYPE_COMPLEX:
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  إذا (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  إذا (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	    {
 	      /* IEEE-128 _Complex long double: each half goes in its own
 		 vector register (or the parameter save area), 16-byte
 		 aligned, consuming two GPR shadow doublewords.  */
 	      float128 *cval = (float128 *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      بینښه صحيح j;
+	      لكل (j = 0; j < 2; j++)
 		{
-		  next_arg.p = FFI_ALIGN (next_arg.p, 16);
-		  if (next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		    memcpy (vec_base.f128++, cval + j, sizeof (float128));
-		  else
-		    memcpy (next_arg.f128, cval + j, sizeof (float128));
-		  if (++next_arg.f128 == gpr_end.f128)
-		    next_arg.f128 = rest.f128;
-		  vecarg_count++;
+		  بل_arg.p = FFI_ALIGN (بل_arg.p, 16);
+		  إذا (بل_arg.ul == gpr_پای_ټکی.ul)
+		    بل_arg.ul = rest.ul;
+		  إذا (vecarg_شمېر < عدد_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		    حافظه_نقل (vec_بنسټ.f128++, cval + j, حجم (float128));
+		  وإلا
+		    حافظه_نقل (بل_arg.f128, cval + j, حجم (float128));
+		  إذا (++بل_arg.f128 == gpr_پای_ټکی.f128)
+		    بل_arg.f128 = rest.f128;
+		  vecarg_شمېر++;
 		}
 	      FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-	      break;
+	      اكسر;
 	    }
-	  if (elt == FFI_TYPE_LONGDOUBLE)
+	  إذا (elt == FFI_TYPE_LONGDOUBLE)
 	    {
 	      /* IBM-128 _Complex long double: four doubles (real hi/lo,
 		 imag hi/lo) into consecutive FPRs, each with a GPR shadow
 		 doubleword.  */
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 4; j++)
+	      مزدوج *cval = (مزدوج *) *p_argv.v;
+	      بینښه صحيح j;
+	      لكل (j = 0; j < 4; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		    *fpr_base.d++ = double_tmp;
-		  else
-		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    *fpr_بنسټ.d++ = double_tmp;
+		  وإلا
+		    *بل_arg.d = double_tmp;
+		  إذا (++بل_arg.ul == gpr_پای_ټکی.ul)
+		    بل_arg.ul = rest.ul;
+		  fparg_شمېر++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      اكسر;
 	    }
-#endif
-	  if (elt == FFI_TYPE_FLOAT)
+#د_که_پای
+	  إذا (elt == FFI_TYPE_FLOAT)
 	    {
-	      float *cval = (float *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      عائم *cval = (عائم *) *p_argv.v;
+	      بینښه صحيح j;
+	      لكل (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		    *fpr_base.d++ = double_tmp;
-		  else
+		  إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    *fpr_بنسټ.d++ = double_tmp;
+		  وإلا
 		    {
 # ifndef __LITTLE_ENDIAN__
-		      next_arg.f[1] = (float) double_tmp;
-# else
-		      next_arg.f[0] = (float) double_tmp;
+		      بل_arg.f[1] = (عائم) double_tmp;
+# وإلا
+		      بل_arg.f[0] = (عائم) double_tmp;
 # endif
 		    }
-		  if (++next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  إذا (++بل_arg.ul == gpr_پای_ټکی.ul)
+		    بل_arg.ul = rest.ul;
+		  fparg_شمېر++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else if (elt == FFI_TYPE_DOUBLE)
+	  وإلا إذا (elt == FFI_TYPE_DOUBLE)
 	    {
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      مزدوج *cval = (مزدوج *) *p_argv.v;
+	      بینښه صحيح j;
+	      لكل (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		    *fpr_base.d++ = double_tmp;
-		  else
-		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    *fpr_بنسټ.d++ = double_tmp;
+		  وإلا
+		    *بل_arg.d = double_tmp;
+		  إذا (++بل_arg.ul == gpr_پای_ټکی.ul)
+		    بل_arg.ul = rest.ul;
+		  fparg_شمېر++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else
+	  وإلا
 	    {
 	      /* Integer-typed _Complex: each half consumes one GPR slot,
 		 sign-/zero-extended to a doubleword.  */
-	      char *cval = (char *) *p_argv.v;
-	      size_t hsize = (*ptr)->elements[0]->size;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      حرف *cval = (حرف *) *p_argv.v;
+	      size_t hsize = (*ptr)->elements[0]->اندازه;
+	      بینښه صحيح j;
+	      لكل (j = 0; j < 2; j++)
 		{
-		  char *half = cval + j * hsize;
-		  unsigned long gprvalue;
-		  switch (elt)
+		  حرف *half = cval + j * hsize;
+		  بینښه اوږد gprvalue;
+		  بدل (elt)
 		    {
-		    case FFI_TYPE_UINT8:
-		      gprvalue = *(unsigned char *) half; break;
-		    case FFI_TYPE_SINT8:
-		      gprvalue = (unsigned long) (long) *(signed char *) half;
-		      break;
-		    case FFI_TYPE_UINT16:
-		      gprvalue = *(unsigned short *) half; break;
-		    case FFI_TYPE_SINT16:
-		      gprvalue = (unsigned long) (long) *(signed short *) half;
-		      break;
-		    case FFI_TYPE_UINT32:
-		      gprvalue = *(unsigned int *) half; break;
-		    case FFI_TYPE_INT:
-		    case FFI_TYPE_SINT32:
-		      gprvalue = (unsigned long) (long) *(signed int *) half;
-		      break;
-		    case FFI_TYPE_SINT64:
-		    case FFI_TYPE_UINT64:
-		    case FFI_TYPE_POINTER:
-		    default:
-		      gprvalue = *(unsigned long *) half; break;
+		    حالة FFI_TYPE_UINT8:
+		      gprvalue = *(بینښه حرف *) half; اكسر;
+		    حالة FFI_TYPE_SINT8:
+		      gprvalue = (بینښه اوږد) (اوږد) *(نښهدار حرف *) half;
+		      اكسر;
+		    حالة FFI_TYPE_UINT16:
+		      gprvalue = *(بینښه لنډ *) half; اكسر;
+		    حالة FFI_TYPE_SINT16:
+		      gprvalue = (بینښه اوږد) (اوږد) *(نښهدار لنډ *) half;
+		      اكسر;
+		    حالة FFI_TYPE_UINT32:
+		      gprvalue = *(بینښه صحيح *) half; اكسر;
+		    حالة FFI_TYPE_INT:
+		    حالة FFI_TYPE_SINT32:
+		      gprvalue = (بینښه اوږد) (اوږد) *(نښهدار صحيح *) half;
+		      اكسر;
+		    حالة FFI_TYPE_SINT64:
+		    حالة FFI_TYPE_UINT64:
+		    حالة FFI_TYPE_اشاره_ګر:
+		    افتراضي:
+		      gprvalue = *(بینښه اوږد *) half; اكسر;
 		    }
-		  *next_arg.ul++ = gprvalue;
-		  if (next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
+		  *بل_arg.ul++ = gprvalue;
+		  إذا (بل_arg.ul == gpr_پای_ټکی.ul)
+		    بل_arg.ul = rest.ul;
 		}
 	    }
-	  break;
-#endif
+	  اكسر;
+#د_که_پای
 
-	case FFI_TYPE_STRUCT:
-	  if ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	حالة FFI_TYPE_STRUCT:
+	  إذا ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      إذا (align > 16)
 		align = 16;
-	      if (align > 1)
+	      إذا (align > 1)
                 {
-                  next_arg.p = FFI_ALIGN (next_arg.p, align);
-                  if (next_arg.ul == gpr_end.ul)
-                    next_arg.ul = rest.ul;
+                  بل_arg.p = FFI_ALIGN (بل_arg.p, align);
+                  إذا (بل_arg.ul == gpr_پای_ټکی.ul)
+                    بل_arg.ul = rest.ul;
                 }
 	    }
 	  elt = discover_homogeneous_aggregate (ecif->cif->abi, *ptr, &elnum);
-	  if (elt)
+	  إذا (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
-		float *f;
-		double *d;
+#إذا _CALL_ELF == 2
+	      اتحاد {
+		فراغ *v;
+		عائم *f;
+		مزدوج *d;
 		float128 *f128;
 	      } arg;
 
 	      arg.v = *p_argv.v;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              إذا (elt == FFI_TYPE_LONGDOUBLE &&
                   (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  افعل
                     {
-                      if (vecarg_count < NUM_VEC_ARG_REGISTERS64
+                      إذا (vecarg_شمېر < عدد_VEC_ARG_REGISTERS64
                           && i < nfixedargs)
-		        memcpy (vec_base.f128++, arg.f128++, sizeof (float128));
-                      else
-		        memcpy (next_arg.f128, arg.f128++, sizeof (float128));
-                      if (++next_arg.f128 == gpr_end.f128)
-                        next_arg.f128 = rest.f128;
-                      vecarg_count++;
+		        حافظه_نقل (vec_بنسټ.f128++, arg.f128++, حجم (float128));
+                      وإلا
+		        حافظه_نقل (بل_arg.f128, arg.f128++, حجم (float128));
+                      إذا (++بل_arg.f128 == gpr_پای_ټکی.f128)
+                        بل_arg.f128 = rest.f128;
+                      vecarg_شمېر++;
                     }
-                  while (--elnum != 0);
+                  طالما (--elnum != 0);
                 }
-              else
-#endif
-	      if (elt == FFI_TYPE_FLOAT)
+              وإلا
+#د_که_پای
+	      إذا (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  افعل
 		    {
 		      double_tmp = *arg.f++;
-		      if (fparg_count < NUM_FPR_ARG_REGISTERS64
+		      إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64
 			  && i < nfixedargs)
-			*fpr_base.d++ = double_tmp;
-		      else
-			*next_arg.f = (float) double_tmp;
-		      if (++next_arg.f == gpr_end.f)
-			next_arg.f = rest.f;
-		      fparg_count++;
+			*fpr_بنسټ.d++ = double_tmp;
+		      وإلا
+			*بل_arg.f = (عائم) double_tmp;
+		      إذا (++بل_arg.f == gpr_پای_ټکی.f)
+			بل_arg.f = rest.f;
+		      fparg_شمېر++;
 		    }
-		  while (--elnum != 0);
-		  if ((next_arg.p & 7) != 0)
-                    if (++next_arg.f == gpr_end.f)
-                      next_arg.f = rest.f;
+		  طالما (--elnum != 0);
+		  إذا ((بل_arg.p & 7) != 0)
+                    إذا (++بل_arg.f == gpr_پای_ټکی.f)
+                      بل_arg.f = rest.f;
 		}
-	      else
-		do
+	      وإلا
+		افعل
 		  {
 		    double_tmp = *arg.d++;
-		    if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		      *fpr_base.d++ = double_tmp;
-		    else
-		      *next_arg.d = double_tmp;
-		    if (++next_arg.d == gpr_end.d)
-		      next_arg.d = rest.d;
-		    fparg_count++;
+		    إذا (fparg_شمېر < عدد_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		      *fpr_بنسټ.d++ = double_tmp;
+		    وإلا
+		      *بل_arg.d = double_tmp;
+		    إذا (++بل_arg.d == gpr_پای_ټکی.d)
+		      بل_arg.d = rest.d;
+		    fparg_شمېر++;
 		  }
-		while (--elnum != 0);
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
-#endif
+		طالما (--elnum != 0);
+#وإلا
+	      إذا (elt == FFI_TYPE_FLOAT)
+		اذهب do_float;
+	      وإلا
+		اذهب do_double;
+#د_که_پای
 	    }
-	  else
+	  وإلا
 	    {
-	      words = ((*ptr)->size + 7) / 8;
-	      if (next_arg.ul >= gpr_base.ul && next_arg.ul + words > gpr_end.ul)
+	      ټکي = ((*ptr)->اندازه + 7) / 8;
+	      إذا (بل_arg.ul >= gpr_بنسټ.ul && بل_arg.ul + ټکي > gpr_پای_ټکی.ul)
 		{
-		  size_t first = gpr_end.c - next_arg.c;
-		  memcpy (next_arg.c, *p_argv.c, first);
-		  memcpy (rest.c, *p_argv.c + first, (*ptr)->size - first);
-		  next_arg.c = rest.c + words * 8 - first;
+		  size_t لومړی = gpr_پای_ټکی.c - بل_arg.c;
+		  حافظه_نقل (بل_arg.c, *p_argv.c, لومړی);
+		  حافظه_نقل (rest.c, *p_argv.c + لومړی, (*ptr)->اندازه - لومړی);
+		  بل_arg.c = rest.c + ټکي * 8 - لومړی;
 		}
-	      else
+	      وإلا
 		{
-		  char *where = next_arg.c;
+		  حرف *where = بل_arg.c;
 
-#ifndef __LITTLE_ENDIAN__
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
 		  /* Structures with size less than eight bytes are passed
 		     left-padded.  */
-		  if ((*ptr)->size < 8)
-		    where += 8 - (*ptr)->size;
-#endif
-		  memcpy (where, *p_argv.c, (*ptr)->size);
-		  next_arg.ul += words;
-		  if (next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
+		  إذا ((*ptr)->اندازه < 8)
+		    where += 8 - (*ptr)->اندازه;
+#د_که_پای
+		  حافظه_نقل (where, *p_argv.c, (*ptr)->اندازه);
+		  بل_arg.ul += ټکي;
+		  إذا (بل_arg.ul == gpr_پای_ټکی.ul)
+		    بل_arg.ul = rest.ul;
 		}
 	    }
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_UINT8:
+	حالة FFI_TYPE_UINT8:
 	  gprvalue = **p_argv.uc;
-	  goto putgpr;
-	case FFI_TYPE_SINT8:
+	  اذهب putgpr;
+	حالة FFI_TYPE_SINT8:
 	  gprvalue = **p_argv.sc;
-	  goto putgpr;
-	case FFI_TYPE_UINT16:
+	  اذهب putgpr;
+	حالة FFI_TYPE_UINT16:
 	  gprvalue = **p_argv.us;
-	  goto putgpr;
-	case FFI_TYPE_SINT16:
+	  اذهب putgpr;
+	حالة FFI_TYPE_SINT16:
 	  gprvalue = **p_argv.ss;
-	  goto putgpr;
-	case FFI_TYPE_UINT32:
+	  اذهب putgpr;
+	حالة FFI_TYPE_UINT32:
 	  gprvalue = **p_argv.ui;
-	  goto putgpr;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	  اذهب putgpr;
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_SINT32:
 	  gprvalue = **p_argv.si;
-	  goto putgpr;
+	  اذهب putgpr;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_اشاره_ګر:
 	  gprvalue = **p_argv.ul;
 	putgpr:
-	  *next_arg.ul++ = gprvalue;
-	  if (next_arg.ul == gpr_end.ul)
-	    next_arg.ul = rest.ul;
-	  break;
+	  *بل_arg.ul++ = gprvalue;
+	  إذا (بل_arg.ul == gpr_پای_ټکی.ul)
+	    بل_arg.ul = rest.ul;
+	  اكسر;
 	}
     }
 
   FFI_ASSERT (flags & FLAG_4_GPR_ARGUMENTS
-	      || (next_arg.ul >= gpr_base.ul
-		  && next_arg.ul <= gpr_base.ul + 4));
+	      || (بل_arg.ul >= gpr_بنسټ.ul
+		  && بل_arg.ul <= gpr_بنسټ.ul + 4));
 }
 
 
-#if _CALL_ELF == 2
-#define MIN_CACHE_LINE_SIZE 8
+#إذا _CALL_ELF == 2
+#تعریف_کړه MIN_CACHE_کرښه_اندازه 8
 
-static void
-flush_icache (char *wraddr, char *xaddr, int size)
+ساكن فراغ
+flush_icache (حرف *wraddr, حرف *xaddr, صحيح اندازه)
 {
-  int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
-    __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
+  صحيح i;
+  لكل (i = 0; i < اندازه; i += MIN_CACHE_کرښه_اندازه)
+    __asm__ متطاير ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
-  __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
-		    : : "r"(xaddr + size - 1), "r"(wraddr + size - 1)
+  __asm__ متطاير ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
+		    : : "r"(xaddr + اندازه - 1), "r"(wraddr + اندازه - 1)
 		    : "memory");
 }
-#endif
+#د_که_پای
 
 
-ffi_status FFI_HIDDEN
-ffi_prep_closure_loc_linux64 (ffi_closure *closure,
+ffi_حالت FFI_HIDDEN
+ffi_prep_تړون_loc_linux64 (ffi_تړون *تړون,
 			      ffi_cif *cif,
-			      void (*fun) (ffi_cif *, void *, void **, void *),
-			      void *user_data,
-			      void *codeloc)
+			      فراغ (*fun) (ffi_cif *, فراغ *, فراغ **, فراغ *),
+			      فراغ *user_معلومات,
+			      فراغ *codeloc)
 {
-  if (cif->abi < FFI_LINUX || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  إذا (cif->abi < FFI_LINUX || cif->abi >= FFI_وروستی_ABI)
+    أرجع FFI_BAD_ABI;
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present(closure))
+#که_تعریف_شوی FFI_EXEC_STATIC_TRAMP
+  إذا (ffi_tramp_is_present(تړون))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_LINUX64;
-      ffi_tramp_set_parms (closure->ftramp, dest, closure);
+      فراغ (*dest)(فراغ) = ffi_تړون_LINUX64;
+      ffi_tramp_سېټ_parms (تړون->ftramp, dest, تړون);
     }
-  else
-#endif
+  وإلا
+#د_که_پای
     {
-#if _CALL_ELF == 2
-      unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+#إذا _CALL_ELF == 2
+      بینښه صحيح *tramp = (بینښه صحيح *) &تړون->tramp[0];
       tramp[0] = 0xe96c0018;	/* 0:	ld	11,2f-0b(12)	*/
       tramp[1] = 0xe98c0010;	/*	ld	12,1f-0b(12)	*/
       tramp[2] = 0x7d8903a6;	/*	mtctr	12		*/
       tramp[3] = 0x4e800420;	/*	bctr			*/
 				/* 1:	.quad	function_addr	*/
 				/* 2:	.quad	context		*/
-      *(void **) &tramp[4] = (void *) ffi_closure_LINUX64;
-      *(void **) &tramp[6] = codeloc;
-      flush_icache ((char *) tramp, (char *) codeloc, 4 * 4);
-#else
+      *(فراغ **) &tramp[4] = (فراغ *) ffi_تړون_LINUX64;
+      *(فراغ **) &tramp[6] = codeloc;
+      flush_icache ((حرف *) tramp, (حرف *) codeloc, 4 * 4);
+#وإلا
       /* Copy function address and TOC from ffi_closure_LINUX64 OPD.  */
-      void **tramp = (void **) &closure->tramp[0];
-      memcpy (&tramp[0], (void **) ffi_closure_LINUX64, sizeof (void *));
+      فراغ **tramp = (فراغ **) &تړون->tramp[0];
+      حافظه_نقل (&tramp[0], (فراغ **) ffi_تړون_LINUX64, حجم (فراغ *));
       tramp[1] = codeloc;
-      memcpy (&tramp[2], (void **) ffi_closure_LINUX64 + 1, sizeof (void *));
-#endif
+      حافظه_نقل (&tramp[2], (فراغ **) ffi_تړون_LINUX64 + 1, حجم (فراغ *));
+#د_که_پای
     }
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  تړون->cif = cif;
+  تړون->fun = fun;
+  تړون->user_معلومات = user_معلومات;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
 
-int FFI_HIDDEN
-ffi_closure_helper_LINUX64 (ffi_cif *cif,
-			    void (*fun) (ffi_cif *, void *, void **, void *),
-			    void *user_data,
-			    void *rvalue,
-			    unsigned long *pst,
+صحيح FFI_HIDDEN
+ffi_تړون_helper_LINUX64 (ffi_cif *cif,
+			    فراغ (*fun) (ffi_cif *, فراغ *, فراغ **, فراغ *),
+			    فراغ *user_معلومات,
+			    فراغ *rvalue,
+			    بینښه اوږد *pst,
                             ffi_dblfl *pfr,
                             float128 *pvec)
 {
@@ -1155,435 +1155,435 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
   /* pfr is the pointer to where f1-f13 are stored in ffi_closure_LINUX64 */
   /* pvec is the pointer to where v2-v13 are stored in ffi_closure_LINUX64 */
 
-  void **avalue;
+  فراغ **avalue;
   ffi_type **arg_types;
-  unsigned long i, avn, nfixedargs;
-  ffi_dblfl *end_pfr = pfr + NUM_FPR_ARG_REGISTERS64;
-  float128 *end_pvec = pvec + NUM_VEC_ARG_REGISTERS64;
-  unsigned long align;
+  بینښه اوږد i, avn, nfixedargs;
+  ffi_dblfl *پای_ټکی_pfr = pfr + عدد_FPR_ARG_REGISTERS64;
+  float128 *پای_ټکی_pvec = pvec + عدد_VEC_ARG_REGISTERS64;
+  بینښه اوږد align;
 
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * حجم (فراغ *));
 
   /* Copy the caller's structure return value address so that the
      closure returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  إذا (cif->rtype->type == FFI_TYPE_STRUCT
       && (cif->flags & FLAG_RETURNS_SMST) == 0)
     {
-      rvalue = (void *) *pst;
+      rvalue = (فراغ *) *pst;
       pst++;
     }
 
   i = 0;
   avn = cif->nargs;
-#if _CALL_ELF != 2
-  nfixedargs = (unsigned) -1;
-  if ((cif->flags & FLAG_COMPAT) == 0)
-#endif
+#إذا _CALL_ELF != 2
+  nfixedargs = (بینښه) -1;
+  إذا ((cif->flags & FLAG_COMPAT) == 0)
+#د_که_پای
     nfixedargs = cif->nfixedargs;
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn)
+  طالما (i < avn)
     {
-      unsigned int elt, elnum;
+      بینښه صحيح elt, elnum;
 
-      switch (arg_types[i]->type)
+      بدل (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-#ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 7;
+	حالة FFI_TYPE_SINT8:
+	حالة FFI_TYPE_UINT8:
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
+	  avalue[i] = (حرف *) pst + 7;
 	  pst++;
-	  break;
-#endif
+	  اكسر;
+#د_که_پای
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-#ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 6;
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT16:
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
+	  avalue[i] = (حرف *) pst + 6;
 	  pst++;
-	  break;
-#endif
+	  اكسر;
+#د_که_پای
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-#ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 4;
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT32:
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
+	  avalue[i] = (حرف *) pst + 4;
 	  pst++;
-	  break;
-#endif
+	  اكسر;
+#د_که_پای
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_اشاره_ګر:
 	  avalue[i] = pst;
 	  pst++;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	حالة FFI_TYPE_STRUCT:
+	  إذا ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = arg_types[i]->alignment;
-	      if (align > 16)
+	      إذا (align > 16)
 		align = 16;
-	      if (align > 1)
-		pst = (unsigned long *) FFI_ALIGN ((size_t) pst, align);
+	      إذا (align > 1)
+		pst = (بینښه اوږد *) FFI_ALIGN ((size_t) pst, align);
 	    }
 	  elt = discover_homogeneous_aggregate (cif->abi, arg_types[i], &elnum);
-	  if (elt)
+	  إذا (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
-		unsigned long *ul;
-		float *f;
-		double *d;
+#إذا _CALL_ELF == 2
+	      اتحاد {
+		فراغ *v;
+		بینښه اوږد *ul;
+		عائم *f;
+		مزدوج *d;
 		float128 *f128;
 		size_t p;
-	      } to, from;
+	      } منزل, from;
 
 	      /* Repackage the aggregate from its parts.  The
 		 aggregate size is not greater than the space taken by
 		 the registers so store back to the register/parameter
 		 save arrays.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              إذا (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  if (pvec + elnum <= end_pvec)
-                    to.v = pvec;
-                  else
-                    to.v = pst;
+                  إذا (pvec + elnum <= پای_ټکی_pvec)
+                    منزل.v = pvec;
+                  وإلا
+                    منزل.v = pst;
                 }
-              else
-#endif
-	      if (pfr + elnum <= end_pfr)
-		to.v = pfr;
-	      else
-		to.v = pst;
+              وإلا
+#د_که_پای
+	      إذا (pfr + elnum <= پای_ټکی_pfr)
+		منزل.v = pfr;
+	      وإلا
+		منزل.v = pst;
 
-	      avalue[i] = to.v;
+	      avalue[i] = منزل.v;
 	      from.ul = pst;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              إذا (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  افعل
                     {
-                      if (pvec < end_pvec && i < nfixedargs)
-		        memcpy (to.f128, pvec++, sizeof (float128));
-                      else
-		        memcpy (to.f128, from.f128, sizeof (float128));
-                      to.f128++;
+                      إذا (pvec < پای_ټکی_pvec && i < nfixedargs)
+		        حافظه_نقل (منزل.f128, pvec++, حجم (float128));
+                      وإلا
+		        حافظه_نقل (منزل.f128, from.f128, حجم (float128));
+                      منزل.f128++;
                       from.f128++;
                     }
-                  while (--elnum != 0);
+                  طالما (--elnum != 0);
                 }
-              else
-#endif
-	      if (elt == FFI_TYPE_FLOAT)
+              وإلا
+#د_که_پای
+	      إذا (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  افعل
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 			{
-			  *to.f = (float) pfr->d;
+			  *منزل.f = (عائم) pfr->d;
 			  pfr++;
 			}
-		      else
-			*to.f = *from.f;
-		      to.f++;
+		      وإلا
+			*منزل.f = *from.f;
+		      منزل.f++;
 		      from.f++;
 		    }
-		  while (--elnum != 0);
+		  طالما (--elnum != 0);
 		}
-	      else
+	      وإلا
 		{
-		  do
+		  افعل
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 			{
-			  *to.d = pfr->d;
+			  *منزل.d = pfr->d;
 			  pfr++;
 			}
-		      else
-			*to.d = *from.d;
-		      to.d++;
+		      وإلا
+			*منزل.d = *from.d;
+		      منزل.d++;
 		      from.d++;
 		    }
-		  while (--elnum != 0);
+		  طالما (--elnum != 0);
 		}
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
-#endif
+#وإلا
+	      إذا (elt == FFI_TYPE_FLOAT)
+		اذهب do_float;
+	      وإلا
+		اذهب do_double;
+#د_که_پای
 	    }
-	  else
+	  وإلا
 	    {
-#ifndef __LITTLE_ENDIAN__
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
 	      /* Structures with size less than eight bytes are passed
 		 left-padded.  */
-	      if (arg_types[i]->size < 8)
-		avalue[i] = (char *) pst + 8 - arg_types[i]->size;
-	      else
-#endif
+	      إذا (arg_types[i]->اندازه < 8)
+		avalue[i] = (حرف *) pst + 8 - arg_types[i]->اندازه;
+	      وإلا
+#د_که_پای
 		avalue[i] = pst;
 	    }
-	  pst += (arg_types[i]->size + 7) / 8;
-	  break;
+	  pst += (arg_types[i]->اندازه + 7) / 8;
+	  اكسر;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	حالة FFI_TYPE_LONGDOUBLE:
+          إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              if (((unsigned long) pst & 0xF) != 0)
+              إذا (((بینښه اوږد) pst & 0xF) != 0)
                 ++pst;
-              if (pvec < end_pvec && i < nfixedargs)
+              إذا (pvec < پای_ټکی_pvec && i < nfixedargs)
                 avalue[i] = pvec++;
-              else
+              وإلا
                 avalue[i] = pst;
               pst += 2;
-              break;
+              اكسر;
             }
-          else if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+          وإلا إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      if (pfr + 1 < end_pfr && i + 1 < nfixedargs)
+	      إذا (pfr + 1 < پای_ټکی_pfr && i + 1 < nfixedargs)
 		{
 		  avalue[i] = pfr;
 		  pfr += 2;
 		}
-	      else
+	      وإلا
 		{
-		  if (pfr < end_pfr && i < nfixedargs)
+		  إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 		    {
 		      /* Passed partly in f13 and partly on the stack.
 			 Move it all to the stack.  */
-		      *pst = *(unsigned long *) pfr;
+		      *pst = *(بینښه اوږد *) pfr;
 		      pfr++;
 		    }
 		  avalue[i] = pst;
 		}
 	      pst += 2;
-	      break;
+	      اكسر;
 	    }
 	  /* Fall through.  */
-#endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+#د_که_پای
+	حالة FFI_TYPE_DOUBLE:
+#إذا _CALL_ELF != 2
 	do_double:
-#endif
+#د_که_پای
 	  /* On the outgoing stack all values are aligned to 8 */
 	  /* there are 13 64bit floating point registers */
 
-	  if (pfr < end_pfr && i < nfixedargs)
+	  إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 	    {
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  وإلا
 	    avalue[i] = pst;
 	  pst++;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	حالة FFI_TYPE_FLOAT:
+#إذا _CALL_ELF != 2
 	do_float:
-#endif
-	  if (pfr < end_pfr && i < nfixedargs)
+#د_که_پای
+	  إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 	    {
 	      /* Float values are stored as doubles in the
 		 ffi_closure_LINUX64 code.  Fix them here.  */
-	      pfr->f = (float) pfr->d;
+	      pfr->f = (عائم) pfr->d;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  وإلا
 	    {
-#ifndef __LITTLE_ENDIAN__
-	      avalue[i] = (char *) pst + 4;
-#else
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
+	      avalue[i] = (حرف *) pst + 4;
+#وإلا
 	      avalue[i] = pst;
-#endif
+#د_که_پای
 	    }
 	  pst++;
-	  break;
+	  اكسر;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
+	حالة FFI_TYPE_COMPLEX:
 	  /* Reassemble each _Complex argument from successive registers (or
 	     parameter-save slots when registers are exhausted) into a
 	     contiguous in-memory value for the closure.  */
 	  {
-	    unsigned int j;
+	    بینښه صحيح j;
 	    elt = arg_types[i]->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	    /* A 64-bit long double arrives exactly like a double.  */
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    إذا (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	      elt = FFI_TYPE_DOUBLE;
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    إذا (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	      {
 		/* IEEE-128: each half arrives in a vector register (or the
 		   16-byte-aligned parameter save area) with two GPR shadow
 		   doublewords.  */
-		float128 *cval = alloca (2 * sizeof (float128));
-		if (((unsigned long) pst & 0xF) != 0)
+		float128 *cval = alloca (2 * حجم (float128));
+		إذا (((بینښه اوږد) pst & 0xF) != 0)
 		  ++pst;
-		for (j = 0; j < 2; j++)
+		لكل (j = 0; j < 2; j++)
 		  {
-		    if (pvec < end_pvec && i < nfixedargs)
-		      memcpy (&cval[j], pvec++, sizeof (float128));
-		    else
-		      memcpy (&cval[j], pst, sizeof (float128));
+		    إذا (pvec < پای_ټکی_pvec && i < nfixedargs)
+		      حافظه_نقل (&cval[j], pvec++, حجم (float128));
+		    وإلا
+		      حافظه_نقل (&cval[j], pst, حجم (float128));
 		    pst += 2;
 		  }
 		avalue[i] = cval;
-		break;
+		اكسر;
 	      }
-	    if (elt == FFI_TYPE_LONGDOUBLE)
+	    إذا (elt == FFI_TYPE_LONGDOUBLE)
 	      {
 		/* IBM-128: four doubles, each in an FPR (or one GPR shadow
 		   doubleword) -- real hi/lo then imag hi/lo.  */
-		double *cval = alloca (4 * sizeof (double));
-		for (j = 0; j < 4; j++)
+		مزدوج *cval = alloca (4 * حجم (مزدوج));
+		لكل (j = 0; j < 4; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    وإلا
+		      cval[j] = *(مزدوج *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
-		break;
+		اكسر;
 	      }
-#endif
-	    if (elt == FFI_TYPE_FLOAT)
+#د_که_پای
+	    إذا (elt == FFI_TYPE_FLOAT)
 	      {
-		float *cval = alloca (2 * sizeof (float));
-		for (j = 0; j < 2; j++)
+		عائم *cval = alloca (2 * حجم (عائم));
+		لكل (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 		      {
-			cval[j] = (float) pfr->d;
+			cval[j] = (عائم) pfr->d;
 			pfr++;
 		      }
-		    else
+		    وإلا
 		      {
-#ifndef __LITTLE_ENDIAN__
-			cval[j] = ((float *) pst)[1];
-#else
-			cval[j] = ((float *) pst)[0];
-#endif
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
+			cval[j] = ((عائم *) pst)[1];
+#وإلا
+			cval[j] = ((عائم *) pst)[0];
+#د_که_پای
 		      }
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else if (elt == FFI_TYPE_DOUBLE)
+	    وإلا إذا (elt == FFI_TYPE_DOUBLE)
 	      {
-		double *cval = alloca (2 * sizeof (double));
-		for (j = 0; j < 2; j++)
+		مزدوج *cval = alloca (2 * حجم (مزدوج));
+		لكل (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    إذا (pfr < پای_ټکی_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    وإلا
+		      cval[j] = *(مزدوج *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else
+	    وإلا
 	      {
 		/* Integer-typed _Complex: each half lives in its own GPR
 		   slot, right-justified on BE, low-address on LE.  */
-		size_t hsize = arg_types[i]->elements[0]->size;
-		char *cval = alloca (2 * hsize);
-		for (j = 0; j < 2; j++)
+		size_t hsize = arg_types[i]->elements[0]->اندازه;
+		حرف *cval = alloca (2 * hsize);
+		لكل (j = 0; j < 2; j++)
 		  {
-		    char *src;
-#ifndef __LITTLE_ENDIAN__
-		    src = (char *) pst + (8 - hsize);
-#else
-		    src = (char *) pst;
-#endif
-		    memcpy (cval + j * hsize, src, hsize);
+		    حرف *src;
+#که_نه_تعریف_شوی __LITTLE_ENDIAN__
+		    src = (حرف *) pst + (8 - hsize);
+#وإلا
+		    src = (حرف *) pst;
+#د_که_پای
+		    حافظه_نقل (cval + j * hsize, src, hsize);
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
 	  }
-	  break;
-#endif
+	  اكسر;
+#د_که_پای
 
-	default:
+	افتراضي:
 	  FFI_ASSERT (0);
 	}
 
       i++;
     }
 
-  (*fun) (cif, rvalue, avalue, user_data);
+  (*fun) (cif, rvalue, avalue, user_معلومات);
 
   /* Tell ffi_closure_LINUX64 how to perform return type promotions.  */
-  switch (cif->rtype->type)
+  بدل (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
-    case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
-    case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	return PPC64_LD_VECTOR;
-      return PPC_LD_F128;
-#endif
-    case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
-    case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
-    case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
-    case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
-    case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
-    case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    حالة FFI_TYPE_VOID:
+      أرجع PPC_LD_NONE;
+    حالة FFI_TYPE_FLOAT:
+      أرجع PPC_LD_F32;
+    حالة FFI_TYPE_DOUBLE:
+      أرجع PPC_LD_F64;
+#إذا FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+    حالة FFI_TYPE_LONGDOUBLE:
+      إذا ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	أرجع PPC64_LD_ویکټور;
+      أرجع PPC_LD_F128;
+#د_که_پای
+    حالة FFI_TYPE_UINT8:
+      أرجع PPC_LD_U8;
+    حالة FFI_TYPE_SINT8:
+      أرجع PPC_LD_S8;
+    حالة FFI_TYPE_UINT16:
+      أرجع PPC_LD_U16;
+    حالة FFI_TYPE_SINT16:
+      أرجع PPC_LD_S16;
+    حالة FFI_TYPE_UINT32:
+      أرجع PPC_LD_U32;
+    حالة FFI_TYPE_INT:
+    حالة FFI_TYPE_SINT32:
+      أرجع PPC_LD_S32;
+    حالة FFI_TYPE_اشاره_ګر:
+      أرجع PPC_LD_PTR;
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
+      أرجع PPC_LD_I64;
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
+    حالة FFI_TYPE_COMPLEX:
       {
-	int inner = cif->rtype->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	if (inner == FFI_TYPE_LONGDOUBLE)
+	صحيح inner = cif->rtype->elements[0]->type;
+#إذا FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	إذا (inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* IEEE-128 _Complex long double returns in v2:v3; IBM-128 in
 	       f1:f2 (real) and f3:f4 (imag), i.e. as a double HFA.  */
-	    if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-	      return PPC64_LD_VECTOR_HOMOG;
+	    إذا ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      أرجع PPC64_LD_ویکټور_HOMOG;
 	    inner = FFI_TYPE_DOUBLE;
 	  }
-#endif
-	if (inner == FFI_TYPE_FLOAT)
-	  return PPC64_LD_FLOAT_HOMOG;
-	if (inner == FFI_TYPE_DOUBLE)
-	  return PPC64_LD_DOUBLE_HOMOG;
+#د_که_پای
+	إذا (inner == FFI_TYPE_FLOAT)
+	  أرجع PPC64_LD_FLOAT_HOMOG;
+	إذا (inner == FFI_TYPE_DOUBLE)
+	  أرجع PPC64_LD_DOUBLE_HOMOG;
 	/* Integer-typed _Complex: the user wrote the natural packed
 	   complex layout into rvalue (real@0, imag@hsize).  Repack into
 	   two sign-/zero-extended doublewords so the closure assembly
@@ -1591,90 +1591,90 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 	   recovers real in r3 and imag in r4.  The RETVAL stack area is
 	   large enough (64 or 128 bytes) to hold the 16-byte repack.  */
 	{
-	  char *rv = rvalue;
-	  unsigned long re, im;
-	  switch (inner)
+	  حرف *rv = rvalue;
+	  بینښه اوږد re, im;
+	  بدل (inner)
 	    {
-	    case FFI_TYPE_UINT8:
-	      re = ((unsigned char *) rv)[0];
-	      im = ((unsigned char *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT8:
-	      re = (unsigned long) (long) ((signed char *) rv)[0];
-	      im = (unsigned long) (long) ((signed char *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT16:
-	      re = ((unsigned short *) rv)[0];
-	      im = ((unsigned short *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT16:
-	      re = (unsigned long) (long) ((signed short *) rv)[0];
-	      im = (unsigned long) (long) ((signed short *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT32:
-	      re = ((unsigned int *) rv)[0];
-	      im = ((unsigned int *) rv)[1];
-	      break;
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT32:
-	      re = (unsigned long) (long) ((signed int *) rv)[0];
-	      im = (unsigned long) (long) ((signed int *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	    default:
-	      re = ((unsigned long *) rv)[0];
-	      im = ((unsigned long *) rv)[1];
-	      break;
+	    حالة FFI_TYPE_UINT8:
+	      re = ((بینښه حرف *) rv)[0];
+	      im = ((بینښه حرف *) rv)[1];
+	      اكسر;
+	    حالة FFI_TYPE_SINT8:
+	      re = (بینښه اوږد) (اوږد) ((نښهدار حرف *) rv)[0];
+	      im = (بینښه اوږد) (اوږد) ((نښهدار حرف *) rv)[1];
+	      اكسر;
+	    حالة FFI_TYPE_UINT16:
+	      re = ((بینښه لنډ *) rv)[0];
+	      im = ((بینښه لنډ *) rv)[1];
+	      اكسر;
+	    حالة FFI_TYPE_SINT16:
+	      re = (بینښه اوږد) (اوږد) ((نښهدار لنډ *) rv)[0];
+	      im = (بینښه اوږد) (اوږد) ((نښهدار لنډ *) rv)[1];
+	      اكسر;
+	    حالة FFI_TYPE_UINT32:
+	      re = ((بینښه صحيح *) rv)[0];
+	      im = ((بینښه صحيح *) rv)[1];
+	      اكسر;
+	    حالة FFI_TYPE_INT:
+	    حالة FFI_TYPE_SINT32:
+	      re = (بینښه اوږد) (اوږد) ((نښهدار صحيح *) rv)[0];
+	      im = (بینښه اوږد) (اوږد) ((نښهدار صحيح *) rv)[1];
+	      اكسر;
+	    حالة FFI_TYPE_SINT64:
+	    حالة FFI_TYPE_UINT64:
+	    حالة FFI_TYPE_اشاره_ګر:
+	    افتراضي:
+	      re = ((بینښه اوږد *) rv)[0];
+	      im = ((بینښه اوږد *) rv)[1];
+	      اكسر;
 	    }
-	  ((unsigned long *) rv)[0] = re;
-	  ((unsigned long *) rv)[1] = im;
-	  return PPC_LD_R3R4;
+	  ((بینښه اوږد *) rv)[0] = re;
+	  ((بینښه اوږد *) rv)[1] = im;
+	  أرجع PPC_LD_R3R4;
 	}
       }
-#endif
-    case FFI_TYPE_STRUCT:
-      if ((cif->flags & FLAG_RETURNS_SMST) != 0)
+#د_که_پای
+    حالة FFI_TYPE_STRUCT:
+      إذا ((cif->flags & FLAG_RETURNS_SMST) != 0)
 	{
-	  if ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
+	  إذا ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	    {
 	      /* A struct smaller than a dword is returned in the low bits
 		 of r3 right justified.  Larger structs are passed left
 		 justified in r3 and r4.  The return value area on the
 		 stack will have the structs as they are usually stored
 		 in memory. */
-	      switch (cif->rtype->size)
+	      بدل (cif->rtype->اندازه)
 		{
-		case 0:
-		  return PPC_LD_NONE;
-		case 1:
-		  return PPC_LD_U8;
-		case 2:
-		  return PPC_LD_U16;
-		case 3:
-		  return PPC64_LD_STRUCT_3;
-		case 4:
-		  return PPC_LD_U32;
-		case 5:
-		  return PPC64_LD_STRUCT_5;
-		case 6:
-		  return PPC64_LD_STRUCT_6;
-		case 7:
-		  return PPC64_LD_STRUCT_7;
-		case 8 ... 16:
-		  return PPC_LD_R3R4;
+		حالة 0:
+		  أرجع PPC_LD_NONE;
+		حالة 1:
+		  أرجع PPC_LD_U8;
+		حالة 2:
+		  أرجع PPC_LD_U16;
+		حالة 3:
+		  أرجع PPC64_LD_STRUCT_3;
+		حالة 4:
+		  أرجع PPC_LD_U32;
+		حالة 5:
+		  أرجع PPC64_LD_STRUCT_5;
+		حالة 6:
+		  أرجع PPC64_LD_STRUCT_6;
+		حالة 7:
+		  أرجع PPC64_LD_STRUCT_7;
+		حالة 8 ... 16:
+		  أرجع PPC_LD_R3R4;
 		}
-	      break;
+	      اكسر;
 	    }
-	  if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	    return PPC64_LD_VECTOR_HOMOG;
-	  if ((cif->flags & FLAG_RETURNS_64BITS) != 0)
-	    return PPC64_LD_DOUBLE_HOMOG;
-	  return PPC64_LD_FLOAT_HOMOG;
+	  إذا ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	    أرجع PPC64_LD_ویکټور_HOMOG;
+	  إذا ((cif->flags & FLAG_RETURNS_64_بټونه) != 0)
+	    أرجع PPC64_LD_DOUBLE_HOMOG;
+	  أرجع PPC64_LD_FLOAT_HOMOG;
         }
-      return PPC_LD_NONE;
+      أرجع PPC_LD_NONE;
     }
   abort();
 }
-#endif
+#د_که_پای

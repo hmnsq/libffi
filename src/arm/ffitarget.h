@@ -27,63 +27,63 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#که_نه_تعریف_شوی LIBFFI_H
+#تېروتنه "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#د_که_پای
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#که_نه_تعریف_شوی LIBFFI_ASM
+تعريفنوع بینښه اوږد          ffi_arg;
+تعريفنوع نښهدار اوږد            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_لومړی_ABI = 0,
   FFI_SYSV,
   FFI_VFP,
-  FFI_LAST_ABI,
-#if defined(__ARM_PCS_VFP) || defined(_WIN32)
+  FFI_وروستی_ABI,
+#إذا defined(__ARM_PCS_VFP) || defined(_WIN32)
   FFI_DEFAULT_ABI = FFI_VFP,
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_SYSV,
-#endif
+#د_که_پای
 } ffi_abi;
-#endif
+#د_که_پای
 
-#define FFI_EXTRA_CIF_FIELDS			\
-  int vfp_used;					\
-  unsigned short vfp_reg_free, vfp_nargs;	\
-  signed char vfp_args[16]			\
+#تعریف_کړه FFI_EXTRA_CIF_FIELDS			\
+  صحيح vfp_کارول_شوی;					\
+  بینښه لنډ vfp_reg_free, vfp_nargs;	\
+  نښهدار حرف vfp_دلیلونه[16]			\
 
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#ifndef _WIN32
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#تعریف_کړه FFI_موخه_SPECIFIC_VARIADIC
+#که_نه_تعریف_شوی _WIN32
+#تعریف_کړه FFI_موخه_HAS_COMPLEX_TYPE
+#د_که_پای
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کړه FFI_CLOSURES 1
+#تعریف_کړه FFI_GO_CLOSURES 1
+#تعریف_کړه FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#إذا defined (FFI_EXEC_TRAMPOLINE_جدول) && FFI_EXEC_TRAMPOLINE_جدول
 
-#ifdef __MACH__
-#define FFI_TRAMPOLINE_SIZE 12
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET 8
-#else
-#error "No trampoline table implementation"
-#endif
+#که_تعریف_شوی __MACH__
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 12
+#تعریف_کړه FFI_TRAMPOLINE_تړون_دننه_واټن 8
+#وإلا
+#تېروتنه "No trampoline table implementation"
+#د_که_پای
 
-#else
-#ifdef _WIN32
-#define FFI_TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_CLOSURE_FUNCTION 12
-#else
-#define FFI_TRAMPOLINE_SIZE 12
-#endif
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
-#endif
+#وإلا
+#که_تعریف_شوی _WIN32
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 16
+#تعریف_کړه FFI_TRAMPOLINE_تړون_FUNCTION 12
+#وإلا
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 12
+#د_که_پای
+#تعریف_کړه FFI_TRAMPOLINE_تړون_دننه_واټن FFI_TRAMPOLINE_اندازه
+#د_که_پای
 
-#endif
+#د_که_پای

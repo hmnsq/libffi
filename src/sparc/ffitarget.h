@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#که_نه_تعریف_شوی LIBFFI_H
+#تېروتنه "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#د_که_پای
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#إذا defined(__arch64__) || defined(__sparcv9)
+#که_نه_تعریف_شوی SPARC64
+#تعریف_کړه SPARC64
+#د_که_پای
+#د_که_پای
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#که_نه_تعریف_شوی LIBFFI_ASM
+تعريفنوع بینښه اوږد          ffi_arg;
+تعريفنوع نښهدار اوږد            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+تعريفنوع تعداد ffi_abi {
+  FFI_لومړی_ABI = 0,
+#که_تعریف_شوی SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#وإلا
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
-  FFI_LAST_ABI
+#د_که_پای
+  FFI_وروستی_ABI
 } ffi_abi;
-#endif
+#د_که_پای
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#تعریف_کړه FFI_موخه_SPECIFIC_ډېری_SPACE_ویش 1
+#تعریف_کړه FFI_موخه_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+#که_تعریف_شوی SPARC64
+# define FFI_موخه_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS  بینښه صحيح nfixedargs
+#د_که_پای
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کړه FFI_CLOSURES 1
+#تعریف_کړه FFI_GO_CLOSURES 1
+#تعریف_کړه FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#که_تعریف_شوی SPARC64
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 24
+#وإلا
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 16
+#د_که_پای
 
-#endif
+#د_که_پای
 

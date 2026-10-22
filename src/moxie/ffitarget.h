@@ -24,29 +24,29 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#که_نه_تعریف_شوی LIBFFI_ASM
+تعريفنوع بینښه اوږد          ffi_arg;
+تعريفنوع نښهدار اوږد            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_لومړی_ABI = 0,
   FFI_EABI,
   FFI_DEFAULT_ABI = FFI_EABI,
-  FFI_LAST_ABI = FFI_DEFAULT_ABI + 1
+  FFI_وروستی_ABI = FFI_DEFAULT_ABI + 1
 } ffi_abi;
-#endif
+#د_که_پای
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کړه FFI_CLOSURES 1
+#تعریف_کړه FFI_NATIVE_RAW_API 0
 
 /* Trampolines are 12-bytes long.  See ffi_prep_closure_loc.  */
-#define FFI_TRAMPOLINE_SIZE (12)
+#تعریف_کړه FFI_TRAMPOLINE_اندازه (12)
 
-#endif
+#د_که_پای

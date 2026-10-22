@@ -26,116 +26,116 @@
 
 /* Hide the basic type definitions from the header file, so that we
    can redefine them here as "const".  */
-#define LIBFFI_HIDE_BASIC_TYPES
+#تعریف_کړه LIBFFI_HIDE_BASIC_TYPES
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
 
 /* Return a version string. */
-const char *ffi_get_version (void)
+ثابت حرف *ffi_get_نسخه (فراغ)
 {
-  return FFI_VERSION_STRING;
+  أرجع FFI_نسخه_STRING;
 }
 
 /* Return the version as an unsigned long value: (x * 10000 + y * 100 + z) */
-unsigned long ffi_get_version_number (void)
+بینښه اوږد ffi_get_نسخه_شمېره (فراغ)
 {
-  return FFI_VERSION_NUMBER;
+  أرجع FFI_نسخه_شمېره;
 }
 
-unsigned int ffi_get_default_abi (void)
+بینښه صحيح ffi_get_default_abi (فراغ)
 {
-  return FFI_DEFAULT_ABI;
+  أرجع FFI_DEFAULT_ABI;
 }
 
-size_t ffi_get_closure_size (void)
+size_t ffi_get_تړون_اندازه (فراغ)
 {
-  return sizeof(ffi_closure);
+  أرجع حجم(ffi_تړون);
 }
 
 /* Type definitions */
 
-#define FFI_TYPEDEF(name, type, id, maybe_const)\
-struct struct_align_##name {			\
-  char c;					\
+#تعریف_کړه FFI_TYPEDEF(name, type, id, maybe_const)\
+بنية struct_align_##name {			\
+  حرف c;					\
   type x;					\
 };						\
 FFI_EXTERN					\
 maybe_const ffi_type ffi_type_##name = {	\
-  sizeof(type),					\
-  offsetof(struct struct_align_##name, x),	\
-  id, NULL					\
+  حجم(type),					\
+  offsetof(بنية struct_align_##name, x),	\
+  id, عدم					\
 }
 
-#define FFI_COMPLEX_TYPEDEF(name, type, maybe_const)	\
-static ffi_type *ffi_elements_complex_##name [2] = {	\
-	(ffi_type *)(&ffi_type_##name), NULL		\
+#تعریف_کړه FFI_COMPLEX_TYPEDEF(name, type, maybe_const)	\
+ساكن ffi_type *ffi_elements_complex_##name [2] = {	\
+	(ffi_type *)(&ffi_type_##name), عدم		\
 };							\
-struct struct_align_complex_##name {			\
-  char c;						\
+بنية struct_align_complex_##name {			\
+  حرف c;						\
   _Complex type x;					\
 };							\
 FFI_EXTERN						\
 maybe_const ffi_type ffi_type_complex_##name = {	\
-  sizeof(_Complex type),				\
-  offsetof(struct struct_align_complex_##name, x),	\
+  حجم(_Complex type),				\
+  offsetof(بنية struct_align_complex_##name, x),	\
   FFI_TYPE_COMPLEX,					\
   (ffi_type **)ffi_elements_complex_##name		\
 }
 
 /* Size and alignment are fake here. They must not be 0. */
-FFI_EXTERN const ffi_type ffi_type_void = {
-  1, 1, FFI_TYPE_VOID, NULL
+FFI_EXTERN ثابت ffi_type ffi_type_void = {
+  1, 1, FFI_TYPE_VOID, عدم
 };
 
-FFI_TYPEDEF(uint8, UINT8, FFI_TYPE_UINT8, const);
-FFI_TYPEDEF(sint8, SINT8, FFI_TYPE_SINT8, const);
-FFI_TYPEDEF(uint16, UINT16, FFI_TYPE_UINT16, const);
-FFI_TYPEDEF(sint16, SINT16, FFI_TYPE_SINT16, const);
-FFI_TYPEDEF(uint32, UINT32, FFI_TYPE_UINT32, const);
-FFI_TYPEDEF(sint32, SINT32, FFI_TYPE_SINT32, const);
-FFI_TYPEDEF(uint64, UINT64, FFI_TYPE_UINT64, const);
-FFI_TYPEDEF(sint64, SINT64, FFI_TYPE_SINT64, const);
+FFI_TYPEDEF(uint8, UINT8, FFI_TYPE_UINT8, ثابت);
+FFI_TYPEDEF(sint8, SINT8, FFI_TYPE_SINT8, ثابت);
+FFI_TYPEDEF(uint16, UINT16, FFI_TYPE_UINT16, ثابت);
+FFI_TYPEDEF(sint16, SINT16, FFI_TYPE_SINT16, ثابت);
+FFI_TYPEDEF(uint32, UINT32, FFI_TYPE_UINT32, ثابت);
+FFI_TYPEDEF(sint32, SINT32, FFI_TYPE_SINT32, ثابت);
+FFI_TYPEDEF(uint64, UINT64, FFI_TYPE_UINT64, ثابت);
+FFI_TYPEDEF(sint64, SINT64, FFI_TYPE_SINT64, ثابت);
 
-FFI_TYPEDEF(pointer, void*, FFI_TYPE_POINTER, const);
+FFI_TYPEDEF(اشاره_ګر, فراغ*, FFI_TYPE_اشاره_ګر, ثابت);
 
-FFI_TYPEDEF(float, float, FFI_TYPE_FLOAT, const);
-FFI_TYPEDEF(double, double, FFI_TYPE_DOUBLE, const);
+FFI_TYPEDEF(عائم, عائم, FFI_TYPE_FLOAT, ثابت);
+FFI_TYPEDEF(مزدوج, مزدوج, FFI_TYPE_DOUBLE, ثابت);
 
-#if !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
-#define FFI_LDBL_CONST const
-#else
-#define FFI_LDBL_CONST
-#endif
+#إذا !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
+#تعریف_کړه FFI_LDBL_CONST ثابت
+#وإلا
+#تعریف_کړه FFI_LDBL_CONST
+#د_که_پای
 
-#ifdef __alpha__
+#که_تعریف_شوی __alpha__
 /* Even if we're not configured to default to 128-bit long double,
    maintain binary compatibility, as -mlong-double-128 can be used
    at any time.  */
 /* Validate the hard-coded number below.  */
-# if defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+# إذا defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE بهر د date
 # endif
-const ffi_type ffi_type_longdouble = { 16, 16, 4, NULL };
-#else
-FFI_TYPEDEF(longdouble, long double, FFI_TYPE_LONGDOUBLE, FFI_LDBL_CONST);
-#endif
+ثابت ffi_type ffi_type_longdouble = { 16, 16, 4, عدم };
+#وإلا
+FFI_TYPEDEF(longdouble, اوږد مزدوج, FFI_TYPE_LONGDOUBLE, FFI_LDBL_CONST);
+#د_که_پای
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-FFI_COMPLEX_TYPEDEF(float, float, const);
-FFI_COMPLEX_TYPEDEF(double, double, const);
-FFI_COMPLEX_TYPEDEF(longdouble, long double, FFI_LDBL_CONST);
-#endif
+#که_تعریف_شوی FFI_موخه_HAS_COMPLEX_TYPE
+FFI_COMPLEX_TYPEDEF(عائم, عائم, ثابت);
+FFI_COMPLEX_TYPEDEF(مزدوج, مزدوج, ثابت);
+FFI_COMPLEX_TYPEDEF(longdouble, اوږد مزدوج, FFI_LDBL_CONST);
+#د_که_پای
 
-#ifdef FFI_TARGET_HAS_INT128
+#که_تعریف_شوی FFI_موخه_HAS_INT128
 # ifdef HAVE_INT128
-FFI_TYPEDEF(uint128, __uint128_t, FFI_TYPE_UINT128, const);
-FFI_TYPEDEF(sint128, __int128_t, FFI_TYPE_SINT128, const);
-# else
+FFI_TYPEDEF(uint128, __uint128_t, FFI_TYPE_UINT128, ثابت);
+FFI_TYPEDEF(sint128, __int128_t, FFI_TYPE_SINT128, ثابت);
+# وإلا
 /* We don't actually need compiler support for __int128_t, as we don't
    use the type itself within libffi.  Obviously the size is 16; make
    the conservative assumption that the alignment must also be 16. */
-const ffi_type ffi_type_uint128 = { 16, 16, FFI_TYPE_UINT128, NULL };
-const ffi_type ffi_type_sint128 = { 16, 16, FFI_TYPE_SINT128, NULL };
+ثابت ffi_type ffi_type_uint128 = { 16, 16, FFI_TYPE_UINT128, عدم };
+ثابت ffi_type ffi_type_sint128 = { 16, 16, FFI_TYPE_SINT128, عدم };
 # endif
-#endif /* FFI_TARGET_HAS_INT128 */
+#د_که_پای /* FFI_TARGET_HAS_INT128 */

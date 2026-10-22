@@ -25,38 +25,38 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#که_نه_تعریف_شوی LIBFFI_H
+#تېروتنه "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#د_که_پای
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#که_نه_تعریف_شوی LIBFFI_ASM
+تعريفنوع بینښه اوږد          ffi_arg;
+تعريفنوع نښهدار اوږد            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_لومړی_ABI = 0,
   FFI_EABI,
-  FFI_LAST_ABI,
+  FFI_وروستی_ABI,
   FFI_DEFAULT_ABI = FFI_EABI
 } ffi_abi;
-#endif
+#د_که_پای
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کړه FFI_CLOSURES 1
+#تعریف_کړه FFI_NATIVE_RAW_API 0
 
-#ifdef __FRV_FDPIC__
+#که_تعریف_شوی __FRV_FDPIC__
 /* Trampolines are 8 4-byte instructions long.  */
-#define FFI_TRAMPOLINE_SIZE (8*4)
-#else
+#تعریف_کړه FFI_TRAMPOLINE_اندازه (8*4)
+#وإلا
 /* Trampolines are 5 4-byte instructions long.  */
-#define FFI_TRAMPOLINE_SIZE (5*4)
-#endif
+#تعریف_کړه FFI_TRAMPOLINE_اندازه (5*4)
+#د_که_پای
 
-#endif
+#د_که_پای

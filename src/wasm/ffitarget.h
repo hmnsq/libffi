@@ -25,55 +25,55 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#که_نه_تعریف_شوی LIBFFI_موخه_H
+#تعریف_کړه LIBFFI_موخه_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#که_نه_تعریف_شوی LIBFFI_H
+#تېروتنه "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#د_که_پای
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+تعريفنوع بینښه اوږد ffi_arg;
+تعريفنوع نښهدار اوږد ffi_sarg;
 
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
-typedef void (*ffi_fp)(void);
+تعريفنوع فراغ (*ffi_fp)(فراغ);
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+تعريفنوع تعداد ffi_abi {
+  FFI_لومړی_ABI = 0,
+#إذا __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
-#elif __SIZEOF_POINTER__ == 8
+#وإلاإذا __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
-#error "Unknown pointer size"
-#endif
-  FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
-#ifdef __EMSCRIPTEN__
+#وإلا
+#تېروتنه "Unknown pointer size"
+#د_که_پای
+  FFI_وروستی_ABI,
+#إذا __SIZEOF_POINTER__ == 4
+#که_تعریف_شوی __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_WASM32
-#endif
-#elif __SIZEOF_POINTER__ == 8
-#ifdef __EMSCRIPTEN__
+#د_که_پای
+#وإلاإذا __SIZEOF_POINTER__ == 8
+#که_تعریف_شوی __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_WASM64
-#endif
-#else
-#error "Unknown pointer size"
-#endif
+#د_که_پای
+#وإلا
+#تېروتنه "Unknown pointer size"
+#د_که_پای
 } ffi_abi;
 
-#define FFI_CLOSURES 1
+#تعریف_کړه FFI_CLOSURES 1
 // #define FFI_GO_CLOSURES 0
-#define FFI_TRAMPOLINE_SIZE 4
+#تعریف_کړه FFI_TRAMPOLINE_اندازه 4
 // #define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#تعریف_کړه FFI_موخه_SPECIFIC_VARIADIC 1
+#تعریف_کړه FFI_EXTRA_CIF_FIELDS  بینښه صحيح nfixedargs
 
-#endif
+#د_که_پای
