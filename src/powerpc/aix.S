@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   أو IMPLIED, INCLUDING BUT ليس LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE و NONINFRINGEMENT.
+   في NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES أو
+   OTHER LIABILITY, WHETHER في AN ACTION OF CONTRACT, TORT أو OTHERWISE,
+   ARISING FROM, OUT OF أو في CONNECTION WITH THE SOFTWARE أو THE USE أو
+   OTHER DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 	.set r0,0
@@ -124,7 +124,7 @@ LCFI..0:
 	stdux	r1, r1, r4
 LCFI..1:
 
-	/* Save arguments over call...  */
+	/* Save arguments over نادي...  */
 	mr	r31, r5	/* flags, */
 	mr	r30, r6	/* rvalue, */
 	mr	r29, r7	/* function address.  */
@@ -135,7 +135,7 @@ LCFI..1:
 	bl	.ffi_prep_args
 	nop
 
-	/* Now do the call.  */
+	/* Now do the نادي.  */
 	ld	r0, 0(r29)
 	ld	r2, 8(r29)
 	ld	r11, 16(r29)
@@ -175,7 +175,7 @@ L1:
 	lfd	f13,-32-(1*8)(r28)
 
 L2:
-	/* Make the call.  */
+	/* Make the نادي.  */
 	bctrl
 	ld	r2, 40(r1)
 
@@ -232,7 +232,7 @@ LCFI..0:
 	stwux	r1, r1, r4
 LCFI..1:
 
-	/* Save arguments over call...  */
+	/* Save arguments over نادي...  */
 	mr	r31, r5	/* flags, */
 	mr	r30, r6	/* rvalue, */
 	mr	r29, r7	/* function address, */
@@ -243,7 +243,7 @@ LCFI..1:
 	bl	.ffi_prep_args
 	nop
 
-	/* Now do the call.  */
+	/* Now do the نادي.  */
 	lwz	r0, 0(r29)
 	lwz	r2, 4(r29)
 	lwz	r11, 8(r29)
@@ -283,7 +283,7 @@ L1:
 	lfd	f13,-16-(1*8)(r28)
 
 L2:
-	/* Make the call.  */
+	/* Make the نادي.  */
 	bctrl
 	lwz	r2, 20(r1)
 
@@ -321,7 +321,7 @@ LFE..0:
 	.ef __LINE__
 	.long 0
 	.byte 0,0,0,1,128,4,0,0
-/* END(ffi_call_AIX) */
+/* انته(ffi_call_AIX) */
 
 	/* void ffi_call_go_AIX(extended_cif *ecif, unsigned long bytes,
 	 *		        unsigned int flags, unsigned int *rvalue,
@@ -360,7 +360,7 @@ LCFI..2:
 	stdux	r1, r1, r4
 LCFI..3:
 
-	/* Save arguments over call...  */
+	/* Save arguments over نادي...  */
 	mr	r31, r5	/* flags, */
 	mr	r30, r6	/* rvalue, */
 	mr	r29, r7	/* function address,  */
@@ -371,7 +371,7 @@ LCFI..3:
 	bl	.ffi_prep_args
 	nop
 
-	/* Now do the call.  */
+	/* Now do the نادي.  */
 	ld	r0, 0(r29)
 	ld	r2, 8(r29)
 	ld      r11, 8(r28)	/* closure */
@@ -416,7 +416,7 @@ LCFI..2:
 	stwux	r1, r1, r4
 LCFI..3:
 
-	/* Save arguments over call...  */
+	/* Save arguments over نادي...  */
 	mr	r31, r5	/* flags, */
 	mr	r30, r6	/* rvalue, */
 	mr	r29, r7	/* function address, */
@@ -427,7 +427,7 @@ LCFI..3:
 	bl	.ffi_prep_args
 	nop
 
-	/* Now do the call.  */
+	/* Now do the نادي.  */
 	lwz	r0, 0(r29)
 	lwz	r2, 4(r29)
 	lwz	r11, 4(r28)	/* closure */
@@ -452,7 +452,7 @@ LFE..1:
 	.ef __LINE__
 	.long 0
 	.byte 0,0,0,1,128,4,0,0
-/* END(ffi_call_go_AIX) */
+/* انته(ffi_call_go_AIX) */
 
 .csect .text[PR]
 	.align 2
@@ -470,7 +470,7 @@ ffi_call_DARWIN:
 	blr
 	.long 0
 	.byte 0,0,0,0,0,0,0,0
-/* END(ffi_call_DARWIN) */
+/* انته(ffi_call_DARWIN) */
 
 /* EH frame stuff.  */
 
