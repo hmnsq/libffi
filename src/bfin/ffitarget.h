@@ -24,20 +24,20 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed 	 long          ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ          ffi_arg;
+రకనిర్వచనం గుర్తుగల 	 దీర్ఘ          ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
-#endif
+#అయితే_ముగింపు
 

@@ -27,63 +27,63 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ          ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
   FFI_SYSV,
   FFI_VFP,
-  FFI_LAST_ABI,
-#if defined(__ARM_PCS_VFP) || defined(_WIN32)
+  FFI_చివరి_ABI,
+#ఒకవేళ defined(__ARM_PCS_VFP) || defined(_WIN32)
   FFI_DEFAULT_ABI = FFI_VFP,
-#else
+#లేకపోతే
   FFI_DEFAULT_ABI = FFI_SYSV,
-#endif
+#అయితే_ముగింపు
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
-#define FFI_EXTRA_CIF_FIELDS			\
-  int vfp_used;					\
-  unsigned short vfp_reg_free, vfp_nargs;	\
-  signed char vfp_args[16]			\
+#నిర్వచించు FFI_EXTRA_CIF_FIELDS			\
+  పూర్ణాంకం vfp_వాడిన;					\
+  గుర్తులేని పొట్టి vfp_reg_free, vfp_nargs;	\
+  గుర్తుగల అక్షరం vfp_వాదనలు[16]			\
 
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#ifndef _WIN32
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#నిర్వచించు FFI_లక్ష్యం_SPECIFIC_VARIADIC
+#నిర్వచితం_కాకపోతే _WIN32
+#నిర్వచించు FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+#అయితే_ముగింపు
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_GO_CLOSURES 1
+#నిర్వచించు FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#ఒకవేళ defined (FFI_EXEC_TRAMPOLINE_పట్టిక) && FFI_EXEC_TRAMPOLINE_పట్టిక
 
-#ifdef __MACH__
-#define FFI_TRAMPOLINE_SIZE 12
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET 8
-#else
-#error "No trampoline table implementation"
-#endif
+#నిర్వచితమైతే __MACH__
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 12
+#నిర్వచించు FFI_TRAMPOLINE_సంవృతం_స్థానభ్రంశం 8
+#లేకపోతే
+#దోషం "No trampoline table implementation"
+#అయితే_ముగింపు
 
-#else
-#ifdef _WIN32
-#define FFI_TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_CLOSURE_FUNCTION 12
-#else
-#define FFI_TRAMPOLINE_SIZE 12
-#endif
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
-#endif
+#లేకపోతే
+#నిర్వచితమైతే _WIN32
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 16
+#నిర్వచించు FFI_TRAMPOLINE_సంవృతం_FUNCTION 12
+#లేకపోతే
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 12
+#అయితే_ముగింపు
+#నిర్వచించు FFI_TRAMPOLINE_సంవృతం_స్థానభ్రంశం FFI_TRAMPOLINE_కొలత
+#అయితే_ముగింపు
 
-#endif
+#అయితే_ముగింపు

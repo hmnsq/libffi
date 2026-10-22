@@ -28,40 +28,40 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include <tramp.h>
-#include <stdlib.h>
+#అన్తర్భావ "ffi.h"
+#అన్తర్భావ <tramp.h>
+#అన్తర్భావ <stdlib.h>
 
-#ifdef POWERPC64
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
+#నిర్వచితమైతే POWERPC64
+#అన్తర్భావ "ffi_common.h"
+#అన్తర్భావ "ffi_powerpc.h"
 
 
 /* About the LINUX64 ABI.  */
-enum {
-  NUM_GPR_ARG_REGISTERS64 = 8,
-  NUM_FPR_ARG_REGISTERS64 = 13,
-  NUM_VEC_ARG_REGISTERS64 = 12,
+గణన {
+  అంకె_GPR_ARG_REGISTERS64 = 8,
+  అంకె_FPR_ARG_REGISTERS64 = 13,
+  అంకె_VEC_ARG_REGISTERS64 = 12,
 };
-enum { ASM_NEEDS_REGISTERS64 = 4 };
+గణన { ASM_NEEDS_REGISTERS64 = 4 };
 
 
-#if HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ఒకవేళ HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 /* Adjust size of ffi_type_longdouble.  */
-void FFI_HIDDEN
+శూన్య FFI_HIDDEN
 ffi_prep_types_linux64 (ffi_abi abi)
 {
-  if ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
+  ఒకవేళ ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
     {
-      ffi_type_longdouble.size = 8;
+      ffi_type_longdouble.కొలత = 8;
       ffi_type_longdouble.alignment = 8;
     }
-  else
+  లేకపోతే
     {
-      ffi_type_longdouble.size = 16;
+      ffi_type_longdouble.కొలత = 16;
       ffi_type_longdouble.alignment = 16;
     }
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
   /* _Complex long double is two halves of whatever long double just became.
      Its size comes from sizeof(_Complex long double) at build time, which is
      only right for the ABI libffi itself was built for, so keep it in step.
@@ -69,56 +69,56 @@ ffi_prep_types_linux64 (ffi_abi abi)
      that asks for the other long double width would get a return value copied
      at cif->rtype->size (wrong by 16 bytes either way) and structs containing
      the type laid out to the build-time size.  */
-  ffi_type_complex_longdouble.size = 2 * ffi_type_longdouble.size;
+  ffi_type_complex_longdouble.కొలత = 2 * ffi_type_longdouble.కొలత;
   ffi_type_complex_longdouble.alignment = ffi_type_longdouble.alignment;
-#endif
+#అయితే_ముగింపు
 }
-#endif
+#అయితే_ముగింపు
 
 
-static unsigned int
+స్థిర గుర్తులేని పూర్ణాంకం
 discover_homogeneous_aggregate (ffi_abi abi,
-                                const ffi_type *t,
-                                unsigned int *elnum)
+                                స్థిరరాశి ffi_type *t,
+                                గుర్తులేని పూర్ణాంకం *elnum)
 {
-  switch (t->type)
+  ఎంపిక (t->type)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    స్థితి FFI_TYPE_LONGDOUBLE:
       /* 64-bit long doubles are equivalent to doubles. */
-      if ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
+      ఒకవేళ ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
         {
           *elnum = 1;
-          return FFI_TYPE_DOUBLE;
+          తిరిగి FFI_TYPE_DOUBLE;
         }
       /* IBM extended precision values use unaligned pairs
          of FPRs, but according to the ABI must be considered
          distinct from doubles. They are also limited to a
          maximum of four members in a homogeneous aggregate. */
-      else if ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
+      లేకపోతే ఒకవేళ ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
         {
           *elnum = 2;
-          return FFI_TYPE_LONGDOUBLE;
+          తిరిగి FFI_TYPE_LONGDOUBLE;
         }
       /* Fall through. */
-#endif
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
+#అయితే_ముగింపు
+    స్థితి FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_DOUBLE:
       *elnum = 1;
-      return (int) t->type;
+      తిరిగి (పూర్ణాంకం) t->type;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+    స్థితి FFI_TYPE_COMPLEX:
       /* Count complex of an FP base as two elements of that base, so a
 	 struct containing complex members is recognised as an HFA.  This
 	 only affects FFI_TYPE_COMPLEX *inside* structs; the top-level
 	 complex arg path has its own case in the cif/args/closure loops
 	 and never reaches the FFI_TYPE_STRUCT branches.  */
       {
-	unsigned int inner_elnum = 0;
-	unsigned int inner
+	గుర్తులేని పూర్ణాంకం inner_elnum = 0;
+	గుర్తులేని పూర్ణాంకం inner
 	  = discover_homogeneous_aggregate (abi, t->elements[0], &inner_elnum);
-	if (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
+	ఒకవేళ (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
 	    || inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* A _Complex of an FP base counts as two of that base: an
@@ -126,159 +126,159 @@ discover_homogeneous_aggregate (ffi_abi abi,
 	       itself two FPRs (inner_elnum == 2), so a _Complex long double
 	       contributes four FPRs.  */
 	    *elnum = 2 * inner_elnum;
-	    return inner;
+	    తిరిగి inner;
 	  }
-	return 0;
+	తిరిగి 0;
       }
-#endif
+#అయితే_ముగింపు
 
-    case FFI_TYPE_STRUCT:;
+    స్థితి FFI_TYPE_STRUCT:;
       {
-	unsigned int base_elt = 0, total_elnum = 0;
+	గుర్తులేని పూర్ణాంకం పునాది_elt = 0, మొత్తం_elnum = 0;
 	ffi_type **el = t->elements;
-	while (*el)
+	అయితే (*el)
 	  {
-	    unsigned int el_elt, el_elnum = 0;
+	    గుర్తులేని పూర్ణాంకం el_elt, el_elnum = 0;
 	    el_elt = discover_homogeneous_aggregate (abi, *el, &el_elnum);
-	    if (el_elt == 0
-		|| (base_elt && base_elt != el_elt))
-	      return 0;
-	    base_elt = el_elt;
-	    total_elnum += el_elnum;
-#if _CALL_ELF == 2
-	    if (total_elnum > 8)
-	      return 0;
-#else
-	    if (total_elnum > 1)
-	      return 0;
-#endif
+	    ఒకవేళ (el_elt == 0
+		|| (పునాది_elt && పునాది_elt != el_elt))
+	      తిరిగి 0;
+	    పునాది_elt = el_elt;
+	    మొత్తం_elnum += el_elnum;
+#ఒకవేళ _CALL_ELF == 2
+	    ఒకవేళ (మొత్తం_elnum > 8)
+	      తిరిగి 0;
+#లేకపోతే
+	    ఒకవేళ (మొత్తం_elnum > 1)
+	      తిరిగి 0;
+#అయితే_ముగింపు
 	    el++;
 	  }
-	*elnum = total_elnum;
-	return base_elt;
+	*elnum = మొత్తం_elnum;
+	తిరిగి పునాది_elt;
       }
 
-    default:
-      return 0;
+    అప్రమేయ:
+      తిరిగి 0;
     }
 }
 
 
 /* Perform machine dependent cif processing */
-static ffi_status
+స్థిర ffi_స్థితి
 ffi_prep_cif_linux64_core (ffi_cif *cif)
 {
   ffi_type **ptr;
-  unsigned bytes;
-  unsigned i, fparg_count = 0, intarg_count = 0, vecarg_count = 0;
-  unsigned flags = cif->flags;
-  unsigned elt, elnum, rtype;
+  గుర్తులేని బైట్లు;
+  గుర్తులేని i, fparg_లెక్క = 0, intarg_లెక్క = 0, vecarg_లెక్క = 0;
+  గుర్తులేని flags = cif->flags;
+  గుర్తులేని elt, elnum, rtype;
 
-#if FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
+#ఒకవేళ FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
   /* If compiled without long double support... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
+  ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#elif !defined(__VEC__)
+    తిరిగి FFI_BAD_ABI;
+#లేదావేళ !defined(__VEC__)
   /* If compiled without vector register support (used by assembly)... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#else
+  ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+    తిరిగి FFI_BAD_ABI;
+#లేకపోతే
   /* If the IEEE128 flag is set, but long double is only 64 bits wide... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
+  ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#endif
+    తిరిగి FFI_BAD_ABI;
+#అయితే_ముగింపు
 
   /* The machine-independent calculation of cif->bytes doesn't work
      for us.  Redo the calculation.  */
-#if _CALL_ELF == 2
+#ఒకవేళ _CALL_ELF == 2
   /* Space for backchain, CR, LR, TOC and the asm's temp regs.  */
-  bytes = (4 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  బైట్లు = (4 + ASM_NEEDS_REGISTERS64) * పరిమాణం (దీర్ఘ);
 
   /* Space for the general registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS64 * sizeof (long);
-#else
+  బైట్లు += అంకె_GPR_ARG_REGISTERS64 * పరిమాణం (దీర్ఘ);
+#లేకపోతే
   /* Space for backchain, CR, LR, cc/ld doubleword, TOC and the asm's temp
      regs.  */
-  bytes = (6 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  బైట్లు = (6 + ASM_NEEDS_REGISTERS64) * పరిమాణం (దీర్ఘ);
 
   /* Space for the mandatory parm save area and general registers.  */
-  bytes += 2 * NUM_GPR_ARG_REGISTERS64 * sizeof (long);
-#endif
+  బైట్లు += 2 * అంకె_GPR_ARG_REGISTERS64 * పరిమాణం (దీర్ఘ);
+#అయితే_ముగింపు
 
   /* Return value handling.  */
   rtype = cif->rtype->type;
-#if _CALL_ELF == 2
+#ఒకవేళ _CALL_ELF == 2
 homogeneous:
-#endif
-  switch (rtype)
+#అయితే_ముగింపు
+  ఎంపిక (rtype)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    స్థితి FFI_TYPE_LONGDOUBLE:
+      ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
         {
           flags |= FLAG_RETURNS_VEC;
-          break;
+          ఆపు;
         }
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
-	flags |= FLAG_RETURNS_128BITS;
+      ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	flags |= FLAG_RETURNS_128_బిట్లు;
       /* Fall through.  */
-#endif
-    case FFI_TYPE_DOUBLE:
-      flags |= FLAG_RETURNS_64BITS;
+#అయితే_ముగింపు
+    స్థితి FFI_TYPE_DOUBLE:
+      flags |= FLAG_RETURNS_64_బిట్లు;
       /* Fall through.  */
-    case FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
-      flags |= FLAG_RETURNS_64BITS;
-      break;
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_సూచిక:
+      flags |= FLAG_RETURNS_64_బిట్లు;
+      ఆపు;
 
-    case FFI_TYPE_STRUCT:
-#if _CALL_ELF == 2
+    స్థితి FFI_TYPE_STRUCT:
+#ఒకవేళ _CALL_ELF == 2
       elt = discover_homogeneous_aggregate (cif->abi, cif->rtype, &elnum);
-      if (elt)
+      ఒకవేళ (elt)
         {
           flags |= FLAG_RETURNS_SMST;
           rtype = elt;
-          goto homogeneous;
+          వెళ్ళు homogeneous;
         }
-      if (cif->rtype->size <= 16)
+      ఒకవేళ (cif->rtype->కొలత <= 16)
         {
           flags |= FLAG_RETURNS_SMST;
-          break;
+          ఆపు;
         }
-#endif
-      intarg_count++;
+#అయితే_ముగింపు
+      intarg_లెక్క++;
       flags |= FLAG_RETVAL_REFERENCE;
       /* Fall through.  */
-    case FFI_TYPE_VOID:
+    స్థితి FFI_TYPE_VOID:
       flags |= FLAG_RETURNS_NOTHING;
-      break;
+      ఆపు;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+    స్థితి FFI_TYPE_COMPLEX:
       rtype = cif->rtype->elements[0]->type;
-      switch (rtype)
+      ఎంపిక (rtype)
         {
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_DOUBLE:
+        స్థితి FFI_TYPE_FLOAT:
+        స్థితి FFI_TYPE_DOUBLE:
           /* float/double _Complex are returned in (f1, f2), matching
              the assembly path for a 2-element FP HFA.  */
           flags |= FLAG_RETURNS_SMST;
-          goto homogeneous;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-        case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+          వెళ్ళు homogeneous;
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+        స్థితి FFI_TYPE_LONGDOUBLE:
+          ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
               /* IEEE-128 _Complex long double: real in v2, imag in v3.
                  Return via the vector-homogeneous small-struct path.  */
               flags |= FLAG_RETURNS_SMST | FLAG_RETURNS_VEC;
-              break;
+              ఆపు;
             }
           /* IBM-128 _Complex long double is returned like a homogeneous
              aggregate of doubles: real in f1:f2, imag in f3:f4.  (For a
@@ -286,222 +286,222 @@ homogeneous:
              real in f1 and imag in f2.)  */
           flags |= FLAG_RETURNS_SMST;
           rtype = FFI_TYPE_DOUBLE;
-          goto homogeneous;
-#endif
-        case FFI_TYPE_INT:
-        case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-        case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-        case FFI_TYPE_POINTER:
+          వెళ్ళు homogeneous;
+#అయితే_ముగింపు
+        స్థితి FFI_TYPE_INT:
+        స్థితి FFI_TYPE_SINT8:  స్థితి FFI_TYPE_UINT8:
+        స్థితి FFI_TYPE_SINT16: స్థితి FFI_TYPE_UINT16:
+        స్థితి FFI_TYPE_SINT32: స్థితి FFI_TYPE_UINT32:
+        స్థితి FFI_TYPE_SINT64: స్థితి FFI_TYPE_UINT64:
+        స్థితి FFI_TYPE_సూచిక:
           /* Integer-typed _Complex: real returned in r3, imag in r4.
              Take the .Lsmall_struct return path (FLAG_RETURNS_SMST
              without FP/VEC) and let the bounce-buffer logic in
              ffi_call_int repack the two halves.  */
           flags |= FLAG_RETURNS_SMST;
-          break;
-        default:
-          return FFI_BAD_TYPEDEF;
+          ఆపు;
+        అప్రమేయ:
+          తిరిగి FFI_BAD_TYPEDEF;
         }
-      break;
-#endif
+      ఆపు;
+#అయితే_ముగింపు
 
-    default:
+    అప్రమేయ:
       /* Returns 32-bit integer, or similar.  Nothing to do here.  */
-      break;
+      ఆపు;
     }
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  కొరకు (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      unsigned int align;
+      గుర్తులేని పూర్ణాంకం align;
 
-      switch ((*ptr)->type)
+      ఎంపిక ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	స్థితి FFI_TYPE_LONGDOUBLE:
+          ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count++;
+              vecarg_లెక్క++;
               /* Align to 16 bytes, plus the 16-byte argument. */
-              intarg_count = (intarg_count + 3) & ~0x1;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              intarg_లెక్క = (intarg_లెక్క + 3) & ~0x1;
+              ఒకవేళ (vecarg_లెక్క > అంకె_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              ఆపు;
             }
-	  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      fparg_count++;
-	      intarg_count++;
+	      fparg_లెక్క++;
+	      intarg_లెక్క++;
 	    }
 	  /* Fall through.  */
-#endif
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_FLOAT:
-	  fparg_count++;
-	  intarg_count++;
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+#అయితే_ముగింపు
+	స్థితి FFI_TYPE_DOUBLE:
+	స్థితి FFI_TYPE_FLOAT:
+	  fparg_లెక్క++;
+	  intarg_లెక్క++;
+	  ఒకవేళ (fparg_లెక్క > అంకె_FPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	స్థితి FFI_TYPE_STRUCT:
+	  ఒకవేళ ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      ఒకవేళ (align > 16)
 		align = 16;
 	      align = align / 8;
-	      if (align > 1)
-		intarg_count = FFI_ALIGN (intarg_count, align);
+	      ఒకవేళ (align > 1)
+		intarg_లెక్క = FFI_ALIGN (intarg_లెక్క, align);
 	    }
-	  intarg_count += ((*ptr)->size + 7) / 8;
+	  intarg_లెక్క += ((*ptr)->కొలత + 7) / 8;
 	  elt = discover_homogeneous_aggregate (cif->abi, *ptr, &elnum);
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-          if (elt == FFI_TYPE_LONGDOUBLE &&
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+          ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE &&
               (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count += elnum;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              vecarg_లెక్క += elnum;
+              ఒకవేళ (vecarg_లెక్క > అంకె_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              ఆపు;
             }
-	  else
-#endif
-	  if (elt)
+	  లేకపోతే
+#అయితే_ముగింపు
+	  ఒకవేళ (elt)
 	    {
-	      fparg_count += elnum;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_లెక్క += elnum;
+	      ఒకవేళ (fparg_లెక్క > అంకె_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  else
+	  లేకపోతే
 	    {
-	      if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	      ఒకవేళ (intarg_లెక్క > అంకె_GPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_సూచిక:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT16:
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 8-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  intarg_count++;
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  intarg_లెక్క++;
+	  ఒకవేళ (intarg_లెక్క > అంకె_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  ఆపు;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+	స్థితి FFI_TYPE_COMPLEX:
 	  /* Each half of a _Complex argument is passed independently: an FP
 	     half in its own FPR (and its own GPR shadow slot); an integer
 	     half in its own GPR slot.  This matches GCC's split_complex_arg
 	     under ELFv2, and is what differentiates _Complex from a
 	     same-sized struct{T;T;} which uses fewer GPR shadow slots.  */
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE
 	      && (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
-#endif
-	  switch (elt)
+#అయితే_ముగింపు
+	  ఎంపిక (elt)
 	    {
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_DOUBLE:
-	      fparg_count += 2;
-	      intarg_count += 2;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	    స్థితి FFI_TYPE_FLOAT:
+	    స్థితి FFI_TYPE_DOUBLE:
+	      fparg_లెక్క += 2;
+	      intarg_లెక్క += 2;
+	      ఒకవేళ (fparg_లెక్క > అంకె_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	    case FFI_TYPE_LONGDOUBLE:
-	      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      ఆపు;
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	    స్థితి FFI_TYPE_LONGDOUBLE:
+	      ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 		{
 		  /* Two IEEE-128 halves: each occupies a vector register plus
 		     two GPR shadow doublewords, the pair 16-byte aligned.  */
-		  vecarg_count += 2;
-		  intarg_count = (intarg_count + 1) & ~0x1;
-		  intarg_count += 4;
-		  if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+		  vecarg_లెక్క += 2;
+		  intarg_లెక్క = (intarg_లెక్క + 1) & ~0x1;
+		  intarg_లెక్క += 4;
+		  ఒకవేళ (vecarg_లెక్క > అంకె_VEC_ARG_REGISTERS64)
 		    flags |= FLAG_ARG_NEEDS_PSAVE;
-		  break;
+		  ఆపు;
 		}
 	      /* IBM-128: each half is a pair of FPRs, and each FPR half
 		 consumes a GPR shadow doubleword -- four of each in total.  */
-	      fparg_count += 4;
-	      intarg_count += 4;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_లెక్క += 4;
+	      intarg_లెక్క += 4;
+	      ఒకవేళ (fparg_లెక్క > అంకె_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
-#endif
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-	    case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	      intarg_count += 2;
-	      break;
-	    default:
-	      return FFI_BAD_TYPEDEF;
+	      ఆపు;
+#అయితే_ముగింపు
+	    స్థితి FFI_TYPE_INT:
+	    స్థితి FFI_TYPE_SINT8:  స్థితి FFI_TYPE_UINT8:
+	    స్థితి FFI_TYPE_SINT16: స్థితి FFI_TYPE_UINT16:
+	    స్థితి FFI_TYPE_SINT32: స్థితి FFI_TYPE_UINT32:
+	    స్థితి FFI_TYPE_SINT64: స్థితి FFI_TYPE_UINT64:
+	    స్థితి FFI_TYPE_సూచిక:
+	      intarg_లెక్క += 2;
+	      ఆపు;
+	    అప్రమేయ:
+	      తిరిగి FFI_BAD_TYPEDEF;
 	    }
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  ఒకవేళ (intarg_లెక్క > అంకె_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
-#endif
+	  ఆపు;
+#అయితే_ముగింపు
 
-	default:
+	అప్రమేయ:
 	  FFI_ASSERT (0);
 	}
     }
 
-  if (fparg_count != 0)
+  ఒకవేళ (fparg_లెక్క != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (intarg_count > 4)
+  ఒకవేళ (intarg_లెక్క > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
-  if (vecarg_count != 0)
+  ఒకవేళ (vecarg_లెక్క != 0)
     flags |= FLAG_VEC_ARGUMENTS;
 
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS64 * sizeof (double);
+  ఒకవేళ (fparg_లెక్క != 0)
+    బైట్లు += అంకె_FPR_ARG_REGISTERS64 * పరిమాణం (ద్విగుణ);
   /* Space for the vector registers, if needed, aligned to 16 bytes. */
-  if (vecarg_count != 0) {
-    bytes = (bytes + 15) & ~0xF;
-    bytes += NUM_VEC_ARG_REGISTERS64 * sizeof (float128);
+  ఒకవేళ (vecarg_లెక్క != 0) {
+    బైట్లు = (బైట్లు + 15) & ~0xF;
+    బైట్లు += అంకె_VEC_ARG_REGISTERS64 * పరిమాణం (float128);
   }
 
   /* Stack space.  */
-#if _CALL_ELF == 2
-  if ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
-    bytes += intarg_count * sizeof (long);
-#else
-  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
-    bytes += (intarg_count - NUM_GPR_ARG_REGISTERS64) * sizeof (long);
-#endif
+#ఒకవేళ _CALL_ELF == 2
+  ఒకవేళ ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
+    బైట్లు += intarg_లెక్క * పరిమాణం (దీర్ఘ);
+#లేకపోతే
+  ఒకవేళ (intarg_లెక్క > అంకె_GPR_ARG_REGISTERS64)
+    బైట్లు += (intarg_లెక్క - అంకె_GPR_ARG_REGISTERS64) * పరిమాణం (దీర్ఘ);
+#అయితే_ముగింపు
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
-  bytes = (bytes + 15) & ~0xF;
+  బైట్లు = (బైట్లు + 15) & ~0xF;
 
   cif->flags = flags;
-  cif->bytes = bytes;
+  cif->బైట్లు = బైట్లు;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_linux64 (ffi_cif *cif)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  ఒకవేళ ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = cif->nargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#ఒకవేళ _CALL_ELF != 2
+  లేకపోతే ఒకవేళ (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -509,21 +509,21 @@ ffi_prep_cif_linux64 (ffi_cif *cif)
       /* Translate to new abi value.  */
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
-#endif
-  else
-    return FFI_BAD_ABI;
-  return ffi_prep_cif_linux64_core (cif);
+#అయితే_ముగింపు
+  లేకపోతే
+    తిరిగి FFI_BAD_ABI;
+  తిరిగి ffi_prep_cif_linux64_core (cif);
 }
 
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_linux64_var (ffi_cif *cif,
-			  unsigned int nfixedargs,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  గుర్తులేని పూర్ణాంకం nfixedargs,
+			  గుర్తులేని పూర్ణాంకం ntotalargs MAYBE_వాడని)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  ఒకవేళ ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = nfixedargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#ఒకవేళ _CALL_ELF != 2
+  లేకపోతే ఒకవేళ (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -531,13 +531,13 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
       /* Translate to new abi value.  */
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
-#endif
-  else
-    return FFI_BAD_ABI;
-#if _CALL_ELF == 2
+#అయితే_ముగింపు
+  లేకపోతే
+    తిరిగి FFI_BAD_ABI;
+#ఒకవేళ _CALL_ELF == 2
   cif->flags |= FLAG_ARG_NEEDS_PSAVE;
-#endif
-  return ffi_prep_cif_linux64_core (cif);
+#అయితే_ముగింపు
+  తిరిగి ffi_prep_cif_linux64_core (cif);
 }
 
 
@@ -577,18 +577,18 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
 
 */
 
-void FFI_HIDDEN
-ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
+శూన్య FFI_HIDDEN
+ffi_prep_args64 (extended_cif *ecif, గుర్తులేని దీర్ఘ *స్థిరరాశి దొంతర)
 {
-  const unsigned long bytes = ecif->cif->bytes;
-  const unsigned long flags = ecif->cif->flags;
+  స్థిరరాశి గుర్తులేని దీర్ఘ బైట్లు = ecif->cif->బైట్లు;
+  స్థిరరాశి గుర్తులేని దీర్ఘ flags = ecif->cif->flags;
 
-  typedef union
+  రకనిర్వచనం సంఘం
   {
-    char *c;
-    unsigned long *ul;
-    float *f;
-    double *d;
+    అక్షరం *c;
+    గుర్తులేని దీర్ఘ *ul;
+    దశాంశం *f;
+    ద్విగుణ *d;
     float128 *f128;
     size_t p;
   } valp;
@@ -598,554 +598,554 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 
   /* 'next_arg' points at the space for gpr3, and grows upwards as
      we use GPR registers, then continues at rest.  */
-  valp gpr_base;
-  valp gpr_end;
+  valp gpr_పునాది;
+  valp gpr_చివర;
   valp rest;
-  valp next_arg;
+  valp తదుపరి_arg;
 
   /* 'fpr_base' points at the space for f1, and grows upwards as
      we use FPR registers.  */
-  valp fpr_base;
-  unsigned int fparg_count;
+  valp fpr_పునాది;
+  గుర్తులేని పూర్ణాంకం fparg_లెక్క;
 
   /* 'vec_base' points at the space for v2, and grows upwards as
      we use vector registers.  */
-  valp vec_base;
-  unsigned int vecarg_count;
+  valp vec_పునాది;
+  గుర్తులేని పూర్ణాంకం vecarg_లెక్క;
 
-  unsigned int i, words, nargs, nfixedargs;
+  గుర్తులేని పూర్ణాంకం i, పదాలు, nargs, nfixedargs;
   ffi_type **ptr;
-  double double_tmp;
-  union
+  ద్విగుణ double_tmp;
+  సంఘం
   {
-    void **v;
-    char **c;
-    signed char **sc;
-    unsigned char **uc;
-    signed short **ss;
-    unsigned short **us;
-    signed int **si;
-    unsigned int **ui;
-    unsigned long **ul;
-    float **f;
-    double **d;
+    శూన్య **v;
+    అక్షరం **c;
+    గుర్తుగల అక్షరం **sc;
+    గుర్తులేని అక్షరం **uc;
+    గుర్తుగల పొట్టి **ss;
+    గుర్తులేని పొట్టి **us;
+    గుర్తుగల పూర్ణాంకం **si;
+    గుర్తులేని పూర్ణాంకం **ui;
+    గుర్తులేని దీర్ఘ **ul;
+    దశాంశం **f;
+    ద్విగుణ **d;
     float128 **f128;
   } p_argv;
-  unsigned long gprvalue;
-  unsigned long align;
+  గుర్తులేని దీర్ఘ gprvalue;
+  గుర్తులేని దీర్ఘ align;
 
-  stacktop.c = (char *) stack + bytes;
-  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - NUM_GPR_ARG_REGISTERS64;
-  gpr_end.ul = gpr_base.ul + NUM_GPR_ARG_REGISTERS64;
-#if _CALL_ELF == 2
-  rest.ul = stack + 4 + NUM_GPR_ARG_REGISTERS64;
-#else
-  rest.ul = stack + 6 + NUM_GPR_ARG_REGISTERS64;
-#endif
-  fpr_base.d = gpr_base.d - NUM_FPR_ARG_REGISTERS64;
-  fparg_count = 0;
+  stacktop.c = (అక్షరం *) దొంతర + బైట్లు;
+  gpr_పునాది.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - అంకె_GPR_ARG_REGISTERS64;
+  gpr_చివర.ul = gpr_పునాది.ul + అంకె_GPR_ARG_REGISTERS64;
+#ఒకవేళ _CALL_ELF == 2
+  rest.ul = దొంతర + 4 + అంకె_GPR_ARG_REGISTERS64;
+#లేకపోతే
+  rest.ul = దొంతర + 6 + అంకె_GPR_ARG_REGISTERS64;
+#అయితే_ముగింపు
+  fpr_పునాది.d = gpr_పునాది.d - అంకె_FPR_ARG_REGISTERS64;
+  fparg_లెక్క = 0;
   /* Place the vector args below the FPRs, if used, else the GPRs. */
-  if (ecif->cif->flags & FLAG_FP_ARGUMENTS)
-    vec_base.p = fpr_base.p & ~0xF;
-  else
-    vec_base.p = gpr_base.p;
-  vec_base.f128 -= NUM_VEC_ARG_REGISTERS64;
-  vecarg_count = 0;
-  next_arg.ul = gpr_base.ul;
+  ఒకవేళ (ecif->cif->flags & FLAG_FP_ARGUMENTS)
+    vec_పునాది.p = fpr_పునాది.p & ~0xF;
+  లేకపోతే
+    vec_పునాది.p = gpr_పునాది.p;
+  vec_పునాది.f128 -= అంకె_VEC_ARG_REGISTERS64;
+  vecarg_లెక్క = 0;
+  తదుపరి_arg.ul = gpr_పునాది.ul;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT (((unsigned long) (char *) stack & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) stacktop.c & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) gpr_base.c & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) gpr_end.c  & 0xF) == 0);
-  FFI_ASSERT (((unsigned long) vec_base.c & 0xF) == 0);
-  FFI_ASSERT ((bytes & 0xF) == 0);
+  FFI_ASSERT (((గుర్తులేని దీర్ఘ) (అక్షరం *) దొంతర & 0xF) == 0);
+  FFI_ASSERT (((గుర్తులేని దీర్ఘ) stacktop.c & 0xF) == 0);
+  FFI_ASSERT (((గుర్తులేని దీర్ఘ) gpr_పునాది.c & 0xF) == 0);
+  FFI_ASSERT (((గుర్తులేని దీర్ఘ) gpr_చివర.c  & 0xF) == 0);
+  FFI_ASSERT (((గుర్తులేని దీర్ఘ) vec_పునాది.c & 0xF) == 0);
+  FFI_ASSERT ((బైట్లు & 0xF) == 0);
 
   /* Deal with return values that are actually pass-by-reference.  */
-  if (flags & FLAG_RETVAL_REFERENCE)
-    *next_arg.ul++ = (unsigned long) (char *) ecif->rvalue;
+  ఒకవేళ (flags & FLAG_RETVAL_REFERENCE)
+    *తదుపరి_arg.ul++ = (గుర్తులేని దీర్ఘ) (అక్షరం *) ecif->rvalue;
 
   /* Now for the arguments.  */
   p_argv.v = ecif->avalue;
   nargs = ecif->cif->nargs;
-#if _CALL_ELF != 2
-  nfixedargs = (unsigned) -1;
-  if ((flags & FLAG_COMPAT) == 0)
-#endif
+#ఒకవేళ _CALL_ELF != 2
+  nfixedargs = (గుర్తులేని) -1;
+  ఒకవేళ ((flags & FLAG_COMPAT) == 0)
+#అయితే_ముగింపు
     nfixedargs = ecif->cif->nfixedargs;
-  for (ptr = ecif->cif->arg_types, i = 0;
+  కొరకు (ptr = ecif->cif->arg_types, i = 0;
        i < nargs;
        i++, ptr++, p_argv.v++)
     {
-      unsigned int elt, elnum;
+      గుర్తులేని పూర్ణాంకం elt, elnum;
 
-      switch ((*ptr)->type)
+      ఎంపిక ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	స్థితి FFI_TYPE_LONGDOUBLE:
+          ఒకవేళ ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              next_arg.p = FFI_ALIGN (next_arg.p, 16);
-              if (next_arg.ul == gpr_end.ul)
-                next_arg.ul = rest.ul;
-              if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		memcpy (vec_base.f128++, *p_argv.f128, sizeof (float128));
-              else
-		memcpy (next_arg.f128, *p_argv.f128, sizeof (float128));
-              if (++next_arg.f128 == gpr_end.f128)
-                next_arg.f128 = rest.f128;
-              vecarg_count++;
+              తదుపరి_arg.p = FFI_ALIGN (తదుపరి_arg.p, 16);
+              ఒకవేళ (తదుపరి_arg.ul == gpr_చివర.ul)
+                తదుపరి_arg.ul = rest.ul;
+              ఒకవేళ (vecarg_లెక్క < అంకె_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		జ్ఞాపకం_నకలు (vec_పునాది.f128++, *p_argv.f128, పరిమాణం (float128));
+              లేకపోతే
+		జ్ఞాపకం_నకలు (తదుపరి_arg.f128, *p_argv.f128, పరిమాణం (float128));
+              ఒకవేళ (++తదుపరి_arg.f128 == gpr_చివర.f128)
+                తదుపరి_arg.f128 = rest.f128;
+              vecarg_లెక్క++;
               FFI_ASSERT (__LDBL_MANT_DIG__ == 113);
               FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-              break;
+              ఆపు;
             }
-	  if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  ఒకవేళ ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
 	      double_tmp = (*p_argv.d)[0];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
-		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
-		    *next_arg.d = double_tmp;
+		  *fpr_పునాది.d++ = double_tmp;
+# ఒకవేళ _CALL_ELF != 2
+		  ఒకవేళ ((flags & FLAG_COMPAT) != 0)
+		    *తదుపరి_arg.d = double_tmp;
 # endif
 		}
-	      else
-		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
-		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      లేకపోతే
+		*తదుపరి_arg.d = double_tmp;
+	      ఒకవేళ (++తదుపరి_arg.ul == gpr_చివర.ul)
+		తదుపరి_arg.ul = rest.ul;
+	      fparg_లెక్క++;
 	      double_tmp = (*p_argv.d)[1];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
-		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
-		    *next_arg.d = double_tmp;
+		  *fpr_పునాది.d++ = double_tmp;
+# ఒకవేళ _CALL_ELF != 2
+		  ఒకవేళ ((flags & FLAG_COMPAT) != 0)
+		    *తదుపరి_arg.d = double_tmp;
 # endif
 		}
-	      else
-		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
-		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      లేకపోతే
+		*తదుపరి_arg.d = double_tmp;
+	      ఒకవేళ (++తదుపరి_arg.ul == gpr_చివర.ul)
+		తదుపరి_arg.ul = rest.ul;
+	      fparg_లెక్క++;
 	      FFI_ASSERT (__LDBL_MANT_DIG__ == 106);
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      ఆపు;
 	    }
 	  /* Fall through.  */
-#endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+#అయితే_ముగింపు
+	స్థితి FFI_TYPE_DOUBLE:
+#ఒకవేళ _CALL_ELF != 2
 	do_double:
-#endif
+#అయితే_ముగింపు
 	  double_tmp = **p_argv.d;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
-	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
-		*next_arg.d = double_tmp;
-#endif
+	      *fpr_పునాది.d++ = double_tmp;
+#ఒకవేళ _CALL_ELF != 2
+	      ఒకవేళ ((flags & FLAG_COMPAT) != 0)
+		*తదుపరి_arg.d = double_tmp;
+#అయితే_ముగింపు
 	    }
-	  else
-	    *next_arg.d = double_tmp;
-	  if (++next_arg.ul == gpr_end.ul)
-	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  లేకపోతే
+	    *తదుపరి_arg.d = double_tmp;
+	  ఒకవేళ (++తదుపరి_arg.ul == gpr_చివర.ul)
+	    తదుపరి_arg.ul = rest.ul;
+	  fparg_లెక్క++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	స్థితి FFI_TYPE_FLOAT:
+#ఒకవేళ _CALL_ELF != 2
 	do_float:
-#endif
+#అయితే_ముగింపు
 	  double_tmp = **p_argv.f;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
-	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
+	      *fpr_పునాది.d++ = double_tmp;
+#ఒకవేళ _CALL_ELF != 2
+	      ఒకవేళ ((flags & FLAG_COMPAT) != 0)
 		{
 # ifndef __LITTLE_ENDIAN__
-		  next_arg.f[1] = (float) double_tmp;
-# else
-		  next_arg.f[0] = (float) double_tmp;
+		  తదుపరి_arg.f[1] = (దశాంశం) double_tmp;
+# లేకపోతే
+		  తదుపరి_arg.f[0] = (దశాంశం) double_tmp;
 # endif
 		}
-#endif
+#అయితే_ముగింపు
 	    }
-	  else
+	  లేకపోతే
 	    {
 # ifndef __LITTLE_ENDIAN__
-	      next_arg.f[1] = (float) double_tmp;
-# else
-	      next_arg.f[0] = (float) double_tmp;
+	      తదుపరి_arg.f[1] = (దశాంశం) double_tmp;
+# లేకపోతే
+	      తదుపరి_arg.f[0] = (దశాంశం) double_tmp;
 # endif
 	    }
-	  if (++next_arg.ul == gpr_end.ul)
-	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  ఒకవేళ (++తదుపరి_arg.ul == gpr_చివర.ul)
+	    తదుపరి_arg.ul = rest.ul;
+	  fparg_లెక్క++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  ఆపు;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+	స్థితి FFI_TYPE_COMPLEX:
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	    {
 	      /* IEEE-128 _Complex long double: each half goes in its own
 		 vector register (or the parameter save area), 16-byte
 		 aligned, consuming two GPR shadow doublewords.  */
 	      float128 *cval = (float128 *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      గుర్తులేని పూర్ణాంకం j;
+	      కొరకు (j = 0; j < 2; j++)
 		{
-		  next_arg.p = FFI_ALIGN (next_arg.p, 16);
-		  if (next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		    memcpy (vec_base.f128++, cval + j, sizeof (float128));
-		  else
-		    memcpy (next_arg.f128, cval + j, sizeof (float128));
-		  if (++next_arg.f128 == gpr_end.f128)
-		    next_arg.f128 = rest.f128;
-		  vecarg_count++;
+		  తదుపరి_arg.p = FFI_ALIGN (తదుపరి_arg.p, 16);
+		  ఒకవేళ (తదుపరి_arg.ul == gpr_చివర.ul)
+		    తదుపరి_arg.ul = rest.ul;
+		  ఒకవేళ (vecarg_లెక్క < అంకె_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		    జ్ఞాపకం_నకలు (vec_పునాది.f128++, cval + j, పరిమాణం (float128));
+		  లేకపోతే
+		    జ్ఞాపకం_నకలు (తదుపరి_arg.f128, cval + j, పరిమాణం (float128));
+		  ఒకవేళ (++తదుపరి_arg.f128 == gpr_చివర.f128)
+		    తదుపరి_arg.f128 = rest.f128;
+		  vecarg_లెక్క++;
 		}
 	      FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-	      break;
+	      ఆపు;
 	    }
-	  if (elt == FFI_TYPE_LONGDOUBLE)
+	  ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE)
 	    {
 	      /* IBM-128 _Complex long double: four doubles (real hi/lo,
 		 imag hi/lo) into consecutive FPRs, each with a GPR shadow
 		 doubleword.  */
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 4; j++)
+	      ద్విగుణ *cval = (ద్విగుణ *) *p_argv.v;
+	      గుర్తులేని పూర్ణాంకం j;
+	      కొరకు (j = 0; j < 4; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		    *fpr_base.d++ = double_tmp;
-		  else
-		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    *fpr_పునాది.d++ = double_tmp;
+		  లేకపోతే
+		    *తదుపరి_arg.d = double_tmp;
+		  ఒకవేళ (++తదుపరి_arg.ul == gpr_చివర.ul)
+		    తదుపరి_arg.ul = rest.ul;
+		  fparg_లెక్క++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      ఆపు;
 	    }
-#endif
-	  if (elt == FFI_TYPE_FLOAT)
+#అయితే_ముగింపు
+	  ఒకవేళ (elt == FFI_TYPE_FLOAT)
 	    {
-	      float *cval = (float *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      దశాంశం *cval = (దశాంశం *) *p_argv.v;
+	      గుర్తులేని పూర్ణాంకం j;
+	      కొరకు (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		    *fpr_base.d++ = double_tmp;
-		  else
+		  ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    *fpr_పునాది.d++ = double_tmp;
+		  లేకపోతే
 		    {
 # ifndef __LITTLE_ENDIAN__
-		      next_arg.f[1] = (float) double_tmp;
-# else
-		      next_arg.f[0] = (float) double_tmp;
+		      తదుపరి_arg.f[1] = (దశాంశం) double_tmp;
+# లేకపోతే
+		      తదుపరి_arg.f[0] = (దశాంశం) double_tmp;
 # endif
 		    }
-		  if (++next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  ఒకవేళ (++తదుపరి_arg.ul == gpr_చివర.ul)
+		    తదుపరి_arg.ul = rest.ul;
+		  fparg_లెక్క++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else if (elt == FFI_TYPE_DOUBLE)
+	  లేకపోతే ఒకవేళ (elt == FFI_TYPE_DOUBLE)
 	    {
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      ద్విగుణ *cval = (ద్విగుణ *) *p_argv.v;
+	      గుర్తులేని పూర్ణాంకం j;
+	      కొరకు (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		    *fpr_base.d++ = double_tmp;
-		  else
-		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    *fpr_పునాది.d++ = double_tmp;
+		  లేకపోతే
+		    *తదుపరి_arg.d = double_tmp;
+		  ఒకవేళ (++తదుపరి_arg.ul == gpr_చివర.ul)
+		    తదుపరి_arg.ul = rest.ul;
+		  fparg_లెక్క++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else
+	  లేకపోతే
 	    {
 	      /* Integer-typed _Complex: each half consumes one GPR slot,
 		 sign-/zero-extended to a doubleword.  */
-	      char *cval = (char *) *p_argv.v;
-	      size_t hsize = (*ptr)->elements[0]->size;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      అక్షరం *cval = (అక్షరం *) *p_argv.v;
+	      size_t hsize = (*ptr)->elements[0]->కొలత;
+	      గుర్తులేని పూర్ణాంకం j;
+	      కొరకు (j = 0; j < 2; j++)
 		{
-		  char *half = cval + j * hsize;
-		  unsigned long gprvalue;
-		  switch (elt)
+		  అక్షరం *half = cval + j * hsize;
+		  గుర్తులేని దీర్ఘ gprvalue;
+		  ఎంపిక (elt)
 		    {
-		    case FFI_TYPE_UINT8:
-		      gprvalue = *(unsigned char *) half; break;
-		    case FFI_TYPE_SINT8:
-		      gprvalue = (unsigned long) (long) *(signed char *) half;
-		      break;
-		    case FFI_TYPE_UINT16:
-		      gprvalue = *(unsigned short *) half; break;
-		    case FFI_TYPE_SINT16:
-		      gprvalue = (unsigned long) (long) *(signed short *) half;
-		      break;
-		    case FFI_TYPE_UINT32:
-		      gprvalue = *(unsigned int *) half; break;
-		    case FFI_TYPE_INT:
-		    case FFI_TYPE_SINT32:
-		      gprvalue = (unsigned long) (long) *(signed int *) half;
-		      break;
-		    case FFI_TYPE_SINT64:
-		    case FFI_TYPE_UINT64:
-		    case FFI_TYPE_POINTER:
-		    default:
-		      gprvalue = *(unsigned long *) half; break;
+		    స్థితి FFI_TYPE_UINT8:
+		      gprvalue = *(గుర్తులేని అక్షరం *) half; ఆపు;
+		    స్థితి FFI_TYPE_SINT8:
+		      gprvalue = (గుర్తులేని దీర్ఘ) (దీర్ఘ) *(గుర్తుగల అక్షరం *) half;
+		      ఆపు;
+		    స్థితి FFI_TYPE_UINT16:
+		      gprvalue = *(గుర్తులేని పొట్టి *) half; ఆపు;
+		    స్థితి FFI_TYPE_SINT16:
+		      gprvalue = (గుర్తులేని దీర్ఘ) (దీర్ఘ) *(గుర్తుగల పొట్టి *) half;
+		      ఆపు;
+		    స్థితి FFI_TYPE_UINT32:
+		      gprvalue = *(గుర్తులేని పూర్ణాంకం *) half; ఆపు;
+		    స్థితి FFI_TYPE_INT:
+		    స్థితి FFI_TYPE_SINT32:
+		      gprvalue = (గుర్తులేని దీర్ఘ) (దీర్ఘ) *(గుర్తుగల పూర్ణాంకం *) half;
+		      ఆపు;
+		    స్థితి FFI_TYPE_SINT64:
+		    స్థితి FFI_TYPE_UINT64:
+		    స్థితి FFI_TYPE_సూచిక:
+		    అప్రమేయ:
+		      gprvalue = *(గుర్తులేని దీర్ఘ *) half; ఆపు;
 		    }
-		  *next_arg.ul++ = gprvalue;
-		  if (next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
+		  *తదుపరి_arg.ul++ = gprvalue;
+		  ఒకవేళ (తదుపరి_arg.ul == gpr_చివర.ul)
+		    తదుపరి_arg.ul = rest.ul;
 		}
 	    }
-	  break;
-#endif
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_STRUCT:
-	  if ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	స్థితి FFI_TYPE_STRUCT:
+	  ఒకవేళ ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      ఒకవేళ (align > 16)
 		align = 16;
-	      if (align > 1)
+	      ఒకవేళ (align > 1)
                 {
-                  next_arg.p = FFI_ALIGN (next_arg.p, align);
-                  if (next_arg.ul == gpr_end.ul)
-                    next_arg.ul = rest.ul;
+                  తదుపరి_arg.p = FFI_ALIGN (తదుపరి_arg.p, align);
+                  ఒకవేళ (తదుపరి_arg.ul == gpr_చివర.ul)
+                    తదుపరి_arg.ul = rest.ul;
                 }
 	    }
 	  elt = discover_homogeneous_aggregate (ecif->cif->abi, *ptr, &elnum);
-	  if (elt)
+	  ఒకవేళ (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
-		float *f;
-		double *d;
+#ఒకవేళ _CALL_ELF == 2
+	      సంఘం {
+		శూన్య *v;
+		దశాంశం *f;
+		ద్విగుణ *d;
 		float128 *f128;
 	      } arg;
 
 	      arg.v = *p_argv.v;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE &&
                   (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  చేయి
                     {
-                      if (vecarg_count < NUM_VEC_ARG_REGISTERS64
+                      ఒకవేళ (vecarg_లెక్క < అంకె_VEC_ARG_REGISTERS64
                           && i < nfixedargs)
-		        memcpy (vec_base.f128++, arg.f128++, sizeof (float128));
-                      else
-		        memcpy (next_arg.f128, arg.f128++, sizeof (float128));
-                      if (++next_arg.f128 == gpr_end.f128)
-                        next_arg.f128 = rest.f128;
-                      vecarg_count++;
+		        జ్ఞాపకం_నకలు (vec_పునాది.f128++, arg.f128++, పరిమాణం (float128));
+                      లేకపోతే
+		        జ్ఞాపకం_నకలు (తదుపరి_arg.f128, arg.f128++, పరిమాణం (float128));
+                      ఒకవేళ (++తదుపరి_arg.f128 == gpr_చివర.f128)
+                        తదుపరి_arg.f128 = rest.f128;
+                      vecarg_లెక్క++;
                     }
-                  while (--elnum != 0);
+                  అయితే (--elnum != 0);
                 }
-              else
-#endif
-	      if (elt == FFI_TYPE_FLOAT)
+              లేకపోతే
+#అయితే_ముగింపు
+	      ఒకవేళ (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  చేయి
 		    {
 		      double_tmp = *arg.f++;
-		      if (fparg_count < NUM_FPR_ARG_REGISTERS64
+		      ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64
 			  && i < nfixedargs)
-			*fpr_base.d++ = double_tmp;
-		      else
-			*next_arg.f = (float) double_tmp;
-		      if (++next_arg.f == gpr_end.f)
-			next_arg.f = rest.f;
-		      fparg_count++;
+			*fpr_పునాది.d++ = double_tmp;
+		      లేకపోతే
+			*తదుపరి_arg.f = (దశాంశం) double_tmp;
+		      ఒకవేళ (++తదుపరి_arg.f == gpr_చివర.f)
+			తదుపరి_arg.f = rest.f;
+		      fparg_లెక్క++;
 		    }
-		  while (--elnum != 0);
-		  if ((next_arg.p & 7) != 0)
-                    if (++next_arg.f == gpr_end.f)
-                      next_arg.f = rest.f;
+		  అయితే (--elnum != 0);
+		  ఒకవేళ ((తదుపరి_arg.p & 7) != 0)
+                    ఒకవేళ (++తదుపరి_arg.f == gpr_చివర.f)
+                      తదుపరి_arg.f = rest.f;
 		}
-	      else
-		do
+	      లేకపోతే
+		చేయి
 		  {
 		    double_tmp = *arg.d++;
-		    if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
-		      *fpr_base.d++ = double_tmp;
-		    else
-		      *next_arg.d = double_tmp;
-		    if (++next_arg.d == gpr_end.d)
-		      next_arg.d = rest.d;
-		    fparg_count++;
+		    ఒకవేళ (fparg_లెక్క < అంకె_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		      *fpr_పునాది.d++ = double_tmp;
+		    లేకపోతే
+		      *తదుపరి_arg.d = double_tmp;
+		    ఒకవేళ (++తదుపరి_arg.d == gpr_చివర.d)
+		      తదుపరి_arg.d = rest.d;
+		    fparg_లెక్క++;
 		  }
-		while (--elnum != 0);
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
-#endif
+		అయితే (--elnum != 0);
+#లేకపోతే
+	      ఒకవేళ (elt == FFI_TYPE_FLOAT)
+		వెళ్ళు do_float;
+	      లేకపోతే
+		వెళ్ళు do_double;
+#అయితే_ముగింపు
 	    }
-	  else
+	  లేకపోతే
 	    {
-	      words = ((*ptr)->size + 7) / 8;
-	      if (next_arg.ul >= gpr_base.ul && next_arg.ul + words > gpr_end.ul)
+	      పదాలు = ((*ptr)->కొలత + 7) / 8;
+	      ఒకవేళ (తదుపరి_arg.ul >= gpr_పునాది.ul && తదుపరి_arg.ul + పదాలు > gpr_చివర.ul)
 		{
-		  size_t first = gpr_end.c - next_arg.c;
-		  memcpy (next_arg.c, *p_argv.c, first);
-		  memcpy (rest.c, *p_argv.c + first, (*ptr)->size - first);
-		  next_arg.c = rest.c + words * 8 - first;
+		  size_t మొదటి = gpr_చివర.c - తదుపరి_arg.c;
+		  జ్ఞాపకం_నకలు (తదుపరి_arg.c, *p_argv.c, మొదటి);
+		  జ్ఞాపకం_నకలు (rest.c, *p_argv.c + మొదటి, (*ptr)->కొలత - మొదటి);
+		  తదుపరి_arg.c = rest.c + పదాలు * 8 - మొదటి;
 		}
-	      else
+	      లేకపోతే
 		{
-		  char *where = next_arg.c;
+		  అక్షరం *where = తదుపరి_arg.c;
 
-#ifndef __LITTLE_ENDIAN__
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
 		  /* Structures with size less than eight bytes are passed
 		     left-padded.  */
-		  if ((*ptr)->size < 8)
-		    where += 8 - (*ptr)->size;
-#endif
-		  memcpy (where, *p_argv.c, (*ptr)->size);
-		  next_arg.ul += words;
-		  if (next_arg.ul == gpr_end.ul)
-		    next_arg.ul = rest.ul;
+		  ఒకవేళ ((*ptr)->కొలత < 8)
+		    where += 8 - (*ptr)->కొలత;
+#అయితే_ముగింపు
+		  జ్ఞాపకం_నకలు (where, *p_argv.c, (*ptr)->కొలత);
+		  తదుపరి_arg.ul += పదాలు;
+		  ఒకవేళ (తదుపరి_arg.ul == gpr_చివర.ul)
+		    తదుపరి_arg.ul = rest.ul;
 		}
 	    }
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_UINT8:
 	  gprvalue = **p_argv.uc;
-	  goto putgpr;
-	case FFI_TYPE_SINT8:
+	  వెళ్ళు putgpr;
+	స్థితి FFI_TYPE_SINT8:
 	  gprvalue = **p_argv.sc;
-	  goto putgpr;
-	case FFI_TYPE_UINT16:
+	  వెళ్ళు putgpr;
+	స్థితి FFI_TYPE_UINT16:
 	  gprvalue = **p_argv.us;
-	  goto putgpr;
-	case FFI_TYPE_SINT16:
+	  వెళ్ళు putgpr;
+	స్థితి FFI_TYPE_SINT16:
 	  gprvalue = **p_argv.ss;
-	  goto putgpr;
-	case FFI_TYPE_UINT32:
+	  వెళ్ళు putgpr;
+	స్థితి FFI_TYPE_UINT32:
 	  gprvalue = **p_argv.ui;
-	  goto putgpr;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	  వెళ్ళు putgpr;
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_SINT32:
 	  gprvalue = **p_argv.si;
-	  goto putgpr;
+	  వెళ్ళు putgpr;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_సూచిక:
 	  gprvalue = **p_argv.ul;
 	putgpr:
-	  *next_arg.ul++ = gprvalue;
-	  if (next_arg.ul == gpr_end.ul)
-	    next_arg.ul = rest.ul;
-	  break;
+	  *తదుపరి_arg.ul++ = gprvalue;
+	  ఒకవేళ (తదుపరి_arg.ul == gpr_చివర.ul)
+	    తదుపరి_arg.ul = rest.ul;
+	  ఆపు;
 	}
     }
 
   FFI_ASSERT (flags & FLAG_4_GPR_ARGUMENTS
-	      || (next_arg.ul >= gpr_base.ul
-		  && next_arg.ul <= gpr_base.ul + 4));
+	      || (తదుపరి_arg.ul >= gpr_పునాది.ul
+		  && తదుపరి_arg.ul <= gpr_పునాది.ul + 4));
 }
 
 
-#if _CALL_ELF == 2
-#define MIN_CACHE_LINE_SIZE 8
+#ఒకవేళ _CALL_ELF == 2
+#నిర్వచించు MIN_CACHE_పంక్తి_కొలత 8
 
-static void
-flush_icache (char *wraddr, char *xaddr, int size)
+స్థిర శూన్య
+flush_icache (అక్షరం *wraddr, అక్షరం *xaddr, పూర్ణాంకం కొలత)
 {
-  int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
-    __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
+  పూర్ణాంకం i;
+  కొరకు (i = 0; i < కొలత; i += MIN_CACHE_పంక్తి_కొలత)
+    __asm__ అస్థిర ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
-  __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
-		    : : "r"(xaddr + size - 1), "r"(wraddr + size - 1)
+  __asm__ అస్థిర ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
+		    : : "r"(xaddr + కొలత - 1), "r"(wraddr + కొలత - 1)
 		    : "memory");
 }
-#endif
+#అయితే_ముగింపు
 
 
-ffi_status FFI_HIDDEN
-ffi_prep_closure_loc_linux64 (ffi_closure *closure,
+ffi_స్థితి FFI_HIDDEN
+ffi_prep_సంవృతం_loc_linux64 (ffi_సంవృతం *సంవృతం,
 			      ffi_cif *cif,
-			      void (*fun) (ffi_cif *, void *, void **, void *),
-			      void *user_data,
-			      void *codeloc)
+			      శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+			      శూన్య *user_దత్తాంశం,
+			      శూన్య *codeloc)
 {
-  if (cif->abi < FFI_LINUX || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi < FFI_LINUX || cif->abi >= FFI_చివరి_ABI)
+    తిరిగి FFI_BAD_ABI;
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present(closure))
+#నిర్వచితమైతే FFI_EXEC_STATIC_TRAMP
+  ఒకవేళ (ffi_tramp_is_present(సంవృతం))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_LINUX64;
-      ffi_tramp_set_parms (closure->ftramp, dest, closure);
+      శూన్య (*dest)(శూన్య) = ffi_సంవృతం_LINUX64;
+      ffi_tramp_సమితి_parms (సంవృతం->ftramp, dest, సంవృతం);
     }
-  else
-#endif
+  లేకపోతే
+#అయితే_ముగింపు
     {
-#if _CALL_ELF == 2
-      unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+#ఒకవేళ _CALL_ELF == 2
+      గుర్తులేని పూర్ణాంకం *tramp = (గుర్తులేని పూర్ణాంకం *) &సంవృతం->tramp[0];
       tramp[0] = 0xe96c0018;	/* 0:	ld	11,2f-0b(12)	*/
       tramp[1] = 0xe98c0010;	/*	ld	12,1f-0b(12)	*/
       tramp[2] = 0x7d8903a6;	/*	mtctr	12		*/
       tramp[3] = 0x4e800420;	/*	bctr			*/
 				/* 1:	.quad	function_addr	*/
 				/* 2:	.quad	context		*/
-      *(void **) &tramp[4] = (void *) ffi_closure_LINUX64;
-      *(void **) &tramp[6] = codeloc;
-      flush_icache ((char *) tramp, (char *) codeloc, 4 * 4);
-#else
+      *(శూన్య **) &tramp[4] = (శూన్య *) ffi_సంవృతం_LINUX64;
+      *(శూన్య **) &tramp[6] = codeloc;
+      flush_icache ((అక్షరం *) tramp, (అక్షరం *) codeloc, 4 * 4);
+#లేకపోతే
       /* Copy function address and TOC from ffi_closure_LINUX64 OPD.  */
-      void **tramp = (void **) &closure->tramp[0];
-      memcpy (&tramp[0], (void **) ffi_closure_LINUX64, sizeof (void *));
+      శూన్య **tramp = (శూన్య **) &సంవృతం->tramp[0];
+      జ్ఞాపకం_నకలు (&tramp[0], (శూన్య **) ffi_సంవృతం_LINUX64, పరిమాణం (శూన్య *));
       tramp[1] = codeloc;
-      memcpy (&tramp[2], (void **) ffi_closure_LINUX64 + 1, sizeof (void *));
-#endif
+      జ్ఞాపకం_నకలు (&tramp[2], (శూన్య **) ffi_సంవృతం_LINUX64 + 1, పరిమాణం (శూన్య *));
+#అయితే_ముగింపు
     }
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
 
-int FFI_HIDDEN
-ffi_closure_helper_LINUX64 (ffi_cif *cif,
-			    void (*fun) (ffi_cif *, void *, void **, void *),
-			    void *user_data,
-			    void *rvalue,
-			    unsigned long *pst,
+పూర్ణాంకం FFI_HIDDEN
+ffi_సంవృతం_helper_LINUX64 (ffi_cif *cif,
+			    శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+			    శూన్య *user_దత్తాంశం,
+			    శూన్య *rvalue,
+			    గుర్తులేని దీర్ఘ *pst,
                             ffi_dblfl *pfr,
                             float128 *pvec)
 {
@@ -1155,435 +1155,435 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
   /* pfr is the pointer to where f1-f13 are stored in ffi_closure_LINUX64 */
   /* pvec is the pointer to where v2-v13 are stored in ffi_closure_LINUX64 */
 
-  void **avalue;
+  శూన్య **avalue;
   ffi_type **arg_types;
-  unsigned long i, avn, nfixedargs;
-  ffi_dblfl *end_pfr = pfr + NUM_FPR_ARG_REGISTERS64;
-  float128 *end_pvec = pvec + NUM_VEC_ARG_REGISTERS64;
-  unsigned long align;
+  గుర్తులేని దీర్ఘ i, avn, nfixedargs;
+  ffi_dblfl *చివర_pfr = pfr + అంకె_FPR_ARG_REGISTERS64;
+  float128 *చివర_pvec = pvec + అంకె_VEC_ARG_REGISTERS64;
+  గుర్తులేని దీర్ఘ align;
 
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * పరిమాణం (శూన్య *));
 
   /* Copy the caller's structure return value address so that the
      closure returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  ఒకవేళ (cif->rtype->type == FFI_TYPE_STRUCT
       && (cif->flags & FLAG_RETURNS_SMST) == 0)
     {
-      rvalue = (void *) *pst;
+      rvalue = (శూన్య *) *pst;
       pst++;
     }
 
   i = 0;
   avn = cif->nargs;
-#if _CALL_ELF != 2
-  nfixedargs = (unsigned) -1;
-  if ((cif->flags & FLAG_COMPAT) == 0)
-#endif
+#ఒకవేళ _CALL_ELF != 2
+  nfixedargs = (గుర్తులేని) -1;
+  ఒకవేళ ((cif->flags & FLAG_COMPAT) == 0)
+#అయితే_ముగింపు
     nfixedargs = cif->nfixedargs;
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn)
+  అయితే (i < avn)
     {
-      unsigned int elt, elnum;
+      గుర్తులేని పూర్ణాంకం elt, elnum;
 
-      switch (arg_types[i]->type)
+      ఎంపిక (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-#ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 7;
+	స్థితి FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_UINT8:
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
+	  avalue[i] = (అక్షరం *) pst + 7;
 	  pst++;
-	  break;
-#endif
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-#ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 6;
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT16:
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
+	  avalue[i] = (అక్షరం *) pst + 6;
 	  pst++;
-	  break;
-#endif
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-#ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 4;
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT32:
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
+	  avalue[i] = (అక్షరం *) pst + 4;
 	  pst++;
-	  break;
-#endif
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_సూచిక:
 	  avalue[i] = pst;
 	  pst++;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	స్థితి FFI_TYPE_STRUCT:
+	  ఒకవేళ ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = arg_types[i]->alignment;
-	      if (align > 16)
+	      ఒకవేళ (align > 16)
 		align = 16;
-	      if (align > 1)
-		pst = (unsigned long *) FFI_ALIGN ((size_t) pst, align);
+	      ఒకవేళ (align > 1)
+		pst = (గుర్తులేని దీర్ఘ *) FFI_ALIGN ((size_t) pst, align);
 	    }
 	  elt = discover_homogeneous_aggregate (cif->abi, arg_types[i], &elnum);
-	  if (elt)
+	  ఒకవేళ (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
-		unsigned long *ul;
-		float *f;
-		double *d;
+#ఒకవేళ _CALL_ELF == 2
+	      సంఘం {
+		శూన్య *v;
+		గుర్తులేని దీర్ఘ *ul;
+		దశాంశం *f;
+		ద్విగుణ *d;
 		float128 *f128;
 		size_t p;
-	      } to, from;
+	      } గమ్యం, from;
 
 	      /* Repackage the aggregate from its parts.  The
 		 aggregate size is not greater than the space taken by
 		 the registers so store back to the register/parameter
 		 save arrays.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  if (pvec + elnum <= end_pvec)
-                    to.v = pvec;
-                  else
-                    to.v = pst;
+                  ఒకవేళ (pvec + elnum <= చివర_pvec)
+                    గమ్యం.v = pvec;
+                  లేకపోతే
+                    గమ్యం.v = pst;
                 }
-              else
-#endif
-	      if (pfr + elnum <= end_pfr)
-		to.v = pfr;
-	      else
-		to.v = pst;
+              లేకపోతే
+#అయితే_ముగింపు
+	      ఒకవేళ (pfr + elnum <= చివర_pfr)
+		గమ్యం.v = pfr;
+	      లేకపోతే
+		గమ్యం.v = pst;
 
-	      avalue[i] = to.v;
+	      avalue[i] = గమ్యం.v;
 	      from.ul = pst;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  చేయి
                     {
-                      if (pvec < end_pvec && i < nfixedargs)
-		        memcpy (to.f128, pvec++, sizeof (float128));
-                      else
-		        memcpy (to.f128, from.f128, sizeof (float128));
-                      to.f128++;
+                      ఒకవేళ (pvec < చివర_pvec && i < nfixedargs)
+		        జ్ఞాపకం_నకలు (గమ్యం.f128, pvec++, పరిమాణం (float128));
+                      లేకపోతే
+		        జ్ఞాపకం_నకలు (గమ్యం.f128, from.f128, పరిమాణం (float128));
+                      గమ్యం.f128++;
                       from.f128++;
                     }
-                  while (--elnum != 0);
+                  అయితే (--elnum != 0);
                 }
-              else
-#endif
-	      if (elt == FFI_TYPE_FLOAT)
+              లేకపోతే
+#అయితే_ముగింపు
+	      ఒకవేళ (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  చేయి
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 			{
-			  *to.f = (float) pfr->d;
+			  *గమ్యం.f = (దశాంశం) pfr->d;
 			  pfr++;
 			}
-		      else
-			*to.f = *from.f;
-		      to.f++;
+		      లేకపోతే
+			*గమ్యం.f = *from.f;
+		      గమ్యం.f++;
 		      from.f++;
 		    }
-		  while (--elnum != 0);
+		  అయితే (--elnum != 0);
 		}
-	      else
+	      లేకపోతే
 		{
-		  do
+		  చేయి
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 			{
-			  *to.d = pfr->d;
+			  *గమ్యం.d = pfr->d;
 			  pfr++;
 			}
-		      else
-			*to.d = *from.d;
-		      to.d++;
+		      లేకపోతే
+			*గమ్యం.d = *from.d;
+		      గమ్యం.d++;
 		      from.d++;
 		    }
-		  while (--elnum != 0);
+		  అయితే (--elnum != 0);
 		}
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
-#endif
+#లేకపోతే
+	      ఒకవేళ (elt == FFI_TYPE_FLOAT)
+		వెళ్ళు do_float;
+	      లేకపోతే
+		వెళ్ళు do_double;
+#అయితే_ముగింపు
 	    }
-	  else
+	  లేకపోతే
 	    {
-#ifndef __LITTLE_ENDIAN__
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
 	      /* Structures with size less than eight bytes are passed
 		 left-padded.  */
-	      if (arg_types[i]->size < 8)
-		avalue[i] = (char *) pst + 8 - arg_types[i]->size;
-	      else
-#endif
+	      ఒకవేళ (arg_types[i]->కొలత < 8)
+		avalue[i] = (అక్షరం *) pst + 8 - arg_types[i]->కొలత;
+	      లేకపోతే
+#అయితే_ముగింపు
 		avalue[i] = pst;
 	    }
-	  pst += (arg_types[i]->size + 7) / 8;
-	  break;
+	  pst += (arg_types[i]->కొలత + 7) / 8;
+	  ఆపు;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	స్థితి FFI_TYPE_LONGDOUBLE:
+          ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              if (((unsigned long) pst & 0xF) != 0)
+              ఒకవేళ (((గుర్తులేని దీర్ఘ) pst & 0xF) != 0)
                 ++pst;
-              if (pvec < end_pvec && i < nfixedargs)
+              ఒకవేళ (pvec < చివర_pvec && i < nfixedargs)
                 avalue[i] = pvec++;
-              else
+              లేకపోతే
                 avalue[i] = pst;
               pst += 2;
-              break;
+              ఆపు;
             }
-          else if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+          లేకపోతే ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      if (pfr + 1 < end_pfr && i + 1 < nfixedargs)
+	      ఒకవేళ (pfr + 1 < చివర_pfr && i + 1 < nfixedargs)
 		{
 		  avalue[i] = pfr;
 		  pfr += 2;
 		}
-	      else
+	      లేకపోతే
 		{
-		  if (pfr < end_pfr && i < nfixedargs)
+		  ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 		    {
 		      /* Passed partly in f13 and partly on the stack.
 			 Move it all to the stack.  */
-		      *pst = *(unsigned long *) pfr;
+		      *pst = *(గుర్తులేని దీర్ఘ *) pfr;
 		      pfr++;
 		    }
 		  avalue[i] = pst;
 		}
 	      pst += 2;
-	      break;
+	      ఆపు;
 	    }
 	  /* Fall through.  */
-#endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+#అయితే_ముగింపు
+	స్థితి FFI_TYPE_DOUBLE:
+#ఒకవేళ _CALL_ELF != 2
 	do_double:
-#endif
+#అయితే_ముగింపు
 	  /* On the outgoing stack all values are aligned to 8 */
 	  /* there are 13 64bit floating point registers */
 
-	  if (pfr < end_pfr && i < nfixedargs)
+	  ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 	    {
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  లేకపోతే
 	    avalue[i] = pst;
 	  pst++;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	స్థితి FFI_TYPE_FLOAT:
+#ఒకవేళ _CALL_ELF != 2
 	do_float:
-#endif
-	  if (pfr < end_pfr && i < nfixedargs)
+#అయితే_ముగింపు
+	  ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 	    {
 	      /* Float values are stored as doubles in the
 		 ffi_closure_LINUX64 code.  Fix them here.  */
-	      pfr->f = (float) pfr->d;
+	      pfr->f = (దశాంశం) pfr->d;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  లేకపోతే
 	    {
-#ifndef __LITTLE_ENDIAN__
-	      avalue[i] = (char *) pst + 4;
-#else
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
+	      avalue[i] = (అక్షరం *) pst + 4;
+#లేకపోతే
 	      avalue[i] = pst;
-#endif
+#అయితే_ముగింపు
 	    }
 	  pst++;
-	  break;
+	  ఆపు;
 
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+	స్థితి FFI_TYPE_COMPLEX:
 	  /* Reassemble each _Complex argument from successive registers (or
 	     parameter-save slots when registers are exhausted) into a
 	     contiguous in-memory value for the closure.  */
 	  {
-	    unsigned int j;
+	    గుర్తులేని పూర్ణాంకం j;
 	    elt = arg_types[i]->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	    /* A 64-bit long double arrives exactly like a double.  */
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	      elt = FFI_TYPE_DOUBLE;
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	      {
 		/* IEEE-128: each half arrives in a vector register (or the
 		   16-byte-aligned parameter save area) with two GPR shadow
 		   doublewords.  */
-		float128 *cval = alloca (2 * sizeof (float128));
-		if (((unsigned long) pst & 0xF) != 0)
+		float128 *cval = alloca (2 * పరిమాణం (float128));
+		ఒకవేళ (((గుర్తులేని దీర్ఘ) pst & 0xF) != 0)
 		  ++pst;
-		for (j = 0; j < 2; j++)
+		కొరకు (j = 0; j < 2; j++)
 		  {
-		    if (pvec < end_pvec && i < nfixedargs)
-		      memcpy (&cval[j], pvec++, sizeof (float128));
-		    else
-		      memcpy (&cval[j], pst, sizeof (float128));
+		    ఒకవేళ (pvec < చివర_pvec && i < nfixedargs)
+		      జ్ఞాపకం_నకలు (&cval[j], pvec++, పరిమాణం (float128));
+		    లేకపోతే
+		      జ్ఞాపకం_నకలు (&cval[j], pst, పరిమాణం (float128));
 		    pst += 2;
 		  }
 		avalue[i] = cval;
-		break;
+		ఆపు;
 	      }
-	    if (elt == FFI_TYPE_LONGDOUBLE)
+	    ఒకవేళ (elt == FFI_TYPE_LONGDOUBLE)
 	      {
 		/* IBM-128: four doubles, each in an FPR (or one GPR shadow
 		   doubleword) -- real hi/lo then imag hi/lo.  */
-		double *cval = alloca (4 * sizeof (double));
-		for (j = 0; j < 4; j++)
+		ద్విగుణ *cval = alloca (4 * పరిమాణం (ద్విగుణ));
+		కొరకు (j = 0; j < 4; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    లేకపోతే
+		      cval[j] = *(ద్విగుణ *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
-		break;
+		ఆపు;
 	      }
-#endif
-	    if (elt == FFI_TYPE_FLOAT)
+#అయితే_ముగింపు
+	    ఒకవేళ (elt == FFI_TYPE_FLOAT)
 	      {
-		float *cval = alloca (2 * sizeof (float));
-		for (j = 0; j < 2; j++)
+		దశాంశం *cval = alloca (2 * పరిమాణం (దశాంశం));
+		కొరకు (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 		      {
-			cval[j] = (float) pfr->d;
+			cval[j] = (దశాంశం) pfr->d;
 			pfr++;
 		      }
-		    else
+		    లేకపోతే
 		      {
-#ifndef __LITTLE_ENDIAN__
-			cval[j] = ((float *) pst)[1];
-#else
-			cval[j] = ((float *) pst)[0];
-#endif
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
+			cval[j] = ((దశాంశం *) pst)[1];
+#లేకపోతే
+			cval[j] = ((దశాంశం *) pst)[0];
+#అయితే_ముగింపు
 		      }
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else if (elt == FFI_TYPE_DOUBLE)
+	    లేకపోతే ఒకవేళ (elt == FFI_TYPE_DOUBLE)
 	      {
-		double *cval = alloca (2 * sizeof (double));
-		for (j = 0; j < 2; j++)
+		ద్విగుణ *cval = alloca (2 * పరిమాణం (ద్విగుణ));
+		కొరకు (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    ఒకవేళ (pfr < చివర_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    లేకపోతే
+		      cval[j] = *(ద్విగుణ *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else
+	    లేకపోతే
 	      {
 		/* Integer-typed _Complex: each half lives in its own GPR
 		   slot, right-justified on BE, low-address on LE.  */
-		size_t hsize = arg_types[i]->elements[0]->size;
-		char *cval = alloca (2 * hsize);
-		for (j = 0; j < 2; j++)
+		size_t hsize = arg_types[i]->elements[0]->కొలత;
+		అక్షరం *cval = alloca (2 * hsize);
+		కొరకు (j = 0; j < 2; j++)
 		  {
-		    char *src;
-#ifndef __LITTLE_ENDIAN__
-		    src = (char *) pst + (8 - hsize);
-#else
-		    src = (char *) pst;
-#endif
-		    memcpy (cval + j * hsize, src, hsize);
+		    అక్షరం *src;
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
+		    src = (అక్షరం *) pst + (8 - hsize);
+#లేకపోతే
+		    src = (అక్షరం *) pst;
+#అయితే_ముగింపు
+		    జ్ఞాపకం_నకలు (cval + j * hsize, src, hsize);
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
 	  }
-	  break;
-#endif
+	  ఆపు;
+#అయితే_ముగింపు
 
-	default:
+	అప్రమేయ:
 	  FFI_ASSERT (0);
 	}
 
       i++;
     }
 
-  (*fun) (cif, rvalue, avalue, user_data);
+  (*fun) (cif, rvalue, avalue, user_దత్తాంశం);
 
   /* Tell ffi_closure_LINUX64 how to perform return type promotions.  */
-  switch (cif->rtype->type)
+  ఎంపిక (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
-    case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
-    case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	return PPC64_LD_VECTOR;
-      return PPC_LD_F128;
-#endif
-    case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
-    case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
-    case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
-    case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
-    case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
-    case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    స్థితి FFI_TYPE_VOID:
+      తిరిగి PPC_LD_NONE;
+    స్థితి FFI_TYPE_FLOAT:
+      తిరిగి PPC_LD_F32;
+    స్థితి FFI_TYPE_DOUBLE:
+      తిరిగి PPC_LD_F64;
+#ఒకవేళ FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+    స్థితి FFI_TYPE_LONGDOUBLE:
+      ఒకవేళ ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	తిరిగి PPC64_LD_సదిశ;
+      తిరిగి PPC_LD_F128;
+#అయితే_ముగింపు
+    స్థితి FFI_TYPE_UINT8:
+      తిరిగి PPC_LD_U8;
+    స్థితి FFI_TYPE_SINT8:
+      తిరిగి PPC_LD_S8;
+    స్థితి FFI_TYPE_UINT16:
+      తిరిగి PPC_LD_U16;
+    స్థితి FFI_TYPE_SINT16:
+      తిరిగి PPC_LD_S16;
+    స్థితి FFI_TYPE_UINT32:
+      తిరిగి PPC_LD_U32;
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_SINT32:
+      తిరిగి PPC_LD_S32;
+    స్థితి FFI_TYPE_సూచిక:
+      తిరిగి PPC_LD_PTR;
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
+      తిరిగి PPC_LD_I64;
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+    స్థితి FFI_TYPE_COMPLEX:
       {
-	int inner = cif->rtype->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	if (inner == FFI_TYPE_LONGDOUBLE)
+	పూర్ణాంకం inner = cif->rtype->elements[0]->type;
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	ఒకవేళ (inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* IEEE-128 _Complex long double returns in v2:v3; IBM-128 in
 	       f1:f2 (real) and f3:f4 (imag), i.e. as a double HFA.  */
-	    if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-	      return PPC64_LD_VECTOR_HOMOG;
+	    ఒకవేళ ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      తిరిగి PPC64_LD_సదిశ_HOMOG;
 	    inner = FFI_TYPE_DOUBLE;
 	  }
-#endif
-	if (inner == FFI_TYPE_FLOAT)
-	  return PPC64_LD_FLOAT_HOMOG;
-	if (inner == FFI_TYPE_DOUBLE)
-	  return PPC64_LD_DOUBLE_HOMOG;
+#అయితే_ముగింపు
+	ఒకవేళ (inner == FFI_TYPE_FLOAT)
+	  తిరిగి PPC64_LD_FLOAT_HOMOG;
+	ఒకవేళ (inner == FFI_TYPE_DOUBLE)
+	  తిరిగి PPC64_LD_DOUBLE_HOMOG;
 	/* Integer-typed _Complex: the user wrote the natural packed
 	   complex layout into rvalue (real@0, imag@hsize).  Repack into
 	   two sign-/zero-extended doublewords so the closure assembly
@@ -1591,90 +1591,90 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 	   recovers real in r3 and imag in r4.  The RETVAL stack area is
 	   large enough (64 or 128 bytes) to hold the 16-byte repack.  */
 	{
-	  char *rv = rvalue;
-	  unsigned long re, im;
-	  switch (inner)
+	  అక్షరం *rv = rvalue;
+	  గుర్తులేని దీర్ఘ re, im;
+	  ఎంపిక (inner)
 	    {
-	    case FFI_TYPE_UINT8:
-	      re = ((unsigned char *) rv)[0];
-	      im = ((unsigned char *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT8:
-	      re = (unsigned long) (long) ((signed char *) rv)[0];
-	      im = (unsigned long) (long) ((signed char *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT16:
-	      re = ((unsigned short *) rv)[0];
-	      im = ((unsigned short *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT16:
-	      re = (unsigned long) (long) ((signed short *) rv)[0];
-	      im = (unsigned long) (long) ((signed short *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT32:
-	      re = ((unsigned int *) rv)[0];
-	      im = ((unsigned int *) rv)[1];
-	      break;
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT32:
-	      re = (unsigned long) (long) ((signed int *) rv)[0];
-	      im = (unsigned long) (long) ((signed int *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	    default:
-	      re = ((unsigned long *) rv)[0];
-	      im = ((unsigned long *) rv)[1];
-	      break;
+	    స్థితి FFI_TYPE_UINT8:
+	      re = ((గుర్తులేని అక్షరం *) rv)[0];
+	      im = ((గుర్తులేని అక్షరం *) rv)[1];
+	      ఆపు;
+	    స్థితి FFI_TYPE_SINT8:
+	      re = (గుర్తులేని దీర్ఘ) (దీర్ఘ) ((గుర్తుగల అక్షరం *) rv)[0];
+	      im = (గుర్తులేని దీర్ఘ) (దీర్ఘ) ((గుర్తుగల అక్షరం *) rv)[1];
+	      ఆపు;
+	    స్థితి FFI_TYPE_UINT16:
+	      re = ((గుర్తులేని పొట్టి *) rv)[0];
+	      im = ((గుర్తులేని పొట్టి *) rv)[1];
+	      ఆపు;
+	    స్థితి FFI_TYPE_SINT16:
+	      re = (గుర్తులేని దీర్ఘ) (దీర్ఘ) ((గుర్తుగల పొట్టి *) rv)[0];
+	      im = (గుర్తులేని దీర్ఘ) (దీర్ఘ) ((గుర్తుగల పొట్టి *) rv)[1];
+	      ఆపు;
+	    స్థితి FFI_TYPE_UINT32:
+	      re = ((గుర్తులేని పూర్ణాంకం *) rv)[0];
+	      im = ((గుర్తులేని పూర్ణాంకం *) rv)[1];
+	      ఆపు;
+	    స్థితి FFI_TYPE_INT:
+	    స్థితి FFI_TYPE_SINT32:
+	      re = (గుర్తులేని దీర్ఘ) (దీర్ఘ) ((గుర్తుగల పూర్ణాంకం *) rv)[0];
+	      im = (గుర్తులేని దీర్ఘ) (దీర్ఘ) ((గుర్తుగల పూర్ణాంకం *) rv)[1];
+	      ఆపు;
+	    స్థితి FFI_TYPE_SINT64:
+	    స్థితి FFI_TYPE_UINT64:
+	    స్థితి FFI_TYPE_సూచిక:
+	    అప్రమేయ:
+	      re = ((గుర్తులేని దీర్ఘ *) rv)[0];
+	      im = ((గుర్తులేని దీర్ఘ *) rv)[1];
+	      ఆపు;
 	    }
-	  ((unsigned long *) rv)[0] = re;
-	  ((unsigned long *) rv)[1] = im;
-	  return PPC_LD_R3R4;
+	  ((గుర్తులేని దీర్ఘ *) rv)[0] = re;
+	  ((గుర్తులేని దీర్ఘ *) rv)[1] = im;
+	  తిరిగి PPC_LD_R3R4;
 	}
       }
-#endif
-    case FFI_TYPE_STRUCT:
-      if ((cif->flags & FLAG_RETURNS_SMST) != 0)
+#అయితే_ముగింపు
+    స్థితి FFI_TYPE_STRUCT:
+      ఒకవేళ ((cif->flags & FLAG_RETURNS_SMST) != 0)
 	{
-	  if ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
+	  ఒకవేళ ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	    {
 	      /* A struct smaller than a dword is returned in the low bits
 		 of r3 right justified.  Larger structs are passed left
 		 justified in r3 and r4.  The return value area on the
 		 stack will have the structs as they are usually stored
 		 in memory. */
-	      switch (cif->rtype->size)
+	      ఎంపిక (cif->rtype->కొలత)
 		{
-		case 0:
-		  return PPC_LD_NONE;
-		case 1:
-		  return PPC_LD_U8;
-		case 2:
-		  return PPC_LD_U16;
-		case 3:
-		  return PPC64_LD_STRUCT_3;
-		case 4:
-		  return PPC_LD_U32;
-		case 5:
-		  return PPC64_LD_STRUCT_5;
-		case 6:
-		  return PPC64_LD_STRUCT_6;
-		case 7:
-		  return PPC64_LD_STRUCT_7;
-		case 8 ... 16:
-		  return PPC_LD_R3R4;
+		స్థితి 0:
+		  తిరిగి PPC_LD_NONE;
+		స్థితి 1:
+		  తిరిగి PPC_LD_U8;
+		స్థితి 2:
+		  తిరిగి PPC_LD_U16;
+		స్థితి 3:
+		  తిరిగి PPC64_LD_STRUCT_3;
+		స్థితి 4:
+		  తిరిగి PPC_LD_U32;
+		స్థితి 5:
+		  తిరిగి PPC64_LD_STRUCT_5;
+		స్థితి 6:
+		  తిరిగి PPC64_LD_STRUCT_6;
+		స్థితి 7:
+		  తిరిగి PPC64_LD_STRUCT_7;
+		స్థితి 8 ... 16:
+		  తిరిగి PPC_LD_R3R4;
 		}
-	      break;
+	      ఆపు;
 	    }
-	  if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	    return PPC64_LD_VECTOR_HOMOG;
-	  if ((cif->flags & FLAG_RETURNS_64BITS) != 0)
-	    return PPC64_LD_DOUBLE_HOMOG;
-	  return PPC64_LD_FLOAT_HOMOG;
+	  ఒకవేళ ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	    తిరిగి PPC64_LD_సదిశ_HOMOG;
+	  ఒకవేళ ((cif->flags & FLAG_RETURNS_64_బిట్లు) != 0)
+	    తిరిగి PPC64_LD_DOUBLE_HOMOG;
+	  తిరిగి PPC64_LD_FLOAT_HOMOG;
         }
-      return PPC_LD_NONE;
+      తిరిగి PPC_LD_NONE;
     }
   abort();
 }
-#endif
+#అయితే_ముగింపు

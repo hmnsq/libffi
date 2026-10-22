@@ -18,13 +18,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS లేదా IMPLIED, INCLUDING BUT కాదు LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE మరియు
+   NONINFRINGEMENT.  లో NO EVENT SHALL THE AUTHORS లేదా COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES లేదా OTHER LIABILITY,
+   WHETHER లో AN ACTION OF CONTRACT, TORT లేదా OTHERWISE, ARISING FROM,
+   OUT OF లేదా లో CONNECTION WITH THE SOFTWARE లేదా THE USE లేదా OTHER
+   DEALINGS లో THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __x86_64__
@@ -102,7 +102,7 @@ L(ret_from_load_sse):
 	popq	%r10
 
 	/* Call the user function.  */
-	call	*%r11
+	పిలువు	*%r11
 
 	/* Deallocate stack arg area; local stack frame in redzone.  */
 	leaq	24(%rbp), %rsp
@@ -221,7 +221,7 @@ L(s3):
 	rep movsb
 	ret
 
-L(sa):	call	PLT(C(abort))
+L(sa):	పిలువు	PLT(C(abort))
 
 	/* Many times we can avoid loading any SSE registers at all.
 	   It's not worth an indirect jump to load the exact set of
@@ -279,9 +279,9 @@ C(ffi_plan_fast_call):
 	movq	0x20(%rax), %r8
 	movq	0x28(%rax), %r9
 	movl	%r10d, %eax		/* %al = ssecount */
-	subq	$8, %rsp		/* realign to 16 across the call */
+	subq	$8, %rsp		/* realign to 16 across the పిలువు */
 	.cfi_adjust_cfa_offset 8
-	call	*%r11
+	పిలువు	*%r11
 	addq	$8, %rsp
 	.cfi_adjust_cfa_offset -8
 	ret				/* rax + xmm0 carry the callee's return */
@@ -289,7 +289,7 @@ C(ffi_plan_fast_call):
 	ENDF(C(ffi_plan_fast_call))
 
 /* Count-based direct thunks for the pure-GP64 fast path: load avalue[0..N-1]
-   straight into the argument registers (no register_args image) and call.
+   straight into the argument registers (no register_args image) and పిలువు.
    struct { UINT64 rax; double xmm0; }
    ffi_plan_gpN (void **avalue /rdi/, void (*fn)(void) /rsi/);
    Eligible only when every arg is a single 64-bit GP value (no sign-extension,
@@ -308,7 +308,7 @@ C(ffi_plan_fast_call):
 	xorl	%eax, %eax;			\
 	subq	$8, %rsp;			\
 	.cfi_adjust_cfa_offset 8;		\
-	call	*%r11;				\
+	పిలువు	*%r11;				\
 	addq	$8, %rsp;			\
 	.cfi_adjust_cfa_offset -8;		\
 	ret;					\
@@ -456,7 +456,7 @@ L(do_closure):
 	leaq	ffi_closure_OFS_RVALUE(%rsp), %rcx	/* Load rvalue */
 	movq	%rsp, %r8				/* Load reg_args */
 	leaq	ffi_closure_FS+8(%rsp), %r9		/* Load argp */
-	call	PLT(C(ffi_closure_unix64_inner))
+	పిలువు	PLT(C(ffi_closure_unix64_inner))
 
 	/* Deallocate stack frame early; return value is now in redzone.  */
 	addq	$ffi_closure_FS, %rsp
@@ -557,7 +557,7 @@ L(l3):
 	movq	(%rsi), %xmm0
 	ret
 
-L(la):	call	PLT(C(abort))
+L(la):	పిలువు	PLT(C(abort))
 
 L(UW11):
 ENDF(C(ffi_closure_unix64))

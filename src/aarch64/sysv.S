@@ -12,12 +12,12 @@ The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
+EXPRESS లేదా IMPLIED, INCLUDING BUT కాదు LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE మరియు NONINFRINGEMENT.
+లో NO EVENT SHALL THE AUTHORS లేదా COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES లేదా OTHER LIABILITY, WHETHER లో AN ACTION OF CONTRACT,
+TORT లేదా OTHERWISE, ARISING FROM, OUT OF లేదా లో CONNECTION WITH THE
+SOFTWARE లేదా THE USE లేదా OTHER DEALINGS లో THE SOFTWARE.  */
 
 #if defined(__aarch64__) || defined(__arm64__)
 #define LIBFFI_ASM
@@ -33,7 +33,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #define CONCAT1(a, b) CONCAT2(a, b)
 #define CONCAT2(a, b) a ## b
 
-/* Use the right prefix for global labels.  */
+/* Use the right prefix for వైశ్విక labels.  */
 #define CNAME(x) CONCAT1 (__USER_LABEL_PREFIX__, x)
 #else
 #define CNAME(x) x
@@ -144,7 +144,7 @@ CNAME(ffi_call_SYSV):
 	/* Deallocate the context, leaving the stacked arguments.  */
 	add	sp, sp, #CALL_CONTEXT_SIZE
 
-	BRANCH_AND_LINK_TO_REG     x9			/* call fn */
+	BRANCH_AND_LINK_TO_REG     x9			/* పిలువు fn */
 
 	ldp	x3, x4, [x29, #16]	/* reload rvalue and flags */
 
@@ -314,15 +314,15 @@ CNAME(ffi_call_SYSV):
 /* ffi_closure_SYSV
 
    Closure invocation glue. This is the low level code invoked directly by
-   the closure trampoline to setup and call a closure.
+   the closure trampoline to setup and పిలువు a closure.
 
    On entry x17 points to a struct ffi_closure, x16 has been clobbered
    all other registers are preserved.
 
-   We allocate a call context and save the argument passing registers,
+   We allocate a పిలువు context and save the argument passing registers,
    then invoked the generic C ffi_closure_SYSV_inner() function to do all
    the real work, on return we load the result passing registers back from
-   the call context.
+   the పిలువు context.
 */
 
 #define ffi_closure_SYSV_FS (8*2 + CALL_CONTEXT_SIZE + 64)

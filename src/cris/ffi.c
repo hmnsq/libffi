@@ -26,33 +26,33 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#నిర్వచించు దొంతర_ARG_కొలత(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
-static ffi_status
+స్థిర ffi_స్థితి
 initialize_aggregate_packed_struct (ffi_type * arg)
 {
   ffi_type **ptr;
 
-  FFI_ASSERT (arg != NULL);
+  FFI_ASSERT (arg != ఖాళీ);
 
-  FFI_ASSERT (arg->elements != NULL);
-  FFI_ASSERT (arg->size == 0);
+  FFI_ASSERT (arg->elements != ఖాళీ);
+  FFI_ASSERT (arg->కొలత == 0);
   FFI_ASSERT (arg->alignment == 0);
 
   ptr = &(arg->elements[0]);
 
-  while ((*ptr) != NULL)
+  అయితే ((*ptr) != ఖాళీ)
     {
-      if (((*ptr)->size == 0)
+      ఒకవేళ (((*ptr)->కొలత == 0)
 	  && (initialize_aggregate_packed_struct ((*ptr)) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+	తిరిగి FFI_BAD_TYPEDEF;
 
       FFI_ASSERT (ffi_type_test ((*ptr)));
 
-      arg->size += (*ptr)->size;
+      arg->కొలత += (*ptr)->కొలత;
 
       arg->alignment = (arg->alignment > (*ptr)->alignment) ?
 	arg->alignment : (*ptr)->alignment;
@@ -60,113 +60,113 @@ initialize_aggregate_packed_struct (ffi_type * arg)
       ptr++;
     }
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  ఒకవేళ (arg->కొలత == 0)
+    తిరిగి FFI_BAD_TYPEDEF;
+  లేకపోతే
+    తిరిగి FFI_OK;
 }
 
-int
-ffi_prep_args (char *stack, extended_cif * ecif)
+పూర్ణాంకం
+ffi_prep_వాదనలు (అక్షరం *దొంతర, extended_cif * ecif)
 {
-  unsigned int i;
-  unsigned int struct_count = 0;
-  void **p_argv;
-  char *argp;
+  గుర్తులేని పూర్ణాంకం i;
+  గుర్తులేని పూర్ణాంకం struct_లెక్క = 0;
+  శూన్య **p_argv;
+  అక్షరం *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = దొంతర;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  కొరకు (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0); i--, p_arg++)
     {
       size_t z;
 
-      switch ((*p_arg)->type)
+      ఎంపిక ((*p_arg)->type)
 	{
-	case FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_STRUCT:
 	  {
-	    z = (*p_arg)->size;
-	    if (z <= 4)
+	    z = (*p_arg)->కొలత;
+	    ఒకవేళ (z <= 4)
 	      {
-		memcpy (argp, *p_argv, z);
+		జ్ఞాపకం_నకలు (argp, *p_argv, z);
 		z = 4;
 	      }
-	    else if (z <= 8)
+	    లేకపోతే ఒకవేళ (z <= 8)
 	      {
-		memcpy (argp, *p_argv, z);
+		జ్ఞాపకం_నకలు (argp, *p_argv, z);
 		z = 8;
 	      }
-	    else
+	    లేకపోతే
 	      {
-		unsigned int uiLocOnStack;
-		z = sizeof (void *);
-		uiLocOnStack = 4 * ecif->cif->nargs + struct_count;
-		struct_count = struct_count + (*p_arg)->size;
-		*(unsigned int *) argp =
-		  (unsigned int) (UINT32 *) (stack + uiLocOnStack);
-		memcpy ((stack + uiLocOnStack), *p_argv, (*p_arg)->size);
+		గుర్తులేని పూర్ణాంకం ui_Loc_On_దొంతర;
+		z = పరిమాణం (శూన్య *);
+		ui_Loc_On_దొంతర = 4 * ecif->cif->nargs + struct_లెక్క;
+		struct_లెక్క = struct_లెక్క + (*p_arg)->కొలత;
+		*(గుర్తులేని పూర్ణాంకం *) argp =
+		  (గుర్తులేని పూర్ణాంకం) (UINT32 *) (దొంతర + ui_Loc_On_దొంతర);
+		జ్ఞాపకం_నకలు ((దొంతర + ui_Loc_On_దొంతర), *p_argv, (*p_arg)->కొలత);
 	      }
-	    break;
+	    ఆపు;
 	  }
-	default:
-	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	అప్రమేయ:
+	  z = (*p_arg)->కొలత;
+	  ఒకవేళ (z < పరిమాణం (పూర్ణాంకం))
 	    {
-	      switch ((*p_arg)->type)
+	      ఎంపిక ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int) *(SINT8 *) (*p_argv);
-		  break;
+		స్థితి FFI_TYPE_SINT8:
+		  *(గుర్తుగల పూర్ణాంకం *) argp = (గుర్తుగల పూర్ణాంకం) *(SINT8 *) (*p_argv);
+		  ఆపు;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp =
-		    (unsigned int) *(UINT8 *) (*p_argv);
-		  break;
+		స్థితి FFI_TYPE_UINT8:
+		  *(గుర్తులేని పూర్ణాంకం *) argp =
+		    (గుర్తులేని పూర్ణాంకం) *(UINT8 *) (*p_argv);
+		  ఆపు;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int) *(SINT16 *) (*p_argv);
-		  break;
+		స్థితి FFI_TYPE_SINT16:
+		  *(గుర్తుగల పూర్ణాంకం *) argp = (గుర్తుగల పూర్ణాంకం) *(SINT16 *) (*p_argv);
+		  ఆపు;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp =
-		    (unsigned int) *(UINT16 *) (*p_argv);
-		  break;
+		స్థితి FFI_TYPE_UINT16:
+		  *(గుర్తులేని పూర్ణాంకం *) argp =
+		    (గుర్తులేని పూర్ణాంకం) *(UINT16 *) (*p_argv);
+		  ఆపు;
 
-		default:
+		అప్రమేయ:
 		  FFI_ASSERT (0);
 		}
-	      z = sizeof (int);
+	      z = పరిమాణం (పూర్ణాంకం);
 	    }
-	  else if (z == sizeof (int))
-	    *(unsigned int *) argp = (unsigned int) *(UINT32 *) (*p_argv);
-	  else
-	    memcpy (argp, *p_argv, z);
-	  break;
+	  లేకపోతే ఒకవేళ (z == పరిమాణం (పూర్ణాంకం))
+	    *(గుర్తులేని పూర్ణాంకం *) argp = (గుర్తులేని పూర్ణాంకం) *(UINT32 *) (*p_argv);
+	  లేకపోతే
+	    జ్ఞాపకం_నకలు (argp, *p_argv, z);
+	  ఆపు;
 	}
       p_argv++;
       argp += z;
     }
 
-  return (struct_count);
+  తిరిగి (struct_లెక్క);
 }
 
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_core (ffi_cif * cif,
-	           ffi_abi abi, unsigned int isvariadic,
-		   unsigned int nfixedargs, unsigned int ntotalargs,
+	           ffi_abi abi, గుర్తులేని పూర్ణాంకం isvariadic,
+		   గుర్తులేని పూర్ణాంకం nfixedargs, గుర్తులేని పూర్ణాంకం ntotalargs,
 	           ffi_type * rtype, ffi_type ** atypes)
 {
-  unsigned bytes = 0;
-  unsigned int i;
+  గుర్తులేని బైట్లు = 0;
+  గుర్తులేని పూర్ణాంకం i;
   ffi_type **ptr;
 
-  FFI_ASSERT (cif != NULL);
+  FFI_ASSERT (cif != ఖాళీ);
   FFI_ASSERT((!isvariadic) || (nfixedargs >= 1));
   FFI_ASSERT(nfixedargs <= ntotalargs);
-  FFI_ASSERT (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI);
+  FFI_ASSERT (abi > FFI_మొదటి_ABI && abi < FFI_చివరి_ABI);
 
   cif->abi = abi;
   cif->arg_types = atypes;
@@ -175,97 +175,97 @@ ffi_prep_cif_core (ffi_cif * cif,
 
   cif->flags = 0;
 
-  if ((cif->rtype->size == 0)
+  ఒకవేళ ((cif->rtype->కొలత == 0)
       && (initialize_aggregate_packed_struct (cif->rtype) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+    తిరిగి FFI_BAD_TYPEDEF;
 
   FFI_ASSERT_VALID_TYPE (cif->rtype);
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  కొరకు (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      if (((*ptr)->size == 0)
+      ఒకవేళ (((*ptr)->కొలత == 0)
 	  && (initialize_aggregate_packed_struct ((*ptr)) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+	తిరిగి FFI_BAD_TYPEDEF;
 
       FFI_ASSERT_VALID_TYPE (*ptr);
 
-      if (((*ptr)->alignment - 1) & bytes)
-	bytes = FFI_ALIGN (bytes, (*ptr)->alignment);
-      if ((*ptr)->type == FFI_TYPE_STRUCT)
+      ఒకవేళ (((*ptr)->alignment - 1) & బైట్లు)
+	బైట్లు = FFI_ALIGN (బైట్లు, (*ptr)->alignment);
+      ఒకవేళ ((*ptr)->type == FFI_TYPE_STRUCT)
 	{
-	  if ((*ptr)->size > 8)
+	  ఒకవేళ ((*ptr)->కొలత > 8)
 	    {
-	      bytes += (*ptr)->size;
-	      bytes += sizeof (void *);
+	      బైట్లు += (*ptr)->కొలత;
+	      బైట్లు += పరిమాణం (శూన్య *);
 	    }
-	  else
+	  లేకపోతే
 	    {
-	      if ((*ptr)->size > 4)
-		bytes += 8;
-	      else
-		bytes += 4;
+	      ఒకవేళ ((*ptr)->కొలత > 4)
+		బైట్లు += 8;
+	      లేకపోతే
+		బైట్లు += 4;
 	    }
 	}
-      else
-	bytes += STACK_ARG_SIZE ((*ptr)->size);
+      లేకపోతే
+	బైట్లు += దొంతర_ARG_కొలత ((*ptr)->కొలత);
     }
 
-  cif->bytes = bytes;
+  cif->బైట్లు = బైట్లు;
 
-  return ffi_prep_cif_machdep (cif);
+  తిరిగి ffi_prep_cif_machdep (cif);
 }
 
-ffi_status
+ffi_స్థితి
 ffi_prep_cif_machdep (ffi_cif * cif)
 {
-  switch (cif->rtype->type)
+  ఎంపిక (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    స్థితి FFI_TYPE_VOID:
+    స్థితి FFI_TYPE_STRUCT:
+    స్థితి FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_DOUBLE:
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
+      cif->flags = (గుర్తులేని) cif->rtype->type;
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ఆపు;
     }
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-extern void ffi_call_SYSV (int (*)(char *, extended_cif *),
+బాహ్య శూన్య ffi_call_SYSV (పూర్ణాంకం (*)(అక్షరం *, extended_cif *),
 			   extended_cif *,
-			   unsigned, unsigned, unsigned *, void (*fn) ())
+			   గుర్తులేని, గుర్తులేని, గుర్తులేని *, శూన్య (*fn) ())
      __attribute__ ((__visibility__ ("hidden")));
 
-void
-ffi_call (ffi_cif * cif, void (*fn) (), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif * cif, శూన్య (*fn) (), శూన్య *rvalue, శూన్య **avalue)
 {
   extended_cif ecif;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
-  if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
+  ఒకవేళ ((rvalue == ఖాళీ) && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca (cif->rtype->size);
+      ecif.rvalue = alloca (cif->rtype->కొలత);
     }
-  else
+  లేకపోతే
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ఎంపిక (cif->abi)
     {
-    case FFI_SYSV:
-      ffi_call_SYSV (ffi_prep_args, &ecif, cif->bytes,
+    స్థితి FFI_SYSV:
+      ffi_call_SYSV (ffi_prep_వాదనలు, &ecif, cif->బైట్లు,
 		     cif->flags, ecif.rvalue, fn);
-      break;
-    default:
+      ఆపు;
+    అప్రమేయ:
       FFI_ASSERT (0);
-      break;
+      ఆపు;
     }
 }
 
@@ -273,17 +273,17 @@ ffi_call (ffi_cif * cif, void (*fn) (), void *rvalue, void **avalue)
    mark them hidden.  */
 
 /* Assembly code for the jump stub.  */
-extern const char ffi_cris_trampoline_template[]
+బాహ్య స్థిరరాశి అక్షరం ffi_cris_trampoline_template[]
  __attribute__ ((__visibility__ ("hidden")));
 
 /* Offset into ffi_cris_trampoline_template of where to put the
    ffi_prep_closure_inner function.  */
-extern const int ffi_cris_trampoline_fn_offset
+బాహ్య స్థిరరాశి పూర్ణాంకం ffi_cris_trampoline_fn_స్థానభ్రంశం
  __attribute__ ((__visibility__ ("hidden")));
 
 /* Offset into ffi_cris_trampoline_template of where to put the
    closure data.  */
-extern const int ffi_cris_trampoline_closure_offset
+బాహ్య స్థిరరాశి పూర్ణాంకం ffi_cris_trampoline_సంవృతం_స్థానభ్రంశం
  __attribute__ ((__visibility__ ("hidden")));
 
 /* This function is sibling-called (jumped to) by the closure
@@ -293,57 +293,57 @@ extern const int ffi_cris_trampoline_closure_offset
    put at the appropriate place in CLOSURE which is then executed and
    the return value is passed back to the caller.  */
 
-static unsigned long long
-ffi_prep_closure_inner (void **params, ffi_closure* closure)
+స్థిర గుర్తులేని దీర్ఘ దీర్ఘ
+ffi_prep_సంవృతం_inner (శూన్య **params, ffi_సంవృతం* సంవృతం)
 {
-  char *register_args = (char *) params;
-  void *struct_ret = params[5];
-  char *stack_args = params[6];
-  char *ptr = register_args;
-  ffi_cif *cif = closure->cif;
+  అక్షరం *రిజిస్టరు_వాదనలు = (అక్షరం *) params;
+  శూన్య *struct_ret = params[5];
+  అక్షరం *దొంతర_వాదనలు = params[6];
+  అక్షరం *ptr = రిజిస్టరు_వాదనలు;
+  ffi_cif *cif = సంవృతం->cif;
   ffi_type **arg_types = cif->arg_types;
 
   /* Max room needed is number of arguments as 64-bit values.  */
-  void **avalue = alloca (closure->cif->nargs * sizeof(void *));
-  int i;
-  int doing_regs;
-  long long llret = 0;
+  శూన్య **avalue = alloca (సంవృతం->cif->nargs * పరిమాణం(శూన్య *));
+  పూర్ణాంకం i;
+  పూర్ణాంకం doing_regs;
+  దీర్ఘ దీర్ఘ llret = 0;
 
   /* Find the address of each argument.  */
-  for (i = 0, doing_regs = 1; i < cif->nargs; i++)
+  కొరకు (i = 0, doing_regs = 1; i < cif->nargs; i++)
     {
       /* Types up to and including 8 bytes go by-value.  */
-      if (arg_types[i]->size <= 4)
+      ఒకవేళ (arg_types[i]->కొలత <= 4)
 	{
 	  avalue[i] = ptr;
 	  ptr += 4;
 	}
-      else if (arg_types[i]->size <= 8)
+      లేకపోతే ఒకవేళ (arg_types[i]->కొలత <= 8)
 	{
 	  avalue[i] = ptr;
 	  ptr += 8;
 	}
-      else
+      లేకపోతే
 	{
 	  FFI_ASSERT (arg_types[i]->type == FFI_TYPE_STRUCT);
 
 	  /* Passed by-reference, so copy the pointer.  */
-	  avalue[i] = *(void **) ptr;
+	  avalue[i] = *(శూన్య **) ptr;
 	  ptr += 4;
 	}
 
       /* If we've handled more arguments than fit in registers, start
 	 looking at the those passed on the stack.  Step over the
 	 first one if we had a straddling parameter.  */
-      if (doing_regs && ptr >= register_args + 4*4)
+      ఒకవేళ (doing_regs && ptr >= రిజిస్టరు_వాదనలు + 4*4)
 	{
-	  ptr = stack_args + ((ptr > register_args + 4*4) ? 4 : 0);
+	  ptr = దొంతర_వాదనలు + ((ptr > రిజిస్టరు_వాదనలు + 4*4) ? 4 : 0);
 	  doing_regs = 0;
 	}
     }
 
   /* Invoke the closure.  */
-  (closure->fun) (cif,
+  (సంవృతం->fun) (cif,
 
 		  cif->rtype->type == FFI_TYPE_STRUCT
 		  /* The caller allocated space for the return
@@ -354,33 +354,33 @@ ffi_prep_closure_inner (void **params, ffi_closure* closure)
 		  /* We take advantage of being able to ignore that
 		     the high part isn't set if the return value is
 		     not in R10:R11, but in R10 only.  */
-		  : (void *) &llret,
+		  : (శూన్య *) &llret,
 
-		  avalue, closure->user_data);
+		  avalue, సంవృతం->user_దత్తాంశం);
 
-  return llret;
+  తిరిగి llret;
 }
 
 /* API function: Prepare the trampoline.  */
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం* సంవృతం,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif *, void *, void **, void*),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun)(ffi_cif *, శూన్య *, శూన్య **, శూన్య*),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
-  void *innerfn = ffi_prep_closure_inner;
+  శూన్య *innerfn = ffi_prep_సంవృతం_inner;
   FFI_ASSERT (cif->abi == FFI_SYSV);
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
-  memcpy (closure->tramp, ffi_cris_trampoline_template,
-	  FFI_CRIS_TRAMPOLINE_CODE_PART_SIZE);
-  memcpy (closure->tramp + ffi_cris_trampoline_fn_offset,
-	  &innerfn, sizeof (void *));
-  memcpy (closure->tramp + ffi_cris_trampoline_closure_offset,
-	  &codeloc, sizeof (void *));
+  సంవృతం->cif  = cif;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
+  సంవృతం->fun  = fun;
+  జ్ఞాపకం_నకలు (సంవృతం->tramp, ffi_cris_trampoline_template,
+	  FFI_CRIS_TRAMPOLINE_సంకేతం_PART_కొలత);
+  జ్ఞాపకం_నకలు (సంవృతం->tramp + ffi_cris_trampoline_fn_స్థానభ్రంశం,
+	  &innerfn, పరిమాణం (శూన్య *));
+  జ్ఞాపకం_నకలు (సంవృతం->tramp + ffi_cris_trampoline_సంవృతం_స్థానభ్రంశం,
+	  &codeloc, పరిమాణం (శూన్య *));
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }

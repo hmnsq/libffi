@@ -25,32 +25,32 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
-typedef unsigned long long          ffi_arg;
-typedef signed long long            ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ దీర్ఘ          ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ దీర్ఘ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
   FFI_UNIX,   	/* Linux and all Unix variants use the same conventions	*/
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24  /* Really the following struct, which 	*/
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 24  /* Really the following struct, which 	*/
 				/* can be interpreted as a C function	*/
 				/* descriptor:				*/
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
+#నిర్వచించు FFI_లక్ష్యం_SPECIFIC_VARIADIC 1
+#నిర్వచించు FFI_EXTRA_CIF_FIELDS గుర్తులేని nfixedargs
 
-#endif
+#అయితే_ముగింపు

@@ -19,201 +19,201 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__kvx__)
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fficonfig.h>
-#include <ffi.h>
-#include "ffi_common.h"
-#include "asm.h"
+#ఒకవేళ defined(__kvx__)
+#అన్తర్భావ <stdio.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <fficonfig.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ "ffi_common.h"
+#అన్తర్భావ "asm.h"
 
-#define ALIGN(x, a) ALIGN_MASK(x, (typeof(x))(a) - 1)
-#define ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
-#define KVX_ABI_STACK_ALIGNMENT (32)
-#define KVX_ABI_STACK_ARG_ALIGNMENT (8)
-#define max(a,b) ((a) > (b) ? (a) : (b))
+#నిర్వచించు ALIGN(x, a) ALIGN_ముసుగు(x, (typeof(x))(a) - 1)
+#నిర్వచించు ALIGN_ముసుగు(x, ముసుగు) (((x) + (ముసుగు)) & ~(ముసుగు))
+#నిర్వచించు KVX_ABI_దొంతర_ALIGNMENT (32)
+#నిర్వచించు KVX_ABI_దొంతర_ARG_ALIGNMENT (8)
+#నిర్వచించు max(a,b) ((a) > (b) ? (a) : (b))
 
-#ifdef FFI_DEBUG
-#define DEBUG_PRINT(...) do{ fprintf( stderr, __VA_ARGS__ ); } while(0)
-#else
-#define DEBUG_PRINT(...)
-#endif
+#నిర్వచితమైతే FFI_DEBUG
+#నిర్వచించు DEBUG_PRINT(...) చేయి{ fprintf( stderr, __VA_ARGS__ ); } అయితే(0)
+#లేకపోతే
+#నిర్వచించు DEBUG_PRINT(...)
+#అయితే_ముగింపు
 
-struct ret_value {
-	unsigned long int r0;
-	unsigned long int r1;
-	unsigned long int r2;
-	unsigned long int r3;
+నిర్మాణం ret_విలువ {
+	గుర్తులేని దీర్ఘ పూర్ణాంకం r0;
+	గుర్తులేని దీర్ఘ పూర్ణాంకం r1;
+	గుర్తులేని దీర్ఘ పూర్ణాంకం r2;
+	గుర్తులేని దీర్ఘ పూర్ణాంకం r3;
 };
 
-extern struct ret_value ffi_call_SYSV(unsigned total_size,
-                                      unsigned size,
+బాహ్య నిర్మాణం ret_విలువ ffi_call_SYSV(గుర్తులేని మొత్తం_కొలత,
+                                      గుర్తులేని కొలత,
                                       extended_cif *ecif,
-                                      unsigned *rvalue_addr,
-                                      void *fn,
-                                      unsigned int_ext_method);
+                                      గుర్తులేని *rvalue_addr,
+                                      శూన్య *fn,
+                                      గుర్తులేని int_ext_పద్ధతి);
 
 /* Perform machine dependent cif processing */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_స్థితి ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  cif->flags = cif->rtype->size;
-  return FFI_OK;
+  cif->flags = cif->rtype->కొలత;
+  తిరిగి FFI_OK;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, unsigned int arg_slots_size, extended_cif *ecif)
+శూన్య *ffi_prep_వాదనలు(అక్షరం *దొంతర, గుర్తులేని పూర్ణాంకం arg_slots_కొలత, extended_cif *ecif)
 {
-  char *stacktemp = stack;
-  char *current_arg_passed_by_value = stack + arg_slots_size;
-  int i, s;
+  అక్షరం *stacktemp = దొంతర;
+  అక్షరం *current_arg_passed_by_విలువ = దొంతర + arg_slots_కొలత;
+  పూర్ణాంకం i, s;
   ffi_type **arg;
-  int count = 0;
+  పూర్ణాంకం లెక్క = 0;
   ffi_cif *cif = ecif->cif;
-  void **argv = ecif->avalue;
+  శూన్య **argv = ecif->avalue;
 
   arg = cif->arg_types;
 
-  DEBUG_PRINT("stack: %p\n", stack);
-  DEBUG_PRINT("arg_slots_size: %u\n", arg_slots_size);
-  DEBUG_PRINT("current_arg_passed_by_value: %p\n", current_arg_passed_by_value);
+  DEBUG_PRINT("stack: %p\n", దొంతర);
+  DEBUG_PRINT("arg_slots_size: %u\n", arg_slots_కొలత);
+  DEBUG_PRINT("current_arg_passed_by_value: %p\n", current_arg_passed_by_విలువ);
   DEBUG_PRINT("ecif: %p\n", ecif);
   DEBUG_PRINT("ecif->avalue: %p\n", ecif->avalue);
 
-  for (i = 0; i < cif->nargs; i++) {
+  కొరకు (i = 0; i < cif->nargs; i++) {
 
-    s = KVX_ABI_SLOT_SIZE;
-    switch((*arg)->type) {
-      case FFI_TYPE_SINT8:
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_POINTER:
-        DEBUG_PRINT("INT64/32/16/8/FLOAT/DOUBLE or POINTER @%p\n", stack);
-        *(uint64_t *) stack = *(uint64_t *)(* argv);
-        break;
+    s = KVX_ABI_స్థానం_కొలత;
+    ఎంపిక((*arg)->type) {
+      స్థితి FFI_TYPE_SINT8:
+      స్థితి FFI_TYPE_UINT8:
+      స్థితి FFI_TYPE_SINT16:
+      స్థితి FFI_TYPE_UINT16:
+      స్థితి FFI_TYPE_SINT32:
+      స్థితి FFI_TYPE_UINT32:
+      స్థితి FFI_TYPE_FLOAT:
+      స్థితి FFI_TYPE_DOUBLE:
+      స్థితి FFI_TYPE_UINT64:
+      స్థితి FFI_TYPE_SINT64:
+      స్థితి FFI_TYPE_సూచిక:
+        DEBUG_PRINT("INT64/32/16/8/FLOAT/DOUBLE or POINTER @%p\n", దొంతర);
+        *(uint64_t *) దొంతర = *(uint64_t *)(* argv);
+        ఆపు;
 
-      case FFI_TYPE_COMPLEX:
-        if ((*arg)->size == 8)
-          *(_Complex float *) stack = *(_Complex float *)(* argv);
-        else if ((*arg)->size == 16) {
-          *(_Complex double *) stack = *(_Complex double *)(* argv);
+      స్థితి FFI_TYPE_COMPLEX:
+        ఒకవేళ ((*arg)->కొలత == 8)
+          *(_Complex దశాంశం *) దొంతర = *(_Complex దశాంశం *)(* argv);
+        లేకపోతే ఒకవేళ ((*arg)->కొలత == 16) {
+          *(_Complex ద్విగుణ *) దొంతర = *(_Complex ద్విగుణ *)(* argv);
           s = 16;
-        } else
+        } లేకపోతే
           abort();
-        break;
-      case FFI_TYPE_STRUCT: {
-        char *value;
-        unsigned int written_size = 0;
-        DEBUG_PRINT("struct by value @%p\n", stack);
-        if ((*arg)->size > KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
+        ఆపు;
+      స్థితి FFI_TYPE_STRUCT: {
+        అక్షరం *విలువ;
+        గుర్తులేని పూర్ణాంకం written_కొలత = 0;
+        DEBUG_PRINT("struct by value @%p\n", దొంతర);
+        ఒకవేళ ((*arg)->కొలత > KVX_ABI_MAX_AGGREGATE_లోపల_REG_కొలత) {
           DEBUG_PRINT("big struct\n");
-          *(uint64_t *) stack = (uintptr_t)current_arg_passed_by_value;
-          value = current_arg_passed_by_value;
-          current_arg_passed_by_value += (*arg)->size;
-          written_size = KVX_ABI_SLOT_SIZE;
-        } else {
-          value = stack;
-          written_size = (*arg)->size;
+          *(uint64_t *) దొంతర = (uintptr_t)current_arg_passed_by_విలువ;
+          విలువ = current_arg_passed_by_విలువ;
+          current_arg_passed_by_విలువ += (*arg)->కొలత;
+          written_కొలత = KVX_ABI_స్థానం_కొలత;
+        } లేకపోతే {
+          విలువ = దొంతర;
+          written_కొలత = (*arg)->కొలత;
         }
-        memcpy(value, *argv, (*arg)->size);
-        s = ALIGN(written_size, KVX_ABI_STACK_ARG_ALIGNMENT);
-        break;
+        జ్ఞాపకం_నకలు(విలువ, *argv, (*arg)->కొలత);
+        s = ALIGN(written_కొలత, KVX_ABI_దొంతర_ARG_ALIGNMENT);
+        ఆపు;
       }
-      default:
-        printf("Error: unsupported arg type %d\n", (*arg)->type);
+      అప్రమేయ:
+        రాయి("Error: unsupported arg type %d\n", (*arg)->type);
         abort();
-        break;
+        ఆపు;
 
     }
-    stack += s;
-    count += s;
+    దొంతర += s;
+    లెక్క += s;
     argv++;
     arg++;
   }
-#ifdef FFI_DEBUG
-  FFI_ASSERT(((intptr_t)(stacktemp + REG_ARGS_SIZE) & (KVX_ABI_STACK_ALIGNMENT-1)) == 0);
-#endif
-  return stacktemp + REG_ARGS_SIZE;
+#నిర్వచితమైతే FFI_DEBUG
+  FFI_ASSERT(((intptr_t)(stacktemp + REG_వాదనలు_కొలత) & (KVX_ABI_దొంతర_ALIGNMENT-1)) == 0);
+#అయితే_ముగింపు
+  తిరిగి stacktemp + REG_వాదనలు_కొలత;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-                                    unsigned int ntotalargs)
+ffi_స్థితి ffi_prep_cif_machdep_var(ffi_cif *cif, గుర్తులేని పూర్ణాంకం nfixedargs,
+                                    గుర్తులేని పూర్ణాంకం ntotalargs)
 {
-  cif->flags = cif->rtype->size;
-  return FFI_OK;
+  cif->flags = cif->rtype->కొలత;
+  తిరిగి FFI_OK;
 }
 
-static unsigned long handle_small_int_ext(kvx_intext_method *int_ext_method,
-                                          const ffi_type *rtype)
+స్థిర గుర్తులేని దీర్ఘ handle_small_int_ext(kvx_intext_పద్ధతి *int_ext_పద్ధతి,
+                                          స్థిరరాశి ffi_type *rtype)
 {
-  switch (rtype->type) {
-    case FFI_TYPE_SINT8:
-      *int_ext_method = KVX_RET_SXBD;
-      return KVX_REGISTER_SIZE;
+  ఎంపిక (rtype->type) {
+    స్థితి FFI_TYPE_SINT8:
+      *int_ext_పద్ధతి = KVX_RET_SXBD;
+      తిరిగి KVX_రిజిస్టరు_కొలత;
 
-    case FFI_TYPE_SINT16:
-      *int_ext_method = KVX_RET_SXHD;
-      return KVX_REGISTER_SIZE;
+    స్థితి FFI_TYPE_SINT16:
+      *int_ext_పద్ధతి = KVX_RET_SXHD;
+      తిరిగి KVX_రిజిస్టరు_కొలత;
 
-    case FFI_TYPE_SINT32:
-      *int_ext_method = KVX_RET_SXWD;
-      return KVX_REGISTER_SIZE;
+    స్థితి FFI_TYPE_SINT32:
+      *int_ext_పద్ధతి = KVX_RET_SXWD;
+      తిరిగి KVX_రిజిస్టరు_కొలత;
 
-    case FFI_TYPE_UINT8:
-      *int_ext_method = KVX_RET_ZXBD;
-      return KVX_REGISTER_SIZE;
+    స్థితి FFI_TYPE_UINT8:
+      *int_ext_పద్ధతి = KVX_RET_ZXBD;
+      తిరిగి KVX_రిజిస్టరు_కొలత;
 
-    case FFI_TYPE_UINT16:
-      *int_ext_method = KVX_RET_ZXHD;
-      return KVX_REGISTER_SIZE;
+    స్థితి FFI_TYPE_UINT16:
+      *int_ext_పద్ధతి = KVX_RET_ZXHD;
+      తిరిగి KVX_రిజిస్టరు_కొలత;
 
-    case FFI_TYPE_UINT32:
-      *int_ext_method = KVX_RET_ZXWD;
-      return KVX_REGISTER_SIZE;
+    స్థితి FFI_TYPE_UINT32:
+      *int_ext_పద్ధతి = KVX_RET_ZXWD;
+      తిరిగి KVX_రిజిస్టరు_కొలత;
 
-    default:
-      *int_ext_method = KVX_RET_NONE;
-      return rtype->size;
+    అప్రమేయ:
+      *int_ext_పద్ధతి = KVX_RET_NONE;
+      తిరిగి rtype->కొలత;
   }
 }
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+శూన్య ffi_call(ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  int i;
-  unsigned long int slot_fitting_args_size = 0;
-  unsigned long int total_size = 0;
-  unsigned long int big_struct_size = 0;
-  kvx_intext_method int_extension_method;
+  పూర్ణాంకం i;
+  గుర్తులేని దీర్ఘ పూర్ణాంకం స్థానం_fitting_వాదనలు_కొలత = 0;
+  గుర్తులేని దీర్ఘ పూర్ణాంకం మొత్తం_కొలత = 0;
+  గుర్తులేని దీర్ఘ పూర్ణాంకం big_struct_కొలత = 0;
+  kvx_intext_పద్ధతి int_extension_పద్ధతి;
   ffi_type **arg;
-  struct ret_value local_rvalue = {0};
-  size_t wb_size;
+  నిర్మాణం ret_విలువ local_rvalue = {0};
+  size_t wb_కొలత;
 
 
   /* Calculate size to allocate on stack */
-  for (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
-    DEBUG_PRINT("argument %d, type %d, size %lu\n", i, (*arg)->type, (*arg)->size);
-    if (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
-      if ((*arg)->size <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
-        slot_fitting_args_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
-      } else {
-        slot_fitting_args_size += KVX_ABI_SLOT_SIZE; /* aggregate passed by reference */
-        big_struct_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
+  కొరకు (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
+    DEBUG_PRINT("argument %d, type %d, size %lu\n", i, (*arg)->type, (*arg)->కొలత);
+    ఒకవేళ (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
+      ఒకవేళ ((*arg)->కొలత <= KVX_ABI_MAX_AGGREGATE_లోపల_REG_కొలత) {
+        స్థానం_fitting_వాదనలు_కొలత += ALIGN((*arg)->కొలత, KVX_ABI_స్థానం_కొలత);
+      } లేకపోతే {
+        స్థానం_fitting_వాదనలు_కొలత += KVX_ABI_స్థానం_కొలత; /* aggregate passed by reference */
+        big_struct_కొలత += ALIGN((*arg)->కొలత, KVX_ABI_స్థానం_కొలత);
       }
-    } else if ((*arg)->size <= KVX_ABI_SLOT_SIZE) {
-      slot_fitting_args_size += KVX_ABI_SLOT_SIZE;
-    } else {
-      printf("Error: unsupported arg size %ld arg type %d\n", (*arg)->size, (*arg)->type);
+    } లేకపోతే ఒకవేళ ((*arg)->కొలత <= KVX_ABI_స్థానం_కొలత) {
+      స్థానం_fitting_వాదనలు_కొలత += KVX_ABI_స్థానం_కొలత;
+    } లేకపోతే {
+      రాయి("Error: unsupported arg size %ld arg type %d\n", (*arg)->కొలత, (*arg)->type);
       abort(); /* should never happen? */
     }
   }
@@ -224,9 +224,9 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ecif.rvalue = rvalue;
 
   /* This implementation allocates anyway for all register based args */
-  slot_fitting_args_size = max(slot_fitting_args_size, REG_ARGS_SIZE);
-  total_size = slot_fitting_args_size + big_struct_size;
-  total_size = ALIGN(total_size, KVX_ABI_STACK_ALIGNMENT);
+  స్థానం_fitting_వాదనలు_కొలత = max(స్థానం_fitting_వాదనలు_కొలత, REG_వాదనలు_కొలత);
+  మొత్తం_కొలత = స్థానం_fitting_వాదనలు_కొలత + big_struct_కొలత;
+  మొత్తం_కొలత = ALIGN(మొత్తం_కొలత, KVX_ABI_దొంతర_ALIGNMENT);
 
   /* wb_size: write back size, the size we will need to write back to user
    * provided buffer. In theory it should always be cif->flags which is
@@ -236,38 +236,38 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
    * in our case, if size <= 8 bytes we must write back 8 bytes.
    * floats, complex and structs are not affected, only integrals.
    */
-  wb_size = handle_small_int_ext(&int_extension_method, cif->rtype);
+  wb_కొలత = handle_small_int_ext(&int_extension_పద్ధతి, cif->rtype);
 
-  switch (cif->abi) {
-    case FFI_SYSV:
-      DEBUG_PRINT("total_size: %lu\n", total_size);
-      DEBUG_PRINT("slot fitting args size: %lu\n", slot_fitting_args_size);
+  ఎంపిక (cif->abi) {
+    స్థితి FFI_SYSV:
+      DEBUG_PRINT("total_size: %lu\n", మొత్తం_కొలత);
+      DEBUG_PRINT("slot fitting args size: %lu\n", స్థానం_fitting_వాదనలు_కొలత);
       DEBUG_PRINT("rvalue: %p\n", rvalue);
       DEBUG_PRINT("fn: %p\n", fn);
       DEBUG_PRINT("rsize: %u\n", cif->flags);
-      DEBUG_PRINT("wb_size: %u\n", wb_size);
-      DEBUG_PRINT("int_extension_method: %u\n", int_extension_method);
-      local_rvalue = ffi_call_SYSV(total_size, slot_fitting_args_size,
-                                   &ecif, rvalue, fn, int_extension_method);
-      if ((cif->flags <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE)
+      DEBUG_PRINT("wb_size: %u\n", wb_కొలత);
+      DEBUG_PRINT("int_extension_method: %u\n", int_extension_పద్ధతి);
+      local_rvalue = ffi_call_SYSV(మొత్తం_కొలత, స్థానం_fitting_వాదనలు_కొలత,
+                                   &ecif, rvalue, fn, int_extension_పద్ధతి);
+      ఒకవేళ ((cif->flags <= KVX_ABI_MAX_AGGREGATE_లోపల_REG_కొలత)
           && (cif->rtype->type != FFI_TYPE_VOID))
-        memcpy(rvalue, &local_rvalue, wb_size);
-      break;
-    default:
+        జ్ఞాపకం_నకలు(rvalue, &local_rvalue, wb_కొలత);
+      ఆపు;
+    అప్రమేయ:
       abort();
-      break;
+      ఆపు;
   }
 }
 
 /* Closures not supported yet */
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం* సంవృతం,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      శూన్య (*fun)(ffi_cif*,శూన్య*,శూన్య**,శూన్య*),
+                      శూన్య *user_దత్తాంశం,
+                      శూన్య *codeloc)
 {
-  return FFI_BAD_ABI;
+  తిరిగి FFI_BAD_ABI;
 }
 
-#endif /* (__kvx__) */
+#అయితే_ముగింపు /* (__kvx__) */

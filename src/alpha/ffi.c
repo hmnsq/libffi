@@ -25,331 +25,331 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ "internal.h"
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if defined(__LONG_DOUBLE_128__)
-# if FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+#ఒకవేళ defined(__LONG_DOUBLE_128__)
+# ఒకవేళ FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE బహిర్గతం యొక్క date
 # endif
-#else
+#లేకపోతే
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#అయితే_ముగింపు
 
-extern void ffi_call_osf(void *stack, void *frame, unsigned flags,
-			 void *raddr, void (*fn)(void), void *closure)
+బాహ్య శూన్య ffi_call_osf(శూన్య *దొంతర, శూన్య *చట్రం, గుర్తులేని flags,
+			 శూన్య *raddr, శూన్య (*fn)(శూన్య), శూన్య *సంవృతం)
 	FFI_HIDDEN;
-extern void ffi_closure_osf(void) FFI_HIDDEN;
-extern void ffi_go_closure_osf(void) FFI_HIDDEN;
+బాహ్య శూన్య ffi_సంవృతం_osf(శూన్య) FFI_HIDDEN;
+బాహ్య శూన్య ffi_go_సంవృతం_osf(శూన్య) FFI_HIDDEN;
 
 /* Promote a float value to its in-register double representation.
    Unlike actually casting to double, this does not trap on NaN.  */
-static inline UINT64 lds(void *ptr)
+స్థిర అంతఃవరుస UINT64 lds(శూన్య *ptr)
 {
   UINT64 ret;
   __asm__("lds %0,%1" : "=f"(ret) : "m"(*(UINT32 *)ptr));
-  return ret;
+  తిరిగి ret;
 }
 
 /* And the reverse.  */
-static inline void sts(void *ptr, UINT64 val)
+స్థిర అంతఃవరుస శూన్య sts(శూన్య *ptr, UINT64 val)
 {
   __asm__("sts %1,%0" : "=m"(*(UINT32 *)ptr) : "f"(val));
 }
 
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  size_t bytes = 0;
-  int flags, i, avn;
+  size_t బైట్లు = 0;
+  పూర్ణాంకం flags, i, avn;
   ffi_type *rtype, *itype;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_OSF)
+    తిరిగి FFI_BAD_ABI;
 
   /* Compute the size of the argument area.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  కొరకు (i = 0, avn = cif->nargs; i < avn; i++)
     {
       itype = cif->arg_types[i];
-      switch (itype->type)
+      ఎంపిక (itype->type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT16:
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_సూచిక:
+	స్థితి FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_DOUBLE:
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	  /* All take one 8 byte slot.  */
-	  bytes += 8;
-	  break;
+	  బైట్లు += 8;
+	  ఆపు;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_SINT128:
+	స్థితి FFI_TYPE_UINT128:
+	స్థితి FFI_TYPE_VOID:
+	స్థితి FFI_TYPE_STRUCT:
 	  /* Passed by value in N slots.  */
-	  bytes += FFI_ALIGN(itype->size, FFI_SIZEOF_ARG);
-	  break;
+	  బైట్లు += FFI_ALIGN(itype->కొలత, FFI_SIZEOF_ARG);
+	  ఆపు;
 
-	case FFI_TYPE_COMPLEX:
+	స్థితి FFI_TYPE_COMPLEX:
 	  /* _Complex long double passed by reference; others in 2 slots.  */
-	  if (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
-	    bytes += 8;
-	  else
-	    bytes += 16;
-	  break;
+	  ఒకవేళ (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+	    బైట్లు += 8;
+	  లేకపోతే
+	    బైట్లు += 16;
+	  ఆపు;
 
-	default:
+	అప్రమేయ:
 	  abort();
 	}
     }
 
   /* Set the return type flag */
   rtype = cif->rtype;
-  switch (rtype->type)
+  ఎంపిక (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    స్థితి FFI_TYPE_VOID:
       flags = ALPHA_FLAGS(ALPHA_ST_VOID, ALPHA_LD_VOID);
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+      ఆపు;
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_UINT32:
+    స్థితి FFI_TYPE_SINT32:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT32);
-      break;
-    case FFI_TYPE_FLOAT:
+      ఆపు;
+    స్థితి FFI_TYPE_FLOAT:
       flags = ALPHA_FLAGS(ALPHA_ST_FLOAT, ALPHA_LD_FLOAT);
-      break;
-    case FFI_TYPE_DOUBLE:
+      ఆపు;
+    స్థితి FFI_TYPE_DOUBLE:
       flags = ALPHA_FLAGS(ALPHA_ST_DOUBLE, ALPHA_LD_DOUBLE);
-      break;
-    case FFI_TYPE_UINT8:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT8);
-      break;
-    case FFI_TYPE_SINT8:
+      ఆపు;
+    స్థితి FFI_TYPE_SINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT8);
-      break;
-    case FFI_TYPE_UINT16:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT16);
-      break;
-    case FFI_TYPE_SINT16:
+      ఆపు;
+    స్థితి FFI_TYPE_SINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT16);
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_సూచిక:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-      break;
-    case FFI_TYPE_SINT128:
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
+      ఆపు;
+    స్థితి FFI_TYPE_SINT128:
+    స్థితి FFI_TYPE_UINT128:
+    స్థితి FFI_TYPE_LONGDOUBLE:
+    స్థితి FFI_TYPE_STRUCT:
       /* Passed in memory, with a hidden pointer.  */
-      flags = ALPHA_RET_IN_MEM;
-      break;
-    case FFI_TYPE_COMPLEX:
+      flags = ALPHA_RET_లోపల_MEM;
+      ఆపు;
+    స్థితి FFI_TYPE_COMPLEX:
       itype = rtype->elements[0];
-      switch (itype->type)
+      ఎంపిక (itype->type)
 	{
-	case FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_FLOAT:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXF, ALPHA_LD_CPLXF);
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  ఆపు;
+	స్థితి FFI_TYPE_DOUBLE:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXD, ALPHA_LD_CPLXD);
-	  break;
-	default:
-	  if (rtype->size <= 8)
+	  ఆపు;
+	అప్రమేయ:
+	  ఒకవేళ (rtype->కొలత <= 8)
 	    flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-	  else
-	    flags = ALPHA_RET_IN_MEM;
-	  break;
+	  లేకపోతే
+	    flags = ALPHA_RET_లోపల_MEM;
+	  ఆపు;
 	}
-      break;
-    default:
+      ఆపు;
+    అప్రమేయ:
       abort();
     }
   cif->flags = flags;
 
   /* Include the hidden structure pointer in args requirement.  */
-  if (flags == ALPHA_RET_IN_MEM)
-    bytes += 8;
+  ఒకవేళ (flags == ALPHA_RET_లోపల_MEM)
+    బైట్లు += 8;
   /* Minimum size is 6 slots, so that ffi_call_osf can pop them.  */
-  if (bytes < 6*8)
-    bytes = 6*8;
-  cif->bytes = bytes;
+  ఒకవేళ (బైట్లు < 6*8)
+    బైట్లు = 6*8;
+  cif->బైట్లు = బైట్లు;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-static unsigned long
-extend_basic_type(void *valp, int type, int argn)
+స్థిర గుర్తులేని దీర్ఘ
+extend_basic_type(శూన్య *valp, పూర్ణాంకం type, పూర్ణాంకం argn)
 {
-  switch (type)
+  ఎంపిక (type)
     {
-    case FFI_TYPE_SINT8:
-      return *(SINT8 *)valp;
-    case FFI_TYPE_UINT8:
-      return *(UINT8 *)valp;
-    case FFI_TYPE_SINT16:
-      return *(SINT16 *)valp;
-    case FFI_TYPE_UINT16:
-      return *(UINT16 *)valp;
+    స్థితి FFI_TYPE_SINT8:
+      తిరిగి *(SINT8 *)valp;
+    స్థితి FFI_TYPE_UINT8:
+      తిరిగి *(UINT8 *)valp;
+    స్థితి FFI_TYPE_SINT16:
+      తిరిగి *(SINT16 *)valp;
+    స్థితి FFI_TYPE_UINT16:
+      తిరిగి *(UINT16 *)valp;
 
-    case FFI_TYPE_FLOAT:
-      if (argn < 6)
-	return lds(valp);
+    స్థితి FFI_TYPE_FLOAT:
+      ఒకవేళ (argn < 6)
+	తిరిగి lds(valp);
       /* FALLTHRU */
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_SINT32:
+    స్థితి FFI_TYPE_UINT32:
       /* Note that unsigned 32-bit quantities are sign extended.  */
-      return *(SINT32 *)valp;
+      తిరిగి *(SINT32 *)valp;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_DOUBLE:
-      return *(UINT64 *)valp;
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_సూచిక:
+    స్థితి FFI_TYPE_DOUBLE:
+      తిరిగి *(UINT64 *)valp;
 
-    default:
+    అప్రమేయ:
       abort();
     }
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+స్థిర శూన్య
+ffi_call_int (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue,
+	      శూన్య **avalue, శూన్య *సంవృతం)
 {
-  unsigned long *argp;
-  long i, avn, argn, flags = cif->flags;
+  గుర్తులేని దీర్ఘ *argp;
+  దీర్ఘ i, avn, argn, flags = cif->flags;
   ffi_type **arg_types;
-  void *frame;
+  శూన్య *చట్రం;
 
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
-  if (rvalue == NULL && flags == ALPHA_RET_IN_MEM)
-    rvalue = alloca(cif->rtype->size);
+  ఒకవేళ (rvalue == ఖాళీ && flags == ALPHA_RET_లోపల_MEM)
+    rvalue = alloca(cif->rtype->కొలత);
 
   /* Allocate the space for the arguments, plus 4 words of temp
      space for ffi_call_osf.  */
-  argp = frame = alloca(cif->bytes + 4*FFI_SIZEOF_ARG);
-  frame += cif->bytes;
+  argp = చట్రం = alloca(cif->బైట్లు + 4*FFI_SIZEOF_ARG);
+  చట్రం += cif->బైట్లు;
 
   argn = 0;
-  if (flags == ALPHA_RET_IN_MEM)
-    argp[argn++] = (unsigned long)rvalue;
+  ఒకవేళ (flags == ALPHA_RET_లోపల_MEM)
+    argp[argn++] = (గుర్తులేని దీర్ఘ)rvalue;
 
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  కొరకు (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *valp = avalue[i];
-      int type = ty->type;
-      size_t size;
+      శూన్య *valp = avalue[i];
+      పూర్ణాంకం type = ty->type;
+      size_t కొలత;
 
-      switch (type)
+      ఎంపిక (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT16:
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_సూచిక:
+	స్థితి FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_DOUBLE:
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argn++;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_LONGDOUBLE:
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Note that 128-bit long double is passed by reference.  */
-	  argp[argn++] = (unsigned long)valp;
-	  break;
+	  argp[argn++] = (గుర్తులేని దీర్ఘ)valp;
+	  ఆపు;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
-	  size = ty->size;
-	  memcpy(argp + argn, valp, size);
-	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	స్థితి FFI_TYPE_SINT128:
+	స్థితి FFI_TYPE_UINT128:
+	స్థితి FFI_TYPE_VOID:
+	స్థితి FFI_TYPE_STRUCT:
+	  కొలత = ty->కొలత;
+	  జ్ఞాపకం_నకలు(argp + argn, valp, కొలత);
+	  argn += FFI_ALIGN(కొలత, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	  ఆపు;
 
-	case FFI_TYPE_COMPLEX:
+	స్థితి FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  if (type == FFI_TYPE_LONGDOUBLE)
-	    goto by_reference;
+	  ఒకవేళ (type == FFI_TYPE_LONGDOUBLE)
+	    వెళ్ళు by_reference;
 
 	  /* Most complex types passed as two separate arguments.  */
-	  size = ty->elements[0]->size;
+	  కొలత = ty->elements[0]->కొలత;
 	  argp[argn] = extend_basic_type(valp, type, argn);
-	  argp[argn + 1] = extend_basic_type(valp + size, type, argn + 1);
+	  argp[argn + 1] = extend_basic_type(valp + కొలత, type, argn + 1);
 	  argn += 2;
-	  break;
+	  ఆపు;
 
-	default:
+	అప్రమేయ:
 	  abort();
 	}
     }
 
-  flags = (flags >> ALPHA_ST_SHIFT) & 0xff;
-  ffi_call_osf(argp, frame, flags, rvalue, fn, closure);
+  flags = (flags >> ALPHA_ST_జరుపు) & 0xff;
+  ffi_call_osf(argp, చట్రం, flags, rvalue, fn, సంవృతం);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, ఖాళీ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+శూన్య
+ffi_call_go (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue,
+	     శూన్య **avalue, శూన్య *సంవృతం)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, closure);
+  ffi_call_int(cif, fn, rvalue, avalue, సంవృతం);
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం* సంవృతం,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
-  unsigned int *tramp;
+  గుర్తులేని పూర్ణాంకం *tramp;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_OSF)
+    తిరిగి FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (గుర్తులేని పూర్ణాంకం *) &సంవృతం->tramp[0];
   tramp[0] = 0x47fb0401;	/* mov $27,$1		*/
   tramp[1] = 0xa77b0010;	/* ldq $27,16($27)	*/
   tramp[2] = 0x6bfb0000;	/* jmp $31,($27),0	*/
   tramp[3] = 0x47ff041f;	/* nop			*/
-  *(void **) &tramp[4] = ffi_closure_osf;
+  *(శూన్య **) &tramp[4] = ffi_సంవృతం_osf;
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
 
   /* Flush the Icache.
 
@@ -357,164 +357,164 @@ ffi_prep_closure_loc (ffi_closure* closure,
      instead, since both Compaq as and gas can handle it.
 
      0x86 is PAL_imb in Tru64 UNIX <alpha/pal.h>.  */
-  __asm__ volatile ("call_pal 0x86" : : : "memory");
+  __asm__ అస్థిర ("call_pal 0x86" : : : "memory");
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure* closure,
+ffi_స్థితి
+ffi_prep_go_సంవృతం (ffi_go_సంవృతం* సంవృతం,
 		     ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*))
 {
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_OSF)
+    తిరిగి FFI_BAD_ABI;
 
-  closure->tramp = (void *)ffi_go_closure_osf;
-  closure->cif = cif;
-  closure->fun = fun;
+  సంవృతం->tramp = (శూన్య *)ffi_go_సంవృతం_osf;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-long FFI_HIDDEN
-ffi_closure_osf_inner (ffi_cif *cif,
-		       void (*fun)(ffi_cif*, void*, void**, void*),
-		       void *user_data,
-		       void *rvalue, unsigned long *argp)
+దీర్ఘ FFI_HIDDEN
+ffi_సంవృతం_osf_inner (ffi_cif *cif,
+		       శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*),
+		       శూన్య *user_దత్తాంశం,
+		       శూన్య *rvalue, గుర్తులేని దీర్ఘ *argp)
 {
-  void **avalue;
+  శూన్య **avalue;
   ffi_type **arg_types;
-  long i, avn, argn, flags;
+  దీర్ఘ i, avn, argn, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * పరిమాణం(శూన్య *));
   flags = cif->flags;
   argn = 0;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  ఒకవేళ (flags == ALPHA_RET_లోపల_MEM)
     {
-      rvalue = (void *) argp[0];
+      rvalue = (శూన్య *) argp[0];
       argn = 1;
     }
 
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  కొరకు (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      int type = ty->type;
-      void *valp = &argp[argn];
-      size_t size;
+      పూర్ణాంకం type = ty->type;
+      శూన్య *valp = &argp[argn];
+      size_t కొలత;
 
-      switch (type)
+      ఎంపిక (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT16:
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_సూచిక:
 	  argn += 1;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
-	  size = ty->size;
-	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	స్థితి FFI_TYPE_SINT128:
+	స్థితి FFI_TYPE_UINT128:
+	స్థితి FFI_TYPE_VOID:
+	స్థితి FFI_TYPE_STRUCT:
+	  కొలత = ty->కొలత;
+	  argn += FFI_ALIGN(కొలత, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	  ఆపు;
 
-	case FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_FLOAT:
 	  /* Floats coming from registers need conversion from double
 	     back to float format.  */
-	  if (argn < 6)
+	  ఒకవేళ (argn < 6)
 	    {
 	      valp = &argp[argn - 6];
 	      sts(valp, argp[argn - 6]);
 	    }
 	  argn += 1;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_DOUBLE:
-	  if (argn < 6)
+	స్థితి FFI_TYPE_DOUBLE:
+	  ఒకవేళ (argn < 6)
 	    valp = &argp[argn - 6];
 	  argn += 1;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_LONGDOUBLE:
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* 128-bit long double is passed by reference.  */
-	  valp = (void *)argp[argn];
+	  valp = (శూన్య *)argp[argn];
 	  argn += 1;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_COMPLEX:
+	స్థితి FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  switch (type)
+	  ఎంపిక (type)
 	    {
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
+	    స్థితి FFI_TYPE_SINT64:
+	    స్థితి FFI_TYPE_UINT64:
 	      /* Passed as separate arguments, but they wind up sequential.  */
-	      break;
+	      ఆపు;
 
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
+	    స్థితి FFI_TYPE_INT:
+	    స్థితి FFI_TYPE_SINT8:
+	    స్థితి FFI_TYPE_UINT8:
+	    స్థితి FFI_TYPE_SINT16:
+	    స్థితి FFI_TYPE_UINT16:
+	    స్థితి FFI_TYPE_SINT32:
+	    స్థితి FFI_TYPE_UINT32:
 	      /* Passed as separate arguments.  Disjoint, but there's room
 		 enough in one slot to hold the pair.  */
-	      size = ty->elements[0]->size;
-	      memcpy(valp + size, valp + 8, size);
-	      break;
+	      కొలత = ty->elements[0]->కొలత;
+	      జ్ఞాపకం_నకలు(valp + కొలత, valp + 8, కొలత);
+	      ఆపు;
 
-	    case FFI_TYPE_FLOAT:
+	    స్థితి FFI_TYPE_FLOAT:
 	      /* Passed as separate arguments.  Disjoint, and each piece
 		 may need conversion back to float.  */
-	      if (argn < 6)
+	      ఒకవేళ (argn < 6)
 		{
 		  valp = &argp[argn - 6];
 		  sts(valp, argp[argn - 6]);
 		}
-	      if (argn + 1 < 6)
+	      ఒకవేళ (argn + 1 < 6)
 		sts(valp + 4, argp[argn + 1 - 6]);
-	      else
+	      లేకపోతే
 		*(UINT32 *)(valp + 4) = argp[argn + 1];
-	      break;
+	      ఆపు;
 
-	    case FFI_TYPE_DOUBLE:
+	    స్థితి FFI_TYPE_DOUBLE:
 	      /* Passed as separate arguments.  Only disjoint if one part
 		 is in fp regs and the other is on the stack.  */
-	      if (argn < 5)
+	      ఒకవేళ (argn < 5)
 		valp = &argp[argn - 6];
-	      else if (argn == 5)
+	      లేకపోతే ఒకవేళ (argn == 5)
 		{
 		  valp = alloca(16);
 		  ((UINT64 *)valp)[0] = argp[5 - 6];
 		  ((UINT64 *)valp)[1] = argp[6];
 		}
-	      break;
+	      ఆపు;
 
-	    case FFI_TYPE_LONGDOUBLE:
-	      goto by_reference;
+	    స్థితి FFI_TYPE_LONGDOUBLE:
+	      వెళ్ళు by_reference;
 
-	    default:
+	    అప్రమేయ:
 	      abort();
 	    }
 	  argn += 2;
-	  break;
+	  ఆపు;
 
-	default:
+	అప్రమేయ:
 	  abort ();
 	}
 
@@ -522,8 +522,8 @@ ffi_closure_osf_inner (ffi_cif *cif,
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_దత్తాంశం);
 
   /* Tell ffi_closure_osf how to perform return type promotions.  */
-  return (flags >> ALPHA_LD_SHIFT) & 0xff;
+  తిరిగి (flags >> ALPHA_LD_జరుపు) & 0xff;
 }

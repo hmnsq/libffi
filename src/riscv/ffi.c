@@ -27,545 +27,545 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include "internal.h"
-#include <tramp.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
+#అన్తర్భావ "internal.h"
+#అన్తర్భావ <tramp.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdint.h>
 
-#if __riscv_float_abi_double
-#define ABI_FLEN 64
-typedef union {
+#ఒకవేళ __riscv_float_abi_double
+#నిర్వచించు ABI_FLEN 64
+రకనిర్వచనం సంఘం {
     uint64_t i;
-    double d;
+    ద్విగుణ d;
 } float_reg;
-#elif __riscv_float_abi_single
-#define ABI_FLEN 32
-typedef union {
-    float f;
+#లేదావేళ __riscv_float_abi_single
+#నిర్వచించు ABI_FLEN 32
+రకనిర్వచనం సంఘం {
+    దశాంశం f;
 } float_reg;
-#endif
+#అయితే_ముగింపు
 
-#define NARGREG 8
-#define STKALIGN 16
-#define MAXCOPYARG (2 * sizeof(double))
+#నిర్వచించు NARGREG 8
+#నిర్వచించు STKALIGN 16
+#నిర్వచించు MAXCOPYARG (2 * పరిమాణం(ద్విగుణ))
 
-typedef struct call_context
+రకనిర్వచనం నిర్మాణం call_context
 {
-#if ABI_FLEN
+#ఒకవేళ ABI_FLEN
     float_reg fa[8];
-#endif
+#అయితే_ముగింపు
     size_t a[8];
     /* used by the assembly code to in-place construct its own stack frame */
-    char frame[16];
+    అక్షరం చట్రం[16];
 } call_context;
 
-typedef struct call_builder
+రకనిర్వచనం నిర్మాణం call_builder
 {
     call_context *aregs;
-    int used_integer;
-    int used_float;
-    size_t *used_stack;
-    void *struct_stack;
+    పూర్ణాంకం వాడిన_integer;
+    పూర్ణాంకం వాడిన_float;
+    size_t *వాడిన_దొంతర;
+    శూన్య *struct_దొంతర;
 } call_builder;
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if __SIZEOF_POINTER__ == 8
-#define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
-#define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
-#endif
+#ఒకవేళ __SIZEOF_POINTER__ == 8
+#నిర్వచించు IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
+#లేకపోతే
+#నిర్వచించు IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
+#అయితే_ముగింపు
 
-#if ABI_FLEN
-typedef struct {
-    char as_elements, type1, offset2, type2;
+#ఒకవేళ ABI_FLEN
+రకనిర్వచనం నిర్మాణం {
+    అక్షరం as_elements, type1, offset2, type2;
 } float_struct_info;
 
-#if ABI_FLEN >= 64
-#define IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
-#else
-#define IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
-#endif
+#ఒకవేళ ABI_FLEN >= 64
+#నిర్వచించు IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
+#లేకపోతే
+#నిర్వచించు IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
+#అయితే_ముగింపు
 
-static ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
-    int i;
-    if (out == out_end) return out;
-    if (in->type != FFI_TYPE_STRUCT) {
-        *(out++) = in;
-    } else {
-        for (i = 0; in->elements[i]; i++)
-            out = flatten_struct(in->elements[i], out, out_end);
+స్థిర ffi_type **flatten_struct(ffi_type *లోపల, ffi_type **బహిర్గతం, ffi_type **బహిర్గతం_చివర) {
+    పూర్ణాంకం i;
+    ఒకవేళ (బహిర్గతం == బహిర్గతం_చివర) తిరిగి బహిర్గతం;
+    ఒకవేళ (లోపల->type != FFI_TYPE_STRUCT) {
+        *(బహిర్గతం++) = లోపల;
+    } లేకపోతే {
+        కొరకు (i = 0; లోపల->elements[i]; i++)
+            బహిర్గతం = flatten_struct(లోపల->elements[i], బహిర్గతం, బహిర్గతం_చివర);
     }
-    return out;
+    తిరిగి బహిర్గతం;
 }
 
 /* Structs with at most two fields after flattening, one of which is of
    floating point type, are passed in multiple registers if sufficient
    registers are available. */
-static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *top) {
+స్థిర float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *శిఖరం) {
     float_struct_info ret = {0, 0, 0, 0};
     ffi_type *fields[3];
-    int num_floats, num_ints;
-    int num_fields = flatten_struct(top, fields, fields + 3) - fields;
+    పూర్ణాంకం అంకె_floats, అంకె_ints;
+    పూర్ణాంకం అంకె_fields = flatten_struct(శిఖరం, fields, fields + 3) - fields;
 
-    if (num_fields == 1) {
-        if (IS_FLOAT(fields[0]->type)) {
+    ఒకవేళ (అంకె_fields == 1) {
+        ఒకవేళ (IS_FLOAT(fields[0]->type)) {
             ret.as_elements = 1;
             ret.type1 = fields[0]->type;
         }
-    } else if (num_fields == 2) {
-        num_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
-        num_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
-        if (num_floats == 0 || num_floats + num_ints != 2)
-            return ret;
-        if (cb->used_float + num_floats > NARGREG || cb->used_integer + (2 - num_floats) > NARGREG)
-            return ret;
-        if (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
-            return ret;
+    } లేకపోతే ఒకవేళ (అంకె_fields == 2) {
+        అంకె_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
+        అంకె_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
+        ఒకవేళ (అంకె_floats == 0 || అంకె_floats + అంకె_ints != 2)
+            తిరిగి ret;
+        ఒకవేళ (cb->వాడిన_float + అంకె_floats > NARGREG || cb->వాడిన_integer + (2 - అంకె_floats) > NARGREG)
+            తిరిగి ret;
+        ఒకవేళ (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
+            తిరిగి ret;
 
         ret.type1 = fields[0]->type;
         ret.type2 = fields[1]->type;
-        ret.offset2 = FFI_ALIGN(fields[0]->size, fields[1]->alignment);
+        ret.offset2 = FFI_ALIGN(fields[0]->కొలత, fields[1]->alignment);
         ret.as_elements = 1;
     }
 
-    return ret;
+    తిరిగి ret;
 }
 
-#if ABI_FLEN >= 64
+#ఒకవేళ ABI_FLEN >= 64
 /* Float values in wider RISC-V FP registers are NaN-boxed */
-static void marshal_float(call_builder *cb, void *data) {
-    union {
+స్థిర శూన్య marshal_float(call_builder *cb, శూన్య *దత్తాంశం) {
+    సంఘం {
         uint32_t i;
-        float f;
-    } value;
+        దశాంశం f;
+    } విలువ;
 
-    value.f = *(float *)data;
-    cb->aregs->fa[cb->used_float++].i =
-        UINT64_C(0xffffffff00000000) | value.i;
+    విలువ.f = *(దశాంశం *)దత్తాంశం;
+    cb->aregs->fa[cb->వాడిన_float++].i =
+        UINT64_C(0xffffffff00000000) | విలువ.i;
 }
 
-static void unmarshal_float(call_builder *cb, void *data) {
-    union {
+స్థిర శూన్య unmarshal_float(call_builder *cb, శూన్య *దత్తాంశం) {
+    సంఘం {
         uint32_t i;
-        float f;
-    } value;
+        దశాంశం f;
+    } విలువ;
 
-    value.i = (uint32_t)cb->aregs->fa[cb->used_float++].i;
-    *(float *)data = value.f;
+    విలువ.i = (uint32_t)cb->aregs->fa[cb->వాడిన_float++].i;
+    *(దశాంశం *)దత్తాంశం = విలువ.f;
 }
-#endif
-#endif
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
-    size_t value = 0;
-    switch (type) {
-        case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
-        case FFI_TYPE_SINT8: value = *(int8_t *)data; break;
-        case FFI_TYPE_UINT16: value = *(uint16_t *)data; break;
-        case FFI_TYPE_SINT16: value = *(int16_t *)data; break;
+స్థిర శూన్య marshal_atom(call_builder *cb, పూర్ణాంకం type, శూన్య *దత్తాంశం) {
+    size_t విలువ = 0;
+    ఎంపిక (type) {
+        స్థితి FFI_TYPE_UINT8: విలువ = *(uint8_t *)దత్తాంశం; ఆపు;
+        స్థితి FFI_TYPE_SINT8: విలువ = *(int8_t *)దత్తాంశం; ఆపు;
+        స్థితి FFI_TYPE_UINT16: విలువ = *(uint16_t *)దత్తాంశం; ఆపు;
+        స్థితి FFI_TYPE_SINT16: విలువ = *(int16_t *)దత్తాంశం; ఆపు;
         /* 32-bit quantities are always sign-extended in the ABI */
-        case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
-        case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
-        case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
-#endif
-        case FFI_TYPE_POINTER: value = *(size_t *)data; break;
+        స్థితి FFI_TYPE_UINT32: విలువ = *(int32_t *)దత్తాంశం; ఆపు;
+        స్థితి FFI_TYPE_SINT32: విలువ = *(int32_t *)దత్తాంశం; ఆపు;
+#ఒకవేళ __SIZEOF_POINTER__ == 8
+        స్థితి FFI_TYPE_UINT64: విలువ = *(uint64_t *)దత్తాంశం; ఆపు;
+        స్థితి FFI_TYPE_SINT64: విలువ = *(int64_t *)దత్తాంశం; ఆపు;
+#అయితే_ముగింపు
+        స్థితి FFI_TYPE_సూచిక: విలువ = *(size_t *)దత్తాంశం; ఆపు;
 
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
-            marshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(float *)data));
-            return;
-#endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(double *)data));
-            return;
-#endif
-        default: FFI_ASSERT(0); break;
+#ఒకవేళ ABI_FLEN >= 64
+        స్థితి FFI_TYPE_FLOAT:
+            marshal_float(cb, దత్తాంశం);
+            తిరిగి;
+#లేదావేళ ABI_FLEN >= 32
+        స్థితి FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(cb->aregs->fa[cb->వాడిన_float++].f) : "0"(*(దశాంశం *)దత్తాంశం));
+            తిరిగి;
+#అయితే_ముగింపు
+#ఒకవేళ ABI_FLEN >= 64
+        స్థితి FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(cb->aregs->fa[cb->వాడిన_float++].d) : "0"(*(ద్విగుణ *)దత్తాంశం));
+            తిరిగి;
+#అయితే_ముగింపు
+        అప్రమేయ: FFI_ASSERT(0); ఆపు;
     }
 
-    if (cb->used_integer == NARGREG) {
-        *cb->used_stack++ = value;
-    } else {
-        cb->aregs->a[cb->used_integer++] = value;
+    ఒకవేళ (cb->వాడిన_integer == NARGREG) {
+        *cb->వాడిన_దొంతర++ = విలువ;
+    } లేకపోతే {
+        cb->aregs->a[cb->వాడిన_integer++] = విలువ;
     }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
-    size_t value;
-    switch (type) {
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
-            unmarshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(*(float *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
-            return;
-#endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(*(double *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
-            return;
-#endif
+స్థిర శూన్య unmarshal_atom(call_builder *cb, పూర్ణాంకం type, శూన్య *దత్తాంశం) {
+    size_t విలువ;
+    ఎంపిక (type) {
+#ఒకవేళ ABI_FLEN >= 64
+        స్థితి FFI_TYPE_FLOAT:
+            unmarshal_float(cb, దత్తాంశం);
+            తిరిగి;
+#లేదావేళ ABI_FLEN >= 32
+        స్థితి FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(*(దశాంశం *)దత్తాంశం) : "0"(cb->aregs->fa[cb->వాడిన_float++].f));
+            తిరిగి;
+#అయితే_ముగింపు
+#ఒకవేళ ABI_FLEN >= 64
+        స్థితి FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(*(ద్విగుణ *)దత్తాంశం) : "0"(cb->aregs->fa[cb->వాడిన_float++].d));
+            తిరిగి;
+#అయితే_ముగింపు
     }
 
-    if (cb->used_integer == NARGREG) {
-        value = *cb->used_stack++;
-    } else {
-        value = cb->aregs->a[cb->used_integer++];
+    ఒకవేళ (cb->వాడిన_integer == NARGREG) {
+        విలువ = *cb->వాడిన_దొంతర++;
+    } లేకపోతే {
+        విలువ = cb->aregs->a[cb->వాడిన_integer++];
     }
 
-    switch (type) {
-        case FFI_TYPE_UINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_SINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_UINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
-        case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
-        case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
-#endif
-        case FFI_TYPE_POINTER: *(size_t *)data = value; break;
-        default: FFI_ASSERT(0); break;
+    ఎంపిక (type) {
+        స్థితి FFI_TYPE_UINT8: *(uint8_t *)దత్తాంశం = విలువ; ఆపు;
+        స్థితి FFI_TYPE_SINT8: *(uint8_t *)దత్తాంశం = విలువ; ఆపు;
+        స్థితి FFI_TYPE_UINT16: *(uint16_t *)దత్తాంశం = విలువ; ఆపు;
+        స్థితి FFI_TYPE_SINT16: *(uint16_t *)దత్తాంశం = విలువ; ఆపు;
+        స్థితి FFI_TYPE_UINT32: *(uint32_t *)దత్తాంశం = విలువ; ఆపు;
+        స్థితి FFI_TYPE_SINT32: *(uint32_t *)దత్తాంశం = విలువ; ఆపు;
+#ఒకవేళ __SIZEOF_POINTER__ == 8
+        స్థితి FFI_TYPE_UINT64: *(uint64_t *)దత్తాంశం = విలువ; ఆపు;
+        స్థితి FFI_TYPE_SINT64: *(uint64_t *)దత్తాంశం = విలువ; ఆపు;
+#అయితే_ముగింపు
+        స్థితి FFI_TYPE_సూచిక: *(size_t *)దత్తాంశం = విలువ; ఆపు;
+        అప్రమేయ: FFI_ASSERT(0); ఆపు;
     }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
+స్థిర శూన్య marshal(call_builder *cb, ffi_type *type, పూర్ణాంకం var, శూన్య *దత్తాంశం) {
     size_t realign[2];
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#ఒకవేళ ABI_FLEN
+    ఒకవేళ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
-            marshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                marshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return;
+        ఒకవేళ (fsi.as_elements) {
+            marshal_atom(cb, fsi.type1, దత్తాంశం);
+            ఒకవేళ (fsi.offset2)
+                marshal_atom(cb, fsi.type2, ((అక్షరం*)దత్తాంశం) + fsi.offset2);
+            తిరిగి;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
-        marshal_atom(cb, type->type, data);
-        return;
+    ఒకవేళ (!var && cb->వాడిన_float < NARGREG && IS_FLOAT(type->type)) {
+        marshal_atom(cb, type->type, దత్తాంశం);
+        తిరిగి;
     }
-#endif
+#అయితే_ముగింపు
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    ఒకవేళ (type->కొలత > 2 * __SIZEOF_POINTER__) {
         /* copy to stack and pass by reference */
-        data = memcpy (cb->struct_stack, data, type->size);
-        cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
-        marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
-        marshal_atom(cb, type->type, data);
-    } else {
+        దత్తాంశం = జ్ఞాపకం_నకలు (cb->struct_దొంతర, దత్తాంశం, type->కొలత);
+        cb->struct_దొంతర = (size_t *) FFI_ALIGN ((అక్షరం *) cb->struct_దొంతర + type->కొలత, __SIZEOF_POINTER__);
+        marshal_atom(cb, FFI_TYPE_సూచిక, &దత్తాంశం);
+    } లేకపోతే ఒకవేళ (IS_INT(type->type) || type->type == FFI_TYPE_సూచిక) {
+        marshal_atom(cb, type->type, దత్తాంశం);
+    } లేకపోతే {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
-                cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+        ఒకవేళ (type->alignment > __SIZEOF_POINTER__) {
+            ఒకవేళ (var)
+                cb->వాడిన_integer = FFI_ALIGN(cb->వాడిన_integer, 2);
+            cb->వాడిన_దొంతర = (size_t *)FFI_ALIGN(cb->వాడిన_దొంతర, 2*__SIZEOF_POINTER__);
         }
 
-        memcpy(realign, data, type->size);
-        if (type->size > 0)
-            marshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
-            marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
+        జ్ఞాపకం_నకలు(realign, దత్తాంశం, type->కొలత);
+        ఒకవేళ (type->కొలత > 0)
+            marshal_atom(cb, FFI_TYPE_సూచిక, realign);
+        ఒకవేళ (type->కొలత > __SIZEOF_POINTER__)
+            marshal_atom(cb, FFI_TYPE_సూచిక, realign + 1);
     }
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
+స్థిర శూన్య *unmarshal(call_builder *cb, ffi_type *type, పూర్ణాంకం var, శూన్య *దత్తాంశం) {
     size_t realign[2];
-    void *pointer;
+    శూన్య *సూచిక_2;
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#ఒకవేళ ABI_FLEN
+    ఒకవేళ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
-            unmarshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                unmarshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return data;
+        ఒకవేళ (fsi.as_elements) {
+            unmarshal_atom(cb, fsi.type1, దత్తాంశం);
+            ఒకవేళ (fsi.offset2)
+                unmarshal_atom(cb, fsi.type2, ((అక్షరం*)దత్తాంశం) + fsi.offset2);
+            తిరిగి దత్తాంశం;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
-        unmarshal_atom(cb, type->type, data);
-        return data;
+    ఒకవేళ (!var && cb->వాడిన_float < NARGREG && IS_FLOAT(type->type)) {
+        unmarshal_atom(cb, type->type, దత్తాంశం);
+        తిరిగి దత్తాంశం;
     }
-#endif
+#అయితే_ముగింపు
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    ఒకవేళ (type->కొలత > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
-        unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
-        unmarshal_atom(cb, type->type, data);
-        return data;
-    } else {
+        unmarshal_atom(cb, FFI_TYPE_సూచిక, (అక్షరం*)&సూచిక_2);
+        తిరిగి సూచిక_2;
+    } లేకపోతే ఒకవేళ (IS_INT(type->type) || type->type == FFI_TYPE_సూచిక) {
+        unmarshal_atom(cb, type->type, దత్తాంశం);
+        తిరిగి దత్తాంశం;
+    } లేకపోతే {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
-                cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+        ఒకవేళ (type->alignment > __SIZEOF_POINTER__) {
+            ఒకవేళ (var)
+                cb->వాడిన_integer = FFI_ALIGN(cb->వాడిన_integer, 2);
+            cb->వాడిన_దొంతర = (size_t *)FFI_ALIGN(cb->వాడిన_దొంతర, 2*__SIZEOF_POINTER__);
         }
 
-        if (type->size > 0)
-            unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
-            unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
-        memcpy(data, realign, type->size);
-        return data;
+        ఒకవేళ (type->కొలత > 0)
+            unmarshal_atom(cb, FFI_TYPE_సూచిక, realign);
+        ఒకవేళ (type->కొలత > __SIZEOF_POINTER__)
+            unmarshal_atom(cb, FFI_TYPE_సూచిక, realign + 1);
+        జ్ఞాపకం_నకలు(దత్తాంశం, realign, type->కొలత);
+        తిరిగి దత్తాంశం;
     }
 }
 
-static int passed_by_ref(call_builder *cb, ffi_type *type, int var) {
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+స్థిర పూర్ణాంకం passed_by_ref(call_builder *cb, ffi_type *type, పూర్ణాంకం var) {
+#ఒకవేళ ABI_FLEN
+    ఒకవేళ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) return 0;
+        ఒకవేళ (fsi.as_elements) తిరిగి 0;
     }
-#endif
+#అయితే_ముగింపు
 
-    return type->size > 2 * __SIZEOF_POINTER__;
+    తిరిగి type->కొలత > 2 * __SIZEOF_POINTER__;
 }
 
 /* Perform machine dependent cif processing */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif) {
+ffi_స్థితి ffi_prep_cif_machdep(ffi_cif *cif) {
     cif->riscv_nfixedargs = cif->nargs;
-    return FFI_OK;
+    తిరిగి FFI_OK;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs) {
+ffi_స్థితి ffi_prep_cif_machdep_var(ffi_cif *cif, గుర్తులేని పూర్ణాంకం nfixedargs, గుర్తులేని పూర్ణాంకం ntotalargs) {
     cif->riscv_nfixedargs = nfixedargs;
-    return FFI_OK;
+    తిరిగి FFI_OK;
 }
 
 /* Low level routine for calling functions */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+బాహ్య శూన్య ffi_call_asm (శూన్య *దొంతర, నిర్మాణం call_context *regs,
+			  శూన్య (*fn) (శూన్య), శూన్య *సంవృతం) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+స్థిర శూన్య
+ffi_call_int (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue, శూన్య **avalue,
+	      శూన్య *సంవృతం)
 {
     /* this is a conservative estimate, assuming a complex return value and
        that all remaining arguments are long long / __int128 */
-    size_t arg_bytes = cif->nargs <= 3 ? 0 :
-        FFI_ALIGN(2 * sizeof(size_t) * (cif->nargs - 3), STKALIGN);
+    size_t arg_బైట్లు = cif->nargs <= 3 ? 0 :
+        FFI_ALIGN(2 * పరిమాణం(size_t) * (cif->nargs - 3), STKALIGN);
     /* Allocate space for copies of big structures.  */
-    size_t struct_bytes = FFI_ALIGN (cif->bytes, STKALIGN);
-    size_t rval_bytes = 0;
-    if (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
-        rval_bytes = FFI_ALIGN(cif->rtype->size, STKALIGN);
-    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + sizeof(call_context);
+    size_t struct_బైట్లు = FFI_ALIGN (cif->బైట్లు, STKALIGN);
+    size_t rval_బైట్లు = 0;
+    ఒకవేళ (rvalue == ఖాళీ && cif->rtype->కొలత > 2*__SIZEOF_POINTER__)
+        rval_బైట్లు = FFI_ALIGN(cif->rtype->కొలత, STKALIGN);
+    size_t alloc_కొలత = arg_బైట్లు + rval_బైట్లు + struct_బైట్లు + పరిమాణం(call_context);
 
     /* the assembly code will deallocate all stack data at lower addresses
        than the argument region, so we need to allocate the frame and the
        return value after the arguments in a single allocation */
-    size_t alloc_base;
+    size_t alloc_పునాది;
     /* Argument region must be 16-byte aligned */
-    if (_Alignof(max_align_t) >= STKALIGN) {
+    ఒకవేళ (_Alignof(max_align_t) >= STKALIGN) {
         /* since sizeof long double is normally 16, the compiler will
            guarantee alloca alignment to at least that much */
-        alloc_base = (size_t)alloca(alloc_size);
-    } else {
-        alloc_base = FFI_ALIGN(alloca(alloc_size + STKALIGN - 1), STKALIGN);
+        alloc_పునాది = (size_t)alloca(alloc_కొలత);
+    } లేకపోతే {
+        alloc_పునాది = FFI_ALIGN(alloca(alloc_కొలత + STKALIGN - 1), STKALIGN);
     }
 
-    if (rval_bytes)
-        rvalue = (void*)(alloc_base + arg_bytes);
+    ఒకవేళ (rval_బైట్లు)
+        rvalue = (శూన్య*)(alloc_పునాది + arg_బైట్లు);
 
     call_builder cb;
-    cb.used_float = cb.used_integer = 0;
-    cb.aregs = (call_context*)(alloc_base + arg_bytes + rval_bytes + struct_bytes);
-    cb.used_stack = (void*)alloc_base;
-    cb.struct_stack = (void *) (alloc_base + arg_bytes + rval_bytes);
+    cb.వాడిన_float = cb.వాడిన_integer = 0;
+    cb.aregs = (call_context*)(alloc_పునాది + arg_బైట్లు + rval_బైట్లు + struct_బైట్లు);
+    cb.వాడిన_దొంతర = (శూన్య*)alloc_పునాది;
+    cb.struct_దొంతర = (శూన్య *) (alloc_పునాది + arg_బైట్లు + rval_బైట్లు);
 
-    int return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
-        marshal(&cb, &ffi_type_pointer, 0, &rvalue);
+    పూర్ణాంకం return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
+    ఒకవేళ (return_by_ref)
+        marshal(&cb, &ffi_type_సూచిక, 0, &rvalue);
 
-    int i;
-    for (i = 0; i < cif->nargs; i++)
+    పూర్ణాంకం i;
+    కొరకు (i = 0; i < cif->nargs; i++)
         marshal(&cb, cif->arg_types[i], i >= cif->riscv_nfixedargs, avalue[i]);
 
-    ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+    ffi_call_asm ((శూన్య *) alloc_పునాది, cb.aregs, fn, సంవృతం);
 
-    cb.used_float = cb.used_integer = 0;
-    if (!return_by_ref && rvalue)
+    cb.వాడిన_float = cb.వాడిన_integer = 0;
+    ఒకవేళ (!return_by_ref && rvalue)
       {
-	if (IS_INT(cif->rtype->type)
-	    && cif->rtype->size < sizeof (ffi_arg))
+	ఒకవేళ (IS_INT(cif->rtype->type)
+	    && cif->rtype->కొలత < పరిమాణం (ffi_arg))
 	  {
 	    /* Integer types smaller than ffi_arg need to be extended.  */
-	    switch (cif->rtype->type)
+	    ఎంపిక (cif->rtype->type)
 	      {
-	      case FFI_TYPE_SINT8:
-	      case FFI_TYPE_SINT16:
-	      case FFI_TYPE_SINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+	      స్థితి FFI_TYPE_SINT8:
+	      స్థితి FFI_TYPE_SINT16:
+	      స్థితి FFI_TYPE_SINT32:
+		unmarshal_atom (&cb, (పరిమాణం (ffi_arg) > 4
 				      ? FFI_TYPE_SINT64 : FFI_TYPE_SINT32),
 				rvalue);
-		break;
-	      case FFI_TYPE_UINT8:
-	      case FFI_TYPE_UINT16:
-	      case FFI_TYPE_UINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+		ఆపు;
+	      స్థితి FFI_TYPE_UINT8:
+	      స్థితి FFI_TYPE_UINT16:
+	      స్థితి FFI_TYPE_UINT32:
+		unmarshal_atom (&cb, (పరిమాణం (ffi_arg) > 4
 				      ? FFI_TYPE_UINT64 : FFI_TYPE_UINT32),
 				rvalue);
-		break;
+		ఆపు;
 	      }
 	  }
-	else
+	లేకపోతే
 	  unmarshal(&cb, cif->rtype, 0, rvalue);
       }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, ఖాళీ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+శూన్య
+ffi_call_go (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue,
+	     శూన్య **avalue, శూన్య *సంవృతం)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, closure);
+  ffi_call_int(cif, fn, rvalue, avalue, సంవృతం);
 }
 
-extern void ffi_closure_asm(void) FFI_HIDDEN;
+బాహ్య శూన్య ffi_సంవృతం_asm(శూన్య) FFI_HIDDEN;
 
-ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(ffi_cif*,void*,void**,void*), void *user_data, void *codeloc)
+ffi_స్థితి ffi_prep_సంవృతం_loc(ffi_సంవృతం *సంవృతం, ffi_cif *cif, శూన్య (*fun)(ffi_cif*,శూన్య*,శూన్య**,శూన్య*), శూన్య *user_దత్తాంశం, శూన్య *codeloc)
 {
-    if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-        return FFI_BAD_ABI;
+    ఒకవేళ (cif->abi <= FFI_మొదటి_ABI || cif->abi >= FFI_చివరి_ABI)
+        తిరిగి FFI_BAD_ABI;
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present (closure))
+#నిర్వచితమైతే FFI_EXEC_STATIC_TRAMP
+  ఒకవేళ (ffi_tramp_is_present (సంవృతం))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_asm;
-      ffi_tramp_set_parms (closure->ftramp, dest, closure);
+      శూన్య (*dest)(శూన్య) = ffi_సంవృతం_asm;
+      ffi_tramp_సమితి_parms (సంవృతం->ftramp, dest, సంవృతం);
     }
-  else
-#endif
+  లేకపోతే
+#అయితే_ముగింపు
     {
-      uint32_t *tramp = (uint32_t *) &closure->tramp[0];
-      uint64_t fn = (uint64_t) (uintptr_t) ffi_closure_asm;
+      uint32_t *tramp = (uint32_t *) &సంవృతం->tramp[0];
+      uint64_t fn = (uint64_t) (uintptr_t) ffi_సంవృతం_asm;
 
       /* we will call ffi_closure_inner with codeloc, not closure, but as long
 	 as the memory is readable it should work */
 
       tramp[0] = 0x00000317; /* auipc t1, 0 (i.e. t0 <- codeloc) */
-#if __SIZEOF_POINTER__ == 8
+#ఒకవేళ __SIZEOF_POINTER__ == 8
       tramp[1] = 0x01033383; /* ld t2, 16(t1) */
-#else
+#లేకపోతే
       tramp[1] = 0x01032383; /* lw t2, 16(t1) */
-#endif
+#అయితే_ముగింపు
       tramp[2] = 0x00038067; /* jr t2 */
       tramp[3] = 0x00000013; /* nop */
       tramp[4] = fn;
       tramp[5] = fn >> 32;
-#if !defined(__FreeBSD__)
-    __builtin___clear_cache(codeloc, codeloc + FFI_TRAMPOLINE_SIZE);
-#endif
+#ఒకవేళ !defined(__FreeBSD__)
+    __builtin___clear_cache(codeloc, codeloc + FFI_TRAMPOLINE_కొలత);
+#అయితే_ముగింపు
     }
 
-    closure->cif = cif;
-    closure->fun = fun;
-    closure->user_data = user_data;
+    సంవృతం->cif = cif;
+    సంవృతం->fun = fun;
+    సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
 
-    return FFI_OK;
+    తిరిగి FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+బాహ్య శూన్య ffi_go_సంవృతం_asm (శూన్య) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+ffi_స్థితి
+ffi_prep_go_సంవృతం (ffi_go_సంవృతం *సంవృతం, ffi_cif *cif,
+		     శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi <= FFI_మొదటి_ABI || cif->abi >= FFI_చివరి_ABI)
+    తిరిగి FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
-  closure->cif = cif;
-  closure->fun = fun;
+  సంవృతం->tramp = (శూన్య *) ffi_go_సంవృతం_asm;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs. */
-void FFI_HIDDEN
-ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data,
-		   size_t *stack, call_context *aregs)
+శూన్య FFI_HIDDEN
+ffi_సంవృతం_inner (ffi_cif *cif,
+		   శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+		   శూన్య *user_దత్తాంశం,
+		   size_t *దొంతర, call_context *aregs)
 {
-    void **avalue = alloca(cif->nargs * sizeof(void*));
+    శూన్య **avalue = alloca(cif->nargs * పరిమాణం(శూన్య*));
     /* storage for arguments which will be copied by unmarshal().  We could
        theoretically avoid the copies in many cases and use at most 128 bytes
        of memory, but allocating disjoint storage for each argument is
        simpler. */
-    char *astorage = alloca(cif->nargs * MAXCOPYARG);
-    void *rvalue;
+    అక్షరం *astorage = alloca(cif->nargs * MAXCOPYARG);
+    శూన్య *rvalue;
     call_builder cb;
-    int return_by_ref;
-    int i;
+    పూర్ణాంకం return_by_ref;
+    పూర్ణాంకం i;
 
     cb.aregs = aregs;
-    cb.used_integer = cb.used_float = 0;
-    cb.used_stack = stack;
+    cb.వాడిన_integer = cb.వాడిన_float = 0;
+    cb.వాడిన_దొంతర = దొంతర;
 
     return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
-        unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
-        rvalue = alloca(cif->rtype->size);
+    ఒకవేళ (return_by_ref)
+        unmarshal(&cb, &ffi_type_సూచిక, 0, &rvalue);
+    లేకపోతే
+        rvalue = alloca(cif->rtype->కొలత);
 
-    for (i = 0; i < cif->nargs; i++)
+    కొరకు (i = 0; i < cif->nargs; i++)
         avalue[i] = unmarshal(&cb, cif->arg_types[i],
             i >= cif->riscv_nfixedargs, astorage + i*MAXCOPYARG);
 
-    fun (cif, rvalue, avalue, user_data);
+    fun (cif, rvalue, avalue, user_దత్తాంశం);
 
-    if (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
-        cb.used_integer = cb.used_float = 0;
+    ఒకవేళ (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
+        cb.వాడిన_integer = cb.వాడిన_float = 0;
         marshal(&cb, cif->rtype, 0, rvalue);
     }
 }
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#నిర్వచితమైతే FFI_EXEC_STATIC_TRAMP
+శూన్య *
+ffi_tramp_arch (size_t *tramp_కొలత, size_t *map_కొలత)
 {
-  extern void *trampoline_code_table;
-  *tramp_size = RISCV_TRAMP_SIZE;
-  *map_size = RISCV_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  బాహ్య శూన్య *trampoline_సంకేతం_పట్టిక;
+  *tramp_కొలత = RISCV_TRAMP_కొలత;
+  *map_కొలత = RISCV_TRAMP_MAP_కొలత;
+  తిరిగి &trampoline_సంకేతం_పట్టిక;
 }
-#endif
+#అయితే_ముగింపు

@@ -25,57 +25,57 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
-#ifndef SPARC64
-#define SPARC64
-#endif
-#endif
+#ఒకవేళ defined(__arch64__) || defined(__sparcv9)
+#నిర్వచితం_కాకపోతే SPARC64
+#నిర్వచించు SPARC64
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ          ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#ifdef SPARC64
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
+#నిర్వచితమైతే SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#లేకపోతే
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
-#endif
-  FFI_LAST_ABI
+#అయితే_ముగింపు
+  FFI_చివరి_ABI
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
-#define FFI_TARGET_HAS_COMPLEX_TYPE 1
+#నిర్వచించు FFI_లక్ష్యం_SPECIFIC_దొంతర_SPACE_కేటాయింపు 1
+#నిర్వచించు FFI_లక్ష్యం_HAS_COMPLEX_TYPE 1
 
-#ifdef SPARC64
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
-#endif
+#నిర్వచితమైతే SPARC64
+# define FFI_లక్ష్యం_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS  గుర్తులేని పూర్ణాంకం nfixedargs
+#అయితే_ముగింపు
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_GO_CLOSURES 1
+#నిర్వచించు FFI_NATIVE_RAW_API 0
 
-#ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
+#నిర్వచితమైతే SPARC64
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 24
+#లేకపోతే
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 16
+#అయితే_ముగింపు
 
-#endif
+#అయితే_ముగింపు
 

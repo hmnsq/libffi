@@ -24,13 +24,13 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
+#అన్తర్భావ <stdlib.h>
 
 /* Round up to FFI_SIZEOF_ARG. */
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#నిర్వచించు దొంతర_ARG_కొలత(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
 /* Compute the machine-independent layout of a vector (SIMD) type.
 
@@ -49,89 +49,89 @@
    valid lane types.  Anything else -- a heterogeneous element list, an
    aggregate lane, long double, or a zero-length vector -- is FFI_BAD_TYPEDEF. */
 
-static ffi_status
-initialize_vector (ffi_type *arg)
+స్థిర ffi_స్థితి
+initialize_సదిశ (ffi_type *arg)
 {
   ffi_type **ptr = arg->elements;
   ffi_type *elem;
-  size_t count = 0;
-  size_t total, p2;
+  size_t లెక్క = 0;
+  size_t మొత్తం, p2;
 
-  if (UNLIKELY (ptr == NULL || *ptr == NULL))
-    return FFI_BAD_TYPEDEF;
+  ఒకవేళ (UNLIKELY (ptr == ఖాళీ || *ptr == ఖాళీ))
+    తిరిగి FFI_BAD_TYPEDEF;
 
   elem = *ptr;
-  switch (elem->type)
+  ఎంపిక (elem->type)
     {
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      break;
-    default:
-      return FFI_BAD_TYPEDEF;
+    స్థితి FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_DOUBLE:
+    స్థితి FFI_TYPE_UINT8:
+    స్థితి FFI_TYPE_SINT8:
+    స్థితి FFI_TYPE_UINT16:
+    స్థితి FFI_TYPE_SINT16:
+    స్థితి FFI_TYPE_UINT32:
+    స్థితి FFI_TYPE_SINT32:
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
+      ఆపు;
+    అప్రమేయ:
+      తిరిగి FFI_BAD_TYPEDEF;
     }
 
   /* Every lane must be the identical scalar type.  */
-  for (; *ptr != NULL; ptr++)
+  కొరకు (; *ptr != ఖాళీ; ptr++)
     {
-      if ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
-	return FFI_BAD_TYPEDEF;
-      count++;
+      ఒకవేళ ((*ptr)->type != elem->type || (*ptr)->కొలత != elem->కొలత)
+	తిరిగి FFI_BAD_TYPEDEF;
+      లెక్క++;
     }
 
-  if (UNLIKELY (count < 1 || elem->size == 0))
-    return FFI_BAD_TYPEDEF;
+  ఒకవేళ (UNLIKELY (లెక్క < 1 || elem->కొలత == 0))
+    తిరిగి FFI_BAD_TYPEDEF;
 
-  total = elem->size * count;
-  for (p2 = 1; p2 < total; p2 <<= 1)
+  మొత్తం = elem->కొలత * లెక్క;
+  కొరకు (p2 = 1; p2 < మొత్తం; p2 <<= 1)
     ;
 
-  arg->size = p2;
+  arg->కొలత = p2;
   arg->alignment = p2 < 16 ? p2 : 16;
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
 /* Perform machine independent initialization of aggregate type
    specifications. */
 
-static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
+స్థిర ffi_స్థితి initialize_aggregate(ffi_type *arg, size_t *offsets)
 {
   ffi_type **ptr;
 
-  if (UNLIKELY(arg == NULL || arg->elements == NULL))
-    return FFI_BAD_TYPEDEF;
+  ఒకవేళ (UNLIKELY(arg == ఖాళీ || arg->elements == ఖాళీ))
+    తిరిగి FFI_BAD_TYPEDEF;
 
-  if (arg->type == FFI_TYPE_VECTOR)
-    return initialize_vector (arg);
+  ఒకవేళ (arg->type == FFI_TYPE_సదిశ)
+    తిరిగి initialize_సదిశ (arg);
 
-  arg->size = 0;
+  arg->కొలత = 0;
   arg->alignment = 0;
 
   ptr = &(arg->elements[0]);
 
-  if (UNLIKELY(ptr == 0))
-    return FFI_BAD_TYPEDEF;
+  ఒకవేళ (UNLIKELY(ptr == 0))
+    తిరిగి FFI_BAD_TYPEDEF;
 
-  while ((*ptr) != NULL)
+  అయితే ((*ptr) != ఖాళీ)
     {
-      if (UNLIKELY(((*ptr)->size == 0)
-		    && (initialize_aggregate((*ptr), NULL) != FFI_OK)))
-	return FFI_BAD_TYPEDEF;
+      ఒకవేళ (UNLIKELY(((*ptr)->కొలత == 0)
+		    && (initialize_aggregate((*ptr), ఖాళీ) != FFI_OK)))
+	తిరిగి FFI_BAD_TYPEDEF;
 
       /* Perform a sanity check on the argument type */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-      arg->size = FFI_ALIGN(arg->size, (*ptr)->alignment);
-      if (offsets)
-	*offsets++ = arg->size;
-      arg->size += (*ptr)->size;
+      arg->కొలత = FFI_ALIGN(arg->కొలత, (*ptr)->alignment);
+      ఒకవేళ (offsets)
+	*offsets++ = arg->కొలత;
+      arg->కొలత += (*ptr)->కొలత;
 
       arg->alignment = (arg->alignment > (*ptr)->alignment) ?
 	arg->alignment : (*ptr)->alignment;
@@ -146,44 +146,44 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
      struct A { long a; char b; }; struct B { struct A x; char y; };
      should find y at an offset of 2*sizeof(long) and result in a
      total size of 3*sizeof(long).  */
-  arg->size = FFI_ALIGN (arg->size, arg->alignment);
+  arg->కొలత = FFI_ALIGN (arg->కొలత, arg->alignment);
 
   /* On some targets, the ABI defines that structures have an additional
      alignment beyond the "natural" one based on their elements.  */
-#ifdef FFI_AGGREGATE_ALIGNMENT
-  if (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
+#నిర్వచితమైతే FFI_AGGREGATE_ALIGNMENT
+  ఒకవేళ (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
     arg->alignment = FFI_AGGREGATE_ALIGNMENT;
-#endif
+#అయితే_ముగింపు
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  ఒకవేళ (arg->కొలత == 0)
+    తిరిగి FFI_BAD_TYPEDEF;
+  లేకపోతే
+    తిరిగి FFI_OK;
 }
 
-#ifndef FFI_TARGET_HAS_VECTOR_TYPE
+#నిర్వచితం_కాకపోతే FFI_లక్ష్యం_HAS_సదిశ_TYPE
 /* Recursively test whether TY is, or contains, a vector (SIMD) type.  Ports
    that do not define FFI_TARGET_HAS_VECTOR_TYPE cannot marshal vectors, so
    ffi_prep_cif_core rejects any signature that mentions one (directly or
    nested inside a struct) with FFI_BAD_TYPEDEF rather than aborting.  */
-static int
-ffi_type_contains_vector (ffi_type *ty)
+స్థిర పూర్ణాంకం
+ffi_type_కలిగియుంది_సదిశ (ffi_type *ty)
 {
   ffi_type **p;
 
-  if (ty == NULL)
-    return 0;
-  if (ty->type == FFI_TYPE_VECTOR)
-    return 1;
-  if (ty->type == FFI_TYPE_STRUCT && ty->elements != NULL)
-    for (p = ty->elements; *p != NULL; p++)
-      if (ffi_type_contains_vector (*p))
-	return 1;
-  return 0;
+  ఒకవేళ (ty == ఖాళీ)
+    తిరిగి 0;
+  ఒకవేళ (ty->type == FFI_TYPE_సదిశ)
+    తిరిగి 1;
+  ఒకవేళ (ty->type == FFI_TYPE_STRUCT && ty->elements != ఖాళీ)
+    కొరకు (p = ty->elements; *p != ఖాళీ; p++)
+      ఒకవేళ (ffi_type_కలిగియుంది_సదిశ (*p))
+	తిరిగి 1;
+  తిరిగి 0;
 }
-#endif /* !FFI_TARGET_HAS_VECTOR_TYPE */
+#అయితే_ముగింపు /* !FFI_TARGET_HAS_VECTOR_TYPE */
 
-#ifndef __CRIS__
+#నిర్వచితం_కాకపోతే __CRIS__
 /* The CRIS ABI specifies structure elements to have byte
    alignment only, so it completely overrides this functions,
    which assumes "natural" alignment and padding.  */
@@ -198,186 +198,186 @@ ffi_type_contains_vector (ffi_type *ty)
    and ntotalargs set as appropriate. nfixedargs must always be >=1 */
 
 
-ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
-			     unsigned int isvariadic,
-                             unsigned int nfixedargs,
-                             unsigned int ntotalargs,
+ffi_స్థితి FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
+			     గుర్తులేని పూర్ణాంకం isvariadic,
+                             గుర్తులేని పూర్ణాంకం nfixedargs,
+                             గుర్తులేని పూర్ణాంకం ntotalargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  unsigned bytes = 0;
-  unsigned int i;
+  గుర్తులేని బైట్లు = 0;
+  గుర్తులేని పూర్ణాంకం i;
   ffi_type **ptr;
 
-  FFI_ASSERT(cif != NULL);
+  FFI_ASSERT(cif != ఖాళీ);
   FFI_ASSERT((!isvariadic) || (nfixedargs >= 1));
   FFI_ASSERT(nfixedargs <= ntotalargs);
 
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
+  ఒకవేళ (! (abi > FFI_మొదటి_ABI && abi < FFI_చివరి_ABI))
+    తిరిగి FFI_BAD_ABI;
 
   cif->abi = abi;
   cif->arg_types = atypes;
   cif->nargs = ntotalargs;
   cif->rtype = rtype;
 
-#ifndef FFI_TARGET_HAS_VECTOR_TYPE
+#నిర్వచితం_కాకపోతే FFI_లక్ష్యం_HAS_సదిశ_TYPE
   /* Vector (SIMD) types are only marshalled on ports that opt in.  */
-  if (ffi_type_contains_vector (rtype))
-    return FFI_BAD_TYPEDEF;
-  for (i = 0; i < ntotalargs; i++)
-    if (ffi_type_contains_vector (atypes[i]))
-      return FFI_BAD_TYPEDEF;
-#endif
+  ఒకవేళ (ffi_type_కలిగియుంది_సదిశ (rtype))
+    తిరిగి FFI_BAD_TYPEDEF;
+  కొరకు (i = 0; i < ntotalargs; i++)
+    ఒకవేళ (ffi_type_కలిగియుంది_సదిశ (atypes[i]))
+      తిరిగి FFI_BAD_TYPEDEF;
+#అయితే_ముగింపు
 
   cif->flags = 0;
-#if (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
+#ఒకవేళ (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
   cif->is_variadic = isvariadic;
-#endif
-#if HAVE_LONG_DOUBLE_VARIANT
+#అయితే_ముగింపు
+#ఒకవేళ HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
-#endif
+#అయితే_ముగింపు
 
   /* Initialize the return type if necessary */
-  if ((cif->rtype->size == 0)
-      && (initialize_aggregate(cif->rtype, NULL) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+  ఒకవేళ ((cif->rtype->కొలత == 0)
+      && (initialize_aggregate(cif->rtype, ఖాళీ) != FFI_OK))
+    తిరిగి FFI_BAD_TYPEDEF;
 
-#ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-  if (rtype->type == FFI_TYPE_COMPLEX)
+#నిర్వచితం_కాకపోతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+  ఒకవేళ (rtype->type == FFI_TYPE_COMPLEX)
     abort();
-#endif
+#అయితే_ముగింపు
   /* Perform a sanity check on the return type */
   FFI_ASSERT_VALID_TYPE(cif->rtype);
 
   /* x86, x86-64 and s390 stack space allocation is handled in prep_machdep. */
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#ఒకవేళ !defined FFI_లక్ష్యం_SPECIFIC_దొంతర_SPACE_కేటాయింపు
   /* Make space for the return structure pointer */
-  if ((cif->rtype->type == FFI_TYPE_STRUCT
-       || cif->rtype->type == FFI_TYPE_VECTOR)
-#ifdef TILE
-      && (cif->rtype->size > 10 * FFI_SIZEOF_ARG)
-#endif
-#ifdef XTENSA
-      && (cif->rtype->size > 16)
-#endif
+  ఒకవేళ ((cif->rtype->type == FFI_TYPE_STRUCT
+       || cif->rtype->type == FFI_TYPE_సదిశ)
+#నిర్వచితమైతే TILE
+      && (cif->rtype->కొలత > 10 * FFI_SIZEOF_ARG)
+#అయితే_ముగింపు
+#నిర్వచితమైతే XTENSA
+      && (cif->rtype->కొలత > 16)
+#అయితే_ముగింపు
      )
-    bytes = STACK_ARG_SIZE(sizeof(void*));
-#endif
+    బైట్లు = దొంతర_ARG_కొలత(పరిమాణం(శూన్య*));
+#అయితే_ముగింపు
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  కొరకు (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
 
       /* Initialize any uninitialized aggregate type definitions */
-      if (((*ptr)->size == 0)
-	  && (initialize_aggregate((*ptr), NULL) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+      ఒకవేళ (((*ptr)->కొలత == 0)
+	  && (initialize_aggregate((*ptr), ఖాళీ) != FFI_OK))
+	తిరిగి FFI_BAD_TYPEDEF;
 
-#ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-      if ((*ptr)->type == FFI_TYPE_COMPLEX)
+#నిర్వచితం_కాకపోతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+      ఒకవేళ ((*ptr)->type == FFI_TYPE_COMPLEX)
 	abort();
-#endif
+#అయితే_ముగింపు
       /* Perform a sanity check on the argument type, do this
 	 check after the initialization.  */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#ఒకవేళ !defined FFI_లక్ష్యం_SPECIFIC_దొంతర_SPACE_కేటాయింపు
 	{
 	  /* Add any padding if necessary */
-	  if (((*ptr)->alignment - 1) & bytes)
-	    bytes = (unsigned)FFI_ALIGN(bytes, (*ptr)->alignment);
+	  ఒకవేళ (((*ptr)->alignment - 1) & బైట్లు)
+	    బైట్లు = (గుర్తులేని)FFI_ALIGN(బైట్లు, (*ptr)->alignment);
 
-#ifdef TILE
-	  if (bytes < 10 * FFI_SIZEOF_ARG &&
-	      bytes + STACK_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
+#నిర్వచితమైతే TILE
+	  ఒకవేళ (బైట్లు < 10 * FFI_SIZEOF_ARG &&
+	      బైట్లు + దొంతర_ARG_కొలత((*ptr)->కొలత) > 10 * FFI_SIZEOF_ARG)
 	    {
 	      /* An argument is never split between the 10 parameter
 		 registers and the stack.  */
-	      bytes = 10 * FFI_SIZEOF_ARG;
+	      బైట్లు = 10 * FFI_SIZEOF_ARG;
 	    }
-#endif
-#ifdef XTENSA
-	  if (bytes <= 6*4 && bytes + STACK_ARG_SIZE((*ptr)->size) > 6*4)
-	    bytes = 6*4;
-#endif
+#అయితే_ముగింపు
+#నిర్వచితమైతే XTENSA
+	  ఒకవేళ (బైట్లు <= 6*4 && బైట్లు + దొంతర_ARG_కొలత((*ptr)->కొలత) > 6*4)
+	    బైట్లు = 6*4;
+#అయితే_ముగింపు
 
-	  bytes += (unsigned int)STACK_ARG_SIZE((*ptr)->size);
+	  బైట్లు += (గుర్తులేని పూర్ణాంకం)దొంతర_ARG_కొలత((*ptr)->కొలత);
 	}
-#endif
+#అయితే_ముగింపు
     }
 
-  cif->bytes = bytes;
+  cif->బైట్లు = బైట్లు;
 
   /* Perform machine dependent cif processing */
-#ifdef FFI_TARGET_SPECIFIC_VARIADIC
-  if (isvariadic)
-	return ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
-#endif
+#నిర్వచితమైతే FFI_లక్ష్యం_SPECIFIC_VARIADIC
+  ఒకవేళ (isvariadic)
+	తిరిగి ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
+#అయితే_ముగింపు
 
-  return ffi_prep_cif_machdep(cif);
+  తిరిగి ffi_prep_cif_machdep(cif);
 }
-#endif /* not __CRIS__ */
+#అయితే_ముగింపు /* not __CRIS__ */
 
-ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, unsigned int nargs,
+ffi_స్థితి ffi_prep_cif(ffi_cif *cif, ffi_abi abi, గుర్తులేని పూర్ణాంకం nargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  return ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
+  తిరిగి ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
 }
 
-ffi_status ffi_prep_cif_var(ffi_cif *cif,
+ffi_స్థితి ffi_prep_cif_var(ffi_cif *cif,
                             ffi_abi abi,
-                            unsigned int nfixedargs,
-                            unsigned int ntotalargs,
+                            గుర్తులేని పూర్ణాంకం nfixedargs,
+                            గుర్తులేని పూర్ణాంకం ntotalargs,
                             ffi_type *rtype,
                             ffi_type **atypes)
 {
-  ffi_status rc;
-  size_t int_size = ffi_type_sint.size;
-  unsigned int i;
+  ffi_స్థితి rc;
+  size_t int_కొలత = ffi_type_sint.కొలత;
+  గుర్తులేని పూర్ణాంకం i;
 
   rc = ffi_prep_cif_core(cif, abi, 1, nfixedargs, ntotalargs, rtype, atypes);
 
-  if (rc != FFI_OK)
-    return rc;
+  ఒకవేళ (rc != FFI_OK)
+    తిరిగి rc;
 
-  for (i = nfixedargs; i < ntotalargs; i++)
+  కొరకు (i = nfixedargs; i < ntotalargs; i++)
     {
       ffi_type *arg_type = atypes[i];
-      if (arg_type == &ffi_type_float
+      ఒకవేళ (arg_type == &ffi_type_float
           || ((arg_type->type != FFI_TYPE_STRUCT
                && arg_type->type != FFI_TYPE_COMPLEX)
-              && arg_type->size < int_size))
-        return FFI_BAD_ARGTYPE;
+              && arg_type->కొలత < int_కొలత))
+        తిరిగి FFI_BAD_ARGTYPE;
     }
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-#if FFI_CLOSURES
+#ఒకవేళ FFI_CLOSURES
 
-ffi_status
-ffi_prep_closure (ffi_closure* closure,
+ffi_స్థితి
+ffi_prep_సంవృతం (ffi_సంవృతం* సంవృతం,
 		  ffi_cif* cif,
-		  void (*fun)(ffi_cif*,void*,void**,void*),
-		  void *user_data)
+		  శూన్య (*fun)(ffi_cif*,శూన్య*,శూన్య**,శూన్య*),
+		  శూన్య *user_దత్తాంశం)
 {
-  return ffi_prep_closure_loc (closure, cif, fun, user_data, closure);
+  తిరిగి ffi_prep_సంవృతం_loc (సంవృతం, cif, fun, user_దత్తాంశం, సంవృతం);
 }
 
-#endif
+#అయితే_ముగింపు
 
-ffi_status
+ffi_స్థితి
 ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
 {
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
-  if (struct_type->type != FFI_TYPE_STRUCT)
-    return FFI_BAD_TYPEDEF;
+  ఒకవేళ (! (abi > FFI_మొదటి_ABI && abi < FFI_చివరి_ABI))
+    తిరిగి FFI_BAD_ABI;
+  ఒకవేళ (struct_type->type != FFI_TYPE_STRUCT)
+    తిరిగి FFI_BAD_TYPEDEF;
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#ఒకవేళ HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
-#endif
+#అయితే_ముగింపు
 
-  return initialize_aggregate(struct_type, offsets);
+  తిరిగి initialize_aggregate(struct_type, offsets);
 }
 
 /* Generic ffi_call_plan: a portable fallback compiled on every target that does
@@ -388,9 +388,9 @@ ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
    exclude the fallback only when ffi64.c actually provides it; everywhere else
    this plan just records the cif and invoke calls ffi_call, so the API is
    always present and links on all targets.  The cif must outlive the plan. */
-#if !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
+#ఒకవేళ !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
 
-struct ffi_call_plan
+నిర్మాణం ffi_call_plan
 {
   ffi_cif *cif;
 };
@@ -398,30 +398,30 @@ struct ffi_call_plan
 ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
-  ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan != NULL)
+  ffi_call_plan *plan = జ్ఞాపకం_ఇవ్వు (పరిమాణం (నిర్మాణం ffi_call_plan));
+  ఒకవేళ (plan != ఖాళీ)
     plan->cif = cif;
-  return plan;
+  తిరిగి plan;
 }
 
-void
-ffi_call_plan_invoke (ffi_call_plan *plan, void (*fn) (void),
-		      void *rvalue, void **avalue)
+శూన్య
+ffi_call_plan_invoke (ffi_call_plan *plan, శూన్య (*fn) (శూన్య),
+		      శూన్య *rvalue, శూన్య **avalue)
 {
   ffi_call (plan->cif, fn, rvalue, avalue);
 }
 
-void
+శూన్య
 ffi_call_plan_free (ffi_call_plan *plan)
 {
-  free (plan);
+  విడుదల (plan);
 }
 
 size_t
-ffi_call_plan_size (ffi_call_plan *plan)
+ffi_call_plan_కొలత (ffi_call_plan *plan)
 {
   /* The generic plan is a bare handle; there is no separate move-list.  */
-  return plan != NULL ? sizeof (struct ffi_call_plan) : 0;
+  తిరిగి plan != ఖాళీ ? పరిమాణం (నిర్మాణం ffi_call_plan) : 0;
 }
 
-#endif /* generic ffi_call_plan fallback */
+#అయితే_ముగింపు /* generic ffi_call_plan fallback */

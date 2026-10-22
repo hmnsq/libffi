@@ -26,237 +26,237 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <stdio.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdio.h>
 
-#ifdef __GNUC__
-#  if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))
+#నిర్వచితమైతే __GNUC__
+#  ఒకవేళ (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 3))
 #    define USE__BUILTIN___CLEAR_CACHE 1
 #  endif
-#endif
+#అయితే_ముగింపు
 
-#ifndef USE__BUILTIN___CLEAR_CACHE
-#  if defined(__FreeBSD__)
+#నిర్వచితం_కాకపోతే USE__BUILTIN___CLEAR_CACHE
+#  ఒకవేళ defined(__FreeBSD__)
 #    include <machine/sysarch.h>
 #  elif defined(__OpenBSD__)
 #    include <mips64/sysarch.h>
-#  else
+#  లేకపోతే
 #    include <sys/cachectl.h>
 #  endif
-#endif
+#అయితే_ముగింపు
 
-#ifdef FFI_DEBUG
-# define FFI_MIPS_STOP_HERE() ffi_stop_here()
-#else
-# define FFI_MIPS_STOP_HERE() do {} while(0)
-#endif
+#నిర్వచితమైతే FFI_DEBUG
+# define FFI_MIPS_STOP_ఇక్కడ() ffi_stop_ఇక్కడ()
+#లేకపోతే
+# define FFI_MIPS_STOP_ఇక్కడ() చేయి {} అయితే(0)
+#అయితే_ముగింపు
 
-#ifdef FFI_MIPS_N32
-#define FIX_ARGP \
-FFI_ASSERT(argp <= &stack[bytes]); \
-if (argp == &stack[bytes]) \
+#నిర్వచితమైతే FFI_MIPS_N32
+#నిర్వచించు FIX_ARGP \
+FFI_ASSERT(argp <= &దొంతర[బైట్లు]); \
+ఒకవేళ (argp == &దొంతర[బైట్లు]) \
 { \
-  argp = stack; \
-  FFI_MIPS_STOP_HERE(); \
+  argp = దొంతర; \
+  FFI_MIPS_STOP_ఇక్కడ(); \
 }
-#else
-#define FIX_ARGP 
-#endif
+#లేకపోతే
+#నిర్వచించు FIX_ARGP 
+#అయితే_ముగింపు
 
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-static void ffi_prep_args(char *stack, 
+స్థిర శూన్య ffi_prep_వాదనలు(అక్షరం *దొంతర, 
 			  extended_cif *ecif,
-			  int bytes,
-			  int flags)
+			  పూర్ణాంకం బైట్లు,
+			  పూర్ణాంకం flags)
 {
-  int i;
-  void **p_argv;
-  char *argp, *argp_f;
+  పూర్ణాంకం i;
+  శూన్య **p_argv;
+  అక్షరం *argp, *argp_f;
   ffi_type **p_arg;
 
-  memset(stack, 0, bytes);
+  memset(దొంతర, 0, బైట్లు);
 
-#ifdef FFI_MIPS_N32
-  int soft_float = (ecif->cif->abi == FFI_N32_SOFT_FLOAT
+#నిర్వచితమైతే FFI_MIPS_N32
+  పూర్ణాంకం soft_float = (ecif->cif->abi == FFI_N32_SOFT_FLOAT
 		    || ecif->cif->abi == FFI_N64_SOFT_FLOAT);
   /* If more than 8 double words are used, the remainder go
      on the stack. We reorder stuff on the stack here to 
      support this easily. */
   /* if ret is _Complex long double, args reg shift2, and a0 should holds pointer to rvalue */
-  if (ecif->cif->rtype->type == FFI_TYPE_COMPLEX && ecif->cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+  ఒకవేళ (ecif->cif->rtype->type == FFI_TYPE_COMPLEX && ecif->cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
     {
-      if (bytes + 16 > 8 * sizeof(ffi_arg))
-        argp = &stack[bytes - (8 * sizeof(ffi_arg))];
-      else
-        argp = stack;
-      * (unsigned long *) argp = (unsigned long) ecif->rvalue;
+      ఒకవేళ (బైట్లు + 16 > 8 * పరిమాణం(ffi_arg))
+        argp = &దొంతర[బైట్లు - (8 * పరిమాణం(ffi_arg))];
+      లేకపోతే
+        argp = దొంతర;
+      * (గుర్తులేని దీర్ఘ *) argp = (గుర్తులేని దీర్ఘ) ecif->rvalue;
       argp += 16;
     }
-  else
+  లేకపోతే
     {
-      if (bytes > 8 * sizeof(ffi_arg))
-        argp = &stack[bytes - (8 * sizeof(ffi_arg))];
-      else
-        argp = stack;
+      ఒకవేళ (బైట్లు > 8 * పరిమాణం(ffi_arg))
+        argp = &దొంతర[బైట్లు - (8 * పరిమాణం(ffi_arg))];
+      లేకపోతే
+        argp = దొంతర;
     }
-#else
-  argp = stack;
-#endif
+#లేకపోతే
+  argp = దొంతర;
+#అయితే_ముగింపు
 
   argp_f = argp;
 
-#ifdef FFI_MIPS_N32
-  if ( ecif->cif->rstruct_flag != 0 )
-#else
-  if ( ecif->cif->rtype->type == FFI_TYPE_STRUCT )
-#endif  
+#నిర్వచితమైతే FFI_MIPS_N32
+  ఒకవేళ ( ecif->cif->rstruct_flag != 0 )
+#లేకపోతే
+  ఒకవేళ ( ecif->cif->rtype->type == FFI_TYPE_STRUCT )
+#అయితే_ముగింపు  
     {
       *(ffi_arg *) argp = (ffi_arg) ecif->rvalue;
-      argp += sizeof(ffi_arg);
+      argp += పరిమాణం(ffi_arg);
       FIX_ARGP;
     }
 
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs; i++, p_arg++)
+  కొరకు (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs; i++, p_arg++)
     {
       size_t z;
-      unsigned int a;
+      గుర్తులేని పూర్ణాంకం a;
 
       /* Align if necessary.  */
       a = (*p_arg)->alignment;
-      if (a < sizeof(ffi_arg))
-        a = sizeof(ffi_arg);
+      ఒకవేళ (a < పరిమాణం(ffi_arg))
+        a = పరిమాణం(ffi_arg);
       
-      if ((a - 1) & (unsigned long) argp)
+      ఒకవేళ ((a - 1) & (గుర్తులేని దీర్ఘ) argp)
 	{
-	  argp = (char *) FFI_ALIGN(argp, a);
+	  argp = (అక్షరం *) FFI_ALIGN(argp, a);
 	  FIX_ARGP;
 	}
 
-      z = (*p_arg)->size;
-      if (z <= sizeof(ffi_arg))
+      z = (*p_arg)->కొలత;
+      ఒకవేళ (z <= పరిమాణం(ffi_arg))
 	{
-          int type = (*p_arg)->type;
-	  z = sizeof(ffi_arg);
+          పూర్ణాంకం type = (*p_arg)->type;
+	  z = పరిమాణం(ffi_arg);
 
           /* The size of a pointer depends on the ABI */
-          if (type == FFI_TYPE_POINTER)
+          ఒకవేళ (type == FFI_TYPE_సూచిక)
             type = (ecif->cif->abi == FFI_N64
 		    || ecif->cif->abi == FFI_N64_SOFT_FLOAT)
 	      ? FFI_TYPE_SINT64 : FFI_TYPE_UINT32;
 
-	if (i < 8 && (ecif->cif->abi == FFI_N32_SOFT_FLOAT
+	ఒకవేళ (i < 8 && (ecif->cif->abi == FFI_N32_SOFT_FLOAT
 		      || ecif->cif->abi == FFI_N64_SOFT_FLOAT))
 	  {
-	    switch (type)
+	    ఎంపిక (type)
 	      {
-	      case FFI_TYPE_FLOAT:
+	      స్థితి FFI_TYPE_FLOAT:
 		type = FFI_TYPE_UINT32;
-		break;
-	      case FFI_TYPE_DOUBLE:
+		ఆపు;
+	      స్థితి FFI_TYPE_DOUBLE:
 		type = FFI_TYPE_UINT64;
-		break;
-	      default:
-		break;
+		ఆపు;
+	      అప్రమేయ:
+		ఆపు;
 	      }
 	  }
-	  switch (type)
+	  ఎంపిక (type)
 	    {
-	      case FFI_TYPE_SINT8:
+	      స్థితి FFI_TYPE_SINT8:
 		*(ffi_arg *)argp = *(SINT8 *)(* p_argv);
-		break;
+		ఆపు;
 
-	      case FFI_TYPE_UINT8:
+	      స్థితి FFI_TYPE_UINT8:
 		*(ffi_arg *)argp = *(UINT8 *)(* p_argv);
-		break;
+		ఆపు;
 		  
-	      case FFI_TYPE_SINT16:
+	      స్థితి FFI_TYPE_SINT16:
 		*(ffi_arg *)argp = *(SINT16 *)(* p_argv);
-		break;
+		ఆపు;
 		  
-	      case FFI_TYPE_UINT16:
+	      స్థితి FFI_TYPE_UINT16:
 		*(ffi_arg *)argp = *(UINT16 *)(* p_argv);
-		break;
+		ఆపు;
 		  
-	      case FFI_TYPE_SINT32:
+	      స్థితి FFI_TYPE_SINT32:
 		*(ffi_arg *)argp = *(SINT32 *)(* p_argv);
-		break;
+		ఆపు;
 		  
-	      case FFI_TYPE_UINT32:
-#ifdef FFI_MIPS_N32
+	      స్థితి FFI_TYPE_UINT32:
+#నిర్వచితమైతే FFI_MIPS_N32
 		/* The N32 ABI requires that 32-bit integers
 		   be sign-extended to 64-bits, regardless of
 		   whether they are signed or unsigned. */
 		*(ffi_arg *)argp = *(SINT32 *)(* p_argv);
-#else
+#లేకపోతే
 		*(ffi_arg *)argp = *(UINT32 *)(* p_argv);
-#endif
-		break;
+#అయితే_ముగింపు
+		ఆపు;
 
-#ifdef FFI_MIPS_N32
-	      case FFI_TYPE_COMPLEX:
+#నిర్వచితమైతే FFI_MIPS_N32
+	      స్థితి FFI_TYPE_COMPLEX:
 		/* expand from 4+4 to 8+8 if pass with fpr reg */
 		/* argp will wind back to stack when we process all of reg args */
 		/* all var_args passed with gpr, should be expand */
-	        if(!soft_float
+	        ఒకవేళ(!soft_float
 		    && (*p_arg)->elements[0]->type == FFI_TYPE_FLOAT
 		    && argp>=argp_f
 		    && i < ecif->cif->mips_nfixedargs)
 		  {
-		    *(float *) argp = *(float *)(* p_argv);
+		    *(దశాంశం *) argp = *(దశాంశం *)(* p_argv);
 		    argp += z;
-		    char *tmp = (void *) (*p_argv);
-		    *(float *) argp = *(float *)(tmp+4);
+		    అక్షరం *tmp = (శూన్య *) (*p_argv);
+		    *(దశాంశం *) argp = *(దశాంశం *)(tmp+4);
 		  }
-		else
-		  memcpy(argp, *p_argv, (*p_arg)->size);
-		break;
-#endif
+		లేకపోతే
+		  జ్ఞాపకం_నకలు(argp, *p_argv, (*p_arg)->కొలత);
+		ఆపు;
+#అయితే_ముగింపు
 	      /* This can only happen with 64bit slots.  */
-	      case FFI_TYPE_FLOAT:
-		*(float *) argp = *(float *)(* p_argv);
-		break;
+	      స్థితి FFI_TYPE_FLOAT:
+		*(దశాంశం *) argp = *(దశాంశం *)(* p_argv);
+		ఆపు;
 
 	      /* Handle structures.  */
-	      default:
-		memcpy(argp, *p_argv, (*p_arg)->size);
-		break;
+	      అప్రమేయ:
+		జ్ఞాపకం_నకలు(argp, *p_argv, (*p_arg)->కొలత);
+		ఆపు;
 	    }
 	}
-      else
+      లేకపోతే
 	{
-#ifdef FFI_MIPS_O32
-	  memcpy(argp, *p_argv, z);
-#else
+#నిర్వచితమైతే FFI_MIPS_O32
+	  జ్ఞాపకం_నకలు(argp, *p_argv, z);
+#లేకపోతే
 	  {
-	    unsigned long end = (unsigned long) argp + z;
-	    unsigned long cap = (unsigned long) stack + bytes;
+	    గుర్తులేని దీర్ఘ చివర = (గుర్తులేని దీర్ఘ) argp + z;
+	    గుర్తులేని దీర్ఘ cap = (గుర్తులేని దీర్ఘ) దొంతర + బైట్లు;
 
 	    /* Check if the data will fit within the register space.
 	       Handle it if it doesn't.  */
 
-	    if (end <= cap)
-	      memcpy(argp, *p_argv, z);
-	    else
+	    ఒకవేళ (చివర <= cap)
+	      జ్ఞాపకం_నకలు(argp, *p_argv, z);
+	    లేకపోతే
 	      {
-		unsigned long portion = cap - (unsigned long)argp;
+		గుర్తులేని దీర్ఘ portion = cap - (గుర్తులేని దీర్ఘ)argp;
 
-		memcpy(argp, *p_argv, portion);
-		argp = stack;
+		జ్ఞాపకం_నకలు(argp, *p_argv, portion);
+		argp = దొంతర;
                 z -= portion;
-		memcpy(argp, (void*)((unsigned long)(*p_argv) + portion),
+		జ్ఞాపకం_నకలు(argp, (శూన్య*)((గుర్తులేని దీర్ఘ)(*p_argv) + portion),
                        z);
 	      }
 	  }
-#endif
+#అయితే_ముగింపు
       }
       p_argv++;
       argp += z;
@@ -264,7 +264,7 @@ static void ffi_prep_args(char *stack,
     }
 }
 
-#ifdef FFI_MIPS_N32
+#నిర్వచితమైతే FFI_MIPS_N32
 
 /* The n32 spec says that if "a chunk consists solely of a double 
    float field (but not a double, which is part of a union), it
@@ -272,61 +272,61 @@ static void ffi_prep_args(char *stack,
    passed in an integer register". This code traverses structure
    definitions and generates the appropriate flags. */
 
-static int
-calc_n32_struct_flags_element(unsigned *flags, ffi_type *e,
-			      unsigned *loc, unsigned *arg_reg)
+స్థిర పూర్ణాంకం
+calc_n32_struct_flags_element(గుర్తులేని *flags, ffi_type *e,
+			      గుర్తులేని *loc, గుర్తులేని *arg_reg)
 {
   /* Align this object.  */
   *loc = FFI_ALIGN(*loc, e->alignment);
-  if (e->type == FFI_TYPE_DOUBLE)
+  ఒకవేళ (e->type == FFI_TYPE_DOUBLE)
     {
       /* Already aligned to FFI_SIZEOF_ARG.  */
       *arg_reg = *loc / FFI_SIZEOF_ARG;
-      if (*arg_reg > 7)
-	return 1;
-      *flags += (FFI_TYPE_DOUBLE << (*arg_reg * FFI_FLAG_BITS));
+      ఒకవేళ (*arg_reg > 7)
+	తిరిగి 1;
+      *flags += (FFI_TYPE_DOUBLE << (*arg_reg * FFI_FLAG_బిట్లు));
     }
-  *loc += e->size;
-  return 0;
+  *loc += e->కొలత;
+  తిరిగి 0;
 }
 
-static unsigned
-calc_n32_struct_flags(int soft_float, ffi_type *arg,
-		      unsigned *loc, unsigned *arg_reg)
+స్థిర గుర్తులేని
+calc_n32_struct_flags(పూర్ణాంకం soft_float, ffi_type *arg,
+		      గుర్తులేని *loc, గుర్తులేని *arg_reg)
 {
-  unsigned flags = 0;
-  unsigned index = 0;
+  గుర్తులేని flags = 0;
+  గుర్తులేని సూచీ = 0;
 
   ffi_type *e;
 
-  if (soft_float)
-    return 0;
+  ఒకవేళ (soft_float)
+    తిరిగి 0;
 
-  while ((e = arg->elements[index]))
+  అయితే ((e = arg->elements[సూచీ]))
     {
-      if (e->type == FFI_TYPE_COMPLEX)
+      ఒకవేళ (e->type == FFI_TYPE_COMPLEX)
 	{
-	  if (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
-	    break;
-	  if (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
-	    break;
+	  ఒకవేళ (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
+	    ఆపు;
+	  ఒకవేళ (calc_n32_struct_flags_element(&flags, e->elements[0], loc, arg_reg))
+	    ఆపు;
 	}
-      else
-	if (calc_n32_struct_flags_element(&flags, e, loc, arg_reg))
-	  break;
-      index++;
+      లేకపోతే
+	ఒకవేళ (calc_n32_struct_flags_element(&flags, e, loc, arg_reg))
+	  ఆపు;
+      సూచీ++;
     }
   /* Next Argument register at alignment of FFI_SIZEOF_ARG.  */
   *arg_reg = FFI_ALIGN(*loc, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 
-  return flags;
+  తిరిగి flags;
 }
 
-static unsigned
-calc_n32_return_struct_flags(int soft_float, ffi_type *arg)
+స్థిర గుర్తులేని
+calc_n32_return_struct_flags(పూర్ణాంకం soft_float, ffi_type *arg)
 {
-  unsigned flags;
-  unsigned small = FFI_TYPE_SMALLSTRUCT;
+  గుర్తులేని flags;
+  గుర్తులేని small = FFI_TYPE_SMALLSTRUCT;
   ffi_type *e;
 
   /* Returning structures under n32 is a tricky thing.
@@ -336,102 +336,102 @@ calc_n32_return_struct_flags(int soft_float, ffi_type *arg)
      (the first 64 bits) and $3 (remainder, if necessary).
      Larger structs are handled normally. */
   
-  if (arg->size > 16)
-    return 0;
+  ఒకవేళ (arg->కొలత > 16)
+    తిరిగి 0;
 
-  if (arg->size > 8)
+  ఒకవేళ (arg->కొలత > 8)
     small = FFI_TYPE_SMALLSTRUCT2;
 
   e = arg->elements[0];
 
-  if (e->type == FFI_TYPE_COMPLEX)
+  ఒకవేళ (e->type == FFI_TYPE_COMPLEX)
     {
-      int type = e->elements[0]->type;
+      పూర్ణాంకం type = e->elements[0]->type;
 
-      if (type != FFI_TYPE_DOUBLE && type != FFI_TYPE_FLOAT)
-	return small;
+      ఒకవేళ (type != FFI_TYPE_DOUBLE && type != FFI_TYPE_FLOAT)
+	తిరిగి small;
 
-      if (arg->elements[1])
+      ఒకవేళ (arg->elements[1])
 	{
 	  /* Two floating point fields with more fields!
 	     This must be passed the old way. */
-	  return small;
+	  తిరిగి small;
 	}
 
-      flags = (type << FFI_FLAG_BITS) + type;
+      flags = (type << FFI_FLAG_బిట్లు) + type;
     }
-  else
+  లేకపోతే
     {
-      if (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
-	return small;
+      ఒకవేళ (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
+	తిరిగి small;
 
       flags = e->type;
 
-      if (arg->elements[1])
+      ఒకవేళ (arg->elements[1])
 	{
 	  e = arg->elements[1];
-	  if (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
-	    return small;
+	  ఒకవేళ (e->type != FFI_TYPE_DOUBLE && e->type != FFI_TYPE_FLOAT)
+	    తిరిగి small;
 
-	  if (arg->elements[2])
+	  ఒకవేళ (arg->elements[2])
 	    {
 	      /* There are three arguments and the first two are
 		 floats! This must be passed the old way. */
-	      return small;
+	      తిరిగి small;
 	    }
 
-	  flags += e->type << FFI_FLAG_BITS;
+	  flags += e->type << FFI_FLAG_బిట్లు;
 	}
     }
 
-  if (soft_float)
+  ఒకవేళ (soft_float)
     flags += FFI_TYPE_STRUCT_SOFT;
-  return flags;
+  తిరిగి flags;
 }
 
-#endif
+#అయితే_ముగింపు
 
 /* Perform machine dependent cif processing */
-static ffi_status ffi_prep_cif_machdep_int(ffi_cif *cif, unsigned nfixedargs)
+స్థిర ffi_స్థితి ffi_prep_cif_machdep_int(ffi_cif *cif, గుర్తులేని nfixedargs)
 {
   cif->flags = 0;
   cif->mips_nfixedargs = nfixedargs;
 
-#ifdef FFI_MIPS_O32
+#నిర్వచితమైతే FFI_MIPS_O32
   /* Set the flags necessary for O32 processing.  FFI_O32_SOFT_FLOAT
    * does not have special handling for floating point args.
    */
 
-  if (cif->rtype->type != FFI_TYPE_STRUCT && cif->rtype->type != FFI_TYPE_COMPLEX && cif->abi == FFI_O32)
+  ఒకవేళ (cif->rtype->type != FFI_TYPE_STRUCT && cif->rtype->type != FFI_TYPE_COMPLEX && cif->abi == FFI_O32)
     {
-      if (cif->nargs > 0 && cif->nargs == nfixedargs)
+      ఒకవేళ (cif->nargs > 0 && cif->nargs == nfixedargs)
 	{
-	  switch ((cif->arg_types)[0]->type)
+	  ఎంపిక ((cif->arg_types)[0]->type)
 	    {
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_DOUBLE:
+	    స్థితి FFI_TYPE_FLOAT:
+	    స్థితి FFI_TYPE_DOUBLE:
 	      cif->flags += (cif->arg_types)[0]->type;
-	      break;
+	      ఆపు;
 	      
-	    default:
-	      break;
+	    అప్రమేయ:
+	      ఆపు;
 	    }
 
-	  if (cif->nargs > 1)
+	  ఒకవేళ (cif->nargs > 1)
 	    {
 	      /* Only handle the second argument if the first
 		 is a float or double. */
-	      if (cif->flags)
+	      ఒకవేళ (cif->flags)
 		{
-		  switch ((cif->arg_types)[1]->type)
+		  ఎంపిక ((cif->arg_types)[1]->type)
 		    {
-		    case FFI_TYPE_FLOAT:
-		    case FFI_TYPE_DOUBLE:
-		      cif->flags += (cif->arg_types)[1]->type << FFI_FLAG_BITS;
-		      break;
+		    స్థితి FFI_TYPE_FLOAT:
+		    స్థితి FFI_TYPE_DOUBLE:
+		      cif->flags += (cif->arg_types)[1]->type << FFI_FLAG_బిట్లు;
+		      ఆపు;
 		      
-		    default:
-		      break;
+		    అప్రమేయ:
+		      ఆపు;
 		    }
 		}
 	    }
@@ -440,322 +440,322 @@ static ffi_status ffi_prep_cif_machdep_int(ffi_cif *cif, unsigned nfixedargs)
       
   /* Set the return type flag */
 
-  if (cif->abi == FFI_O32_SOFT_FLOAT)
+  ఒకవేళ (cif->abi == FFI_O32_SOFT_FLOAT)
     {
-      switch (cif->rtype->type)
+      ఎంపిక (cif->rtype->type)
         {
-        case FFI_TYPE_VOID:
-        case FFI_TYPE_STRUCT:
-          cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 2);
-          break;
+        స్థితి FFI_TYPE_VOID:
+        స్థితి FFI_TYPE_STRUCT:
+          cif->flags += cif->rtype->type << (FFI_FLAG_బిట్లు * 2);
+          ఆపు;
 
-        case FFI_TYPE_SINT64:
-        case FFI_TYPE_UINT64:
-        case FFI_TYPE_DOUBLE:
-          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 2);
-          break;
+        స్థితి FFI_TYPE_SINT64:
+        స్థితి FFI_TYPE_UINT64:
+        స్థితి FFI_TYPE_DOUBLE:
+          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_బిట్లు * 2);
+          ఆపు;
       
-        case FFI_TYPE_FLOAT:
-        default:
-          cif->flags += FFI_TYPE_INT << (FFI_FLAG_BITS * 2);
-          break;
+        స్థితి FFI_TYPE_FLOAT:
+        అప్రమేయ:
+          cif->flags += FFI_TYPE_INT << (FFI_FLAG_బిట్లు * 2);
+          ఆపు;
         }
     }
-  else
+  లేకపోతే
     {
       /* FFI_O32 */      
-      switch (cif->rtype->type)
+      ఎంపిక (cif->rtype->type)
         {
-        case FFI_TYPE_VOID:
-        case FFI_TYPE_STRUCT:
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_DOUBLE:
-        case FFI_TYPE_COMPLEX:
-          cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 2);
-	  if (cif->rtype->type == FFI_TYPE_COMPLEX)
-            cif->flags +=  ((*cif->rtype->elements[0]).type) << (FFI_FLAG_BITS * 4);
-          break;
+        స్థితి FFI_TYPE_VOID:
+        స్థితి FFI_TYPE_STRUCT:
+        స్థితి FFI_TYPE_FLOAT:
+        స్థితి FFI_TYPE_DOUBLE:
+        స్థితి FFI_TYPE_COMPLEX:
+          cif->flags += cif->rtype->type << (FFI_FLAG_బిట్లు * 2);
+	  ఒకవేళ (cif->rtype->type == FFI_TYPE_COMPLEX)
+            cif->flags +=  ((*cif->rtype->elements[0]).type) << (FFI_FLAG_బిట్లు * 4);
+          ఆపు;
 
-        case FFI_TYPE_SINT64:
-        case FFI_TYPE_UINT64:
-          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 2);
-          break;
+        స్థితి FFI_TYPE_SINT64:
+        స్థితి FFI_TYPE_UINT64:
+          cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_బిట్లు * 2);
+          ఆపు;
       
-        default:
-          cif->flags += FFI_TYPE_INT << (FFI_FLAG_BITS * 2);
-          break;
+        అప్రమేయ:
+          cif->flags += FFI_TYPE_INT << (FFI_FLAG_బిట్లు * 2);
+          ఆపు;
         }
     }
-#endif
+#అయితే_ముగింపు
 
-#ifdef FFI_MIPS_N32
+#నిర్వచితమైతే FFI_MIPS_N32
   /* Set the flags necessary for N32 processing */
   {
-    unsigned arg_reg = 0;
-    unsigned loc = 0;
-    unsigned count = (cif->nargs < 8) ? cif->nargs : 8;
-    unsigned index = 0;
+    గుర్తులేని arg_reg = 0;
+    గుర్తులేని loc = 0;
+    గుర్తులేని లెక్క = (cif->nargs < 8) ? cif->nargs : 8;
+    గుర్తులేని సూచీ = 0;
 
-    unsigned struct_flags = 0;
-    int soft_float = (cif->abi == FFI_N32_SOFT_FLOAT
+    గుర్తులేని struct_flags = 0;
+    పూర్ణాంకం soft_float = (cif->abi == FFI_N32_SOFT_FLOAT
 		      || cif->abi == FFI_N64_SOFT_FLOAT);
 
-    if (cif->rtype->type == FFI_TYPE_STRUCT)
+    ఒకవేళ (cif->rtype->type == FFI_TYPE_STRUCT)
       {
 	struct_flags = calc_n32_return_struct_flags(soft_float, cif->rtype);
 
-	if (struct_flags == 0)
+	ఒకవేళ (struct_flags == 0)
 	  {
 	    /* This means that the structure is being passed as
 	       a hidden argument */
 
 	    arg_reg = 1;
-	    count = (cif->nargs < 7) ? cif->nargs : 7;
+	    లెక్క = (cif->nargs < 7) ? cif->nargs : 7;
 
 	    cif->rstruct_flag = !0;
 	  }
-	else
+	లేకపోతే
 	    cif->rstruct_flag = 0;
       }
-    else
+    లేకపోతే
       cif->rstruct_flag = 0;
 
-    while (count-- > 0 && arg_reg < 8)
+    అయితే (లెక్క-- > 0 && arg_reg < 8)
       {
-	ffi_type *t = cif->arg_types[index];
+	ffi_type *t = cif->arg_types[సూచీ];
 
-	switch (t->type)
+	ఎంపిక (t->type)
 	  {
-	  case FFI_TYPE_FLOAT:
-	  case FFI_TYPE_DOUBLE:
-	    if (!soft_float && index < nfixedargs)
-              cif->flags += t->type << (arg_reg * FFI_FLAG_BITS);
+	  స్థితి FFI_TYPE_FLOAT:
+	  స్థితి FFI_TYPE_DOUBLE:
+	    ఒకవేళ (!soft_float && సూచీ < nfixedargs)
+              cif->flags += t->type << (arg_reg * FFI_FLAG_బిట్లు);
 	    arg_reg++;
-	    break;
-          case FFI_TYPE_LONGDOUBLE:
+	    ఆపు;
+          స్థితి FFI_TYPE_LONGDOUBLE:
             /* Align it.  */
             arg_reg = FFI_ALIGN(arg_reg, 2);
             /* Treat it as two adjacent doubles.  */
-	    if (soft_float || index >= nfixedargs)
+	    ఒకవేళ (soft_float || సూచీ >= nfixedargs)
 	      {
 		arg_reg += 2;
 	      }
-	    else
+	    లేకపోతే
 	      {
 		cif->flags +=
-		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_బిట్లు));
 		arg_reg++;
-		if (arg_reg >= 8)
-		  continue;
+		ఒకవేళ (arg_reg >= 8)
+		  కొనసాగు;
 		cif->flags +=
-		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		  (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_బిట్లు));
 		arg_reg++;
 	      }
-            break;
+            ఆపు;
 
-	  case FFI_TYPE_COMPLEX:
-	    switch (t->elements[0]->type)
+	  స్థితి FFI_TYPE_COMPLEX:
+	    ఎంపిక (t->elements[0]->type)
 	      {
-	      case FFI_TYPE_LONGDOUBLE:
+	      స్థితి FFI_TYPE_LONGDOUBLE:
 		arg_reg = FFI_ALIGN(arg_reg, 2);
-		if (soft_float || index >= nfixedargs)
+		ఒకవేళ (soft_float || సూచీ >= nfixedargs)
 		  {
 		    arg_reg += 2;
 		  }
-		else
+		లేకపోతే
 		  {
 		    cif->flags +=
-		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_బిట్లు));
 		    arg_reg++;
-		    if (arg_reg >= 8)
-		        continue;
+		    ఒకవేళ (arg_reg >= 8)
+		        కొనసాగు;
 		    cif->flags +=
-		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_BITS));
+		      (FFI_TYPE_DOUBLE << (arg_reg * FFI_FLAG_బిట్లు));
 		    arg_reg++;
-		    if (arg_reg >= 8)
-		        continue;
+		    ఒకవేళ (arg_reg >= 8)
+		        కొనసాగు;
 		  }
 		/* passthrough */
-	      case FFI_TYPE_FLOAT:
+	      స్థితి FFI_TYPE_FLOAT:
 		// one fpr can only holds one arg even it is single
-		cif->bytes += 16;
+		cif->బైట్లు += 16;
 		/* passthrough */
-	      case FFI_TYPE_SINT32:
-	      case FFI_TYPE_UINT32:
-	      case FFI_TYPE_DOUBLE:
-		if (soft_float || index >= nfixedargs)
+	      స్థితి FFI_TYPE_SINT32:
+	      స్థితి FFI_TYPE_UINT32:
+	      స్థితి FFI_TYPE_DOUBLE:
+		ఒకవేళ (soft_float || సూచీ >= nfixedargs)
 		  {
 		    arg_reg += 2;
 		  }
-		else
+		లేకపోతే
 		  {
 		    uint32_t type = t->elements[0]->type != FFI_TYPE_LONGDOUBLE? t->elements[0]->type: FFI_TYPE_DOUBLE;
 		    cif->flags +=
-		      (type << (arg_reg * FFI_FLAG_BITS));
+		      (type << (arg_reg * FFI_FLAG_బిట్లు));
 		    arg_reg++;
-		    if (arg_reg >= 8)
-		        continue;
+		    ఒకవేళ (arg_reg >= 8)
+		        కొనసాగు;
 		    cif->flags +=
-		      (type << (arg_reg * FFI_FLAG_BITS));
+		      (type << (arg_reg * FFI_FLAG_బిట్లు));
 		    arg_reg++;
 		  }
-		break;
-	      default:
+		ఆపు;
+	      అప్రమేయ:
 		arg_reg += 2;
-		break;
+		ఆపు;
 	      }
-	    break;
+	    ఆపు;
 
-	  case FFI_TYPE_STRUCT:
+	  స్థితి FFI_TYPE_STRUCT:
             loc = arg_reg * FFI_SIZEOF_ARG;
-	    cif->flags += calc_n32_struct_flags(soft_float || index >= nfixedargs,
+	    cif->flags += calc_n32_struct_flags(soft_float || సూచీ >= nfixedargs,
 						t, &loc, &arg_reg);
-	    break;
+	    ఆపు;
 
-	  default:
+	  అప్రమేయ:
 	    arg_reg++;
-            break;
+            ఆపు;
 	  }
 
-	index++;
+	సూచీ++;
       }
 
   /* Set the return type flag */
-    switch (cif->rtype->type)
+    ఎంపిక (cif->rtype->type)
       {
-      case FFI_TYPE_STRUCT:
+      స్థితి FFI_TYPE_STRUCT:
 	{
-	  if (struct_flags == 0)
+	  ఒకవేళ (struct_flags == 0)
 	    {
 	      /* The structure is returned through a hidden
 		 first argument. Do nothing, 'cause FFI_TYPE_VOID 
 		 is 0 */
 	    }
-	  else
+	  లేకపోతే
 	    {
 	      /* The structure is returned via some tricky
 		 mechanism */
-	      cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_BITS * 8);
-	      cif->flags += struct_flags << (4 + (FFI_FLAG_BITS * 8));
+	      cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_బిట్లు * 8);
+	      cif->flags += struct_flags << (4 + (FFI_FLAG_బిట్లు * 8));
 	    }
-	  break;
+	  ఆపు;
 	}
       
-      case FFI_TYPE_VOID:
+      స్థితి FFI_TYPE_VOID:
 	/* Do nothing, 'cause FFI_TYPE_VOID is 0 */
-	break;
+	ఆపు;
 
-      case FFI_TYPE_POINTER:
-	if (cif->abi == FFI_N32_SOFT_FLOAT || cif->abi == FFI_N32)
-	  cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_BITS * 8);
-	else
-	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 8);
-	break;
+      స్థితి FFI_TYPE_సూచిక:
+	ఒకవేళ (cif->abi == FFI_N32_SOFT_FLOAT || cif->abi == FFI_N32)
+	  cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_బిట్లు * 8);
+	లేకపోతే
+	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_బిట్లు * 8);
+	ఆపు;
 
-      case FFI_TYPE_FLOAT:
-	if (soft_float)
+      స్థితి FFI_TYPE_FLOAT:
+	ఒకవేళ (soft_float)
 	  {
-	    cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_BITS * 8);
-	    break;
+	    cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_బిట్లు * 8);
+	    ఆపు;
 	  }
 	/* else fall through */
-      case FFI_TYPE_DOUBLE:
-	if (soft_float)
-	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 8);
-	else
-	  cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 8);
-	break;
+      స్థితి FFI_TYPE_DOUBLE:
+	ఒకవేళ (soft_float)
+	  cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_బిట్లు * 8);
+	లేకపోతే
+	  cif->flags += cif->rtype->type << (FFI_FLAG_బిట్లు * 8);
+	ఆపు;
 
-      case FFI_TYPE_LONGDOUBLE:
+      స్థితి FFI_TYPE_LONGDOUBLE:
 	/* Long double is returned as if it were a struct containing
 	   two doubles.  */
-	if (soft_float)
+	ఒకవేళ (soft_float)
 	  {
 	    /* if ret is long double, the ret is given by v0 and a0, no idea why
 	     * Let's us VOID | VOID | LONGDOUBLE for it*/
-	    cif->flags += FFI_TYPE_LONGDOUBLE << (FFI_FLAG_BITS * 8);
+	    cif->flags += FFI_TYPE_LONGDOUBLE << (FFI_FLAG_బిట్లు * 8);
  	  }
-	else
+	లేకపోతే
 	  {
-	    cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_BITS * 8);
+	    cif->flags += FFI_TYPE_STRUCT << (FFI_FLAG_బిట్లు * 8);
 	    cif->flags += (FFI_TYPE_DOUBLE
-			   + (FFI_TYPE_DOUBLE << FFI_FLAG_BITS))
-					      << (4 + (FFI_FLAG_BITS * 8));
+			   + (FFI_TYPE_DOUBLE << FFI_FLAG_బిట్లు))
+					      << (4 + (FFI_FLAG_బిట్లు * 8));
 	  }
-	break;
-      case FFI_TYPE_COMPLEX:
+	ఆపు;
+      స్థితి FFI_TYPE_COMPLEX:
 	{
-	  int type = cif->rtype->elements[0]->type;
+	  పూర్ణాంకం type = cif->rtype->elements[0]->type;
 
-	  cif->flags += (FFI_TYPE_COMPLEX << (FFI_FLAG_BITS * 8));
-	  if (soft_float || (type != FFI_TYPE_FLOAT && type != FFI_TYPE_DOUBLE && type != FFI_TYPE_LONGDOUBLE))
+	  cif->flags += (FFI_TYPE_COMPLEX << (FFI_FLAG_బిట్లు * 8));
+	  ఒకవేళ (soft_float || (type != FFI_TYPE_FLOAT && type != FFI_TYPE_DOUBLE && type != FFI_TYPE_LONGDOUBLE))
 	    {
-	      switch (type)
+	      ఎంపిక (type)
 		{
-		case FFI_TYPE_DOUBLE:
-		case FFI_TYPE_SINT64:
-		case FFI_TYPE_UINT64:
-		case FFI_TYPE_INT:
+		స్థితి FFI_TYPE_DOUBLE:
+		స్థితి FFI_TYPE_SINT64:
+		స్థితి FFI_TYPE_UINT64:
+		స్థితి FFI_TYPE_INT:
 		  type = FFI_TYPE_SMALLSTRUCT2;
-		  break;
-		case FFI_TYPE_LONGDOUBLE:
+		  ఆపు;
+		స్థితి FFI_TYPE_LONGDOUBLE:
 		  type = FFI_TYPE_LONGDOUBLE;
-		  break;
-		case FFI_TYPE_FLOAT:
-		default:
+		  ఆపు;
+		స్థితి FFI_TYPE_FLOAT:
+		అప్రమేయ:
 		  type = FFI_TYPE_SMALLSTRUCT;
 		}
-	      cif->flags += type << (4 + (FFI_FLAG_BITS * 8));
+	      cif->flags += type << (4 + (FFI_FLAG_బిట్లు * 8));
 	    }
-	  else
+	  లేకపోతే
 	    {
 	      //cif->flags += (type + (type << FFI_FLAG_BITS))
 		//	    << (4 + (FFI_FLAG_BITS * 8));
-	      cif->flags += type << (4 + (FFI_FLAG_BITS * 8));
+	      cif->flags += type << (4 + (FFI_FLAG_బిట్లు * 8));
 	    }
-	  break;
+	  ఆపు;
 	}
-      case FFI_TYPE_UINT32:
+      స్థితి FFI_TYPE_UINT32:
 	/* In the N32 or N64 ABI unsigned 32-bit integer should be
 	   *sign*-extended.  */
-	cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_BITS * 8);
-	break;
-      case FFI_TYPE_SINT64:
-	cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_BITS * 8);
-	break;
-      default:
-	cif->flags += cif->rtype->type << (FFI_FLAG_BITS * 8);
-	break;
+	cif->flags += FFI_TYPE_SINT32 << (FFI_FLAG_బిట్లు * 8);
+	ఆపు;
+      స్థితి FFI_TYPE_SINT64:
+	cif->flags += FFI_TYPE_UINT64 << (FFI_FLAG_బిట్లు * 8);
+	ఆపు;
+      అప్రమేయ:
+	cif->flags += cif->rtype->type << (FFI_FLAG_బిట్లు * 8);
+	ఆపు;
       }
   }
-#endif
-  return FFI_OK;
+#అయితే_ముగింపు
+  తిరిగి FFI_OK;
 }
 
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_స్థితి ffi_prep_cif_machdep(ffi_cif *cif)
 {
-    return ffi_prep_cif_machdep_int(cif, cif->nargs);
+    తిరిగి ffi_prep_cif_machdep_int(cif, cif->nargs);
 }
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-                                    unsigned nfixedargs,
-                                    unsigned ntotalargs MAYBE_UNUSED)
+ffi_స్థితి ffi_prep_cif_machdep_var(ffi_cif *cif,
+                                    గుర్తులేని nfixedargs,
+                                    గుర్తులేని ntotalargs MAYBE_వాడని)
 {
-    return ffi_prep_cif_machdep_int(cif, nfixedargs);
+    తిరిగి ffi_prep_cif_machdep_int(cif, nfixedargs);
 }
 
 /* Low level routine for calling O32 functions */
-extern int ffi_call_O32(void (*)(char *, extended_cif *, int, int), 
-			extended_cif *, unsigned, 
-			unsigned, unsigned *, void (*)(void), void *closure);
+బాహ్య పూర్ణాంకం ffi_call_O32(శూన్య (*)(అక్షరం *, extended_cif *, పూర్ణాంకం, పూర్ణాంకం), 
+			extended_cif *, గుర్తులేని, 
+			గుర్తులేని, గుర్తులేని *, శూన్య (*)(శూన్య), శూన్య *సంవృతం);
 
 /* Low level routine for calling N32 functions */
-extern int ffi_call_N32(void (*)(char *, extended_cif *, int, int), 
-			extended_cif *, unsigned, 
-			unsigned, void *, void (*)(void), void *closure);
+బాహ్య పూర్ణాంకం ffi_call_N32(శూన్య (*)(అక్షరం *, extended_cif *, పూర్ణాంకం, పూర్ణాంకం), 
+			extended_cif *, గుర్తులేని, 
+			గుర్తులేని, శూన్య *, శూన్య (*)(శూన్య), శూన్య *సంవృతం);
 
-void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue, 
-	      void **avalue, void *closure)
+శూన్య ffi_call_int(ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, 
+	      శూన్య **avalue, శూన్య *సంవృతం)
 {
   extended_cif ecif;
 
@@ -765,32 +765,32 @@ void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
   
-  if ((rvalue == NULL) && 
+  ఒకవేళ ((rvalue == ఖాళీ) && 
       (cif->rtype->type == FFI_TYPE_STRUCT || cif->rtype->type == FFI_TYPE_COMPLEX))
-    ecif.rvalue = alloca(cif->rtype->size);
-  else
+    ecif.rvalue = alloca(cif->rtype->కొలత);
+  లేకపోతే
     ecif.rvalue = rvalue;
     
-  switch (cif->abi) 
+  ఎంపిక (cif->abi) 
     {
-#ifdef FFI_MIPS_O32
-    case FFI_O32:
-    case FFI_O32_SOFT_FLOAT:
-      ffi_call_O32(ffi_prep_args, &ecif, cif->bytes, 
-		   cif->flags, ecif.rvalue, fn, closure);
-      break;
-#endif
+#నిర్వచితమైతే FFI_MIPS_O32
+    స్థితి FFI_O32:
+    స్థితి FFI_O32_SOFT_FLOAT:
+      ffi_call_O32(ffi_prep_వాదనలు, &ecif, cif->బైట్లు, 
+		   cif->flags, ecif.rvalue, fn, సంవృతం);
+      ఆపు;
+#అయితే_ముగింపు
 
-#ifdef FFI_MIPS_N32
-    case FFI_N32:
-    case FFI_N32_SOFT_FLOAT:
-    case FFI_N64:
-    case FFI_N64_SOFT_FLOAT:
+#నిర్వచితమైతే FFI_MIPS_N32
+    స్థితి FFI_N32:
+    స్థితి FFI_N32_SOFT_FLOAT:
+    స్థితి FFI_N64:
+    స్థితి FFI_N64_SOFT_FLOAT:
       {
-        int copy_rvalue = 0;
-	int copy_offset = 0;
-        char *rvalue_copy = ecif.rvalue;
-        if (cif->rtype->type == FFI_TYPE_STRUCT && cif->rtype->size < 16)
+        పూర్ణాంకం copy_rvalue = 0;
+	పూర్ణాంకం copy_స్థానభ్రంశం = 0;
+        అక్షరం *rvalue_copy = ecif.rvalue;
+        ఒకవేళ (cif->rtype->type == FFI_TYPE_STRUCT && cif->rtype->కొలత < 16)
           {
             /* For structures smaller than 16 bytes we clobber memory
                in 8 byte increments.  Make a copy so we don't clobber
@@ -798,143 +798,143 @@ void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
             rvalue_copy = alloca(16);
             copy_rvalue = 1;
           }
-	else if (cif->rtype->type == FFI_TYPE_FLOAT
+	లేకపోతే ఒకవేళ (cif->rtype->type == FFI_TYPE_FLOAT
 		 && (cif->abi == FFI_N64_SOFT_FLOAT
 		     || cif->abi == FFI_N32_SOFT_FLOAT))
 	  {
 	    rvalue_copy = alloca (8);
 	    copy_rvalue = 1;
-#if defined(__MIPSEB__) || defined(_MIPSEB)
-	    copy_offset = 4;
-#endif
+#ఒకవేళ defined(__MIPSEB__) || defined(_MIPSEB)
+	    copy_స్థానభ్రంశం = 4;
+#అయితే_ముగింపు
 	  }
-        ffi_call_N32(ffi_prep_args, &ecif, cif->bytes,
-                     cif->flags, rvalue_copy, fn, closure);
-        if (copy_rvalue)
-          memcpy(ecif.rvalue, rvalue_copy + copy_offset, cif->rtype->size);
+        ffi_call_N32(ffi_prep_వాదనలు, &ecif, cif->బైట్లు,
+                     cif->flags, rvalue_copy, fn, సంవృతం);
+        ఒకవేళ (copy_rvalue)
+          జ్ఞాపకం_నకలు(ecif.rvalue, rvalue_copy + copy_స్థానభ్రంశం, cif->rtype->కొలత);
       }
-      break;
-#endif
+      ఆపు;
+#అయితే_ముగింపు
 
-    default:
+    అప్రమేయ:
       FFI_ASSERT(0);
-      break;
+      ఆపు;
     }
 }
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+శూన్య
+ffi_call(ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ఖాళీ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+శూన్య
+ffi_call_go (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue,
+	     శూన్య **avalue, శూన్య *సంవృతం)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, సంవృతం);
 }
 
 
-#if FFI_CLOSURES
-#if defined(FFI_MIPS_O32)
-extern void ffi_closure_O32(void);
-extern void ffi_go_closure_O32(void);
-#else
-extern void ffi_closure_N32(void);
-extern void ffi_go_closure_N32(void);
-#endif /* FFI_MIPS_O32 */
+#ఒకవేళ FFI_CLOSURES
+#ఒకవేళ defined(FFI_MIPS_O32)
+బాహ్య శూన్య ffi_సంవృతం_O32(శూన్య);
+బాహ్య శూన్య ffi_go_సంవృతం_O32(శూన్య);
+#లేకపోతే
+బాహ్య శూన్య ffi_సంవృతం_N32(శూన్య);
+బాహ్య శూన్య ffi_go_సంవృతం_N32(శూన్య);
+#అయితే_ముగింపు /* FFI_MIPS_O32 */
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం *సంవృతం,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun)(ffi_cif*,శూన్య*,శూన్య**,శూన్య*),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
-  void * fn;
-  char *clear_location = (char *) codeloc;
+  గుర్తులేని పూర్ణాంకం *tramp = (గుర్తులేని పూర్ణాంకం *) &సంవృతం->tramp[0];
+  శూన్య * fn;
+  అక్షరం *clear_location = (అక్షరం *) codeloc;
 
-#if defined(FFI_MIPS_O32)
-  if (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-  fn = ffi_closure_O32;
-#else
-#if _MIPS_SIM ==_ABIN32
-  if (cif->abi != FFI_N32
+#ఒకవేళ defined(FFI_MIPS_O32)
+  ఒకవేళ (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
+    తిరిగి FFI_BAD_ABI;
+  fn = ffi_సంవృతం_O32;
+#లేకపోతే
+#ఒకవేళ _MIPS_SIM ==_ABIN32
+  ఒకవేళ (cif->abi != FFI_N32
       && cif->abi != FFI_N32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#else
-  if (cif->abi != FFI_N64
+    తిరిగి FFI_BAD_ABI;
+#లేకపోతే
+  ఒకవేళ (cif->abi != FFI_N64
       && cif->abi != FFI_N64_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#endif
-  fn = ffi_closure_N32;
-#endif /* FFI_MIPS_O32 */
+    తిరిగి FFI_BAD_ABI;
+#అయితే_ముగింపు
+  fn = ffi_సంవృతం_N32;
+#అయితే_ముగింపు /* FFI_MIPS_O32 */
 
-#if defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
+#ఒకవేళ defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
   /* lui  $25,high(fn) */
-  tramp[0] = 0x3c190000 | ((unsigned)fn >> 16);
+  tramp[0] = 0x3c190000 | ((గుర్తులేని)fn >> 16);
   /* ori  $25,low(fn)  */
-  tramp[1] = 0x37390000 | ((unsigned)fn & 0xffff);
+  tramp[1] = 0x37390000 | ((గుర్తులేని)fn & 0xffff);
   /* lui  $12,high(codeloc) */
-  tramp[2] = 0x3c0c0000 | ((unsigned)codeloc >> 16);
+  tramp[2] = 0x3c0c0000 | ((గుర్తులేని)codeloc >> 16);
   /* jr   $25          */
-#if !defined(__mips_isa_rev) || (__mips_isa_rev<6)
+#ఒకవేళ !defined(__mips_isa_rev) || (__mips_isa_rev<6)
   tramp[3] = 0x03200008;
-#else
+#లేకపోతే
   tramp[3] = 0x03200009;
-#endif
+#అయితే_ముగింపు
   /* ori  $12,low(codeloc)  */
-  tramp[4] = 0x358c0000 | ((unsigned)codeloc & 0xffff);
-#else
+  tramp[4] = 0x358c0000 | ((గుర్తులేని)codeloc & 0xffff);
+#లేకపోతే
   /* N64 has a somewhat larger trampoline.  */
   /* lui  $25,high(fn) */
-  tramp[0] = 0x3c190000 | ((unsigned long)fn >> 48);
+  tramp[0] = 0x3c190000 | ((గుర్తులేని దీర్ఘ)fn >> 48);
   /* lui  $12,high(codeloc) */
-  tramp[1] = 0x3c0c0000 | ((unsigned long)codeloc >> 48);
+  tramp[1] = 0x3c0c0000 | ((గుర్తులేని దీర్ఘ)codeloc >> 48);
   /* ori  $25,mid-high(fn)  */
-  tramp[2] = 0x37390000 | (((unsigned long)fn >> 32 ) & 0xffff);
+  tramp[2] = 0x37390000 | (((గుర్తులేని దీర్ఘ)fn >> 32 ) & 0xffff);
   /* ori  $12,mid-high(codeloc)  */
-  tramp[3] = 0x358c0000 | (((unsigned long)codeloc >> 32) & 0xffff);
+  tramp[3] = 0x358c0000 | (((గుర్తులేని దీర్ఘ)codeloc >> 32) & 0xffff);
   /* dsll $25,$25,16 */
   tramp[4] = 0x0019cc38;
   /* dsll $12,$12,16 */
   tramp[5] = 0x000c6438;
   /* ori  $25,mid-low(fn)  */
-  tramp[6] = 0x37390000 | (((unsigned long)fn >> 16 ) & 0xffff);
+  tramp[6] = 0x37390000 | (((గుర్తులేని దీర్ఘ)fn >> 16 ) & 0xffff);
   /* ori  $12,mid-low(codeloc)  */
-  tramp[7] = 0x358c0000 | (((unsigned long)codeloc >> 16) & 0xffff);
+  tramp[7] = 0x358c0000 | (((గుర్తులేని దీర్ఘ)codeloc >> 16) & 0xffff);
   /* dsll $25,$25,16 */
   tramp[8] = 0x0019cc38;
   /* dsll $12,$12,16 */
   tramp[9] = 0x000c6438;
   /* ori  $25,low(fn)  */
-  tramp[10] = 0x37390000 | ((unsigned long)fn  & 0xffff);
+  tramp[10] = 0x37390000 | ((గుర్తులేని దీర్ఘ)fn  & 0xffff);
   /* jr   $25          */
-#if !defined(__mips_isa_rev) || (__mips_isa_rev<6)
+#ఒకవేళ !defined(__mips_isa_rev) || (__mips_isa_rev<6)
   tramp[11] = 0x03200008;
-#else
+#లేకపోతే
   tramp[11] = 0x03200009;
-#endif
+#అయితే_ముగింపు
   /* ori  $12,low(codeloc)  */
-  tramp[12] = 0x358c0000 | ((unsigned long)codeloc & 0xffff);
+  tramp[12] = 0x358c0000 | ((గుర్తులేని దీర్ఘ)codeloc & 0xffff);
 
-#endif
+#అయితే_ముగింపు
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
 
-#if !defined(__FreeBSD__)
-#ifdef USE__BUILTIN___CLEAR_CACHE
-  __builtin___clear_cache(clear_location, clear_location + FFI_TRAMPOLINE_SIZE);
-#else
-  cacheflush (clear_location, FFI_TRAMPOLINE_SIZE, ICACHE);
-#endif
-#endif /* ! __FreeBSD__ */
-  return FFI_OK;
+#ఒకవేళ !defined(__FreeBSD__)
+#నిర్వచితమైతే USE__BUILTIN___CLEAR_CACHE
+  __builtin___clear_cache(clear_location, clear_location + FFI_TRAMPOLINE_కొలత);
+#లేకపోతే
+  cacheflush (clear_location, FFI_TRAMPOLINE_కొలత, ICACHE);
+#అయితే_ముగింపు
+#అయితే_ముగింపు /* ! __FreeBSD__ */
+  తిరిగి FFI_OK;
 }
 
 /*
@@ -954,31 +954,31 @@ ffi_prep_closure_loc (ffi_closure *closure,
  *
  * Based on the similar routine for sparc.
  */
-int
-ffi_closure_mips_inner_O32 (ffi_cif *cif,
-                            void (*fun)(ffi_cif*, void*, void**, void*),
-			    void *user_data,
-			    void *rvalue, ffi_arg *ar,
-			    double *fpr)
+పూర్ణాంకం
+ffi_సంవృతం_mips_inner_O32 (ffi_cif *cif,
+                            శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*),
+			    శూన్య *user_దత్తాంశం,
+			    శూన్య *rvalue, ffi_arg *ar,
+			    ద్విగుణ *fpr)
 {
-  void **avaluep;
+  శూన్య **avaluep;
   ffi_arg *avalue;
   ffi_type **arg_types;
-  int i, avn, argn, seen_int;
+  పూర్ణాంకం i, avn, argn, చూసిన_int;
 
-  avalue = alloca (cif->nargs * sizeof (ffi_arg));
-  avaluep = alloca (cif->nargs * sizeof (ffi_arg));
+  avalue = alloca (cif->nargs * పరిమాణం (ffi_arg));
+  avaluep = alloca (cif->nargs * పరిమాణం (ffi_arg));
 
-  seen_int = (cif->abi == FFI_O32_SOFT_FLOAT) || (cif->mips_nfixedargs != cif->nargs);
+  చూసిన_int = (cif->abi == FFI_O32_SOFT_FLOAT) || (cif->mips_nfixedargs != cif->nargs);
   argn = 0;
 
-  if ((cif->flags >> (FFI_FLAG_BITS * 2)) == FFI_TYPE_STRUCT)
+  ఒకవేళ ((cif->flags >> (FFI_FLAG_బిట్లు * 2)) == FFI_TYPE_STRUCT)
     {
-      rvalue = (void *)(uintptr_t)ar[0];
+      rvalue = (శూన్య *)(uintptr_t)ar[0];
       argn = 1;
-      seen_int = 1;
+      చూసిన_int = 1;
     }
-  if ((cif->flags >> (FFI_FLAG_BITS * 2)) == FFI_TYPE_COMPLEX)
+  ఒకవేళ ((cif->flags >> (FFI_FLAG_బిట్లు * 2)) == FFI_TYPE_COMPLEX)
     {
       rvalue = fpr;
       argn = 1;
@@ -988,117 +988,117 @@ ffi_closure_mips_inner_O32 (ffi_cif *cif,
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  while (i < avn)
+  అయితే (i < avn)
     {
-      if (arg_types[i]->alignment == 8 && (argn & 0x1))
+      ఒకవేళ (arg_types[i]->alignment == 8 && (argn & 0x1))
         argn++;
-      if (i < 2 && !seen_int &&
+      ఒకవేళ (i < 2 && !చూసిన_int &&
 	  (arg_types[i]->type == FFI_TYPE_FLOAT ||
 	   arg_types[i]->type == FFI_TYPE_DOUBLE ||
 	   arg_types[i]->type == FFI_TYPE_LONGDOUBLE))
 	{
-#if defined(__MIPSEB__) || defined(_MIPSEB)
-	  if (arg_types[i]->type == FFI_TYPE_FLOAT)
-	    avaluep[i] = ((char *) &fpr[i]) + sizeof (float);
-	  else
-#endif
-	    avaluep[i] = (char *) &fpr[i];
+#ఒకవేళ defined(__MIPSEB__) || defined(_MIPSEB)
+	  ఒకవేళ (arg_types[i]->type == FFI_TYPE_FLOAT)
+	    avaluep[i] = ((అక్షరం *) &fpr[i]) + పరిమాణం (దశాంశం);
+	  లేకపోతే
+#అయితే_ముగింపు
+	    avaluep[i] = (అక్షరం *) &fpr[i];
 	}
-      else
+      లేకపోతే
 	{
-	  switch (arg_types[i]->type)
+	  ఎంపిక (arg_types[i]->type)
 	    {
-	      case FFI_TYPE_SINT8:
+	      స్థితి FFI_TYPE_SINT8:
 		avaluep[i] = &avalue[i];
 		*(SINT8 *) &avalue[i] = (SINT8) ar[argn];
-		break;
+		ఆపు;
 
-	      case FFI_TYPE_UINT8:
+	      స్థితి FFI_TYPE_UINT8:
 		avaluep[i] = &avalue[i];
 		*(UINT8 *) &avalue[i] = (UINT8) ar[argn];
-		break;
+		ఆపు;
 		  
-	      case FFI_TYPE_SINT16:
+	      స్థితి FFI_TYPE_SINT16:
 		avaluep[i] = &avalue[i];
 		*(SINT16 *) &avalue[i] = (SINT16) ar[argn];
-		break;
+		ఆపు;
 		  
-	      case FFI_TYPE_UINT16:
+	      స్థితి FFI_TYPE_UINT16:
 		avaluep[i] = &avalue[i];
 		*(UINT16 *) &avalue[i] = (UINT16) ar[argn];
-		break;
+		ఆపు;
 
-	      default:
-		avaluep[i] = (char *) &ar[argn];
-		break;
+	      అప్రమేయ:
+		avaluep[i] = (అక్షరం *) &ar[argn];
+		ఆపు;
 	    }
-	  seen_int = 1;
+	  చూసిన_int = 1;
 	}
-      argn += FFI_ALIGN(arg_types[i]->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+      argn += FFI_ALIGN(arg_types[i]->కొలత, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
       i++;
     }
 
   /* Invoke the closure. */
-  fun(cif, rvalue, avaluep, user_data);
+  fun(cif, rvalue, avaluep, user_దత్తాంశం);
 
-  if (cif->abi == FFI_O32_SOFT_FLOAT)
+  ఒకవేళ (cif->abi == FFI_O32_SOFT_FLOAT)
     {
-      switch (cif->rtype->type)
+      ఎంపిక (cif->rtype->type)
         {
-        case FFI_TYPE_FLOAT:
-          return FFI_TYPE_INT;
-        case FFI_TYPE_DOUBLE:
-          return FFI_TYPE_UINT64;
-        default:
-          return cif->rtype->type;
+        స్థితి FFI_TYPE_FLOAT:
+          తిరిగి FFI_TYPE_INT;
+        స్థితి FFI_TYPE_DOUBLE:
+          తిరిగి FFI_TYPE_UINT64;
+        అప్రమేయ:
+          తిరిగి cif->rtype->type;
         }
     }
-  else
+  లేకపోతే
     {
-      if (cif->rtype->type == FFI_TYPE_COMPLEX) {
-          __asm__ volatile ("move $v1, %0" : : "r"(cif->rtype->size));
+      ఒకవేళ (cif->rtype->type == FFI_TYPE_COMPLEX) {
+          __asm__ అస్థిర ("move $v1, %0" : : "r"(cif->rtype->కొలత));
       }
-      return cif->rtype->type;
+      తిరిగి cif->rtype->type;
     }
 }
 
-#if defined(FFI_MIPS_N32)
+#ఒకవేళ defined(FFI_MIPS_N32)
 
-static void
-copy_struct_N32(char *target, unsigned offset, ffi_abi abi, ffi_type *type,
-                int argn, unsigned arg_offset, ffi_arg *ar,
-                ffi_arg *fpr, int soft_float)
+స్థిర శూన్య
+copy_struct_N32(అక్షరం *లక్ష్యం_2, గుర్తులేని offset, ffi_abi abi, ffi_type *type,
+                పూర్ణాంకం argn, గుర్తులేని arg_స్థానభ్రంశం, ffi_arg *ar,
+                ffi_arg *fpr, పూర్ణాంకం soft_float)
 {
   ffi_type **elt_typep = type->elements;
-  while(*elt_typep)
+  అయితే(*elt_typep)
     {
       ffi_type *elt_type = *elt_typep;
-      unsigned o;
-      char *tp;
-      char *argp;
-      char *fpp;
+      గుర్తులేని o;
+      అక్షరం *tp;
+      అక్షరం *argp;
+      అక్షరం *fpp;
 
       o = FFI_ALIGN(offset, elt_type->alignment);
-      arg_offset += o - offset;
+      arg_స్థానభ్రంశం += o - offset;
       offset = o;
-      argn += arg_offset / sizeof(ffi_arg);
-      arg_offset = arg_offset % sizeof(ffi_arg);
+      argn += arg_స్థానభ్రంశం / పరిమాణం(ffi_arg);
+      arg_స్థానభ్రంశం = arg_స్థానభ్రంశం % పరిమాణం(ffi_arg);
 
-      argp = (char *)(ar + argn);
-      fpp = (char *)(argn >= 8 ? ar + argn : fpr + argn);
+      argp = (అక్షరం *)(ar + argn);
+      fpp = (అక్షరం *)(argn >= 8 ? ar + argn : fpr + argn);
 
-      tp = target + offset;
+      tp = లక్ష్యం_2 + offset;
 
-      if (elt_type->type == FFI_TYPE_DOUBLE && !soft_float)
-        *(double *)tp = *(double *)fpp;
-      else
-        memcpy(tp, argp + arg_offset, elt_type->size);
+      ఒకవేళ (elt_type->type == FFI_TYPE_DOUBLE && !soft_float)
+        *(ద్విగుణ *)tp = *(ద్విగుణ *)fpp;
+      లేకపోతే
+        జ్ఞాపకం_నకలు(tp, argp + arg_స్థానభ్రంశం, elt_type->కొలత);
 
-      offset += elt_type->size;
-      arg_offset += elt_type->size;
+      offset += elt_type->కొలత;
+      arg_స్థానభ్రంశం += elt_type->కొలత;
       elt_typep++;
-      argn += arg_offset / sizeof(ffi_arg);
-      arg_offset = arg_offset % sizeof(ffi_arg);
+      argn += arg_స్థానభ్రంశం / పరిమాణం(ffi_arg);
+      arg_స్థానభ్రంశం = arg_స్థానభ్రంశం % పరిమాణం(ffi_arg);
     }
 }
 
@@ -1117,201 +1117,201 @@ copy_struct_N32(char *target, unsigned offset, ffi_abi abi, ffi_type *type,
  * Returns the function return flags.
  *
  */
-int
-ffi_closure_mips_inner_N32 (ffi_cif *cif, 
-			    void (*fun)(ffi_cif*, void*, void**, void*),
-                            void *user_data,
-			    void *rvalue, ffi_arg *ar,
+పూర్ణాంకం
+ffi_సంవృతం_mips_inner_N32 (ffi_cif *cif, 
+			    శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*),
+                            శూన్య *user_దత్తాంశం,
+			    శూన్య *rvalue, ffi_arg *ar,
 			    ffi_arg *fpr)
 {
-  void **avaluep;
+  శూన్య **avaluep;
   ffi_arg *avalue;
   ffi_type **arg_types;
-  int i, avn, argn;
-  int soft_float;
+  పూర్ణాంకం i, avn, argn;
+  పూర్ణాంకం soft_float;
   ffi_arg *argp;
 
   soft_float = cif->abi == FFI_N64_SOFT_FLOAT
     || cif->abi == FFI_N32_SOFT_FLOAT;
-  avalue = alloca (cif->nargs * sizeof (ffi_arg));
-  avaluep = alloca (cif->nargs * sizeof (ffi_arg));
+  avalue = alloca (cif->nargs * పరిమాణం (ffi_arg));
+  avaluep = alloca (cif->nargs * పరిమాణం (ffi_arg));
 
   argn = 0;
 
-  if (cif->rstruct_flag)
+  ఒకవేళ (cif->rstruct_flag)
     {
-#if _MIPS_SIM==_ABIN32
-      rvalue = (void *)(UINT32)ar[0];
-#else /* N64 */
-      rvalue = (void *)ar[0];
-#endif
+#ఒకవేళ _MIPS_SIM==_ABIN32
+      rvalue = (శూన్య *)(UINT32)ar[0];
+#లేకపోతే /* N64 */
+      rvalue = (శూన్య *)ar[0];
+#అయితే_ముగింపు
       argn = 1;
     }
-  if (cif->rtype->type == FFI_TYPE_COMPLEX && cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+  ఒకవేళ (cif->rtype->type == FFI_TYPE_COMPLEX && cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
     argn = 2;
 
   i = 0;
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  while (i < avn)
+  అయితే (i < avn)
     {
-      if (arg_types[i]->type == FFI_TYPE_FLOAT
+      ఒకవేళ (arg_types[i]->type == FFI_TYPE_FLOAT
 	  || arg_types[i]->type == FFI_TYPE_DOUBLE
 	  || arg_types[i]->type == FFI_TYPE_LONGDOUBLE)
         {
           argp = (argn >= 8 || i >= cif->mips_nfixedargs || soft_float) ? ar + argn : fpr + argn;
-          if ((arg_types[i]->type == FFI_TYPE_LONGDOUBLE) && ((uintptr_t)argp & (arg_types[i]->alignment-1)))
+          ఒకవేళ ((arg_types[i]->type == FFI_TYPE_LONGDOUBLE) && ((uintptr_t)argp & (arg_types[i]->alignment-1)))
             {
               argp=(ffi_arg*)FFI_ALIGN(argp,arg_types[i]->alignment);
               argn++;
             }
-#if defined(__MIPSEB__) || defined(_MIPSEB)
-          if (arg_types[i]->type == FFI_TYPE_FLOAT && argn < 8)
-            avaluep[i] = ((char *) argp) + sizeof (float);
-          else
-#endif
-            avaluep[i] = (char *) argp;
+#ఒకవేళ defined(__MIPSEB__) || defined(_MIPSEB)
+          ఒకవేళ (arg_types[i]->type == FFI_TYPE_FLOAT && argn < 8)
+            avaluep[i] = ((అక్షరం *) argp) + పరిమాణం (దశాంశం);
+          లేకపోతే
+#అయితే_ముగింపు
+            avaluep[i] = (అక్షరం *) argp;
         }
-      else if (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
+      లేకపోతే ఒకవేళ (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_DOUBLE)
         {
           argp = (argn >= 8 || i >= cif->mips_nfixedargs || soft_float) ? ar + argn : fpr + argn;
-          avaluep[i] = (char *) argp;
+          avaluep[i] = (అక్షరం *) argp;
         }
-      else if (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+      లేకపోతే ఒకవేళ (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_LONGDOUBLE)
         {
 	  /* align long double */
 	  argn += ((argn & 0x1)? 1 : 0);
           argp = (argn >= 8 || i >= cif->mips_nfixedargs || soft_float) ? ar + argn : fpr + argn;
-          avaluep[i] = (char *) argp;
+          avaluep[i] = (అక్షరం *) argp;
         }
-      else if (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT)
+      లేకపోతే ఒకవేళ (arg_types[i]->type == FFI_TYPE_COMPLEX && arg_types[i]->elements[0]->type == FFI_TYPE_FLOAT)
         {
-          if (argn >= 8 || i >= cif->mips_nfixedargs || soft_float)
+          ఒకవేళ (argn >= 8 || i >= cif->mips_nfixedargs || soft_float)
 	     argp = ar + argn;
-	  else
+	  లేకపోతే
 	    {
 	      argp = fpr + argn;
 	      /* the normal args for function holds 8bytes, while here we convert it to ptr */
 	      uint32_t *tmp = (uint32_t *)argp;
 	      tmp[1] = tmp[2];
 	    }
-          avaluep[i] = (char *) argp;
+          avaluep[i] = (అక్షరం *) argp;
         }
-      else
+      లేకపోతే
         {
-          unsigned type = arg_types[i]->type;
+          గుర్తులేని type = arg_types[i]->type;
 
-          if (arg_types[i]->alignment > sizeof(ffi_arg))
-            argn = FFI_ALIGN(argn, arg_types[i]->alignment / sizeof(ffi_arg));
+          ఒకవేళ (arg_types[i]->alignment > పరిమాణం(ffi_arg))
+            argn = FFI_ALIGN(argn, arg_types[i]->alignment / పరిమాణం(ffi_arg));
 
           argp = ar + argn;
 
           /* The size of a pointer depends on the ABI */
-          if (type == FFI_TYPE_POINTER)
+          ఒకవేళ (type == FFI_TYPE_సూచిక)
             type = (cif->abi == FFI_N64 || cif->abi == FFI_N64_SOFT_FLOAT)
 	      ? FFI_TYPE_SINT64 : FFI_TYPE_UINT32;
 
-	  if (soft_float && type ==  FFI_TYPE_FLOAT)
+	  ఒకవేళ (soft_float && type ==  FFI_TYPE_FLOAT)
 	    type = FFI_TYPE_SINT32;
 
-          switch (type)
+          ఎంపిక (type)
             {
-            case FFI_TYPE_SINT8:
+            స్థితి FFI_TYPE_SINT8:
               avaluep[i] = &avalue[i];
               *(SINT8 *) &avalue[i] = (SINT8) *argp;
-              break;
+              ఆపు;
 
-            case FFI_TYPE_UINT8:
+            స్థితి FFI_TYPE_UINT8:
               avaluep[i] = &avalue[i];
               *(UINT8 *) &avalue[i] = (UINT8) *argp;
-              break;
+              ఆపు;
 
-            case FFI_TYPE_SINT16:
+            స్థితి FFI_TYPE_SINT16:
               avaluep[i] = &avalue[i];
               *(SINT16 *) &avalue[i] = (SINT16) *argp;
-              break;
+              ఆపు;
 
-            case FFI_TYPE_UINT16:
+            స్థితి FFI_TYPE_UINT16:
               avaluep[i] = &avalue[i];
               *(UINT16 *) &avalue[i] = (UINT16) *argp;
-              break;
+              ఆపు;
 
-            case FFI_TYPE_SINT32:
+            స్థితి FFI_TYPE_SINT32:
               avaluep[i] = &avalue[i];
               *(SINT32 *) &avalue[i] = (SINT32) *argp;
-              break;
+              ఆపు;
 
-            case FFI_TYPE_UINT32:
+            స్థితి FFI_TYPE_UINT32:
               avaluep[i] = &avalue[i];
               *(UINT32 *) &avalue[i] = (UINT32) *argp;
-              break;
+              ఆపు;
 
-            case FFI_TYPE_STRUCT:
-              if (argn < 8)
+            స్థితి FFI_TYPE_STRUCT:
+              ఒకవేళ (argn < 8)
                 {
                   /* Allocate space for the struct as at least part of
                      it was passed in registers.  */
-                  avaluep[i] = alloca(arg_types[i]->size);
+                  avaluep[i] = alloca(arg_types[i]->కొలత);
                   copy_struct_N32(avaluep[i], 0, cif->abi, arg_types[i],
                                   argn, 0, ar, fpr, i >= cif->mips_nfixedargs || soft_float);
 
-                  break;
+                  ఆపు;
                 }
               /* Else fall through.  */
-            default:
-              avaluep[i] = (char *) argp;
-              break;
+            అప్రమేయ:
+              avaluep[i] = (అక్షరం *) argp;
+              ఆపు;
             }
         }
-      argn += FFI_ALIGN(arg_types[i]->size, sizeof(ffi_arg)) / sizeof(ffi_arg);
+      argn += FFI_ALIGN(arg_types[i]->కొలత, పరిమాణం(ffi_arg)) / పరిమాణం(ffi_arg);
       i++;
     }
 
   /* Invoke the closure. */
-  fun (cif, rvalue, avaluep, user_data);
+  fun (cif, rvalue, avaluep, user_దత్తాంశం);
 
-  return cif->flags >> (FFI_FLAG_BITS * 8);
+  తిరిగి cif->flags >> (FFI_FLAG_బిట్లు * 8);
 }
 
-#endif /* FFI_MIPS_N32 */
+#అయితే_ముగింపు /* FFI_MIPS_N32 */
 
-#if defined(FFI_MIPS_O32)
-extern void ffi_closure_O32(void);
-extern void ffi_go_closure_O32(void);
-#else
-extern void ffi_closure_N32(void);
-extern void ffi_go_closure_N32(void);
-#endif /* FFI_MIPS_O32 */
+#ఒకవేళ defined(FFI_MIPS_O32)
+బాహ్య శూన్య ffi_సంవృతం_O32(శూన్య);
+బాహ్య శూన్య ffi_go_సంవృతం_O32(శూన్య);
+#లేకపోతే
+బాహ్య శూన్య ffi_సంవృతం_N32(శూన్య);
+బాహ్య శూన్య ffi_go_సంవృతం_N32(శూన్య);
+#అయితే_ముగింపు /* FFI_MIPS_O32 */
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
-		     void (*fun)(ffi_cif*,void*,void**,void*))
+ffi_స్థితి
+ffi_prep_go_సంవృతం (ffi_go_సంవృతం* సంవృతం, ffi_cif* cif,
+		     శూన్య (*fun)(ffi_cif*,శూన్య*,శూన్య**,శూన్య*))
 {
-  void * fn;
+  శూన్య * fn;
 
-#if defined(FFI_MIPS_O32)
-  if (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-  fn = ffi_go_closure_O32;
-#else
-#if _MIPS_SIM ==_ABIN32
-  if (cif->abi != FFI_N32
+#ఒకవేళ defined(FFI_MIPS_O32)
+  ఒకవేళ (cif->abi != FFI_O32 && cif->abi != FFI_O32_SOFT_FLOAT)
+    తిరిగి FFI_BAD_ABI;
+  fn = ffi_go_సంవృతం_O32;
+#లేకపోతే
+#ఒకవేళ _MIPS_SIM ==_ABIN32
+  ఒకవేళ (cif->abi != FFI_N32
       && cif->abi != FFI_N32_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#else
-  if (cif->abi != FFI_N64
+    తిరిగి FFI_BAD_ABI;
+#లేకపోతే
+  ఒకవేళ (cif->abi != FFI_N64
       && cif->abi != FFI_N64_SOFT_FLOAT)
-    return FFI_BAD_ABI;
-#endif
-  fn = ffi_go_closure_N32;
-#endif /* FFI_MIPS_O32 */
+    తిరిగి FFI_BAD_ABI;
+#అయితే_ముగింపు
+  fn = ffi_go_సంవృతం_N32;
+#అయితే_ముగింపు /* FFI_MIPS_O32 */
 
-  closure->tramp = (void *)fn;
-  closure->cif = cif;
-  closure->fun = fun;
+  సంవృతం->tramp = (శూన్య *)fn;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-#endif /* FFI_CLOSURES */
+#అయితే_ముగింపు /* FFI_CLOSURES */

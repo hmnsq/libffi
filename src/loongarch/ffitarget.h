@@ -26,72 +26,72 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error \
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం \
   "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#అయితే_ముగింపు
 
-#ifndef __loongarch__
-#error \
+#నిర్వచితం_కాకపోతే __loongarch__
+#దోషం \
   "libffi was configured for a LoongArch target but this does not appear to be a LoongArch compiler."
-#endif
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+రకనిర్వచనం గుర్తులేని దీర్ఘ ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ ffi_sarg;
 
-typedef enum ffi_abi
+రకనిర్వచనం గణన ffi_abi
 {
-  FFI_FIRST_ABI = 0,
+  FFI_మొదటి_ABI = 0,
   FFI_LP64S,
   FFI_LP64F,
   FFI_LP64D,
   FFI_ILP32S,
   FFI_ILP32F,
   FFI_ILP32D,
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
 
-#if __loongarch_grlen == 64
-  #if defined(__loongarch_soft_float)
+#ఒకవేళ __loongarch_grlen == 64
+  #ఒకవేళ defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_LP64S
-  #elif defined(__loongarch_single_float)
+  #లేదావేళ defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_LP64F
-  #elif defined(__loongarch_double_float)
+  #లేదావేళ defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_LP64D
-  #else
-    #error unsupported LoongArch floating-point ABI
-  #endif
-#elif __loongarch_grlen == 32
-  #if defined(__loongarch_soft_float)
+  #లేకపోతే
+    #దోషం unsupported LoongArch floating-బిందువు ABI
+  #అయితే_ముగింపు
+#లేదావేళ __loongarch_grlen == 32
+  #ఒకవేళ defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_ILP32S
-  #elif defined(__loongarch_single_float)
+  #లేదావేళ defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_ILP32F
-  #elif defined(__loongarch_double_float)
+  #లేదావేళ defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_ILP32D
-  #else
-    #error unsupported LoongArch floating-point ABI
-  #endif
-#else
-  #error unsupported LoongArch base architecture
-#endif
+  #లేకపోతే
+    #దోషం unsupported LoongArch floating-బిందువు ABI
+  #అయితే_ముగింపు
+#లేకపోతే
+  #దోషం unsupported LoongArch పునాది architecture
+#అయితే_ముగింపు
 } ffi_abi;
 
-#endif /* LIBFFI_ASM */
+#అయితే_ముగింపు /* LIBFFI_ASM */
 
-#define FFI_TARGET_HAS_INT128
+#నిర్వచించు FFI_లక్ష్యం_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_NATIVE_RAW_API 0
-#define FFI_EXTRA_CIF_FIELDS \
-  unsigned loongarch_nfixedargs; \
-  unsigned loongarch_unused
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#endif
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_GO_CLOSURES 1
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 24
+#నిర్వచించు FFI_NATIVE_RAW_API 0
+#నిర్వచించు FFI_EXTRA_CIF_FIELDS \
+  గుర్తులేని loongarch_nfixedargs; \
+  గుర్తులేని loongarch_వాడని
+#నిర్వచించు FFI_లక్ష్యం_SPECIFIC_VARIADIC
+#అయితే_ముగింపు

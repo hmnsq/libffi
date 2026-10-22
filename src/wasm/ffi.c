@@ -25,99 +25,99 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdint.h>
 
-#include <emscripten/emscripten.h>
+#అన్తర్భావ <emscripten/emscripten.h>
 
-#ifdef DEBUG_F
-#define LOG_DEBUG(args...)  \
-  console.warn(`====LIBFFI(line __LINE__)`, args)
-#else
-#define LOG_DEBUG(args...) 0
-#endif
+#నిర్వచితమైతే DEBUG_F
+#నిర్వచించు LOG_DEBUG(వాదనలు...)  \
+  console.warn(`====LIBFFI(పంక్తి __LINE__)`, వాదనలు)
+#లేకపోతే
+#నిర్వచించు LOG_DEBUG(వాదనలు...) 0
+#అయితే_ముగింపు
 
-#define EM_JS_MACROS(ret, name, args, body...) EM_JS(ret, name, args, body)
+#నిర్వచించు EM_JS_MACROS(ret, name, వాదనలు, body...) EM_JS(ret, name, వాదనలు, body)
 
 EM_JS_DEPS(libffi, "$getWasmTableEntry,$setWasmTableEntry,$getEmptyTableSlot,$wasmTable,$stackSave,$stackAlloc,$stackRestore");
 
-#define DEREF_U8(addr, offset) HEAPU8[addr + offset]
-#define DEREF_S8(addr, offset) HEAP8[addr + offset]
-#define DEREF_U16(addr, offset) HEAPU16[(addr >> 1) + offset]
-#define DEREF_S16(addr, offset) HEAP16[(addr >> 1) + offset]
-#define DEREF_U32(addr, offset) HEAPU32[(addr >> 2) + offset]
-#define DEREF_S32(addr, offset) HEAP32[(addr >> 2) + offset]
+#నిర్వచించు DEREF_U8(addr, offset) HEAPU8[addr + offset]
+#నిర్వచించు DEREF_S8(addr, offset) HEAP8[addr + offset]
+#నిర్వచించు DEREF_U16(addr, offset) HEAPU16[(addr >> 1) + offset]
+#నిర్వచించు DEREF_S16(addr, offset) HEAP16[(addr >> 1) + offset]
+#నిర్వచించు DEREF_U32(addr, offset) HEAPU32[(addr >> 2) + offset]
+#నిర్వచించు DEREF_S32(addr, offset) HEAP32[(addr >> 2) + offset]
 
-#define DEREF_F32(addr, offset) HEAPF32[(addr >> 2) + offset]
-#define DEREF_F64(addr, offset) HEAPF64[(addr >> 3) + offset]
-#define DEREF_U64(addr, offset) HEAPU64[(addr >> 3) + offset]
+#నిర్వచించు DEREF_F32(addr, offset) HEAPF32[(addr >> 2) + offset]
+#నిర్వచించు DEREF_F64(addr, offset) HEAPF64[(addr >> 3) + offset]
+#నిర్వచించు DEREF_U64(addr, offset) HEAPU64[(addr >> 3) + offset]
 
-#define CHECK_FIELD_OFFSET(struct, field, offset)                                  \
+#నిర్వచించు CHECK_క్షేత్రం_స్థానభ్రంశం(నిర్మాణం, క్షేత్రం, offset)                                  \
   _Static_assert(                                                                  \
-    offsetof(struct, field) == offset,                                             \
+    offsetof(నిర్మాణం, క్షేత్రం) == offset,                                             \
     "Memory layout of '" #struct "' has changed: '" #field "' is in an unexpected location");
 
-#if __SIZEOF_POINTER__ == 4
+#ఒకవేళ __SIZEOF_POINTER__ == 4
 
-#define FFI_EMSCRIPTEN_ABI FFI_WASM32_EMSCRIPTEN
-#define PTR_SIG 'i'
-#define PTR_WASM_TYPE 0x7f
+#నిర్వచించు FFI_EMSCRIPTEN_ABI FFI_WASM32_EMSCRIPTEN
+#నిర్వచించు PTR_SIG 'i'
+#నిర్వచించు PTR_WASM_TYPE 0x7f
 
-#define DEC_PTR(p) p
-#define ENC_PTR(p) p
+#నిర్వచించు DEC_PTR(p) p
+#నిర్వచించు ENC_PTR(p) p
 
-#define DEREF_PTR(addr, offset) DEREF_U32(addr, offset)
-#define DEREF_PTR_NUMBER(addr, offset) DEREF_PTR(addr, offset)
+#నిర్వచించు DEREF_PTR(addr, offset) DEREF_U32(addr, offset)
+#నిర్వచించు DEREF_PTR_సంఖ్య(addr, offset) DEREF_PTR(addr, offset)
 
 // Store an integral return value widened to ffi_arg (32 bits on wasm32), as
 // the libffi API promises for integral returns narrower than a register.
 // The typed-array store wraps modulo 2^32, so a sign-extended negative
 // Number is stored correctly by both variants.
-#define STORE_ARG_WIDENED_UNSIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
-#define STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
+#నిర్వచించు STORE_ARG_WIDENED_UNSIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
+#నిర్వచించు STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U32(rvalue, 0) = (x))
 
-CHECK_FIELD_OFFSET(ffi_cif, abi, 4*0);
-CHECK_FIELD_OFFSET(ffi_cif, nargs, 4*1);
-CHECK_FIELD_OFFSET(ffi_cif, arg_types, 4*2);
-CHECK_FIELD_OFFSET(ffi_cif, rtype, 4*3);
-CHECK_FIELD_OFFSET(ffi_cif, flags, 4*5);
-CHECK_FIELD_OFFSET(ffi_cif, nfixedargs, 4*6);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, abi, 4*0);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, nargs, 4*1);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, arg_types, 4*2);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, rtype, 4*3);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, flags, 4*5);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, nfixedargs, 4*6);
 
-#define CIF__ABI(addr) DEREF_U32(addr, 0)
-#define CIF__NARGS(addr) DEREF_U32(addr, 1)
-#define CIF__ARGTYPES(addr) DEREF_U32(addr, 2)
-#define CIF__RTYPE(addr) DEREF_U32(addr, 3)
-#define CIF__FLAGS(addr) DEREF_U32(addr, 5)
-#define CIF__NFIXEDARGS(addr) DEREF_U32(addr, 6)
+#నిర్వచించు CIF__ABI(addr) DEREF_U32(addr, 0)
+#నిర్వచించు CIF__NARGS(addr) DEREF_U32(addr, 1)
+#నిర్వచించు CIF__ARGTYPES(addr) DEREF_U32(addr, 2)
+#నిర్వచించు CIF__RTYPE(addr) DEREF_U32(addr, 3)
+#నిర్వచించు CIF__FLAGS(addr) DEREF_U32(addr, 5)
+#నిర్వచించు CIF__NFIXEDARGS(addr) DEREF_U32(addr, 6)
 
-CHECK_FIELD_OFFSET(ffi_type, size, 0);
-CHECK_FIELD_OFFSET(ffi_type, alignment, 4);
-CHECK_FIELD_OFFSET(ffi_type, type, 6);
-CHECK_FIELD_OFFSET(ffi_type, elements, 8);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, కొలత, 0);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, alignment, 4);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, type, 6);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, elements, 8);
 
-#define FFI_TYPE__SIZE(addr) DEREF_U32(addr, 0)
-#define FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 4, 0)
-#define FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 6, 0)
-#define FFI_TYPE__ELEMENTS(addr) DEREF_U32(addr + 8, 0)
+#నిర్వచించు FFI_TYPE_కొలత(addr) DEREF_U32(addr, 0)
+#నిర్వచించు FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 4, 0)
+#నిర్వచించు FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 6, 0)
+#నిర్వచించు FFI_TYPE__ELEMENTS(addr) DEREF_U32(addr + 8, 0)
 
-#elif __SIZEOF_POINTER__ == 8
+#లేదావేళ __SIZEOF_POINTER__ == 8
 
-#define FFI_EMSCRIPTEN_ABI FFI_WASM64_EMSCRIPTEN
-#define PTR_SIG 'j'
-#define PTR_WASM_TYPE 0x7e
+#నిర్వచించు FFI_EMSCRIPTEN_ABI FFI_WASM64_EMSCRIPTEN
+#నిర్వచించు PTR_SIG 'j'
+#నిర్వచించు PTR_WASM_TYPE 0x7e
 
 // DEC_PTR casts a pointer value (coming from Wasm) represented as BigInt (i64) to Number (i53).
 // This should be used for a pointer that is expected to be within the i53 range. If the pointer
 // value is outside the Number's range, the value will become NaN.
-#define DEC_PTR(p) bigintToI53Checked(p)
+#నిర్వచించు DEC_PTR(p) bigint_గమ్యం_I53_Checked(p)
 // ENC_PTR casts a pointer value represented as Number to BigInt (i64)
-#define ENC_PTR(p) BigInt(p)
+#నిర్వచించు ENC_PTR(p) BigInt(p)
 
-#define DEREF_PTR(addr, offset) DEREF_U64(addr, offset)
-#define DEREF_PTR_NUMBER(addr, offset) DEC_PTR(DEREF_PTR(addr, offset))
+#నిర్వచించు DEREF_PTR(addr, offset) DEREF_U64(addr, offset)
+#నిర్వచించు DEREF_PTR_సంఖ్య(addr, offset) DEC_PTR(DEREF_PTR(addr, offset))
 
 // Store an integral return value widened to ffi_arg (64 bits on wasm64), as
 // the libffi API promises for integral returns narrower than a register.
@@ -125,83 +125,83 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 8);
 // the unsigned variant zero-extends a possibly-negative i32 Number, while
 // the BigUint64Array store wraps the signed variant modulo 2^64, which is
 // sign extension.
-#define STORE_ARG_WIDENED_UNSIGNED(rvalue, x) \
+#నిర్వచించు STORE_ARG_WIDENED_UNSIGNED(rvalue, x) \
   (DEREF_U64(rvalue, 0) = BigInt(x) & BigInt(4294967295))
-#define STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U64(rvalue, 0) = BigInt(x))
+#నిర్వచించు STORE_ARG_WIDENED_SIGNED(rvalue, x) (DEREF_U64(rvalue, 0) = BigInt(x))
 
-CHECK_FIELD_OFFSET(ffi_cif, abi, 0);
-CHECK_FIELD_OFFSET(ffi_cif, nargs, 4);
-CHECK_FIELD_OFFSET(ffi_cif, arg_types, 8);
-CHECK_FIELD_OFFSET(ffi_cif, rtype, 16);
-CHECK_FIELD_OFFSET(ffi_cif, flags, 28);
-CHECK_FIELD_OFFSET(ffi_cif, nfixedargs, 32);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, abi, 0);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, nargs, 4);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, arg_types, 8);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, rtype, 16);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, flags, 28);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_cif, nfixedargs, 32);
 
-#define CIF__ABI(addr) DEREF_U32(addr, 0)
-#define CIF__NARGS(addr) DEREF_U32(addr + 4,  0)
-#define CIF__ARGTYPES(addr) DEREF_U64(addr + 8,  0)
-#define CIF__RTYPE(addr) DEREF_U64(addr + 16, 0)
-#define CIF__FLAGS(addr) DEREF_U32(addr + 28, 0)
-#define CIF__NFIXEDARGS(addr) DEREF_U32(addr + 32, 0)
+#నిర్వచించు CIF__ABI(addr) DEREF_U32(addr, 0)
+#నిర్వచించు CIF__NARGS(addr) DEREF_U32(addr + 4,  0)
+#నిర్వచించు CIF__ARGTYPES(addr) DEREF_U64(addr + 8,  0)
+#నిర్వచించు CIF__RTYPE(addr) DEREF_U64(addr + 16, 0)
+#నిర్వచించు CIF__FLAGS(addr) DEREF_U32(addr + 28, 0)
+#నిర్వచించు CIF__NFIXEDARGS(addr) DEREF_U32(addr + 32, 0)
 
-CHECK_FIELD_OFFSET(ffi_type, size, 0);
-CHECK_FIELD_OFFSET(ffi_type, alignment, 8);
-CHECK_FIELD_OFFSET(ffi_type, type, 10);
-CHECK_FIELD_OFFSET(ffi_type, elements, 16);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, కొలత, 0);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, alignment, 8);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, type, 10);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_type, elements, 16);
 
-#define FFI_TYPE__SIZE(addr) DEREF_U64(addr, 0)
-#define FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 8, 0)
-#define FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 10, 0)
-#define FFI_TYPE__ELEMENTS(addr) DEREF_U64(addr + 16, 0)
+#నిర్వచించు FFI_TYPE_కొలత(addr) DEREF_U64(addr, 0)
+#నిర్వచించు FFI_TYPE__ALIGN(addr) DEREF_U16(addr + 8, 0)
+#నిర్వచించు FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 10, 0)
+#నిర్వచించు FFI_TYPE__ELEMENTS(addr) DEREF_U64(addr + 16, 0)
 
-#else
-#error "Unknown pointer size"
-#endif
+#లేకపోతే
+#దోషం "Unknown pointer size"
+#అయితే_ముగింపు
 
-#define ALIGN_ADDRESS(addr, align) (addr &= (~((align) - 1)))
-#define STACK_ALLOC(stack, size, align) ((stack -= (size)), ALIGN_ADDRESS(stack, align))
+#నిర్వచించు ALIGN_చిరునామా(addr, align) (addr &= (~((align) - 1)))
+#నిర్వచించు దొంతర_ALLOC(దొంతర, కొలత, align) ((దొంతర -= (కొలత)), ALIGN_చిరునామా(దొంతర, align))
 
 // Most wasm runtimes support at most 1000 Js trampoline args.
-#define MAX_ARGS 1000
+#నిర్వచించు MAX_వాదనలు 1000
 
-#include <stddef.h>
+#అన్తర్భావ <stddef.h>
 
-#define VARARGS_FLAG 1
+#నిర్వచించు VARARGS_FLAG 1
 
-#define FFI_OK_MACRO 0
+#నిర్వచించు FFI_OK_MACRO 0
 _Static_assert(FFI_OK_MACRO == FFI_OK, "FFI_OK must be 0");
 
-#define FFI_BAD_TYPEDEF_MACRO 1
+#నిర్వచించు FFI_BAD_TYPEDEF_MACRO 1
 _Static_assert(FFI_BAD_TYPEDEF_MACRO == FFI_BAD_TYPEDEF, "FFI_BAD_TYPEDEF must be 1");
 
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_EMSCRIPTEN_ABI)
+    తిరిగి FFI_BAD_ABI;
   // This is called after ffi_prep_cif_machdep_var so we need to avoid
   // overwriting cif->nfixedargs.
-  if (!(cif->flags & VARARGS_FLAG))
+  ఒకవేళ (!(cif->flags & VARARGS_FLAG))
     cif->nfixedargs = cif->nargs;
-  if (cif->nargs > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  if (cif->rtype->type == FFI_TYPE_COMPLEX)
-    return FFI_BAD_TYPEDEF;
+  ఒకవేళ (cif->nargs > MAX_వాదనలు)
+    తిరిగి FFI_BAD_TYPEDEF;
+  ఒకవేళ (cif->rtype->type == FFI_TYPE_COMPLEX)
+    తిరిగి FFI_BAD_TYPEDEF;
   // If they put the COMPLEX type into a struct we won't notice, but whatever.
-  for (int i = 0; i < cif->nargs; i++)
-    if (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
-      return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  కొరకు (పూర్ణాంకం i = 0; i < cif->nargs; i++)
+    ఒకవేళ (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
+      తిరిగి FFI_BAD_TYPEDEF;
+  తిరిగి FFI_OK;
 }
 
-ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
+ffi_స్థితి FFI_HIDDEN
+ffi_prep_cif_machdep_var(ffi_cif *cif, గుర్తులేని nfixedargs, గుర్తులేని ntotalargs)
 {
   cif->flags |= VARARGS_FLAG;
   cif->nfixedargs = nfixedargs;
   // The varargs takes up one extra argument
-  if (cif->nfixedargs + 1 > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  ఒకవేళ (cif->nfixedargs + 1 > MAX_వాదనలు)
+    తిరిగి FFI_BAD_TYPEDEF;
+  తిరిగి FFI_OK;
 }
 
 /**
@@ -218,11 +218,11 @@ ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
  * By always unboxing structs up front, we can avoid messy casework later.
  */
 EM_JS_MACROS(
-void,
+శూన్య,
 unbox_small_structs, (ffi_type type_ptr), {
   type_ptr = DEC_PTR(type_ptr);
   var type_id = FFI_TYPE__TYPEID(type_ptr);
-  while (type_id === FFI_TYPE_STRUCT) {
+  అయితే (type_id === FFI_TYPE_STRUCT) {
     // Don't unbox single element structs if they are bigger than 16 bytes. This
     // is a work around for the fact that Python will give incorrect values for
     // the size of the field in these cases: it says that the struct has pointer
@@ -233,27 +233,27 @@ unbox_small_structs, (ffi_type type_ptr), {
     //
     // See the Python comment here:
     // https://github.com/python/cpython/blob/a16a9f978f42b8a09297c1efbf33877f6388c403/Modules/_ctypes/stgdict.c#L718-L779
-    if (DEC_PTR(FFI_TYPE__SIZE(type_ptr)) > 16) {
-      break;
+    ఒకవేళ (DEC_PTR(FFI_TYPE_కొలత(type_ptr)) > 16) {
+      ఆపు;
     }
     var elements = DEC_PTR(FFI_TYPE__ELEMENTS(type_ptr));
-    var first_element = DEREF_PTR_NUMBER(elements, 0);
-    if (first_element === 0) {
+    var మొదటి_element = DEREF_PTR_సంఖ్య(elements, 0);
+    ఒకవేళ (మొదటి_element === 0) {
       type_id = FFI_TYPE_VOID;
-      break;
-    } else if (DEREF_PTR_NUMBER(elements, 1) === 0) {
-      type_ptr = first_element;
-      type_id = FFI_TYPE__TYPEID(first_element);
-    } else {
-      break;
+      ఆపు;
+    } లేకపోతే ఒకవేళ (DEREF_PTR_సంఖ్య(elements, 1) === 0) {
+      type_ptr = మొదటి_element;
+      type_id = FFI_TYPE__TYPEID(మొదటి_element);
+    } లేకపోతే {
+      ఆపు;
     }
   }
-  return [type_ptr, type_id];
+  తిరిగి [type_ptr, type_id];
 })
 
 EM_JS_MACROS(
-void,
-ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
+శూన్య,
+ffi_call_js, (ffi_cif *cif, ffi_fp fn, శూన్య *rvalue, శూన్య **avalue),
 {
   cif = DEC_PTR(cif);
   fn = DEC_PTR(fn);
@@ -271,18 +271,18 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // still a struct to the caller: its buffer is exactly the struct's size,
   // so it must not get the integral widening to ffi_arg.
   var rtype_widen = FFI_TYPE__TYPEID(DEC_PTR(CIF__RTYPE(cif))) !== FFI_TYPE_STRUCT;
-  var orig_stack_ptr = stackSave();
-  var cur_stack_ptr = orig_stack_ptr;
+  var orig_దొంతర_ptr = దొంతర_Save();
+  var cur_దొంతర_ptr = orig_దొంతర_ptr;
 
-  var args = [];
+  var వాదనలు = [];
   // Does our onwards call return by argument or normally? We return by argument
   // no matter what.
   var ret_by_arg = false;
 
-  if (rtype_id === FFI_TYPE_COMPLEX) {
+  ఒకవేళ (rtype_id === FFI_TYPE_COMPLEX) {
     throw new Error('complex ret marshalling nyi');
   }
-  if (rtype_id < 0 || rtype_id > FFI_TYPE_LAST) {
+  ఒకవేళ (rtype_id < 0 || rtype_id > FFI_TYPE_చివరి) {
     throw new Error('Unexpected rtype ' + rtype_id);
   }
   // If the return type is a struct with multiple entries or a long double, the
@@ -290,17 +290,17 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Conveniently, we've already received a pointer to return value, so we can
   // just use this. We also mark a flag that we don't need to convert the return
   // value of the dynamic call back to C.
-  if (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
-    if (rvalue === 0) {
+  ఒకవేళ (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
+    ఒకవేళ (rvalue === 0) {
       // NULL rvalue: the caller discards the result, but the callee still
       // needs somewhere to write it. Allocate scratch space on the stack;
       // it is released by the stackRestore after the call.
-      var rsize = DEC_PTR(FFI_TYPE__SIZE(rtype_ptr));
+      var rsize = DEC_PTR(FFI_TYPE_కొలత(rtype_ptr));
       var ralign = FFI_TYPE__ALIGN(rtype_ptr);
-      STACK_ALLOC(cur_stack_ptr, rsize, ralign);
-      rvalue = cur_stack_ptr;
+      దొంతర_ALLOC(cur_దొంతర_ptr, rsize, ralign);
+      rvalue = cur_దొంతర_ptr;
     }
-    args.push(ENC_PTR(rvalue));
+    వాదనలు.నెట్టు(ENC_PTR(rvalue));
     ret_by_arg = true;
   }
 
@@ -308,8 +308,8 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // the wasm function. The Javascript wrapper does a type conversion from
   // Javascript to C automatically, here we manually do the inverse conversion
   // from C to Javascript.
-  for (var i = 0; i < nfixedargs; i++) {
-    var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
+  కొరకు (var i = 0; i < nfixedargs; i++) {
+    var arg_ptr = DEREF_PTR_సంఖ్య(avalue, i);
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
@@ -317,55 +317,55 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
     // It's okay here to always use unsigned integers as long as the size is 32
     // or 64 bits. Smaller sizes get extended to 32 bits differently according
     // to whether they are signed or unsigned.
-    switch (arg_type_id) {
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-      args.push(DEREF_U32(arg_ptr, 0));
-      break;
-    case FFI_TYPE_FLOAT:
-      args.push(DEREF_F32(arg_ptr, 0));
-      break;
-    case FFI_TYPE_DOUBLE:
-      args.push(DEREF_F64(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT8:
-      args.push(DEREF_U8(arg_ptr, 0));
-      break;
-    case FFI_TYPE_SINT8:
-      args.push(DEREF_S8(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT16:
-      args.push(DEREF_U16(arg_ptr, 0));
-      break;
-    case FFI_TYPE_SINT16:
-      args.push(DEREF_S16(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      args.push(DEREF_U64(arg_ptr, 0));
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+    ఎంపిక (arg_type_id) {
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_SINT32:
+    స్థితి FFI_TYPE_UINT32:
+      వాదనలు.నెట్టు(DEREF_U32(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_FLOAT:
+      వాదనలు.నెట్టు(DEREF_F32(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_DOUBLE:
+      వాదనలు.నెట్టు(DEREF_F64(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_UINT8:
+      వాదనలు.నెట్టు(DEREF_U8(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_SINT8:
+      వాదనలు.నెట్టు(DEREF_S8(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_UINT16:
+      వాదనలు.నెట్టు(DEREF_U16(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_SINT16:
+      వాదనలు.నెట్టు(DEREF_S16(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
+      వాదనలు.నెట్టు(DEREF_U64(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_LONGDOUBLE:
       // long double is passed as a pair of BigInts.
-      args.push(DEREF_U64(arg_ptr, 0));
-      args.push(DEREF_U64(arg_ptr, 1));
-      break;
-    case FFI_TYPE_STRUCT:
+      వాదనలు.నెట్టు(DEREF_U64(arg_ptr, 0));
+      వాదనలు.నెట్టు(DEREF_U64(arg_ptr, 1));
+      ఆపు;
+    స్థితి FFI_TYPE_STRUCT:
       // Nontrivial structs are passed by pointer.
       // Have to copy the struct onto the stack though because C ABI says it's
       // call by value.
-      var size = DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr));
+      var కొలత = DEC_PTR(FFI_TYPE_కొలత(arg_type_ptr));
       var align = FFI_TYPE__ALIGN(arg_type_ptr);
-      STACK_ALLOC(cur_stack_ptr, size, align);
-      HEAP8.subarray(cur_stack_ptr, cur_stack_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
-      args.push(ENC_PTR(cur_stack_ptr));
-      break;
-    case FFI_TYPE_POINTER:
-      args.push(DEREF_PTR(arg_ptr, 0));
-      break;
-    case FFI_TYPE_COMPLEX:
+      దొంతర_ALLOC(cur_దొంతర_ptr, కొలత, align);
+      HEAP8.subarray(cur_దొంతర_ptr, cur_దొంతర_ptr+కొలత).సమితి(HEAP8.subarray(arg_ptr, arg_ptr + కొలత));
+      వాదనలు.నెట్టు(ENC_PTR(cur_దొంతర_ptr));
+      ఆపు;
+    స్థితి FFI_TYPE_సూచిక:
+      వాదనలు.నెట్టు(DEREF_PTR(arg_ptr, 0));
+      ఆపు;
+    స్థితి FFI_TYPE_COMPLEX:
       throw new Error('complex marshalling nyi');
-    default:
+    అప్రమేయ:
       throw new Error('Unexpected type ' + arg_type_id);
     }
   }
@@ -379,93 +379,93 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // We don't have any way of knowing how many args were actually passed, so we
   // just always copy extra nonsense past the end. The ownwards call will know
   // not to look at it.
-  if (flags & VARARGS_FLAG) {
+  ఒకవేళ (flags & VARARGS_FLAG) {
     var struct_arg_info = [];
-    for (var i = nargs - 1;  i >= nfixedargs; i--) {
-      var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
+    కొరకు (var i = nargs - 1;  i >= nfixedargs; i--) {
+      var arg_ptr = DEREF_PTR_సంఖ్య(avalue, i);
       var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
       var arg_type_ptr = arg_unboxed[0];
       var arg_type_id = arg_unboxed[1];
-      switch (arg_type_id) {
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
-        STACK_ALLOC(cur_stack_ptr, 1, 1);
-        DEREF_U8(cur_stack_ptr, 0) = DEREF_U8(arg_ptr, 0);
-        break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
-        STACK_ALLOC(cur_stack_ptr, 2, 2);
-        DEREF_U16(cur_stack_ptr, 0) = DEREF_U16(arg_ptr, 0);
-        break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_FLOAT:
-        STACK_ALLOC(cur_stack_ptr, 4, 4);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        break;
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-        STACK_ALLOC(cur_stack_ptr, 8, 8);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
-        break;
-      case FFI_TYPE_LONGDOUBLE:
-        STACK_ALLOC(cur_stack_ptr, 16, 8);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
-        DEREF_U32(cur_stack_ptr, 2) = DEREF_U32(arg_ptr, 2);
-        DEREF_U32(cur_stack_ptr, 3) = DEREF_U32(arg_ptr, 3);
-        break;
-      case FFI_TYPE_STRUCT:
+      ఎంపిక (arg_type_id) {
+      స్థితి FFI_TYPE_UINT8:
+      స్థితి FFI_TYPE_SINT8:
+        దొంతర_ALLOC(cur_దొంతర_ptr, 1, 1);
+        DEREF_U8(cur_దొంతర_ptr, 0) = DEREF_U8(arg_ptr, 0);
+        ఆపు;
+      స్థితి FFI_TYPE_UINT16:
+      స్థితి FFI_TYPE_SINT16:
+        దొంతర_ALLOC(cur_దొంతర_ptr, 2, 2);
+        DEREF_U16(cur_దొంతర_ptr, 0) = DEREF_U16(arg_ptr, 0);
+        ఆపు;
+      స్థితి FFI_TYPE_INT:
+      స్థితి FFI_TYPE_UINT32:
+      స్థితి FFI_TYPE_SINT32:
+      స్థితి FFI_TYPE_FLOAT:
+        దొంతర_ALLOC(cur_దొంతర_ptr, 4, 4);
+        DEREF_U32(cur_దొంతర_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        ఆపు;
+      స్థితి FFI_TYPE_DOUBLE:
+      స్థితి FFI_TYPE_UINT64:
+      స్థితి FFI_TYPE_SINT64:
+        దొంతర_ALLOC(cur_దొంతర_ptr, 8, 8);
+        DEREF_U32(cur_దొంతర_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        DEREF_U32(cur_దొంతర_ptr, 1) = DEREF_U32(arg_ptr, 1);
+        ఆపు;
+      స్థితి FFI_TYPE_LONGDOUBLE:
+        దొంతర_ALLOC(cur_దొంతర_ptr, 16, 8);
+        DEREF_U32(cur_దొంతర_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        DEREF_U32(cur_దొంతర_ptr, 1) = DEREF_U32(arg_ptr, 1);
+        DEREF_U32(cur_దొంతర_ptr, 2) = DEREF_U32(arg_ptr, 2);
+        DEREF_U32(cur_దొంతర_ptr, 3) = DEREF_U32(arg_ptr, 3);
+        ఆపు;
+      స్థితి FFI_TYPE_STRUCT:
         // Again, struct must be passed by pointer.
         // But ABI is by value, so have to copy struct onto stack.
         // Currently arguments are going onto stack so we can't put it there now. Come back for this.
-        STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        struct_arg_info.push([cur_stack_ptr, arg_ptr, DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
-        break;
-      case FFI_TYPE_POINTER:
-        STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        DEREF_PTR(cur_stack_ptr, 0) = DEREF_PTR(arg_ptr, 0);
-        break;
-      case FFI_TYPE_COMPLEX:
+        దొంతర_ALLOC(cur_దొంతర_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        struct_arg_info.నెట్టు([cur_దొంతర_ptr, arg_ptr, DEC_PTR(FFI_TYPE_కొలత(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
+        ఆపు;
+      స్థితి FFI_TYPE_సూచిక:
+        దొంతర_ALLOC(cur_దొంతర_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        DEREF_PTR(cur_దొంతర_ptr, 0) = DEREF_PTR(arg_ptr, 0);
+        ఆపు;
+      స్థితి FFI_TYPE_COMPLEX:
         throw new Error('complex arg marshalling nyi');
-      default:
+      అప్రమేయ:
         throw new Error('Unexpected argtype ' + arg_type_id);
       }
     }
     // extra normal argument which is the pointer to the varargs.
-    args.push(ENC_PTR(cur_stack_ptr));
+    వాదనలు.నెట్టు(ENC_PTR(cur_దొంతర_ptr));
     // Now allocate variable struct args on stack too.
-    for (var i = 0; i < struct_arg_info.length; i++) {
+    కొరకు (var i = 0; i < struct_arg_info.నిడివి; i++) {
       var struct_info = struct_arg_info[i];
-      var arg_target = struct_info[0];
+      var arg_లక్ష్యం = struct_info[0];
       var arg_ptr = struct_info[1];
-      var size = struct_info[2];
+      var కొలత = struct_info[2];
       var align = struct_info[3];
-      STACK_ALLOC(cur_stack_ptr, size, align);
-      HEAP8.subarray(cur_stack_ptr, cur_stack_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
-      DEREF_PTR(arg_target, 0) = ENC_PTR(cur_stack_ptr);
+      దొంతర_ALLOC(cur_దొంతర_ptr, కొలత, align);
+      HEAP8.subarray(cur_దొంతర_ptr, cur_దొంతర_ptr+కొలత).సమితి(HEAP8.subarray(arg_ptr, arg_ptr + కొలత));
+      DEREF_PTR(arg_లక్ష్యం, 0) = ENC_PTR(cur_దొంతర_ptr);
     }
   }
-  stackRestore(cur_stack_ptr);
-  stackAlloc(0); // stackAlloc enforces alignment invariants on the stack pointer
-  LOG_DEBUG("CALL_FUNC_PTR", "fn:", fn, "args:", args);
-  var result = getWasmTableEntry(fn).apply(null, args);
+  దొంతర_Restore(cur_దొంతర_ptr);
+  దొంతర_Alloc(0); // stackAlloc enforces alignment invariants on the stack pointer
+  LOG_DEBUG("CALL_FUNC_PTR", "fn:", fn, "args:", వాదనలు);
+  var ఫలితం = get_Wasm_పట్టిక_నమోదు(fn).apply(null, వాదనలు);
   // Put the stack pointer back (we moved it if there were any struct args or we
   // made a varargs call)
-  stackRestore(orig_stack_ptr);
+  దొంతర_Restore(orig_దొంతర_ptr);
 
   // We need to return by argument. If return value was a nontrivial struct or
   // long double, the onwards call already put the return value in rvalue
-  if (ret_by_arg) {
-    return;
+  ఒకవేళ (ret_by_arg) {
+    తిరిగి;
   }
 
   // A NULL rvalue means the caller discards the return value.
-  if (rvalue === 0) {
-    return;
+  ఒకవేళ (rvalue === 0) {
+    తిరిగి;
   }
 
   // Otherwise the result was automatically converted from C into Javascript and
@@ -473,123 +473,123 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Integral returns narrower than a register are widened to ffi_arg, as
   // documented and as every native port does -- but only genuine scalar
   // returns: an unboxed small-struct return keeps its natural width.
-  switch (rtype_id) {
-  case FFI_TYPE_VOID:
-    break;
-  case FFI_TYPE_INT:
-  case FFI_TYPE_SINT32:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_SIGNED(rvalue, result | 0);
-    else
-      DEREF_U32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT32:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_UNSIGNED(rvalue, result | 0);
-    else
-      DEREF_U32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_FLOAT:
-    DEREF_F32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_DOUBLE:
-    DEREF_F64(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT8:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xff);
-    else
-      DEREF_U8(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_SINT8:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_SIGNED(rvalue, (result << 24) >> 24);
-    else
-      DEREF_U8(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT16:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xffff);
-    else
-      DEREF_U16(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_SINT16:
-    if (rtype_widen)
-      STORE_ARG_WIDENED_SIGNED(rvalue, (result << 16) >> 16);
-    else
-      DEREF_U16(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT64:
-  case FFI_TYPE_SINT64:
-    DEREF_U64(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_POINTER:
-    DEREF_PTR(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_COMPLEX:
+  ఎంపిక (rtype_id) {
+  స్థితి FFI_TYPE_VOID:
+    ఆపు;
+  స్థితి FFI_TYPE_INT:
+  స్థితి FFI_TYPE_SINT32:
+    ఒకవేళ (rtype_widen)
+      STORE_ARG_WIDENED_SIGNED(rvalue, ఫలితం | 0);
+    లేకపోతే
+      DEREF_U32(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_UINT32:
+    ఒకవేళ (rtype_widen)
+      STORE_ARG_WIDENED_UNSIGNED(rvalue, ఫలితం | 0);
+    లేకపోతే
+      DEREF_U32(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_FLOAT:
+    DEREF_F32(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_DOUBLE:
+    DEREF_F64(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_UINT8:
+    ఒకవేళ (rtype_widen)
+      STORE_ARG_WIDENED_UNSIGNED(rvalue, ఫలితం & 0xff);
+    లేకపోతే
+      DEREF_U8(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_SINT8:
+    ఒకవేళ (rtype_widen)
+      STORE_ARG_WIDENED_SIGNED(rvalue, (ఫలితం << 24) >> 24);
+    లేకపోతే
+      DEREF_U8(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_UINT16:
+    ఒకవేళ (rtype_widen)
+      STORE_ARG_WIDENED_UNSIGNED(rvalue, ఫలితం & 0xffff);
+    లేకపోతే
+      DEREF_U16(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_SINT16:
+    ఒకవేళ (rtype_widen)
+      STORE_ARG_WIDENED_SIGNED(rvalue, (ఫలితం << 16) >> 16);
+    లేకపోతే
+      DEREF_U16(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_UINT64:
+  స్థితి FFI_TYPE_SINT64:
+    DEREF_U64(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_సూచిక:
+    DEREF_PTR(rvalue, 0) = ఫలితం;
+    ఆపు;
+  స్థితి FFI_TYPE_COMPLEX:
     throw new Error('complex ret marshalling nyi');
-  default:
+  అప్రమేయ:
     throw new Error('Unexpected rtype ' + rtype_id);
   }
 });
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue) {
+శూన్య ffi_call(ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, శూన్య **avalue) {
   ffi_call_js(cif, fn, rvalue, avalue);
 }
 
-#if __SIZEOF_POINTER__ == 4
+#ఒకవేళ __SIZEOF_POINTER__ == 4
 
-CHECK_FIELD_OFFSET(ffi_closure, ftramp, 4*0);
-CHECK_FIELD_OFFSET(ffi_closure, cif, 4*1);
-CHECK_FIELD_OFFSET(ffi_closure, fun, 4*2);
-CHECK_FIELD_OFFSET(ffi_closure, user_data, 4*3);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, ftramp, 4*0);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, cif, 4*1);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, fun, 4*2);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, user_దత్తాంశం, 4*3);
 
-#define CLOSURE__wrapper(addr) DEREF_U32(addr, 0)
-#define CLOSURE__cif(addr) DEREF_U32(addr, 1)
-#define CLOSURE__fun(addr) DEREF_U32(addr, 2)
-#define CLOSURE__user_data(addr) DEREF_U32(addr, 3)
+#నిర్వచించు సంవృతం_wrapper(addr) DEREF_U32(addr, 0)
+#నిర్వచించు సంవృతం_cif(addr) DEREF_U32(addr, 1)
+#నిర్వచించు సంవృతం_fun(addr) DEREF_U32(addr, 2)
+#నిర్వచించు సంవృతం_user_దత్తాంశం(addr) DEREF_U32(addr, 3)
 
-#elif __SIZEOF_POINTER__ == 8
+#లేదావేళ __SIZEOF_POINTER__ == 8
 
-CHECK_FIELD_OFFSET(ffi_closure, ftramp, 0);
-CHECK_FIELD_OFFSET(ffi_closure, cif, 8);
-CHECK_FIELD_OFFSET(ffi_closure, fun, 16);
-CHECK_FIELD_OFFSET(ffi_closure, user_data, 24);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, ftramp, 0);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, cif, 8);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, fun, 16);
+CHECK_క్షేత్రం_స్థానభ్రంశం(ffi_సంవృతం, user_దత్తాంశం, 24);
 
-#define CLOSURE__wrapper(addr) DEREF_U64(addr, 0)
-#define CLOSURE__cif(addr) DEREF_U64(addr, 1)
-#define CLOSURE__fun(addr) DEREF_U64(addr, 2)
-#define CLOSURE__user_data(addr) DEREF_U64(addr, 3)
+#నిర్వచించు సంవృతం_wrapper(addr) DEREF_U64(addr, 0)
+#నిర్వచించు సంవృతం_cif(addr) DEREF_U64(addr, 1)
+#నిర్వచించు సంవృతం_fun(addr) DEREF_U64(addr, 2)
+#నిర్వచించు సంవృతం_user_దత్తాంశం(addr) DEREF_U64(addr, 3)
 
-#else
-#error "Unknown pointer size"
-#endif
+#లేకపోతే
+#దోషం "Unknown pointer size"
+#అయితే_ముగింపు
 
-EM_JS_MACROS(void *, ffi_closure_alloc_js, (size_t size, void **code), {
-  size = DEC_PTR(size);
-  code = DEC_PTR(code);
-  var closure = _malloc(size);
-  var index = getEmptyTableSlot();
-  DEREF_PTR(code, 0) = ENC_PTR(index);
-  CLOSURE__wrapper(closure) = ENC_PTR(index);
-  return ENC_PTR(closure);
+EM_JS_MACROS(శూన్య *, ffi_సంవృతం_alloc_js, (size_t కొలత, శూన్య **సంకేతం_2), {
+  కొలత = DEC_PTR(కొలత);
+  సంకేతం_2 = DEC_PTR(సంకేతం_2);
+  var సంవృతం = _malloc(కొలత);
+  var సూచీ = get_ఖాళీలు_పట్టిక_స్థానం();
+  DEREF_PTR(సంకేతం_2, 0) = ENC_PTR(సూచీ);
+  సంవృతం_wrapper(సంవృతం) = ENC_PTR(సూచీ);
+  తిరిగి ENC_PTR(సంవృతం);
 })
 
-void * __attribute__ ((visibility ("default")))
-ffi_closure_alloc(size_t size, void **code) {
-  return ffi_closure_alloc_js(size, code);
+శూన్య * __attribute__ ((visibility ("default")))
+ffi_సంవృతం_alloc(size_t కొలత, శూన్య **సంకేతం_2) {
+  తిరిగి ffi_సంవృతం_alloc_js(కొలత, సంకేతం_2);
 }
 
-EM_JS_MACROS(void, ffi_closure_free_js, (void *closure), {
-  closure = DEC_PTR(closure);
-  var index = DEC_PTR(CLOSURE__wrapper(closure));
-  freeTableIndexes.push(index);
-  _free(closure);
+EM_JS_MACROS(శూన్య, ffi_సంవృతం_free_js, (శూన్య *సంవృతం), {
+  సంవృతం = DEC_PTR(సంవృతం);
+  var సూచీ = DEC_PTR(సంవృతం_wrapper(సంవృతం));
+  free_పట్టిక_Indexes.నెట్టు(సూచీ);
+  _free(సంవృతం);
 })
 
-void __attribute__ ((visibility ("default")))
-ffi_closure_free(void *closure) {
-  return ffi_closure_free_js(closure);
+శూన్య __attribute__ ((visibility ("default")))
+ffi_సంవృతం_free(శూన్య *సంవృతం) {
+  తిరిగి ffi_సంవృతం_free_js(సంవృతం);
 }
 
 
@@ -621,44 +621,44 @@ ffi_closure_free(void *closure) {
  * with that closure's prelude.
  */
 EM_JS_MACROS(
-ffi_status,
-ffi_prep_closure_loc_js,
-(ffi_closure *closure, ffi_cif *cif, void *fun, void *user_data, void *codeloc),
+ffi_స్థితి,
+ffi_prep_సంవృతం_loc_js,
+(ffi_సంవృతం *సంవృతం, ffi_cif *cif, శూన్య *fun, శూన్య *user_దత్తాంశం, శూన్య *codeloc),
 {
-  closure = DEC_PTR(closure);
+  సంవృతం = DEC_PTR(సంవృతం);
   cif = DEC_PTR(cif);
   fun = DEC_PTR(fun);
-  user_data = DEC_PTR(user_data);
+  user_దత్తాంశం = DEC_PTR(user_దత్తాంశం);
   codeloc = DEC_PTR(codeloc);
-  var { sig, call_info } = ffi_cif_to_call_info(cif);
+  var { sig, call_info } = ffi_cif_గమ్యం_call_info(cif);
 
   LOG_DEBUG("CREATE_CLOSURE", "sig:", sig);
   try {
     var instance = new WebAssembly.Instance(
-      ffi_closure_trampoline_module(sig),
+      ffi_సంవృతం_trampoline_module(sig),
       {
         e: {
-          p: ffi_closure_prelude(closure, call_info),
-          e: ffi_closure_epilogue(sig),
-          t: wasmTable,
+          p: ffi_సంవృతం_prelude(సంవృతం, call_info),
+          e: ffi_సంవృతం_epilogue(sig),
+          t: wasm_పట్టిక,
         },
       },
     );
   } catch (e) {
     LOG_DEBUG("CREATE_CLOSURE_FAILED", e);
-    return FFI_BAD_TYPEDEF_MACRO;
+    తిరిగి FFI_BAD_TYPEDEF_MACRO;
   }
   var wasm_trampoline = instance.exports["f"];
-  setWasmTableEntry(codeloc, wasm_trampoline);
-  CLOSURE__cif(closure) = ENC_PTR(cif);
-  CLOSURE__fun(closure) = ENC_PTR(fun);
-  CLOSURE__user_data(closure) = ENC_PTR(user_data);
-  return FFI_OK_MACRO;
+  సమితి_Wasm_పట్టిక_నమోదు(codeloc, wasm_trampoline);
+  సంవృతం_cif(సంవృతం) = ENC_PTR(cif);
+  సంవృతం_fun(సంవృతం) = ENC_PTR(fun);
+  సంవృతం_user_దత్తాంశం(సంవృతం) = ENC_PTR(user_దత్తాంశం);
+  తిరిగి FFI_OK_MACRO;
 }
 
 // Walk the CIF and compute the metadata we need for ffi_closure_prelude
 // and ffi_closure_trampoline_module.
-function ffi_cif_to_call_info(cif) {
+function ffi_cif_గమ్యం_call_info(cif) {
   var abi = CIF__ABI(cif);
   var nargs = CIF__NARGS(cif);
   var nfixedargs = CIF__NFIXEDARGS(cif);
@@ -671,91 +671,91 @@ function ffi_cif_to_call_info(cif) {
   // Important: this is the signature for calling us, the onward call always has sig viiii.
   var sig;
   var ret_by_arg = false;
-  switch (rtype_id) {
-  case FFI_TYPE_VOID:
+  ఎంపిక (rtype_id) {
+  స్థితి FFI_TYPE_VOID:
     sig = 'v';
-    break;
-  case FFI_TYPE_STRUCT:
-  case FFI_TYPE_LONGDOUBLE:
+    ఆపు;
+  స్థితి FFI_TYPE_STRUCT:
+  స్థితి FFI_TYPE_LONGDOUBLE:
     // Return via a first pointer argument.
     sig = 'v' + PTR_SIG;
     ret_by_arg = true;
-    break;
-  case FFI_TYPE_INT:
-  case FFI_TYPE_UINT8:
-  case FFI_TYPE_SINT8:
-  case FFI_TYPE_UINT16:
-  case FFI_TYPE_SINT16:
-  case FFI_TYPE_UINT32:
-  case FFI_TYPE_SINT32:
+    ఆపు;
+  స్థితి FFI_TYPE_INT:
+  స్థితి FFI_TYPE_UINT8:
+  స్థితి FFI_TYPE_SINT8:
+  స్థితి FFI_TYPE_UINT16:
+  స్థితి FFI_TYPE_SINT16:
+  స్థితి FFI_TYPE_UINT32:
+  స్థితి FFI_TYPE_SINT32:
     sig = 'i';
-    break;
-  case FFI_TYPE_FLOAT:
+    ఆపు;
+  స్థితి FFI_TYPE_FLOAT:
     sig = 'f';
-    break;
-  case FFI_TYPE_DOUBLE:
+    ఆపు;
+  స్థితి FFI_TYPE_DOUBLE:
     sig = 'd';
-    break;
-  case FFI_TYPE_UINT64:
-  case FFI_TYPE_SINT64:
+    ఆపు;
+  స్థితి FFI_TYPE_UINT64:
+  స్థితి FFI_TYPE_SINT64:
     sig = 'j';
-    break;
-  case FFI_TYPE_POINTER:
+    ఆపు;
+  స్థితి FFI_TYPE_సూచిక:
     sig = PTR_SIG;
-    break;
-  case FFI_TYPE_COMPLEX:
+    ఆపు;
+  స్థితి FFI_TYPE_COMPLEX:
     throw new Error('complex ret marshalling nyi');
-  default:
+  అప్రమేయ:
     throw new Error('Unexpected rtype ' + rtype_id);
   }
   var unboxed_arg_type_id_list = [];
   var unboxed_arg_type_info_list = [];
-  for (var i = 0; i < nargs; i++) {
+  కొరకు (var i = 0; i < nargs; i++) {
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
-    unboxed_arg_type_id_list.push(arg_type_id);
-    unboxed_arg_type_info_list.push([DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
+    unboxed_arg_type_id_list.నెట్టు(arg_type_id);
+    unboxed_arg_type_info_list.నెట్టు([DEC_PTR(FFI_TYPE_కొలత(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
   }
-  for (var i = 0; i < nfixedargs; i++) {
-    switch (unboxed_arg_type_id_list[i]) {
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+  కొరకు (var i = 0; i < nfixedargs; i++) {
+    ఎంపిక (unboxed_arg_type_id_list[i]) {
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_UINT8:
+    స్థితి FFI_TYPE_SINT8:
+    స్థితి FFI_TYPE_UINT16:
+    స్థితి FFI_TYPE_SINT16:
+    స్థితి FFI_TYPE_UINT32:
+    స్థితి FFI_TYPE_SINT32:
       sig += 'i';
-      break;
-    case FFI_TYPE_FLOAT:
+      ఆపు;
+    స్థితి FFI_TYPE_FLOAT:
       sig += 'f';
-      break;
-    case FFI_TYPE_DOUBLE:
+      ఆపు;
+    స్థితి FFI_TYPE_DOUBLE:
       sig += 'd';
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      ఆపు;
+    స్థితి FFI_TYPE_LONGDOUBLE:
       sig += 'jj';
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
       sig += 'j';
-      break;
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_POINTER:
+      ఆపు;
+    స్థితి FFI_TYPE_STRUCT:
+    స్థితి FFI_TYPE_సూచిక:
       sig += PTR_SIG;
-      break;
-    case FFI_TYPE_COMPLEX:
+      ఆపు;
+    స్థితి FFI_TYPE_COMPLEX:
       throw new Error('complex marshalling nyi');
-    default:
+    అప్రమేయ:
       throw new Error('Unexpected argtype ' + arg_type_id);
     }
   }
-  if (nfixedargs < nargs) {
+  ఒకవేళ (nfixedargs < nargs) {
     // extra pointer to varargs stack
     sig += PTR_SIG;
   }
-  return {
+  తిరిగి {
     sig,
     call_info: {
       nfixedargs,
@@ -770,8 +770,8 @@ function ffi_cif_to_call_info(cif) {
 // The prelude() function is called by the wasm trampoline with the closure's
 // arguments. It marshals them onto the C stack and returns what the trampoline
 // needs to make the onward call.
-function ffi_closure_prelude(
-  closure,
+function ffi_సంవృతం_prelude(
+  సంవృతం,
   {
     nfixedargs,
     nargs,
@@ -780,98 +780,98 @@ function ffi_closure_prelude(
     unboxed_arg_type_id_list,
   },
 ) {
-  return function prelude() {
-    var args = arguments;
-    var orig_stack_ptr = stackSave();
-    var cur_ptr = orig_stack_ptr;
+  తిరిగి function prelude() {
+    var వాదనలు = arguments;
+    var orig_దొంతర_ptr = దొంతర_Save();
+    var cur_ptr = orig_దొంతర_ptr;
     var ret_ptr;
     var jsarg_idx = 0;
     // Should we return by argument or not? The onwards call returns by argument
     // no matter what. (Warning: ret_by_arg means the opposite in ffi_call)
-    if (ret_by_arg) {
-      ret_ptr = DEC_PTR(args[jsarg_idx++]);
-    } else {
+    ఒకవేళ (ret_by_arg) {
+      ret_ptr = DEC_PTR(వాదనలు[jsarg_idx++]);
+    } లేకపోతే {
       // We might return 4 bytes or 8 bytes, allocate 8 just in case.
-      STACK_ALLOC(cur_ptr, 8, 8);
+      దొంతర_ALLOC(cur_ptr, 8, 8);
       ret_ptr = cur_ptr;
     }
     cur_ptr -= __SIZEOF_POINTER__ * nargs;
-    var args_ptr = cur_ptr;
+    var వాదనలు_ptr = cur_ptr;
     var carg_idx = 0;
     // Here we either have the actual argument, or a pair of BigInts for long
     // double, or a pointer to struct. We have to store into args_ptr[i] a
     // pointer to the ith argument. If the argument is a struct, just store the
     // pointer. Otherwise allocate stack space and copy the js argument onto the
     // stack.
-    for (; carg_idx < nfixedargs; carg_idx++) {
+    కొరకు (; carg_idx < nfixedargs; carg_idx++) {
       // jsarg_idx might start out as 0 or 1 depending on ret_by_arg
       // it advances an extra time for long double
-      var cur_arg = args[jsarg_idx++];
+      var cur_arg = వాదనలు[jsarg_idx++];
       var arg_type_info = unboxed_arg_type_info_list[carg_idx];
-      var arg_size = arg_type_info[0];
+      var arg_కొలత = arg_type_info[0];
       var arg_align = arg_type_info[1];
       var arg_type_id = unboxed_arg_type_id_list[carg_idx];
-      switch (arg_type_id) {
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
+      ఎంపిక (arg_type_id) {
+      స్థితి FFI_TYPE_UINT8:
+      స్థితి FFI_TYPE_SINT8:
         // Bad things happen if we don't align to 4 here
-        STACK_ALLOC(cur_ptr, 1, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        దొంతర_ALLOC(cur_ptr, 1, 4);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U8(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+        ఆపు;
+      స్థితి FFI_TYPE_UINT16:
+      స్థితి FFI_TYPE_SINT16:
         // Bad things happen if we don't align to 4 here
-        STACK_ALLOC(cur_ptr, 2, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        దొంతర_ALLOC(cur_ptr, 2, 4);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U16(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-        STACK_ALLOC(cur_ptr, 4, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ఆపు;
+      స్థితి FFI_TYPE_INT:
+      స్థితి FFI_TYPE_UINT32:
+      స్థితి FFI_TYPE_SINT32:
+        దొంతర_ALLOC(cur_ptr, 4, 4);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U32(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_STRUCT:
+        ఆపు;
+      స్థితి FFI_TYPE_STRUCT:
         // cur_arg is already a pointer to struct
         // copy it onto stack to pass by value
-        STACK_ALLOC(cur_ptr, arg_size, arg_align);
-        HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(DEC_PTR(cur_arg), DEC_PTR(cur_arg) + arg_size));
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
-        break;
-      case FFI_TYPE_FLOAT:
-        STACK_ALLOC(cur_ptr, 4, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        దొంతర_ALLOC(cur_ptr, arg_కొలత, arg_align);
+        HEAP8.subarray(cur_ptr, cur_ptr + arg_కొలత).సమితి(HEAP8.subarray(DEC_PTR(cur_arg), DEC_PTR(cur_arg) + arg_కొలత));
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ఆపు;
+      స్థితి FFI_TYPE_FLOAT:
+        దొంతర_ALLOC(cur_ptr, 4, 4);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F32(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_DOUBLE:
-        STACK_ALLOC(cur_ptr, 8, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ఆపు;
+      స్థితి FFI_TYPE_DOUBLE:
+        దొంతర_ALLOC(cur_ptr, 8, 8);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F64(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-        STACK_ALLOC(cur_ptr, 8, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ఆపు;
+      స్థితి FFI_TYPE_UINT64:
+      స్థితి FFI_TYPE_SINT64:
+        దొంతర_ALLOC(cur_ptr, 8, 8);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_LONGDOUBLE:
-        STACK_ALLOC(cur_ptr, 16, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ఆపు;
+      స్థితి FFI_TYPE_LONGDOUBLE:
+        దొంతర_ALLOC(cur_ptr, 16, 8);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
-        cur_arg = args[jsarg_idx++];
+        cur_arg = వాదనలు[jsarg_idx++];
         DEREF_U64(cur_ptr, 1) = cur_arg;
-        break;
-      case FFI_TYPE_POINTER:
-        STACK_ALLOC(cur_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        ఆపు;
+      స్థితి FFI_TYPE_సూచిక:
+        దొంతర_ALLOC(cur_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_PTR(cur_ptr, 0) = cur_arg;
-        break;
+        ఆపు;
       }
     }
     // If its a varargs call, last js argument is a pointer to the varargs.
-    var varargs = DEC_PTR(args[args.length - 1]);
+    var varargs = DEC_PTR(వాదనలు[వాదనలు.నిడివి - 1]);
     // We have no way of knowing how many varargs were actually provided, this
     // fills the rest of the stack space allocated with nonsense. The onward
     // call will know to ignore the nonsense.
@@ -879,103 +879,103 @@ function ffi_closure_prelude(
     // We either have a pointer to the argument if the argument is not a struct
     // or a pointer to pointer to struct. We need to store a pointer to the
     // argument into args_ptr[i]
-    for (; carg_idx < nargs; carg_idx++) {
+    కొరకు (; carg_idx < nargs; carg_idx++) {
       var arg_type_id = unboxed_arg_type_id_list[carg_idx];
       var arg_type_info = unboxed_arg_type_info_list[carg_idx];
-      var arg_size = arg_type_info[0];
+      var arg_కొలత = arg_type_info[0];
       var arg_align = arg_type_info[1];
-      if (arg_type_id === FFI_TYPE_STRUCT) {
+      ఒకవేళ (arg_type_id === FFI_TYPE_STRUCT) {
         // In this case varargs is a pointer to pointer to struct so we need to
         // deref once
-        var struct_ptr = DEREF_PTR_NUMBER(varargs, 0);
-        STACK_ALLOC(cur_ptr, arg_size, arg_align);
-        HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(struct_ptr, struct_ptr + arg_size));
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
-      } else {
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(varargs);
+        var struct_ptr = DEREF_PTR_సంఖ్య(varargs, 0);
+        దొంతర_ALLOC(cur_ptr, arg_కొలత, arg_align);
+        HEAP8.subarray(cur_ptr, cur_ptr + arg_కొలత).సమితి(HEAP8.subarray(struct_ptr, struct_ptr + arg_కొలత));
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(cur_ptr);
+      } లేకపోతే {
+        DEREF_PTR(వాదనలు_ptr, carg_idx) = ENC_PTR(varargs);
       }
       varargs += __SIZEOF_POINTER__;
     }
-    stackRestore(cur_ptr);
-    stackAlloc(0); // stackAlloc enforces alignment invariants on the stack pointer
-    LOG_DEBUG("CALL_CLOSURE", "closure:", closure, "fptr", CLOSURE__fun(closure), "cif", CLOSURE__cif(closure));
+    దొంతర_Restore(cur_ptr);
+    దొంతర_Alloc(0); // stackAlloc enforces alignment invariants on the stack pointer
+    LOG_DEBUG("CALL_CLOSURE", "closure:", సంవృతం, "fptr", సంవృతం_fun(సంవృతం), "cif", సంవృతం_cif(సంవృతం));
     // The trampoline now does
     //    fun(cif, ret_ptr, args_ptr, user_data);
     //    return epilogue(ret_ptr, orig_stack_ptr);
     //
     // We return these arguments in reverse order because stack is LIFO.
-    return [
+    తిరిగి [
       ENC_PTR(ret_ptr),          // epilogue args (in correct order)
-      ENC_PTR(orig_stack_ptr),
+      ENC_PTR(orig_దొంతర_ptr),
 
-      CLOSURE__cif(closure),     // call_indirect args (in correct order)
+      సంవృతం_cif(సంవృతం),     // call_indirect args (in correct order)
       ENC_PTR(ret_ptr),
-      ENC_PTR(args_ptr),
-      CLOSURE__user_data(closure),
+      ENC_PTR(వాదనలు_ptr),
+      సంవృతం_user_దత్తాంశం(సంవృతం),
 
-      CLOSURE__fun(closure),     // ...and the table index for call_indirect
+      సంవృతం_fun(సంవృతం),     // ...and the table index for call_indirect
     ];
   }
 }
 
 // Returns function which restores the stack pointer and loads the closure's
 // return value from ret_ptr.
-function ffi_closure_epilogue(sig) {
-  var load;
-  switch (sig[0]) {
-  case 'i': load = (ptr) => DEREF_S32(ptr, 0); break;
-  case 'j': load = (ptr) => DEREF_U64(ptr, 0); break;
-  case 'f': load = (ptr) => DEREF_F32(ptr, 0); break;
-  case 'd': load = (ptr) => DEREF_F64(ptr, 0); break;
-  default:  load = (ptr) => undefined; break;
+function ffi_సంవృతం_epilogue(sig) {
+  var ఎక్కించు;
+  ఎంపిక (sig[0]) {
+  స్థితి 'i': ఎక్కించు = (ptr) => DEREF_S32(ptr, 0); ఆపు;
+  స్థితి 'j': ఎక్కించు = (ptr) => DEREF_U64(ptr, 0); ఆపు;
+  స్థితి 'f': ఎక్కించు = (ptr) => DEREF_F32(ptr, 0); ఆపు;
+  స్థితి 'd': ఎక్కించు = (ptr) => DEREF_F64(ptr, 0); ఆపు;
+  అప్రమేయ:  ఎక్కించు = (ptr) => undefined; ఆపు;
   }
-  return function epilogue(ret_ptr, orig_stack_ptr) {
-    stackRestore(DEC_PTR(orig_stack_ptr));
-    return load(DEC_PTR(ret_ptr));
+  తిరిగి function epilogue(ret_ptr, orig_దొంతర_ptr) {
+    దొంతర_Restore(DEC_PTR(orig_దొంతర_ptr));
+    తిరిగి ఎక్కించు(DEC_PTR(ret_ptr));
   };
 }
 
-var ffi_closure_trampoline_module_cache = new Map();
-function ffi_closure_trampoline_module(sig) {
-  var cache = ffi_closure_trampoline_module_cache;
+var ffi_సంవృతం_trampoline_module_cache = new Map();
+function ffi_సంవృతం_trampoline_module(sig) {
+  var cache = ffi_సంవృతం_trampoline_module_cache;
   var module = cache.get(sig);
-  if (module) {
-    return module;
+  ఒకవేళ (module) {
+    తిరిగి module;
   }
 
   function uleb128(n) {
-    var result = [];
-    do {
+    var ఫలితం = [];
+    చేయి {
       var byte = n & 0x7f;
       n >>>= 7;
-      if (n) {
+      ఒకవేళ (n) {
         byte |= 0x80;
       }
-      result.push(byte);
-    } while (n);
-    return result;
+      ఫలితం.నెట్టు(byte);
+    } అయితే (n);
+    తిరిగి ఫలితం;
   }
   // A vector of single-byte items
-  function vec(bytes) {
-    return [...uleb128(bytes.length), ...bytes];
+  function vec(బైట్లు) {
+    తిరిగి [...uleb128(బైట్లు.నిడివి), ...బైట్లు];
   }
-  function section(id, bytes) {
-    return [id, ...vec(bytes)];
+  function section(id, బైట్లు) {
+    తిరిగి [id, ...vec(బైట్లు)];
   }
   function funcType(params, results) {
-    return [0x60, ...vec(params), ...vec(results)];
+    తిరిగి [0x60, ...vec(params), ...vec(results)];
   }
 
   var typeCodes = { 'i': 0x7f, 'j': 0x7e, 'f': 0x7d, 'd': 0x7c };
   var P = PTR_WASM_TYPE;
-  var params = Array.from(sig.slice(1), (c) => typeCodes[c]);
+  var params = Array.from(sig.ముక్క(1), (c) => typeCodes[c]);
   var results = sig[0] === 'v' ? [] : [typeCodes[sig[0]]];
-  var nparams = params.length;
+  var nparams = params.నిడివి;
 
   // Is the function table 64-bit indexed?
   // -sMEMORY64=2 compiles with 64-bit pointers but uses a 32-bit memory and
   // table, so we have to i32.wrap_i64 pointers.
-  var idx64 = typeof wasmTable.length === 'bigint';
+  var idx64 = typeof wasm_పట్టిక.నిడివి === 'bigint';
   var idxFlag = idx64 ? 0x04 : 0x00;
   // Pointers are wrapped to i32 to be used as a table index.
   var wrapPtr = (P === 0x7e && !idx64) ? [0xa7] : []; // i32.wrap_i64
@@ -1003,42 +1003,42 @@ function ffi_closure_trampoline_module(sig) {
 
   // Function body
   var body = [0x00]; // no locals
-  for (var i = 0; i < nparams; i++) {
-    body.push(0x20, ...uleb128(i)); // local.get i
+  కొరకు (var i = 0; i < nparams; i++) {
+    body.నెట్టు(0x20, ...uleb128(i)); // local.get i
   }
-  body.push(0x10, 0x00); // call prelude
+  body.నెట్టు(0x10, 0x00); // call prelude
   // Operand stack is now: ret_ptr, orig_sp, cif, ret_ptr, args_ptr, user_data, fun
-  body.push(...wrapPtr); // fun is used as a table index
-  body.push(0x11, 0x02, 0x00); // call_indirect (type 2) (table 0), consumes the top 5
+  body.నెట్టు(...wrapPtr); // fun is used as a table index
+  body.నెట్టు(0x11, 0x02, 0x00); // call_indirect (type 2) (table 0), consumes the top 5
   // Operand stack: ret_ptr, orig_sp
-  body.push(0x10, 0x01); // call epilogue, consumes both and leaves the result (if any)
-  body.push(0x0b); // end
-  var codeSection = section(0x0a, [...uleb128(1), ...vec(body)]);
+  body.నెట్టు(0x10, 0x01); // call epilogue, consumes both and leaves the result (if any)
+  body.నెట్టు(0x0b); //చివర
+  var సంకేతం_Section = section(0x0a, [...uleb128(1), ...vec(body)]);
 
-  var bytes = new Uint8Array([
+  var బైట్లు = new Uint8Array([
     0x00, 0x61, 0x73, 0x6d, // magic
-    0x01, 0x00, 0x00, 0x00, // version
+    0x01, 0x00, 0x00, 0x00, //సంస్కరణ
     ...typeSection,
     ...importSection,
     ...functionSection,
     ...exportSection,
-    ...codeSection,
+    ...సంకేతం_Section,
   ]);
-  LOG_DEBUG("CLOSURE_MODULE", "sig:", sig, "bytes:", bytes);
+  LOG_DEBUG("CLOSURE_MODULE", "sig:", sig, "bytes:", బైట్లు);
   // The module is tiny so compiling synchronously is fine.
-  module = new WebAssembly.Module(bytes);
-  cache.set(sig, module);
-  return module;
+  module = new WebAssembly.Module(బైట్లు);
+  cache.సమితి(sig, module);
+  తిరిగి module;
 }
 )
 
 // EM_JS does not correctly handle function pointer arguments, so we need a
 // helper
-ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif,
-                                void (*fun)(ffi_cif *, void *, void **, void *),
-                                void *user_data, void *codeloc) {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
-  return ffi_prep_closure_loc_js(closure, cif, (void *)fun, user_data,
+ffi_స్థితి ffi_prep_సంవృతం_loc(ffi_సంవృతం *సంవృతం, ffi_cif *cif,
+                                శూన్య (*fun)(ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+                                శూన్య *user_దత్తాంశం, శూన్య *codeloc) {
+  ఒకవేళ (cif->abi != FFI_EMSCRIPTEN_ABI)
+    తిరిగి FFI_BAD_ABI;
+  తిరిగి ffi_prep_సంవృతం_loc_js(సంవృతం, cif, (శూన్య *)fun, user_దత్తాంశం,
                                      codeloc);
 }

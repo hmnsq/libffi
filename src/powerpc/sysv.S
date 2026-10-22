@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS లేదా IMPLIED, INCLUDING BUT కాదు LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE మరియు
+   NONINFRINGEMENT.  లో NO EVENT SHALL THE AUTHORS లేదా COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES లేదా OTHER LIABILITY,
+   WHETHER లో AN ACTION OF CONTRACT, TORT లేదా OTHERWISE, ARISING FROM,
+   OUT OF లేదా లో CONNECTION WITH THE SOFTWARE లేదా THE USE లేదా OTHER
+   DEALINGS లో THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -53,7 +53,7 @@ ENTRY(ffi_call_SYSV)
 	.cfi_offset 29, -12
 	.cfi_offset 28, -16
 
-	/* Save arguments over call...  */
+	/* Save arguments over పిలువు...  */
 	stw	%r7,   -20(%r10)	/* closure, */
 	mr	%r31,%r6		/* flags, */
 	mr	%r30,%r5		/* rvalue, */
@@ -65,10 +65,10 @@ ENTRY(ffi_call_SYSV)
 	mr	%r4,%r1
 	bl	ffi_prep_args_SYSV@local
 
-	/* Now do the call.  */
+	/* Now do the పిలువు.  */
 	/* Set up cr1 with bits 4-7 of the flags.  */
 	mtcrf	0x40,%r31
-	/* Get the address to call into CTR.  */
+	/* Get the address to పిలువు into CTR.  */
 	mtctr	%r29
 	/* Load all those argument registers.  */
 	lwz	%r3,-24-(8*4)(%r28)
@@ -99,7 +99,7 @@ ENTRY(ffi_call_SYSV)
 #endif
 2:
 
-	/* Make the call.  */
+	/* Make the పిలువు.  */
 	lwz	%r11, -20(%r28)
 	bctrl
 
@@ -165,7 +165,7 @@ L(small_struct_return_value):
 	b L(done_return_value)
 	.cfi_endproc
 
-END(ffi_call_SYSV)
+ముగింపు(ffi_call_SYSV)
 
 #if defined __ELF__ && defined __linux__
 	.section	.note.GNU-stack,"",@progbits

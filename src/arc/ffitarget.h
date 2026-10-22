@@ -24,44 +24,44 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ ffi_sarg;
 
-typedef enum ffi_abi
+రకనిర్వచనం గణన ffi_abi
 {
-  FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 8
+  FFI_మొదటి_ABI = 0,
+#ఒకవేళ __SIZEOF_POINTER__ == 8
   FFI_ARC64,
-#else
+#లేకపోతే
   FFI_ARCOMPACT,
-#endif
-  FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 8
+#అయితే_ముగింపు
+  FFI_చివరి_ABI,
+#ఒకవేళ __SIZEOF_POINTER__ == 8
   FFI_DEFAULT_ABI = FFI_ARC64
-#else
+#లేకపోతే
   FFI_DEFAULT_ABI = FFI_ARCOMPACT
-#endif
+#అయితే_ముగింపు
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
-#define FFI_CLOSURES 		1
-#define FFI_GO_CLOSURES 1
-#if __SIZEOF_POINTER__ == 8
-#define FFI_TRAMPOLINE_SIZE	24
-#else
-#define FFI_TRAMPOLINE_SIZE	12
-#endif
+#నిర్వచించు FFI_CLOSURES 		1
+#నిర్వచించు FFI_GO_CLOSURES 1
+#ఒకవేళ __SIZEOF_POINTER__ == 8
+#నిర్వచించు FFI_TRAMPOLINE_కొలత	24
+#లేకపోతే
+#నిర్వచించు FFI_TRAMPOLINE_కొలత	12
+#అయితే_ముగింపు
 
-#define FFI_NATIVE_RAW_API 	0
+#నిర్వచించు FFI_NATIVE_RAW_API 	0
 
-#endif
+#అయితే_ముగింపు

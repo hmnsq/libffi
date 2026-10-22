@@ -28,56 +28,56 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
-#include "internal.h"
-#include <tramp.h>
+#అన్తర్భావ "ffi.h"
+#అన్తర్భావ "ffi_common.h"
+#అన్తర్భావ "ffi_powerpc.h"
+#అన్తర్భావ "internal.h"
+#అన్తర్భావ <tramp.h>
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#ఒకవేళ HAVE_LONG_DOUBLE_VARIANT
 /* Adjust ffi_type_longdouble.  */
-void FFI_HIDDEN
+శూన్య FFI_HIDDEN
 ffi_prep_types (ffi_abi abi)
 {
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 #  ifdef POWERPC64
   ffi_prep_types_linux64 (abi);
-#  else
+#  లేకపోతే
   ffi_prep_types_sysv (abi);
 #  endif
 # endif
 }
-#endif
+#అయితే_ముగింపు
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64 (cif);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#నిర్వచితమైతే POWERPC64
+  తిరిగి ffi_prep_cif_linux64 (cif);
+#లేకపోతే
+  తిరిగి ffi_prep_cif_sysv (cif);
+#అయితే_ముగింపు
 }
 
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif *cif,
-			  unsigned int nfixedargs MAYBE_UNUSED,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  గుర్తులేని పూర్ణాంకం nfixedargs MAYBE_వాడని,
+			  గుర్తులేని పూర్ణాంకం ntotalargs MAYBE_వాడని)
 {
-#ifdef POWERPC64
-  return ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
-#else
-  return ffi_prep_cif_sysv (cif);
-#endif
+#నిర్వచితమైతే POWERPC64
+  తిరిగి ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
+#లేకపోతే
+  తిరిగి ffi_prep_cif_sysv (cif);
+#అయితే_ముగింపు
 }
 
-static void
+స్థిర శూన్య
 ffi_call_int (ffi_cif *cif,
-	      void (*fn) (void),
-	      void *rvalue,
-	      void **avalue,
-	      void *closure)
+	      శూన్య (*fn) (శూన్య),
+	      శూన్య *rvalue,
+	      శూన్య **avalue,
+	      శూన్య *సంవృతం)
 {
   /* The final SYSV ABI says that structures smaller or equal 8 bytes
      are returned in r3/r4.  A draft ABI used by linux instead returns
@@ -89,126 +89,126 @@ ffi_call_int (ffi_cif *cif,
      For ELFv2 ABI, use a bounce buffer for homogeneous structs too,
      for similar reasons. This bounce buffer must be aligned to 16
      bytes for use with homogeneous structs of vectors (float128).  */
-  float128 smst_buffer[8];
+  float128 smst_బఫరు[8];
   extended_cif ecif;
 
   ecif.cif = cif;
   ecif.avalue = avalue;
 
   ecif.rvalue = rvalue;
-  if ((cif->flags & FLAG_RETURNS_SMST) != 0)
-    ecif.rvalue = smst_buffer;
+  ఒకవేళ ((cif->flags & FLAG_RETURNS_SMST) != 0)
+    ecif.rvalue = smst_బఫరు;
   /* Ensure that we have a valid struct return value.
      FIXME: Isn't this just papering over a user problem?  */
-  else if (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
-    ecif.rvalue = alloca (cif->rtype->size);
+  లేకపోతే ఒకవేళ (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
+    ecif.rvalue = alloca (cif->rtype->కొలత);
 
-#ifdef POWERPC64
-  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, closure,
-		    -(long) cif->bytes);
-#else
-  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, closure, -cif->bytes);
-#endif
+#నిర్వచితమైతే POWERPC64
+  ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, సంవృతం,
+		    -(దీర్ఘ) cif->బైట్లు);
+#లేకపోతే
+  ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, సంవృతం, -cif->బైట్లు);
+#అయితే_ముగింపు
 
   /* Check for a bounce-buffered return value */
-  if (rvalue && ecif.rvalue == smst_buffer)
+  ఒకవేళ (rvalue && ecif.rvalue == smst_బఫరు)
     {
-      unsigned int rsize = cif->rtype->size;
-#ifdef FFI_TARGET_HAS_COMPLEX_TYPE
+      గుర్తులేని పూర్ణాంకం rsize = cif->rtype->కొలత;
+#నిర్వచితమైతే FFI_లక్ష్యం_HAS_COMPLEX_TYPE
       /* Integer-typed _Complex: the .Lsmall_struct return path stored
 	 r3 at buffer offset 0 and r4 at offset 8.  Extract one inner-
 	 sized half from each slot — right-justified on BE, low-address
 	 on LE — and lay them out as the natural packed complex value
 	 the caller expects (real@0, imag@hsize).  */
-      if (cif->rtype->type == FFI_TYPE_COMPLEX
+      ఒకవేళ (cif->rtype->type == FFI_TYPE_COMPLEX
 	  && (cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	{
-	  size_t hsize = cif->rtype->elements[0]->size;
-#ifndef __LITTLE_ENDIAN__
+	  size_t hsize = cif->rtype->elements[0]->కొలత;
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
 	  size_t off = 8 - hsize;
-#else
+#లేకపోతే
 	  size_t off = 0;
-#endif
-	  memcpy ((char *) rvalue,         (char *) smst_buffer + off, hsize);
-	  memcpy ((char *) rvalue + hsize, (char *) smst_buffer + 8 + off, hsize);
+#అయితే_ముగింపు
+	  జ్ఞాపకం_నకలు ((అక్షరం *) rvalue,         (అక్షరం *) smst_బఫరు + off, hsize);
+	  జ్ఞాపకం_నకలు ((అక్షరం *) rvalue + hsize, (అక్షరం *) smst_బఫరు + 8 + off, hsize);
 	}
-      else
-#endif
-#ifndef __LITTLE_ENDIAN__
+      లేకపోతే
+#అయితే_ముగింపు
+#నిర్వచితం_కాకపోతే __LITTLE_ENDIAN__
       /* The SYSV ABI returns a structure of up to 4 bytes in size
 	 left-padded in r3.  */
 # ifndef POWERPC64
-      if (rsize <= 4)
-	memcpy (rvalue, (char *) smst_buffer + 4 - rsize, rsize);
-      else
+      ఒకవేళ (rsize <= 4)
+	జ్ఞాపకం_నకలు (rvalue, (అక్షరం *) smst_బఫరు + 4 - rsize, rsize);
+      లేకపోతే
 # endif
 	/* The SYSV ABI returns a structure of up to 8 bytes in size
 	   left-padded in r3/r4, and the ELFv2 ABI similarly returns a
 	   structure of up to 8 bytes in size left-padded in r3. But
 	   note that a structure of a single float is not paddded.  */
-	if (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
-	  memcpy (rvalue, (char *) smst_buffer + 8 - rsize, rsize);
-	else
-#endif
-	  memcpy (rvalue, smst_buffer, rsize);
+	ఒకవేళ (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
+	  జ్ఞాపకం_నకలు (rvalue, (అక్షరం *) smst_బఫరు + 8 - rsize, rsize);
+	లేకపోతే
+#అయితే_ముగింపు
+	  జ్ఞాపకం_నకలు (rvalue, smst_బఫరు, rsize);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ఖాళీ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+శూన్య
+ffi_call_go (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue, శూన్య **avalue,
+	     శూన్య *సంవృతం)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, సంవృతం);
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం *సంవృతం,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
-#ifdef POWERPC64
-  return ffi_prep_closure_loc_linux64 (closure, cif, fun, user_data, codeloc);
-#else
-  return ffi_prep_closure_loc_sysv (closure, cif, fun, user_data, codeloc);
-#endif
+#నిర్వచితమైతే POWERPC64
+  తిరిగి ffi_prep_సంవృతం_loc_linux64 (సంవృతం, cif, fun, user_దత్తాంశం, codeloc);
+#లేకపోతే
+  తిరిగి ffi_prep_సంవృతం_loc_sysv (సంవృతం, cif, fun, user_దత్తాంశం, codeloc);
+#అయితే_ముగింపు
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure,
+ffi_స్థితి
+ffi_prep_go_సంవృతం (ffi_go_సంవృతం *సంవృతం,
 		     ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *))
 {
-#ifdef POWERPC64
-  closure->tramp = ffi_go_closure_linux64;
-#else
-  closure->tramp = ffi_go_closure_sysv;
-#endif
-  closure->cif = cif;
-  closure->fun = fun;
-  return FFI_OK;
+#నిర్వచితమైతే POWERPC64
+  సంవృతం->tramp = ffi_go_సంవృతం_linux64;
+#లేకపోతే
+  సంవృతం->tramp = ffi_go_సంవృతం_sysv;
+#అయితే_ముగింపు
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  తిరిగి FFI_OK;
 }
 
-#ifdef FFI_EXEC_STATIC_TRAMP
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#నిర్వచితమైతే FFI_EXEC_STATIC_TRAMP
+శూన్య *
+ffi_tramp_arch (size_t *tramp_కొలత, size_t *map_కొలత)
 {
-  extern void *trampoline_code_table;
-  *tramp_size = PPC_TRAMP_SIZE;
-  *map_size = PPC_TRAMP_MAP_SIZE;
-#if defined (_CALL_AIX) || _CALL_ELF == 1
+  బాహ్య శూన్య *trampoline_సంకేతం_పట్టిక;
+  *tramp_కొలత = PPC_TRAMP_కొలత;
+  *map_కొలత = PPC_TRAMP_MAP_కొలత;
+#ఒకవేళ defined (_CALL_AIX) || _CALL_ELF == 1
   /* The caller wants the entry point address of the trampoline code,
      not the address of the function descriptor.  */
-  return *(void **)trampoline_code_table;
-#else
-  return &trampoline_code_table;
-#endif
+  తిరిగి *(శూన్య **)trampoline_సంకేతం_పట్టిక;
+#లేకపోతే
+  తిరిగి &trampoline_సంకేతం_పట్టిక;
+#అయితే_ముగింపు
 }
-#endif
+#అయితే_ముగింపు

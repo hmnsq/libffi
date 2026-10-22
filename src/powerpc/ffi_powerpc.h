@@ -33,69 +33,69 @@
  */
 
 /* Common to ppc32 and ppc64 */
-#define PPC_LD_NONE		0
-#define PPC_LD_R3		1
-#define PPC_LD_R3R4		2
-#define PPC_LD_F32		3
-#define PPC_LD_F64		4
-#define PPC_LD_F128		5
-#define PPC_LD_U8		6
-#define PPC_LD_S8		7
-#define PPC_LD_U16		8
-#define PPC_LD_S16		9
+#నిర్వచించు PPC_LD_NONE		0
+#నిర్వచించు PPC_LD_R3		1
+#నిర్వచించు PPC_LD_R3R4		2
+#నిర్వచించు PPC_LD_F32		3
+#నిర్వచించు PPC_LD_F64		4
+#నిర్వచించు PPC_LD_F128		5
+#నిర్వచించు PPC_LD_U8		6
+#నిర్వచించు PPC_LD_S8		7
+#నిర్వచించు PPC_LD_U16		8
+#నిర్వచించు PPC_LD_S16		9
 
-#ifndef POWERPC64
+#నిర్వచితం_కాకపోతే POWERPC64
 
-#define PPC_LD_U32		PPC_LD_R3
-#define PPC_LD_S32		PPC_LD_R3
-#define PPC_LD_PTR		PPC_LD_R3
-#define PPC_LD_I64		PPC_LD_R3R4
+#నిర్వచించు PPC_LD_U32		PPC_LD_R3
+#నిర్వచించు PPC_LD_S32		PPC_LD_R3
+#నిర్వచించు PPC_LD_PTR		PPC_LD_R3
+#నిర్వచించు PPC_LD_I64		PPC_LD_R3R4
 
 /* Needed for soft-float long-double. */
-#define PPC32_LD_R3R6		10
+#నిర్వచించు PPC32_LD_R3R6		10
 
 /* Needed for FFI_SYSV small structure returns.  */
-#ifdef __LITTLE_ENDIAN__
-#define PPC32_SYSV_LD_STRUCT_3	PPC32_LD_R3
-#define PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
-#define PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
-#define PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
-#else
-#define PPC32_SYSV_LD_STRUCT_3	11
-#define PPC32_SYSV_LD_STRUCT_5	12
-#define PPC32_SYSV_LD_STRUCT_6	13
-#define PPC32_SYSV_LD_STRUCT_7	14
-#endif
+#నిర్వచితమైతే __LITTLE_ENDIAN__
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_3	PPC32_LD_R3
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
+#లేకపోతే
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_3	11
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_5	12
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_6	13
+#నిర్వచించు PPC32_SYSV_LD_STRUCT_7	14
+#అయితే_ముగింపు
 
-#else /* POWERPC64 */
+#లేకపోతే /* POWERPC64 */
 
-#define PPC_LD_U32		10
-#define PPC_LD_S32		11
-#define PPC_LD_PTR		PPC_LD_R3
-#define PPC_LD_I64		PPC_LD_R3
+#నిర్వచించు PPC_LD_U32		10
+#నిర్వచించు PPC_LD_S32		11
+#నిర్వచించు PPC_LD_PTR		PPC_LD_R3
+#నిర్వచించు PPC_LD_I64		PPC_LD_R3
 
 /* Used by ELFv2 for homogenous structure returns.  */
-#define PPC64_LD_VECTOR		12
-#define PPC64_LD_VECTOR_HOMOG	13
-#define PPC64_LD_FLOAT_HOMOG	14
-#define PPC64_LD_DOUBLE_HOMOG	15
-#ifdef __LITTLE_ENDIAN__
-#define PPC64_LD_STRUCT_3	PPC_LD_U32
-#define PPC64_LD_STRUCT_5	PPC_LD_I64
-#define PPC64_LD_STRUCT_6	PPC_LD_I64
-#define PPC64_LD_STRUCT_7	PPC_LD_I64
-#else
-#define PPC64_LD_STRUCT_3	16
-#define PPC64_LD_STRUCT_5	17
-#define PPC64_LD_STRUCT_6	18
-#define PPC64_LD_STRUCT_7	19
-#endif
+#నిర్వచించు PPC64_LD_సదిశ		12
+#నిర్వచించు PPC64_LD_సదిశ_HOMOG	13
+#నిర్వచించు PPC64_LD_FLOAT_HOMOG	14
+#నిర్వచించు PPC64_LD_DOUBLE_HOMOG	15
+#నిర్వచితమైతే __LITTLE_ENDIAN__
+#నిర్వచించు PPC64_LD_STRUCT_3	PPC_LD_U32
+#నిర్వచించు PPC64_LD_STRUCT_5	PPC_LD_I64
+#నిర్వచించు PPC64_LD_STRUCT_6	PPC_LD_I64
+#నిర్వచించు PPC64_LD_STRUCT_7	PPC_LD_I64
+#లేకపోతే
+#నిర్వచించు PPC64_LD_STRUCT_3	16
+#నిర్వచించు PPC64_LD_STRUCT_5	17
+#నిర్వచించు PPC64_LD_STRUCT_6	18
+#నిర్వచించు PPC64_LD_STRUCT_7	19
+#అయితే_ముగింపు
 
-#endif /* POWERPC64 */
+#అయితే_ముగింపు /* POWERPC64 */
 
-#ifndef LIBFFI_ASM
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
 
-enum {
+గణన {
   /* The assembly depends on these exact flags.  */
   /* These go in cr7 */
   FLAG_RETURNS_SMST     = 1 << (31-31), /* Used for FFI_SYSV small structs.  */
@@ -104,8 +104,8 @@ enum {
   FLAG_RETURNS_VEC      = 1 << (31-28),
 
   /* These go in cr6 */
-  FLAG_RETURNS_64BITS   = 1 << (31-27),
-  FLAG_RETURNS_128BITS  = 1 << (31-26),
+  FLAG_RETURNS_64_బిట్లు   = 1 << (31-27),
+  FLAG_RETURNS_128_బిట్లు  = 1 << (31-26),
 
   FLAG_COMPAT           = 1 << (31- 8), /* Not used by assembly */
 
@@ -118,57 +118,57 @@ enum {
   FLAG_VEC_ARGUMENTS    = 1 << (31- 3),
 };
 
-typedef union
+రకనిర్వచనం సంఘం
 {
-  float f;
-  double d;
+  దశాంశం f;
+  ద్విగుణ d;
 } ffi_dblfl;
 
-#if defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
-typedef _Float128 float128;
-#elif defined(__FLOAT128__)
-typedef __float128 float128;
-#else
-typedef char float128[16] __attribute__((aligned(16)));
-#endif
+#ఒకవేళ defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
+రకనిర్వచనం _Float128 float128;
+#లేదావేళ defined(__FLOAT128__)
+రకనిర్వచనం __float128 float128;
+#లేకపోతే
+రకనిర్వచనం అక్షరం float128[16] __attribute__((aligned(16)));
+#అయితే_ముగింపు
 
-void FFI_HIDDEN ffi_closure_SYSV (void);
-void FFI_HIDDEN ffi_go_closure_sysv (void);
-void FFI_HIDDEN ffi_call_SYSV(extended_cif *, void (*)(void), void *,
-			      unsigned, void *, int);
+శూన్య FFI_HIDDEN ffi_సంవృతం_SYSV (శూన్య);
+శూన్య FFI_HIDDEN ffi_go_సంవృతం_sysv (శూన్య);
+శూన్య FFI_HIDDEN ffi_call_SYSV(extended_cif *, శూన్య (*)(శూన్య), శూన్య *,
+			      గుర్తులేని, శూన్య *, పూర్ణాంకం);
 
-void FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
-ffi_status FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_closure_loc_sysv (ffi_closure *,
+శూన్య FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
+ffi_స్థితి FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
+ffi_స్థితి FFI_HIDDEN ffi_prep_సంవృతం_loc_sysv (ffi_సంవృతం *,
 						 ffi_cif *,
-						 void (*) (ffi_cif *, void *,
-							   void **, void *),
-						 void *, void *);
-int FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
-					void (*) (ffi_cif *, void *,
-						  void **, void *),
-					void *, void *, unsigned long *,
-					ffi_dblfl *, unsigned long *);
+						 శూన్య (*) (ffi_cif *, శూన్య *,
+							   శూన్య **, శూన్య *),
+						 శూన్య *, శూన్య *);
+పూర్ణాంకం FFI_HIDDEN ffi_సంవృతం_helper_SYSV (ffi_cif *,
+					శూన్య (*) (ffi_cif *, శూన్య *,
+						  శూన్య **, శూన్య *),
+					శూన్య *, శూన్య *, గుర్తులేని దీర్ఘ *,
+					ffi_dblfl *, గుర్తులేని దీర్ఘ *);
 
-void FFI_HIDDEN ffi_call_LINUX64(extended_cif *, void (*) (void), void *,
-				 unsigned long, void *, long);
-void FFI_HIDDEN ffi_closure_LINUX64 (void);
-void FFI_HIDDEN ffi_go_closure_linux64 (void);
+శూన్య FFI_HIDDEN ffi_call_LINUX64(extended_cif *, శూన్య (*) (శూన్య), శూన్య *,
+				 గుర్తులేని దీర్ఘ, శూన్య *, దీర్ఘ);
+శూన్య FFI_HIDDEN ffi_సంవృతం_LINUX64 (శూన్య);
+శూన్య FFI_HIDDEN ffi_go_సంవృతం_linux64 (శూన్య);
 
-void FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned int,
-						unsigned int);
-void FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *const);
-ffi_status FFI_HIDDEN ffi_prep_closure_loc_linux64 (ffi_closure *, ffi_cif *,
-						    void (*) (ffi_cif *, void *,
-							      void **, void *),
-						    void *, void *);
-int FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
-					   void (*) (ffi_cif *, void *,
-						     void **, void *),
-					   void *, void *,
-					   unsigned long *, ffi_dblfl *,
+శూన్య FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
+ffi_స్థితి FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
+ffi_స్థితి FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, గుర్తులేని పూర్ణాంకం,
+						గుర్తులేని పూర్ణాంకం);
+శూన్య FFI_HIDDEN ffi_prep_args64 (extended_cif *, గుర్తులేని దీర్ఘ *స్థిరరాశి);
+ffi_స్థితి FFI_HIDDEN ffi_prep_సంవృతం_loc_linux64 (ffi_సంవృతం *, ffi_cif *,
+						    శూన్య (*) (ffi_cif *, శూన్య *,
+							      శూన్య **, శూన్య *),
+						    శూన్య *, శూన్య *);
+పూర్ణాంకం FFI_HIDDEN ffi_సంవృతం_helper_LINUX64 (ffi_cif *,
+					   శూన్య (*) (ffi_cif *, శూన్య *,
+						     శూన్య **, శూన్య *),
+					   శూన్య *, శూన్య *,
+					   గుర్తులేని దీర్ఘ *, ffi_dblfl *,
 					   float128 *);
 
-#endif /* !LIBFFI_ASM */
+#అయితే_ముగింపు /* !LIBFFI_ASM */

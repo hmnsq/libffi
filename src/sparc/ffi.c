@@ -25,177 +25,177 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ "internal.h"
 
-#ifndef SPARC64
+#నిర్వచితం_కాకపోతే SPARC64
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
-#  error FFI_TYPE_LONGDOUBLE out of date
+#ఒకవేళ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ఒకవేళ FFI_TYPE_LONGDOUBLE != 4
+#  error FFI_TYPE_LONGDOUBLE బహిర్గతం యొక్క date
 # endif
-#else
+#లేకపోతే
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
-#endif
+#అయితే_ముగింపు
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
-  size_t bytes;
-  int i, n, flags;
+  పూర్ణాంకం rtt = rtype->type;
+  size_t బైట్లు;
+  పూర్ణాంకం i, n, flags;
 
   /* Set the return type flag */
-  switch (rtt)
+  ఎంపిక (rtt)
     {
-    case FFI_TYPE_VOID:
+    స్థితి FFI_TYPE_VOID:
       flags = SPARC_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      ఆపు;
+    స్థితి FFI_TYPE_FLOAT:
       flags = SPARC_RET_F_1;
-      break;
-    case FFI_TYPE_DOUBLE:
+      ఆపు;
+    స్థితి FFI_TYPE_DOUBLE:
       flags = SPARC_RET_F_2;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
-      flags = (rtype->size & 0xfff) << SPARC_SIZEMASK_SHIFT;
+      ఆపు;
+    స్థితి FFI_TYPE_LONGDOUBLE:
+    స్థితి FFI_TYPE_STRUCT:
+      flags = (rtype->కొలత & 0xfff) << SPARC_SIZEMASK_జరుపు;
       flags |= SPARC_RET_STRUCT;
-      break;
-    case FFI_TYPE_SINT8:
+      ఆపు;
+    స్థితి FFI_TYPE_SINT8:
       flags = SPARC_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT8:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT8:
       flags = SPARC_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      ఆపు;
+    స్థితి FFI_TYPE_SINT16:
       flags = SPARC_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT16:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT16:
       flags = SPARC_RET_UINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      ఆపు;
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_SINT32:
+    స్థితి FFI_TYPE_UINT32:
+    స్థితి FFI_TYPE_సూచిక:
       flags = SPARC_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      ఆపు;
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
       flags = SPARC_RET_INT64;
-      break;
-    case FFI_TYPE_COMPLEX:
+      ఆపు;
+    స్థితి FFI_TYPE_COMPLEX:
       rtt = rtype->elements[0]->type;
-      switch (rtt)
+      ఎంపిక (rtt)
 	{
-	case FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_FLOAT:
 	  flags = SPARC_RET_F_2;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  ఆపు;
+	స్థితి FFI_TYPE_DOUBLE:
 	  flags = SPARC_RET_F_4;
-	  break;
-	case FFI_TYPE_LONGDOUBLE:
+	  ఆపు;
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	  flags = SPARC_RET_F_8;
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	  ఆపు;
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_UINT64:
 	  flags = SPARC_RET_INT128;
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	  ఆపు;
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT32:
 	  flags = SPARC_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  ఆపు;
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT16:
 	  flags = SP_V8_RET_CPLX16;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  ఆపు;
+	స్థితి FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_UINT8:
 	  flags = SP_V8_RET_CPLX8;
-	  break;
-	default:
+	  ఆపు;
+	అప్రమేయ:
 	  abort();
 	}
-      break;
-    default:
+      ఆపు;
+    అప్రమేయ:
       abort();
     }
   cif->flags = flags;
 
-  bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  బైట్లు = 0;
+  కొరకు (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
-      size_t z = ty->size;
-      int tt = ty->type;
+      size_t z = ty->కొలత;
+      పూర్ణాంకం tt = ty->type;
 
-      switch (tt)
+      ఎంపిక (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	స్థితి FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Passed by reference.  */
 	  z = 4;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_COMPLEX:
+	స్థితి FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
+	  ఒకవేళ (tt == FFI_TYPE_FLOAT || z > 8)
+	    వెళ్ళు by_reference;
 	  /* FALLTHRU */
 
-	default:
+	అప్రమేయ:
 	  z = FFI_ALIGN(z, 4);
 	}
-      bytes += z;
+      బైట్లు += z;
     }
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary.  */
-  if (bytes < 6 * 4)
-    bytes = 6 * 4;
+  ఒకవేళ (బైట్లు < 6 * 4)
+    బైట్లు = 6 * 4;
 
   /* The ABI always requires space for the struct return pointer.  */
-  bytes += 4;
+  బైట్లు += 4;
 
   /* The stack must be 2 word aligned, so round bytes up appropriately. */
-  bytes = FFI_ALIGN(bytes, 2 * 4);
+  బైట్లు = FFI_ALIGN(బైట్లు, 2 * 4);
 
   /* Include the call frame to prep_args.  */
-  bytes += 4*16 + 4*8;
-  cif->bytes = bytes;
+  బైట్లు += 4*16 + 4*8;
+  cif->బైట్లు = బైట్లు;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
-			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
+బాహ్య శూన్య ffi_call_v8(ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue,
+			శూన్య **avalue, size_t బైట్లు, శూన్య *సంవృతం) FFI_HIDDEN;
 
-int FFI_HIDDEN
-ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
+పూర్ణాంకం FFI_HIDDEN
+ffi_prep_వాదనలు_v8(ffi_cif *cif, గుర్తులేని దీర్ఘ *argp, శూన్య *rvalue, శూన్య **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  పూర్ణాంకం flags = cif->flags;
+  పూర్ణాంకం i, nargs;
 
-  if (rvalue == NULL)
+  ఒకవేళ (rvalue == ఖాళీ)
     {
-      if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+      ఒకవేళ ((flags & SPARC_FLAG_RET_ముసుగు) == SPARC_RET_STRUCT)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
-	  rvalue = (char *)argp + cif->bytes;
+	  rvalue = (అక్షరం *)argp + cif->బైట్లు;
 	}
-      else
+      లేకపోతే
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -204,216 +204,216 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 
   /* This could only really be done when we are returning a structure.
      However, the space is reserved so we can do it unconditionally.  */
-  *argp++ = (unsigned long)rvalue;
+  *argp++ = (గుర్తులేని దీర్ఘ)rvalue;
 
-#ifdef USING_PURIFY
+#నిర్వచితమైతే USING_PURIFY
   /* Purify will probably complain in our assembly routine,
      unless we zero out this memory. */
   memset(argp, 0, 6*4);
-#endif
+#అయితే_ముగింపు
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  కొరకు (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
-      void *a = avalue[i];
-      int tt = ty->type;
+      శూన్య *a = avalue[i];
+      పూర్ణాంకం tt = ty->type;
       size_t z;
 
-      switch (tt)
+      ఎంపిక (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	స్థితి FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	by_reference:
-	  *argp++ = (unsigned long)a;
-	  break;
+	  *argp++ = (గుర్తులేని దీర్ఘ)a;
+	  ఆపు;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	  memcpy(argp, a, 8);
+	స్థితి FFI_TYPE_DOUBLE:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_SINT64:
+	  జ్ఞాపకం_నకలు(argp, a, 8);
 	  argp += 2;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  *argp++ = *(unsigned *)a;
-	  break;
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_సూచిక:
+	  *argp++ = *(గుర్తులేని *)a;
+	  ఆపు;
 
-	case FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_UINT8:
 	  *argp++ = *(UINT8 *)a;
-	  break;
-	case FFI_TYPE_SINT8:
+	  ఆపు;
+	స్థితి FFI_TYPE_SINT8:
 	  *argp++ = *(SINT8 *)a;
-	  break;
-	case FFI_TYPE_UINT16:
+	  ఆపు;
+	స్థితి FFI_TYPE_UINT16:
 	  *argp++ = *(UINT16 *)a;
-	  break;
-	case FFI_TYPE_SINT16:
+	  ఆపు;
+	స్థితి FFI_TYPE_SINT16:
 	  *argp++ = *(SINT16 *)a;
-	  break;
+	  ఆపు;
 
-        case FFI_TYPE_COMPLEX:
+        స్థితి FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->కొలత;
+	  ఒకవేళ (tt == FFI_TYPE_FLOAT || z > 8)
+	    వెళ్ళు by_reference;
+	  ఒకవేళ (z < 4)
 	    {
-	      memcpy((char *)argp + 4 - z, a, z);
+	      జ్ఞాపకం_నకలు((అక్షరం *)argp + 4 - z, a, z);
 	      argp++;
 	    }
-	  else
+	  లేకపోతే
 	    {
-	      memcpy(argp, a, z);
+	      జ్ఞాపకం_నకలు(argp, a, z);
 	      argp += z / 4;
 	    }
-	  break;
+	  ఆపు;
 
-	default:
+	అప్రమేయ:
 	  abort();
 	}
     }
 
-  return flags;
+  తిరిగి flags;
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+స్థిర శూన్య
+ffi_call_int (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue,
+	      శూన్య **avalue, శూన్య *సంవృతం)
 {
-  size_t bytes = cif->bytes;
+  size_t బైట్లు = cif->బైట్లు;
   size_t i, nargs = cif->nargs;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
+  శూన్య **avalue_copy = ఖాళీ;
 
   FFI_ASSERT (cif->abi == FFI_V8);
 
   /* If we've not got a return value, we need to create one if we've
      got to pass the return value to the callee.  Otherwise ignore it.  */
-  if (rvalue == NULL
-      && (cif->flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
-    bytes += FFI_ALIGN (cif->rtype->size, 8);
+  ఒకవేళ (rvalue == ఖాళీ
+      && (cif->flags & SPARC_FLAG_RET_ముసుగు) == SPARC_RET_STRUCT)
+    బైట్లు += FFI_ALIGN (cif->rtype->కొలత, 8);
 
   /* If we have any structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  కొరకు (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT)
+      పూర్ణాంకం కొలత = at->కొలత;
+      ఒకవేళ (at->type == FFI_TYPE_STRUCT)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          అక్షరం *argcopy = alloca (కొలత);
+          ఒకవేళ (avalue_copy == ఖాళీ)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * పరిమాణం (శూన్య *));
+              జ్ఞాపకం_నకలు (avalue_copy, avalue, nargs * పరిమాణం (శూన్య *));
               avalue = avalue_copy;
             }
-          memcpy (argcopy, avalue[i], size);
+          జ్ఞాపకం_నకలు (argcopy, avalue[i], కొలత);
           avalue[i] = argcopy;
         }
     }
 
-  ffi_call_v8(cif, fn, rvalue, avalue, -bytes, closure);
+  ffi_call_v8(cif, fn, rvalue, avalue, -బైట్లు, సంవృతం);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ఖాళీ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+శూన్య
+ffi_call_go (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue,
+	     శూన్య **avalue, శూన్య *సంవృతం)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, సంవృతం);
 }
 
-#ifdef __GNUC__
-static inline void
-ffi_flush_icache (void *p)
+#నిర్వచితమైతే __GNUC__
+స్థిర అంతఃవరుస శూన్య
+ffi_flush_icache (శూన్య *p)
 {
   /* SPARC v8 requires 5 instructions for flush to be visible */
-  __asm__ volatile ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
+  __asm__ అస్థిర ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
 		: : "r" (p) : "memory");
 }
-#else
-extern void ffi_flush_icache (void *) FFI_HIDDEN;
-#endif
+#లేకపోతే
+బాహ్య శూన్య ffi_flush_icache (శూన్య *) FFI_HIDDEN;
+#అయితే_ముగింపు
 
-extern void ffi_closure_v8(void) FFI_HIDDEN;
-extern void ffi_go_closure_v8(void) FFI_HIDDEN;
+బాహ్య శూన్య ffi_సంవృతం_v8(శూన్య) FFI_HIDDEN;
+బాహ్య శూన్య ffi_go_సంవృతం_v8(శూన్య) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure *closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం *సంవృతం,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
-  unsigned long ctx = (unsigned long) closure;
-  unsigned long fn = (unsigned long) ffi_closure_v8;
+  గుర్తులేని పూర్ణాంకం *tramp = (గుర్తులేని పూర్ణాంకం *) &సంవృతం->tramp[0];
+  గుర్తులేని దీర్ఘ ctx = (గుర్తులేని దీర్ఘ) సంవృతం;
+  గుర్తులేని దీర్ఘ fn = (గుర్తులేని దీర్ఘ) ffi_సంవృతం_v8;
 
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_V8)
+    తిరిగి FFI_BAD_ABI;
 
   tramp[0] = 0x03000000 | fn >> 10;	/* sethi %hi(fn), %g1	*/
   tramp[1] = 0x05000000 | ctx >> 10;	/* sethi %hi(ctx), %g2	*/
   tramp[2] = 0x81c06000 | (fn & 0x3ff);	/* jmp   %g1+%lo(fn)	*/
   tramp[3] = 0x8410a000 | (ctx & 0x3ff);/* or    %g2, %lo(ctx)	*/
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
 
-  ffi_flush_icache (closure);
+  ffi_flush_icache (సంవృతం);
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+ffi_స్థితి
+ffi_prep_go_సంవృతం (ffi_go_సంవృతం *సంవృతం, ffi_cif *cif,
+		     శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*))
 {
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_V8)
+    తిరిగి FFI_BAD_ABI;
 
-  closure->tramp = ffi_go_closure_v8;
-  closure->cif = cif;
-  closure->fun = fun;
+  సంవృతం->tramp = ffi_go_సంవృతం_v8;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-int FFI_HIDDEN
-ffi_closure_sparc_inner_v8(ffi_cif *cif, 
-			   void (*fun)(ffi_cif*, void*, void**, void*),
-			   void *user_data, void *rvalue,
-			   unsigned long *argp)
+పూర్ణాంకం FFI_HIDDEN
+ffi_సంవృతం_sparc_inner_v8(ffi_cif *cif, 
+			   శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*),
+			   శూన్య *user_దత్తాంశం, శూన్య *rvalue,
+			   గుర్తులేని దీర్ఘ *argp)
 {
   ffi_type **arg_types;
-  void **avalue;
-  int i, nargs, flags;
+  శూన్య **avalue;
+  పూర్ణాంకం i, nargs, flags;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
   flags = cif->flags;
-  avalue = alloca(nargs * sizeof(void *));
+  avalue = alloca(nargs * పరిమాణం(శూన్య *));
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  Also install it so we
      can return the address in %o0.  */
-  if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+  ఒకవేళ ((flags & SPARC_FLAG_RET_ముసుగు) == SPARC_RET_STRUCT)
     {
-      void *new_rvalue = (void *)*argp;
-      *(void **)rvalue = new_rvalue;
+      శూన్య *new_rvalue = (శూన్య *)*argp;
+      *(శూన్య **)rvalue = new_rvalue;
       rvalue = new_rvalue;
     }
 
@@ -421,26 +421,26 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   argp++;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++)
+  కొరకు (i = 0; i < nargs; i++)
     {
       ffi_type *ty = arg_types[i];
-      int tt = ty->type;
-      void *a = argp;
+      పూర్ణాంకం tt = ty->type;
+      శూన్య *a = argp;
       size_t z;
 
-      switch (tt)
+      ఎంపిక (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	స్థితి FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Straight copy of invisible reference.  */
-	  a = (void *)*argp;
-	  break;
+	  a = (శూన్య *)*argp;
+	  ఆపు;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  if ((unsigned long)a & 7)
+	స్థితి FFI_TYPE_DOUBLE:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_UINT64:
+	  ఒకవేళ ((గుర్తులేని దీర్ఘ)a & 7)
 	    {
 	      /* Align on a 8-byte boundary.  */
 	      UINT64 *tmp = alloca(8);
@@ -448,35 +448,35 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 	      a = tmp;
 	    }
 	  argp++;
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  break;
-        case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_INT:
+	స్థితి FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_సూచిక:
+	  ఆపు;
+        స్థితి FFI_TYPE_UINT16:
+        స్థితి FFI_TYPE_SINT16:
 	  a += 2;
-	  break;
-        case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT8:
+	  ఆపు;
+        స్థితి FFI_TYPE_UINT8:
+        స్థితి FFI_TYPE_SINT8:
 	  a += 3;
-	  break;
+	  ఆపు;
 
-        case FFI_TYPE_COMPLEX:
+        స్థితి FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
-	    goto by_reference;
-	  if (z < 4)
+	  z = ty->కొలత;
+	  ఒకవేళ (tt == FFI_TYPE_FLOAT || z > 8)
+	    వెళ్ళు by_reference;
+	  ఒకవేళ (z < 4)
 	    a += 4 - z;
-	  else if (z > 4)
+	  లేకపోతే ఒకవేళ (z > 4)
 	    argp++;
-	  break;
+	  ఆపు;
 
-	default:
+	అప్రమేయ:
 	  abort();
 	}
       argp++;
@@ -484,9 +484,9 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
     }
 
   /* Invoke the closure.  */
-  fun (cif, rvalue, avalue, user_data);
+  fun (cif, rvalue, avalue, user_దత్తాంశం);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  తిరిగి flags;
 }
-#endif /* !SPARC64 */
+#అయితే_ముగింపు /* !SPARC64 */

@@ -23,35 +23,35 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
-typedef unsigned long	ffi_arg;
-typedef signed long	ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ	ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ	ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
-#define FFI_REGISTER_NARGS	6
-#define XTENSA_STACK_ALIGNMENT	16
-#define FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
-				  XTENSA_STACK_ALIGNMENT - 1) & \
-				  -XTENSA_STACK_ALIGNMENT)
+#నిర్వచించు FFI_రిజిస్టరు_NARGS	6
+#నిర్వచించు XTENSA_దొంతర_ALIGNMENT	16
+#నిర్వచించు FFI_రిజిస్టరు_వాదనలు_SPACE ((FFI_రిజిస్టరు_NARGS * 4 + \
+				  XTENSA_దొంతర_ALIGNMENT - 1) & \
+				  -XTENSA_దొంతర_ALIGNMENT)
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TRAMPOLINE_SIZE 24
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_NATIVE_RAW_API 0
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 24
 
-#endif
+#అయితే_ముగింపు

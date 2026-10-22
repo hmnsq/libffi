@@ -26,37 +26,37 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#include <stdlib.h>
+#అన్తర్భావ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, extended_cif *ecif)
+శూన్య *ffi_prep_వాదనలు(అక్షరం *దొంతర, extended_cif *ecif)
 {
-  register unsigned int i;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
-  register int count = 0;
+  నమోదు గుర్తులేని పూర్ణాంకం i;
+  నమోదు శూన్య **p_argv;
+  నమోదు అక్షరం *argp;
+  నమోదు ffi_type **p_arg;
+  నమోదు పూర్ణాంకం లెక్క = 0;
 
   p_argv = ecif->avalue;
-  argp = stack;
+  argp = దొంతర;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  కొరకు (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0);
        i--, p_arg++)
     {
       size_t z;
       
-      z = (*p_arg)->size;
+      z = (*p_arg)->కొలత;
 
-      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+      ఒకవేళ ((*p_arg)->type == FFI_TYPE_STRUCT)
 	{
-	  z = sizeof(void*);
-	  *(void **) argp = *p_argv;
+	  z = పరిమాణం(శూన్య*);
+	  *(శూన్య **) argp = *p_argv;
 	} 
       /*      if ((*p_arg)->type == FFI_TYPE_FLOAT)
 	{
@@ -69,70 +69,70 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
 	  else
 	    *(void **) argp = *(void **)(* p_argv);
 	}  */
-      else if (z < sizeof(int))
+      లేకపోతే ఒకవేళ (z < పరిమాణం(పూర్ణాంకం))
 	{
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = పరిమాణం(పూర్ణాంకం);
+	  ఎంపిక ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    స్థితి FFI_TYPE_SINT8:
+	      *(గుర్తుగల పూర్ణాంకం *) argp = (గుర్తుగల పూర్ణాంకం)*(SINT8 *)(* p_argv);
+	      ఆపు;
 	      
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    స్థితి FFI_TYPE_UINT8:
+	      *(గుర్తులేని పూర్ణాంకం *) argp = (గుర్తులేని పూర్ణాంకం)*(UINT8 *)(* p_argv);
+	      ఆపు;
 	      
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    స్థితి FFI_TYPE_SINT16:
+	      *(గుర్తుగల పూర్ణాంకం *) argp = (గుర్తుగల పూర్ణాంకం)*(SINT16 *)(* p_argv);
+	      ఆపు;
 		  
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    స్థితి FFI_TYPE_UINT16:
+	      *(గుర్తులేని పూర్ణాంకం *) argp = (గుర్తులేని పూర్ణాంకం)*(UINT16 *)(* p_argv);
+	      ఆపు;
 		  
-	    default:
+	    అప్రమేయ:
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof(int))
+      లేకపోతే ఒకవేళ (z == పరిమాణం(పూర్ణాంకం))
 	{
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(గుర్తులేని పూర్ణాంకం *) argp = (గుర్తులేని పూర్ణాంకం)*(UINT32 *)(* p_argv);
 	}
-      else
+      లేకపోతే
 	{
-	  memcpy(argp, *p_argv, z);
+	  జ్ఞాపకం_నకలు(argp, *p_argv, z);
 	}
       p_argv++;
       argp += z;
-      count += z;
+      లెక్క += z;
     }
 
-  return (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
+  తిరిగి (దొంతర + ((లెక్క > 24) ? 24 : FFI_ALIGN_కిందికి(లెక్క, 8)));
 }
 
 /* Perform machine dependent cif processing */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_స్థితి ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  ఒకవేళ (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = -1;
-  else
-    cif->flags = cif->rtype->size;
+  లేకపోతే
+    cif->flags = cif->rtype->కొలత;
 
-  cif->bytes = FFI_ALIGN (cif->bytes, 8);
+  cif->బైట్లు = FFI_ALIGN (cif->బైట్లు, 8);
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-extern void ffi_call_EABI(void *(*)(char *, extended_cif *), 
+బాహ్య శూన్య ffi_call_EABI(శూన్య *(*)(అక్షరం *, extended_cif *), 
 			  extended_cif *, 
-			  unsigned, unsigned, 
-			  unsigned *, 
-			  void (*fn)(void));
+			  గుర్తులేని, గుర్తులేని, 
+			  గుర్తులేని *, 
+			  శూన్య (*fn)(శూన్య));
 
-void ffi_call(ffi_cif *cif, 
-	      void (*fn)(void), 
-	      void *rvalue, 
-	      void **avalue)
+శూన్య ffi_call(ffi_cif *cif, 
+	      శూన్య (*fn)(శూన్య), 
+	      శూన్య *rvalue, 
+	      శూన్య **avalue)
 {
   extended_cif ecif;
 
@@ -142,128 +142,128 @@ void ffi_call(ffi_cif *cif,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if ((rvalue == NULL) && 
+  ఒకవేళ ((rvalue == ఖాళీ) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca(cif->rtype->size);
+      ecif.rvalue = alloca(cif->rtype->కొలత);
     }
-  else
+  లేకపోతే
     ecif.rvalue = rvalue;
     
   
-  switch (cif->abi) 
+  ఎంపిక (cif->abi) 
     {
-    case FFI_EABI:
-      ffi_call_EABI(ffi_prep_args, &ecif, cif->bytes, 
+    స్థితి FFI_EABI:
+      ffi_call_EABI(ffi_prep_వాదనలు, &ecif, cif->బైట్లు, 
 		    cif->flags, ecif.rvalue, fn);
-      break;
-    default:
+      ఆపు;
+    అప్రమేయ:
       FFI_ASSERT(0);
-      break;
+      ఆపు;
     }
 }
 
-void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
-		       unsigned arg4, unsigned arg5, unsigned arg6)
+శూన్య ffi_సంవృతం_eabi (గుర్తులేని arg1, గుర్తులేని arg2, గుర్తులేని arg3,
+		       గుర్తులేని arg4, గుర్తులేని arg5, గుర్తులేని arg6)
 {
   /* This function is called by a trampoline.  The trampoline stows a
      pointer to the ffi_closure object in gr7.  We must save this
      pointer in a place that will persist while we do our work.  */
-  register ffi_closure *creg __asm__ ("gr7");
-  ffi_closure *closure = creg;
+  నమోదు ffi_సంవృతం *creg __asm__ ("gr7");
+  ffi_సంవృతం *సంవృతం = creg;
 
   /* Arguments that don't fit in registers are found on the stack
      at a fixed offset above the current frame pointer.  */
-  register char *frame_pointer __asm__ ("fp");
-  char *stack_args = frame_pointer + 16;
+  నమోదు అక్షరం *చట్రం_సూచిక __asm__ ("fp");
+  అక్షరం *దొంతర_వాదనలు = చట్రం_సూచిక + 16;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
-  unsigned register_args[6] =
+  గుర్తులేని రిజిస్టరు_వాదనలు[6] =
     { arg1, arg2, arg3, arg4, arg5, arg6 };
 
-  ffi_cif *cif = closure->cif;
+  ffi_cif *cif = సంవృతం->cif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
-  int i;
+  శూన్య **avalue = alloca (cif->nargs * పరిమాణం(శూన్య *));
+  అక్షరం *ptr = (అక్షరం *) రిజిస్టరు_వాదనలు;
+  పూర్ణాంకం i;
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  కొరకు (i = 0; i < cif->nargs; i++)
     {
-      switch (arg_types[i]->type)
+      ఎంపిక (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_UINT8:
 	  avalue[i] = ptr + 3;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  ఆపు;
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT16:
 	  avalue[i] = ptr + 2;
-	  break;
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_FLOAT:
+	  ఆపు;
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_FLOAT:
 	  avalue[i] = ptr;
-	  break;
-	case FFI_TYPE_STRUCT:
-	  avalue[i] = *(void**)ptr;
-	  break;
-	default:
+	  ఆపు;
+	స్థితి FFI_TYPE_STRUCT:
+	  avalue[i] = *(శూన్య**)ptr;
+	  ఆపు;
+	అప్రమేయ:
 	  /* This is an 8-byte value.  */
 	  avalue[i] = ptr;
 	  ptr += 4;
-	  break;
+	  ఆపు;
 	}
       ptr += 4;
 
       /* If we've handled more arguments than fit in registers,
 	 start looking at the those passed on the stack.  */
-      if (ptr == ((char *)register_args + (6*4)))
-	ptr = stack_args;
+      ఒకవేళ (ptr == ((అక్షరం *)రిజిస్టరు_వాదనలు + (6*4)))
+	ptr = దొంతర_వాదనలు;
     }
 
   /* Invoke the closure.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  ఒకవేళ (cif->rtype->type == FFI_TYPE_STRUCT)
     {
       /* The caller allocates space for the return structure, and
        passes a pointer to this space in gr3.  Use this value directly
        as the return value.  */
-      register void *return_struct_ptr __asm__("gr3");
-      (closure->fun) (cif, return_struct_ptr, avalue, closure->user_data);
+      నమోదు శూన్య *return_struct_ptr __asm__("gr3");
+      (సంవృతం->fun) (cif, return_struct_ptr, avalue, సంవృతం->user_దత్తాంశం);
     }
-  else
+  లేకపోతే
     {
       /* Allocate space for the return value and call the function.  */
-      long long rvalue;
-      (closure->fun) (cif, &rvalue, avalue, closure->user_data);
+      దీర్ఘ దీర్ఘ rvalue;
+      (సంవృతం->fun) (cif, &rvalue, avalue, సంవృతం->user_దత్తాంశం);
 
       /* Functions return 4-byte or smaller results in gr8.  8-byte
 	 values also use gr9.  We fill the both, even for small return
 	 values, just to avoid a branch.  */ 
       __asm__ ("ldi  @(%0, #0), gr8" : : "r" (&rvalue));
-      __asm__ ("ldi  @(%0, #0), gr9" : : "r" (&((int *) &rvalue)[1]));
+      __asm__ ("ldi  @(%0, #0), gr9" : : "r" (&((పూర్ణాంకం *) &rvalue)[1]));
     }
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం* సంవృతం,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun)(ffi_cif*, శూన్య*, శూన్య**, శూన్య*),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
-  unsigned long fn = (long) ffi_closure_eabi;
-  unsigned long cls = (long) codeloc;
-#ifdef __FRV_FDPIC__
-  register void *got __asm__("gr15");
-#endif
-  int i;
+  గుర్తులేని పూర్ణాంకం *tramp = (గుర్తులేని పూర్ణాంకం *) &సంవృతం->tramp[0];
+  గుర్తులేని దీర్ఘ fn = (దీర్ఘ) ffi_సంవృతం_eabi;
+  గుర్తులేని దీర్ఘ cls = (దీర్ఘ) codeloc;
+#నిర్వచితమైతే __FRV_FDPIC__
+  నమోదు శూన్య *got __asm__("gr15");
+#అయితే_ముగింపు
+  పూర్ణాంకం i;
 
-  fn = (unsigned long) ffi_closure_eabi;
+  fn = (గుర్తులేని దీర్ఘ) ffi_సంవృతం_eabi;
 
-#ifdef __FRV_FDPIC__
-  tramp[0] = &((unsigned int *)codeloc)[2];
+#నిర్వచితమైతే __FRV_FDPIC__
+  tramp[0] = &((గుర్తులేని పూర్ణాంకం *)codeloc)[2];
   tramp[1] = got;
   tramp[2] = 0x8cfc0000 + (fn  & 0xffff); /* setlos lo(fn), gr6    */
   tramp[3] = 0x8efc0000 + (cls & 0xffff); /* setlos lo(cls), gr7   */
@@ -271,22 +271,22 @@ ffi_prep_closure_loc (ffi_closure* closure,
   tramp[5] = 0x8ef80000 + (cls >> 16);    /* sethi hi(cls), gr7    */
   tramp[6] = 0x9cc86000;                  /* ldi @(gr6, #0), gr14  */
   tramp[7] = 0x8030e000;                  /* jmpl @(gr14, gr0)     */
-#else
+#లేకపోతే
   tramp[0] = 0x8cfc0000 + (fn  & 0xffff); /* setlos lo(fn), gr6    */
   tramp[1] = 0x8efc0000 + (cls & 0xffff); /* setlos lo(cls), gr7   */
   tramp[2] = 0x8cf80000 + (fn  >> 16);	  /* sethi hi(fn), gr6     */
   tramp[3] = 0x8ef80000 + (cls >> 16);    /* sethi hi(cls), gr7    */
   tramp[4] = 0x80300006;                  /* jmpl @(gr0, gr6)      */
-#endif
+#అయితే_ముగింపు
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
 
   /* Cache flushing.  */
-  for (i = 0; i < FFI_TRAMPOLINE_SIZE; i++)
-    __asm__ volatile ("dcf @(%0,%1)\n\tici @(%2,%1)" :: "r" (tramp), "r" (i),
+  కొరకు (i = 0; i < FFI_TRAMPOLINE_కొలత; i++)
+    __asm__ అస్థిర ("dcf @(%0,%1)\n\tici @(%2,%1)" :: "r" (tramp), "r" (i),
 		      "r" (codeloc));
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }

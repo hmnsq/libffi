@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   లేదా IMPLIED, INCLUDING BUT కాదు LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE మరియు NONINFRINGEMENT.
+   లో NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES లేదా
+   OTHER LIABILITY, WHETHER లో AN ACTION OF CONTRACT, TORT లేదా OTHERWISE,
+   ARISING FROM, OUT OF లేదా లో CONNECTION WITH THE SOFTWARE లేదా THE USE లేదా
+   OTHER DEALINGS లో THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 	.set r0,0
@@ -162,7 +162,7 @@ LCFI..1:
 	/* now load up the pointer to the saved fpr registers */
 	addi r6, r1, 128
 
-	/* make the call */
+	/* make the పిలువు */
 	bl .ffi_closure_helper_DARWIN
 	nop
 
@@ -325,7 +325,7 @@ LCFI..1:
 	/* now load up the pointer to the saved fpr registers */
 	addi r6, r1, 72
 
-	/* make the call */
+	/* make the పిలువు */
 	bl .ffi_closure_helper_DARWIN
 	nop
 
@@ -413,7 +413,7 @@ L..60:
 LFE..0:
 #endif
 	.ef __LINE__
-/* END(ffi_closure_ASM) */
+/* ముగింపు(ffi_closure_ASM) */
 
 
 .csect .text[PR]
@@ -485,7 +485,7 @@ LCFI..3:
 	/* now load up the pointer to the saved fpr registers */
 	addi r6, r1, 128
 
-	/* make the call */
+	/* make the పిలువు */
 	bl .ffi_go_closure_helper_DARWIN
 	nop
 
@@ -555,7 +555,7 @@ LCFI..3:
 	/* now load up the pointer to the saved fpr registers */
 	addi r6, r1, 72
 
-	/* make the call */
+	/* make the పిలువు */
 	bl .ffi_go_closure_helper_DARWIN
 	nop
 
@@ -563,7 +563,7 @@ LCFI..3:
 LFE..1:
 #endif
 	.ef __LINE__
-/* END(ffi_go_closure_ASM) */
+/* ముగింపు(ffi_go_closure_ASM) */
 
 /* EH frame stuff.  */
 

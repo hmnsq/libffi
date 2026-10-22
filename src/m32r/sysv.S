@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   లేదా IMPLIED, INCLUDING BUT కాదు LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE మరియు NONINFRINGEMENT.
+   లో NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES లేదా
+   OTHER LIABILITY, WHETHER లో AN ACTION OF CONTRACT, TORT లేదా OTHERWISE,
+   ARISING FROM, OUT OF లేదా లో CONNECTION WITH THE SOFTWARE లేదా THE USE లేదా
+   OTHER DEALINGS లో THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -62,7 +62,7 @@ ENTRY(ffi_call_SYSV)
 	mv	r0, sp
 	/* R1 already set.  */
 
-	/* And call.  */
+	/* And పిలువు.  */
 	jl	lr
 
 	/* Move first 4 parameters in registers...  */
@@ -95,7 +95,7 @@ adjust_stack:
 	/* If the return value pointer is NULL, assume no return value.  */
 	beqz	r2, epilogue
 
-	/* Return INT.  */
+	/* Return పూర్ణాంకం.  */
 	ldi	r4, #FFI_TYPE_INT
 	bne	r3, r4, return_double
 	st	r0, @r2	

@@ -28,119 +28,119 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__arm__) || defined(_M_ARM)
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <tramp.h>
-#include "internal.h"
+#ఒకవేళ defined(__arm__) || defined(_M_ARM)
+#అన్తర్భావ <fficonfig.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
+#అన్తర్భావ <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <tramp.h>
+#అన్తర్భావ "internal.h"
 
-#if defined(_WIN32)
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#endif
+#ఒకవేళ defined(_WIN32)
+#నిర్వచించు WIN32_LEAN_AND_సగటు
+#అన్తర్భావ <windows.h>
+#అయితే_ముగింపు
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#ఒకవేళ FFI_EXEC_TRAMPOLINE_పట్టిక
 
-#ifdef __MACH__
-#include <mach/machine/vm_param.h>
-#endif
+#నిర్వచితమైతే __MACH__
+#అన్తర్భావ <mach/machine/vm_param.h>
+#అయితే_ముగింపు
 
-#else
-#ifndef _WIN32
-extern unsigned int ffi_arm_trampoline[2] FFI_HIDDEN;
-#else
+#లేకపోతే
+#నిర్వచితం_కాకపోతే _WIN32
+బాహ్య గుర్తులేని పూర్ణాంకం ffi_arm_trampoline[2] FFI_HIDDEN;
+#లేకపోతే
 // Declare this as an array of char, instead of array of int,
 // otherwise Clang optimizes out the "& 0xFFFFFFFE" for clearing
 // the thumb bit.
-extern unsigned char ffi_arm_trampoline[12] FFI_HIDDEN;
-#endif
-#endif
+బాహ్య గుర్తులేని అక్షరం ffi_arm_trampoline[12] FFI_HIDDEN;
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
-#if defined(__FreeBSD__) && defined(__arm__)
-#include <sys/types.h>
-#include <machine/sysarch.h>
-#endif
+#ఒకవేళ defined(__FreeBSD__) && defined(__arm__)
+#అన్తర్భావ <sys/types.h>
+#అన్తర్భావ <machine/sysarch.h>
+#అయితే_ముగింపు
 
-#if defined(__QNX__)
-#include <sys/mman.h>
-#endif
+#ఒకవేళ defined(__QNX__)
+#అన్తర్భావ <sys/mman.h>
+#అయితే_ముగింపు
 
 /* Forward declares. */
-static int vfp_type_p (const ffi_type *);
-static void layout_vfp_args (ffi_cif *);
+స్థిర పూర్ణాంకం vfp_type_p (స్థిరరాశి ffi_type *);
+స్థిర శూన్య layout_vfp_వాదనలు (ffi_cif *);
 
-static void *
-ffi_align (ffi_type *ty, void *p)
+స్థిర శూన్య *
+ffi_align (ffi_type *ty, శూన్య *p)
 {
   /* Align if necessary */
   size_t alignment;
-#ifdef _WIN32_WCE
+#నిర్వచితమైతే _WIN32_WCE
   alignment = 4;
-#else
+#లేకపోతే
   alignment = ty->alignment;
-  if (alignment < 4)
+  ఒకవేళ (alignment < 4)
     alignment = 4;
-#endif
-  return (void *) FFI_ALIGN (p, alignment);
+#అయితే_ముగింపు
+  తిరిగి (శూన్య *) FFI_ALIGN (p, alignment);
 }
 
-static size_t
-ffi_put_arg (ffi_type *ty, void *src, void *dst)
+స్థిర size_t
+ffi_put_arg (ffi_type *ty, శూన్య *src, శూన్య *dst)
 {
-  size_t z = ty->size;
+  size_t z = ty->కొలత;
 
-  switch (ty->type)
+  ఎంపిక (ty->type)
     {
-    case FFI_TYPE_SINT8:
+    స్థితి FFI_TYPE_SINT8:
       *(UINT32 *)dst = *(SINT8 *)src;
-      break;
-    case FFI_TYPE_UINT8:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT8:
       *(UINT32 *)dst = *(UINT8 *)src;
-      break;
-    case FFI_TYPE_SINT16:
+      ఆపు;
+    స్థితి FFI_TYPE_SINT16:
       *(UINT32 *)dst = *(SINT16 *)src;
-      break;
-    case FFI_TYPE_UINT16:
+      ఆపు;
+    స్థితి FFI_TYPE_UINT16:
       *(UINT32 *)dst = *(UINT16 *)src;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
-#ifndef _WIN32
-    case FFI_TYPE_FLOAT:
-#endif
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_SINT32:
+    స్థితి FFI_TYPE_UINT32:
+    స్థితి FFI_TYPE_సూచిక:
+#నిర్వచితం_కాకపోతే _WIN32
+    స్థితి FFI_TYPE_FLOAT:
+#అయితే_ముగింపు
       *(UINT32 *)dst = *(UINT32 *)src;
-      break;
+      ఆపు;
 
-#ifdef _WIN32
+#నిర్వచితమైతే _WIN32
     // casting a float* to a UINT32* doesn't work on Windows
-    case FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_FLOAT:
         *(uintptr_t *)dst = 0;
-        *(float *)dst = *(float *)src;
-        break;
-#endif
+        *(దశాంశం *)dst = *(దశాంశం *)src;
+        ఆపు;
+#అయితే_ముగింపు
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_DOUBLE:
       *(UINT64 *)dst = *(UINT64 *)src;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_COMPLEX:
-      memcpy (dst, src, z);
-      break;
+    స్థితి FFI_TYPE_STRUCT:
+    స్థితి FFI_TYPE_COMPLEX:
+      జ్ఞాపకం_నకలు (dst, src, z);
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       abort();
     }
 
-  return FFI_ALIGN (z, 4);
+  తిరిగి FFI_ALIGN (z, 4);
 }
 
 /* ffi_prep_args is called once stack space has been allocated
@@ -150,20 +150,20 @@ ffi_put_arg (ffi_type *ty, void *src, void *dst)
    value is cif->vfp_used (word bitset of VFP regs used for passing
    arguments). These are only used for the VFP hard-float ABI.
 */
-static void
-ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
-		    void **avalue, char *argp)
+స్థిర శూన్య
+ffi_prep_వాదనలు_SYSV (ffi_cif *cif, పూర్ణాంకం flags, శూన్య *rvalue,
+		    శూన్య **avalue, అక్షరం *argp)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n;
+  పూర్ణాంకం i, n;
 
-  if (flags == ARM_TYPE_STRUCT)
+  ఒకవేళ (flags == ARM_TYPE_STRUCT)
     {
-      *(void **) argp = rvalue;
+      *(శూన్య **) argp = rvalue;
       argp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  కొరకు (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
       argp = ffi_align (ty, argp);
@@ -171,548 +171,548 @@ ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
     }
 }
 
-static void
-ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
-                   void **avalue, char *stack, char *vfp_space)
+స్థిర శూన్య
+ffi_prep_వాదనలు_VFP (ffi_cif *cif, పూర్ణాంకం flags, శూన్య *rvalue,
+                   శూన్య **avalue, అక్షరం *దొంతర, అక్షరం *vfp_space)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n, vi = 0;
-  char *argp, *regp, *eo_regp;
-  char stack_used = 0;
-  char done_with_regs = 0;
+  పూర్ణాంకం i, n, vi = 0;
+  అక్షరం *argp, *regp, *eo_regp;
+  అక్షరం దొంతర_వాడిన = 0;
+  అక్షరం పూర్తి_with_regs = 0;
 
   /* The first 4 words on the stack are used for values
      passed in core registers.  */
-  regp = stack;
+  regp = దొంతర;
   eo_regp = argp = regp + 16;
 
   /* If the function returns an FFI_TYPE_STRUCT in memory,
      that address is passed in r0 to the function.  */
-  if (flags == ARM_TYPE_STRUCT)
+  ఒకవేళ (flags == ARM_TYPE_STRUCT)
     {
-      *(void **) regp = rvalue;
+      *(శూన్య **) regp = rvalue;
       regp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  కొరకు (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *a = avalue[i];
-      int is_vfp_type = vfp_type_p (ty);
+      శూన్య *a = avalue[i];
+      పూర్ణాంకం is_vfp_type = vfp_type_p (ty);
 
       /* Allocated in VFP registers. */
-      if (vi < cif->vfp_nargs && is_vfp_type)
+      ఒకవేళ (vi < cif->vfp_nargs && is_vfp_type)
 	{
-	  char *vfp_slot = vfp_space + cif->vfp_args[vi++] * 4;
-	  ffi_put_arg (ty, a, vfp_slot);
-	  continue;
+	  అక్షరం *vfp_స్థానం = vfp_space + cif->vfp_వాదనలు[vi++] * 4;
+	  ffi_put_arg (ty, a, vfp_స్థానం);
+	  కొనసాగు;
 	}
       /* Try allocating in core registers. */
-      else if (!done_with_regs && !is_vfp_type)
+      లేకపోతే ఒకవేళ (!పూర్తి_with_regs && !is_vfp_type)
 	{
-	  char *tregp = ffi_align (ty, regp);
-	  size_t size = ty->size;
-	  size = (size < 4) ? 4 : size;	// pad
+	  అక్షరం *tregp = ffi_align (ty, regp);
+	  size_t కొలత = ty->కొలత;
+	  కొలత = (కొలత < 4) ? 4 : కొలత;	// pad
 	  /* Check if there is space left in the aligned register
 	     area to place the argument.  */
-	  if (tregp + size <= eo_regp)
+	  ఒకవేళ (tregp + కొలత <= eo_regp)
 	    {
 	      regp = tregp + ffi_put_arg (ty, a, tregp);
-	      done_with_regs = (regp == argp);
+	      పూర్తి_with_regs = (regp == argp);
 	      // ensure we did not write into the stack area
 	      FFI_ASSERT (regp <= argp);
-	      continue;
+	      కొనసాగు;
 	    }
 	  /* In case there are no arguments in the stack area yet,
 	     the argument is passed in the remaining core registers
 	     and on the stack.  */
-	  else if (!stack_used)
+	  లేకపోతే ఒకవేళ (!దొంతర_వాడిన)
 	    {
-	      stack_used = 1;
-	      done_with_regs = 1;
+	      దొంతర_వాడిన = 1;
+	      పూర్తి_with_regs = 1;
 	      argp = tregp + ffi_put_arg (ty, a, tregp);
 	      FFI_ASSERT (eo_regp < argp);
-	      continue;
+	      కొనసాగు;
 	    }
 	}
       /* Base case, arguments are passed on the stack */
-      stack_used = 1;
+      దొంతర_వాడిన = 1;
       argp = ffi_align (ty, argp);
       argp += ffi_put_arg (ty, a, argp);
     }
 }
 
 /* Perform machine dependent cif processing */
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
-  int flags = 0, cabi = cif->abi;
-  size_t bytes = cif->bytes;
+  పూర్ణాంకం flags = 0, cabi = cif->abi;
+  size_t బైట్లు = cif->బైట్లు;
 
   /* Map out the register placements of VFP register args.  The VFP
      hard-float calling conventions are slightly more sophisticated
      than the base calling conventions, so we do it here instead of
      in ffi_prep_args(). */
-  if (cabi == FFI_VFP)
-    layout_vfp_args (cif);
+  ఒకవేళ (cabi == FFI_VFP)
+    layout_vfp_వాదనలు (cif);
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ఎంపిక (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    స్థితి FFI_TYPE_VOID:
       flags = ARM_TYPE_VOID;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_POINTER:
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_UINT8:
+    స్థితి FFI_TYPE_SINT8:
+    స్థితి FFI_TYPE_UINT16:
+    స్థితి FFI_TYPE_SINT16:
+    స్థితి FFI_TYPE_UINT32:
+    స్థితి FFI_TYPE_SINT32:
+    స్థితి FFI_TYPE_సూచిక:
       flags = ARM_TYPE_INT;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
       flags = ARM_TYPE_INT64;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_FLOAT:
       flags = (cabi == FFI_VFP ? ARM_TYPE_VFP_S : ARM_TYPE_INT);
-      break;
-    case FFI_TYPE_DOUBLE:
+      ఆపు;
+    స్థితి FFI_TYPE_DOUBLE:
       flags = (cabi == FFI_VFP ? ARM_TYPE_VFP_D : ARM_TYPE_INT64);
-      break;
+      ఆపు;
 
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_COMPLEX:
-      if (cabi == FFI_VFP)
+    స్థితి FFI_TYPE_STRUCT:
+    స్థితి FFI_TYPE_COMPLEX:
+      ఒకవేళ (cabi == FFI_VFP)
 	{
-	  int h = vfp_type_p (cif->rtype);
+	  పూర్ణాంకం h = vfp_type_p (cif->rtype);
 
 	  flags = ARM_TYPE_VFP_N;
-	  if (h == 0x100 + FFI_TYPE_FLOAT)
+	  ఒకవేళ (h == 0x100 + FFI_TYPE_FLOAT)
 	    flags = ARM_TYPE_VFP_S;
-	  if (h == 0x100 + FFI_TYPE_DOUBLE)
+	  ఒకవేళ (h == 0x100 + FFI_TYPE_DOUBLE)
 	    flags = ARM_TYPE_VFP_D;
-	  if (h != 0)
-	      break;
+	  ఒకవేళ (h != 0)
+	      ఆపు;
 	}
 
       /* A Composite Type not larger than 4 bytes is returned in r0.
 	 A Composite Type larger than 4 bytes, or whose size cannot
 	 be determined statically ... is stored in memory at an
 	 address passed [in r0].  */
-      if (cif->rtype->size <= 4)
+      ఒకవేళ (cif->rtype->కొలత <= 4)
 	flags = ARM_TYPE_INT;
-      else
+      లేకపోతే
 	{
 	  flags = ARM_TYPE_STRUCT;
-	  bytes += 4;
+	  బైట్లు += 4;
 	}
-      break;
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       abort();
     }
 
   /* Round the stack up to a multiple of 8 bytes.  This isn't needed
      everywhere, but it is on some platforms, and it doesn't harm anything
      when it isn't needed.  */
-  bytes = FFI_ALIGN (bytes, 8);
+  బైట్లు = FFI_ALIGN (బైట్లు, 8);
 
   /* Minimum stack space is the 4 register arguments that we pop.  */
-  if (bytes < 4*4)
-    bytes = 4*4;
+  ఒకవేళ (బైట్లు < 4*4)
+    బైట్లు = 4*4;
 
-  cif->bytes = bytes;
+  cif->బైట్లు = బైట్లు;
   cif->flags = flags;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
 /* Perform machine dependent cif processing for variadic calls */
-ffi_status FFI_HIDDEN
+ffi_స్థితి FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif * cif,
-			  unsigned int nfixedargs, unsigned int ntotalargs)
+			  గుర్తులేని పూర్ణాంకం nfixedargs, గుర్తులేని పూర్ణాంకం ntotalargs)
 {
   /* VFP variadic calls actually use the SYSV ABI */
-  if (cif->abi == FFI_VFP)
+  ఒకవేళ (cif->abi == FFI_VFP)
     cif->abi = FFI_SYSV;
 
-  return ffi_prep_cif_machdep (cif);
+  తిరిగి ffi_prep_cif_machdep (cif);
 }
 
 /* Prototypes for assembly functions, in sysv.S.  */
 
-struct call_frame
+నిర్మాణం call_చట్రం
 {
-  void *fp;
-  void *lr;
-  void *rvalue;
-  int flags;
-  void *closure;
+  శూన్య *fp;
+  శూన్య *lr;
+  శూన్య *rvalue;
+  పూర్ణాంకం flags;
+  శూన్య *సంవృతం;
 };
 
-extern void ffi_call_SYSV (void *stack, struct call_frame *,
-			   void (*fn) (void)) FFI_HIDDEN;
-extern void ffi_call_VFP (void *vfp_space, struct call_frame *,
-			   void (*fn) (void), unsigned vfp_used) FFI_HIDDEN;
+బాహ్య శూన్య ffi_call_SYSV (శూన్య *దొంతర, నిర్మాణం call_చట్రం *,
+			   శూన్య (*fn) (శూన్య)) FFI_HIDDEN;
+బాహ్య శూన్య ffi_call_VFP (శూన్య *vfp_space, నిర్మాణం call_చట్రం *,
+			   శూన్య (*fn) (శూన్య), గుర్తులేని vfp_వాడిన) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
-	      void **avalue, void *closure)
+స్థిర శూన్య
+ffi_call_int (ffi_cif * cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue,
+	      శూన్య **avalue, శూన్య *సంవృతం)
 {
-  int flags = cif->flags;
+  పూర్ణాంకం flags = cif->flags;
   ffi_type *rtype = cif->rtype;
-  size_t bytes, rsize, vfp_size;
-  char *stack, *vfp_space, *new_rvalue;
-  struct call_frame *frame;
+  size_t బైట్లు, rsize, vfp_కొలత;
+  అక్షరం *దొంతర, *vfp_space, *new_rvalue;
+  నిర్మాణం call_చట్రం *చట్రం;
 
   rsize = 0;
-  if (rvalue == NULL)
+  ఒకవేళ (rvalue == ఖాళీ)
     {
       /* If the return value is a struct and we don't have a return
 	 value address then we need to make one.  Otherwise the return
 	 value is in registers and we can ignore them.  */
-      if (flags == ARM_TYPE_STRUCT)
-	rsize = rtype->size;
-      else
+      ఒకవేళ (flags == ARM_TYPE_STRUCT)
+	rsize = rtype->కొలత;
+      లేకపోతే
 	flags = ARM_TYPE_VOID;
     }
-  else if (flags == ARM_TYPE_VFP_N)
+  లేకపోతే ఒకవేళ (flags == ARM_TYPE_VFP_N)
     {
       /* Largest case is double x 4. */
       rsize = 32;
     }
-  else if (flags == ARM_TYPE_INT && rtype->type == FFI_TYPE_STRUCT)
+  లేకపోతే ఒకవేళ (flags == ARM_TYPE_INT && rtype->type == FFI_TYPE_STRUCT)
     rsize = 4;
 
   /* Largest case.  */
-  vfp_size = (cif->abi == FFI_VFP && cif->vfp_used ? 8*8: 0);
+  vfp_కొలత = (cif->abi == FFI_VFP && cif->vfp_వాడిన ? 8*8: 0);
 
-  bytes = cif->bytes;
-  stack = alloca (vfp_size + bytes + sizeof(struct call_frame) + rsize);
+  బైట్లు = cif->బైట్లు;
+  దొంతర = alloca (vfp_కొలత + బైట్లు + పరిమాణం(నిర్మాణం call_చట్రం) + rsize);
 
-  vfp_space = NULL;
-  if (vfp_size)
+  vfp_space = ఖాళీ;
+  ఒకవేళ (vfp_కొలత)
     {
-      vfp_space = stack;
-      stack += vfp_size;
+      vfp_space = దొంతర;
+      దొంతర += vfp_కొలత;
     }
 
-  frame = (struct call_frame *)(stack + bytes);
+  చట్రం = (నిర్మాణం call_చట్రం *)(దొంతర + బైట్లు);
 
   new_rvalue = rvalue;
-  if (rsize)
-    new_rvalue = (void *)(frame + 1);
+  ఒకవేళ (rsize)
+    new_rvalue = (శూన్య *)(చట్రం + 1);
 
-  frame->rvalue = new_rvalue;
-  frame->flags = flags;
-  frame->closure = closure;
+  చట్రం->rvalue = new_rvalue;
+  చట్రం->flags = flags;
+  చట్రం->సంవృతం = సంవృతం;
 
-  if (vfp_space)
+  ఒకవేళ (vfp_space)
     {
-      ffi_prep_args_VFP (cif, flags, new_rvalue, avalue, stack, vfp_space);
-      ffi_call_VFP (vfp_space, frame, fn, cif->vfp_used);
+      ffi_prep_వాదనలు_VFP (cif, flags, new_rvalue, avalue, దొంతర, vfp_space);
+      ffi_call_VFP (vfp_space, చట్రం, fn, cif->vfp_వాడిన);
     }
-  else
+  లేకపోతే
     {
-      ffi_prep_args_SYSV (cif, flags, new_rvalue, avalue, stack);
-      ffi_call_SYSV (stack, frame, fn);
+      ffi_prep_వాదనలు_SYSV (cif, flags, new_rvalue, avalue, దొంతర);
+      ffi_call_SYSV (దొంతర, చట్రం, fn);
     }
 
-  if (rvalue && rvalue != new_rvalue)
-    memcpy (rvalue, new_rvalue, rtype->size);
+  ఒకవేళ (rvalue && rvalue != new_rvalue)
+    జ్ఞాపకం_నకలు (rvalue, new_rvalue, rtype->కొలత);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ఖాళీ);
 }
 
-#ifdef FFI_GO_CLOSURES
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+#నిర్వచితమైతే FFI_GO_CLOSURES
+శూన్య
+ffi_call_go (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue,
+	     శూన్య **avalue, శూన్య *సంవృతం)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, closure);
+  ffi_call_int (cif, fn, rvalue, avalue, సంవృతం);
 }
-#endif
+#అయితే_ముగింపు
 
-static void *
-ffi_prep_incoming_args_SYSV (ffi_cif *cif, void *rvalue,
-			     char *argp, void **avalue)
+స్థిర శూన్య *
+ffi_prep_incoming_వాదనలు_SYSV (ffi_cif *cif, శూన్య *rvalue,
+			     అక్షరం *argp, శూన్య **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n;
+  పూర్ణాంకం i, n;
 
-  if (cif->flags == ARM_TYPE_STRUCT)
+  ఒకవేళ (cif->flags == ARM_TYPE_STRUCT)
     {
-      rvalue = *(void **) argp;
+      rvalue = *(శూన్య **) argp;
       argp += 4;
     }
-  else
+  లేకపోతే
     {
-      if (cif->rtype->size && cif->rtype->size < 4)
+      ఒకవేళ (cif->rtype->కొలత && cif->rtype->కొలత < 4)
         *(uint32_t *) rvalue = 0;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  కొరకు (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      size_t z = ty->size;
+      size_t z = ty->కొలత;
 
       argp = ffi_align (ty, argp);
-#ifdef __ARMEB__
-      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
-	avalue[i] = (void *) (argp + 4 - z);
-      else
-#endif
-      avalue[i] = (void *) argp;
+#నిర్వచితమైతే __ARMEB__
+      ఒకవేళ (z < 4 && ty->type != FFI_TYPE_STRUCT)
+	avalue[i] = (శూన్య *) (argp + 4 - z);
+      లేకపోతే
+#అయితే_ముగింపు
+      avalue[i] = (శూన్య *) argp;
       argp += z;
     }
 
-  return rvalue;
+  తిరిగి rvalue;
 }
 
-static void *
-ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
-			    char *vfp_space, void **avalue)
+స్థిర శూన్య *
+ffi_prep_incoming_వాదనలు_VFP (ffi_cif *cif, శూన్య *rvalue, అక్షరం *దొంతర,
+			    అక్షరం *vfp_space, శూన్య **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
-  int i, n, vi = 0;
-  char *argp, *regp, *eo_regp;
-  char done_with_regs = 0;
-  char stack_used = 0;
+  పూర్ణాంకం i, n, vi = 0;
+  అక్షరం *argp, *regp, *eo_regp;
+  అక్షరం పూర్తి_with_regs = 0;
+  అక్షరం దొంతర_వాడిన = 0;
 
-  regp = stack;
+  regp = దొంతర;
   eo_regp = argp = regp + 16;
 
-  if (cif->flags == ARM_TYPE_STRUCT)
+  ఒకవేళ (cif->flags == ARM_TYPE_STRUCT)
     {
-      rvalue = *(void **) regp;
+      rvalue = *(శూన్య **) regp;
       regp += 4;
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
+  కొరకు (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = arg_types[i];
-      int is_vfp_type = vfp_type_p (ty);
-      size_t z = ty->size;
+      పూర్ణాంకం is_vfp_type = vfp_type_p (ty);
+      size_t z = ty->కొలత;
 
-      if (vi < cif->vfp_nargs && is_vfp_type)
+      ఒకవేళ (vi < cif->vfp_nargs && is_vfp_type)
 	{
-	  avalue[i] = vfp_space + cif->vfp_args[vi++] * 4;
-	  continue;
+	  avalue[i] = vfp_space + cif->vfp_వాదనలు[vi++] * 4;
+	  కొనసాగు;
 	}
-      else if (!done_with_regs && !is_vfp_type)
+      లేకపోతే ఒకవేళ (!పూర్తి_with_regs && !is_vfp_type)
 	{
-	  char *tregp = ffi_align (ty, regp);
+	  అక్షరం *tregp = ffi_align (ty, regp);
 
 	  z = (z < 4) ? 4 : z;	// pad
 
 	  /* If the arguments either fits into the registers or uses registers
 	     and stack, while we haven't read other things from the stack */
-	  if (tregp + z <= eo_regp || !stack_used)
+	  ఒకవేళ (tregp + z <= eo_regp || !దొంతర_వాడిన)
 	    {
 	      /* Because we're little endian, this is what it turns into.  */
-#ifdef __ARMEB__
-	      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
-		avalue[i] = (void *) (tregp + 4 - z);
-	      else
-#endif
-	      avalue[i] = (void *) tregp;
+#నిర్వచితమైతే __ARMEB__
+	      ఒకవేళ (z < 4 && ty->type != FFI_TYPE_STRUCT)
+		avalue[i] = (శూన్య *) (tregp + 4 - z);
+	      లేకపోతే
+#అయితే_ముగింపు
+	      avalue[i] = (శూన్య *) tregp;
 	      regp = tregp + z;
 
 	      /* If we read past the last core register, make sure we
 		 have not read from the stack before and continue
 		 reading after regp.  */
-	      if (regp > eo_regp)
+	      ఒకవేళ (regp > eo_regp)
 		{
-		  FFI_ASSERT (!stack_used);
+		  FFI_ASSERT (!దొంతర_వాడిన);
 		  argp = regp;
 		}
-	      if (regp >= eo_regp)
+	      ఒకవేళ (regp >= eo_regp)
 		{
-		  done_with_regs = 1;
-		  stack_used = 1;
+		  పూర్తి_with_regs = 1;
+		  దొంతర_వాడిన = 1;
 		}
-	      continue;
+	      కొనసాగు;
 	    }
 	}
 
-      stack_used = 1;
+      దొంతర_వాడిన = 1;
       argp = ffi_align (ty, argp);
-#ifdef __ARMEB__
-      if (z < 4 && ty->type != FFI_TYPE_STRUCT)
-	avalue[i] = (void *) (argp + 4 - z);
-      else
-#endif
-      avalue[i] = (void *) argp;
+#నిర్వచితమైతే __ARMEB__
+      ఒకవేళ (z < 4 && ty->type != FFI_TYPE_STRUCT)
+	avalue[i] = (శూన్య *) (argp + 4 - z);
+      లేకపోతే
+#అయితే_ముగింపు
+      avalue[i] = (శూన్య *) argp;
       argp += z;
     }
 
-  return rvalue;
+  తిరిగి rvalue;
 }
 
-#if FFI_CLOSURES
+#ఒకవేళ FFI_CLOSURES
 
-struct closure_frame
+నిర్మాణం సంవృతం_చట్రం
 {
-  char vfp_space[8*8] __attribute__((aligned(8)));
-  char result[8*4];
-  char argp[];
+  అక్షరం vfp_space[8*8] __attribute__((aligned(8)));
+  అక్షరం ఫలితం[8*4];
+  అక్షరం argp[];
 };
 
-int FFI_HIDDEN
-ffi_closure_inner_SYSV (ffi_cif *cif,
-		        void (*fun) (ffi_cif *, void *, void **, void *),
-		        void *user_data,
-		        struct closure_frame *frame)
+పూర్ణాంకం FFI_HIDDEN
+ffi_సంవృతం_inner_SYSV (ffi_cif *cif,
+		        శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+		        శూన్య *user_దత్తాంశం,
+		        నిర్మాణం సంవృతం_చట్రం *చట్రం)
 {
-  void **avalue = (void **) alloca (cif->nargs * sizeof (void *));
-  void *rvalue = ffi_prep_incoming_args_SYSV (cif, frame->result,
-					      frame->argp, avalue);
-  fun (cif, rvalue, avalue, user_data);
-  return cif->flags;
+  శూన్య **avalue = (శూన్య **) alloca (cif->nargs * పరిమాణం (శూన్య *));
+  శూన్య *rvalue = ffi_prep_incoming_వాదనలు_SYSV (cif, చట్రం->ఫలితం,
+					      చట్రం->argp, avalue);
+  fun (cif, rvalue, avalue, user_దత్తాంశం);
+  తిరిగి cif->flags;
 }
 
-int FFI_HIDDEN
-ffi_closure_inner_VFP (ffi_cif *cif,
-		       void (*fun) (ffi_cif *, void *, void **, void *),
-		       void *user_data,
-		       struct closure_frame *frame)
+పూర్ణాంకం FFI_HIDDEN
+ffi_సంవృతం_inner_VFP (ffi_cif *cif,
+		       శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+		       శూన్య *user_దత్తాంశం,
+		       నిర్మాణం సంవృతం_చట్రం *చట్రం)
 {
-  void **avalue = (void **) alloca (cif->nargs * sizeof (void *));
-  void *rvalue = ffi_prep_incoming_args_VFP (cif, frame->result, frame->argp,
-					     frame->vfp_space, avalue);
-  fun (cif, rvalue, avalue, user_data);
-  return cif->flags;
+  శూన్య **avalue = (శూన్య **) alloca (cif->nargs * పరిమాణం (శూన్య *));
+  శూన్య *rvalue = ffi_prep_incoming_వాదనలు_VFP (cif, చట్రం->ఫలితం, చట్రం->argp,
+					     చట్రం->vfp_space, avalue);
+  fun (cif, rvalue, avalue, user_దత్తాంశం);
+  తిరిగి cif->flags;
 }
 
-void ffi_closure_SYSV (void) FFI_HIDDEN;
-void ffi_closure_VFP (void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void ffi_closure_SYSV_alt (void) FFI_HIDDEN;
-void ffi_closure_VFP_alt (void) FFI_HIDDEN;
-#endif
+శూన్య ffi_సంవృతం_SYSV (శూన్య) FFI_HIDDEN;
+శూన్య ffi_సంవృతం_VFP (శూన్య) FFI_HIDDEN;
+#ఒకవేళ defined(FFI_EXEC_STATIC_TRAMP)
+శూన్య ffi_సంవృతం_SYSV_alt (శూన్య) FFI_HIDDEN;
+శూన్య ffi_సంవృతం_VFP_alt (శూన్య) FFI_HIDDEN;
+#అయితే_ముగింపు
 
-#ifdef FFI_GO_CLOSURES
-void ffi_go_closure_SYSV (void) FFI_HIDDEN;
-void ffi_go_closure_VFP (void) FFI_HIDDEN;
-#endif
+#నిర్వచితమైతే FFI_GO_CLOSURES
+శూన్య ffi_go_సంవృతం_SYSV (శూన్య) FFI_HIDDEN;
+శూన్య ffi_go_సంవృతం_VFP (శూన్య) FFI_HIDDEN;
+#అయితే_ముగింపు
 
 /* the cif must already be prep'ed */
 
-#if defined(__FreeBSD__) && defined(__arm__)
-#define __clear_cache(start, end) do { \
-		struct arm_sync_icache_args ua; 		\
+#ఒకవేళ defined(__FreeBSD__) && defined(__arm__)
+#నిర్వచించు __clear_cache(ప్రారంభం, చివర) చేయి { \
+		నిర్మాణం arm_sync_icache_వాదనలు ua; 		\
 								\
-		ua.addr = (uintptr_t)(start);			\
-		ua.len = (char *)(end) - (char *)start;		\
+		ua.addr = (uintptr_t)(ప్రారంభం);			\
+		ua.len = (అక్షరం *)(చివర) - (అక్షరం *)ప్రారంభం;		\
 		sysarch(ARM_SYNC_ICACHE, &ua);			\
-	} while (0);
-#endif
+	} అయితే (0);
+#అయితే_ముగింపు
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure * closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం * సంవృతం,
 		      ffi_cif * cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+		      శూన్య *user_దత్తాంశం, శూన్య *codeloc)
 {
-  void (*closure_func) (void) = ffi_closure_SYSV;
+  శూన్య (*సంవృతం_func) (శూన్య) = ffi_సంవృతం_SYSV;
 
-  if (cif->abi == FFI_VFP)
+  ఒకవేళ (cif->abi == FFI_VFP)
     {
       /* We only need take the vfp path if there are vfp arguments.  */
-      if (cif->vfp_used)
-	closure_func = ffi_closure_VFP;
+      ఒకవేళ (cif->vfp_వాడిన)
+	సంవృతం_func = ffi_సంవృతం_VFP;
     }
-  else if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  లేకపోతే ఒకవేళ (cif->abi != FFI_SYSV)
+    తిరిగి FFI_BAD_ABI;
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
-  void **config = (void **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
-  config[0] = closure;
-  config[1] = closure_func;
-#else
+#ఒకవేళ FFI_EXEC_TRAMPOLINE_పట్టిక
+  శూన్య **config = (శూన్య **)((uint8_t *)codeloc - పుట_MAX_కొలత);
+  config[0] = సంవృతం;
+  config[1] = సంవృతం_func;
+#లేకపోతే
 
-# if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+# ఒకవేళ defined(FFI_EXEC_STATIC_TRAMP)
+  ఒకవేళ (ffi_tramp_is_present(సంవృతం))
     {
       /* Initialize the static trampoline's parameters. */
-      if (closure_func == ffi_closure_SYSV)
-        closure_func = ffi_closure_SYSV_alt;
-      else
-        closure_func = ffi_closure_VFP_alt;
-      ffi_tramp_set_parms (closure->ftramp, closure_func, closure);
-      goto out;
+      ఒకవేళ (సంవృతం_func == ffi_సంవృతం_SYSV)
+        సంవృతం_func = ffi_సంవృతం_SYSV_alt;
+      లేకపోతే
+        సంవృతం_func = ffi_సంవృతం_VFP_alt;
+      ffi_tramp_సమితి_parms (సంవృతం->ftramp, సంవృతం_func, సంవృతం);
+      వెళ్ళు బహిర్గతం;
     }
 # endif
 
   /* Initialize the dynamic trampoline. */
 # ifndef _WIN32
-  memcpy(closure->tramp, ffi_arm_trampoline, 8);
-# else
+  జ్ఞాపకం_నకలు(సంవృతం->tramp, ffi_arm_trampoline, 8);
+# లేకపోతే
   // cast away function type so MSVC doesn't set the lower bit of the function pointer
-  memcpy(closure->tramp, (void*)((uintptr_t)ffi_arm_trampoline & 0xFFFFFFFE), FFI_TRAMPOLINE_CLOSURE_OFFSET);
+  జ్ఞాపకం_నకలు(సంవృతం->tramp, (శూన్య*)((uintptr_t)ffi_arm_trampoline & 0xFFFFFFFE), FFI_TRAMPOLINE_సంవృతం_స్థానభ్రంశం);
 # endif
 
-# if defined(__QNX__)
-  msync (closure->tramp, 8, MS_INVALIDATE_ICACHE);	/* clear data map */
+# ఒకవేళ defined(__QNX__)
+  msync (సంవృతం->tramp, 8, MS_INVALIDATE_ICACHE);	/* clear data map */
   msync (codeloc, 8, MS_INVALIDATE_ICACHE);		/* clear insn map */
 # elif defined(_WIN32)
-  FlushInstructionCache(GetCurrentProcess(), closure->tramp, FFI_TRAMPOLINE_SIZE);
-# else
-  __clear_cache(closure->tramp, closure->tramp + 8);	/* clear data map */
+  FlushInstructionCache(GetCurrentProcess(), సంవృతం->tramp, FFI_TRAMPOLINE_కొలత);
+# లేకపోతే
+  __clear_cache(సంవృతం->tramp, సంవృతం->tramp + 8);	/* clear data map */
   __clear_cache(codeloc, codeloc + 8);			/* clear insn map */
 # endif
 # ifdef _WIN32
-  *(void(**)(void))(closure->tramp + FFI_TRAMPOLINE_CLOSURE_FUNCTION) = closure_func;
-# else
-  *(void (**)(void))(closure->tramp + 8) = closure_func;
+  *(శూన్య(**)(శూన్య))(సంవృతం->tramp + FFI_TRAMPOLINE_సంవృతం_FUNCTION) = సంవృతం_func;
+# లేకపోతే
+  *(శూన్య (**)(శూన్య))(సంవృతం->tramp + 8) = సంవృతం_func;
 # endif
-# if defined(FFI_EXEC_STATIC_TRAMP)
-out:
+# ఒకవేళ defined(FFI_EXEC_STATIC_TRAMP)
+బహిర్గతం:
 # endif
-#endif
+#అయితే_ముగింపు
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-#ifdef FFI_GO_CLOSURES
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+#నిర్వచితమైతే FFI_GO_CLOSURES
+ffi_స్థితి
+ffi_prep_go_సంవృతం (ffi_go_సంవృతం *సంవృతం, ffi_cif *cif,
+		     శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *))
 {
-  void (*closure_func) (void) = ffi_go_closure_SYSV;
+  శూన్య (*సంవృతం_func) (శూన్య) = ffi_go_సంవృతం_SYSV;
 
-  if (cif->abi == FFI_VFP)
+  ఒకవేళ (cif->abi == FFI_VFP)
     {
       /* We only need take the vfp path if there are vfp arguments.  */
-      if (cif->vfp_used)
-	closure_func = ffi_go_closure_VFP;
+      ఒకవేళ (cif->vfp_వాడిన)
+	సంవృతం_func = ffi_go_సంవృతం_VFP;
     }
-  else if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  లేకపోతే ఒకవేళ (cif->abi != FFI_SYSV)
+    తిరిగి FFI_BAD_ABI;
 
-  closure->tramp = closure_func;
-  closure->cif = cif;
-  closure->fun = fun;
+  సంవృతం->tramp = సంవృతం_func;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
-#endif
+#అయితే_ముగింపు
 
-#endif /* FFI_CLOSURES */
+#అయితే_ముగింపు /* FFI_CLOSURES */
 
 /* Below are routines for VFP hard-float support. */
 
@@ -720,51 +720,51 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
    of the first non-structure element.  Recurse for structure elements.
    Return -1 if the structure is in fact empty, i.e. no nested elements.  */
 
-static int
-is_hfa0 (const ffi_type *ty)
+స్థిర పూర్ణాంకం
+is_hfa0 (స్థిరరాశి ffi_type *ty)
 {
   ffi_type **elements = ty->elements;
-  int i, ret = -1;
+  పూర్ణాంకం i, ret = -1;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  ఒకవేళ (elements != ఖాళీ)
+    కొరకు (i = 0; elements[i]; ++i)
       {
         ret = elements[i]->type;
-        if (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_COMPLEX)
+        ఒకవేళ (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_COMPLEX)
           {
             ret = is_hfa0 (elements[i]);
-            if (ret < 0)
-              continue;
+            ఒకవేళ (ret < 0)
+              కొనసాగు;
           }
-        break;
+        ఆపు;
       }
 
-  return ret;
+  తిరిగి ret;
 }
 
 /* A subroutine of vfp_type_p.  Given a structure type, return true if all
    of the non-structure elements are the same as CANDIDATE.  */
 
-static int
-is_hfa1 (const ffi_type *ty, int candidate)
+స్థిర పూర్ణాంకం
+is_hfa1 (స్థిరరాశి ffi_type *ty, పూర్ణాంకం candidate)
 {
   ffi_type **elements = ty->elements;
-  int i;
+  పూర్ణాంకం i;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  ఒకవేళ (elements != ఖాళీ)
+    కొరకు (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+        పూర్ణాంకం t = elements[i]->type;
+        ఒకవేళ (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
           {
-            if (!is_hfa1 (elements[i], candidate))
-              return 0;
+            ఒకవేళ (!is_hfa1 (elements[i], candidate))
+              తిరిగి 0;
           }
-        else if (t != candidate)
-          return 0;
+        లేకపోతే ఒకవేళ (t != candidate)
+          తిరిగి 0;
       }
 
-  return 1;
+  తిరిగి 1;
 }
 
 /* Determine if TY is an homogenous floating point aggregate (HFA).
@@ -774,163 +774,163 @@ is_hfa1 (const ffi_type *ty, int candidate)
    Returns non-zero iff TY is an HFA.  The result is an encoded value where
    bits 0-7 contain the type code, and bits 8-10 contain the element count.  */
 
-static int
-vfp_type_p (const ffi_type *ty)
+స్థిర పూర్ణాంకం
+vfp_type_p (స్థిరరాశి ffi_type *ty)
 {
   ffi_type **elements;
-  int candidate, i;
-  size_t size, ele_count;
+  పూర్ణాంకం candidate, i;
+  size_t కొలత, ele_లెక్క;
 
   /* Quickest tests first.  */
   candidate = ty->type;
-  switch (ty->type)
+  ఎంపిక (ty->type)
     {
-    default:
-      return 0;
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-      ele_count = 1;
-      goto done;
-    case FFI_TYPE_COMPLEX:
+    అప్రమేయ:
+      తిరిగి 0;
+    స్థితి FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_DOUBLE:
+      ele_లెక్క = 1;
+      వెళ్ళు పూర్తి;
+    స్థితి FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
-      if (candidate != FFI_TYPE_FLOAT && candidate != FFI_TYPE_DOUBLE)
-	return 0;
-      ele_count = 2;
-      goto done;
-    case FFI_TYPE_STRUCT:
-      break;
+      ఒకవేళ (candidate != FFI_TYPE_FLOAT && candidate != FFI_TYPE_DOUBLE)
+	తిరిగి 0;
+      ele_లెక్క = 2;
+      వెళ్ళు పూర్తి;
+    స్థితి FFI_TYPE_STRUCT:
+      ఆపు;
     }
 
   /* No HFA types are smaller than 4 bytes, or larger than 32 bytes.  */
-  size = ty->size;
-  if (size < 4 || size > 32)
-    return 0;
+  కొలత = ty->కొలత;
+  ఒకవేళ (కొలత < 4 || కొలత > 32)
+    తిరిగి 0;
 
   /* Find the type of the first non-structure member.  */
   elements = ty->elements;
   candidate = elements[0]->type;
-  if (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_COMPLEX)
+  ఒకవేళ (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_COMPLEX)
     {
-      for (i = 0; ; ++i)
+      కొరకు (i = 0; ; ++i)
         {
           candidate = is_hfa0 (elements[i]);
-          if (candidate >= 0)
-            break;
+          ఒకవేళ (candidate >= 0)
+            ఆపు;
         }
     }
 
   /* If the first member is not a floating point type, it's not an HFA.
      Also quickly re-check the size of the structure.  */
-  switch (candidate)
+  ఎంపిక (candidate)
     {
-    case FFI_TYPE_FLOAT:
-      ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
-        return 0;
-      break;
-    case FFI_TYPE_DOUBLE:
-      ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
-        return 0;
-      break;
-    default:
-      return 0;
+    స్థితి FFI_TYPE_FLOAT:
+      ele_లెక్క = కొలత / పరిమాణం(దశాంశం);
+      ఒకవేళ (కొలత != ele_లెక్క * పరిమాణం(దశాంశం))
+        తిరిగి 0;
+      ఆపు;
+    స్థితి FFI_TYPE_DOUBLE:
+      ele_లెక్క = కొలత / పరిమాణం(ద్విగుణ);
+      ఒకవేళ (కొలత != ele_లెక్క * పరిమాణం(ద్విగుణ))
+        తిరిగి 0;
+      ఆపు;
+    అప్రమేయ:
+      తిరిగి 0;
     }
-  if (ele_count > 4)
-    return 0;
+  ఒకవేళ (ele_లెక్క > 4)
+    తిరిగి 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
-  for (i = 0; elements[i]; ++i)
+  కొరకు (i = 0; elements[i]; ++i)
     {
-      int t = elements[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+      పూర్ణాంకం t = elements[i]->type;
+      ఒకవేళ (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
         {
-          if (!is_hfa1 (elements[i], candidate))
-            return 0;
+          ఒకవేళ (!is_hfa1 (elements[i], candidate))
+            తిరిగి 0;
         }
-      else if (t != candidate)
-        return 0;
+      లేకపోతే ఒకవేళ (t != candidate)
+        తిరిగి 0;
     }
 
   /* All tests succeeded.  Encode the result.  */
- done:
-  return (ele_count << 8) | candidate;
+ పూర్తి:
+  తిరిగి (ele_లెక్క << 8) | candidate;
 }
 
-static int
-place_vfp_arg (ffi_cif *cif, int h)
+స్థిర పూర్ణాంకం
+ఉంచు_vfp_arg (ffi_cif *cif, పూర్ణాంకం h)
 {
-  unsigned short reg = cif->vfp_reg_free;
-  int align = 1, nregs = h >> 8;
+  గుర్తులేని పొట్టి reg = cif->vfp_reg_free;
+  పూర్ణాంకం align = 1, nregs = h >> 8;
 
-  if ((h & 0xff) == FFI_TYPE_DOUBLE)
+  ఒకవేళ ((h & 0xff) == FFI_TYPE_DOUBLE)
     align = 2, nregs *= 2;
 
   /* Align register number. */
-  if ((reg & 1) && align == 2)
+  ఒకవేళ ((reg & 1) && align == 2)
     reg++;
 
-  while (reg + nregs <= 16)
+  అయితే (reg + nregs <= 16)
     {
-      int s, new_used = 0;
-      for (s = reg; s < reg + nregs; s++)
+      పూర్ణాంకం s, new_వాడిన = 0;
+      కొరకు (s = reg; s < reg + nregs; s++)
 	{
-	  new_used |= (1 << s);
-	  if (cif->vfp_used & (1 << s))
+	  new_వాడిన |= (1 << s);
+	  ఒకవేళ (cif->vfp_వాడిన & (1 << s))
 	    {
 	      reg += align;
-	      goto next_reg;
+	      వెళ్ళు తదుపరి_reg;
 	    }
 	}
       /* Found regs to allocate. */
-      cif->vfp_used |= new_used;
-      cif->vfp_args[cif->vfp_nargs++] = (signed char)reg;
+      cif->vfp_వాడిన |= new_వాడిన;
+      cif->vfp_వాదనలు[cif->vfp_nargs++] = (గుర్తుగల అక్షరం)reg;
 
       /* Update vfp_reg_free. */
-      if (cif->vfp_used & (1 << cif->vfp_reg_free))
+      ఒకవేళ (cif->vfp_వాడిన & (1 << cif->vfp_reg_free))
 	{
 	  reg += nregs;
-	  while (cif->vfp_used & (1 << reg))
+	  అయితే (cif->vfp_వాడిన & (1 << reg))
 	    reg += 1;
 	  cif->vfp_reg_free = reg;
 	}
-      return 0;
-    next_reg:;
+      తిరిగి 0;
+    తదుపరి_reg:;
     }
   // done, mark all regs as used
   cif->vfp_reg_free = 16;
-  cif->vfp_used = 0xFFFF;
-  return 1;
+  cif->vfp_వాడిన = 0xFFFF;
+  తిరిగి 1;
 }
 
-static void
-layout_vfp_args (ffi_cif * cif)
+స్థిర శూన్య
+layout_vfp_వాదనలు (ffi_cif * cif)
 {
-  unsigned int i;
+  గుర్తులేని పూర్ణాంకం i;
   /* Init VFP fields */
-  cif->vfp_used = 0;
+  cif->vfp_వాడిన = 0;
   cif->vfp_nargs = 0;
   cif->vfp_reg_free = 0;
-  memset (cif->vfp_args, -1, 16);	/* Init to -1. */
+  memset (cif->vfp_వాదనలు, -1, 16);	/* Init to -1. */
 
-  for (i = 0; i < cif->nargs; i++)
+  కొరకు (i = 0; i < cif->nargs; i++)
     {
-      int h = vfp_type_p (cif->arg_types[i]);
-      if (h && place_vfp_arg (cif, h) == 1)
-	break;
+      పూర్ణాంకం h = vfp_type_p (cif->arg_types[i]);
+      ఒకవేళ (h && ఉంచు_vfp_arg (cif, h) == 1)
+	ఆపు;
     }
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
-ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
+#ఒకవేళ defined(FFI_EXEC_STATIC_TRAMP)
+శూన్య *
+ffi_tramp_arch (size_t *tramp_కొలత, size_t *map_కొలత)
 {
-  extern void *trampoline_code_table;
+  బాహ్య శూన్య *trampoline_సంకేతం_పట్టిక;
 
-  *tramp_size = ARM_TRAMP_SIZE;
-  *map_size = ARM_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  *tramp_కొలత = ARM_TRAMP_కొలత;
+  *map_కొలత = ARM_TRAMP_MAP_కొలత;
+  తిరిగి &trampoline_సంకేతం_పట్టిక;
 }
-#endif
+#అయితే_ముగింపు
 
-#endif /* __arm__ or _M_ARM */
+#అయితే_ముగింపు /* __arm__ or _M_ARM */

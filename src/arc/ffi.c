@@ -23,425 +23,425 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdint.h>
 
-#include <sys/cachectl.h>
+#అన్తర్భావ <sys/cachectl.h>
 
-#define NARGREG 8
-#define STKALIGN 4
-#define MAXCOPYARG (2 * sizeof(double))
+#నిర్వచించు NARGREG 8
+#నిర్వచించు STKALIGN 4
+#నిర్వచించు MAXCOPYARG (2 * పరిమాణం(ద్విగుణ))
 
-typedef struct call_context
+రకనిర్వచనం నిర్మాణం call_context
 {
   size_t r[8];
   /* used by the assembly code to in-place construct its own stack frame */
-  char frame[16];
+  అక్షరం చట్రం[16];
 } call_context;
 
-typedef struct call_builder
+రకనిర్వచనం నిర్మాణం call_builder
 {
   call_context *aregs;
-  int used_integer;
+  పూర్ణాంకం వాడిన_integer;
   //int used_float;
-  size_t *used_stack;
-  void *struct_stack;
+  size_t *వాడిన_దొంతర;
+  శూన్య *struct_దొంతర;
 } call_builder;
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if defined(__ARC64_ARCH64__)
-#define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
-#define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
-#endif
+#ఒకవేళ defined(__ARC64_ARCH64__)
+#నిర్వచించు IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
+#లేకపోతే
+#నిర్వచించు IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
+#అయితే_ముగింపు
 
 /* for little endian ARC, the code is in fact stored as mixed endian for
    performance reasons */
-#if __BIG_ENDIAN__
-#define CODE_ENDIAN(x) (x)
-#else
-#define CODE_ENDIAN(x) ( (((uint32_t) (x)) << 16) | (((uint32_t) (x)) >> 16))
-#endif
+#ఒకవేళ __BIG_ENDIAN__
+#నిర్వచించు సంకేతం_ENDIAN(x) (x)
+#లేకపోతే
+#నిర్వచించు సంకేతం_ENDIAN(x) ( (((uint32_t) (x)) << 16) | (((uint32_t) (x)) >> 16))
+#అయితే_ముగింపు
 
 /* Perform machine dependent cif processing.  */
-ffi_status
+ffi_స్థితి
 ffi_prep_cif_machdep (ffi_cif * cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  ఎంపిక (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    స్థితి FFI_TYPE_VOID:
+      cif->flags = (గుర్తులేని) cif->rtype->type;
+      ఆపు;
 
-    case FFI_TYPE_STRUCT:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    స్థితి FFI_TYPE_STRUCT:
+      cif->flags = (గుర్తులేని) cif->rtype->type;
+      ఆపు;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    స్థితి FFI_TYPE_FLOAT:
+    అప్రమేయ:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ఆపు;
     }
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
-  size_t value = 0;
-  switch (type) {
-    case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
-    case FFI_TYPE_SINT8: value = *(int8_t *)data; break;
-    case FFI_TYPE_UINT16: value = *(uint16_t *)data; break;
-    case FFI_TYPE_SINT16: value = *(int16_t *)data; break;
+స్థిర శూన్య marshal_atom(call_builder *cb, పూర్ణాంకం type, శూన్య *దత్తాంశం) {
+  size_t విలువ = 0;
+  ఎంపిక (type) {
+    స్థితి FFI_TYPE_UINT8: విలువ = *(uint8_t *)దత్తాంశం; ఆపు;
+    స్థితి FFI_TYPE_SINT8: విలువ = *(int8_t *)దత్తాంశం; ఆపు;
+    స్థితి FFI_TYPE_UINT16: విలువ = *(uint16_t *)దత్తాంశం; ఆపు;
+    స్థితి FFI_TYPE_SINT16: విలువ = *(int16_t *)దత్తాంశం; ఆపు;
     /* 32-bit quantities are always sign-extended in the ABI */
-    case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
-    case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if defined(__ARC64_ARCH64__)
-    case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
-    case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
-#endif
-    case FFI_TYPE_POINTER: value = *(size_t *)data; break;
-    default: FFI_ASSERT(0); break;
+    స్థితి FFI_TYPE_UINT32: విలువ = *(int32_t *)దత్తాంశం; ఆపు;
+    స్థితి FFI_TYPE_SINT32: విలువ = *(int32_t *)దత్తాంశం; ఆపు;
+#ఒకవేళ defined(__ARC64_ARCH64__)
+    స్థితి FFI_TYPE_UINT64: విలువ = *(uint64_t *)దత్తాంశం; ఆపు;
+    స్థితి FFI_TYPE_SINT64: విలువ = *(int64_t *)దత్తాంశం; ఆపు;
+#అయితే_ముగింపు
+    స్థితి FFI_TYPE_సూచిక: విలువ = *(size_t *)దత్తాంశం; ఆపు;
+    అప్రమేయ: FFI_ASSERT(0); ఆపు;
   }
 
-  if (cb->used_integer == NARGREG) {
-    *cb->used_stack++ = value;
-  } else {
-    cb->aregs->r[cb->used_integer++] = value;
+  ఒకవేళ (cb->వాడిన_integer == NARGREG) {
+    *cb->వాడిన_దొంతర++ = విలువ;
+  } లేకపోతే {
+    cb->aregs->r[cb->వాడిన_integer++] = విలువ;
   }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
+స్థిర శూన్య marshal(call_builder *cb, ffi_type *type, పూర్ణాంకం var, శూన్య *దత్తాంశం) {
   size_t realign[2];
 
-#if (defined(__ARC64_ARCH64__) || defined(__ARC64_ARCH32__))
-  if (type->size > 2 * __SIZEOF_POINTER__) {
-    if (var) {
-      marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else {
+#ఒకవేళ (defined(__ARC64_ARCH64__) || defined(__ARC64_ARCH32__))
+  ఒకవేళ (type->కొలత > 2 * __SIZEOF_POINTER__) {
+    ఒకవేళ (var) {
+      marshal_atom(cb, FFI_TYPE_సూచిక, &దత్తాంశం);
+    } లేకపోతే {
       /* copy to stack and pass by reference */
-      data = memcpy (cb->struct_stack, data, type->size);
-      cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
-      marshal_atom(cb, FFI_TYPE_POINTER, &data);
+      దత్తాంశం = జ్ఞాపకం_నకలు (cb->struct_దొంతర, దత్తాంశం, type->కొలత);
+      cb->struct_దొంతర = (size_t *) FFI_ALIGN ((అక్షరం *) cb->struct_దొంతర + type->కొలత, __SIZEOF_POINTER__);
+      marshal_atom(cb, FFI_TYPE_సూచిక, &దత్తాంశం);
     }
   }
-#else
-  if (type->type == FFI_TYPE_STRUCT) {
-    if (var) {
-      if (type->size > 0)
-        marshal_atom(cb, FFI_TYPE_POINTER, data);
-    } else {
-      int i;
+#లేకపోతే
+  ఒకవేళ (type->type == FFI_TYPE_STRUCT) {
+    ఒకవేళ (var) {
+      ఒకవేళ (type->కొలత > 0)
+        marshal_atom(cb, FFI_TYPE_సూచిక, దత్తాంశం);
+    } లేకపోతే {
+      పూర్ణాంకం i;
       
-      for (i = 0; i < type->size; i += sizeof(size_t)) {
-        marshal_atom(cb, FFI_TYPE_POINTER, data);
-        data += sizeof(size_t);
+      కొరకు (i = 0; i < type->కొలత; i += పరిమాణం(size_t)) {
+        marshal_atom(cb, FFI_TYPE_సూచిక, దత్తాంశం);
+        దత్తాంశం += పరిమాణం(size_t);
       }
     }
   }
-#endif
-  else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
-    marshal_atom(cb, type->type, data);
-  } else {
-      memcpy(realign, data, type->size);
-      if (type->size > 0)
-        marshal_atom(cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
-        marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
+#అయితే_ముగింపు
+  లేకపోతే ఒకవేళ (IS_INT(type->type) || type->type == FFI_TYPE_సూచిక) {
+    marshal_atom(cb, type->type, దత్తాంశం);
+  } లేకపోతే {
+      జ్ఞాపకం_నకలు(realign, దత్తాంశం, type->కొలత);
+      ఒకవేళ (type->కొలత > 0)
+        marshal_atom(cb, FFI_TYPE_సూచిక, realign);
+      ఒకవేళ (type->కొలత > __SIZEOF_POINTER__)
+        marshal_atom(cb, FFI_TYPE_సూచిక, realign + 1);
   }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
-  size_t value;
+స్థిర శూన్య unmarshal_atom(call_builder *cb, పూర్ణాంకం type, శూన్య *దత్తాంశం) {
+  size_t విలువ;
 
-  if (cb->used_integer == NARGREG) {
-    value = *cb->used_stack++;
-  } else {
-    value = cb->aregs->r[cb->used_integer++];
+  ఒకవేళ (cb->వాడిన_integer == NARGREG) {
+    విలువ = *cb->వాడిన_దొంతర++;
+  } లేకపోతే {
+    విలువ = cb->aregs->r[cb->వాడిన_integer++];
   }
 
-  switch (type) {
-    case FFI_TYPE_UINT8: *(uint8_t *)data = value; break;
-    case FFI_TYPE_SINT8: *(uint8_t *)data = value; break;
-    case FFI_TYPE_UINT16: *(uint16_t *)data = value; break;
-    case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
-    case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
-    case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if defined(__ARC64_ARCH64__)
-    case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
-    case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
-#endif
-    case FFI_TYPE_POINTER: *(size_t *)data = value; break;
-    default: FFI_ASSERT(0); break;
+  ఎంపిక (type) {
+    స్థితి FFI_TYPE_UINT8: *(uint8_t *)దత్తాంశం = విలువ; ఆపు;
+    స్థితి FFI_TYPE_SINT8: *(uint8_t *)దత్తాంశం = విలువ; ఆపు;
+    స్థితి FFI_TYPE_UINT16: *(uint16_t *)దత్తాంశం = విలువ; ఆపు;
+    స్థితి FFI_TYPE_SINT16: *(uint16_t *)దత్తాంశం = విలువ; ఆపు;
+    స్థితి FFI_TYPE_UINT32: *(uint32_t *)దత్తాంశం = విలువ; ఆపు;
+    స్థితి FFI_TYPE_SINT32: *(uint32_t *)దత్తాంశం = విలువ; ఆపు;
+#ఒకవేళ defined(__ARC64_ARCH64__)
+    స్థితి FFI_TYPE_UINT64: *(uint64_t *)దత్తాంశం = విలువ; ఆపు;
+    స్థితి FFI_TYPE_SINT64: *(uint64_t *)దత్తాంశం = విలువ; ఆపు;
+#అయితే_ముగింపు
+    స్థితి FFI_TYPE_సూచిక: *(size_t *)దత్తాంశం = విలువ; ఆపు;
+    అప్రమేయ: FFI_ASSERT(0); ఆపు;
   }
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
+స్థిర శూన్య *unmarshal(call_builder *cb, ffi_type *type, పూర్ణాంకం var, శూన్య *దత్తాంశం) {
   size_t realign[2];
 
-#if defined(__ARC64_ARCH64__)
-  void *pointer;
+#ఒకవేళ defined(__ARC64_ARCH64__)
+  శూన్య *సూచిక_2;
 
-  if (type->size > 2 * __SIZEOF_POINTER__) {
+  ఒకవేళ (type->కొలత > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
-        unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
+        unmarshal_atom(cb, FFI_TYPE_సూచిక, (అక్షరం*)&సూచిక_2);
+        తిరిగి సూచిక_2;
     }
-#elif defined(__ARC64_ARCH32__)
-  if (type->type == FFI_TYPE_STRUCT) {
-    if (type->size > 2 * __SIZEOF_POINTER__) {
-      unmarshal_atom(cb, FFI_TYPE_POINTER, &realign[0]);
-      memcpy(data, (const void*)realign[0], type->size);
-      return data;
-    } else {
-      int i;
-      void *pdata = data;
+#లేదావేళ defined(__ARC64_ARCH32__)
+  ఒకవేళ (type->type == FFI_TYPE_STRUCT) {
+    ఒకవేళ (type->కొలత > 2 * __SIZEOF_POINTER__) {
+      unmarshal_atom(cb, FFI_TYPE_సూచిక, &realign[0]);
+      జ్ఞాపకం_నకలు(దత్తాంశం, (స్థిరరాశి శూన్య*)realign[0], type->కొలత);
+      తిరిగి దత్తాంశం;
+    } లేకపోతే {
+      పూర్ణాంకం i;
+      శూన్య *pdata = దత్తాంశం;
 
-      for (i = 0; i < type->size; i += sizeof(size_t)) {
-        unmarshal_atom(cb, FFI_TYPE_POINTER, pdata);
-        pdata += sizeof(size_t);
+      కొరకు (i = 0; i < type->కొలత; i += పరిమాణం(size_t)) {
+        unmarshal_atom(cb, FFI_TYPE_సూచిక, pdata);
+        pdata += పరిమాణం(size_t);
       }
-      return data;
+      తిరిగి దత్తాంశం;
     }
   }
-#else
-  if (type->type == FFI_TYPE_STRUCT) {
+#లేకపోతే
+  ఒకవేళ (type->type == FFI_TYPE_STRUCT) {
 
-      if (var) {
-        int i;
-        void *pdata = data;
+      ఒకవేళ (var) {
+        పూర్ణాంకం i;
+        శూన్య *pdata = దత్తాంశం;
 
-        for (i = 0; i < type->size; i += sizeof(size_t)) {
-          unmarshal_atom(cb, FFI_TYPE_POINTER, pdata);
-          pdata += sizeof(size_t);
+        కొరకు (i = 0; i < type->కొలత; i += పరిమాణం(size_t)) {
+          unmarshal_atom(cb, FFI_TYPE_సూచిక, pdata);
+          pdata += పరిమాణం(size_t);
         }
-        return data;
-      } else {
-        if (type->size > 0)
-          unmarshal_atom(cb, FFI_TYPE_POINTER, &realign[0]);
-        memcpy(data, (const void*)realign[0], type->size);
-        return data;
+        తిరిగి దత్తాంశం;
+      } లేకపోతే {
+        ఒకవేళ (type->కొలత > 0)
+          unmarshal_atom(cb, FFI_TYPE_సూచిక, &realign[0]);
+        జ్ఞాపకం_నకలు(దత్తాంశం, (స్థిరరాశి శూన్య*)realign[0], type->కొలత);
+        తిరిగి దత్తాంశం;
       }
   }
-#endif
-  else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
-    unmarshal_atom(cb, type->type, data);
-    return data;
-  } else {
-      if (type->size > 0)
-        unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
-        unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
-      memcpy(data, realign, type->size);
-      return data;
+#అయితే_ముగింపు
+  లేకపోతే ఒకవేళ (IS_INT(type->type) || type->type == FFI_TYPE_సూచిక) {
+    unmarshal_atom(cb, type->type, దత్తాంశం);
+    తిరిగి దత్తాంశం;
+  } లేకపోతే {
+      ఒకవేళ (type->కొలత > 0)
+        unmarshal_atom(cb, FFI_TYPE_సూచిక, realign);
+      ఒకవేళ (type->కొలత > __SIZEOF_POINTER__)
+        unmarshal_atom(cb, FFI_TYPE_సూచిక, realign + 1);
+      జ్ఞాపకం_నకలు(దత్తాంశం, realign, type->కొలత);
+      తిరిగి దత్తాంశం;
   }
 }
 
-static int passed_by_ref(ffi_type *type, int var) {
-  if (type->type == FFI_TYPE_STRUCT)
-	  return 1;
+స్థిర పూర్ణాంకం passed_by_ref(ffi_type *type, పూర్ణాంకం var) {
+  ఒకవేళ (type->type == FFI_TYPE_STRUCT)
+	  తిరిగి 1;
   
-  return type->size > 2 * __SIZEOF_POINTER__;
+  తిరిగి type->కొలత > 2 * __SIZEOF_POINTER__;
 }
 
 /* Low level routine for calling functions */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+బాహ్య శూన్య ffi_call_asm (శూన్య *దొంతర, నిర్మాణం call_context *regs,
+			  శూన్య (*fn) (శూన్య), శూన్య *సంవృతం) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+స్థిర శూన్య
+ffi_call_int (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue, శూన్య **avalue,
+	      శూన్య *సంవృతం)
 {
-  int return_by_ref = passed_by_ref(cif->rtype, 0);
+  పూర్ణాంకం return_by_ref = passed_by_ref(cif->rtype, 0);
 
   /* Allocate space for stack arg parameters.  */
-  size_t arg_bytes = FFI_ALIGN(2 * sizeof(size_t) * cif->nargs, STKALIGN);
+  size_t arg_బైట్లు = FFI_ALIGN(2 * పరిమాణం(size_t) * cif->nargs, STKALIGN);
   /* Allocate space for copies of big structures.  */
-  size_t struct_bytes = FFI_ALIGN(cif->bytes, STKALIGN);
+  size_t struct_బైట్లు = FFI_ALIGN(cif->బైట్లు, STKALIGN);
   // size_t rval_bytes = 0;
   // if (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
   //   rval_bytes = FFI_ALIGN(cif->rtype->size, STKALIGN);
-  size_t alloc_size = arg_bytes + /*rval_bytes +*/ struct_bytes + sizeof(call_context);
-  size_t alloc_base = (size_t)alloca(alloc_size);
+  size_t alloc_కొలత = arg_బైట్లు + /*rval_bytes +*/ struct_బైట్లు + పరిమాణం(call_context);
+  size_t alloc_పునాది = (size_t)alloca(alloc_కొలత);
 
   // if (rval_bytes)
   //   rvalue = (void*)(alloc_base + arg_bytes);
 
   call_builder cb;
-  cb.used_integer = 0;
-  cb.aregs = (call_context*)(alloc_base + arg_bytes /*+ rval_bytes*/ + struct_bytes);
-  cb.used_stack = (void*)alloc_base;
-  cb.struct_stack = (void *)(alloc_base + arg_bytes /*+ rval_bytes*/);
+  cb.వాడిన_integer = 0;
+  cb.aregs = (call_context*)(alloc_పునాది + arg_బైట్లు /*+ rval_bytes*/ + struct_బైట్లు);
+  cb.వాడిన_దొంతర = (శూన్య*)alloc_పునాది;
+  cb.struct_దొంతర = (శూన్య *)(alloc_పునాది + arg_బైట్లు /*+ rval_bytes*/);
 
   // if (cif->rtype->type == FFI_TYPE_STRUCT)
   //   marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-  if (return_by_ref)
-	  marshal(&cb, &ffi_type_pointer, 0, &rvalue);
+  ఒకవేళ (return_by_ref)
+	  marshal(&cb, &ffi_type_సూచిక, 0, &rvalue);
 
-  int i;
-  for (i = 0; i < cif->nargs; i++)
+  పూర్ణాంకం i;
+  కొరకు (i = 0; i < cif->nargs; i++)
     marshal(&cb, cif->arg_types[i], 0, avalue[i]);
 
-  ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+  ffi_call_asm ((శూన్య *) alloc_పునాది, cb.aregs, fn, సంవృతం);
 
-  cb.used_integer = 0;
-  if (!return_by_ref && rvalue)
+  cb.వాడిన_integer = 0;
+  ఒకవేళ (!return_by_ref && rvalue)
     {
-	    if (IS_INT(cif->rtype->type)
-	        && cif->rtype->size < sizeof (ffi_arg))
+	    ఒకవేళ (IS_INT(cif->rtype->type)
+	        && cif->rtype->కొలత < పరిమాణం (ffi_arg))
 	    {
         /* Integer types smaller than ffi_arg need to be extended.  */
-	    switch (cif->rtype->type) {
-	      case FFI_TYPE_SINT8:
-	      case FFI_TYPE_SINT16:
-	      case FFI_TYPE_SINT32:
-		      unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+	    ఎంపిక (cif->rtype->type) {
+	      స్థితి FFI_TYPE_SINT8:
+	      స్థితి FFI_TYPE_SINT16:
+	      స్థితి FFI_TYPE_SINT32:
+		      unmarshal_atom (&cb, (పరిమాణం (ffi_arg) > 4
                           ? FFI_TYPE_SINT64 : FFI_TYPE_SINT32),
 				                  rvalue);
-		      break;
-	      case FFI_TYPE_UINT8:
-	      case FFI_TYPE_UINT16:
-	      case FFI_TYPE_UINT32:
-		      unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+		      ఆపు;
+	      స్థితి FFI_TYPE_UINT8:
+	      స్థితి FFI_TYPE_UINT16:
+	      స్థితి FFI_TYPE_UINT32:
+		      unmarshal_atom (&cb, (పరిమాణం (ffi_arg) > 4
 				                  ? FFI_TYPE_UINT64 : FFI_TYPE_UINT32),
 				                  rvalue);
-		      break;
+		      ఆపు;
 	      }
 	    }
-	    else
+	    లేకపోతే
 	      unmarshal(&cb, cif->rtype, 0, rvalue);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, ఖాళీ);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+శూన్య
+ffi_call_go (ffi_cif *cif, శూన్య (*fn) (శూన్య), శూన్య *rvalue,
+	     శూన్య **avalue, శూన్య *సంవృతం)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, closure);
+  ffi_call_int(cif, fn, rvalue, avalue, సంవృతం);
 }
 
-extern void ffi_closure_asm(void) FFI_HIDDEN;
+బాహ్య శూన్య ffi_సంవృతం_asm(శూన్య) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure * closure, ffi_cif * cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం * సంవృతం, ffi_cif * cif,
+		      శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+		      శూన్య *user_దత్తాంశం, శూన్య *codeloc)
 {
-  uint32_t *tramp = (uint32_t *) & (closure->tramp[0]);
+  uint32_t *tramp = (uint32_t *) & (సంవృతం->tramp[0]);
 
-#if defined(__ARC64_ARCH64__)
-  size_t address_ffi_closure = (size_t) ffi_closure_asm;
-#endif
+#ఒకవేళ defined(__ARC64_ARCH64__)
+  size_t చిరునామా_ffi_సంవృతం = (size_t) ffi_సంవృతం_asm;
+#అయితే_ముగింపు
 
-  switch (cif->abi)
+  ఎంపిక (cif->abi)
     {
-#if defined(__ARC64_ARCH64__)
-    case FFI_ARC64:
+#ఒకవేళ defined(__ARC64_ARCH64__)
+    స్థితి FFI_ARC64:
       FFI_ASSERT (tramp == codeloc);
-      tramp[0] = CODE_ENDIAN (0x580a1fc0);	/* movl r8, pcl  */
-      tramp[1] = CODE_ENDIAN (0x5c0b1f80);	/* movhl r12, limm */
-      tramp[2] = CODE_ENDIAN ((uint32_t)(address_ffi_closure >> 32));
-      tramp[3] = CODE_ENDIAN (0x5c051f8c);	/* orl r12, r12, limm */
-      tramp[4] = CODE_ENDIAN ((uint32_t)(address_ffi_closure & 0xffffffff));
-      tramp[5] = CODE_ENDIAN (0x20200300);	/* j [r12] */
-      break;
-#else
-    case FFI_ARCOMPACT:
+      tramp[0] = సంకేతం_ENDIAN (0x580a1fc0);	/* movl r8, pcl  */
+      tramp[1] = సంకేతం_ENDIAN (0x5c0b1f80);	/* movhl r12, limm */
+      tramp[2] = సంకేతం_ENDIAN ((uint32_t)(చిరునామా_ffi_సంవృతం >> 32));
+      tramp[3] = సంకేతం_ENDIAN (0x5c051f8c);	/* orl r12, r12, limm */
+      tramp[4] = సంకేతం_ENDIAN ((uint32_t)(చిరునామా_ffi_సంవృతం & 0xffffffff));
+      tramp[5] = సంకేతం_ENDIAN (0x20200300);	/* j [r12] */
+      ఆపు;
+#లేకపోతే
+    స్థితి FFI_ARCOMPACT:
       FFI_ASSERT (tramp == codeloc);
-      tramp[0] = CODE_ENDIAN (0x200a1fc0);	/* mov r8, pcl  */
-      tramp[1] = CODE_ENDIAN (0x20200f80);	/* j [long imm] */
-      tramp[2] = CODE_ENDIAN ((uint32_t) ffi_closure_asm);
-      break;
-#endif
+      tramp[0] = సంకేతం_ENDIAN (0x200a1fc0);	/* mov r8, pcl  */
+      tramp[1] = సంకేతం_ENDIAN (0x20200f80);	/* j [long imm] */
+      tramp[2] = సంకేతం_ENDIAN ((uint32_t) ffi_సంవృతం_asm);
+      ఆపు;
+#అయితే_ముగింపు
 
-    default:
-      return FFI_BAD_ABI;
+    అప్రమేయ:
+      తిరిగి FFI_BAD_ABI;
     }
 
-  closure->cif = cif;
-  closure->fun = fun;
-  closure->user_data = user_data;
-  cacheflush (codeloc, FFI_TRAMPOLINE_SIZE, BCACHE);
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
+  cacheflush (codeloc, FFI_TRAMPOLINE_కొలత, BCACHE);
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+బాహ్య శూన్య ffi_go_సంవృతం_asm (శూన్య) FFI_HIDDEN;
 
-ffi_status
-ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+ffi_స్థితి
+ffi_prep_go_సంవృతం (ffi_go_సంవృతం *సంవృతం, ffi_cif *cif,
+		     శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi <= FFI_మొదటి_ABI || cif->abi >= FFI_చివరి_ABI)
+    తిరిగి FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
-  closure->cif = cif;
-  closure->fun = fun;
+  సంవృతం->tramp = (శూన్య *) ffi_go_సంవృతం_asm;
+  సంవృతం->cif = cif;
+  సంవృతం->fun = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs. */
-void FFI_HIDDEN
-ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data,
-		   size_t *stack, call_context *aregs)
+శూన్య FFI_HIDDEN
+ffi_సంవృతం_inner (ffi_cif *cif,
+		   శూన్య (*fun) (ffi_cif *, శూన్య *, శూన్య **, శూన్య *),
+		   శూన్య *user_దత్తాంశం,
+		   size_t *దొంతర, call_context *aregs)
 {
-    void **avalue = alloca(cif->nargs * sizeof(void*));
+    శూన్య **avalue = alloca(cif->nargs * పరిమాణం(శూన్య*));
     /* storage for arguments which will be copied by unmarshal().  We could
        theoretically avoid the copies in many cases and use at most 128 bytes
        of memory, but allocating disjoint storage for each argument is
        simpler. */
-    char *astorage = alloca(cif->bytes);
-    char *ptr = astorage;
-    void *rvalue;
+    అక్షరం *astorage = alloca(cif->బైట్లు);
+    అక్షరం *ptr = astorage;
+    శూన్య *rvalue;
     call_builder cb;
-    int i;
+    పూర్ణాంకం i;
 
     cb.aregs = aregs;
-    cb.used_integer = 0;
-    cb.used_stack = stack;
+    cb.వాడిన_integer = 0;
+    cb.వాడిన_దొంతర = దొంతర;
     
     /* handle hidden argument */
-    if (cif->flags == FFI_TYPE_STRUCT)
-      unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
-      rvalue = alloca(cif->rtype->size);
+    ఒకవేళ (cif->flags == FFI_TYPE_STRUCT)
+      unmarshal(&cb, &ffi_type_సూచిక, 0, &rvalue);
+    లేకపోతే
+      rvalue = alloca(cif->rtype->కొలత);
 
-    for (i = 0; i < cif->nargs; i++) {
+    కొరకు (i = 0; i < cif->nargs; i++) {
       avalue[i] = unmarshal(&cb, cif->arg_types[i], 1, ptr);
-      ptr += cif->arg_types[i]->size;
+      ptr += cif->arg_types[i]->కొలత;
     }
 
-    fun (cif, rvalue, avalue, user_data);
+    fun (cif, rvalue, avalue, user_దత్తాంశం);
 
-    if (cif->rtype->type != FFI_TYPE_VOID) {
-        cb.used_integer = 0;
+    ఒకవేళ (cif->rtype->type != FFI_TYPE_VOID) {
+        cb.వాడిన_integer = 0;
         marshal(&cb, cif->rtype, 1, rvalue);
     }
 }

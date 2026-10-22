@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   లేదా IMPLIED, INCLUDING BUT కాదు LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE మరియు NONINFRINGEMENT.
+   లో NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES లేదా
+   OTHER LIABILITY, WHETHER లో AN ACTION OF CONTRACT, TORT లేదా OTHERWISE,
+   ARISING FROM, OUT OF లేదా లో CONNECTION WITH THE SOFTWARE లేదా THE USE లేదా
+   OTHER DEALINGS లో THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -83,7 +83,7 @@
 
 _ffi_call_DARWIN:
 Lstartcode:
-	mr   	r12,r8	/* We only need r12 until the call,
+	mr   	r12,r8	/* We only need r12 until the పిలువు,
 			   so it does not have to be saved.  */
 LFB1:
 	/* Save the old stack pointer as AP.  */
@@ -112,7 +112,7 @@ LCFI0:
 
 LCFI1:
 
-	/* Save arguments over call.  */
+	/* Save arguments over పిలువు.  */
 	mr	r31,r5	/* flags,  */
 	mr	r30,r6	/* rvalue,  */
 	mr	r29,r7	/* function address,  */
@@ -129,10 +129,10 @@ LCFI2:
 	/* The TOC slot is reserved in the Darwin ABI and r2 is volatile.  */
 	lg     r2,(5 * GPR_BYTES)(r1)
 #endif
-	/* Now do the call.
+	/* Now do the పిలువు.
 	   Set up cr1 with bits 4-7 of the flags.  */
 	mtcrf	0x40,r31
-	/* Get the address to call into CTR.  */
+	/* Get the address to పిలువు into CTR.  */
 	mtctr	r29
 	/* Load all those argument registers.
 	   We have set up a nice stack frame, just load it into registers.  */
@@ -172,7 +172,7 @@ L2:
 	nop
 	nop
 
-	/* Make the call.  */
+	/* Make the పిలువు.  */
 	bctrl
 
 	/* Now, deal with the return value.  */
@@ -193,7 +193,7 @@ L2:
 
 	/* OK, we have to map the return back to a mem struct.
 	   We are about to trample the parents param area, so recover the
-	   return type.  r29 is free, since the call is done.  */
+	   return type.  r29 is free, since the పిలువు is done.  */
 	lg	r29,(LINKAGE_SIZE + 6 * GPR_BYTES)(r28)
 
 	sg	r3, (LINKAGE_SIZE                )(r28)
@@ -208,7 +208,7 @@ L2:
 	/* OK, so do the block move - we trust that memcpy will not trample
 	   the fprs...  */
 	mr 	r3,r30 ; dest
-	addi	r4,r28,LINKAGE_SIZE ; source
+	addi	r4,r28,LINKAGE_SIZE ;ఆధారం
 	/* The size is a size_t, should be long.  */
 	lg	r5,0(r29)
 	/* Figure out small structs */
@@ -304,7 +304,7 @@ L(done_return_value):
 	blr
 LFE1:
 	.align	1
-/* END(_ffi_call_DARWIN)  */
+/* ముగింపు(_ffi_call_DARWIN)  */
 
 /* Provide a null definition of _ffi_call_AIX.  */
 	.text
@@ -312,7 +312,7 @@ LFE1:
 	.align 2
 _ffi_call_AIX:
 	blr
-/* END(_ffi_call_AIX)  */
+/* ముగింపు(_ffi_call_AIX)  */
 
 /* EH stuff.  */
 

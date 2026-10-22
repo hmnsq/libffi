@@ -26,174 +26,174 @@
 
 /* This file defines generic functions for use with the raw api. */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#ఒకవేళ !FFI_NO_RAW_API
 
 size_t
-ffi_raw_size (ffi_cif *cif)
+ffi_raw_కొలత (ffi_cif *cif)
 {
-  size_t result = 0;
-  int i;
+  size_t ఫలితం = 0;
+  పూర్ణాంకం i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  కొరకు (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
-#endif
-	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
+#ఒకవేళ !FFI_NO_STRUCTS
+      ఒకవేళ ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_సదిశ)
+	ఫలితం += FFI_ALIGN (పరిమాణం (శూన్య*), FFI_SIZEOF_ARG);
+      లేకపోతే
+#అయితే_ముగింపు
+	ఫలితం += FFI_ALIGN ((*at)->కొలత, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  తిరిగి ఫలితం;
 }
 
 
-void
-ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
+శూన్య
+ffi_raw_గమ్యం_ptrarray (ffi_cif *cif, ffi_raw *raw, శూన్య **వాదనలు)
 {
-  unsigned i;
+  గుర్తులేని i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#ఒకవేళ పదాలు_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  కొరకు (i = 0; i < cif->nargs; i++, tp++, వాదనలు++)
     {	  
-      switch ((*tp)->type)
+      ఎంపిక ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	స్థితి FFI_TYPE_UINT8:
+	స్థితి FFI_TYPE_SINT8:
+	  *వాదనలు = (శూన్య*) ((అక్షరం*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  ఆపు;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	స్థితి FFI_TYPE_UINT16:
+	స్థితి FFI_TYPE_SINT16:
+	  *వాదనలు = (శూన్య*) ((అక్షరం*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  ఆపు;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
-#endif
+#ఒకవేళ FFI_SIZEOF_ARG >= 4	  
+	స్థితి FFI_TYPE_UINT32:
+	స్థితి FFI_TYPE_SINT32:
+	  *వాదనలు = (శూన్య*) ((అక్షరం*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  ఆపు;
+#అయితే_ముగింపు
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  *args = (raw++)->ptr;
-	  break;
-#endif
+#ఒకవేళ !FFI_NO_STRUCTS
+	స్థితి FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_సదిశ:
+	  *వాదనలు = (raw++)->ptr;
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_COMPLEX:
-	  *args = (raw++)->ptr;
-	  break;
+	స్థితి FFI_TYPE_COMPLEX:
+	  *వాదనలు = (raw++)->ptr;
+	  ఆపు;
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	స్థితి FFI_TYPE_సూచిక:
+	  *వాదనలు = (శూన్య*) &(raw++)->ptr;
+	  ఆపు;
 	  
-	default:
-	  *args = raw;
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	అప్రమేయ:
+	  *వాదనలు = raw;
+	  raw += FFI_ALIGN ((*tp)->కొలత, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#లేకపోతే /* WORDS_BIGENDIAN */
 
-#if !PDP
+#ఒకవేళ !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  కొరకు (i = 0; i < cif->nargs; i++, tp++, వాదనలు++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#ఒకవేళ !FFI_NO_STRUCTS
+      ఒకవేళ ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_సదిశ)
 	{
-	  *args = (raw++)->ptr;
+	  *వాదనలు = (raw++)->ptr;
 	}
-      else
-#endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      లేకపోతే
+#అయితే_ముగింపు
+      ఒకవేళ ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
-	  *args = (raw++)->ptr;
+	  *వాదనలు = (raw++)->ptr;
 	}
-      else
+      లేకపోతే
 	{
-	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  *వాదనలు = (శూన్య*) raw;
+	  raw += FFI_ALIGN ((*tp)->కొలత, పరిమాణం (శూన్య*)) / పరిమాణం (శూన్య*);
 	}
     }
 
-#else
-#error "pdp endian not supported"
-#endif /* ! PDP */
+#లేకపోతే
+#దోషం "pdp endian not supported"
+#అయితే_ముగింపు /* ! PDP */
 
-#endif /* WORDS_BIGENDIAN */
+#అయితే_ముగింపు /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
+శూన్య
+ffi_ptrarray_గమ్యం_raw (ffi_cif *cif, శూన్య **వాదనలు, ffi_raw *raw)
 {
-  unsigned i;
+  గుర్తులేని i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  కొరకు (i = 0; i < cif->nargs; i++, tp++, వాదనలు++)
     {	  
-      switch ((*tp)->type)
+      ఎంపిక ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	స్థితి FFI_TYPE_UINT8:
+	  (raw++)->uint = *(UINT8*) (*వాదనలు);
+	  ఆపు;
 
-	case FFI_TYPE_SINT8:
-	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	స్థితి FFI_TYPE_SINT8:
+	  (raw++)->sint = *(SINT8*) (*వాదనలు);
+	  ఆపు;
 
-	case FFI_TYPE_UINT16:
-	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	స్థితి FFI_TYPE_UINT16:
+	  (raw++)->uint = *(UINT16*) (*వాదనలు);
+	  ఆపు;
 
-	case FFI_TYPE_SINT16:
-	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	స్థితి FFI_TYPE_SINT16:
+	  (raw++)->sint = *(SINT16*) (*వాదనలు);
+	  ఆపు;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
-	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+#ఒకవేళ FFI_SIZEOF_ARG >= 4
+	స్థితి FFI_TYPE_UINT32:
+	  (raw++)->uint = *(UINT32*) (*వాదనలు);
+	  ఆపు;
 
-	case FFI_TYPE_SINT32:
-	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
-#endif
+	స్థితి FFI_TYPE_SINT32:
+	  (raw++)->sint = *(SINT32*) (*వాదనలు);
+	  ఆపు;
+#అయితే_ముగింపు
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  (raw++)->ptr = *args;
-	  break;
-#endif
+#ఒకవేళ !FFI_NO_STRUCTS
+	స్థితి FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_సదిశ:
+	  (raw++)->ptr = *వాదనలు;
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_COMPLEX:
-	  (raw++)->ptr = *args;
-	  break;
+	స్థితి FFI_TYPE_COMPLEX:
+	  (raw++)->ptr = *వాదనలు;
+	  ఆపు;
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	స్థితి FFI_TYPE_సూచిక:
+	  (raw++)->ptr = **(శూన్య***) వాదనలు;
+	  ఆపు;
 
-	default:
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	అప్రమేయ:
+	  జ్ఞాపకం_నకలు ((శూన్య*) raw->దత్తాంశం, (శూన్య*)*వాదనలు, (*tp)->కొలత);
+	  raw += FFI_ALIGN ((*tp)->కొలత, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#ఒకవేళ !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -203,67 +203,67 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
+శూన్య ffi_raw_call (ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  ffi_raw_to_ptrarray (cif, raw, avalue);
+  శూన్య **avalue = (శూన్య**) alloca (cif->nargs * పరిమాణం (శూన్య*));
+  ffi_raw_గమ్యం_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#ఒకవేళ FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+స్థిర శూన్య
+ffi_translate_వాదనలు (ffi_cif *cif, శూన్య *rvalue,
+		    శూన్య **avalue, శూన్య *user_దత్తాంశం)
 {
-  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_size (cif));
-  ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
+  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_కొలత (cif));
+  ffi_raw_సంవృతం *cl = (ffi_raw_సంవృతం*)user_దత్తాంశం;
 
-  ffi_ptrarray_to_raw (cif, avalue, raw);
-  (*cl->fun) (cif, rvalue, raw, cl->user_data);
+  ffi_ptrarray_గమ్యం_raw (cif, avalue, raw);
+  (*cl->fun) (cif, rvalue, raw, cl->user_దత్తాంశం);
 }
 
-ffi_status
-ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
+ffi_స్థితి
+ffi_prep_raw_సంవృతం_loc (ffi_raw_సంవృతం* cl,
 			  ffi_cif *cif,
-			  void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-			  void *user_data,
-			  void *codeloc)
+			  శూన్య (*fun)(ffi_cif*,శూన్య*,ffi_raw*,శూన్య*),
+			  శూన్య *user_దత్తాంశం,
+			  శూన్య *codeloc)
 {
-  ffi_status status;
+  ffi_స్థితి status;
 
-  status = ffi_prep_closure_loc ((ffi_closure*) cl,
+  status = ffi_prep_సంవృతం_loc ((ffi_సంవృతం*) cl,
 				 cif,
-				 &ffi_translate_args,
+				 &ffi_translate_వాదనలు,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  ఒకవేళ (status == FFI_OK)
     {
       cl->fun       = fun;
-      cl->user_data = user_data;
+      cl->user_దత్తాంశం = user_దత్తాంశం;
     }
 
-  return status;
+  తిరిగి status;
 }
 
-#endif /* FFI_CLOSURES */
-#endif /* !FFI_NATIVE_RAW_API */
+#అయితే_ముగింపు /* FFI_CLOSURES */
+#అయితే_ముగింపు /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#ఒకవేళ FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
  * the pointer-array format, to the raw format */
 
-ffi_status
-ffi_prep_raw_closure (ffi_raw_closure* cl,
+ffi_స్థితి
+ffi_prep_raw_సంవృతం (ffi_raw_సంవృతం* cl,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-		      void *user_data)
+		      శూన్య (*fun)(ffi_cif*,శూన్య*,ffi_raw*,శూన్య*),
+		      శూన్య *user_దత్తాంశం)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  తిరిగి ffi_prep_raw_సంవృతం_loc (cl, cif, fun, user_దత్తాంశం, cl);
 }
 
-#endif /* FFI_CLOSURES */
+#అయితే_ముగింపు /* FFI_CLOSURES */
 
-#endif /* !FFI_NO_RAW_API */
+#అయితే_ముగింపు /* !FFI_NO_RAW_API */

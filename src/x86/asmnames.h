@@ -1,30 +1,30 @@
-#ifndef ASMNAMES_H
-#define ASMNAMES_H
+#నిర్వచితం_కాకపోతే ASMNAMES_H
+#నిర్వచించు ASMNAMES_H
 
-#define C2(X, Y)  X ## Y
-#define C1(X, Y)  C2(X, Y)
-#ifdef __USER_LABEL_PREFIX__
+#నిర్వచించు C2(X, Y)  X ## Y
+#నిర్వచించు C1(X, Y)  C2(X, Y)
+#నిర్వచితమైతే __USER_LABEL_PREFIX__
 # define C(X)     C1(__USER_LABEL_PREFIX__, X)
-#else
+#లేకపోతే
 # define C(X)     X
-#endif
+#అయితే_ముగింపు
 
-#ifdef __APPLE__
+#నిర్వచితమైతే __APPLE__
 # define L(X)     C1(L, X)
-#else
+#లేకపోతే
 # define L(X)     C1(.L, X)
-#endif
+#అయితే_ముగింపు
 
-#if defined(__ELF__) && defined(__PIC__)
+#ఒకవేళ defined(__ELF__) && defined(__PIC__)
 # define PLT(X)	  X@PLT
-#else
+#లేకపోతే
 # define PLT(X)	  X
-#endif
+#అయితే_ముగింపు
 
-#ifdef __ELF__
-# define ENDF(X)  .type	X,@function; .size X, . - X
-#else
+#నిర్వచితమైతే __ELF__
+# define ENDF(X)  .type	X,@function; .కొలత X, . - X
+#లేకపోతే
 # define ENDF(X)
-#endif
+#అయితే_ముగింపు
 
-#endif /* ASMNAMES_H */
+#అయితే_ముగింపు /* ASMNAMES_H */

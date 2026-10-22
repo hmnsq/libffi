@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS లేదా IMPLIED, INCLUDING BUT కాదు LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE మరియు
+   NONINFRINGEMENT.  లో NO EVENT SHALL THE AUTHORS లేదా COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES లేదా OTHER LIABILITY,
+   WHETHER లో AN ACTION OF CONTRACT, TORT లేదా OTHERWISE, ARISING FROM,
+   OUT OF లేదా లో CONNECTION WITH THE SOFTWARE లేదా THE USE లేదా OTHER
+   DEALINGS లో THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -29,7 +29,7 @@
 #include <ffi.h>
 
 #define ENTRY(name) .text; .globl name; .type  name,@function; .align 4; name:
-#define END(name) .size name , . - name
+#define ముగింపు(name) .size name , . - name
 
 /* Assert that the table below is in sync with ffi.h.  */
 
@@ -159,7 +159,7 @@ store_calls:
 	s32i	a11, a2, 4
 	retw
 
-END(ffi_call_SYSV)
+ముగింపు(ffi_call_SYSV)
 
 
 /*
@@ -184,7 +184,7 @@ ENTRY(ffi_cacheflush)
 
 	retw
 
-END(ffi_cacheflush)
+ముగింపు(ffi_cacheflush)
 
 /* ffi_trampoline is copied to the stack */
 
@@ -205,7 +205,7 @@ ENTRY(ffi_trampoline)
 	_mov 	a14, a0                           # [15]
 	callx0	a15                               # [18]
                                                   # [21]
-END(ffi_trampoline)
+ముగింపు(ffi_trampoline)
 
 /*
  * ffi_closure()
@@ -265,4 +265,4 @@ ENTRY(ffi_closure_SYSV)
 
 1:	retw
 
-END(ffi_closure_SYSV)
+ముగింపు(ffi_closure_SYSV)

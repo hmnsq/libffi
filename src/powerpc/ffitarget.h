@@ -27,52 +27,52 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined (POWERPC) && defined (__powerpc64__)	/* linux64 */
-#ifndef POWERPC64
-#define POWERPC64
-#endif
-#elif defined (POWERPC_DARWIN) && defined (__ppc64__)	/* Darwin64 */
-#ifndef POWERPC64
-#define POWERPC64
-#endif
-#ifndef POWERPC_DARWIN64
-#define POWERPC_DARWIN64
-#endif
-#elif defined (POWERPC_AIX) && defined (__64BIT__)	/* AIX64 */
-#ifndef POWERPC64
-#define POWERPC64
-#endif
-#endif
+#ఒకవేళ defined (POWERPC) && defined (__powerpc64__)	/* linux64 */
+#నిర్వచితం_కాకపోతే POWERPC64
+#నిర్వచించు POWERPC64
+#అయితే_ముగింపు
+#లేదావేళ defined (POWERPC_DARWIN) && defined (__ppc64__)	/* Darwin64 */
+#నిర్వచితం_కాకపోతే POWERPC64
+#నిర్వచించు POWERPC64
+#అయితే_ముగింపు
+#నిర్వచితం_కాకపోతే POWERPC_DARWIN64
+#నిర్వచించు POWERPC_DARWIN64
+#అయితే_ముగింపు
+#లేదావేళ defined (POWERPC_AIX) && defined (__64BIT__)	/* AIX64 */
+#నిర్వచితం_కాకపోతే POWERPC64
+#నిర్వచించు POWERPC64
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ          ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
 
-#if defined (POWERPC_AIX)
+#ఒకవేళ defined (POWERPC_AIX)
   FFI_AIX,
   FFI_DARWIN,
   FFI_DEFAULT_ABI = FFI_AIX,
-  FFI_LAST_ABI
+  FFI_చివరి_ABI
 
-#elif defined (POWERPC_DARWIN)
+#లేదావేళ defined (POWERPC_DARWIN)
   FFI_AIX,
   FFI_DARWIN,
   FFI_DEFAULT_ABI = FFI_DARWIN,
-  FFI_LAST_ABI
+  FFI_చివరి_ABI
 
-#else
+#లేకపోతే
   /* The FFI_COMPAT values are used by old code.  Since libffi may be
      a shared library we have to support old values for backwards
      compatibility.  */
@@ -82,7 +82,7 @@ typedef enum ffi_abi {
   FFI_COMPAT_LINUX,
   FFI_COMPAT_LINUX_SOFT_FLOAT,
 
-# if defined (POWERPC64)
+# ఒకవేళ defined (POWERPC64)
   /* This bit, always set in new code, must not be set in any of the
      old FFI_COMPAT values that might be used for 64-bit linux.  We
      only need worry about FFI_COMPAT_LINUX64, but to be safe avoid
@@ -103,9 +103,9 @@ typedef enum ffi_abi {
 #   endif
 #  endif
 		     ),
-  FFI_LAST_ABI = 16
+  FFI_చివరి_ABI = 16
 
-# else
+# లేకపోతే
   /* This bit, always set in new code, must not be set in any of the
      old FFI_COMPAT values that might be used for 32-bit linux/sysv/bsd.  */
   FFI_SYSV = 8,
@@ -119,36 +119,36 @@ typedef enum ffi_abi {
 #  ifdef __NO_FPRS__
 		     | FFI_SYSV_SOFT_FLOAT
 #  endif
-#  if (defined (__SVR4_STRUCT_RETURN)					\
+#  ఒకవేళ (defined (__SVR4_STRUCT_RETURN)					\
        || defined (POWERPC_FREEBSD) && !defined (__AIX_STRUCT_RETURN))
 		     | FFI_SYSV_STRUCT_RET
 #  endif
-#  if __LDBL_MANT_DIG__ == 106
+#  ఒకవేళ __LDBL_MANT_DIG__ == 106
 		     | FFI_SYSV_IBM_LONG_DOUBLE
 #  endif
 #  ifdef __LONG_DOUBLE_128__
 		     | FFI_SYSV_LONG_DOUBLE_128
 #  endif
 		     ),
-  FFI_LAST_ABI = 32
+  FFI_చివరి_ABI = 32
 # endif
-#endif
+#అయితే_ముగింపు
 
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#if defined (POWERPC) || defined (POWERPC_FREEBSD)
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_NATIVE_RAW_API 0
+#ఒకవేళ defined (POWERPC) || defined (POWERPC_FREEBSD)
 # define FFI_GO_CLOSURES 1
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
-#endif
-#if defined (POWERPC_AIX)
+# define FFI_లక్ష్యం_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS గుర్తులేని nfixedargs
+#అయితే_ముగింపు
+#ఒకవేళ defined (POWERPC_AIX)
 # define FFI_GO_CLOSURES 1
-#endif
+#అయితే_ముగింపు
 
 /* Complex types are supported on ELFv2 (the only PowerPC64 variant where
    the assembly and C-side passing/return logic has been wired up).  Under
@@ -156,22 +156,22 @@ typedef enum ffi_abi {
    homogeneous floating-point aggregate, but each scalar half consumes a
    GPR shadow slot of its own — i.e. the same way the underlying C ABI
    handles them, which is what GCC's split_complex_arg emits.  */
-#if defined(POWERPC64) && _CALL_ELF == 2
-# define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#ఒకవేళ defined(POWERPC64) && _CALL_ELF == 2
+# define FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+#అయితే_ముగింపు
 
-#if _CALL_ELF == 2
-# define FFI_TRAMPOLINE_SIZE 32
-#else
-# if defined(POWERPC64) || defined(POWERPC_AIX)
-#  if defined(POWERPC_DARWIN64)
-#    define FFI_TRAMPOLINE_SIZE 48
-#  else
-#    define FFI_TRAMPOLINE_SIZE 24
+#ఒకవేళ _CALL_ELF == 2
+# define FFI_TRAMPOLINE_కొలత 32
+#లేకపోతే
+# ఒకవేళ defined(POWERPC64) || defined(POWERPC_AIX)
+#  ఒకవేళ defined(POWERPC_DARWIN64)
+#    define FFI_TRAMPOLINE_కొలత 48
+#  లేకపోతే
+#    define FFI_TRAMPOLINE_కొలత 24
 #  endif
-# else /* POWERPC || POWERPC_AIX */
-#  define FFI_TRAMPOLINE_SIZE 40
+# లేకపోతే /* POWERPC || POWERPC_AIX */
+#  define FFI_TRAMPOLINE_కొలత 40
 # endif
-#endif
+#అయితే_ముగింపు
 
-#endif
+#అయితే_ముగింపు

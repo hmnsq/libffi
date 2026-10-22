@@ -27,123 +27,123 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
 /* ---- System specific configurations ----------------------------------- */
 
 /* For code common to all platforms on x86 and x86_64. */
-#define X86_ANY
+#నిర్వచించు X86_ANY
 
-#if defined (X86_64) && defined (__i386__)
-#undef X86_64
-#define X86
-#endif
+#ఒకవేళ defined (X86_64) && defined (__i386__)
+#నిర్వచనం_రద్దు X86_64
+#నిర్వచించు X86
+#అయితే_ముగింపు
 
-#ifdef X86_WIN64
-#define FFI_SIZEOF_ARG 8
-#define USE_BUILTIN_FFS 0 /* not yet implemented in mingw-64 */
-#endif
+#నిర్వచితమైతే X86_WIN64
+#నిర్వచించు FFI_SIZEOF_ARG 8
+#నిర్వచించు USE_BUILTIN_FFS 0 /* not yet implemented in mingw-64 */
+#అయితే_ముగింపు
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
-#ifndef _MSC_VER
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#నిర్వచించు FFI_లక్ష్యం_SPECIFIC_దొంతర_SPACE_కేటాయింపు
+#నిర్వచితం_కాకపోతే _MSC_VER
+#నిర్వచించు FFI_లక్ష్యం_HAS_COMPLEX_TYPE
+#అయితే_ముగింపు
 
-#ifdef X86_64
-#define FFI_TARGET_HAS_INT128
-#endif
+#నిర్వచితమైతే X86_64
+#నిర్వచించు FFI_లక్ష్యం_HAS_INT128
+#అయితే_ముగింపు
 
 /* The System V x86-64 psABI passes 8- and 16-byte vectors in SSE registers;
    this is implemented by the ffi64.c (FFI_UNIX64) backend only.  32-bit x86
    and the Windows x86-64 backend (ffiw64.c) do not marshal vectors.  */
-#if defined(X86_64) && !defined(X86_WIN64)
-#define FFI_TARGET_HAS_VECTOR_TYPE
-#endif
+#ఒకవేళ defined(X86_64) && !defined(X86_WIN64)
+#నిర్వచించు FFI_లక్ష్యం_HAS_సదిశ_TYPE
+#అయితే_ముగింపు
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-#ifndef LIBFFI_ASM
-#ifdef X86_WIN64
-#ifdef _MSC_VER
-typedef unsigned __int64       ffi_arg;
-typedef __int64                ffi_sarg;
-#else
-typedef unsigned long long     ffi_arg;
-typedef long long              ffi_sarg;
-#endif
-#else
-#if defined __x86_64__ && defined __ILP32__
-#define FFI_SIZEOF_ARG 8
-#define FFI_SIZEOF_JAVA_RAW  4
-typedef unsigned long long     ffi_arg;
-typedef long long              ffi_sarg;
-#else
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
-#endif
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+#నిర్వచితమైతే X86_WIN64
+#నిర్వచితమైతే _MSC_VER
+రకనిర్వచనం గుర్తులేని __int64       ffi_arg;
+రకనిర్వచనం __int64                ffi_sarg;
+#లేకపోతే
+రకనిర్వచనం గుర్తులేని దీర్ఘ దీర్ఘ     ffi_arg;
+రకనిర్వచనం దీర్ఘ దీర్ఘ              ffi_sarg;
+#అయితే_ముగింపు
+#లేకపోతే
+#ఒకవేళ defined __x86_64__ && defined __ILP32__
+#నిర్వచించు FFI_SIZEOF_ARG 8
+#నిర్వచించు FFI_SIZEOF_JAVA_RAW  4
+రకనిర్వచనం గుర్తులేని దీర్ఘ దీర్ఘ     ffi_arg;
+రకనిర్వచనం దీర్ఘ దీర్ఘ              ffi_sarg;
+#లేకపోతే
+రకనిర్వచనం గుర్తులేని దీర్ఘ          ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ            ffi_sarg;
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
-typedef enum ffi_abi {
-#if defined(X86_WIN64)
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+#ఒకవేళ defined(X86_WIN64)
+  FFI_మొదటి_ABI = 0,
   FFI_WIN64,            /* sizeof(long double) == 8  - microsoft compilers */
   FFI_GNUW64,           /* sizeof(long double) == 16 - GNU compilers */
-  FFI_LAST_ABI,
-#ifdef __GNUC__
+  FFI_చివరి_ABI,
+#నిర్వచితమైతే __GNUC__
   FFI_DEFAULT_ABI = FFI_GNUW64
-#else
+#లేకపోతే
   FFI_DEFAULT_ABI = FFI_WIN64
-#endif
+#అయితే_ముగింపు
 
-#elif defined(X86_64) || (defined (__x86_64__) && defined (X86_DARWIN))
-  FFI_FIRST_ABI = 1,
+#లేదావేళ defined(X86_64) || (defined (__x86_64__) && defined (X86_DARWIN))
+  FFI_మొదటి_ABI = 1,
   FFI_UNIX64,
   FFI_WIN64,
   FFI_EFI64 = FFI_WIN64,
   FFI_GNUW64,
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX64
 
-#elif defined(X86_WIN32)
-  FFI_FIRST_ABI = 0,
+#లేదావేళ defined(X86_WIN32)
+  FFI_మొదటి_ABI = 0,
   FFI_SYSV      = 1,
   FFI_STDCALL   = 2,
   FFI_THISCALL  = 3,
   FFI_FASTCALL  = 4,
   FFI_MS_CDECL  = 5,
   FFI_PASCAL    = 6,
-  FFI_REGISTER  = 7,
-  FFI_LAST_ABI,
+  FFI_రిజిస్టరు  = 7,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_MS_CDECL
-#else
-  FFI_FIRST_ABI = 0,
+#లేకపోతే
+  FFI_మొదటి_ABI = 0,
   FFI_SYSV      = 1,
   FFI_THISCALL  = 3,
   FFI_FASTCALL  = 4,
   FFI_STDCALL   = 5,
   FFI_PASCAL    = 6,
-  FFI_REGISTER  = 7,
+  FFI_రిజిస్టరు  = 7,
   FFI_MS_CDECL  = 8,
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
-#endif
+#అయితే_ముగింపు
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_GO_CLOSURES 1
 
-#define FFI_TYPE_SMALL_STRUCT_1B (FFI_TYPE_LAST + 1)
-#define FFI_TYPE_SMALL_STRUCT_2B (FFI_TYPE_LAST + 2)
-#define FFI_TYPE_SMALL_STRUCT_4B (FFI_TYPE_LAST + 3)
-#define FFI_TYPE_MS_STRUCT       (FFI_TYPE_LAST + 4)
+#నిర్వచించు FFI_TYPE_SMALL_STRUCT_1B (FFI_TYPE_చివరి + 1)
+#నిర్వచించు FFI_TYPE_SMALL_STRUCT_2B (FFI_TYPE_చివరి + 2)
+#నిర్వచించు FFI_TYPE_SMALL_STRUCT_4B (FFI_TYPE_చివరి + 3)
+#నిర్వచించు FFI_TYPE_MS_STRUCT       (FFI_TYPE_చివరి + 4)
 
 /* Tripwire: the win64.S / win64_intel.S return-value jump tables use one
    8-byte slot per code value and place the FFI_TYPE_SMALL_STRUCT_* pseudo-types
@@ -152,33 +152,33 @@ typedef enum ffi_abi {
    and opens a gap in the tables that silently misaligns small-struct returns.
    When this fires: add a matching E() slot for the new type in both win64.S
    and win64_intel.S, then bump FFI_X86_TYPE_LAST to match.  */
-#define FFI_X86_TYPE_LAST FFI_TYPE_VECTOR
-#if FFI_TYPE_LAST != FFI_X86_TYPE_LAST
+#నిర్వచించు FFI_X86_TYPE_చివరి FFI_TYPE_సదిశ
+#ఒకవేళ FFI_TYPE_చివరి != FFI_X86_TYPE_చివరి
 # error "new FFI_TYPE_* added: sync the win64.S/win64_intel.S jump tables and bump FFI_X86_TYPE_LAST"
-#endif
+#అయితే_ముగింపు
 
-#if defined (X86_64) || defined(X86_WIN64) \
+#ఒకవేళ defined (X86_64) || defined(X86_WIN64) \
     || (defined (__x86_64__) && defined (X86_DARWIN))
 /* 4 bytes of ENDBR64 + 7 bytes of LEA + 6 bytes of JMP + 7 bytes of NOP
    + 8 bytes of pointer.  */
-# define FFI_TRAMPOLINE_SIZE 32
+# define FFI_TRAMPOLINE_కొలత 32
 # define FFI_NATIVE_RAW_API 0
-#else
+#లేకపోతే
 /* 4 bytes of ENDBR32 + 5 bytes of MOV + 5 bytes of JMP + 2 unused
    bytes.  */
-# define FFI_TRAMPOLINE_SIZE 16
+# define FFI_TRAMPOLINE_కొలత 16
 # define FFI_NATIVE_RAW_API 1  /* x86 has native raw api support */
-#endif
+#అయితే_ముగింపు
 
-#if !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
+#ఒకవేళ !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
 # include <cet.h>
-# if (__CET__ & 1) != 0
+# ఒకవేళ (__CET__ & 1) != 0
 #   define ENDBR_PRESENT
 # endif
 # define _CET_NOTRACK notrack
-#else
+#లేకపోతే
 # define _CET_ENDBR
 # define _CET_NOTRACK
-#endif
+#అయితే_ముగింపు
 
-#endif
+#అయితే_ముగింపు

@@ -22,14 +22,14 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdio.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdio.h>
 
 /* General debugging routines */
 
-void ffi_stop_here(void)
+శూన్య ffi_stop_ఇక్కడ(శూన్య)
 {
   /* This function is only useful for debugging purposes.
      Place a breakpoint on ffi_stop_here to be notified of
@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN శూన్య ffi_assert(స్థిరరాశి అక్షరం *సమాసం, స్థిరరాశి అక్షరం *file, పూర్ణాంకం పంక్తి)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
-  ffi_stop_here();
+  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", సమాసం, file, పంక్తి);
+  ffi_stop_ఇక్కడ();
   abort();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+శూన్య ffi_type_test(ffi_type *a, స్థిరరాశి అక్షరం *file, పూర్ణాంకం పంక్తి)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != ఖాళీ, file, పంక్తి);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_చివరి, file, పంక్తి);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->కొలత > 0, file, పంక్తి);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, పంక్తి);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
-		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		 && a->type != FFI_TYPE_సదిశ)
+		|| a->elements != ఖాళీ, file, పంక్తి);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
-		|| (a->elements != NULL
-		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		|| (a->elements != ఖాళీ
+		    && a->elements[0] != ఖాళీ && a->elements[1] == ఖాళీ),
+		file, పంక్తి);
 
 }

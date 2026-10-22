@@ -25,31 +25,31 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <stdio.h>
 
-#define ROUND_UP(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
+#నిర్వచించు విడత_పైకి(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
 
-#define FIRST_ARG_SLOT  0
-#define DEBUG_LEVEL   0
+#నిర్వచించు మొదటి_ARG_స్థానం  0
+#నిర్వచించు DEBUG_LEVEL   0
 
-#define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
-#define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
-#define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
-#define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+#నిర్వచించు fldw(addr, fpreg) \
+  __asm__ అస్థిర ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
+#నిర్వచించు fstw(fpreg, addr) \
+  __asm__ అస్థిర ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
+#నిర్వచించు fldd(addr, fpreg) \
+  __asm__ అస్థిర ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+#నిర్వచించు fstd(fpreg, addr) \
+  __asm__ అస్థిర ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#నిర్వచించు debug(lvl, x...) చేయి { ఒకవేళ (lvl <= DEBUG_LEVEL) { రాయి(x); } } అయితే (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+స్థిర అంతఃవరుస పూర్ణాంకం ffi_struct_type(ffi_type *t)
 {
-  int sz = t->size;
+  పూర్ణాంకం sz = t->కొలత;
 
   /* Small structure results are returned in registers 28 and 29,
      larger ones are in a buffer allocated by the callee.  The
@@ -57,16 +57,16 @@ static inline int ffi_struct_type(ffi_type *t)
      to be aligned on a 16-byte boundary.   Register return values are
      padded on the right.  The pad bits on the right are undefined.  */
 
-  if (sz <= 16)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT;
+  ఒకవేళ (sz <= 16)
+    తిరిగి -sz;
+  లేకపోతే
+    తిరిగి FFI_TYPE_STRUCT;
 }
 
 /* PA has a downward growing stack, which looks like this.  Stack
    arguments are offset from the argument ponter (AP) in r29.
 
-   Offset
+స్థానభ్రంశం
 	[ Fixed args ]
    AP-64                arg word 0 (r26, fr4)
    AP-56                arg word 1 (r25, fr5)
@@ -123,209 +123,209 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
+శూన్య ffi_prep_వాదనలు_pa64(UINT64 *దొంతర, extended_cif *ecif, గుర్తులేని బైట్లు)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
+  నమోదు గుర్తులేని పూర్ణాంకం i;
+  నమోదు ffi_type **p_arg;
+  నమోదు శూన్య **p_argv;
+  గుర్తులేని పూర్ణాంకం స్థానం = మొదటి_ARG_స్థానం;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
-	ecif, bytes);
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, దొంతర,
+	ecif, బైట్లు);
 
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  కొరకు (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      పూర్ణాంకం type = (*p_arg)->type;
 
-      len = (*p_arg)->size;
+      len = (*p_arg)->కొలత;
 
-      switch (type)
+      ఎంపిక (type)
 	{
-	case FFI_TYPE_SINT8:
-	  *(SINT64 *)(stack + slot) = *(SINT8 *)(*p_argv);
-	  break;
+	స్థితి FFI_TYPE_SINT8:
+	  *(SINT64 *)(దొంతర + స్థానం) = *(SINT8 *)(*p_argv);
+	  ఆపు;
 
-	case FFI_TYPE_UINT8:
-	  *(UINT64 *)(stack + slot) = *(UINT8 *)(*p_argv);
-	  break;
+	స్థితి FFI_TYPE_UINT8:
+	  *(UINT64 *)(దొంతర + స్థానం) = *(UINT8 *)(*p_argv);
+	  ఆపు;
 
-	case FFI_TYPE_SINT16:
-	  *(SINT64 *)(stack + slot) = *(SINT16 *)(*p_argv);
-	  break;
+	స్థితి FFI_TYPE_SINT16:
+	  *(SINT64 *)(దొంతర + స్థానం) = *(SINT16 *)(*p_argv);
+	  ఆపు;
 
-	case FFI_TYPE_UINT16:
-	  *(UINT64 *)(stack + slot) = *(UINT16 *)(*p_argv);
-	  break;
+	స్థితి FFI_TYPE_UINT16:
+	  *(UINT64 *)(దొంతర + స్థానం) = *(UINT16 *)(*p_argv);
+	  ఆపు;
 
-	case FFI_TYPE_SINT32:
-	  *(SINT64 *)(stack + slot) = *(SINT32 *)(*p_argv);
-	  break;
+	స్థితి FFI_TYPE_SINT32:
+	  *(SINT64 *)(దొంతర + స్థానం) = *(SINT32 *)(*p_argv);
+	  ఆపు;
 
-	case FFI_TYPE_UINT32:
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  break;
+	స్థితి FFI_TYPE_UINT32:
+	  *(UINT64 *)(దొంతర + స్థానం) = *(UINT32 *)(*p_argv);
+	  ఆపు;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	స్థితి FFI_TYPE_UINT64:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_సూచిక:
 	  debug(3, "Storing UINT64 %lu in slot %u\n", *(UINT64 *)(*p_argv),
-		slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  break;
+		స్థానం);
+	  *(UINT64 *)(దొంతర + స్థానం) = *(UINT64 *)(*p_argv);
+	  ఆపు;
 
-	case FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_FLOAT:
 	  /* First 8 args go in fr4L - fr11L.  */
-	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  debug(3, "Storing UINT32(float) in slot %u\n", స్థానం);
+	  *(UINT64 *)(దొంతర + స్థానం) = *(UINT32 *)(*p_argv);
+	  ఎంపిక (స్థానం - మొదటి_ARG_స్థానం)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack + slot, fr4); break;
-	    case 1: fldw(stack + slot, fr5); break;
-	    case 2: fldw(stack + slot, fr6); break;
-	    case 3: fldw(stack + slot, fr7); break;
-	    case 4: fldw(stack + slot, fr8); break;
-	    case 5: fldw(stack + slot, fr9); break;
-	    case 6: fldw(stack + slot, fr10); break;
-	    case 7: fldw(stack + slot, fr11); break;
+	    స్థితి 0: fldw(దొంతర + స్థానం, fr4); ఆపు;
+	    స్థితి 1: fldw(దొంతర + స్థానం, fr5); ఆపు;
+	    స్థితి 2: fldw(దొంతర + స్థానం, fr6); ఆపు;
+	    స్థితి 3: fldw(దొంతర + స్థానం, fr7); ఆపు;
+	    స్థితి 4: fldw(దొంతర + స్థానం, fr8); ఆపు;
+	    స్థితి 5: fldw(దొంతర + స్థానం, fr9); ఆపు;
+	    స్థితి 6: fldw(దొంతర + స్థానం, fr10); ఆపు;
+	    స్థితి 7: fldw(దొంతర + స్థానం, fr11); ఆపు;
 	    }
-	  break;
+	  ఆపు;
 
-	case FFI_TYPE_DOUBLE:
-	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	స్థితి FFI_TYPE_DOUBLE:
+	  debug(3, "Storing UINT64(double) at slot %u\n", స్థానం);
+	  *(UINT64 *)(దొంతర + స్థానం) = *(UINT64 *)(*p_argv);
+	  ఎంపిక (స్థానం - మొదటి_ARG_స్థానం)
 	    {
 	    /* First 8 args go in fr4 to fr11.  */
-	    case 0: fldd(stack + slot, fr4); break;
-	    case 1: fldd(stack + slot, fr5); break;
-	    case 2: fldd(stack + slot, fr6); break;
-	    case 3: fldd(stack + slot, fr7); break;
-	    case 4: fldd(stack + slot, fr8); break;
-	    case 5: fldd(stack + slot, fr9); break;
-	    case 6: fldd(stack + slot, fr10); break;
-	    case 7: fldd(stack + slot, fr11); break;
+	    స్థితి 0: fldd(దొంతర + స్థానం, fr4); ఆపు;
+	    స్థితి 1: fldd(దొంతర + స్థానం, fr5); ఆపు;
+	    స్థితి 2: fldd(దొంతర + స్థానం, fr6); ఆపు;
+	    స్థితి 3: fldd(దొంతర + స్థానం, fr7); ఆపు;
+	    స్థితి 4: fldd(దొంతర + స్థానం, fr8); ఆపు;
+	    స్థితి 5: fldd(దొంతర + స్థానం, fr9); ఆపు;
+	    స్థితి 6: fldd(దొంతర + స్థానం, fr10); ఆపు;
+	    స్థితి 7: fldd(దొంతర + స్థానం, fr11); ఆపు;
 	    }
-	  break;
+	  ఆపు;
 
-#ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+#నిర్వచితమైతే PA64_HPUX
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	  /* Align slot to a 16-byte boundary.  */
-	  slot += (slot & 1);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  *(UINT64 *)(stack + slot + 1) = *(UINT64 *)(*p_argv + 8);
-	  break;
-#endif
+	  స్థానం += (స్థానం & 1);
+	  *(UINT64 *)(దొంతర + స్థానం) = *(UINT64 *)(*p_argv);
+	  *(UINT64 *)(దొంతర + స్థానం + 1) = *(UINT64 *)(*p_argv + 8);
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_STRUCT:
 	  /* Structs larger than 8 bytes are aligned on a 16-byte boundary. */
-	  if (len > 8)
-	    slot += (slot & 1);
-	  memcpy((char *)(stack + slot), (char *)*p_argv, len);
-	  break;
+	  ఒకవేళ (len > 8)
+	    స్థానం += (స్థానం & 1);
+	  జ్ఞాపకం_నకలు((అక్షరం *)(దొంతర + స్థానం), (అక్షరం *)*p_argv, len);
+	  ఆపు;
 
-	default:
+	అప్రమేయ:
 	  FFI_ASSERT(0);
 	}
 
-      slot += ROUND_UP (len, 8) >> 3;
+      స్థానం += విడత_పైకి (len, 8) >> 3;
       p_arg++;
       p_argv++;
     }
 
-  FFI_ASSERT(slot * 8 <= bytes);
+  FFI_ASSERT(స్థానం * 8 <= బైట్లు);
 
-  return;
+  తిరిగి;
 }
 
-static void ffi_size_stack_pa64(ffi_cif *cif)
+స్థిర శూన్య ffi_కొలత_దొంతర_pa64(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  పూర్ణాంకం i;
+  పూర్ణాంకం z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  కొరకు (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
-      int size = (*ptr)->size;
+      పూర్ణాంకం type = (*ptr)->type;
+      పూర్ణాంకం కొలత = (*ptr)->కొలత;
 
-      switch (type)
+      ఎంపిక (type)
 	{
-#ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+#నిర్వచితమైతే PA64_HPUX
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	  z += 2 + (z & 1);
-	  break;
-#endif
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_STRUCT:
-	  if (size > 8)
+	స్థితి FFI_TYPE_STRUCT:
+	  ఒకవేళ (కొలత > 8)
 	    z += (z & 1);
-	  z += ROUND_UP (size, 8) >> 3;
-	  break;
+	  z += విడత_పైకి (కొలత, 8) >> 3;
+	  ఆపు;
 
-	default: /* 64-bit values */
+	అప్రమేయ: /* 64-bit values */
 	  z++;
 	}
     }
 
   /* We need a minimum of 8 argument slots.  Stack must be 16-byte
      aligned.  */
-  if (z <= 8)
+  ఒకవేళ (z <= 8)
     z = 8;
-  else
+  లేకపోతే
     z += (z & 1);
 
   /* Add 16 bytes for frame marker.  */
-  cif->bytes = z * 8 + 64;
-  debug(3, "Calculated stack size is %u bytes\n", cif->bytes);
+  cif->బైట్లు = z * 8 + 64;
+  debug(3, "Calculated stack size is %u bytes\n", cif->బైట్లు);
 }
 
 /* Perform machine dependent cif processing.  */
-ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
+ffi_స్థితి ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag for jump table.  */
-  switch (cif->rtype->type)
+  ఎంపిక (cif->rtype->type)
     {
-    case FFI_TYPE_COMPLEX:
-    case FFI_TYPE_STRUCT:
+    స్థితి FFI_TYPE_COMPLEX:
+    స్థితి FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 8 bytes, the result is given back
 	 in one register. If the size is smaller or equal 16 bytes than we
 	 return the result in two registers. If the size is bigger than
 	 16 bytes, the return is in a buffer allocated by the caller.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      ఆపు;
 
-    default:
-      cif->flags = (unsigned) cif->rtype->type;
-      break;
+    అప్రమేయ:
+      cif->flags = (గుర్తులేని) cif->rtype->type;
+      ఆపు;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
-  switch (cif->abi)
+  ఎంపిక (cif->abi)
     {
-    case FFI_PA64:
-      ffi_size_stack_pa64(cif);
-      break;
+    స్థితి FFI_PA64:
+      ffi_కొలత_దొంతర_pa64(cif);
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       FFI_ASSERT(0);
-      break;
+      ఆపు;
     }
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-extern void ffi_call_pa64(void (*)(UINT64 *, extended_cif *, unsigned),
-			  extended_cif *, unsigned, unsigned, unsigned *,
-			  void (*fn)(void));
+బాహ్య శూన్య ffi_call_pa64(శూన్య (*)(UINT64 *, extended_cif *, గుర్తులేని),
+			  extended_cif *, గుర్తులేని, గుర్తులేని, గుర్తులేని *,
+			  శూన్య (*fn)(శూన్య));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+శూన్య ffi_call(ffi_cif *cif, శూన్య (*fn)(శూన్య), శూన్య *rvalue, శూన్య **avalue)
 {
   extended_cif ecif;
 
@@ -335,280 +335,280 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  ఒకవేళ (rvalue == ఖాళీ
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_COMPLEX)
-      && cif->rtype->size > 16)
-    ecif.rvalue = alloca(ROUND_UP (cif->rtype->size, 16));
-  else
+      && cif->rtype->కొలత > 16)
+    ecif.rvalue = alloca(విడత_పైకి (cif->rtype->కొలత, 16));
+  లేకపోతే
     ecif.rvalue = rvalue;
 
 
-  switch (cif->abi)
+  ఎంపిక (cif->abi)
     {
-    case FFI_PA64:
-      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
-      ffi_call_pa64(ffi_prep_args_pa64, &ecif, cif->bytes,
+    స్థితి FFI_PA64:
+      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->బైట్లు, cif->flags, ecif.rvalue, (శూన్య *)fn);
+      ffi_call_pa64(ffi_prep_వాదనలు_pa64, &ecif, cif->బైట్లు,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       FFI_ASSERT(0);
-      break;
+      ఆపు;
     }
 }
 
-#if FFI_CLOSURES
+#ఒకవేళ FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
+ffi_స్థితి ffi_సంవృతం_inner_pa64(ffi_సంవృతం *సంవృతం, UINT64 *దొంతర)
 {
   ffi_cif *cif;
-  void **avalue;
-  void *rvalue;
+  శూన్య **avalue;
+  శూన్య *rvalue;
   /* Functions can return up to 128-bits in registers.  Return address
      must be double word aligned.  */
-  union { long double rld; UINT64 ret[2]; } u;
+  సంఘం { దీర్ఘ ద్విగుణ rld; UINT64 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT64 r28 __asm__("r28");
+  అక్షరం *tmp;
+  పూర్ణాంకం i, avn;
+  గుర్తులేని పూర్ణాంకం స్థానం = మొదటి_ARG_స్థానం;
+  నమోదు UINT64 r28 __asm__("r28");
 
-  cif = closure->cif;
+  cif = సంవృతం->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
-    rvalue = (void *)r28;
-  else
+  ఒకవేళ (cif->flags == FFI_TYPE_STRUCT)
+    rvalue = (శూన్య *)r28;
+  లేకపోతే
     rvalue = &u;
 
-  avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
+  avalue = (శూన్య **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  కొరకు (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      పూర్ణాంకం type = (*p_arg)->type;
 
-      switch (type)
+      ఎంపిక (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	  avalue[i] = (void *)(stack + slot) + 7;
-	  break;
+	స్థితి FFI_TYPE_SINT8:
+	స్థితి FFI_TYPE_UINT8:
+	  avalue[i] = (శూన్య *)(దొంతర + స్థానం) + 7;
+	  ఆపు;
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	  avalue[i] = (void *)(stack + slot) + 6;
-	  break;
+	స్థితి FFI_TYPE_SINT16:
+	స్థితి FFI_TYPE_UINT16:
+	  avalue[i] = (శూన్య *)(దొంతర + స్థానం) + 6;
+	  ఆపు;
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	స్థితి FFI_TYPE_SINT32:
+	స్థితి FFI_TYPE_UINT32:
+	  avalue[i] = (శూన్య *)(దొంతర + స్థానం) + 4;
+	  ఆపు;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	స్థితి FFI_TYPE_సూచిక:
+	స్థితి FFI_TYPE_SINT64:
+	స్థితి FFI_TYPE_UINT64:
+	  avalue[i] = (శూన్య *)(దొంతర + స్థానం);
+	  ఆపు;
 
-	case FFI_TYPE_FLOAT:
+	స్థితి FFI_TYPE_FLOAT:
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
 	     in the floating point registers instead of the general
 	     registers.  So, we need to replace what was previously
 	     stored in the current slot with the value in the
 	     corresponding floating point register.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  ఎంపిక (స్థానం + మొదటి_ARG_స్థానం)
 	    {
-	    case 0: fstw(fr4, (void *)(stack + slot)); break;
-	    case 1: fstw(fr5, (void *)(stack + slot)); break;
-	    case 2: fstw(fr6, (void *)(stack + slot)); break;
-	    case 3: fstw(fr7, (void *)(stack + slot)); break;
-	    case 4: fstw(fr8, (void *)(stack + slot)); break;
-	    case 5: fstw(fr9, (void *)(stack + slot)); break;
-	    case 6: fstw(fr10, (void *)(stack + slot)); break;
-	    case 7: fstw(fr11, (void *)(stack + slot)); break;
+	    స్థితి 0: fstw(fr4, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 1: fstw(fr5, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 2: fstw(fr6, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 3: fstw(fr7, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 4: fstw(fr8, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 5: fstw(fr9, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 6: fstw(fr10, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 7: fstw(fr11, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
 	    }
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	  avalue[i] = (శూన్య *)(దొంతర + స్థానం) + 4;
+	  ఆపు;
 
-	case FFI_TYPE_DOUBLE:
+	స్థితి FFI_TYPE_DOUBLE:
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  ఎంపిక (స్థానం + మొదటి_ARG_స్థానం)
 	    {
-	    case 0: fstd(fr4, (void *)(stack + slot)); break;
-	    case 1: fstd(fr5, (void *)(stack + slot)); break;
-	    case 2: fstd(fr6, (void *)(stack + slot)); break;
-	    case 3: fstd(fr7, (void *)(stack + slot)); break;
-	    case 4: fstd(fr8, (void *)(stack + slot)); break;
-	    case 5: fstd(fr9, (void *)(stack + slot)); break;
-	    case 6: fstd(fr10, (void *)(stack + slot)); break;
-	    case 7: fstd(fr11, (void *)(stack + slot)); break;
+	    స్థితి 0: fstd(fr4, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 1: fstd(fr5, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 2: fstd(fr6, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 3: fstd(fr7, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 4: fstd(fr8, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 5: fstd(fr9, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 6: fstd(fr10, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
+	    స్థితి 7: fstd(fr11, (శూన్య *)(దొంతర + స్థానం)); ఆపు;
 	    }
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  avalue[i] = (శూన్య *)(దొంతర + స్థానం);
+	  ఆపు;
 
-#ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+#నిర్వచితమైతే PA64_HPUX
+	స్థితి FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
-	  slot += (slot & 1);
-	  avalue[i] = (void *)(stack + slot);
-	  break;
-#endif
+	  స్థానం += (స్థానం & 1);
+	  avalue[i] = (శూన్య *)(దొంతర + స్థానం);
+	  ఆపు;
+#అయితే_ముగింపు
 
-	case FFI_TYPE_STRUCT:
+	స్థితి FFI_TYPE_STRUCT:
 	  /* All structs are passed in registers.  Structs larger
 	     than 8 bytes are aligned on a 16-byte boundary.  */
-	  if((*p_arg)->size > 8)
-	    slot += (slot & 1);
-	  avalue[i] = (void *) (stack + slot);
-	  break;
+	  ఒకవేళ((*p_arg)->కొలత > 8)
+	    స్థానం += (స్థానం & 1);
+	  avalue[i] = (శూన్య *) (దొంతర + స్థానం);
+	  ఆపు;
 
-	default:
+	అప్రమేయ:
 	  FFI_ASSERT(0);
 	}
 
-      slot += (ROUND_UP ((*p_arg)->size, 8) >> 3);
+      స్థానం += (విడత_పైకి ((*p_arg)->కొలత, 8) >> 3);
       p_arg++;
     }
 
   /* Invoke the closure.  */
-  (closure->fun) (cif, rvalue, avalue, closure->user_data);
+  (సంవృతం->fun) (cif, rvalue, avalue, సంవృతం->user_దత్తాంశం);
 
   debug(3, "after calling function, ret[0] = %16lx, ret[1] = %16lx\n", u.ret[0],
 	u.ret[1]);
 
   /* Store the result using the lower 2 bytes of the flags.  */
-  switch (cif->flags)
+  ఎంపిక (cif->flags)
     {
-    case FFI_TYPE_UINT8:
-      *(stack + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
-      *(stack + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
-      *(stack + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
-      *(stack + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      *(stack + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
-      break;
-    case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
+    స్థితి FFI_TYPE_UINT8:
+      *(దొంతర + మొదటి_ARG_స్థానం) = (UINT8)u.ret[0];
+      ఆపు;
+    స్థితి FFI_TYPE_SINT8:
+      *(దొంతర + మొదటి_ARG_స్థానం) = (SINT8)u.ret[0];
+      ఆపు;
+    స్థితి FFI_TYPE_UINT16:
+      *(దొంతర + మొదటి_ARG_స్థానం) = (UINT16)u.ret[0];
+      ఆపు;
+    స్థితి FFI_TYPE_SINT16:
+      *(దొంతర + మొదటి_ARG_స్థానం) = (SINT16)u.ret[0];
+      ఆపు;
+    స్థితి FFI_TYPE_INT:
+    స్థితి FFI_TYPE_SINT32:
+      *(దొంతర + మొదటి_ARG_స్థానం) = (SINT32)u.ret[0];
+      ఆపు;
+    స్థితి FFI_TYPE_UINT32:
+      *(దొంతర - మొదటి_ARG_స్థానం) = (UINT32)u.ret[0];
+      ఆపు;
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_సూచిక:
+      *(దొంతర - మొదటి_ARG_స్థానం) = u.ret[0];
+      ఆపు;
 
-    case FFI_TYPE_LONGDOUBLE:
-      *(stack + FIRST_ARG_SLOT) = u.ret[0];
-      *(stack + FIRST_ARG_SLOT + 1) = u.ret[1];
-      break;
+    స్థితి FFI_TYPE_LONGDOUBLE:
+      *(దొంతర + మొదటి_ARG_స్థానం) = u.ret[0];
+      *(దొంతర + మొదటి_ARG_స్థానం + 1) = u.ret[1];
+      ఆపు;
 
-    case FFI_TYPE_DOUBLE:
+    స్థితి FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      ఆపు;
 
-    case FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_FLOAT:
       /* Adjust for address adjustment in fldw macro.  */
       fldw(rvalue - 4, fr4);
-      break;
+      ఆపు;
 
-    case FFI_TYPE_STRUCT:
+    స్థితి FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      ఆపు;
 
-    case -1:
-    case -2:
-    case -3:
-    case -4:
-    case -5:
-    case -6:
-    case -7:
-    case -8:
-    case -9:
-    case -10:
-    case -11:
-    case -12:
-    case -13:
-    case -14:
-    case -15:
-    case -16:
-      tmp = (void*)(stack + FIRST_ARG_SLOT);
-      memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+    స్థితి -1:
+    స్థితి -2:
+    స్థితి -3:
+    స్థితి -4:
+    స్థితి -5:
+    స్థితి -6:
+    స్థితి -7:
+    స్థితి -8:
+    స్థితి -9:
+    స్థితి -10:
+    స్థితి -11:
+    స్థితి -12:
+    స్థితి -13:
+    స్థితి -14:
+    స్థితి -15:
+    స్థితి -16:
+      tmp = (శూన్య*)(దొంతర + మొదటి_ARG_స్థానం);
+      జ్ఞాపకం_నకలు((శూన్య*)tmp, &u, cif->rtype->కొలత);
+      ఆపు;
 
-    case FFI_TYPE_VOID:
-      break;
+    స్థితి FFI_TYPE_VOID:
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      ఆపు;
     }
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
    cif specifies the argument and result types for fun.
    The cif must already be prep'ed.  */
 
-extern void ffi_closure_pa64(void);
+బాహ్య శూన్య ffi_సంవృతం_pa64(శూన్య);
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం* సంవృతం,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun)(ffi_cif*,శూన్య*,శూన్య**,శూన్య*),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
   /* The layout of a function descriptor.  */
-  struct pa64_fd
+  నిర్మాణం pa64_fd
   {
     UINT64 tmp1;
     UINT64 tmp2;
-    UINT64 code_pointer;
+    UINT64 సంకేతం_సూచిక;
     UINT64 gp;
   };
 
-  struct ffi_pa64_trampoline_struct
+  నిర్మాణం ffi_pa64_trampoline_struct
   {
     UINT64 real_gp;             /* Real gp value.  */
     UINT64 tmp2;
-    UINT64 code_pointer;        /* Pointer to ffi_closure_unix.  */
+    UINT64 సంకేతం_సూచిక;        /* Pointer to ffi_closure_unix.  */
     UINT64 fake_gp;             /* Pointer to closure, installed as gp.  */
   };
 
-  struct ffi_pa64_trampoline_struct *tramp;
-  struct pa64_fd *fd;
+  నిర్మాణం ffi_pa64_trampoline_struct *tramp;
+  నిర్మాణం pa64_fd *fd;
 
-  if (cif->abi != FFI_PA64)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_PA64)
+    తిరిగి FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa64.  */
-  fd = (struct pa64_fd *)((UINT64)ffi_closure_pa64);
+  fd = (నిర్మాణం pa64_fd *)((UINT64)ffi_సంవృతం_pa64);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa64_trampoline_struct *)closure->tramp;
-  tramp->code_pointer = fd->code_pointer;
+  tramp = (నిర్మాణం ffi_pa64_trampoline_struct *)సంవృతం->tramp;
+  tramp->సంకేతం_సూచిక = fd->సంకేతం_సూచిక;
   tramp->fake_gp = (UINT64)codeloc;
   tramp->real_gp = fd->gp;
 
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
+  సంవృతం->cif  = cif;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
+  సంవృతం->fun  = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
-#endif
+#అయితే_ముగింపు

@@ -4,222 +4,222 @@
    m68k Foreign Function Interface
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#అన్తర్భావ <ffi.h>
+#అన్తర్భావ <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
-#ifdef __rtems__
-void rtems_cache_flush_multiple_data_lines( const void *, size_t );
-#else
-#include <sys/syscall.h>
-#ifdef __MINT__
-#include <mint/mintbind.h>
-#include <mint/ssystem.h>
-#else
-#include <asm/cachectl.h>
-#endif
-#endif
+#అన్తర్భావ <stdlib.h>
+#అన్తర్భావ <unistd.h>
+#నిర్వచితమైతే __rtems__
+శూన్య rtems_cache_flush_గుణిజం_దత్తాంశం_పంక్తులు( స్థిరరాశి శూన్య *, size_t );
+#లేకపోతే
+#అన్తర్భావ <sys/syscall.h>
+#నిర్వచితమైతే __MINT__
+#అన్తర్భావ <mint/mintbind.h>
+#అన్తర్భావ <mint/ssystem.h>
+#లేకపోతే
+#అన్తర్భావ <asm/cachectl.h>
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
-void ffi_call_SYSV (extended_cif *,
-		    unsigned, unsigned,
-		    void *, void (*fn) ());
-void *ffi_prep_args (void *stack, extended_cif *ecif);
-void ffi_closure_SYSV (ffi_closure *);
-void ffi_closure_struct_SYSV (ffi_closure *);
-unsigned int ffi_closure_SYSV_inner (ffi_closure *closure,
-				     void *resp, void *args);
+శూన్య ffi_call_SYSV (extended_cif *,
+		    గుర్తులేని, గుర్తులేని,
+		    శూన్య *, శూన్య (*fn) ());
+శూన్య *ffi_prep_వాదనలు (శూన్య *దొంతర, extended_cif *ecif);
+శూన్య ffi_సంవృతం_SYSV (ffi_సంవృతం *);
+శూన్య ffi_సంవృతం_struct_SYSV (ffi_సంవృతం *);
+గుర్తులేని పూర్ణాంకం ffi_సంవృతం_SYSV_inner (ffi_సంవృతం *సంవృతం,
+				     శూన్య *resp, శూన్య *వాదనలు);
 
 /* ffi_prep_args is called by the assembly routine once stack space has
    been allocated for the function's arguments.  */
 
-void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+శూన్య *
+ffi_prep_వాదనలు (శూన్య *దొంతర, extended_cif *ecif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  గుర్తులేని పూర్ణాంకం i;
+  శూన్య **p_argv;
+  అక్షరం *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  శూన్య *struct_విలువ_ptr;
 
-  argp = stack;
+  argp = దొంతర;
 
-  if (
-#ifdef __MINT__
+  ఒకవేళ (
+#నిర్వచితమైతే __MINT__
       (ecif->cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
-#endif
+#అయితే_ముగింపు
       (((ecif->cif->rtype->type == FFI_TYPE_STRUCT)
         && !ecif->cif->flags)))
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_విలువ_ptr = ecif->rvalue;
+  లేకపోతే
+    struct_విలువ_ptr = ఖాళీ;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  కొరకు (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
-      size_t z = (*p_arg)->size;
-      int type = (*p_arg)->type;
+      size_t z = (*p_arg)->కొలత;
+      పూర్ణాంకం type = (*p_arg)->type;
 
-      if (z < sizeof (int))
+      ఒకవేళ (z < పరిమాణం (పూర్ణాంకం))
 	{
-	  switch (type)
+	  ఎంపిక (type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    స్థితి FFI_TYPE_SINT8:
+	      *(గుర్తుగల పూర్ణాంకం *) argp = (గుర్తుగల పూర్ణాంకం) *(SINT8 *) *p_argv;
+	      ఆపు;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    స్థితి FFI_TYPE_UINT8:
+	      *(గుర్తులేని పూర్ణాంకం *) argp = (గుర్తులేని పూర్ణాంకం) *(UINT8 *) *p_argv;
+	      ఆపు;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    స్థితి FFI_TYPE_SINT16:
+	      *(గుర్తుగల పూర్ణాంకం *) argp = (గుర్తుగల పూర్ణాంకం) *(SINT16 *) *p_argv;
+	      ఆపు;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    స్థితి FFI_TYPE_UINT16:
+	      *(గుర్తులేని పూర్ణాంకం *) argp = (గుర్తులేని పూర్ణాంకం) *(UINT16 *) *p_argv;
+	      ఆపు;
 
-	    case FFI_TYPE_STRUCT:
-#ifdef __MINT__
-	      if (z == 1 || z == 2)
-		memcpy (argp + 2, *p_argv, z);
-              else
-		memcpy (argp, *p_argv, z);
-#else
-	      memcpy (argp + sizeof (int) - z, *p_argv, z);
-#endif
-	      break;
+	    స్థితి FFI_TYPE_STRUCT:
+#నిర్వచితమైతే __MINT__
+	      ఒకవేళ (z == 1 || z == 2)
+		జ్ఞాపకం_నకలు (argp + 2, *p_argv, z);
+              లేకపోతే
+		జ్ఞాపకం_నకలు (argp, *p_argv, z);
+#లేకపోతే
+	      జ్ఞాపకం_నకలు (argp + పరిమాణం (పూర్ణాంకం) - z, *p_argv, z);
+#అయితే_ముగింపు
+	      ఆపు;
 
-	    default:
+	    అప్రమేయ:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = పరిమాణం (పూర్ణాంకం);
 	}
-      else
+      లేకపోతే
 	{
-	  memcpy (argp, *p_argv, z);
+	  జ్ఞాపకం_నకలు (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  ఒకవేళ ((పరిమాణం(పూర్ణాంకం) - 1) & z)
+	    z = FFI_ALIGN(z, పరిమాణం(పూర్ణాంకం));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  తిరిగి struct_విలువ_ptr;
 }
 
-#define CIF_FLAGS_INT		1
-#define CIF_FLAGS_DINT		2
-#define CIF_FLAGS_FLOAT		4
-#define CIF_FLAGS_DOUBLE	8
-#define CIF_FLAGS_LDOUBLE	16
-#define CIF_FLAGS_POINTER	32
-#define CIF_FLAGS_STRUCT1	64
-#define CIF_FLAGS_STRUCT2	128
-#define CIF_FLAGS_SINT8		256
-#define CIF_FLAGS_SINT16	512
+#నిర్వచించు CIF_FLAGS_INT		1
+#నిర్వచించు CIF_FLAGS_DINT		2
+#నిర్వచించు CIF_FLAGS_FLOAT		4
+#నిర్వచించు CIF_FLAGS_DOUBLE	8
+#నిర్వచించు CIF_FLAGS_LDOUBLE	16
+#నిర్వచించు CIF_FLAGS_సూచిక	32
+#నిర్వచించు CIF_FLAGS_STRUCT1	64
+#నిర్వచించు CIF_FLAGS_STRUCT2	128
+#నిర్వచించు CIF_FLAGS_SINT8		256
+#నిర్వచించు CIF_FLAGS_SINT16	512
 
 /* Perform machine dependent cif processing */
-ffi_status
+ffi_స్థితి
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  ఎంపిక (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    స్థితి FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    స్థితి FFI_TYPE_STRUCT:
+      ఒకవేళ (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
           cif->rtype->elements[1])
         {
           cif->flags = 0;
-          break;
+          ఆపు;
         }
 
-      switch (cif->rtype->size)
+      ఎంపిక (cif->rtype->కొలత)
 	{
-	case 1:
-#ifdef __MINT__
+	స్థితి 1:
+#నిర్వచితమైతే __MINT__
 	  cif->flags = CIF_FLAGS_STRUCT2;
-#else
+#లేకపోతే
 	  cif->flags = CIF_FLAGS_STRUCT1;
-#endif
-	  break;
-	case 2:
+#అయితే_ముగింపు
+	  ఆపు;
+	స్థితి 2:
 	  cif->flags = CIF_FLAGS_STRUCT2;
-	  break;
-#ifdef __MINT__
-	case 3:
-#endif
-	case 4:
+	  ఆపు;
+#నిర్వచితమైతే __MINT__
+	స్థితి 3:
+#అయితే_ముగింపు
+	స్థితి 4:
 	  cif->flags = CIF_FLAGS_INT;
-	  break;
-#ifdef __MINT__
-	case 7:
-#endif
-	case 8:
+	  ఆపు;
+#నిర్వచితమైతే __MINT__
+	స్థితి 7:
+#అయితే_ముగింపు
+	స్థితి 8:
 	  cif->flags = CIF_FLAGS_DINT;
-	  break;
-	default:
+	  ఆపు;
+	అప్రమేయ:
 	  cif->flags = 0;
-	  break;
+	  ఆపు;
 	}
-      break;
+      ఆపు;
 
-    case FFI_TYPE_FLOAT:
+    స్థితి FFI_TYPE_FLOAT:
       cif->flags = CIF_FLAGS_FLOAT;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_DOUBLE:
+    స్థితి FFI_TYPE_DOUBLE:
       cif->flags = CIF_FLAGS_DOUBLE;
-      break;
+      ఆపు;
 
-#if (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
-    case FFI_TYPE_LONGDOUBLE:
-#ifdef __MINT__
+#ఒకవేళ (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
+    స్థితి FFI_TYPE_LONGDOUBLE:
+#నిర్వచితమైతే __MINT__
       cif->flags = 0;
-#else
+#లేకపోతే
       cif->flags = CIF_FLAGS_LDOUBLE;
-#endif
-      break;
-#endif
+#అయితే_ముగింపు
+      ఆపు;
+#అయితే_ముగింపు
 
-    case FFI_TYPE_POINTER:
-      cif->flags = CIF_FLAGS_POINTER;
-      break;
+    స్థితి FFI_TYPE_సూచిక:
+      cif->flags = CIF_FLAGS_సూచిక;
+      ఆపు;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    స్థితి FFI_TYPE_SINT64:
+    స్థితి FFI_TYPE_UINT64:
       cif->flags = CIF_FLAGS_DINT;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_SINT16:
+    స్థితి FFI_TYPE_SINT16:
       cif->flags = CIF_FLAGS_SINT16;
-      break;
+      ఆపు;
 
-    case FFI_TYPE_SINT8:
+    స్థితి FFI_TYPE_SINT8:
       cif->flags = CIF_FLAGS_SINT8;
-      break;
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       cif->flags = CIF_FLAGS_INT;
-      break;
+      ఆపు;
     }
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+శూన్య
+ffi_call (ffi_cif *cif, శూన్య (*fn) (), శూన్య *rvalue, శూన్య **avalue)
 {
   extended_cif ecif;
 
@@ -229,75 +229,75 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  ఒకవేళ (rvalue == ఖాళీ
       && cif->rtype->type == FFI_TYPE_STRUCT
-      && cif->rtype->size > 8)
-    ecif.rvalue = alloca (cif->rtype->size);
-  else
+      && cif->rtype->కొలత > 8)
+    ecif.rvalue = alloca (cif->rtype->కొలత);
+  లేకపోతే
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  ఎంపిక (cif->abi)
     {
-    case FFI_SYSV:
-      ffi_call_SYSV (&ecif, cif->bytes, cif->flags,
+    స్థితి FFI_SYSV:
+      ffi_call_SYSV (&ecif, cif->బైట్లు, cif->flags,
 		     ecif.rvalue, fn);
-      break;
+      ఆపు;
 
-    default:
+    అప్రమేయ:
       FFI_ASSERT (0);
-      break;
+      ఆపు;
     }
 }
 
-static void
-ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
+స్థిర శూన్య
+ffi_prep_incoming_వాదనలు_SYSV (అక్షరం *దొంతర, శూన్య **avalue, ffi_cif *cif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  గుర్తులేని పూర్ణాంకం i;
+  శూన్య **p_argv;
+  అక్షరం *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = దొంతర;
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
+  కొరకు (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-#ifdef __MINT__
-      if (cif->flags &&
+      z = (*p_arg)->కొలత;
+#నిర్వచితమైతే __MINT__
+      ఒకవేళ (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 1 || z == 2))
  	{
-	  *p_argv = (void *) (argp + 2);
+	  *p_argv = (శూన్య *) (argp + 2);
 
 	  z = 4;
 	}
-      else
-      if (cif->flags &&
+      లేకపోతే
+      ఒకవేళ (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 3 || z == 4))
  	{
-	  *p_argv = (void *) (argp);
+	  *p_argv = (శూన్య *) (argp);
 
 	  z = 4;
 	}
-      else
-#endif
-      if (z <= 4)
+      లేకపోతే
+#అయితే_ముగింపు
+      ఒకవేళ (z <= 4)
 	{
-	  *p_argv = (void *) (argp + 4 - z);
+	  *p_argv = (శూన్య *) (argp + 4 - z);
 
 	  z = 4;
 	}
-      else
+      లేకపోతే
 	{
-	  *p_argv = (void *) argp;
+	  *p_argv = (శూన్య *) argp;
 
 	  /* Align if necessary */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  ఒకవేళ ((పరిమాణం(పూర్ణాంకం) - 1) & z)
+	    z = FFI_ALIGN(z, పరిమాణం(పూర్ణాంకం));
 	}
 
       p_argv++;
@@ -305,58 +305,58 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
     }
 }
 
-unsigned int
-ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
+గుర్తులేని పూర్ణాంకం
+ffi_సంవృతం_SYSV_inner (ffi_సంవృతం *సంవృతం, శూన్య *resp, శూన్య *వాదనలు)
 {
   ffi_cif *cif;
-  void **arg_area;
+  శూన్య **arg_area;
 
-  cif = closure->cif;
-  arg_area = (void**) alloca (cif->nargs * sizeof (void *));
+  cif = సంవృతం->cif;
+  arg_area = (శూన్య**) alloca (cif->nargs * పరిమాణం (శూన్య *));
 
-  ffi_prep_incoming_args_SYSV(args, arg_area, cif);
+  ffi_prep_incoming_వాదనలు_SYSV(వాదనలు, arg_area, cif);
 
-  (closure->fun) (cif, resp, arg_area, closure->user_data);
+  (సంవృతం->fun) (cif, resp, arg_area, సంవృతం->user_దత్తాంశం);
 
-  return cif->flags;
+  తిరిగి cif->flags;
 }
 
-ffi_status
-ffi_prep_closure_loc (ffi_closure* closure,
+ffi_స్థితి
+ffi_prep_సంవృతం_loc (ffi_సంవృతం* సంవృతం,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      శూన్య (*fun)(ffi_cif*,శూన్య*,శూన్య**,శూన్య*),
+		      శూన్య *user_దత్తాంశం,
+		      శూన్య *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ఒకవేళ (cif->abi != FFI_SYSV)
+    తిరిగి FFI_BAD_ABI;
 
-  *(unsigned short *)closure->tramp = 0x207c;
-  *(void **)(closure->tramp + 2) = codeloc;
-  *(unsigned short *)(closure->tramp + 6) = 0x4ef9;
+  *(గుర్తులేని పొట్టి *)సంవృతం->tramp = 0x207c;
+  *(శూన్య **)(సంవృతం->tramp + 2) = codeloc;
+  *(గుర్తులేని పొట్టి *)(సంవృతం->tramp + 6) = 0x4ef9;
 
-  if (
-#ifdef __MINT__
+  ఒకవేళ (
+#నిర్వచితమైతే __MINT__
       (cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
-#endif
+#అయితే_ముగింపు
       (((cif->rtype->type == FFI_TYPE_STRUCT)
          && !cif->flags)))
-    *(void **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
-  else
-    *(void **)(closure->tramp + 8) = ffi_closure_SYSV;
+    *(శూన్య **)(సంవృతం->tramp + 8) = ffi_సంవృతం_struct_SYSV;
+  లేకపోతే
+    *(శూన్య **)(సంవృతం->tramp + 8) = ffi_సంవృతం_SYSV;
 
-#ifdef __rtems__
-  rtems_cache_flush_multiple_data_lines( codeloc, FFI_TRAMPOLINE_SIZE );
-#elif defined(__MINT__)
-  Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_SIZE);
-#else
-  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_LINE,
-	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_SIZE);
-#endif
+#నిర్వచితమైతే __rtems__
+  rtems_cache_flush_గుణిజం_దత్తాంశం_పంక్తులు( codeloc, FFI_TRAMPOLINE_కొలత );
+#లేదావేళ defined(__MINT__)
+  Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_కొలత);
+#లేకపోతే
+  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_పంక్తి,
+	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_కొలత);
+#అయితే_ముగింపు
 
-  closure->cif  = cif;
-  closure->user_data = user_data;
-  closure->fun  = fun;
+  సంవృతం->cif  = cif;
+  సంవృతం->user_దత్తాంశం = user_దత్తాంశం;
+  సంవృతం->fun  = fun;
 
-  return FFI_OK;
+  తిరిగి FFI_OK;
 }

@@ -27,37 +27,37 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
+రకనిర్వచనం గుర్తులేని దీర్ఘ          ffi_arg;
+రకనిర్వచనం గుర్తుగల దీర్ఘ            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV,
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
-#ifdef __CSKYABIV2__
-#define FFI_ASM_ARGREG_SIZE 16
-#define TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_ASM_ARGREG_SIZE 24
-#define TRAMPOLINE_SIZE 20
-#define FFI_TRAMPOLINE_SIZE 28
-#endif
+#నిర్వచితమైతే __CSKYABIV2__
+#నిర్వచించు FFI_ASM_ARGREG_కొలత 16
+#నిర్వచించు TRAMPOLINE_కొలత 16
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 24
+#లేకపోతే
+#నిర్వచించు FFI_ASM_ARGREG_కొలత 24
+#నిర్వచించు TRAMPOLINE_కొలత 20
+#నిర్వచించు FFI_TRAMPOLINE_కొలత 28
+#అయితే_ముగింపు
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#endif
+#నిర్వచించు FFI_CLOSURES 1
+#నిర్వచించు FFI_NATIVE_RAW_API 0
+#అయితే_ముగింపు

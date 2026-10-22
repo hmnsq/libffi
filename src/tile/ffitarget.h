@@ -23,43 +23,43 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#నిర్వచితం_కాకపోతే LIBFFI_లక్ష్యం_H
+#నిర్వచించు LIBFFI_లక్ష్యం_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#నిర్వచితం_కాకపోతే LIBFFI_H
+#దోషం "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#అయితే_ముగింపు
 
-#ifndef LIBFFI_ASM
+#నిర్వచితం_కాకపోతే LIBFFI_ASM
 
-#include <arch/abi.h>
+#అన్తర్భావ <arch/abi.h>
 
-typedef uint_reg_t ffi_arg;
-typedef int_reg_t  ffi_sarg;
+రకనిర్వచనం uint_reg_t ffi_arg;
+రకనిర్వచనం int_reg_t  ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+రకనిర్వచనం గణన ffi_abi {
+  FFI_మొదటి_ABI = 0,
   FFI_UNIX,
-  FFI_LAST_ABI,
+  FFI_చివరి_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX
 } ffi_abi;
-#endif
+#అయితే_ముగింపు
 
 /* ---- Definitions for closures ----------------------------------------- */
-#define FFI_CLOSURES 1
+#నిర్వచించు FFI_CLOSURES 1
 
-#ifdef __tilegx__
+#నిర్వచితమైతే __tilegx__
 /* We always pass 8-byte values, even in -m32 mode. */
 # define FFI_SIZEOF_ARG 8
 # ifdef __LP64__
-#  define FFI_TRAMPOLINE_SIZE (8 * 5)  /* 5 bundles */
-# else
-#  define FFI_TRAMPOLINE_SIZE (8 * 3)  /* 3 bundles */
+#  define FFI_TRAMPOLINE_కొలత (8 * 5)  /* 5 bundles */
+# లేకపోతే
+#  define FFI_TRAMPOLINE_కొలత (8 * 3)  /* 3 bundles */
 # endif
-#else
+#లేకపోతే
 # define FFI_SIZEOF_ARG 4
-# define FFI_TRAMPOLINE_SIZE 8 /* 1 bundle */
-#endif
-#define FFI_NATIVE_RAW_API 0
+# define FFI_TRAMPOLINE_కొలత 8 /* 1 bundle */
+#అయితే_ముగింపు
+#నిర్వచించు FFI_NATIVE_RAW_API 0
 
-#endif
+#అయితే_ముగింపు

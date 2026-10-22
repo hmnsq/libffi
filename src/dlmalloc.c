@@ -522,211 +522,211 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 */
 
 /* Version identifier to allow people to support multiple versions */
-#ifndef DLMALLOC_VERSION
-#define DLMALLOC_VERSION 20806
-#endif /* DLMALLOC_VERSION */
+#నిర్వచితం_కాకపోతే DLMALLOC_సంస్కరణ
+#నిర్వచించు DLMALLOC_సంస్కరణ 20806
+#అయితే_ముగింపు /* DLMALLOC_VERSION */
 
-#ifndef DLMALLOC_EXPORT
-#define DLMALLOC_EXPORT extern
-#endif
+#నిర్వచితం_కాకపోతే DLMALLOC_EXPORT
+#నిర్వచించు DLMALLOC_EXPORT బాహ్య
+#అయితే_ముగింపు
 
-#if defined __linux__ && !defined _GNU_SOURCE
+#ఒకవేళ defined __linux__ && !defined GNU_ఆధారం
 /* mremap() on Linux requires this via sys/mman.h */
-#define _GNU_SOURCE 1
-#endif
+#నిర్వచించు GNU_ఆధారం 1
+#అయితే_ముగింపు
 
-#ifndef WIN32
-#ifdef _WIN32
-#define WIN32 1
-#endif  /* _WIN32 */
-#ifdef _WIN32_WCE
-#define LACKS_FCNTL_H
-#define WIN32 1
-#endif /* _WIN32_WCE */
-#endif  /* WIN32 */
-#ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <tchar.h>
-#define HAVE_MMAP 1
-#define HAVE_MORECORE 0
-#define LACKS_UNISTD_H
-#define LACKS_SYS_PARAM_H
-#define LACKS_SYS_MMAN_H
-#define LACKS_STRING_H
-#define LACKS_STRINGS_H
-#define LACKS_SYS_TYPES_H
-#define LACKS_ERRNO_H
-#define LACKS_SCHED_H
-#ifndef MALLOC_FAILURE_ACTION
-#define MALLOC_FAILURE_ACTION
-#endif /* MALLOC_FAILURE_ACTION */
-#ifndef MMAP_CLEARS
-#ifdef _WIN32_WCE /* WINCE reportedly does not clear */
-#define MMAP_CLEARS 0
-#else
-#define MMAP_CLEARS 1
-#endif /* _WIN32_WCE */
-#endif /*MMAP_CLEARS */
-#endif  /* WIN32 */
+#నిర్వచితం_కాకపోతే WIN32
+#నిర్వచితమైతే _WIN32
+#నిర్వచించు WIN32 1
+#అయితే_ముగింపు  /* _WIN32 */
+#నిర్వచితమైతే _WIN32_WCE
+#నిర్వచించు LACKS_FCNTL_H
+#నిర్వచించు WIN32 1
+#అయితే_ముగింపు /* _WIN32_WCE */
+#అయితే_ముగింపు  /* WIN32 */
+#నిర్వచితమైతే WIN32
+#నిర్వచించు WIN32_LEAN_AND_సగటు
+#అన్తర్భావ <windows.h>
+#అన్తర్భావ <tchar.h>
+#నిర్వచించు HAVE_MMAP 1
+#నిర్వచించు HAVE_MORECORE 0
+#నిర్వచించు LACKS_UNISTD_H
+#నిర్వచించు LACKS_SYS_PARAM_H
+#నిర్వచించు LACKS_SYS_MMAN_H
+#నిర్వచించు LACKS_STRING_H
+#నిర్వచించు LACKS_అక్షరశ్రేణులు_H
+#నిర్వచించు LACKS_SYS_TYPES_H
+#నిర్వచించు LACKS_ERRNO_H
+#నిర్వచించు LACKS_SCHED_H
+#నిర్వచితం_కాకపోతే MALLOC_FAILURE_ACTION
+#నిర్వచించు MALLOC_FAILURE_ACTION
+#అయితే_ముగింపు /* MALLOC_FAILURE_ACTION */
+#నిర్వచితం_కాకపోతే MMAP_CLEARS
+#నిర్వచితమైతే _WIN32_WCE /* WINCE reportedly does not clear */
+#నిర్వచించు MMAP_CLEARS 0
+#లేకపోతే
+#నిర్వచించు MMAP_CLEARS 1
+#అయితే_ముగింపు /* _WIN32_WCE */
+#అయితే_ముగింపు /*MMAP_CLEARS */
+#అయితే_ముగింపు  /* WIN32 */
 
-#ifdef __OS2__
-#define INCL_DOS
-#include <os2.h>
-#define HAVE_MMAP 1
-#define HAVE_MORECORE 0
-#define LACKS_SYS_MMAN_H
-#endif  /* __OS2__ */
+#నిర్వచితమైతే __OS2__
+#నిర్వచించు INCL_DOS
+#అన్తర్భావ <os2.h>
+#నిర్వచించు HAVE_MMAP 1
+#నిర్వచించు HAVE_MORECORE 0
+#నిర్వచించు LACKS_SYS_MMAN_H
+#అయితే_ముగింపు  /* __OS2__ */
 
-#if defined(DARWIN) || defined(_DARWIN)
+#ఒకవేళ defined(DARWIN) || defined(_DARWIN)
 /* Mac OSX docs advise not to use sbrk; it seems better to use mmap */
-#ifndef HAVE_MORECORE
-#define HAVE_MORECORE 0
-#define HAVE_MMAP 1
+#నిర్వచితం_కాకపోతే HAVE_MORECORE
+#నిర్వచించు HAVE_MORECORE 0
+#నిర్వచించు HAVE_MMAP 1
 /* OSX allocators provide 16 byte alignment */
-#ifndef MALLOC_ALIGNMENT
-#define MALLOC_ALIGNMENT ((size_t)16U)
-#endif
-#endif  /* HAVE_MORECORE */
-#endif  /* DARWIN */
+#నిర్వచితం_కాకపోతే MALLOC_ALIGNMENT
+#నిర్వచించు MALLOC_ALIGNMENT ((size_t)16U)
+#అయితే_ముగింపు
+#అయితే_ముగింపు  /* HAVE_MORECORE */
+#అయితే_ముగింపు  /* DARWIN */
 
-#ifndef LACKS_SYS_TYPES_H
-#include <sys/types.h>  /* For size_t */
-#endif  /* LACKS_SYS_TYPES_H */
+#నిర్వచితం_కాకపోతే LACKS_SYS_TYPES_H
+#అన్తర్భావ <sys/types.h>  /* For size_t */
+#అయితే_ముగింపు  /* LACKS_SYS_TYPES_H */
 
 /* The maximum possible size_t value has all bits set */
-#define MAX_SIZE_T           (~(size_t)0)
+#నిర్వచించు MAX_కొలత_T           (~(size_t)0)
 
-#ifndef USE_LOCKS /* ensure true if spin or recursive locks set */
-#define USE_LOCKS  ((defined(USE_SPIN_LOCKS) && USE_SPIN_LOCKS != 0) || \
+#నిర్వచితం_కాకపోతే USE_LOCKS /* ensure true if spin or recursive locks set */
+#నిర్వచించు USE_LOCKS  ((defined(USE_SPIN_LOCKS) && USE_SPIN_LOCKS != 0) || \
                     (defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0))
-#endif /* USE_LOCKS */
+#అయితే_ముగింపు /* USE_LOCKS */
 
-#if USE_LOCKS /* Spin locks for gcc >= 4.1, older gcc on x86, MSC >= 1310 */
-#if ((defined(__GNUC__) &&                                              \
+#ఒకవేళ USE_LOCKS /* Spin locks for gcc >= 4.1, older gcc on x86, MSC >= 1310 */
+#ఒకవేళ ((defined(__GNUC__) &&                                              \
       ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1)) ||      \
        defined(__i386__) || defined(__x86_64__))) ||                    \
      (defined(_MSC_VER) && _MSC_VER>=1310))
-#ifndef USE_SPIN_LOCKS
-#define USE_SPIN_LOCKS 1
-#endif /* USE_SPIN_LOCKS */
-#elif USE_SPIN_LOCKS
-#error "USE_SPIN_LOCKS defined without implementation"
-#endif /* ... locks available... */
-#elif !defined(USE_SPIN_LOCKS)
-#define USE_SPIN_LOCKS 0
-#endif /* USE_LOCKS */
+#నిర్వచితం_కాకపోతే USE_SPIN_LOCKS
+#నిర్వచించు USE_SPIN_LOCKS 1
+#అయితే_ముగింపు /* USE_SPIN_LOCKS */
+#లేదావేళ USE_SPIN_LOCKS
+#దోషం "USE_SPIN_LOCKS defined without implementation"
+#అయితే_ముగింపు /* ... locks available... */
+#లేదావేళ !defined(USE_SPIN_LOCKS)
+#నిర్వచించు USE_SPIN_LOCKS 0
+#అయితే_ముగింపు /* USE_LOCKS */
 
-#ifndef ONLY_MSPACES
-#define ONLY_MSPACES 0
-#endif  /* ONLY_MSPACES */
-#ifndef MSPACES
-#if ONLY_MSPACES
-#define MSPACES 1
-#else   /* ONLY_MSPACES */
-#define MSPACES 0
-#endif  /* ONLY_MSPACES */
-#endif  /* MSPACES */
-#ifndef MALLOC_ALIGNMENT
-#define MALLOC_ALIGNMENT ((size_t)(2 * sizeof(void *)))
-#endif  /* MALLOC_ALIGNMENT */
-#ifndef FOOTERS
-#define FOOTERS 0
-#endif  /* FOOTERS */
-#ifndef ABORT
-#define ABORT  abort()
-#endif  /* ABORT */
-#ifndef ABORT_ON_ASSERT_FAILURE
-#define ABORT_ON_ASSERT_FAILURE 1
-#endif  /* ABORT_ON_ASSERT_FAILURE */
-#ifndef PROCEED_ON_ERROR
-#define PROCEED_ON_ERROR 0
-#endif  /* PROCEED_ON_ERROR */
+#నిర్వచితం_కాకపోతే ONLY_MSPACES
+#నిర్వచించు ONLY_MSPACES 0
+#అయితే_ముగింపు  /* ONLY_MSPACES */
+#నిర్వచితం_కాకపోతే MSPACES
+#ఒకవేళ ONLY_MSPACES
+#నిర్వచించు MSPACES 1
+#లేకపోతే   /* ONLY_MSPACES */
+#నిర్వచించు MSPACES 0
+#అయితే_ముగింపు  /* ONLY_MSPACES */
+#అయితే_ముగింపు  /* MSPACES */
+#నిర్వచితం_కాకపోతే MALLOC_ALIGNMENT
+#నిర్వచించు MALLOC_ALIGNMENT ((size_t)(2 * పరిమాణం(శూన్య *)))
+#అయితే_ముగింపు  /* MALLOC_ALIGNMENT */
+#నిర్వచితం_కాకపోతే FOOTERS
+#నిర్వచించు FOOTERS 0
+#అయితే_ముగింపు  /* FOOTERS */
+#నిర్వచితం_కాకపోతే ABORT
+#నిర్వచించు ABORT  abort()
+#అయితే_ముగింపు  /* ABORT */
+#నిర్వచితం_కాకపోతే ABORT_ON_ASSERT_FAILURE
+#నిర్వచించు ABORT_ON_ASSERT_FAILURE 1
+#అయితే_ముగింపు  /* ABORT_ON_ASSERT_FAILURE */
+#నిర్వచితం_కాకపోతే PROCEED_ON_ERROR
+#నిర్వచించు PROCEED_ON_ERROR 0
+#అయితే_ముగింపు  /* PROCEED_ON_ERROR */
 
-#ifndef INSECURE
-#define INSECURE 0
-#endif  /* INSECURE */
-#ifndef MALLOC_INSPECT_ALL
-#define MALLOC_INSPECT_ALL 0
-#endif  /* MALLOC_INSPECT_ALL */
-#ifndef HAVE_MMAP
-#define HAVE_MMAP 1
-#endif  /* HAVE_MMAP */
-#ifndef MMAP_CLEARS
-#define MMAP_CLEARS 1
-#endif  /* MMAP_CLEARS */
-#ifndef HAVE_MREMAP
-#ifdef linux
-#define HAVE_MREMAP 1
-#define _GNU_SOURCE /* Turns on mremap() definition */
-#else   /* linux */
-#define HAVE_MREMAP 0
-#endif  /* linux */
-#endif  /* HAVE_MREMAP */
-#ifndef MALLOC_FAILURE_ACTION
-#define MALLOC_FAILURE_ACTION  errno = ENOMEM;
-#endif  /* MALLOC_FAILURE_ACTION */
-#ifndef HAVE_MORECORE
-#if ONLY_MSPACES
-#define HAVE_MORECORE 0
-#else   /* ONLY_MSPACES */
-#define HAVE_MORECORE 1
-#endif  /* ONLY_MSPACES */
-#endif  /* HAVE_MORECORE */
-#if !HAVE_MORECORE
-#define MORECORE_CONTIGUOUS 0
-#else   /* !HAVE_MORECORE */
-#define MORECORE_DEFAULT sbrk
-#ifndef MORECORE_CONTIGUOUS
-#define MORECORE_CONTIGUOUS 1
-#endif  /* MORECORE_CONTIGUOUS */
-#endif  /* HAVE_MORECORE */
-#ifndef DEFAULT_GRANULARITY
-#if (MORECORE_CONTIGUOUS || defined(WIN32))
-#define DEFAULT_GRANULARITY (0)  /* 0 means to compute in init_mparams */
-#else   /* MORECORE_CONTIGUOUS */
-#define DEFAULT_GRANULARITY ((size_t)64U * (size_t)1024U)
-#endif  /* MORECORE_CONTIGUOUS */
-#endif  /* DEFAULT_GRANULARITY */
-#ifndef DEFAULT_TRIM_THRESHOLD
-#ifndef MORECORE_CANNOT_TRIM
-#define DEFAULT_TRIM_THRESHOLD ((size_t)2U * (size_t)1024U * (size_t)1024U)
-#else   /* MORECORE_CANNOT_TRIM */
-#define DEFAULT_TRIM_THRESHOLD MAX_SIZE_T
-#endif  /* MORECORE_CANNOT_TRIM */
-#endif  /* DEFAULT_TRIM_THRESHOLD */
-#ifndef DEFAULT_MMAP_THRESHOLD
-#if HAVE_MMAP
-#define DEFAULT_MMAP_THRESHOLD ((size_t)256U * (size_t)1024U)
-#else   /* HAVE_MMAP */
-#define DEFAULT_MMAP_THRESHOLD MAX_SIZE_T
-#endif  /* HAVE_MMAP */
-#endif  /* DEFAULT_MMAP_THRESHOLD */
-#ifndef MAX_RELEASE_CHECK_RATE
-#if HAVE_MMAP
-#define MAX_RELEASE_CHECK_RATE 4095
-#else
-#define MAX_RELEASE_CHECK_RATE MAX_SIZE_T
-#endif /* HAVE_MMAP */
-#endif /* MAX_RELEASE_CHECK_RATE */
-#ifndef USE_BUILTIN_FFS
-#define USE_BUILTIN_FFS 0
-#endif  /* USE_BUILTIN_FFS */
-#ifndef USE_DEV_RANDOM
-#define USE_DEV_RANDOM 0
-#endif  /* USE_DEV_RANDOM */
-#ifndef NO_MALLINFO
-#define NO_MALLINFO 0
-#endif  /* NO_MALLINFO */
-#ifndef MALLINFO_FIELD_TYPE
-#define MALLINFO_FIELD_TYPE size_t
-#endif  /* MALLINFO_FIELD_TYPE */
-#ifndef NO_MALLOC_STATS
-#define NO_MALLOC_STATS 0
-#endif  /* NO_MALLOC_STATS */
-#ifndef NO_SEGMENT_TRAVERSAL
-#define NO_SEGMENT_TRAVERSAL 0
-#endif /* NO_SEGMENT_TRAVERSAL */
+#నిర్వచితం_కాకపోతే INSECURE
+#నిర్వచించు INSECURE 0
+#అయితే_ముగింపు  /* INSECURE */
+#నిర్వచితం_కాకపోతే MALLOC_INSPECT_ALL
+#నిర్వచించు MALLOC_INSPECT_ALL 0
+#అయితే_ముగింపు  /* MALLOC_INSPECT_ALL */
+#నిర్వచితం_కాకపోతే HAVE_MMAP
+#నిర్వచించు HAVE_MMAP 1
+#అయితే_ముగింపు  /* HAVE_MMAP */
+#నిర్వచితం_కాకపోతే MMAP_CLEARS
+#నిర్వచించు MMAP_CLEARS 1
+#అయితే_ముగింపు  /* MMAP_CLEARS */
+#నిర్వచితం_కాకపోతే HAVE_MREMAP
+#నిర్వచితమైతే linux
+#నిర్వచించు HAVE_MREMAP 1
+#నిర్వచించు GNU_ఆధారం /* Turns on mremap() definition */
+#లేకపోతే   /* linux */
+#నిర్వచించు HAVE_MREMAP 0
+#అయితే_ముగింపు  /* linux */
+#అయితే_ముగింపు  /* HAVE_MREMAP */
+#నిర్వచితం_కాకపోతే MALLOC_FAILURE_ACTION
+#నిర్వచించు MALLOC_FAILURE_ACTION  errno = ENOMEM;
+#అయితే_ముగింపు  /* MALLOC_FAILURE_ACTION */
+#నిర్వచితం_కాకపోతే HAVE_MORECORE
+#ఒకవేళ ONLY_MSPACES
+#నిర్వచించు HAVE_MORECORE 0
+#లేకపోతే   /* ONLY_MSPACES */
+#నిర్వచించు HAVE_MORECORE 1
+#అయితే_ముగింపు  /* ONLY_MSPACES */
+#అయితే_ముగింపు  /* HAVE_MORECORE */
+#ఒకవేళ !HAVE_MORECORE
+#నిర్వచించు MORECORE_CONTIGUOUS 0
+#లేకపోతే   /* !HAVE_MORECORE */
+#నిర్వచించు MORECORE_DEFAULT sbrk
+#నిర్వచితం_కాకపోతే MORECORE_CONTIGUOUS
+#నిర్వచించు MORECORE_CONTIGUOUS 1
+#అయితే_ముగింపు  /* MORECORE_CONTIGUOUS */
+#అయితే_ముగింపు  /* HAVE_MORECORE */
+#నిర్వచితం_కాకపోతే DEFAULT_GRANULARITY
+#ఒకవేళ (MORECORE_CONTIGUOUS || defined(WIN32))
+#నిర్వచించు DEFAULT_GRANULARITY (0)  /* 0 means to compute in init_mparams */
+#లేకపోతే   /* MORECORE_CONTIGUOUS */
+#నిర్వచించు DEFAULT_GRANULARITY ((size_t)64U * (size_t)1024U)
+#అయితే_ముగింపు  /* MORECORE_CONTIGUOUS */
+#అయితే_ముగింపు  /* DEFAULT_GRANULARITY */
+#నిర్వచితం_కాకపోతే DEFAULT_TRIM_పరిమితి
+#నిర్వచితం_కాకపోతే MORECORE_CANNOT_TRIM
+#నిర్వచించు DEFAULT_TRIM_పరిమితి ((size_t)2U * (size_t)1024U * (size_t)1024U)
+#లేకపోతే   /* MORECORE_CANNOT_TRIM */
+#నిర్వచించు DEFAULT_TRIM_పరిమితి MAX_కొలత_T
+#అయితే_ముగింపు  /* MORECORE_CANNOT_TRIM */
+#అయితే_ముగింపు  /* DEFAULT_TRIM_THRESHOLD */
+#నిర్వచితం_కాకపోతే DEFAULT_MMAP_పరిమితి
+#ఒకవేళ HAVE_MMAP
+#నిర్వచించు DEFAULT_MMAP_పరిమితి ((size_t)256U * (size_t)1024U)
+#లేకపోతే   /* HAVE_MMAP */
+#నిర్వచించు DEFAULT_MMAP_పరిమితి MAX_కొలత_T
+#అయితే_ముగింపు  /* HAVE_MMAP */
+#అయితే_ముగింపు  /* DEFAULT_MMAP_THRESHOLD */
+#నిర్వచితం_కాకపోతే MAX_RELEASE_CHECK_రేటు
+#ఒకవేళ HAVE_MMAP
+#నిర్వచించు MAX_RELEASE_CHECK_రేటు 4095
+#లేకపోతే
+#నిర్వచించు MAX_RELEASE_CHECK_రేటు MAX_కొలత_T
+#అయితే_ముగింపు /* HAVE_MMAP */
+#అయితే_ముగింపు /* MAX_RELEASE_CHECK_RATE */
+#నిర్వచితం_కాకపోతే USE_BUILTIN_FFS
+#నిర్వచించు USE_BUILTIN_FFS 0
+#అయితే_ముగింపు  /* USE_BUILTIN_FFS */
+#నిర్వచితం_కాకపోతే USE_DEV_RANDOM
+#నిర్వచించు USE_DEV_RANDOM 0
+#అయితే_ముగింపు  /* USE_DEV_RANDOM */
+#నిర్వచితం_కాకపోతే NO_MALLINFO
+#నిర్వచించు NO_MALLINFO 0
+#అయితే_ముగింపు  /* NO_MALLINFO */
+#నిర్వచితం_కాకపోతే MALLINFO_క్షేత్రం_TYPE
+#నిర్వచించు MALLINFO_క్షేత్రం_TYPE size_t
+#అయితే_ముగింపు  /* MALLINFO_FIELD_TYPE */
+#నిర్వచితం_కాకపోతే NO_MALLOC_STATS
+#నిర్వచించు NO_MALLOC_STATS 0
+#అయితే_ముగింపు  /* NO_MALLOC_STATS */
+#నిర్వచితం_కాకపోతే NO_SEGMENT_TRAVERSAL
+#నిర్వచించు NO_SEGMENT_TRAVERSAL 0
+#అయితే_ముగింపు /* NO_SEGMENT_TRAVERSAL */
 
 /*
   mallopt tuning options.  SVID/XPG defines four standard parameter
@@ -736,17 +736,17 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 */
 
 /* The system's malloc.h may have conflicting defines. */
-#undef M_TRIM_THRESHOLD
-#undef M_GRANULARITY
-#undef M_MMAP_THRESHOLD
+#నిర్వచనం_రద్దు M_TRIM_పరిమితి
+#నిర్వచనం_రద్దు M_GRANULARITY
+#నిర్వచనం_రద్దు M_MMAP_పరిమితి
 
-#define M_TRIM_THRESHOLD     (-1)
-#define M_GRANULARITY        (-2)
-#define M_MMAP_THRESHOLD     (-3)
+#నిర్వచించు M_TRIM_పరిమితి     (-1)
+#నిర్వచించు M_GRANULARITY        (-2)
+#నిర్వచించు M_MMAP_పరిమితి     (-3)
 
 /* ------------------------ Mallinfo declarations ------------------------ */
 
-#if !NO_MALLINFO
+#ఒకవేళ !NO_MALLINFO
 /*
   This version of malloc supports the standard SVID/XPG mallinfo
   routine that returns a struct containing usage properties and
@@ -771,89 +771,89 @@ MAX_RELEASE_CHECK_RATE   default: 4095 unless not HAVE_MMAP
 
 /* #define HAVE_USR_INCLUDE_MALLOC_H */
 
-#ifdef HAVE_USR_INCLUDE_MALLOC_H
-#include "/usr/include/malloc.h"
-#else /* HAVE_USR_INCLUDE_MALLOC_H */
-#ifndef STRUCT_MALLINFO_DECLARED
+#నిర్వచితమైతే HAVE_USR_INCLUDE_MALLOC_H
+#అన్తర్భావ "/usr/include/malloc.h"
+#లేకపోతే /* HAVE_USR_INCLUDE_MALLOC_H */
+#నిర్వచితం_కాకపోతే STRUCT_MALLINFO_DECLARED
 /* HP-UX (and others?) redefines mallinfo unless _STRUCT_MALLINFO is defined */
-#define _STRUCT_MALLINFO
-#define STRUCT_MALLINFO_DECLARED 1
-struct mallinfo {
-  MALLINFO_FIELD_TYPE arena;    /* non-mmapped space allocated from system */
-  MALLINFO_FIELD_TYPE ordblks;  /* number of free chunks */
-  MALLINFO_FIELD_TYPE smblks;   /* always 0 */
-  MALLINFO_FIELD_TYPE hblks;    /* always 0 */
-  MALLINFO_FIELD_TYPE hblkhd;   /* space in mmapped regions */
-  MALLINFO_FIELD_TYPE usmblks;  /* maximum total allocated space */
-  MALLINFO_FIELD_TYPE fsmblks;  /* always 0 */
-  MALLINFO_FIELD_TYPE uordblks; /* total allocated space */
-  MALLINFO_FIELD_TYPE fordblks; /* total free space */
-  MALLINFO_FIELD_TYPE keepcost; /* releasable (via malloc_trim) space */
+#నిర్వచించు _STRUCT_MALLINFO
+#నిర్వచించు STRUCT_MALLINFO_DECLARED 1
+నిర్మాణం mallinfo {
+  MALLINFO_క్షేత్రం_TYPE arena;    /* non-mmapped space allocated from system */
+  MALLINFO_క్షేత్రం_TYPE ordblks;  /* number of free chunks */
+  MALLINFO_క్షేత్రం_TYPE smblks;   /* always 0 */
+  MALLINFO_క్షేత్రం_TYPE hblks;    /* always 0 */
+  MALLINFO_క్షేత్రం_TYPE hblkhd;   /* space in mmapped regions */
+  MALLINFO_క్షేత్రం_TYPE usmblks;  /* maximum total allocated space */
+  MALLINFO_క్షేత్రం_TYPE fsmblks;  /* always 0 */
+  MALLINFO_క్షేత్రం_TYPE uordblks; /* total allocated space */
+  MALLINFO_క్షేత్రం_TYPE fordblks; /* total free space */
+  MALLINFO_క్షేత్రం_TYPE keepcost; /* releasable (via malloc_trim) space */
 };
-#endif /* STRUCT_MALLINFO_DECLARED */
-#endif /* HAVE_USR_INCLUDE_MALLOC_H */
-#endif /* NO_MALLINFO */
+#అయితే_ముగింపు /* STRUCT_MALLINFO_DECLARED */
+#అయితే_ముగింపు /* HAVE_USR_INCLUDE_MALLOC_H */
+#అయితే_ముగింపు /* NO_MALLINFO */
 
 /*
   Try to persuade compilers to inline. The most critical functions for
   inlining are defined as macros, so these aren't used for them.
 */
 
-#ifndef FORCEINLINE
-  #if defined(__GNUC__)
-#define FORCEINLINE __inline __attribute__ ((always_inline))
-  #elif defined(_MSC_VER)
-    #define FORCEINLINE __forceinline
-  #endif
-#endif
-#ifndef NOINLINE
-  #if defined(__GNUC__)
-    #define NOINLINE __attribute__ ((noinline))
-  #elif defined(_MSC_VER)
-    #define NOINLINE __declspec(noinline)
-  #else
-    #define NOINLINE
-  #endif
-#endif
+#నిర్వచితం_కాకపోతే FORCEINLINE
+  #ఒకవేళ defined(__GNUC__)
+#నిర్వచించు FORCEINLINE __inline __attribute__ ((always_inline))
+  #లేదావేళ defined(_MSC_VER)
+    #నిర్వచించు FORCEINLINE __forceinline
+  #అయితే_ముగింపు
+#అయితే_ముగింపు
+#నిర్వచితం_కాకపోతే NOINLINE
+  #ఒకవేళ defined(__GNUC__)
+    #నిర్వచించు NOINLINE __attribute__ ((noinline))
+  #లేదావేళ defined(_MSC_VER)
+    #నిర్వచించు NOINLINE __declspec(noinline)
+  #లేకపోతే
+    #నిర్వచించు NOINLINE
+  #అయితే_ముగింపు
+#అయితే_ముగింపు
 
-#ifdef __cplusplus
-extern "C" {
-#ifndef FORCEINLINE
- #define FORCEINLINE inline
-#endif
-#endif /* __cplusplus */
-#ifndef FORCEINLINE
- #define FORCEINLINE
-#endif
+#నిర్వచితమైతే __cplusplus
+బాహ్య "C" {
+#నిర్వచితం_కాకపోతే FORCEINLINE
+ #నిర్వచించు FORCEINLINE అంతఃవరుస
+#అయితే_ముగింపు
+#అయితే_ముగింపు /* __cplusplus */
+#నిర్వచితం_కాకపోతే FORCEINLINE
+ #నిర్వచించు FORCEINLINE
+#అయితే_ముగింపు
 
-#if !ONLY_MSPACES
+#ఒకవేళ !ONLY_MSPACES
 
 /* ------------------- Declarations of public routines ------------------- */
 
-#ifndef USE_DL_PREFIX
-#define dlcalloc               calloc
-#define dlfree                 free
-#define dlmalloc               malloc
-#define dlmemalign             memalign
-#define dlposix_memalign       posix_memalign
-#define dlrealloc              realloc
-#define dlrealloc_in_place     realloc_in_place
-#define dlvalloc               valloc
-#define dlpvalloc              pvalloc
-#define dlmallinfo             mallinfo
-#define dlmallopt              mallopt
-#define dlmalloc_trim          malloc_trim
-#define dlmalloc_stats         malloc_stats
-#define dlmalloc_usable_size   malloc_usable_size
-#define dlmalloc_footprint     malloc_footprint
-#define dlmalloc_max_footprint malloc_max_footprint
-#define dlmalloc_footprint_limit malloc_footprint_limit
-#define dlmalloc_set_footprint_limit malloc_set_footprint_limit
-#define dlmalloc_inspect_all   malloc_inspect_all
-#define dlindependent_calloc   independent_calloc
-#define dlindependent_comalloc independent_comalloc
-#define dlbulk_free            bulk_free
-#endif /* USE_DL_PREFIX */
+#నిర్వచితం_కాకపోతే USE_DL_ఉపసర్గ
+#నిర్వచించు dlcalloc               సున్నా_జ్ఞాపకం_ఇవ్వు
+#నిర్వచించు dlfree                 విడుదల
+#నిర్వచించు dlmalloc               జ్ఞాపకం_ఇవ్వు
+#నిర్వచించు dlmemalign             memalign
+#నిర్వచించు dlposix_memalign       posix_memalign
+#నిర్వచించు dlrealloc              realloc
+#నిర్వచించు dlrealloc_లోపల_ఉంచు     realloc_లోపల_ఉంచు
+#నిర్వచించు dlvalloc               valloc
+#నిర్వచించు dlpvalloc              pvalloc
+#నిర్వచించు dlmallinfo             mallinfo
+#నిర్వచించు dlmallopt              mallopt
+#నిర్వచించు dlmalloc_trim          malloc_trim
+#నిర్వచించు dlmalloc_stats         malloc_stats
+#నిర్వచించు dlmalloc_usable_కొలత   malloc_usable_కొలత
+#నిర్వచించు dlmalloc_footprint     malloc_footprint
+#నిర్వచించు dlmalloc_max_footprint malloc_max_footprint
+#నిర్వచించు dlmalloc_footprint_హద్దు malloc_footprint_హద్దు
+#నిర్వచించు dlmalloc_సమితి_footprint_హద్దు malloc_సమితి_footprint_హద్దు
+#నిర్వచించు dlmalloc_inspect_all   malloc_inspect_all
+#నిర్వచించు dlindependent_calloc   independent_calloc
+#నిర్వచించు dlindependent_comalloc independent_comalloc
+#నిర్వచించు dlbulk_free            bulk_free
+#అయితే_ముగింపు /* USE_DL_PREFIX */
 
 /*
   malloc(size_t n)
@@ -869,7 +869,7 @@ extern "C" {
   maximum supported value of n differs across systems, but is in all
   cases less than the maximum representable value of a size_t.
 */
-DLMALLOC_EXPORT void* dlmalloc(size_t);
+DLMALLOC_EXPORT శూన్య* dlmalloc(size_t);
 
 /*
   free(void* p)
@@ -878,14 +878,14 @@ DLMALLOC_EXPORT void* dlmalloc(size_t);
   It has no effect if p is null. If p was not malloced or already
   freed, free(p) will by default cause the current program to abort.
 */
-DLMALLOC_EXPORT void  dlfree(void*);
+DLMALLOC_EXPORT శూన్య  dlfree(శూన్య*);
 
 /*
   calloc(size_t n_elements, size_t element_size);
   Returns a pointer to n_elements * element_size bytes, with all locations
   set to zero.
 */
-DLMALLOC_EXPORT void* dlcalloc(size_t, size_t);
+DLMALLOC_EXPORT శూన్య* dlcalloc(size_t, size_t);
 
 /*
   realloc(void* p, size_t n)
@@ -909,7 +909,7 @@ DLMALLOC_EXPORT void* dlcalloc(size_t, size_t);
   The old unix realloc convention of allowing the last-free'd chunk
   to be used as an argument to realloc is not supported.
 */
-DLMALLOC_EXPORT void* dlrealloc(void*, size_t);
+DLMALLOC_EXPORT శూన్య* dlrealloc(శూన్య*, size_t);
 
 /*
   realloc_in_place(void* p, size_t n)
@@ -924,7 +924,7 @@ DLMALLOC_EXPORT void* dlrealloc(void*, size_t);
 
   Returns p if successful; otherwise null.
 */
-DLMALLOC_EXPORT void* dlrealloc_in_place(void*, size_t);
+DLMALLOC_EXPORT శూన్య* dlrealloc_లోపల_ఉంచు(శూన్య*, size_t);
 
 /*
   memalign(size_t alignment, size_t n);
@@ -938,7 +938,7 @@ DLMALLOC_EXPORT void* dlrealloc_in_place(void*, size_t);
 
   Overreliance on memalign is a sure way to fragment space.
 */
-DLMALLOC_EXPORT void* dlmemalign(size_t, size_t);
+DLMALLOC_EXPORT శూన్య* dlmemalign(size_t, size_t);
 
 /*
   int posix_memalign(void** pp, size_t alignment, size_t n);
@@ -948,14 +948,14 @@ DLMALLOC_EXPORT void* dlmemalign(size_t, size_t);
   returns EINVAL if the alignment is not a power of two (3) fails and
   returns ENOMEM if memory cannot be allocated.
 */
-DLMALLOC_EXPORT int dlposix_memalign(void**, size_t, size_t);
+DLMALLOC_EXPORT పూర్ణాంకం dlposix_memalign(శూన్య**, size_t, size_t);
 
 /*
   valloc(size_t n);
   Equivalent to memalign(pagesize, n), where pagesize is the page
   size of the system. If the pagesize is unknown, 4096 is used.
 */
-DLMALLOC_EXPORT void* dlvalloc(size_t);
+DLMALLOC_EXPORT శూన్య* dlvalloc(size_t);
 
 /*
   mallopt(int parameter_number, int parameter_value)
@@ -979,7 +979,7 @@ DLMALLOC_EXPORT void* dlvalloc(size_t);
   M_GRANULARITY        -2     page size   any power of 2 >= page size
   M_MMAP_THRESHOLD     -3      256*1024   any   (or 0 if no MMAP support)
 */
-DLMALLOC_EXPORT int dlmallopt(int, int);
+DLMALLOC_EXPORT పూర్ణాంకం dlmallopt(పూర్ణాంకం, పూర్ణాంకం);
 
 /*
   malloc_footprint();
@@ -990,7 +990,7 @@ DLMALLOC_EXPORT int dlmallopt(int, int);
   Even if locks are otherwise defined, this function does not use them,
   so results might not be up to date.
 */
-DLMALLOC_EXPORT size_t dlmalloc_footprint(void);
+DLMALLOC_EXPORT size_t dlmalloc_footprint(శూన్య);
 
 /*
   malloc_max_footprint();
@@ -1003,7 +1003,7 @@ DLMALLOC_EXPORT size_t dlmalloc_footprint(void);
   otherwise defined, this function does not use them, so results might
   not be up to date.
 */
-DLMALLOC_EXPORT size_t dlmalloc_max_footprint(void);
+DLMALLOC_EXPORT size_t dlmalloc_max_footprint(శూన్య);
 
 /*
   malloc_footprint_limit();
@@ -1014,7 +1014,7 @@ DLMALLOC_EXPORT size_t dlmalloc_max_footprint(void);
   guarantee that this number of bytes can actually be obtained from
   the system.
 */
-DLMALLOC_EXPORT size_t dlmalloc_footprint_limit();
+DLMALLOC_EXPORT size_t dlmalloc_footprint_హద్దు();
 
 /*
   malloc_set_footprint_limit();
@@ -1028,9 +1028,9 @@ DLMALLOC_EXPORT size_t dlmalloc_footprint_limit();
   additional system memory will fail. However, invocation cannot
   retroactively deallocate existing used memory.
 */
-DLMALLOC_EXPORT size_t dlmalloc_set_footprint_limit(size_t bytes);
+DLMALLOC_EXPORT size_t dlmalloc_సమితి_footprint_హద్దు(size_t బైట్లు);
 
-#if MALLOC_INSPECT_ALL
+#ఒకవేళ MALLOC_INSPECT_ALL
 /*
   malloc_inspect_all(void(*handler)(void *start,
                                     void *end,
@@ -1059,12 +1059,12 @@ DLMALLOC_EXPORT size_t dlmalloc_set_footprint_limit(size_t bytes);
 
   malloc_inspect_all is compiled only if MALLOC_INSPECT_ALL is defined.
 */
-DLMALLOC_EXPORT void dlmalloc_inspect_all(void(*handler)(void*, void *, size_t, void*),
-                           void* arg);
+DLMALLOC_EXPORT శూన్య dlmalloc_inspect_all(శూన్య(*handler)(శూన్య*, శూన్య *, size_t, శూన్య*),
+                           శూన్య* arg);
 
-#endif /* MALLOC_INSPECT_ALL */
+#అయితే_ముగింపు /* MALLOC_INSPECT_ALL */
 
-#if !NO_MALLINFO
+#ఒకవేళ !NO_MALLINFO
 /*
   mallinfo()
   Returns (by copy) a struct containing various summary statistics:
@@ -1087,8 +1087,8 @@ DLMALLOC_EXPORT void dlmalloc_inspect_all(void(*handler)(void*, void *, size_t, 
   be kept as longs, the reported values may wrap around zero and
   thus be inaccurate.
 */
-DLMALLOC_EXPORT struct mallinfo dlmallinfo(void);
-#endif /* NO_MALLINFO */
+DLMALLOC_EXPORT నిర్మాణం mallinfo dlmallinfo(శూన్య);
+#అయితే_ముగింపు /* NO_MALLINFO */
 
 /*
   independent_calloc(size_t n_elements, size_t element_size, void* chunks[]);
@@ -1139,7 +1139,7 @@ DLMALLOC_EXPORT struct mallinfo dlmallinfo(void);
     return first;
   }
 */
-DLMALLOC_EXPORT void** dlindependent_calloc(size_t, size_t, void**);
+DLMALLOC_EXPORT శూన్య** dlindependent_calloc(size_t, size_t, శూన్య**);
 
 /*
   independent_comalloc(size_t n_elements, size_t sizes[], void* chunks[]);
@@ -1197,7 +1197,7 @@ DLMALLOC_EXPORT void** dlindependent_calloc(size_t, size_t, void**);
   since it cannot reuse existing noncontiguous small chunks that
   might be available for some of the elements.
 */
-DLMALLOC_EXPORT void** dlindependent_comalloc(size_t, size_t*, void**);
+DLMALLOC_EXPORT శూన్య** dlindependent_comalloc(size_t, size_t*, శూన్య**);
 
 /*
   bulk_free(void* array[], size_t n_elements)
@@ -1208,14 +1208,14 @@ DLMALLOC_EXPORT void** dlindependent_comalloc(size_t, size_t*, void**);
   is returned.  For large arrays of pointers with poor locality, it
   may be worthwhile to sort this array before calling bulk_free.
 */
-DLMALLOC_EXPORT size_t  dlbulk_free(void**, size_t n_elements);
+DLMALLOC_EXPORT size_t  dlbulk_free(శూన్య**, size_t n_elements);
 
 /*
   pvalloc(size_t n);
   Equivalent to valloc(minimum-page-that-holds(n)), that is,
   round up n to nearest pagesize.
  */
-DLMALLOC_EXPORT void*  dlpvalloc(size_t);
+DLMALLOC_EXPORT శూన్య*  dlpvalloc(size_t);
 
 /*
   malloc_trim(size_t pad);
@@ -1238,7 +1238,7 @@ DLMALLOC_EXPORT void*  dlpvalloc(size_t);
 
   Malloc_trim returns 1 if it actually released any memory, else 0.
 */
-DLMALLOC_EXPORT int  dlmalloc_trim(size_t);
+DLMALLOC_EXPORT పూర్ణాంకం  dlmalloc_trim(size_t);
 
 /*
   malloc_stats();
@@ -1259,7 +1259,7 @@ DLMALLOC_EXPORT int  dlmalloc_trim(size_t);
   malloc_stats prints only the most commonly interesting statistics.
   More information can be obtained by calling mallinfo.
 */
-DLMALLOC_EXPORT void  dlmalloc_stats(void);
+DLMALLOC_EXPORT శూన్య  dlmalloc_stats(శూన్య);
 
 /*
   malloc_usable_size(void* p);
@@ -1275,17 +1275,17 @@ DLMALLOC_EXPORT void  dlmalloc_stats(void);
   p = malloc(n);
   assert(malloc_usable_size(p) >= 256);
 */
-size_t dlmalloc_usable_size(void*);
+size_t dlmalloc_usable_కొలత(శూన్య*);
 
-#endif /* ONLY_MSPACES */
+#అయితే_ముగింపు /* ONLY_MSPACES */
 
-#if MSPACES
+#ఒకవేళ MSPACES
 
 /*
   mspace is an opaque type representing an independent
   region of space that supports mspace_malloc, etc.
 */
-typedef void* mspace;
+రకనిర్వచనం శూన్య* mspace;
 
 /*
   create_mspace creates and returns a new independent space with the
@@ -1298,7 +1298,7 @@ typedef void* mspace;
   compiling with a different DEFAULT_GRANULARITY or dynamically
   setting with mallopt(M_GRANULARITY, value).
 */
-DLMALLOC_EXPORT mspace create_mspace(size_t capacity, int locked);
+DLMALLOC_EXPORT mspace create_mspace(size_t సామర్థ్యం, పూర్ణాంకం locked);
 
 /*
   destroy_mspace destroys the given space, and attempts to return all
@@ -1317,7 +1317,7 @@ DLMALLOC_EXPORT size_t destroy_mspace(mspace msp);
   Destroying this space will deallocate all additionally allocated
   space (if possible) but not the initial base.
 */
-DLMALLOC_EXPORT mspace create_mspace_with_base(void* base, size_t capacity, int locked);
+DLMALLOC_EXPORT mspace create_mspace_with_పునాది(శూన్య* పునాది, size_t సామర్థ్యం, పూర్ణాంకం locked);
 
 /*
   mspace_track_large_chunks controls whether requests for large chunks
@@ -1330,14 +1330,14 @@ DLMALLOC_EXPORT mspace create_mspace_with_base(void* base, size_t capacity, int 
   allocated using this space.  The function returns the previous
   setting.
 */
-DLMALLOC_EXPORT int mspace_track_large_chunks(mspace msp, int enable);
+DLMALLOC_EXPORT పూర్ణాంకం mspace_track_large_chunks(mspace msp, పూర్ణాంకం enable);
 
 
 /*
   mspace_malloc behaves as malloc, but operates within
   the given space.
 */
-DLMALLOC_EXPORT void* mspace_malloc(mspace msp, size_t bytes);
+DLMALLOC_EXPORT శూన్య* mspace_malloc(mspace msp, size_t బైట్లు);
 
 /*
   mspace_free behaves as free, but operates within
@@ -1347,7 +1347,7 @@ DLMALLOC_EXPORT void* mspace_malloc(mspace msp, size_t bytes);
   free may be called instead of mspace_free because freed chunks from
   any space are handled by their originating spaces.
 */
-DLMALLOC_EXPORT void mspace_free(mspace msp, void* mem);
+DLMALLOC_EXPORT శూన్య mspace_free(mspace msp, శూన్య* mem);
 
 /*
   mspace_realloc behaves as realloc, but operates within
@@ -1358,33 +1358,33 @@ DLMALLOC_EXPORT void mspace_free(mspace msp, void* mem);
   realloced chunks from any space are handled by their originating
   spaces.
 */
-DLMALLOC_EXPORT void* mspace_realloc(mspace msp, void* mem, size_t newsize);
+DLMALLOC_EXPORT శూన్య* mspace_realloc(mspace msp, శూన్య* mem, size_t newsize);
 
 /*
   mspace_calloc behaves as calloc, but operates within
   the given space.
 */
-DLMALLOC_EXPORT void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size);
+DLMALLOC_EXPORT శూన్య* mspace_calloc(mspace msp, size_t n_elements, size_t elem_కొలత);
 
 /*
   mspace_memalign behaves as memalign, but operates within
   the given space.
 */
-DLMALLOC_EXPORT void* mspace_memalign(mspace msp, size_t alignment, size_t bytes);
+DLMALLOC_EXPORT శూన్య* mspace_memalign(mspace msp, size_t alignment, size_t బైట్లు);
 
 /*
   mspace_independent_calloc behaves as independent_calloc, but
   operates within the given space.
 */
-DLMALLOC_EXPORT void** mspace_independent_calloc(mspace msp, size_t n_elements,
-                                 size_t elem_size, void* chunks[]);
+DLMALLOC_EXPORT శూన్య** mspace_independent_calloc(mspace msp, size_t n_elements,
+                                 size_t elem_కొలత, శూన్య* chunks[]);
 
 /*
   mspace_independent_comalloc behaves as independent_comalloc, but
   operates within the given space.
 */
-DLMALLOC_EXPORT void** mspace_independent_comalloc(mspace msp, size_t n_elements,
-                                   size_t sizes[], void* chunks[]);
+DLMALLOC_EXPORT శూన్య** mspace_independent_comalloc(mspace msp, size_t n_elements,
+                                   size_t sizes[], శూన్య* chunks[]);
 
 /*
   mspace_footprint() returns the number of bytes obtained from the
@@ -1399,41 +1399,41 @@ DLMALLOC_EXPORT size_t mspace_footprint(mspace msp);
 DLMALLOC_EXPORT size_t mspace_max_footprint(mspace msp);
 
 
-#if !NO_MALLINFO
+#ఒకవేళ !NO_MALLINFO
 /*
   mspace_mallinfo behaves as mallinfo, but reports properties of
   the given space.
 */
-DLMALLOC_EXPORT struct mallinfo mspace_mallinfo(mspace msp);
-#endif /* NO_MALLINFO */
+DLMALLOC_EXPORT నిర్మాణం mallinfo mspace_mallinfo(mspace msp);
+#అయితే_ముగింపు /* NO_MALLINFO */
 
 /*
   malloc_usable_size(void* p) behaves the same as malloc_usable_size;
 */
-DLMALLOC_EXPORT size_t mspace_usable_size(const void* mem);
+DLMALLOC_EXPORT size_t mspace_usable_కొలత(స్థిరరాశి శూన్య* mem);
 
 /*
   mspace_malloc_stats behaves as malloc_stats, but reports
   properties of the given space.
 */
-DLMALLOC_EXPORT void mspace_malloc_stats(mspace msp);
+DLMALLOC_EXPORT శూన్య mspace_malloc_stats(mspace msp);
 
 /*
   mspace_trim behaves as malloc_trim, but
   operates within the given space.
 */
-DLMALLOC_EXPORT int mspace_trim(mspace msp, size_t pad);
+DLMALLOC_EXPORT పూర్ణాంకం mspace_trim(mspace msp, size_t pad);
 
 /*
   An alias for mallopt.
 */
-DLMALLOC_EXPORT int mspace_mallopt(int, int);
+DLMALLOC_EXPORT పూర్ణాంకం mspace_mallopt(పూర్ణాంకం, పూర్ణాంకం);
 
-#endif /* MSPACES */
+#అయితే_ముగింపు /* MSPACES */
 
-#ifdef __cplusplus
+#నిర్వచితమైతే __cplusplus
 }  /* end of extern "C" */
-#endif /* __cplusplus */
+#అయితే_ముగింపు /* __cplusplus */
 
 /*
   ========================================================================
@@ -1447,158 +1447,158 @@ DLMALLOC_EXPORT int mspace_mallopt(int, int);
 
 /*------------------------------ internal #includes ---------------------- */
 
-#ifdef _MSC_VER
-#pragma warning( disable : 4146 ) /* no "unsigned" warnings */
-#endif /* _MSC_VER */
-#if !NO_MALLOC_STATS
-#include <stdio.h>       /* for printing in malloc_stats */
-#endif /* NO_MALLOC_STATS */
-#ifndef LACKS_ERRNO_H
-#include <errno.h>       /* for MALLOC_FAILURE_ACTION */
-#endif /* LACKS_ERRNO_H */
-#ifdef DEBUG
-#if ABORT_ON_ASSERT_FAILURE
-#undef assert
-#define assert(x) if(!(x)) ABORT
-#else /* ABORT_ON_ASSERT_FAILURE */
-#include <assert.h>
-#endif /* ABORT_ON_ASSERT_FAILURE */
-#else  /* DEBUG */
-#ifndef assert
-#define assert(x)
-#endif
-#define DEBUG 0
-#endif /* DEBUG */
-#if !defined(WIN32) && !defined(LACKS_TIME_H)
-#include <time.h>        /* for magic initialization */
-#endif /* WIN32 */
-#ifndef LACKS_STDLIB_H
-#include <stdlib.h>      /* for abort() */
-#endif /* LACKS_STDLIB_H */
-#ifndef LACKS_STRING_H
-#include <string.h>      /* for memset etc */
-#endif  /* LACKS_STRING_H */
-#if USE_BUILTIN_FFS
-#ifndef LACKS_STRINGS_H
-#include <strings.h>     /* for ffs */
-#endif /* LACKS_STRINGS_H */
-#endif /* USE_BUILTIN_FFS */
-#if HAVE_MMAP
-#ifndef LACKS_SYS_MMAN_H
+#నిర్వచితమైతే _MSC_VER
+#సూచన warning( disable : 4146 ) /* no "unsigned" warnings */
+#అయితే_ముగింపు /* _MSC_VER */
+#ఒకవేళ !NO_MALLOC_STATS
+#అన్తర్భావ <stdio.h>       /* for printing in malloc_stats */
+#అయితే_ముగింపు /* NO_MALLOC_STATS */
+#నిర్వచితం_కాకపోతే LACKS_ERRNO_H
+#అన్తర్భావ <errno.h>       /* for MALLOC_FAILURE_ACTION */
+#అయితే_ముగింపు /* LACKS_ERRNO_H */
+#నిర్వచితమైతే DEBUG
+#ఒకవేళ ABORT_ON_ASSERT_FAILURE
+#నిర్వచనం_రద్దు ప్రతిజ్ఞా
+#నిర్వచించు ప్రతిజ్ఞా(x) ఒకవేళ(!(x)) ABORT
+#లేకపోతే /* ABORT_ON_ASSERT_FAILURE */
+#అన్తర్భావ <assert.h>
+#అయితే_ముగింపు /* ABORT_ON_ASSERT_FAILURE */
+#లేకపోతే  /* DEBUG */
+#నిర్వచితం_కాకపోతే ప్రతిజ్ఞా
+#నిర్వచించు ప్రతిజ్ఞా(x)
+#అయితే_ముగింపు
+#నిర్వచించు DEBUG 0
+#అయితే_ముగింపు /* DEBUG */
+#ఒకవేళ !defined(WIN32) && !defined(LACKS_సమయం_H)
+#అన్తర్భావ <time.h>        /* for magic initialization */
+#అయితే_ముగింపు /* WIN32 */
+#నిర్వచితం_కాకపోతే LACKS_STDLIB_H
+#అన్తర్భావ <stdlib.h>      /* for abort() */
+#అయితే_ముగింపు /* LACKS_STDLIB_H */
+#నిర్వచితం_కాకపోతే LACKS_STRING_H
+#అన్తర్భావ <string.h>      /* for memset etc */
+#అయితే_ముగింపు  /* LACKS_STRING_H */
+#ఒకవేళ USE_BUILTIN_FFS
+#నిర్వచితం_కాకపోతే LACKS_అక్షరశ్రేణులు_H
+#అన్తర్భావ <strings.h>     /* for ffs */
+#అయితే_ముగింపు /* LACKS_STRINGS_H */
+#అయితే_ముగింపు /* USE_BUILTIN_FFS */
+#ఒకవేళ HAVE_MMAP
+#నిర్వచితం_కాకపోతే LACKS_SYS_MMAN_H
 /* On some versions of linux, mremap decl in mman.h needs __USE_GNU set */
-#if (defined(linux) && !defined(__USE_GNU))
-#define __USE_GNU 1
-#include <sys/mman.h>    /* for mmap */
-#undef __USE_GNU
-#else
-#include <sys/mman.h>    /* for mmap */
-#endif /* linux */
-#endif /* LACKS_SYS_MMAN_H */
-#ifndef LACKS_FCNTL_H
-#include <fcntl.h>
-#endif /* LACKS_FCNTL_H */
-#endif /* HAVE_MMAP */
-#ifndef LACKS_UNISTD_H
-#include <unistd.h>     /* for sbrk, sysconf */
-#else /* LACKS_UNISTD_H */
-#if !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__NetBSD__)
-extern void*     sbrk(ptrdiff_t);
-#endif /* FreeBSD etc */
-#endif /* LACKS_UNISTD_H */
+#ఒకవేళ (defined(linux) && !defined(__USE_GNU))
+#నిర్వచించు __USE_GNU 1
+#అన్తర్భావ <sys/mman.h>    /* for mmap */
+#నిర్వచనం_రద్దు __USE_GNU
+#లేకపోతే
+#అన్తర్భావ <sys/mman.h>    /* for mmap */
+#అయితే_ముగింపు /* linux */
+#అయితే_ముగింపు /* LACKS_SYS_MMAN_H */
+#నిర్వచితం_కాకపోతే LACKS_FCNTL_H
+#అన్తర్భావ <fcntl.h>
+#అయితే_ముగింపు /* LACKS_FCNTL_H */
+#అయితే_ముగింపు /* HAVE_MMAP */
+#నిర్వచితం_కాకపోతే LACKS_UNISTD_H
+#అన్తర్భావ <unistd.h>     /* for sbrk, sysconf */
+#లేకపోతే /* LACKS_UNISTD_H */
+#ఒకవేళ !defined(__FreeBSD__) && !defined(__OpenBSD__) && !defined(__NetBSD__)
+బాహ్య శూన్య*     sbrk(ptrdiff_t);
+#అయితే_ముగింపు /* FreeBSD etc */
+#అయితే_ముగింపు /* LACKS_UNISTD_H */
 
 /* Declarations for locking */
-#if USE_LOCKS
-#ifndef WIN32
-#if defined (__SVR4) && defined (__sun)  /* solaris */
-#include <thread.h>
-#elif !defined(LACKS_SCHED_H)
-#include <sched.h>
-#endif /* solaris or LACKS_SCHED_H */
-#if (defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0) || !USE_SPIN_LOCKS
-#include <pthread.h>
-#endif /* USE_RECURSIVE_LOCKS ... */
-#elif defined(_MSC_VER)
-#ifndef _M_AMD64
+#ఒకవేళ USE_LOCKS
+#నిర్వచితం_కాకపోతే WIN32
+#ఒకవేళ defined (__SVR4) && defined (__sun)  /* solaris */
+#అన్తర్భావ <thread.h>
+#లేదావేళ !defined(LACKS_SCHED_H)
+#అన్తర్భావ <sched.h>
+#అయితే_ముగింపు /* solaris or LACKS_SCHED_H */
+#ఒకవేళ (defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0) || !USE_SPIN_LOCKS
+#అన్తర్భావ <pthread.h>
+#అయితే_ముగింపు /* USE_RECURSIVE_LOCKS ... */
+#లేదావేళ defined(_MSC_VER)
+#నిర్వచితం_కాకపోతే _M_AMD64
 /* These are already defined on AMD64 builds */
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-LONG __cdecl _InterlockedCompareExchange(LONG volatile *Dest, LONG Exchange, LONG Comp);
-LONG __cdecl _InterlockedExchange(LONG volatile *Target, LONG Value);
-#ifdef __cplusplus
+#నిర్వచితమైతే __cplusplus
+బాహ్య "C" {
+#అయితే_ముగింపు /* __cplusplus */
+LONG __cdecl _InterlockedCompareExchange(LONG అస్థిర *Dest, LONG Exchange, LONG Comp);
+LONG __cdecl _InterlockedExchange(LONG అస్థిర *లక్ష్యం, LONG విలువ_2);
+#నిర్వచితమైతే __cplusplus
 }
-#endif /* __cplusplus */
-#endif /* _M_AMD64 */
-#pragma intrinsic (_InterlockedCompareExchange)
-#pragma intrinsic (_InterlockedExchange)
-#define interlockedcompareexchange _InterlockedCompareExchange
-#define interlockedexchange _InterlockedExchange
-#elif defined(WIN32) && defined(__GNUC__)
-#define interlockedcompareexchange(a, b, c) __sync_val_compare_and_swap(a, c, b)
-#define interlockedexchange __sync_lock_test_and_set
-#endif /* Win32 */
-#else /* USE_LOCKS */
-#endif /* USE_LOCKS */
+#అయితే_ముగింపు /* __cplusplus */
+#అయితే_ముగింపు /* _M_AMD64 */
+#సూచన intrinsic (_InterlockedCompareExchange)
+#సూచన intrinsic (_InterlockedExchange)
+#నిర్వచించు interlockedcompareexchange _InterlockedCompareExchange
+#నిర్వచించు interlockedexchange _InterlockedExchange
+#లేదావేళ defined(WIN32) && defined(__GNUC__)
+#నిర్వచించు interlockedcompareexchange(a, b, c) __sync_val_compare_and_swap(a, c, b)
+#నిర్వచించు interlockedexchange __sync_lock_test_and_set
+#అయితే_ముగింపు /* Win32 */
+#లేకపోతే /* USE_LOCKS */
+#అయితే_ముగింపు /* USE_LOCKS */
 
-#ifndef LOCK_AT_FORK
-#define LOCK_AT_FORK 0
-#endif
+#నిర్వచితం_కాకపోతే తాళం_AT_FORK
+#నిర్వచించు తాళం_AT_FORK 0
+#అయితే_ముగింపు
 
 /* Declarations for bit scanning on win32 */
-#if defined(_MSC_VER) && _MSC_VER>=1300
-#ifndef BitScanForward /* Try to avoid pulling in WinNT.h */
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-unsigned char _BitScanForward(unsigned long *index, unsigned long mask);
-unsigned char _BitScanReverse(unsigned long *index, unsigned long mask);
-#ifdef __cplusplus
+#ఒకవేళ defined(_MSC_VER) && _MSC_VER>=1300
+#నిర్వచితం_కాకపోతే బిట్టు_పరిశీలన_Forward /* Try to avoid pulling in WinNT.h */
+#నిర్వచితమైతే __cplusplus
+బాహ్య "C" {
+#అయితే_ముగింపు /* __cplusplus */
+గుర్తులేని అక్షరం బిట్టు_పరిశీలన_Forward_2(గుర్తులేని దీర్ఘ *సూచీ, గుర్తులేని దీర్ఘ ముసుగు);
+గుర్తులేని అక్షరం బిట్టు_పరిశీలన_తిరగేయి(గుర్తులేని దీర్ఘ *సూచీ, గుర్తులేని దీర్ఘ ముసుగు);
+#నిర్వచితమైతే __cplusplus
 }
-#endif /* __cplusplus */
+#అయితే_ముగింపు /* __cplusplus */
 
-#define BitScanForward _BitScanForward
-#define BitScanReverse _BitScanReverse
-#pragma intrinsic(_BitScanForward)
-#pragma intrinsic(_BitScanReverse)
-#endif /* BitScanForward */
-#endif /* defined(_MSC_VER) && _MSC_VER>=1300 */
+#నిర్వచించు బిట్టు_పరిశీలన_Forward బిట్టు_పరిశీలన_Forward_2
+#నిర్వచించు బిట్టు_పరిశీలన_తిరగేయి_2 బిట్టు_పరిశీలన_తిరగేయి
+#సూచన intrinsic(బిట్టు_పరిశీలన_Forward_2)
+#సూచన intrinsic(బిట్టు_పరిశీలన_తిరగేయి)
+#అయితే_ముగింపు /* BitScanForward */
+#అయితే_ముగింపు /* defined(_MSC_VER) && _MSC_VER>=1300 */
 
-#ifndef WIN32
-#ifndef malloc_getpagesize
+#నిర్వచితం_కాకపోతే WIN32
+#నిర్వచితం_కాకపోతే malloc_getpagesize
 #  ifdef _SC_PAGESIZE         /* some SVR4 systems omit an underscore */
-#    ifndef _SC_PAGE_SIZE
-#      define _SC_PAGE_SIZE _SC_PAGESIZE
+#    ifndef SC_పుట_కొలత
+#      define SC_పుట_కొలత _SC_PAGESIZE
 #    endif
 #  endif
-#  ifdef _SC_PAGE_SIZE
-#    define malloc_getpagesize sysconf(_SC_PAGE_SIZE)
-#  else
-#    if defined(BSD) || defined(DGUX) || defined(HAVE_GETPAGESIZE)
-       extern size_t getpagesize();
+#  ifdef SC_పుట_కొలత
+#    define malloc_getpagesize sysconf(SC_పుట_కొలత)
+#  లేకపోతే
+#    ఒకవేళ defined(BSD) || defined(DGUX) || defined(HAVE_GETPAGESIZE)
+       బాహ్య size_t getpagesize();
 #      define malloc_getpagesize getpagesize()
-#    else
+#    లేకపోతే
 #      ifdef WIN32 /* use supplied emulation of getpagesize */
 #        define malloc_getpagesize getpagesize()
-#      else
+#      లేకపోతే
 #        ifndef LACKS_SYS_PARAM_H
 #          include <sys/param.h>
 #        endif
 #        ifdef EXEC_PAGESIZE
 #          define malloc_getpagesize EXEC_PAGESIZE
-#        else
+#        లేకపోతే
 #          ifdef NBPG
 #            ifndef CLSIZE
 #              define malloc_getpagesize NBPG
-#            else
+#            లేకపోతే
 #              define malloc_getpagesize (NBPG * CLSIZE)
 #            endif
-#          else
+#          లేకపోతే
 #            ifdef NBPC
 #              define malloc_getpagesize NBPC
-#            else
+#            లేకపోతే
 #              ifdef PAGESIZE
 #                define malloc_getpagesize PAGESIZE
-#              else /* just guess */
+#              లేకపోతే /* just guess */
 #                define malloc_getpagesize ((size_t)4096U)
 #              endif
 #            endif
@@ -1607,44 +1607,44 @@ unsigned char _BitScanReverse(unsigned long *index, unsigned long mask);
 #      endif
 #    endif
 #  endif
-#endif
-#endif
+#అయితే_ముగింపు
+#అయితే_ముగింపు
 
 /* libffi: the upstream malloc_getpagesize definition above is gated on
    !WIN32 (WIN32 builds use GetSystemInfo in init_mparams instead).  Guarantee
    the symbol is always defined so the !WIN32 init_mparams branch still compiles
    on toolchains where it is not preprocessed out as expected (e.g. MSVC).  */
-#ifndef malloc_getpagesize
-#define malloc_getpagesize ((size_t)4096U)
-#endif
+#నిర్వచితం_కాకపోతే malloc_getpagesize
+#నిర్వచించు malloc_getpagesize ((size_t)4096U)
+#అయితే_ముగింపు
 
 /* ------------------- size_t and alignment properties -------------------- */
 
 /* The byte and bit size of a size_t */
-#define SIZE_T_SIZE         (sizeof(size_t))
-#define SIZE_T_BITSIZE      (sizeof(size_t) << 3)
+#నిర్వచించు కొలత_T_కొలత         (పరిమాణం(size_t))
+#నిర్వచించు కొలత_T_BITSIZE      (పరిమాణం(size_t) << 3)
 
 /* Some constants coerced to size_t */
 /* Annoying but necessary to avoid errors on some platforms */
-#define SIZE_T_ZERO         ((size_t)0)
-#define SIZE_T_ONE          ((size_t)1)
-#define SIZE_T_TWO          ((size_t)2)
-#define SIZE_T_FOUR         ((size_t)4)
-#define TWO_SIZE_T_SIZES    (SIZE_T_SIZE<<1)
-#define FOUR_SIZE_T_SIZES   (SIZE_T_SIZE<<2)
-#define SIX_SIZE_T_SIZES    (FOUR_SIZE_T_SIZES+TWO_SIZE_T_SIZES)
-#define HALF_MAX_SIZE_T     (MAX_SIZE_T / 2U)
+#నిర్వచించు కొలత_T_ZERO         ((size_t)0)
+#నిర్వచించు కొలత_T_ONE          ((size_t)1)
+#నిర్వచించు కొలత_T_TWO          ((size_t)2)
+#నిర్వచించు కొలత_T_FOUR         ((size_t)4)
+#నిర్వచించు TWO_కొలత_T_SIZES    (కొలత_T_కొలత<<1)
+#నిర్వచించు FOUR_కొలత_T_SIZES   (కొలత_T_కొలత<<2)
+#నిర్వచించు SIX_కొలత_T_SIZES    (FOUR_కొలత_T_SIZES+TWO_కొలత_T_SIZES)
+#నిర్వచించు HALF_MAX_కొలత_T     (MAX_కొలత_T / 2U)
 
 /* The bit mask value corresponding to MALLOC_ALIGNMENT */
-#define CHUNK_ALIGN_MASK    (MALLOC_ALIGNMENT - SIZE_T_ONE)
+#నిర్వచించు CHUNK_ALIGN_ముసుగు    (MALLOC_ALIGNMENT - కొలత_T_ONE)
 
 /* True if address a has acceptable alignment */
-#define is_aligned(A)       (((size_t)((A)) & (CHUNK_ALIGN_MASK)) == 0)
+#నిర్వచించు is_aligned(A)       (((size_t)((A)) & (CHUNK_ALIGN_ముసుగు)) == 0)
 
 /* the number of bytes to offset an address to align it */
-#define align_offset(A)\
- ((((size_t)(A) & CHUNK_ALIGN_MASK) == 0)? 0 :\
-  ((MALLOC_ALIGNMENT - ((size_t)(A) & CHUNK_ALIGN_MASK)) & CHUNK_ALIGN_MASK))
+#నిర్వచించు align_స్థానభ్రంశం(A)\
+ ((((size_t)(A) & CHUNK_ALIGN_ముసుగు) == 0)? 0 :\
+  ((MALLOC_ALIGNMENT - ((size_t)(A) & CHUNK_ALIGN_ముసుగు)) & CHUNK_ALIGN_ముసుగు))
 
 /* -------------------------- MMAP preliminaries ------------------------- */
 
@@ -1656,180 +1656,180 @@ unsigned char _BitScanReverse(unsigned long *index, unsigned long mask);
 
 
 /* MORECORE and MMAP must return MFAIL on failure */
-#define MFAIL                ((void*)(MAX_SIZE_T))
-#define CMFAIL               ((char*)(MFAIL)) /* defined for convenience */
+#నిర్వచించు MFAIL                ((శూన్య*)(MAX_కొలత_T))
+#నిర్వచించు CMFAIL               ((అక్షరం*)(MFAIL)) /* defined for convenience */
 
-#if HAVE_MMAP
+#ఒకవేళ HAVE_MMAP
 
-#if !defined(WIN32) && !defined (__OS2__)
-#define MUNMAP_DEFAULT(a, s)  munmap((a), (s))
-#define MMAP_PROT            (PROT_READ|PROT_WRITE)
-#if !defined(MAP_ANONYMOUS) && defined(MAP_ANON)
-#define MAP_ANONYMOUS        MAP_ANON
-#endif /* MAP_ANON */
-#ifdef MAP_ANONYMOUS
-#define MMAP_FLAGS           (MAP_PRIVATE|MAP_ANONYMOUS)
-#define MMAP_DEFAULT(s)       mmap(0, (s), MMAP_PROT, MMAP_FLAGS, -1, 0)
-#else /* MAP_ANONYMOUS */
+#ఒకవేళ !defined(WIN32) && !defined (__OS2__)
+#నిర్వచించు MUNMAP_DEFAULT(a, s)  munmap((a), (s))
+#నిర్వచించు MMAP_PROT            (PROT_READ|PROT_WRITE)
+#ఒకవేళ !defined(MAP_ANONYMOUS) && defined(MAP_ANON)
+#నిర్వచించు MAP_ANONYMOUS        MAP_ANON
+#అయితే_ముగింపు /* MAP_ANON */
+#నిర్వచితమైతే MAP_ANONYMOUS
+#నిర్వచించు MMAP_FLAGS           (MAP_వ్యక్తిగత|MAP_ANONYMOUS)
+#నిర్వచించు MMAP_DEFAULT(s)       mmap(0, (s), MMAP_PROT, MMAP_FLAGS, -1, 0)
+#లేకపోతే /* MAP_ANONYMOUS */
 /*
    Nearly all versions of mmap support MAP_ANONYMOUS, so the following
    is unlikely to be needed, but is supplied just in case.
 */
-#define MMAP_FLAGS           (MAP_PRIVATE)
-static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
-#define MMAP_DEFAULT(s) ((dev_zero_fd < 0) ? \
+#నిర్వచించు MMAP_FLAGS           (MAP_వ్యక్తిగత)
+స్థిర పూర్ణాంకం dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
+#నిర్వచించు MMAP_DEFAULT(s) ((dev_zero_fd < 0) ? \
            (dev_zero_fd = open("/dev/zero", O_RDWR), \
             mmap(0, (s), MMAP_PROT, MMAP_FLAGS, dev_zero_fd, 0)) : \
             mmap(0, (s), MMAP_PROT, MMAP_FLAGS, dev_zero_fd, 0))
-#endif /* MAP_ANONYMOUS */
+#అయితే_ముగింపు /* MAP_ANONYMOUS */
 
-#define DIRECT_MMAP_DEFAULT(s) MMAP_DEFAULT(s)
+#నిర్వచించు ప్రత్యక్ష_MMAP_DEFAULT(s) MMAP_DEFAULT(s)
 
-#elif defined(__OS2__)
+#లేదావేళ defined(__OS2__)
 
 /* OS/2 MMAP via DosAllocMem */
-static void* os2mmap(size_t size) {
-  void* ptr;
-  if (DosAllocMem(&ptr, size, OBJ_ANY|PAG_COMMIT|PAG_READ|PAG_WRITE) &&
-      DosAllocMem(&ptr, size, PAG_COMMIT|PAG_READ|PAG_WRITE))
-    return MFAIL;
-  return ptr;
+స్థిర శూన్య* os2mmap(size_t కొలత) {
+  శూన్య* ptr;
+  ఒకవేళ (DosAllocMem(&ptr, కొలత, OBJ_ANY|PAG_COMMIT|PAG_READ|PAG_WRITE) &&
+      DosAllocMem(&ptr, కొలత, PAG_COMMIT|PAG_READ|PAG_WRITE))
+    తిరిగి MFAIL;
+  తిరిగి ptr;
 }
 
-#define os2direct_mmap(n)     os2mmap(n)
+#నిర్వచించు os2direct_mmap(n)     os2mmap(n)
 
 /* This function supports releasing coalesed segments */
-static int os2munmap(void* ptr, size_t size) {
-  while (size) {
-    ULONG ulSize = size;
+స్థిర పూర్ణాంకం os2munmap(శూన్య* ptr, size_t కొలత) {
+  అయితే (కొలత) {
+    ULONG ul_కొలత = కొలత;
     ULONG ulFlags = 0;
-    if (DosQueryMem(ptr, &ulSize, &ulFlags) != 0)
-      return -1;
-    if ((ulFlags & PAG_BASE) == 0 ||(ulFlags & PAG_COMMIT) == 0 ||
-        ulSize > size)
-      return -1;
-    if (DosFreeMem(ptr) != 0)
-      return -1;
-    ptr = ( void * ) ( ( char * ) ptr + ulSize );
-    size -= ulSize;
+    ఒకవేళ (DosQueryMem(ptr, &ul_కొలత, &ulFlags) != 0)
+      తిరిగి -1;
+    ఒకవేళ ((ulFlags & PAG_పునాది) == 0 ||(ulFlags & PAG_COMMIT) == 0 ||
+        ul_కొలత > కొలత)
+      తిరిగి -1;
+    ఒకవేళ (DosFreeMem(ptr) != 0)
+      తిరిగి -1;
+    ptr = ( శూన్య * ) ( ( అక్షరం * ) ptr + ul_కొలత );
+    కొలత -= ul_కొలత;
   }
-  return 0;
+  తిరిగి 0;
 }
 
-#define MMAP_DEFAULT(s)         os2mmap(s)
-#define MUNMAP_DEFAULT(a, s)    os2munmap((a), (s))
-#define DIRECT_MMAP_DEFAULT(s)  os2direct_mmap(s)
+#నిర్వచించు MMAP_DEFAULT(s)         os2mmap(s)
+#నిర్వచించు MUNMAP_DEFAULT(a, s)    os2munmap((a), (s))
+#నిర్వచించు ప్రత్యక్ష_MMAP_DEFAULT(s)  os2direct_mmap(s)
 
-#else /* WIN32 */
+#లేకపోతే /* WIN32 */
 
 /* Win32 MMAP via VirtualAlloc */
 /* libffi: plain static (not FORCEINLINE) -- mingw's <windows.h> defines
    FORCEINLINE with an 'extern' storage class, which clashes with 'static'.  */
-static void* win32mmap(size_t size) {
-  void* ptr = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-  return (ptr != 0)? ptr: MFAIL;
+స్థిర శూన్య* win32mmap(size_t కొలత) {
+  శూన్య* ptr = VirtualAlloc(0, కొలత, MEM_RESERVE|MEM_COMMIT, పుట_EXECUTE_READWRITE);
+  తిరిగి (ptr != 0)? ptr: MFAIL;
 }
 
 /* For direct MMAP, use MEM_TOP_DOWN to minimize interference */
-static void* win32direct_mmap(size_t size) {
-  void* ptr = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT|MEM_TOP_DOWN,
-                           PAGE_EXECUTE_READWRITE);
-  return (ptr != 0)? ptr: MFAIL;
+స్థిర శూన్య* win32direct_mmap(size_t కొలత) {
+  శూన్య* ptr = VirtualAlloc(0, కొలత, MEM_RESERVE|MEM_COMMIT|MEM_శిఖరం_కిందికి,
+                           పుట_EXECUTE_READWRITE);
+  తిరిగి (ptr != 0)? ptr: MFAIL;
 }
 
 /* This function supports releasing coalesed segments */
-static int win32munmap(void* ptr, size_t size) {
-  MEMORY_BASIC_INFORMATION minfo;
-  char* cptr = (char*)ptr;
-  while (size) {
-    if (VirtualQuery(cptr, &minfo, sizeof(minfo)) == 0)
-      return -1;
-    if (minfo.BaseAddress != cptr || minfo.AllocationBase != cptr ||
-        minfo.State != MEM_COMMIT || minfo.RegionSize > size)
-      return -1;
-    if (VirtualFree(cptr, 0, MEM_RELEASE) == 0)
-      return -1;
-    cptr += minfo.RegionSize;
-    size -= minfo.RegionSize;
+స్థిర పూర్ణాంకం win32munmap(శూన్య* ptr, size_t కొలత) {
+  జ్ఞాపకం_BASIC_INFORMATION minfo;
+  అక్షరం* cptr = (అక్షరం*)ptr;
+  అయితే (కొలత) {
+    ఒకవేళ (VirtualQuery(cptr, &minfo, పరిమాణం(minfo)) == 0)
+      తిరిగి -1;
+    ఒకవేళ (minfo.పునాది_చిరునామా != cptr || minfo.కేటాయింపు_పునాది != cptr ||
+        minfo.State != MEM_COMMIT || minfo.Region_కొలత > కొలత)
+      తిరిగి -1;
+    ఒకవేళ (VirtualFree(cptr, 0, MEM_RELEASE) == 0)
+      తిరిగి -1;
+    cptr += minfo.Region_కొలత;
+    కొలత -= minfo.Region_కొలత;
   }
-  return 0;
+  తిరిగి 0;
 }
 
-#define MMAP_DEFAULT(s)             win32mmap(s)
-#define MUNMAP_DEFAULT(a, s)        win32munmap((a), (s))
-#define DIRECT_MMAP_DEFAULT(s)      win32direct_mmap(s)
-#endif /* WIN32 */
-#endif /* HAVE_MMAP */
+#నిర్వచించు MMAP_DEFAULT(s)             win32mmap(s)
+#నిర్వచించు MUNMAP_DEFAULT(a, s)        win32munmap((a), (s))
+#నిర్వచించు ప్రత్యక్ష_MMAP_DEFAULT(s)      win32direct_mmap(s)
+#అయితే_ముగింపు /* WIN32 */
+#అయితే_ముగింపు /* HAVE_MMAP */
 
-#if HAVE_MREMAP
-#ifndef WIN32
-#define MREMAP_DEFAULT(addr, osz, nsz, mv) mremap((addr), (osz), (nsz), (mv))
-#endif /* WIN32 */
-#endif /* HAVE_MREMAP */
+#ఒకవేళ HAVE_MREMAP
+#నిర్వచితం_కాకపోతే WIN32
+#నిర్వచించు MREMAP_DEFAULT(addr, osz, nsz, mv) mremap((addr), (osz), (nsz), (mv))
+#అయితే_ముగింపు /* WIN32 */
+#అయితే_ముగింపు /* HAVE_MREMAP */
 
 /**
  * Define CALL_MORECORE
  */
-#if HAVE_MORECORE
-    #ifdef MORECORE
-        #define CALL_MORECORE(S)    MORECORE(S)
-    #else  /* MORECORE */
-        #define CALL_MORECORE(S)    MORECORE_DEFAULT(S)
-    #endif /* MORECORE */
-#else  /* HAVE_MORECORE */
-    #define CALL_MORECORE(S)        MFAIL
-#endif /* HAVE_MORECORE */
+#ఒకవేళ HAVE_MORECORE
+    #నిర్వచితమైతే MORECORE
+        #నిర్వచించు CALL_MORECORE(S)    MORECORE(S)
+    #లేకపోతే  /* MORECORE */
+        #నిర్వచించు CALL_MORECORE(S)    MORECORE_DEFAULT(S)
+    #అయితే_ముగింపు /* MORECORE */
+#లేకపోతే  /* HAVE_MORECORE */
+    #నిర్వచించు CALL_MORECORE(S)        MFAIL
+#అయితే_ముగింపు /* HAVE_MORECORE */
 
 /**
  * Define CALL_MMAP/CALL_MUNMAP/CALL_DIRECT_MMAP
  */
-#if HAVE_MMAP
-    #define USE_MMAP_BIT            (SIZE_T_ONE)
+#ఒకవేళ HAVE_MMAP
+    #నిర్వచించు USE_MMAP_బిట్టు            (కొలత_T_ONE)
 
-    #ifdef MMAP
-        #define CALL_MMAP(s)        MMAP(s)
-    #else /* MMAP */
-        #define CALL_MMAP(s)        MMAP_DEFAULT(s)
-    #endif /* MMAP */
-    #ifdef MUNMAP
-        #define CALL_MUNMAP(a, s)   MUNMAP((a), (s))
-    #else /* MUNMAP */
-        #define CALL_MUNMAP(a, s)   MUNMAP_DEFAULT((a), (s))
-    #endif /* MUNMAP */
-    #ifdef DIRECT_MMAP
-        #define CALL_DIRECT_MMAP(s) DIRECT_MMAP(s)
-    #else /* DIRECT_MMAP */
-        #define CALL_DIRECT_MMAP(s) DIRECT_MMAP_DEFAULT(s)
-    #endif /* DIRECT_MMAP */
-#else  /* HAVE_MMAP */
-    #define USE_MMAP_BIT            (SIZE_T_ZERO)
+    #నిర్వచితమైతే MMAP
+        #నిర్వచించు CALL_MMAP(s)        MMAP(s)
+    #లేకపోతే /* MMAP */
+        #నిర్వచించు CALL_MMAP(s)        MMAP_DEFAULT(s)
+    #అయితే_ముగింపు /* MMAP */
+    #నిర్వచితమైతే MUNMAP
+        #నిర్వచించు CALL_MUNMAP(a, s)   MUNMAP((a), (s))
+    #లేకపోతే /* MUNMAP */
+        #నిర్వచించు CALL_MUNMAP(a, s)   MUNMAP_DEFAULT((a), (s))
+    #అయితే_ముగింపు /* MUNMAP */
+    #నిర్వచితమైతే ప్రత్యక్ష_MMAP
+        #నిర్వచించు CALL_ప్రత్యక్ష_MMAP(s) ప్రత్యక్ష_MMAP(s)
+    #లేకపోతే /* DIRECT_MMAP */
+        #నిర్వచించు CALL_ప్రత్యక్ష_MMAP(s) ప్రత్యక్ష_MMAP_DEFAULT(s)
+    #అయితే_ముగింపు /* DIRECT_MMAP */
+#లేకపోతే  /* HAVE_MMAP */
+    #నిర్వచించు USE_MMAP_బిట్టు            (కొలత_T_ZERO)
 
-    #define MMAP(s)                 MFAIL
-    #define MUNMAP(a, s)            (-1)
-    #define DIRECT_MMAP(s)          MFAIL
-    #define CALL_DIRECT_MMAP(s)     DIRECT_MMAP(s)
-    #define CALL_MMAP(s)            MMAP(s)
-    #define CALL_MUNMAP(a, s)       MUNMAP((a), (s))
-#endif /* HAVE_MMAP */
+    #నిర్వచించు MMAP(s)                 MFAIL
+    #నిర్వచించు MUNMAP(a, s)            (-1)
+    #నిర్వచించు ప్రత్యక్ష_MMAP(s)          MFAIL
+    #నిర్వచించు CALL_ప్రత్యక్ష_MMAP(s)     ప్రత్యక్ష_MMAP(s)
+    #నిర్వచించు CALL_MMAP(s)            MMAP(s)
+    #నిర్వచించు CALL_MUNMAP(a, s)       MUNMAP((a), (s))
+#అయితే_ముగింపు /* HAVE_MMAP */
 
 /**
  * Define CALL_MREMAP
  */
-#if HAVE_MMAP && HAVE_MREMAP
-    #ifdef MREMAP
-        #define CALL_MREMAP(addr, osz, nsz, mv) MREMAP((addr), (osz), (nsz), (mv))
-    #else /* MREMAP */
-        #define CALL_MREMAP(addr, osz, nsz, mv) MREMAP_DEFAULT((addr), (osz), (nsz), (mv))
-    #endif /* MREMAP */
-#else  /* HAVE_MMAP && HAVE_MREMAP */
-    #define CALL_MREMAP(addr, osz, nsz, mv)     MFAIL
-#endif /* HAVE_MMAP && HAVE_MREMAP */
+#ఒకవేళ HAVE_MMAP && HAVE_MREMAP
+    #నిర్వచితమైతే MREMAP
+        #నిర్వచించు CALL_MREMAP(addr, osz, nsz, mv) MREMAP((addr), (osz), (nsz), (mv))
+    #లేకపోతే /* MREMAP */
+        #నిర్వచించు CALL_MREMAP(addr, osz, nsz, mv) MREMAP_DEFAULT((addr), (osz), (nsz), (mv))
+    #అయితే_ముగింపు /* MREMAP */
+#లేకపోతే  /* HAVE_MMAP && HAVE_MREMAP */
+    #నిర్వచించు CALL_MREMAP(addr, osz, nsz, mv)     MFAIL
+#అయితే_ముగింపు /* HAVE_MMAP && HAVE_MREMAP */
 
 /* mstate bit set if contiguous morecore disabled or failed */
-#define USE_NONCONTIGUOUS_BIT (4U)
+#నిర్వచించు USE_NONCONTIGUOUS_బిట్టు (4U)
 
 /* segment bit set in create_mspace_with_base */
-#define EXTERN_BIT            (8U)
+#నిర్వచించు EXTERN_బిట్టు            (8U)
 
 
 /* --------------------------- Lock preliminaries ------------------------ */
@@ -1862,15 +1862,15 @@ static int win32munmap(void* ptr, size_t size) {
 
 */
 
-#if !USE_LOCKS
-#define USE_LOCK_BIT               (0U)
-#define INITIAL_LOCK(l)            (0)
-#define DESTROY_LOCK(l)            (0)
-#define ACQUIRE_MALLOC_GLOBAL_LOCK()
-#define RELEASE_MALLOC_GLOBAL_LOCK()
+#ఒకవేళ !USE_LOCKS
+#నిర్వచించు USE_తాళం_బిట్టు               (0U)
+#నిర్వచించు INITIAL_తాళం(l)            (0)
+#నిర్వచించు DESTROY_తాళం(l)            (0)
+#నిర్వచించు ACQUIRE_MALLOC_GLOBAL_తాళం()
+#నిర్వచించు RELEASE_MALLOC_GLOBAL_తాళం()
 
-#else
-#if USE_LOCKS > 1
+#లేకపోతే
+#ఒకవేళ USE_LOCKS > 1
 /* -----------------------  User-defined locks ------------------------ */
 /* Define your own lock implementation here */
 /* #define INITIAL_LOCK(lk)  ... */
@@ -1880,59 +1880,59 @@ static int win32munmap(void* ptr, size_t size) {
 /* #define TRY_LOCK(lk) ... */
 /* static MLOCK_T malloc_global_mutex = ... */
 
-#elif USE_SPIN_LOCKS
+#లేదావేళ USE_SPIN_LOCKS
 
 /* First, define CAS_LOCK and CLEAR_LOCK on ints */
 /* Note CAS_LOCK defined to return 0 on success */
 
-#if defined(__GNUC__)&& (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
-#define CAS_LOCK(sl)     __sync_lock_test_and_set(sl, 1)
-#define CLEAR_LOCK(sl)   __sync_lock_release(sl)
+#ఒకవేళ defined(__GNUC__)&& (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
+#నిర్వచించు CAS_తాళం(sl)     __sync_lock_test_and_set(sl, 1)
+#నిర్వచించు CLEAR_తాళం(sl)   __sync_lock_release(sl)
 
-#elif (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)))
+#లేదావేళ (defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__)))
 /* Custom spin locks for older gcc on x86 */
-static FORCEINLINE int x86_cas_lock(int *sl) {
-  int ret;
-  int val = 1;
-  int cmp = 0;
+స్థిర FORCEINLINE పూర్ణాంకం x86_cas_తాళం(పూర్ణాంకం *sl) {
+  పూర్ణాంకం ret;
+  పూర్ణాంకం val = 1;
+  పూర్ణాంకం cmp = 0;
   __asm__ __volatile__  ("lock; cmpxchgl %1, %2"
                          : "=a" (ret)
                          : "r" (val), "m" (*(sl)), "0"(cmp)
                          : "memory", "cc");
-  return ret;
+  తిరిగి ret;
 }
 
-static FORCEINLINE void x86_clear_lock(int* sl) {
-  assert(*sl != 0);
-  int prev = 0;
-  int ret;
+స్థిర FORCEINLINE శూన్య x86_clear_తాళం(పూర్ణాంకం* sl) {
+  ప్రతిజ్ఞా(*sl != 0);
+  పూర్ణాంకం prev = 0;
+  పూర్ణాంకం ret;
   __asm__ __volatile__ ("lock; xchgl %0, %1"
                         : "=r" (ret)
                         : "m" (*(sl)), "0"(prev)
                         : "memory");
 }
 
-#define CAS_LOCK(sl)     x86_cas_lock(sl)
-#define CLEAR_LOCK(sl)   x86_clear_lock(sl)
+#నిర్వచించు CAS_తాళం(sl)     x86_cas_తాళం(sl)
+#నిర్వచించు CLEAR_తాళం(sl)   x86_clear_తాళం(sl)
 
-#else /* Win32 MSC */
-#define CAS_LOCK(sl)     interlockedexchange((LONG volatile *)(sl), (LONG)1)
-#define CLEAR_LOCK(sl)   interlockedexchange ((LONG volatile *)(sl), (LONG)0)
+#లేకపోతే /* Win32 MSC */
+#నిర్వచించు CAS_తాళం(sl)     interlockedexchange((LONG అస్థిర *)(sl), (LONG)1)
+#నిర్వచించు CLEAR_తాళం(sl)   interlockedexchange ((LONG అస్థిర *)(sl), (LONG)0)
 
-#endif /* ... gcc spins locks ... */
+#అయితే_ముగింపు /* ... gcc spins locks ... */
 
 /* How to yield for a spin lock */
-#define SPINS_PER_YIELD       63
-#if defined(_MSC_VER)
-#define SLEEP_EX_DURATION     50 /* delay for yield/sleep */
-#define SPIN_LOCK_YIELD  SleepEx(SLEEP_EX_DURATION, FALSE)
-#elif defined (__SVR4) && defined (__sun) /* solaris */
-#define SPIN_LOCK_YIELD   thr_yield();
-#elif !defined(LACKS_SCHED_H)
-#define SPIN_LOCK_YIELD   sched_yield();
-#else
-#define SPIN_LOCK_YIELD
-#endif /* ... yield ... */
+#నిర్వచించు SPINS_చొప్పున_YIELD       63
+#ఒకవేళ defined(_MSC_VER)
+#నిర్వచించు SLEEP_EX_DURATION     50 /* delay for yield/sleep */
+#నిర్వచించు SPIN_తాళం_YIELD  SleepEx(SLEEP_EX_DURATION, FALSE)
+#లేదావేళ defined (__SVR4) && defined (__sun) /* solaris */
+#నిర్వచించు SPIN_తాళం_YIELD   thr_yield();
+#లేదావేళ !defined(LACKS_SCHED_H)
+#నిర్వచించు SPIN_తాళం_YIELD   sched_yield();
+#లేకపోతే
+#నిర్వచించు SPIN_తాళం_YIELD
+#అయితే_ముగింపు /* ... yield ... */
 
 /* libffi: read the spin-lock word with a relaxed atomic load for the lock-free
    "is it held?" peek, so ThreadSanitizer does not flag it as racing with the
@@ -1940,185 +1940,185 @@ static FORCEINLINE void x86_clear_lock(int* sl) {
    peek is only a hint to avoid a costly CAS, and CAS_LOCK still provides the
    acquire ordering on success.  Falls back to the original volatile read when
    atomic builtins are unavailable.  */
-#if defined(__ATOMIC_RELAXED)
+#ఒకవేళ defined(__ATOMIC_RELAXED)
 # define ffi_spin_peek(sl) __atomic_load_n((sl), __ATOMIC_RELAXED)
-#elif defined(_MSC_VER)
+#లేదావేళ defined(_MSC_VER)
 # define ffi_spin_peek(sl) \
-  ((int)_InterlockedCompareExchange((LONG volatile *)(sl), (LONG)0, (LONG)0))
-#else
-# define ffi_spin_peek(sl) (*(volatile int *)(sl))
-#endif
+  ((పూర్ణాంకం)_InterlockedCompareExchange((LONG అస్థిర *)(sl), (LONG)0, (LONG)0))
+#లేకపోతే
+# define ffi_spin_peek(sl) (*(అస్థిర పూర్ణాంకం *)(sl))
+#అయితే_ముగింపు
 
-#if !defined(USE_RECURSIVE_LOCKS) || USE_RECURSIVE_LOCKS == 0
+#ఒకవేళ !defined(USE_RECURSIVE_LOCKS) || USE_RECURSIVE_LOCKS == 0
 /* Plain spin locks use single word (embedded in malloc_states) */
-static int spin_acquire_lock(int *sl) {
-  int spins = 0;
-  while (ffi_spin_peek(sl) != 0 || CAS_LOCK(sl)) {
-    if ((++spins & SPINS_PER_YIELD) == 0) {
-      SPIN_LOCK_YIELD;
+స్థిర పూర్ణాంకం spin_acquire_తాళం(పూర్ణాంకం *sl) {
+  పూర్ణాంకం spins = 0;
+  అయితే (ffi_spin_peek(sl) != 0 || CAS_తాళం(sl)) {
+    ఒకవేళ ((++spins & SPINS_చొప్పున_YIELD) == 0) {
+      SPIN_తాళం_YIELD;
     }
   }
-  return 0;
+  తిరిగి 0;
 }
 
-#define MLOCK_T               int
-#define TRY_LOCK(sl)          !CAS_LOCK(sl)
-#define RELEASE_LOCK(sl)      CLEAR_LOCK(sl)
-#define ACQUIRE_LOCK(sl)      (CAS_LOCK(sl)? spin_acquire_lock(sl) : 0)
-#define INITIAL_LOCK(sl)      (*sl = 0)
-#define DESTROY_LOCK(sl)      (0)
-static MLOCK_T malloc_global_mutex = 0;
+#నిర్వచించు MLOCK_T               పూర్ణాంకం
+#నిర్వచించు TRY_తాళం(sl)          !CAS_తాళం(sl)
+#నిర్వచించు RELEASE_తాళం(sl)      CLEAR_తాళం(sl)
+#నిర్వచించు ACQUIRE_తాళం(sl)      (CAS_తాళం(sl)? spin_acquire_తాళం(sl) : 0)
+#నిర్వచించు INITIAL_తాళం(sl)      (*sl = 0)
+#నిర్వచించు DESTROY_తాళం(sl)      (0)
+స్థిర MLOCK_T malloc_global_mutex = 0;
 
-#else /* USE_RECURSIVE_LOCKS */
+#లేకపోతే /* USE_RECURSIVE_LOCKS */
 /* types for lock owners */
-#ifdef WIN32
-#define THREAD_ID_T           DWORD
-#define CURRENT_THREAD        GetCurrentThreadId()
-#define EQ_OWNER(X,Y)         ((X) == (Y))
-#else
+#నిర్వచితమైతే WIN32
+#నిర్వచించు THREAD_ID_T           DWORD
+#నిర్వచించు CURRENT_THREAD        GetCurrentThreadId()
+#నిర్వచించు EQ_OWNER(X,Y)         ((X) == (Y))
+#లేకపోతే
 /*
   Note: the following assume that pthread_t is a type that can be
   initialized to (casted) zero. If this is not the case, you will need to
   somehow redefine these or not use spin locks.
 */
-#define THREAD_ID_T           pthread_t
-#define CURRENT_THREAD        pthread_self()
-#define EQ_OWNER(X,Y)         pthread_equal(X, Y)
-#endif
+#నిర్వచించు THREAD_ID_T           pthread_t
+#నిర్వచించు CURRENT_THREAD        pthread_self()
+#నిర్వచించు EQ_OWNER(X,Y)         pthread_equal(X, Y)
+#అయితే_ముగింపు
 
-struct malloc_recursive_lock {
-  int sl;
-  unsigned int c;
+నిర్మాణం malloc_recursive_తాళం {
+  పూర్ణాంకం sl;
+  గుర్తులేని పూర్ణాంకం c;
   THREAD_ID_T threadid;
 };
 
-#define MLOCK_T  struct malloc_recursive_lock
-static MLOCK_T malloc_global_mutex = { 0, 0, (THREAD_ID_T)0};
+#నిర్వచించు MLOCK_T  నిర్మాణం malloc_recursive_తాళం
+స్థిర MLOCK_T malloc_global_mutex = { 0, 0, (THREAD_ID_T)0};
 
-static FORCEINLINE void recursive_release_lock(MLOCK_T *lk) {
-  assert(lk->sl != 0);
-  if (--lk->c == 0) {
-    CLEAR_LOCK(&lk->sl);
+స్థిర FORCEINLINE శూన్య recursive_release_తాళం(MLOCK_T *lk) {
+  ప్రతిజ్ఞా(lk->sl != 0);
+  ఒకవేళ (--lk->c == 0) {
+    CLEAR_తాళం(&lk->sl);
   }
 }
 
-static FORCEINLINE int recursive_acquire_lock(MLOCK_T *lk) {
+స్థిర FORCEINLINE పూర్ణాంకం recursive_acquire_తాళం(MLOCK_T *lk) {
   THREAD_ID_T mythreadid = CURRENT_THREAD;
-  int spins = 0;
-  for (;;) {
-    if (ffi_spin_peek(&lk->sl) == 0) {
-      if (!CAS_LOCK(&lk->sl)) {
+  పూర్ణాంకం spins = 0;
+  కొరకు (;;) {
+    ఒకవేళ (ffi_spin_peek(&lk->sl) == 0) {
+      ఒకవేళ (!CAS_తాళం(&lk->sl)) {
         lk->threadid = mythreadid;
         lk->c = 1;
-        return 0;
+        తిరిగి 0;
       }
     }
-    else if (EQ_OWNER(lk->threadid, mythreadid)) {
+    లేకపోతే ఒకవేళ (EQ_OWNER(lk->threadid, mythreadid)) {
       ++lk->c;
-      return 0;
+      తిరిగి 0;
     }
-    if ((++spins & SPINS_PER_YIELD) == 0) {
-      SPIN_LOCK_YIELD;
+    ఒకవేళ ((++spins & SPINS_చొప్పున_YIELD) == 0) {
+      SPIN_తాళం_YIELD;
     }
   }
 }
 
-static FORCEINLINE int recursive_try_lock(MLOCK_T *lk) {
+స్థిర FORCEINLINE పూర్ణాంకం recursive_try_తాళం(MLOCK_T *lk) {
   THREAD_ID_T mythreadid = CURRENT_THREAD;
-  if (ffi_spin_peek(&lk->sl) == 0) {
-    if (!CAS_LOCK(&lk->sl)) {
+  ఒకవేళ (ffi_spin_peek(&lk->sl) == 0) {
+    ఒకవేళ (!CAS_తాళం(&lk->sl)) {
       lk->threadid = mythreadid;
       lk->c = 1;
-      return 1;
+      తిరిగి 1;
     }
   }
-  else if (EQ_OWNER(lk->threadid, mythreadid)) {
+  లేకపోతే ఒకవేళ (EQ_OWNER(lk->threadid, mythreadid)) {
     ++lk->c;
-    return 1;
+    తిరిగి 1;
   }
-  return 0;
+  తిరిగి 0;
 }
 
-#define RELEASE_LOCK(lk)      recursive_release_lock(lk)
-#define TRY_LOCK(lk)          recursive_try_lock(lk)
-#define ACQUIRE_LOCK(lk)      recursive_acquire_lock(lk)
-#define INITIAL_LOCK(lk)      ((lk)->threadid = (THREAD_ID_T)0, (lk)->sl = 0, (lk)->c = 0)
-#define DESTROY_LOCK(lk)      (0)
-#endif /* USE_RECURSIVE_LOCKS */
+#నిర్వచించు RELEASE_తాళం(lk)      recursive_release_తాళం(lk)
+#నిర్వచించు TRY_తాళం(lk)          recursive_try_తాళం(lk)
+#నిర్వచించు ACQUIRE_తాళం(lk)      recursive_acquire_తాళం(lk)
+#నిర్వచించు INITIAL_తాళం(lk)      ((lk)->threadid = (THREAD_ID_T)0, (lk)->sl = 0, (lk)->c = 0)
+#నిర్వచించు DESTROY_తాళం(lk)      (0)
+#అయితే_ముగింపు /* USE_RECURSIVE_LOCKS */
 
-#elif defined(WIN32) /* Win32 critical sections */
-#define MLOCK_T               CRITICAL_SECTION
-#define ACQUIRE_LOCK(lk)      (EnterCriticalSection(lk), 0)
-#define RELEASE_LOCK(lk)      LeaveCriticalSection(lk)
-#define TRY_LOCK(lk)          TryEnterCriticalSection(lk)
-#define INITIAL_LOCK(lk)      (!InitializeCriticalSectionAndSpinCount((lk), 0x80000000|4000))
-#define DESTROY_LOCK(lk)      (DeleteCriticalSection(lk), 0)
-#define NEED_GLOBAL_LOCK_INIT
+#లేదావేళ defined(WIN32) /* Win32 critical sections */
+#నిర్వచించు MLOCK_T               CRITICAL_SECTION
+#నిర్వచించు ACQUIRE_తాళం(lk)      (EnterCriticalSection(lk), 0)
+#నిర్వచించు RELEASE_తాళం(lk)      LeaveCriticalSection(lk)
+#నిర్వచించు TRY_తాళం(lk)          TryEnterCriticalSection(lk)
+#నిర్వచించు INITIAL_తాళం(lk)      (!Initialize_Critical_Section_And_Spin_లెక్క((lk), 0x80000000|4000))
+#నిర్వచించు DESTROY_తాళం(lk)      (DeleteCriticalSection(lk), 0)
+#నిర్వచించు NEED_GLOBAL_తాళం_INIT
 
-static MLOCK_T malloc_global_mutex;
-static volatile LONG malloc_global_mutex_status;
+స్థిర MLOCK_T malloc_global_mutex;
+స్థిర అస్థిర LONG malloc_global_mutex_స్థితి;
 
 /* Use spin loop to initialize global lock */
-static void init_malloc_global_mutex() {
-  for (;;) {
-    long stat = malloc_global_mutex_status;
-    if (stat > 0)
-      return;
+స్థిర శూన్య init_malloc_global_mutex() {
+  కొరకు (;;) {
+    దీర్ఘ stat = malloc_global_mutex_స్థితి;
+    ఒకవేళ (stat > 0)
+      తిరిగి;
     /* transition to < 0 while initializing, then to > 0) */
-    if (stat == 0 &&
-        interlockedcompareexchange(&malloc_global_mutex_status, (LONG)-1, (LONG)0) == 0) {
+    ఒకవేళ (stat == 0 &&
+        interlockedcompareexchange(&malloc_global_mutex_స్థితి, (LONG)-1, (LONG)0) == 0) {
       InitializeCriticalSection(&malloc_global_mutex);
-      interlockedexchange(&malloc_global_mutex_status, (LONG)1);
-      return;
+      interlockedexchange(&malloc_global_mutex_స్థితి, (LONG)1);
+      తిరిగి;
     }
     SleepEx(0, FALSE);
   }
 }
 
-#else /* pthreads-based locks */
-#define MLOCK_T               pthread_mutex_t
-#define ACQUIRE_LOCK(lk)      pthread_mutex_lock(lk)
-#define RELEASE_LOCK(lk)      pthread_mutex_unlock(lk)
-#define TRY_LOCK(lk)          (!pthread_mutex_trylock(lk))
-#define INITIAL_LOCK(lk)      pthread_init_lock(lk)
-#define DESTROY_LOCK(lk)      pthread_mutex_destroy(lk)
+#లేకపోతే /* pthreads-based locks */
+#నిర్వచించు MLOCK_T               pthread_mutex_t
+#నిర్వచించు ACQUIRE_తాళం(lk)      pthread_mutex_తాళం(lk)
+#నిర్వచించు RELEASE_తాళం(lk)      pthread_mutex_unlock(lk)
+#నిర్వచించు TRY_తాళం(lk)          (!pthread_mutex_trylock(lk))
+#నిర్వచించు INITIAL_తాళం(lk)      pthread_init_తాళం(lk)
+#నిర్వచించు DESTROY_తాళం(lk)      pthread_mutex_destroy(lk)
 
-#if defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0 && defined(linux) && !defined(PTHREAD_MUTEX_RECURSIVE)
+#ఒకవేళ defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0 && defined(linux) && !defined(PTHREAD_MUTEX_RECURSIVE)
 /* Cope with old-style linux recursive lock initialization by adding */
 /* skipped internal declaration from pthread.h */
-extern int pthread_mutexattr_setkind_np __P ((pthread_mutexattr_t *__attr,
-                                              int __kind));
-#define PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
-#define pthread_mutexattr_settype(x,y) pthread_mutexattr_setkind_np(x,y)
-#endif /* USE_RECURSIVE_LOCKS ... */
+బాహ్య పూర్ణాంకం pthread_mutexattr_setkind_np __P ((pthread_mutexattr_t *__attr,
+                                              పూర్ణాంకం __kind));
+#నిర్వచించు PTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
+#నిర్వచించు pthread_mutexattr_settype(x,y) pthread_mutexattr_setkind_np(x,y)
+#అయితే_ముగింపు /* USE_RECURSIVE_LOCKS ... */
 
-static MLOCK_T malloc_global_mutex = PTHREAD_MUTEX_INITIALIZER;
+స్థిర MLOCK_T malloc_global_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static int pthread_init_lock (MLOCK_T *lk) {
+స్థిర పూర్ణాంకం pthread_init_తాళం (MLOCK_T *lk) {
   pthread_mutexattr_t attr;
-  if (pthread_mutexattr_init(&attr)) return 1;
-#if defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0
-  if (pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)) return 1;
-#endif
-  if (pthread_mutex_init(lk, &attr)) return 1;
-  if (pthread_mutexattr_destroy(&attr)) return 1;
-  return 0;
+  ఒకవేళ (pthread_mutexattr_init(&attr)) తిరిగి 1;
+#ఒకవేళ defined(USE_RECURSIVE_LOCKS) && USE_RECURSIVE_LOCKS != 0
+  ఒకవేళ (pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE)) తిరిగి 1;
+#అయితే_ముగింపు
+  ఒకవేళ (pthread_mutex_init(lk, &attr)) తిరిగి 1;
+  ఒకవేళ (pthread_mutexattr_destroy(&attr)) తిరిగి 1;
+  తిరిగి 0;
 }
 
-#endif /* ... lock types ... */
+#అయితే_ముగింపు /* ... lock types ... */
 
 /* Common code for all lock types */
-#define USE_LOCK_BIT               (2U)
+#నిర్వచించు USE_తాళం_బిట్టు               (2U)
 
-#ifndef ACQUIRE_MALLOC_GLOBAL_LOCK
-#define ACQUIRE_MALLOC_GLOBAL_LOCK()  ACQUIRE_LOCK(&malloc_global_mutex);
-#endif
+#నిర్వచితం_కాకపోతే ACQUIRE_MALLOC_GLOBAL_తాళం
+#నిర్వచించు ACQUIRE_MALLOC_GLOBAL_తాళం()  ACQUIRE_తాళం(&malloc_global_mutex);
+#అయితే_ముగింపు
 
-#ifndef RELEASE_MALLOC_GLOBAL_LOCK
-#define RELEASE_MALLOC_GLOBAL_LOCK()  RELEASE_LOCK(&malloc_global_mutex);
-#endif
+#నిర్వచితం_కాకపోతే RELEASE_MALLOC_GLOBAL_తాళం
+#నిర్వచించు RELEASE_MALLOC_GLOBAL_తాళం()  RELEASE_తాళం(&malloc_global_mutex);
+#అయితే_ముగింపు
 
-#endif /* USE_LOCKS */
+#అయితే_ముగింపు /* USE_LOCKS */
 
 /* -----------------------  Chunk representations ------------------------ */
 
@@ -2257,56 +2257,56 @@ static int pthread_init_lock (MLOCK_T *lk) {
 
 */
 
-struct malloc_chunk {
+నిర్మాణం malloc_chunk {
   size_t               prev_foot;  /* Size of previous chunk (if free).  */
-  size_t               head;       /* Size and inuse bits. */
-  struct malloc_chunk* fd;         /* double links -- used only if free. */
-  struct malloc_chunk* bk;
+  size_t               తల;       /* Size and inuse bits. */
+  నిర్మాణం malloc_chunk* fd;         /* double links -- used only if free. */
+  నిర్మాణం malloc_chunk* bk;
 };
 
-typedef struct malloc_chunk  mchunk;
-typedef struct malloc_chunk* mchunkptr;
-typedef struct malloc_chunk* sbinptr;  /* The type of bins of chunks */
-typedef unsigned int bindex_t;         /* Described below */
-typedef unsigned int binmap_t;         /* Described below */
-typedef unsigned int flag_t;           /* The type of various bit flag sets */
+రకనిర్వచనం నిర్మాణం malloc_chunk  mchunk;
+రకనిర్వచనం నిర్మాణం malloc_chunk* mchunkptr;
+రకనిర్వచనం నిర్మాణం malloc_chunk* sbinptr;  /* The type of bins of chunks */
+రకనిర్వచనం గుర్తులేని పూర్ణాంకం bindex_t;         /* Described below */
+రకనిర్వచనం గుర్తులేని పూర్ణాంకం binmap_t;         /* Described below */
+రకనిర్వచనం గుర్తులేని పూర్ణాంకం flag_t;           /* The type of various bit flag sets */
 
 /* ------------------- Chunks sizes and alignments ----------------------- */
 
-#define MCHUNK_SIZE         (sizeof(mchunk))
+#నిర్వచించు MCHUNK_కొలత         (పరిమాణం(mchunk))
 
-#if FOOTERS
-#define CHUNK_OVERHEAD      (TWO_SIZE_T_SIZES)
-#else /* FOOTERS */
-#define CHUNK_OVERHEAD      (SIZE_T_SIZE)
-#endif /* FOOTERS */
+#ఒకవేళ FOOTERS
+#నిర్వచించు CHUNK_OVERHEAD      (TWO_కొలత_T_SIZES)
+#లేకపోతే /* FOOTERS */
+#నిర్వచించు CHUNK_OVERHEAD      (కొలత_T_కొలత)
+#అయితే_ముగింపు /* FOOTERS */
 
 /* MMapped chunks need a second word of overhead ... */
-#define MMAP_CHUNK_OVERHEAD (TWO_SIZE_T_SIZES)
+#నిర్వచించు MMAP_CHUNK_OVERHEAD (TWO_కొలత_T_SIZES)
 /* ... and additional padding for fake next-chunk at foot */
-#define MMAP_FOOT_PAD       (FOUR_SIZE_T_SIZES)
+#నిర్వచించు MMAP_FOOT_PAD       (FOUR_కొలత_T_SIZES)
 
 /* The smallest size we can malloc is an aligned minimal chunk */
-#define MIN_CHUNK_SIZE\
-  ((MCHUNK_SIZE + CHUNK_ALIGN_MASK) & ~CHUNK_ALIGN_MASK)
+#నిర్వచించు MIN_CHUNK_కొలత\
+  ((MCHUNK_కొలత + CHUNK_ALIGN_ముసుగు) & ~CHUNK_ALIGN_ముసుగు)
 
 /* conversion from malloc headers to user pointers, and back */
-#define chunk2mem(p)        ((void*)((char*)(p)       + TWO_SIZE_T_SIZES))
-#define mem2chunk(mem)      ((mchunkptr)((char*)(mem) - TWO_SIZE_T_SIZES))
+#నిర్వచించు chunk2mem(p)        ((శూన్య*)((అక్షరం*)(p)       + TWO_కొలత_T_SIZES))
+#నిర్వచించు mem2chunk(mem)      ((mchunkptr)((అక్షరం*)(mem) - TWO_కొలత_T_SIZES))
 /* chunk associated with aligned address A */
-#define align_as_chunk(A)   (mchunkptr)((A) + align_offset(chunk2mem(A)))
+#నిర్వచించు align_as_chunk(A)   (mchunkptr)((A) + align_స్థానభ్రంశం(chunk2mem(A)))
 
 /* Bounds on request (not chunk) sizes. */
-#define MAX_REQUEST         ((-MIN_CHUNK_SIZE) << 2)
-#define MIN_REQUEST         (MIN_CHUNK_SIZE - CHUNK_OVERHEAD - SIZE_T_ONE)
+#నిర్వచించు MAX_REQUEST         ((-MIN_CHUNK_కొలత) << 2)
+#నిర్వచించు MIN_REQUEST         (MIN_CHUNK_కొలత - CHUNK_OVERHEAD - కొలత_T_ONE)
 
 /* pad request bytes into a usable size */
-#define pad_request(req) \
-   (((req) + CHUNK_OVERHEAD + CHUNK_ALIGN_MASK) & ~CHUNK_ALIGN_MASK)
+#నిర్వచించు pad_request(req) \
+   (((req) + CHUNK_OVERHEAD + CHUNK_ALIGN_ముసుగు) & ~CHUNK_ALIGN_ముసుగు)
 
 /* pad request, checking for minimum (but not maximum) */
-#define request2size(req) \
-  (((req) < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(req))
+#నిర్వచించు request2size(req) \
+  (((req) < MIN_REQUEST)? MIN_CHUNK_కొలత : pad_request(req))
 
 
 /* ------------------ Operations on head and foot fields ----------------- */
@@ -2319,61 +2319,61 @@ typedef unsigned int flag_t;           /* The type of various bit flag sets */
   FLAG4_BIT is not used by this malloc, but might be useful in extensions.
 */
 
-#define PINUSE_BIT          (SIZE_T_ONE)
-#define CINUSE_BIT          (SIZE_T_TWO)
-#define FLAG4_BIT           (SIZE_T_FOUR)
-#define INUSE_BITS          (PINUSE_BIT|CINUSE_BIT)
-#define FLAG_BITS           (PINUSE_BIT|CINUSE_BIT|FLAG4_BIT)
+#నిర్వచించు PINUSE_బిట్టు          (కొలత_T_ONE)
+#నిర్వచించు CINUSE_బిట్టు          (కొలత_T_TWO)
+#నిర్వచించు FLAG4_బిట్టు           (కొలత_T_FOUR)
+#నిర్వచించు INUSE_బిట్లు          (PINUSE_బిట్టు|CINUSE_బిట్టు)
+#నిర్వచించు FLAG_బిట్లు           (PINUSE_బిట్టు|CINUSE_బిట్టు|FLAG4_బిట్టు)
 
 /* Head value for fenceposts */
-#define FENCEPOST_HEAD      (INUSE_BITS|SIZE_T_SIZE)
+#నిర్వచించు FENCEPOST_తల      (INUSE_బిట్లు|కొలత_T_కొలత)
 
 /* extraction of fields from head words */
-#define cinuse(p)           ((p)->head & CINUSE_BIT)
-#define pinuse(p)           ((p)->head & PINUSE_BIT)
-#define flag4inuse(p)       ((p)->head & FLAG4_BIT)
-#define is_inuse(p)         (((p)->head & INUSE_BITS) != PINUSE_BIT)
-#define is_mmapped(p)       (((p)->head & INUSE_BITS) == 0)
+#నిర్వచించు cinuse(p)           ((p)->తల & CINUSE_బిట్టు)
+#నిర్వచించు pinuse(p)           ((p)->తల & PINUSE_బిట్టు)
+#నిర్వచించు flag4inuse(p)       ((p)->తల & FLAG4_బిట్టు)
+#నిర్వచించు is_inuse(p)         (((p)->తల & INUSE_బిట్లు) != PINUSE_బిట్టు)
+#నిర్వచించు is_mmapped(p)       (((p)->తల & INUSE_బిట్లు) == 0)
 
-#define chunksize(p)        ((p)->head & ~(FLAG_BITS))
+#నిర్వచించు chunksize(p)        ((p)->తల & ~(FLAG_బిట్లు))
 
-#define clear_pinuse(p)     ((p)->head &= ~PINUSE_BIT)
-#define set_flag4(p)        ((p)->head |= FLAG4_BIT)
-#define clear_flag4(p)      ((p)->head &= ~FLAG4_BIT)
+#నిర్వచించు clear_pinuse(p)     ((p)->తల &= ~PINUSE_బిట్టు)
+#నిర్వచించు సమితి_flag4(p)        ((p)->తల |= FLAG4_బిట్టు)
+#నిర్వచించు clear_flag4(p)      ((p)->తల &= ~FLAG4_బిట్టు)
 
 /* Treat space at ptr +/- offset as a chunk */
-#define chunk_plus_offset(p, s)  ((mchunkptr)(((char*)(p)) + (s)))
-#define chunk_minus_offset(p, s) ((mchunkptr)(((char*)(p)) - (s)))
+#నిర్వచించు chunk_plus_స్థానభ్రంశం(p, s)  ((mchunkptr)(((అక్షరం*)(p)) + (s)))
+#నిర్వచించు chunk_minus_స్థానభ్రంశం(p, s) ((mchunkptr)(((అక్షరం*)(p)) - (s)))
 
 /* Ptr to next or previous physical malloc_chunk. */
-#define next_chunk(p) ((mchunkptr)( ((char*)(p)) + ((p)->head & ~FLAG_BITS)))
-#define prev_chunk(p) ((mchunkptr)( ((char*)(p)) - ((p)->prev_foot) ))
+#నిర్వచించు తదుపరి_chunk(p) ((mchunkptr)( ((అక్షరం*)(p)) + ((p)->తల & ~FLAG_బిట్లు)))
+#నిర్వచించు prev_chunk(p) ((mchunkptr)( ((అక్షరం*)(p)) - ((p)->prev_foot) ))
 
 /* extract next chunk's pinuse bit */
-#define next_pinuse(p)  ((next_chunk(p)->head) & PINUSE_BIT)
+#నిర్వచించు తదుపరి_pinuse(p)  ((తదుపరి_chunk(p)->తల) & PINUSE_బిట్టు)
 
 /* Get/set size at footer */
-#define get_foot(p, s)  (((mchunkptr)((char*)(p) + (s)))->prev_foot)
-#define set_foot(p, s)  (((mchunkptr)((char*)(p) + (s)))->prev_foot = (s))
+#నిర్వచించు get_foot(p, s)  (((mchunkptr)((అక్షరం*)(p) + (s)))->prev_foot)
+#నిర్వచించు సమితి_foot(p, s)  (((mchunkptr)((అక్షరం*)(p) + (s)))->prev_foot = (s))
 
 /* Set size, pinuse bit, and foot */
-#define set_size_and_pinuse_of_free_chunk(p, s)\
-  ((p)->head = (s|PINUSE_BIT), set_foot(p, s))
+#నిర్వచించు సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, s)\
+  ((p)->తల = (s|PINUSE_బిట్టు), సమితి_foot(p, s))
 
 /* Set size, pinuse bit, foot, and clear next pinuse */
-#define set_free_with_pinuse(p, s, n)\
-  (clear_pinuse(n), set_size_and_pinuse_of_free_chunk(p, s))
+#నిర్వచించు సమితి_free_with_pinuse(p, s, n)\
+  (clear_pinuse(n), సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, s))
 
 /* Get the internal overhead associated with chunk p */
-#define overhead_for(p)\
+#నిర్వచించు overhead_for(p)\
  (is_mmapped(p)? MMAP_CHUNK_OVERHEAD : CHUNK_OVERHEAD)
 
 /* Return true if malloced space is not necessarily cleared */
-#if MMAP_CLEARS
-#define calloc_must_clear(p) (!is_mmapped(p))
-#else /* MMAP_CLEARS */
-#define calloc_must_clear(p) (1)
-#endif /* MMAP_CLEARS */
+#ఒకవేళ MMAP_CLEARS
+#నిర్వచించు calloc_must_clear(p) (!is_mmapped(p))
+#లేకపోతే /* MMAP_CLEARS */
+#నిర్వచించు calloc_must_clear(p) (1)
+#అయితే_ముగింపు /* MMAP_CLEARS */
 
 /* ---------------------- Overlaid data structures ----------------------- */
 
@@ -2466,24 +2466,24 @@ nextchunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
   is of course much better.
 */
 
-struct malloc_tree_chunk {
+నిర్మాణం malloc_వృక్షం_chunk {
   /* The first four fields must be compatible with malloc_chunk */
   size_t                    prev_foot;
-  size_t                    head;
-  struct malloc_tree_chunk* fd;
-  struct malloc_tree_chunk* bk;
+  size_t                    తల;
+  నిర్మాణం malloc_వృక్షం_chunk* fd;
+  నిర్మాణం malloc_వృక్షం_chunk* bk;
 
-  struct malloc_tree_chunk* child[2];
-  struct malloc_tree_chunk* parent;
-  bindex_t                  index;
+  నిర్మాణం malloc_వృక్షం_chunk* బిడ్డ[2];
+  నిర్మాణం malloc_వృక్షం_chunk* మాతృ;
+  bindex_t                  సూచీ;
 };
 
-typedef struct malloc_tree_chunk  tchunk;
-typedef struct malloc_tree_chunk* tchunkptr;
-typedef struct malloc_tree_chunk* tbinptr; /* The type of bins of trees */
+రకనిర్వచనం నిర్మాణం malloc_వృక్షం_chunk  tchunk;
+రకనిర్వచనం నిర్మాణం malloc_వృక్షం_chunk* tchunkptr;
+రకనిర్వచనం నిర్మాణం malloc_వృక్షం_chunk* tbinptr; /* The type of bins of trees */
 
 /* A little helper macro for trees */
-#define leftmost_child(t) ((t)->child[0] != 0? (t)->child[0] : (t)->child[1])
+#నిర్వచించు leftmost_బిడ్డ(t) ((t)->బిడ్డ[0] != 0? (t)->బిడ్డ[0] : (t)->బిడ్డ[1])
 
 /* ----------------------------- Segments -------------------------------- */
 
@@ -2542,54 +2542,54 @@ typedef struct malloc_tree_chunk* tbinptr; /* The type of bins of trees */
     and deallocated/trimmed using MORECORE with negative arguments.
 */
 
-struct malloc_segment {
-  char*        base;             /* base address */
-  size_t       size;             /* allocated size */
-  struct malloc_segment* next;   /* ptr to next segment */
-#if FFI_MMAP_EXEC_WRIT
+నిర్మాణం malloc_segment {
+  అక్షరం*        పునాది;             /* base address */
+  size_t       కొలత;             /* allocated size */
+  నిర్మాణం malloc_segment* తదుపరి;   /* ptr to next segment */
+#ఒకవేళ FFI_MMAP_EXEC_WRIT
   /* The mmap magic is supposed to store the address of the executable
      segment at the very end of the requested block.  */
 
-# define mmap_exec_offset(b,s) (*(ptrdiff_t*)((b)+(s)-sizeof(ptrdiff_t)))
+# define mmap_exec_స్థానభ్రంశం(b,s) (*(ptrdiff_t*)((b)+(s)-పరిమాణం(ptrdiff_t)))
 
   /* We can only merge segments if their corresponding executable
      segments are at identical offsets.  */
-# define check_segment_merge(S,b,s) \
-  (mmap_exec_offset((b),(s)) == (S)->exec_offset)
+# define check_segment_విలీనం(S,b,s) \
+  (mmap_exec_స్థానభ్రంశం((b),(s)) == (S)->exec_స్థానభ్రంశం)
 
-# define add_segment_exec_offset(p,S) ((char*)(p) + (S)->exec_offset)
-# define sub_segment_exec_offset(p,S) ((char*)(p) - (S)->exec_offset)
+# define కూడు_segment_exec_స్థానభ్రంశం(p,S) ((అక్షరం*)(p) + (S)->exec_స్థానభ్రంశం)
+# define sub_segment_exec_స్థానభ్రంశం(p,S) ((అక్షరం*)(p) - (S)->exec_స్థానభ్రంశం)
 
   /* The removal of sflags only works with HAVE_MORECORE == 0.  */
 
-# define get_segment_flags(S)   (USE_MMAP_BIT)
-# define set_segment_flags(S,v) \
-  (((v) != USE_MMAP_BIT) ? (ABORT, (v)) :				\
-   (((S)->exec_offset =							\
-     mmap_exec_offset((S)->base, (S)->size)),				\
-    (mmap_exec_offset((S)->base + (S)->exec_offset, (S)->size) !=	\
-     (S)->exec_offset) ? (ABORT, (v)) :					\
-   (mmap_exec_offset((S)->base, (S)->size) = 0), (v)))
+# define get_segment_flags(S)   (USE_MMAP_బిట్టు)
+# define సమితి_segment_flags(S,v) \
+  (((v) != USE_MMAP_బిట్టు) ? (ABORT, (v)) :				\
+   (((S)->exec_స్థానభ్రంశం =							\
+     mmap_exec_స్థానభ్రంశం((S)->పునాది, (S)->కొలత)),				\
+    (mmap_exec_స్థానభ్రంశం((S)->పునాది + (S)->exec_స్థానభ్రంశం, (S)->కొలత) !=	\
+     (S)->exec_స్థానభ్రంశం) ? (ABORT, (v)) :					\
+   (mmap_exec_స్థానభ్రంశం((S)->పునాది, (S)->కొలత) = 0), (v)))
 
   /* We use an offset here, instead of a pointer, because then, when
      base changes, we don't have to modify this.  On architectures
      with segmented addresses, this might not work.  */
-  ptrdiff_t    exec_offset;
-#else
+  ptrdiff_t    exec_స్థానభ్రంశం;
+#లేకపోతే
 
 # define get_segment_flags(S)   ((S)->sflags)
-# define set_segment_flags(S,v) ((S)->sflags = (v))
-# define check_segment_merge(S,b,s) (1)
+# define సమితి_segment_flags(S,v) ((S)->sflags = (v))
+# define check_segment_విలీనం(S,b,s) (1)
 
   flag_t       sflags;           /* mmap and extern flag */
-#endif
+#అయితే_ముగింపు
 };
 
-#define is_mmapped_segment(S)  (get_segment_flags(S) & USE_MMAP_BIT)
-#define is_extern_segment(S)   (get_segment_flags(S) & EXTERN_BIT)
+#నిర్వచించు is_mmapped_segment(S)  (get_segment_flags(S) & USE_MMAP_బిట్టు)
+#నిర్వచించు is_extern_segment(S)   (get_segment_flags(S) & EXTERN_బిట్టు)
 
-typedef struct malloc_segment  msegment;
-typedef struct malloc_segment* msegmentptr;
+రకనిర్వచనం నిర్మాణం malloc_segment  msegment;
+రకనిర్వచనం నిర్మాణం malloc_segment* msegmentptr;
 
 /* ---------------------------- malloc_state ----------------------------- */
 
@@ -2597,7 +2597,7 @@ typedef struct malloc_segment* msegmentptr;
    A malloc_state holds all of the bookkeeping for a space.
    The main fields are:
 
-  Top
+శిఖరం
     The topmost chunk of the currently active segment. Its size is
     cached in topsize.  The actual size of topmost space is
     topsize+TOP_FOOT_SIZE, which includes space reserved for adding
@@ -2679,23 +2679,23 @@ typedef struct malloc_segment* msegmentptr;
 */
 
 /* Bin types, widths and sizes */
-#define NSMALLBINS        (32U)
-#define NTREEBINS         (32U)
-#define SMALLBIN_SHIFT    (3U)
-#define SMALLBIN_WIDTH    (SIZE_T_ONE << SMALLBIN_SHIFT)
-#define TREEBIN_SHIFT     (8U)
-#define MIN_LARGE_SIZE    (SIZE_T_ONE << TREEBIN_SHIFT)
-#define MAX_SMALL_SIZE    (MIN_LARGE_SIZE - SIZE_T_ONE)
-#define MAX_SMALL_REQUEST (MAX_SMALL_SIZE - CHUNK_ALIGN_MASK - CHUNK_OVERHEAD)
+#నిర్వచించు NSMALLBINS        (32U)
+#నిర్వచించు NTREEBINS         (32U)
+#నిర్వచించు SMALLBIN_జరుపు    (3U)
+#నిర్వచించు SMALLBIN_వెడల్పు    (కొలత_T_ONE << SMALLBIN_జరుపు)
+#నిర్వచించు TREEBIN_జరుపు     (8U)
+#నిర్వచించు MIN_LARGE_కొలత    (కొలత_T_ONE << TREEBIN_జరుపు)
+#నిర్వచించు MAX_SMALL_కొలత    (MIN_LARGE_కొలత - కొలత_T_ONE)
+#నిర్వచించు MAX_SMALL_REQUEST (MAX_SMALL_కొలత - CHUNK_ALIGN_ముసుగు - CHUNK_OVERHEAD)
 
-struct malloc_state {
+నిర్మాణం malloc_state {
   binmap_t   smallmap;
   binmap_t   treemap;
   size_t     dvsize;
   size_t     topsize;
-  char*      least_addr;
+  అక్షరం*      కనిష్ఠ_addr;
   mchunkptr  dv;
-  mchunkptr  top;
+  mchunkptr  శిఖరం;
   size_t     trim_check;
   size_t     release_checks;
   size_t     magic;
@@ -2703,17 +2703,17 @@ struct malloc_state {
   tbinptr    treebins[NTREEBINS];
   size_t     footprint;
   size_t     max_footprint;
-  size_t     footprint_limit; /* zero means no limit */
+  size_t     footprint_హద్దు; /* zero means no limit */
   flag_t     mflags;
-#if USE_LOCKS
+#ఒకవేళ USE_LOCKS
   MLOCK_T    mutex;     /* locate lock among fields that rarely change */
-#endif /* USE_LOCKS */
+#అయితే_ముగింపు /* USE_LOCKS */
   msegment   seg;
-  void*      extp;      /* Unused but available for extensions */
+  శూన్య*      extp;      /* Unused but available for extensions */
   size_t     exts;
 };
 
-typedef struct malloc_state*    mstate;
+రకనిర్వచనం నిర్మాణం malloc_state*    mstate;
 
 /* ------------- Global malloc_state and malloc_params ------------------- */
 
@@ -2724,16 +2724,16 @@ typedef struct malloc_state*    mstate;
   also serves as an initialization flag.
 */
 
-struct malloc_params {
+నిర్మాణం malloc_params {
   size_t magic;
-  size_t page_size;
+  size_t పుట_కొలత;
   size_t granularity;
-  size_t mmap_threshold;
-  size_t trim_threshold;
+  size_t mmap_పరిమితి;
+  size_t trim_పరిమితి;
   flag_t default_mflags;
 };
 
-static struct malloc_params mparams;
+స్థిర నిర్మాణం malloc_params mparams;
 
 /* libffi: mparams is initialized exactly once (under the malloc global lock),
    but mparams.magic is read on every allocation's fast path WITHOUT a lock to
@@ -2745,135 +2745,135 @@ static struct malloc_params mparams;
    guaranteed to see all the other initialization writes (page_size, mflags,
    ...) performed before the release store.  Fall back to the original volatile
    access when no supported compiler atomic operations are available.  */
-#if USE_LOCKS && defined(__ATOMIC_ACQUIRE)
-# define ffi_mparams_magic_load()   __atomic_load_n(&mparams.magic, __ATOMIC_ACQUIRE)
+#ఒకవేళ USE_LOCKS && defined(__ATOMIC_ACQUIRE)
+# define ffi_mparams_magic_ఎక్కించు()   __atomic_load_n(&mparams.magic, __ATOMIC_ACQUIRE)
 # define ffi_mparams_magic_store(v) __atomic_store_n(&mparams.magic, (size_t)(v), __ATOMIC_RELEASE)
-#elif USE_LOCKS && defined(_MSC_VER)
-# if defined(_WIN64)
-#  define ffi_mparams_magic_load() \
-  ((size_t)_InterlockedCompareExchange64((__int64 volatile *)&mparams.magic, \
+#లేదావేళ USE_LOCKS && defined(_MSC_VER)
+# ఒకవేళ defined(_WIN64)
+#  define ffi_mparams_magic_ఎక్కించు() \
+  ((size_t)_InterlockedCompareExchange64((__int64 అస్థిర *)&mparams.magic, \
                                          (__int64)0, (__int64)0))
 #  define ffi_mparams_magic_store(v) \
-  ((void)_InterlockedExchange64((__int64 volatile *)&mparams.magic, \
+  ((శూన్య)_InterlockedExchange64((__int64 అస్థిర *)&mparams.magic, \
                                 (__int64)(v)))
-# else
-#  define ffi_mparams_magic_load() \
-  ((size_t)_InterlockedCompareExchange((LONG volatile *)&mparams.magic, \
+# లేకపోతే
+#  define ffi_mparams_magic_ఎక్కించు() \
+  ((size_t)_InterlockedCompareExchange((LONG అస్థిర *)&mparams.magic, \
                                        (LONG)0, (LONG)0))
 #  define ffi_mparams_magic_store(v) \
-  ((void)_InterlockedExchange((LONG volatile *)&mparams.magic, (LONG)(v)))
+  ((శూన్య)_InterlockedExchange((LONG అస్థిర *)&mparams.magic, (LONG)(v)))
 # endif
-#else
-# define ffi_mparams_magic_load()   (mparams.magic)
-# define ffi_mparams_magic_store(v) (*(volatile size_t *)(&(mparams.magic)) = (size_t)(v))
-#endif
+#లేకపోతే
+# define ffi_mparams_magic_ఎక్కించు()   (mparams.magic)
+# define ffi_mparams_magic_store(v) (*(అస్థిర size_t *)(&(mparams.magic)) = (size_t)(v))
+#అయితే_ముగింపు
 
 /* Ensure mparams initialized */
-#define ensure_initialization() (void)(ffi_mparams_magic_load() != 0 || init_mparams())
+#నిర్వచించు ensure_initialization() (శూన్య)(ffi_mparams_magic_ఎక్కించు() != 0 || init_mparams())
 
-#if !ONLY_MSPACES
+#ఒకవేళ !ONLY_MSPACES
 
 /* The global malloc_state used for all non-"mspace" calls */
-static struct malloc_state _gm_;
-#define gm                 (&_gm_)
-#define is_global(M)       ((M) == &_gm_)
+స్థిర నిర్మాణం malloc_state _gm_;
+#నిర్వచించు gm                 (&_gm_)
+#నిర్వచించు is_global(M)       ((M) == &_gm_)
 
-#endif /* !ONLY_MSPACES */
+#అయితే_ముగింపు /* !ONLY_MSPACES */
 
-#define is_initialized(M)  ((M)->top != 0)
+#నిర్వచించు is_initialized(M)  ((M)->శిఖరం != 0)
 
 /* -------------------------- system alloc setup ------------------------- */
 
 /* Operations on mflags */
 
-#define use_lock(M)           ((M)->mflags &   USE_LOCK_BIT)
-#define enable_lock(M)        ((M)->mflags |=  USE_LOCK_BIT)
-#if USE_LOCKS
-#define disable_lock(M)       ((M)->mflags &= ~USE_LOCK_BIT)
-#else
-#define disable_lock(M)
-#endif
+#నిర్వచించు use_తాళం(M)           ((M)->mflags &   USE_తాళం_బిట్టు)
+#నిర్వచించు enable_తాళం(M)        ((M)->mflags |=  USE_తాళం_బిట్టు)
+#ఒకవేళ USE_LOCKS
+#నిర్వచించు disable_తాళం(M)       ((M)->mflags &= ~USE_తాళం_బిట్టు)
+#లేకపోతే
+#నిర్వచించు disable_తాళం(M)
+#అయితే_ముగింపు
 
-#define use_mmap(M)           ((M)->mflags &   USE_MMAP_BIT)
-#define enable_mmap(M)        ((M)->mflags |=  USE_MMAP_BIT)
-#if HAVE_MMAP
-#define disable_mmap(M)       ((M)->mflags &= ~USE_MMAP_BIT)
-#else
-#define disable_mmap(M)
-#endif
+#నిర్వచించు use_mmap(M)           ((M)->mflags &   USE_MMAP_బిట్టు)
+#నిర్వచించు enable_mmap(M)        ((M)->mflags |=  USE_MMAP_బిట్టు)
+#ఒకవేళ HAVE_MMAP
+#నిర్వచించు disable_mmap(M)       ((M)->mflags &= ~USE_MMAP_బిట్టు)
+#లేకపోతే
+#నిర్వచించు disable_mmap(M)
+#అయితే_ముగింపు
 
-#define use_noncontiguous(M)  ((M)->mflags &   USE_NONCONTIGUOUS_BIT)
-#define disable_contiguous(M) ((M)->mflags |=  USE_NONCONTIGUOUS_BIT)
+#నిర్వచించు use_noncontiguous(M)  ((M)->mflags &   USE_NONCONTIGUOUS_బిట్టు)
+#నిర్వచించు disable_contiguous(M) ((M)->mflags |=  USE_NONCONTIGUOUS_బిట్టు)
 
-#define set_lock(M,L)\
+#నిర్వచించు సమితి_తాళం(M,L)\
  ((M)->mflags = (L)?\
-  ((M)->mflags | USE_LOCK_BIT) :\
-  ((M)->mflags & ~USE_LOCK_BIT))
+  ((M)->mflags | USE_తాళం_బిట్టు) :\
+  ((M)->mflags & ~USE_తాళం_బిట్టు))
 
 /* page-align a size */
-#define page_align(S)\
- (((S) + (mparams.page_size - SIZE_T_ONE)) & ~(mparams.page_size - SIZE_T_ONE))
+#నిర్వచించు పుట_align(S)\
+ (((S) + (mparams.పుట_కొలత - కొలత_T_ONE)) & ~(mparams.పుట_కొలత - కొలత_T_ONE))
 
 /* granularity-align a size */
-#define granularity_align(S)\
-  (((S) + (mparams.granularity - SIZE_T_ONE))\
-   & ~(mparams.granularity - SIZE_T_ONE))
+#నిర్వచించు granularity_align(S)\
+  (((S) + (mparams.granularity - కొలత_T_ONE))\
+   & ~(mparams.granularity - కొలత_T_ONE))
 
 
 /* For mmap, use granularity alignment on windows, else page-align */
-#ifdef WIN32
-#define mmap_align(S) granularity_align(S)
-#else
-#define mmap_align(S) page_align(S)
-#endif
+#నిర్వచితమైతే WIN32
+#నిర్వచించు mmap_align(S) granularity_align(S)
+#లేకపోతే
+#నిర్వచించు mmap_align(S) పుట_align(S)
+#అయితే_ముగింపు
 
 /* For sys_alloc, enough padding to ensure can malloc request on success */
-#define SYS_ALLOC_PADDING (TOP_FOOT_SIZE + MALLOC_ALIGNMENT)
+#నిర్వచించు SYS_ALLOC_PADDING (శిఖరం_FOOT_కొలత + MALLOC_ALIGNMENT)
 
-#define is_page_aligned(S)\
-   (((size_t)(S) & (mparams.page_size - SIZE_T_ONE)) == 0)
-#define is_granularity_aligned(S)\
-   (((size_t)(S) & (mparams.granularity - SIZE_T_ONE)) == 0)
+#నిర్వచించు is_పుట_aligned(S)\
+   (((size_t)(S) & (mparams.పుట_కొలత - కొలత_T_ONE)) == 0)
+#నిర్వచించు is_granularity_aligned(S)\
+   (((size_t)(S) & (mparams.granularity - కొలత_T_ONE)) == 0)
 
 /*  True if segment S holds address A */
-#define segment_holds(S, A)\
-  ((char*)(A) >= S->base && (char*)(A) < S->base + S->size)
+#నిర్వచించు segment_holds(S, A)\
+  ((అక్షరం*)(A) >= S->పునాది && (అక్షరం*)(A) < S->పునాది + S->కొలత)
 
 /* Return segment holding given address */
-static msegmentptr segment_holding(mstate m, char* addr) {
+స్థిర msegmentptr segment_holding(mstate m, అక్షరం* addr) {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if (addr >= sp->base && addr < sp->base + sp->size)
-      return sp;
-    if ((sp = sp->next) == 0)
-      return 0;
+  కొరకు (;;) {
+    ఒకవేళ (addr >= sp->పునాది && addr < sp->పునాది + sp->కొలత)
+      తిరిగి sp;
+    ఒకవేళ ((sp = sp->తదుపరి) == 0)
+      తిరిగి 0;
   }
 }
 
 /* Return true if segment contains a segment link */
-static int has_segment_link(mstate m, msegmentptr ss) {
+స్థిర పూర్ణాంకం has_segment_link(mstate m, msegmentptr ss) {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if ((char*)sp >= ss->base && (char*)sp < ss->base + ss->size)
-      return 1;
-    if ((sp = sp->next) == 0)
-      return 0;
+  కొరకు (;;) {
+    ఒకవేళ ((అక్షరం*)sp >= ss->పునాది && (అక్షరం*)sp < ss->పునాది + ss->కొలత)
+      తిరిగి 1;
+    ఒకవేళ ((sp = sp->తదుపరి) == 0)
+      తిరిగి 0;
   }
 }
 
-#ifndef MORECORE_CANNOT_TRIM
-#define should_trim(M,s)  ((s) > (M)->trim_check)
-#else  /* MORECORE_CANNOT_TRIM */
-#define should_trim(M,s)  (0)
-#endif /* MORECORE_CANNOT_TRIM */
+#నిర్వచితం_కాకపోతే MORECORE_CANNOT_TRIM
+#నిర్వచించు should_trim(M,s)  ((s) > (M)->trim_check)
+#లేకపోతే  /* MORECORE_CANNOT_TRIM */
+#నిర్వచించు should_trim(M,s)  (0)
+#అయితే_ముగింపు /* MORECORE_CANNOT_TRIM */
 
 /*
   TOP_FOOT_SIZE is padding at the end of a segment, including space
   that may be needed to place segment records and fenceposts when new
   noncontiguous segments are added.
 */
-#define TOP_FOOT_SIZE\
-  (align_offset(chunk2mem(0))+pad_request(sizeof(struct malloc_segment))+MIN_CHUNK_SIZE)
+#నిర్వచించు శిఖరం_FOOT_కొలత\
+  (align_స్థానభ్రంశం(chunk2mem(0))+pad_request(పరిమాణం(నిర్మాణం malloc_segment))+MIN_CHUNK_కొలత)
 
 
 /* -------------------------------  Hooks -------------------------------- */
@@ -2884,20 +2884,20 @@ static int has_segment_link(mstate m, msegmentptr ss) {
   anything you like.
 */
 
-#if USE_LOCKS
-#define PREACTION(M)  ((use_lock(M))? ACQUIRE_LOCK(&(M)->mutex) : 0)
-#define POSTACTION(M) { if (use_lock(M)) RELEASE_LOCK(&(M)->mutex); }
-#else /* USE_LOCKS */
+#ఒకవేళ USE_LOCKS
+#నిర్వచించు PREACTION(M)  ((use_తాళం(M))? ACQUIRE_తాళం(&(M)->mutex) : 0)
+#నిర్వచించు POSTACTION(M) { ఒకవేళ (use_తాళం(M)) RELEASE_తాళం(&(M)->mutex); }
+#లేకపోతే /* USE_LOCKS */
 
-#ifndef PREACTION
-#define PREACTION(M) (0)
-#endif  /* PREACTION */
+#నిర్వచితం_కాకపోతే PREACTION
+#నిర్వచించు PREACTION(M) (0)
+#అయితే_ముగింపు  /* PREACTION */
 
-#ifndef POSTACTION
-#define POSTACTION(M)
-#endif  /* POSTACTION */
+#నిర్వచితం_కాకపోతే POSTACTION
+#నిర్వచించు POSTACTION(M)
+#అయితే_ముగింపు  /* POSTACTION */
 
-#endif /* USE_LOCKS */
+#అయితే_ముగింపు /* USE_LOCKS */
 
 /*
   CORRUPTION_ERROR_ACTION is triggered upon detected bad addresses.
@@ -2907,223 +2907,223 @@ static int has_segment_link(mstate m, msegmentptr ss) {
   useful in custom actions that try to help diagnose errors.
 */
 
-#if PROCEED_ON_ERROR
+#ఒకవేళ PROCEED_ON_ERROR
 
 /* A count of the number of corruption errors causing resets */
-int malloc_corruption_error_count;
+పూర్ణాంకం malloc_corruption_error_లెక్క;
 
 /* default corruption action */
-static void reset_on_error(mstate m);
+స్థిర శూన్య reset_on_error(mstate m);
 
-#define CORRUPTION_ERROR_ACTION(m)  reset_on_error(m)
-#define USAGE_ERROR_ACTION(m, p)
+#నిర్వచించు CORRUPTION_ERROR_ACTION(m)  reset_on_error(m)
+#నిర్వచించు USAGE_ERROR_ACTION(m, p)
 
-#else /* PROCEED_ON_ERROR */
+#లేకపోతే /* PROCEED_ON_ERROR */
 
-#ifndef CORRUPTION_ERROR_ACTION
-#define CORRUPTION_ERROR_ACTION(m) ABORT
-#endif /* CORRUPTION_ERROR_ACTION */
+#నిర్వచితం_కాకపోతే CORRUPTION_ERROR_ACTION
+#నిర్వచించు CORRUPTION_ERROR_ACTION(m) ABORT
+#అయితే_ముగింపు /* CORRUPTION_ERROR_ACTION */
 
-#ifndef USAGE_ERROR_ACTION
-#define USAGE_ERROR_ACTION(m,p) ABORT
-#endif /* USAGE_ERROR_ACTION */
+#నిర్వచితం_కాకపోతే USAGE_ERROR_ACTION
+#నిర్వచించు USAGE_ERROR_ACTION(m,p) ABORT
+#అయితే_ముగింపు /* USAGE_ERROR_ACTION */
 
-#endif /* PROCEED_ON_ERROR */
+#అయితే_ముగింపు /* PROCEED_ON_ERROR */
 
 
 /* -------------------------- Debugging setup ---------------------------- */
 
-#if ! DEBUG
+#ఒకవేళ ! DEBUG
 
-#define check_free_chunk(M,P)
-#define check_inuse_chunk(M,P)
-#define check_malloced_chunk(M,P,N)
-#define check_mmapped_chunk(M,P)
-#define check_malloc_state(M)
-#define check_top_chunk(M,P)
+#నిర్వచించు check_free_chunk(M,P)
+#నిర్వచించు check_inuse_chunk(M,P)
+#నిర్వచించు check_malloced_chunk(M,P,N)
+#నిర్వచించు check_mmapped_chunk(M,P)
+#నిర్వచించు check_malloc_state(M)
+#నిర్వచించు check_శిఖరం_chunk(M,P)
 
-#else /* DEBUG */
-#define check_free_chunk(M,P)       do_check_free_chunk(M,P)
-#define check_inuse_chunk(M,P)      do_check_inuse_chunk(M,P)
-#define check_top_chunk(M,P)        do_check_top_chunk(M,P)
-#define check_malloced_chunk(M,P,N) do_check_malloced_chunk(M,P,N)
-#define check_mmapped_chunk(M,P)    do_check_mmapped_chunk(M,P)
-#define check_malloc_state(M)       do_check_malloc_state(M)
+#లేకపోతే /* DEBUG */
+#నిర్వచించు check_free_chunk(M,P)       do_check_free_chunk(M,P)
+#నిర్వచించు check_inuse_chunk(M,P)      do_check_inuse_chunk(M,P)
+#నిర్వచించు check_శిఖరం_chunk(M,P)        do_check_శిఖరం_chunk(M,P)
+#నిర్వచించు check_malloced_chunk(M,P,N) do_check_malloced_chunk(M,P,N)
+#నిర్వచించు check_mmapped_chunk(M,P)    do_check_mmapped_chunk(M,P)
+#నిర్వచించు check_malloc_state(M)       do_check_malloc_state(M)
 
-static void   do_check_any_chunk(mstate m, mchunkptr p);
-static void   do_check_top_chunk(mstate m, mchunkptr p);
-static void   do_check_mmapped_chunk(mstate m, mchunkptr p);
-static void   do_check_inuse_chunk(mstate m, mchunkptr p);
-static void   do_check_free_chunk(mstate m, mchunkptr p);
-static void   do_check_malloced_chunk(mstate m, void* mem, size_t s);
-static void   do_check_tree(mstate m, tchunkptr t);
-static void   do_check_treebin(mstate m, bindex_t i);
-static void   do_check_smallbin(mstate m, bindex_t i);
-static void   do_check_malloc_state(mstate m);
-static int    bin_find(mstate m, mchunkptr x);
-static size_t traverse_and_check(mstate m);
-#endif /* DEBUG */
+స్థిర శూన్య   do_check_any_chunk(mstate m, mchunkptr p);
+స్థిర శూన్య   do_check_శిఖరం_chunk(mstate m, mchunkptr p);
+స్థిర శూన్య   do_check_mmapped_chunk(mstate m, mchunkptr p);
+స్థిర శూన్య   do_check_inuse_chunk(mstate m, mchunkptr p);
+స్థిర శూన్య   do_check_free_chunk(mstate m, mchunkptr p);
+స్థిర శూన్య   do_check_malloced_chunk(mstate m, శూన్య* mem, size_t s);
+స్థిర శూన్య   do_check_వృక్షం(mstate m, tchunkptr t);
+స్థిర శూన్య   do_check_treebin(mstate m, bindex_t i);
+స్థిర శూన్య   do_check_smallbin(mstate m, bindex_t i);
+స్థిర శూన్య   do_check_malloc_state(mstate m);
+స్థిర పూర్ణాంకం    bin_కనుగొను(mstate m, mchunkptr x);
+స్థిర size_t traverse_and_check(mstate m);
+#అయితే_ముగింపు /* DEBUG */
 
 /* ---------------------------- Indexing Bins ---------------------------- */
 
-#define is_small(s)         (((s) >> SMALLBIN_SHIFT) < NSMALLBINS)
-#define small_index(s)      (bindex_t)((s)  >> SMALLBIN_SHIFT)
-#define small_index2size(i) ((i)  << SMALLBIN_SHIFT)
-#define MIN_SMALL_INDEX     (small_index(MIN_CHUNK_SIZE))
+#నిర్వచించు is_small(s)         (((s) >> SMALLBIN_జరుపు) < NSMALLBINS)
+#నిర్వచించు small_సూచీ(s)      (bindex_t)((s)  >> SMALLBIN_జరుపు)
+#నిర్వచించు small_index2size(i) ((i)  << SMALLBIN_జరుపు)
+#నిర్వచించు MIN_SMALL_సూచీ     (small_సూచీ(MIN_CHUNK_కొలత))
 
 /* addressing by index. See above about smallbin repositioning */
-#define smallbin_at(M, i)   ((sbinptr)((char*)&((M)->smallbins[(i)<<1])))
-#define treebin_at(M,i)     (&((M)->treebins[i]))
+#నిర్వచించు smallbin_at(M, i)   ((sbinptr)((అక్షరం*)&((M)->smallbins[(i)<<1])))
+#నిర్వచించు treebin_at(M,i)     (&((M)->treebins[i]))
 
 /* assign tree index for size S to variable I.
    libffi: enable the __builtin_clz path on any GNU-compatible compiler, not
    only x86, so the log2 is an intrinsic rather than the generic C idiom that
    the compiler can't always recognize (libffi #754).  */
-#if defined(__GNUC__)
-#define compute_tree_index(S, I)\
+#ఒకవేళ defined(__GNUC__)
+#నిర్వచించు compute_వృక్షం_సూచీ(S, I)\
 {\
-  unsigned int X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  గుర్తులేని పూర్ణాంకం X = S >> TREEBIN_జరుపు;\
+  ఒకవేళ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  లేకపోతే ఒకవేళ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int K = (unsigned) sizeof(X)*__CHAR_BIT__ - 1 - (unsigned) __builtin_clz(X); \
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
+  లేకపోతే {\
+    గుర్తులేని పూర్ణాంకం K = (గుర్తులేని) పరిమాణం(X)*__CHAR_BIT__ - 1 - (గుర్తులేని) __builtin_clz(X); \
+    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_జరుపు-1)) & 1)));\
   }\
 }
 
-#elif defined (__INTEL_COMPILER)
-#define compute_tree_index(S, I)\
+#లేదావేళ defined (__INTEL_COMPILER)
+#నిర్వచించు compute_వృక్షం_సూచీ(S, I)\
 {\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  size_t X = S >> TREEBIN_జరుపు;\
+  ఒకవేళ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  లేకపోతే ఒకవేళ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int K = _bit_scan_reverse (X); \
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
+  లేకపోతే {\
+    గుర్తులేని పూర్ణాంకం K = బిట్టు_పరిశీలన_తిరగేయి_3 (X); \
+    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_జరుపు-1)) & 1)));\
   }\
 }
 
-#elif defined(_MSC_VER) && _MSC_VER>=1300
-#define compute_tree_index(S, I)\
+#లేదావేళ defined(_MSC_VER) && _MSC_VER>=1300
+#నిర్వచించు compute_వృక్షం_సూచీ(S, I)\
 {\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  size_t X = S >> TREEBIN_జరుపు;\
+  ఒకవేళ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  లేకపోతే ఒకవేళ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int K;\
-    _BitScanReverse((DWORD *) &K, (DWORD) X);\
-    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1)));\
+  లేకపోతే {\
+    గుర్తులేని పూర్ణాంకం K;\
+    బిట్టు_పరిశీలన_తిరగేయి((DWORD *) &K, (DWORD) X);\
+    I =  (bindex_t)((K << 1) + ((S >> (K + (TREEBIN_జరుపు-1)) & 1)));\
   }\
 }
 
-#else /* GNUC */
-#define compute_tree_index(S, I)\
+#లేకపోతే /* GNUC */
+#నిర్వచించు compute_వృక్షం_సూచీ(S, I)\
 {\
-  size_t X = S >> TREEBIN_SHIFT;\
-  if (X == 0)\
+  size_t X = S >> TREEBIN_జరుపు;\
+  ఒకవేళ (X == 0)\
     I = 0;\
-  else if (X > 0xFFFF)\
+  లేకపోతే ఒకవేళ (X > 0xFFFF)\
     I = NTREEBINS-1;\
-  else {\
-    unsigned int Y = (unsigned int)X;\
-    unsigned int N = ((Y - 0x100) >> 16) & 8;\
-    unsigned int K = (((Y <<= N) - 0x1000) >> 16) & 4;\
+  లేకపోతే {\
+    గుర్తులేని పూర్ణాంకం Y = (గుర్తులేని పూర్ణాంకం)X;\
+    గుర్తులేని పూర్ణాంకం N = ((Y - 0x100) >> 16) & 8;\
+    గుర్తులేని పూర్ణాంకం K = (((Y <<= N) - 0x1000) >> 16) & 4;\
     N += K;\
     N += K = (((Y <<= K) - 0x4000) >> 16) & 2;\
     K = 14 - N + ((Y <<= K) >> 15);\
-    I = (K << 1) + ((S >> (K + (TREEBIN_SHIFT-1)) & 1));\
+    I = (K << 1) + ((S >> (K + (TREEBIN_జరుపు-1)) & 1));\
   }\
 }
-#endif /* GNUC */
+#అయితే_ముగింపు /* GNUC */
 
 /* Bit representing maximum resolved size in a treebin at i */
-#define bit_for_tree_index(i) \
-   (i == NTREEBINS-1)? (SIZE_T_BITSIZE-1) : (((i) >> 1) + TREEBIN_SHIFT - 2)
+#నిర్వచించు బిట్టు_for_వృక్షం_సూచీ(i) \
+   (i == NTREEBINS-1)? (కొలత_T_BITSIZE-1) : (((i) >> 1) + TREEBIN_జరుపు - 2)
 
 /* Shift placing maximum resolved bit in a treebin at i as sign bit */
-#define leftshift_for_tree_index(i) \
+#నిర్వచించు leftshift_for_వృక్షం_సూచీ(i) \
    ((i == NTREEBINS-1)? 0 : \
-    ((SIZE_T_BITSIZE-SIZE_T_ONE) - (((i) >> 1) + TREEBIN_SHIFT - 2)))
+    ((కొలత_T_BITSIZE-కొలత_T_ONE) - (((i) >> 1) + TREEBIN_జరుపు - 2)))
 
 /* The size of the smallest chunk held in bin with index i */
-#define minsize_for_tree_index(i) \
-   ((SIZE_T_ONE << (((i) >> 1) + TREEBIN_SHIFT)) |  \
-   (((size_t)((i) & SIZE_T_ONE)) << (((i) >> 1) + TREEBIN_SHIFT - 1)))
+#నిర్వచించు minsize_for_వృక్షం_సూచీ(i) \
+   ((కొలత_T_ONE << (((i) >> 1) + TREEBIN_జరుపు)) |  \
+   (((size_t)((i) & కొలత_T_ONE)) << (((i) >> 1) + TREEBIN_జరుపు - 1)))
 
 
 /* ------------------------ Operations on bin maps ----------------------- */
 
 /* bit corresponding to given index */
-#define idx2bit(i)              ((binmap_t)(1) << (i))
+#నిర్వచించు idx2bit(i)              ((binmap_t)(1) << (i))
 
 /* Mark/Clear bits with given index */
-#define mark_smallmap(M,i)      ((M)->smallmap |=  idx2bit(i))
-#define clear_smallmap(M,i)     ((M)->smallmap &= ~idx2bit(i))
-#define smallmap_is_marked(M,i) ((M)->smallmap &   idx2bit(i))
+#నిర్వచించు mark_smallmap(M,i)      ((M)->smallmap |=  idx2bit(i))
+#నిర్వచించు clear_smallmap(M,i)     ((M)->smallmap &= ~idx2bit(i))
+#నిర్వచించు smallmap_is_marked(M,i) ((M)->smallmap &   idx2bit(i))
 
-#define mark_treemap(M,i)       ((M)->treemap  |=  idx2bit(i))
-#define clear_treemap(M,i)      ((M)->treemap  &= ~idx2bit(i))
-#define treemap_is_marked(M,i)  ((M)->treemap  &   idx2bit(i))
+#నిర్వచించు mark_treemap(M,i)       ((M)->treemap  |=  idx2bit(i))
+#నిర్వచించు clear_treemap(M,i)      ((M)->treemap  &= ~idx2bit(i))
+#నిర్వచించు treemap_is_marked(M,i)  ((M)->treemap  &   idx2bit(i))
 
 /* isolate the least set bit of a bitmap */
-#define least_bit(x)         ((x) & -(x))
+#నిర్వచించు కనిష్ఠ_బిట్టు(x)         ((x) & -(x))
 
 /* mask with all bits to left of least bit of x on */
-#define left_bits(x)         ((x<<1) | -(x<<1))
+#నిర్వచించు ఎడమ_బిట్లు(x)         ((x<<1) | -(x<<1))
 
 /* mask with all bits to left of or equal to least bit of x on */
-#define same_or_left_bits(x) ((x) | -(x))
+#నిర్వచించు same_or_ఎడమ_బిట్లు(x) ((x) | -(x))
 
 /* index corresponding to given bit.
    libffi: use __builtin_ctz on any GNU-compatible compiler, not only x86
    (libffi #754).  */
 
-#if defined(__GNUC__)
-#define compute_bit2idx(X, I)\
+#ఒకవేళ defined(__GNUC__)
+#నిర్వచించు compute_bit2idx(X, I)\
 {\
-  unsigned int J;\
+  గుర్తులేని పూర్ణాంకం J;\
   J = __builtin_ctz(X); \
   I = (bindex_t)J;\
 }
 
-#elif defined (__INTEL_COMPILER)
-#define compute_bit2idx(X, I)\
+#లేదావేళ defined (__INTEL_COMPILER)
+#నిర్వచించు compute_bit2idx(X, I)\
 {\
-  unsigned int J;\
-  J = _bit_scan_forward (X); \
+  గుర్తులేని పూర్ణాంకం J;\
+  J = బిట్టు_పరిశీలన_forward (X); \
   I = (bindex_t)J;\
 }
 
-#elif defined(_MSC_VER) && _MSC_VER>=1300
-#define compute_bit2idx(X, I)\
+#లేదావేళ defined(_MSC_VER) && _MSC_VER>=1300
+#నిర్వచించు compute_bit2idx(X, I)\
 {\
-  unsigned int J;\
-  _BitScanForward((DWORD *) &J, X);\
+  గుర్తులేని పూర్ణాంకం J;\
+  బిట్టు_పరిశీలన_Forward_2((DWORD *) &J, X);\
   I = (bindex_t)J;\
 }
 
-#elif USE_BUILTIN_FFS
-#define compute_bit2idx(X, I) I = ffs(X)-1
+#లేదావేళ USE_BUILTIN_FFS
+#నిర్వచించు compute_bit2idx(X, I) I = ffs(X)-1
 
-#else
-#define compute_bit2idx(X, I)\
+#లేకపోతే
+#నిర్వచించు compute_bit2idx(X, I)\
 {\
-  unsigned int Y = X - 1;\
-  unsigned int K = Y >> (16-4) & 16;\
-  unsigned int N = K;        Y >>= K;\
+  గుర్తులేని పూర్ణాంకం Y = X - 1;\
+  గుర్తులేని పూర్ణాంకం K = Y >> (16-4) & 16;\
+  గుర్తులేని పూర్ణాంకం N = K;        Y >>= K;\
   N += K = Y >> (8-3) &  8;  Y >>= K;\
   N += K = Y >> (4-2) &  4;  Y >>= K;\
   N += K = Y >> (2-1) &  2;  Y >>= K;\
   N += K = Y >> (1-0) &  1;  Y >>= K;\
   I = (bindex_t)(N + Y);\
 }
-#endif /* GNUC */
+#అయితే_ముగింపు /* GNUC */
 
 
 /* ----------------------- Runtime Check Support ------------------------- */
@@ -3154,127 +3154,127 @@ static size_t traverse_and_check(mstate m);
   next, etc). This turns out to be cheaper than relying on hashes.
 */
 
-#if !INSECURE
+#ఒకవేళ !INSECURE
 /* Check if address a is at least as high as any from MORECORE or MMAP */
-#define ok_address(M, a) ((char*)(a) >= (M)->least_addr)
+#నిర్వచించు ok_చిరునామా(M, a) ((అక్షరం*)(a) >= (M)->కనిష్ఠ_addr)
 /* Check if address of next chunk n is higher than base chunk p */
-#define ok_next(p, n)    ((char*)(p) < (char*)(n))
+#నిర్వచించు ok_తదుపరి(p, n)    ((అక్షరం*)(p) < (అక్షరం*)(n))
 /* Check if p has inuse status */
-#define ok_inuse(p)     is_inuse(p)
+#నిర్వచించు ok_inuse(p)     is_inuse(p)
 /* Check if p has its pinuse bit on */
-#define ok_pinuse(p)     pinuse(p)
+#నిర్వచించు ok_pinuse(p)     pinuse(p)
 
-#else /* !INSECURE */
-#define ok_address(M, a) (1)
-#define ok_next(b, n)    (1)
-#define ok_inuse(p)      (1)
-#define ok_pinuse(p)     (1)
-#endif /* !INSECURE */
+#లేకపోతే /* !INSECURE */
+#నిర్వచించు ok_చిరునామా(M, a) (1)
+#నిర్వచించు ok_తదుపరి(b, n)    (1)
+#నిర్వచించు ok_inuse(p)      (1)
+#నిర్వచించు ok_pinuse(p)     (1)
+#అయితే_ముగింపు /* !INSECURE */
 
-#if (FOOTERS && !INSECURE)
+#ఒకవేళ (FOOTERS && !INSECURE)
 /* Check if (alleged) mstate m has expected magic field */
-#define ok_magic(M)      ((M)->magic == mparams.magic)
-#else  /* (FOOTERS && !INSECURE) */
-#define ok_magic(M)      (1)
-#endif /* (FOOTERS && !INSECURE) */
+#నిర్వచించు ok_magic(M)      ((M)->magic == mparams.magic)
+#లేకపోతే  /* (FOOTERS && !INSECURE) */
+#నిర్వచించు ok_magic(M)      (1)
+#అయితే_ముగింపు /* (FOOTERS && !INSECURE) */
 
 /* In gcc, use __builtin_expect to minimize impact of checks */
-#if !INSECURE
-#if defined(__GNUC__) && __GNUC__ >= 3
-#define RTCHECK(e)  __builtin_expect(e, 1)
-#else /* GNUC */
-#define RTCHECK(e)  (e)
-#endif /* GNUC */
-#else /* !INSECURE */
-#define RTCHECK(e)  (1)
-#endif /* !INSECURE */
+#ఒకవేళ !INSECURE
+#ఒకవేళ defined(__GNUC__) && __GNUC__ >= 3
+#నిర్వచించు RTCHECK(e)  __builtin_expect(e, 1)
+#లేకపోతే /* GNUC */
+#నిర్వచించు RTCHECK(e)  (e)
+#అయితే_ముగింపు /* GNUC */
+#లేకపోతే /* !INSECURE */
+#నిర్వచించు RTCHECK(e)  (1)
+#అయితే_ముగింపు /* !INSECURE */
 
 /* macros to set up inuse chunks with or without footers */
 
-#if !FOOTERS
+#ఒకవేళ !FOOTERS
 
-#define mark_inuse_foot(M,p,s)
+#నిర్వచించు mark_inuse_foot(M,p,s)
 
 /* Macros for setting head/foot of non-mmapped chunks */
 
 /* Set cinuse bit and pinuse bit of next chunk */
-#define set_inuse(M,p,s)\
-  ((p)->head = (((p)->head & PINUSE_BIT)|s|CINUSE_BIT),\
-  ((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT)
+#నిర్వచించు సమితి_inuse(M,p,s)\
+  ((p)->తల = (((p)->తల & PINUSE_బిట్టు)|s|CINUSE_బిట్టు),\
+  ((mchunkptr)(((అక్షరం*)(p)) + (s)))->తల |= PINUSE_బిట్టు)
 
 /* Set cinuse and pinuse of this chunk and pinuse of next chunk */
-#define set_inuse_and_pinuse(M,p,s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT),\
-  ((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT)
+#నిర్వచించు సమితి_inuse_and_pinuse(M,p,s)\
+  ((p)->తల = (s|PINUSE_బిట్టు|CINUSE_బిట్టు),\
+  ((mchunkptr)(((అక్షరం*)(p)) + (s)))->తల |= PINUSE_బిట్టు)
 
 /* Set size, cinuse and pinuse bit of this chunk */
-#define set_size_and_pinuse_of_inuse_chunk(M, p, s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT))
+#నిర్వచించు సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(M, p, s)\
+  ((p)->తల = (s|PINUSE_బిట్టు|CINUSE_బిట్టు))
 
-#else /* FOOTERS */
+#లేకపోతే /* FOOTERS */
 
 /* Set foot of inuse chunk to be xor of mstate and seed */
-#define mark_inuse_foot(M,p,s)\
-  (((mchunkptr)((char*)(p) + (s)))->prev_foot = ((size_t)(M) ^ mparams.magic))
+#నిర్వచించు mark_inuse_foot(M,p,s)\
+  (((mchunkptr)((అక్షరం*)(p) + (s)))->prev_foot = ((size_t)(M) ^ mparams.magic))
 
-#define get_mstate_for(p)\
-  ((mstate)(((mchunkptr)((char*)(p) +\
+#నిర్వచించు get_mstate_for(p)\
+  ((mstate)(((mchunkptr)((అక్షరం*)(p) +\
     (chunksize(p))))->prev_foot ^ mparams.magic))
 
-#define set_inuse(M,p,s)\
-  ((p)->head = (((p)->head & PINUSE_BIT)|s|CINUSE_BIT),\
-  (((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT), \
+#నిర్వచించు సమితి_inuse(M,p,s)\
+  ((p)->తల = (((p)->తల & PINUSE_బిట్టు)|s|CINUSE_బిట్టు),\
+  (((mchunkptr)(((అక్షరం*)(p)) + (s)))->తల |= PINUSE_బిట్టు), \
   mark_inuse_foot(M,p,s))
 
-#define set_inuse_and_pinuse(M,p,s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT),\
-  (((mchunkptr)(((char*)(p)) + (s)))->head |= PINUSE_BIT),\
+#నిర్వచించు సమితి_inuse_and_pinuse(M,p,s)\
+  ((p)->తల = (s|PINUSE_బిట్టు|CINUSE_బిట్టు),\
+  (((mchunkptr)(((అక్షరం*)(p)) + (s)))->తల |= PINUSE_బిట్టు),\
  mark_inuse_foot(M,p,s))
 
-#define set_size_and_pinuse_of_inuse_chunk(M, p, s)\
-  ((p)->head = (s|PINUSE_BIT|CINUSE_BIT),\
+#నిర్వచించు సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(M, p, s)\
+  ((p)->తల = (s|PINUSE_బిట్టు|CINUSE_బిట్టు),\
   mark_inuse_foot(M, p, s))
 
-#endif /* !FOOTERS */
+#అయితే_ముగింపు /* !FOOTERS */
 
 /* ---------------------------- setting mparams -------------------------- */
 
-#if LOCK_AT_FORK
-static void pre_fork(void)         { ACQUIRE_LOCK(&(gm)->mutex); }
-static void post_fork_parent(void) { RELEASE_LOCK(&(gm)->mutex); }
-static void post_fork_child(void)  { INITIAL_LOCK(&(gm)->mutex); }
-#endif /* LOCK_AT_FORK */
+#ఒకవేళ తాళం_AT_FORK
+స్థిర శూన్య pre_fork(శూన్య)         { ACQUIRE_తాళం(&(gm)->mutex); }
+స్థిర శూన్య post_fork_మాతృ(శూన్య) { RELEASE_తాళం(&(gm)->mutex); }
+స్థిర శూన్య post_fork_బిడ్డ(శూన్య)  { INITIAL_తాళం(&(gm)->mutex); }
+#అయితే_ముగింపు /* LOCK_AT_FORK */
 
 /* Initialize mparams */
-static int init_mparams(void) {
-#ifdef NEED_GLOBAL_LOCK_INIT
-  if (malloc_global_mutex_status <= 0)
+స్థిర పూర్ణాంకం init_mparams(శూన్య) {
+#నిర్వచితమైతే NEED_GLOBAL_తాళం_INIT
+  ఒకవేళ (malloc_global_mutex_స్థితి <= 0)
     init_malloc_global_mutex();
-#endif
+#అయితే_ముగింపు
 
-  ACQUIRE_MALLOC_GLOBAL_LOCK();
-  if (mparams.magic == 0) {
+  ACQUIRE_MALLOC_GLOBAL_తాళం();
+  ఒకవేళ (mparams.magic == 0) {
     size_t magic;
     size_t psize;
     size_t gsize;
 
-#if !defined(WIN32) && !defined(__OS2__)
+#ఒకవేళ !defined(WIN32) && !defined(__OS2__)
     psize = malloc_getpagesize;
     gsize = ((DEFAULT_GRANULARITY != 0)? DEFAULT_GRANULARITY : psize);
-#elif defined (__OS2__)
+#లేదావేళ defined (__OS2__)
     /* if low-memory is used, os2munmap() would break
        if it were anything other than 64k */
     psize = 4096u;
     gsize = 65536u;
-#else /* WIN32 */
+#లేకపోతే /* WIN32 */
     {
       SYSTEM_INFO system_info;
       GetSystemInfo(&system_info);
-      psize = system_info.dwPageSize;
+      psize = system_info.dw_పుట_కొలత;
       gsize = ((DEFAULT_GRANULARITY != 0)?
-               DEFAULT_GRANULARITY : system_info.dwAllocationGranularity);
+               DEFAULT_GRANULARITY : system_info.dw_కేటాయింపు_Granularity);
     }
-#endif /* WIN32 */
+#అయితే_ముగింపు /* WIN32 */
 
     /* Sanity-check configuration:
        size_t must be unsigned and as wide as pointer type.
@@ -3282,53 +3282,53 @@ static int init_mparams(void) {
        alignment must be at least 8.
        Alignment, min chunk size, and page size must all be powers of 2.
     */
-    if ((sizeof(size_t) != sizeof(char*)) ||
-        (MAX_SIZE_T < MIN_CHUNK_SIZE)  ||
-        (sizeof(int) < 4)  ||
+    ఒకవేళ ((పరిమాణం(size_t) != పరిమాణం(అక్షరం*)) ||
+        (MAX_కొలత_T < MIN_CHUNK_కొలత)  ||
+        (పరిమాణం(పూర్ణాంకం) < 4)  ||
         (MALLOC_ALIGNMENT < (size_t)8U) ||
-        ((MALLOC_ALIGNMENT & (MALLOC_ALIGNMENT-SIZE_T_ONE)) != 0) ||
-        ((MCHUNK_SIZE      & (MCHUNK_SIZE-SIZE_T_ONE))      != 0) ||
-        ((gsize            & (gsize-SIZE_T_ONE))            != 0) ||
-        ((psize            & (psize-SIZE_T_ONE))            != 0))
+        ((MALLOC_ALIGNMENT & (MALLOC_ALIGNMENT-కొలత_T_ONE)) != 0) ||
+        ((MCHUNK_కొలత      & (MCHUNK_కొలత-కొలత_T_ONE))      != 0) ||
+        ((gsize            & (gsize-కొలత_T_ONE))            != 0) ||
+        ((psize            & (psize-కొలత_T_ONE))            != 0))
       ABORT;
     mparams.granularity = gsize;
-    mparams.page_size = psize;
-    mparams.mmap_threshold = DEFAULT_MMAP_THRESHOLD;
-    mparams.trim_threshold = DEFAULT_TRIM_THRESHOLD;
-#if MORECORE_CONTIGUOUS
-    mparams.default_mflags = USE_LOCK_BIT|USE_MMAP_BIT;
-#else  /* MORECORE_CONTIGUOUS */
-    mparams.default_mflags = USE_LOCK_BIT|USE_MMAP_BIT|USE_NONCONTIGUOUS_BIT;
-#endif /* MORECORE_CONTIGUOUS */
+    mparams.పుట_కొలత = psize;
+    mparams.mmap_పరిమితి = DEFAULT_MMAP_పరిమితి;
+    mparams.trim_పరిమితి = DEFAULT_TRIM_పరిమితి;
+#ఒకవేళ MORECORE_CONTIGUOUS
+    mparams.default_mflags = USE_తాళం_బిట్టు|USE_MMAP_బిట్టు;
+#లేకపోతే  /* MORECORE_CONTIGUOUS */
+    mparams.default_mflags = USE_తాళం_బిట్టు|USE_MMAP_బిట్టు|USE_NONCONTIGUOUS_బిట్టు;
+#అయితే_ముగింపు /* MORECORE_CONTIGUOUS */
 
-#if !ONLY_MSPACES
+#ఒకవేళ !ONLY_MSPACES
     /* Set up lock for main malloc area */
     gm->mflags = mparams.default_mflags;
-    (void)INITIAL_LOCK(&gm->mutex);
-#endif
-#if LOCK_AT_FORK
-    pthread_atfork(&pre_fork, &post_fork_parent, &post_fork_child);
-#endif
+    (శూన్య)INITIAL_తాళం(&gm->mutex);
+#అయితే_ముగింపు
+#ఒకవేళ తాళం_AT_FORK
+    pthread_atfork(&pre_fork, &post_fork_మాతృ, &post_fork_బిడ్డ);
+#అయితే_ముగింపు
 
     {
-#if USE_DEV_RANDOM
-      int fd;
-      unsigned char buf[sizeof(size_t)];
+#ఒకవేళ USE_DEV_RANDOM
+      పూర్ణాంకం fd;
+      గుర్తులేని అక్షరం buf[పరిమాణం(size_t)];
       /* Try to use /dev/urandom, else fall back on using time */
-      if ((fd = open("/dev/urandom", O_RDONLY)) >= 0 &&
-          read(fd, buf, sizeof(buf)) == sizeof(buf)) {
+      ఒకవేళ ((fd = open("/dev/urandom", O_RDONLY)) >= 0 &&
+          పఠ(fd, buf, పరిమాణం(buf)) == పరిమాణం(buf)) {
         magic = *((size_t *) buf);
         close(fd);
       }
-      else
-#endif /* USE_DEV_RANDOM */
-#ifdef WIN32
-      magic = (size_t)(GetTickCount() ^ (size_t)0x55555555U);
-#elif defined(LACKS_TIME_H)
+      లేకపోతే
+#అయితే_ముగింపు /* USE_DEV_RANDOM */
+#నిర్వచితమైతే WIN32
+      magic = (size_t)(Get_Tick_లెక్క() ^ (size_t)0x55555555U);
+#లేదావేళ defined(LACKS_సమయం_H)
       magic = (size_t)&magic ^ (size_t)0x55555555U;
-#else
+#లేకపోతే
       magic = (size_t)(time(0) ^ (size_t)0x55555555U);
-#endif
+#అయితే_ముగింపు
       magic |= (size_t)8U;    /* ensure nonzero */
       magic &= ~(size_t)7U;   /* improve chances of fault for bad values */
       /* libffi: release-store so any thread that observes magic via the
@@ -3337,334 +3337,334 @@ static int init_mparams(void) {
     }
   }
 
-  RELEASE_MALLOC_GLOBAL_LOCK();
-  return 1;
+  RELEASE_MALLOC_GLOBAL_తాళం();
+  తిరిగి 1;
 }
 
 /* support for mallopt */
-static int change_mparam(int param_number, int value) {
+స్థిర పూర్ణాంకం change_mparam(పూర్ణాంకం param_సంఖ్య, పూర్ణాంకం విలువ) {
   size_t val;
   ensure_initialization();
-  val = (value == -1)? MAX_SIZE_T : (size_t)value;
-  switch(param_number) {
-  case M_TRIM_THRESHOLD:
-    mparams.trim_threshold = val;
-    return 1;
-  case M_GRANULARITY:
-    if (val >= mparams.page_size && ((val & (val-1)) == 0)) {
+  val = (విలువ == -1)? MAX_కొలత_T : (size_t)విలువ;
+  ఎంపిక(param_సంఖ్య) {
+  స్థితి M_TRIM_పరిమితి:
+    mparams.trim_పరిమితి = val;
+    తిరిగి 1;
+  స్థితి M_GRANULARITY:
+    ఒకవేళ (val >= mparams.పుట_కొలత && ((val & (val-1)) == 0)) {
       mparams.granularity = val;
-      return 1;
+      తిరిగి 1;
     }
-    else
-      return 0;
-  case M_MMAP_THRESHOLD:
-    mparams.mmap_threshold = val;
-    return 1;
-  default:
-    return 0;
+    లేకపోతే
+      తిరిగి 0;
+  స్థితి M_MMAP_పరిమితి:
+    mparams.mmap_పరిమితి = val;
+    తిరిగి 1;
+  అప్రమేయ:
+    తిరిగి 0;
   }
 }
 
-#if DEBUG
+#ఒకవేళ DEBUG
 /* ------------------------- Debugging Support --------------------------- */
 
 /* Check properties of any chunk, whether free, inuse, mmapped etc  */
-static void do_check_any_chunk(mstate m, mchunkptr p) {
-  assert((is_aligned(chunk2mem(p))) || (p->head == FENCEPOST_HEAD));
-  assert(ok_address(m, p));
+స్థిర శూన్య do_check_any_chunk(mstate m, mchunkptr p) {
+  ప్రతిజ్ఞా((is_aligned(chunk2mem(p))) || (p->తల == FENCEPOST_తల));
+  ప్రతిజ్ఞా(ok_చిరునామా(m, p));
 }
 
 /* Check properties of top chunk */
-static void do_check_top_chunk(mstate m, mchunkptr p) {
-  msegmentptr sp = segment_holding(m, (char*)p);
-  size_t  sz = p->head & ~INUSE_BITS; /* third-lowest bit can be set! */
-  assert(sp != 0);
-  assert((is_aligned(chunk2mem(p))) || (p->head == FENCEPOST_HEAD));
-  assert(ok_address(m, p));
-  assert(sz == m->topsize);
-  assert(sz > 0);
-  assert(sz == ((sp->base + sp->size) - (char*)p) - TOP_FOOT_SIZE);
-  assert(pinuse(p));
-  assert(!pinuse(chunk_plus_offset(p, sz)));
+స్థిర శూన్య do_check_శిఖరం_chunk(mstate m, mchunkptr p) {
+  msegmentptr sp = segment_holding(m, (అక్షరం*)p);
+  size_t  sz = p->తల & ~INUSE_బిట్లు; /* third-lowest bit can be set! */
+  ప్రతిజ్ఞా(sp != 0);
+  ప్రతిజ్ఞా((is_aligned(chunk2mem(p))) || (p->తల == FENCEPOST_తల));
+  ప్రతిజ్ఞా(ok_చిరునామా(m, p));
+  ప్రతిజ్ఞా(sz == m->topsize);
+  ప్రతిజ్ఞా(sz > 0);
+  ప్రతిజ్ఞా(sz == ((sp->పునాది + sp->కొలత) - (అక్షరం*)p) - శిఖరం_FOOT_కొలత);
+  ప్రతిజ్ఞా(pinuse(p));
+  ప్రతిజ్ఞా(!pinuse(chunk_plus_స్థానభ్రంశం(p, sz)));
 }
 
 /* Check properties of (inuse) mmapped chunks */
-static void do_check_mmapped_chunk(mstate m, mchunkptr p) {
+స్థిర శూన్య do_check_mmapped_chunk(mstate m, mchunkptr p) {
   size_t  sz = chunksize(p);
   size_t len = (sz + (p->prev_foot) + MMAP_FOOT_PAD);
-  assert(is_mmapped(p));
-  assert(use_mmap(m));
-  assert((is_aligned(chunk2mem(p))) || (p->head == FENCEPOST_HEAD));
-  assert(ok_address(m, p));
-  assert(!is_small(sz));
-  assert((len & (mparams.page_size-SIZE_T_ONE)) == 0);
-  assert(chunk_plus_offset(p, sz)->head == FENCEPOST_HEAD);
-  assert(chunk_plus_offset(p, sz+SIZE_T_SIZE)->head == 0);
+  ప్రతిజ్ఞా(is_mmapped(p));
+  ప్రతిజ్ఞా(use_mmap(m));
+  ప్రతిజ్ఞా((is_aligned(chunk2mem(p))) || (p->తల == FENCEPOST_తల));
+  ప్రతిజ్ఞా(ok_చిరునామా(m, p));
+  ప్రతిజ్ఞా(!is_small(sz));
+  ప్రతిజ్ఞా((len & (mparams.పుట_కొలత-కొలత_T_ONE)) == 0);
+  ప్రతిజ్ఞా(chunk_plus_స్థానభ్రంశం(p, sz)->తల == FENCEPOST_తల);
+  ప్రతిజ్ఞా(chunk_plus_స్థానభ్రంశం(p, sz+కొలత_T_కొలత)->తల == 0);
 }
 
 /* Check properties of inuse chunks */
-static void do_check_inuse_chunk(mstate m, mchunkptr p) {
+స్థిర శూన్య do_check_inuse_chunk(mstate m, mchunkptr p) {
   do_check_any_chunk(m, p);
-  assert(is_inuse(p));
-  assert(next_pinuse(p));
+  ప్రతిజ్ఞా(is_inuse(p));
+  ప్రతిజ్ఞా(తదుపరి_pinuse(p));
   /* If not pinuse and not mmapped, previous chunk has OK offset */
-  assert(is_mmapped(p) || pinuse(p) || next_chunk(prev_chunk(p)) == p);
-  if (is_mmapped(p))
+  ప్రతిజ్ఞా(is_mmapped(p) || pinuse(p) || తదుపరి_chunk(prev_chunk(p)) == p);
+  ఒకవేళ (is_mmapped(p))
     do_check_mmapped_chunk(m, p);
 }
 
 /* Check properties of free chunks */
-static void do_check_free_chunk(mstate m, mchunkptr p) {
+స్థిర శూన్య do_check_free_chunk(mstate m, mchunkptr p) {
   size_t sz = chunksize(p);
-  mchunkptr next = chunk_plus_offset(p, sz);
+  mchunkptr తదుపరి = chunk_plus_స్థానభ్రంశం(p, sz);
   do_check_any_chunk(m, p);
-  assert(!is_inuse(p));
-  assert(!next_pinuse(p));
-  assert (!is_mmapped(p));
-  if (p != m->dv && p != m->top) {
-    if (sz >= MIN_CHUNK_SIZE) {
-      assert((sz & CHUNK_ALIGN_MASK) == 0);
-      assert(is_aligned(chunk2mem(p)));
-      assert(next->prev_foot == sz);
-      assert(pinuse(p));
-      assert (next == m->top || is_inuse(next));
-      assert(p->fd->bk == p);
-      assert(p->bk->fd == p);
+  ప్రతిజ్ఞా(!is_inuse(p));
+  ప్రతిజ్ఞా(!తదుపరి_pinuse(p));
+  ప్రతిజ్ఞా (!is_mmapped(p));
+  ఒకవేళ (p != m->dv && p != m->శిఖరం) {
+    ఒకవేళ (sz >= MIN_CHUNK_కొలత) {
+      ప్రతిజ్ఞా((sz & CHUNK_ALIGN_ముసుగు) == 0);
+      ప్రతిజ్ఞా(is_aligned(chunk2mem(p)));
+      ప్రతిజ్ఞా(తదుపరి->prev_foot == sz);
+      ప్రతిజ్ఞా(pinuse(p));
+      ప్రతిజ్ఞా (తదుపరి == m->శిఖరం || is_inuse(తదుపరి));
+      ప్రతిజ్ఞా(p->fd->bk == p);
+      ప్రతిజ్ఞా(p->bk->fd == p);
     }
-    else  /* markers are always of size SIZE_T_SIZE */
-      assert(sz == SIZE_T_SIZE);
+    లేకపోతే  /* markers are always of size SIZE_T_SIZE */
+      ప్రతిజ్ఞా(sz == కొలత_T_కొలత);
   }
 }
 
 /* Check properties of malloced chunks at the point they are malloced */
-static void do_check_malloced_chunk(mstate m, void* mem, size_t s) {
-  if (mem != 0) {
+స్థిర శూన్య do_check_malloced_chunk(mstate m, శూన్య* mem, size_t s) {
+  ఒకవేళ (mem != 0) {
     mchunkptr p = mem2chunk(mem);
-    size_t sz = p->head & ~INUSE_BITS;
+    size_t sz = p->తల & ~INUSE_బిట్లు;
     do_check_inuse_chunk(m, p);
-    assert((sz & CHUNK_ALIGN_MASK) == 0);
-    assert(sz >= MIN_CHUNK_SIZE);
-    assert(sz >= s);
+    ప్రతిజ్ఞా((sz & CHUNK_ALIGN_ముసుగు) == 0);
+    ప్రతిజ్ఞా(sz >= MIN_CHUNK_కొలత);
+    ప్రతిజ్ఞా(sz >= s);
     /* unless mmapped, size is less than MIN_CHUNK_SIZE more than request */
-    assert(is_mmapped(p) || sz < (s + MIN_CHUNK_SIZE));
+    ప్రతిజ్ఞా(is_mmapped(p) || sz < (s + MIN_CHUNK_కొలత));
   }
 }
 
 /* Check a tree and its subtrees.  */
-static void do_check_tree(mstate m, tchunkptr t) {
-  tchunkptr head = 0;
+స్థిర శూన్య do_check_వృక్షం(mstate m, tchunkptr t) {
+  tchunkptr తల = 0;
   tchunkptr u = t;
-  bindex_t tindex = t->index;
+  bindex_t tindex = t->సూచీ;
   size_t tsize = chunksize(t);
   bindex_t idx;
-  compute_tree_index(tsize, idx);
-  assert(tindex == idx);
-  assert(tsize >= MIN_LARGE_SIZE);
-  assert(tsize >= minsize_for_tree_index(idx));
-  assert((idx == NTREEBINS-1) || (tsize < minsize_for_tree_index((idx+1))));
+  compute_వృక్షం_సూచీ(tsize, idx);
+  ప్రతిజ్ఞా(tindex == idx);
+  ప్రతిజ్ఞా(tsize >= MIN_LARGE_కొలత);
+  ప్రతిజ్ఞా(tsize >= minsize_for_వృక్షం_సూచీ(idx));
+  ప్రతిజ్ఞా((idx == NTREEBINS-1) || (tsize < minsize_for_వృక్షం_సూచీ((idx+1))));
 
-  do { /* traverse through chain of same-sized nodes */
+  చేయి { /* traverse through chain of same-sized nodes */
     do_check_any_chunk(m, ((mchunkptr)u));
-    assert(u->index == tindex);
-    assert(chunksize(u) == tsize);
-    assert(!is_inuse(u));
-    assert(!next_pinuse(u));
-    assert(u->fd->bk == u);
-    assert(u->bk->fd == u);
-    if (u->parent == 0) {
-      assert(u->child[0] == 0);
-      assert(u->child[1] == 0);
+    ప్రతిజ్ఞా(u->సూచీ == tindex);
+    ప్రతిజ్ఞా(chunksize(u) == tsize);
+    ప్రతిజ్ఞా(!is_inuse(u));
+    ప్రతిజ్ఞా(!తదుపరి_pinuse(u));
+    ప్రతిజ్ఞా(u->fd->bk == u);
+    ప్రతిజ్ఞా(u->bk->fd == u);
+    ఒకవేళ (u->మాతృ == 0) {
+      ప్రతిజ్ఞా(u->బిడ్డ[0] == 0);
+      ప్రతిజ్ఞా(u->బిడ్డ[1] == 0);
     }
-    else {
-      assert(head == 0); /* only one node on chain has parent */
-      head = u;
-      assert(u->parent != u);
-      assert (u->parent->child[0] == u ||
-              u->parent->child[1] == u ||
-              *((tbinptr*)(u->parent)) == u);
-      if (u->child[0] != 0) {
-        assert(u->child[0]->parent == u);
-        assert(u->child[0] != u);
-        do_check_tree(m, u->child[0]);
+    లేకపోతే {
+      ప్రతిజ్ఞా(తల == 0); /* only one node on chain has parent */
+      తల = u;
+      ప్రతిజ్ఞా(u->మాతృ != u);
+      ప్రతిజ్ఞా (u->మాతృ->బిడ్డ[0] == u ||
+              u->మాతృ->బిడ్డ[1] == u ||
+              *((tbinptr*)(u->మాతృ)) == u);
+      ఒకవేళ (u->బిడ్డ[0] != 0) {
+        ప్రతిజ్ఞా(u->బిడ్డ[0]->మాతృ == u);
+        ప్రతిజ్ఞా(u->బిడ్డ[0] != u);
+        do_check_వృక్షం(m, u->బిడ్డ[0]);
       }
-      if (u->child[1] != 0) {
-        assert(u->child[1]->parent == u);
-        assert(u->child[1] != u);
-        do_check_tree(m, u->child[1]);
+      ఒకవేళ (u->బిడ్డ[1] != 0) {
+        ప్రతిజ్ఞా(u->బిడ్డ[1]->మాతృ == u);
+        ప్రతిజ్ఞా(u->బిడ్డ[1] != u);
+        do_check_వృక్షం(m, u->బిడ్డ[1]);
       }
-      if (u->child[0] != 0 && u->child[1] != 0) {
-        assert(chunksize(u->child[0]) < chunksize(u->child[1]));
+      ఒకవేళ (u->బిడ్డ[0] != 0 && u->బిడ్డ[1] != 0) {
+        ప్రతిజ్ఞా(chunksize(u->బిడ్డ[0]) < chunksize(u->బిడ్డ[1]));
       }
     }
     u = u->fd;
-  } while (u != t);
-  assert(head != 0);
+  } అయితే (u != t);
+  ప్రతిజ్ఞా(తల != 0);
 }
 
 /*  Check all the chunks in a treebin.  */
-static void do_check_treebin(mstate m, bindex_t i) {
+స్థిర శూన్య do_check_treebin(mstate m, bindex_t i) {
   tbinptr* tb = treebin_at(m, i);
   tchunkptr t = *tb;
-  int empty = (m->treemap & (1U << i)) == 0;
-  if (t == 0)
-    assert(empty);
-  if (!empty)
-    do_check_tree(m, t);
+  పూర్ణాంకం ఖాళీలు = (m->treemap & (1U << i)) == 0;
+  ఒకవేళ (t == 0)
+    ప్రతిజ్ఞా(ఖాళీలు);
+  ఒకవేళ (!ఖాళీలు)
+    do_check_వృక్షం(m, t);
 }
 
 /*  Check all the chunks in a smallbin.  */
-static void do_check_smallbin(mstate m, bindex_t i) {
+స్థిర శూన్య do_check_smallbin(mstate m, bindex_t i) {
   sbinptr b = smallbin_at(m, i);
   mchunkptr p = b->bk;
-  unsigned int empty = (m->smallmap & (1U << i)) == 0;
-  if (p == b)
-    assert(empty);
-  if (!empty) {
-    for (; p != b; p = p->bk) {
-      size_t size = chunksize(p);
+  గుర్తులేని పూర్ణాంకం ఖాళీలు = (m->smallmap & (1U << i)) == 0;
+  ఒకవేళ (p == b)
+    ప్రతిజ్ఞా(ఖాళీలు);
+  ఒకవేళ (!ఖాళీలు) {
+    కొరకు (; p != b; p = p->bk) {
+      size_t కొలత = chunksize(p);
       mchunkptr q;
       /* each chunk claims to be free */
       do_check_free_chunk(m, p);
       /* chunk belongs in bin */
-      assert(small_index(size) == i);
-      assert(p->bk == b || chunksize(p->bk) == chunksize(p));
+      ప్రతిజ్ఞా(small_సూచీ(కొలత) == i);
+      ప్రతిజ్ఞా(p->bk == b || chunksize(p->bk) == chunksize(p));
       /* chunk is followed by an inuse chunk */
-      q = next_chunk(p);
-      if (q->head != FENCEPOST_HEAD)
+      q = తదుపరి_chunk(p);
+      ఒకవేళ (q->తల != FENCEPOST_తల)
         do_check_inuse_chunk(m, q);
     }
   }
 }
 
 /* Find x in a bin. Used in other check functions. */
-static int bin_find(mstate m, mchunkptr x) {
-  size_t size = chunksize(x);
-  if (is_small(size)) {
-    bindex_t sidx = small_index(size);
+స్థిర పూర్ణాంకం bin_కనుగొను(mstate m, mchunkptr x) {
+  size_t కొలత = chunksize(x);
+  ఒకవేళ (is_small(కొలత)) {
+    bindex_t sidx = small_సూచీ(కొలత);
     sbinptr b = smallbin_at(m, sidx);
-    if (smallmap_is_marked(m, sidx)) {
+    ఒకవేళ (smallmap_is_marked(m, sidx)) {
       mchunkptr p = b;
-      do {
-        if (p == x)
-          return 1;
-      } while ((p = p->fd) != b);
+      చేయి {
+        ఒకవేళ (p == x)
+          తిరిగి 1;
+      } అయితే ((p = p->fd) != b);
     }
   }
-  else {
+  లేకపోతే {
     bindex_t tidx;
-    compute_tree_index(size, tidx);
-    if (treemap_is_marked(m, tidx)) {
+    compute_వృక్షం_సూచీ(కొలత, tidx);
+    ఒకవేళ (treemap_is_marked(m, tidx)) {
       tchunkptr t = *treebin_at(m, tidx);
-      size_t sizebits = size << leftshift_for_tree_index(tidx);
-      while (t != 0 && chunksize(t) != size) {
-        t = t->child[(sizebits >> (SIZE_T_BITSIZE-SIZE_T_ONE)) & 1];
+      size_t sizebits = కొలత << leftshift_for_వృక్షం_సూచీ(tidx);
+      అయితే (t != 0 && chunksize(t) != కొలత) {
+        t = t->బిడ్డ[(sizebits >> (కొలత_T_BITSIZE-కొలత_T_ONE)) & 1];
         sizebits <<= 1;
       }
-      if (t != 0) {
+      ఒకవేళ (t != 0) {
         tchunkptr u = t;
-        do {
-          if (u == (tchunkptr)x)
-            return 1;
-        } while ((u = u->fd) != t);
+        చేయి {
+          ఒకవేళ (u == (tchunkptr)x)
+            తిరిగి 1;
+        } అయితే ((u = u->fd) != t);
       }
     }
   }
-  return 0;
+  తిరిగి 0;
 }
 
 /* Traverse each chunk and check it; return total */
-static size_t traverse_and_check(mstate m) {
-  size_t sum = 0;
-  if (is_initialized(m)) {
+స్థిర size_t traverse_and_check(mstate m) {
+  size_t కూడిక = 0;
+  ఒకవేళ (is_initialized(m)) {
     msegmentptr s = &m->seg;
-    sum += m->topsize + TOP_FOOT_SIZE;
-    while (s != 0) {
-      mchunkptr q = align_as_chunk(s->base);
+    కూడిక += m->topsize + శిఖరం_FOOT_కొలత;
+    అయితే (s != 0) {
+      mchunkptr q = align_as_chunk(s->పునాది);
       mchunkptr lastq = 0;
-      assert(pinuse(q));
-      while (segment_holds(s, q) &&
-             q != m->top && q->head != FENCEPOST_HEAD) {
-        sum += chunksize(q);
-        if (is_inuse(q)) {
-          assert(!bin_find(m, q));
+      ప్రతిజ్ఞా(pinuse(q));
+      అయితే (segment_holds(s, q) &&
+             q != m->శిఖరం && q->తల != FENCEPOST_తల) {
+        కూడిక += chunksize(q);
+        ఒకవేళ (is_inuse(q)) {
+          ప్రతిజ్ఞా(!bin_కనుగొను(m, q));
           do_check_inuse_chunk(m, q);
         }
-        else {
-          assert(q == m->dv || bin_find(m, q));
-          assert(lastq == 0 || is_inuse(lastq)); /* Not 2 consecutive free */
+        లేకపోతే {
+          ప్రతిజ్ఞా(q == m->dv || bin_కనుగొను(m, q));
+          ప్రతిజ్ఞా(lastq == 0 || is_inuse(lastq)); /* Not 2 consecutive free */
           do_check_free_chunk(m, q);
         }
         lastq = q;
-        q = next_chunk(q);
+        q = తదుపరి_chunk(q);
       }
-      s = s->next;
+      s = s->తదుపరి;
     }
   }
-  return sum;
+  తిరిగి కూడిక;
 }
 
 
 /* Check all properties of malloc_state. */
-static void do_check_malloc_state(mstate m) {
+స్థిర శూన్య do_check_malloc_state(mstate m) {
   bindex_t i;
-  size_t total;
+  size_t మొత్తం;
   /* check bins */
-  for (i = 0; i < NSMALLBINS; ++i)
+  కొరకు (i = 0; i < NSMALLBINS; ++i)
     do_check_smallbin(m, i);
-  for (i = 0; i < NTREEBINS; ++i)
+  కొరకు (i = 0; i < NTREEBINS; ++i)
     do_check_treebin(m, i);
 
-  if (m->dvsize != 0) { /* check dv chunk */
+  ఒకవేళ (m->dvsize != 0) { /* check dv chunk */
     do_check_any_chunk(m, m->dv);
-    assert(m->dvsize == chunksize(m->dv));
-    assert(m->dvsize >= MIN_CHUNK_SIZE);
-    assert(bin_find(m, m->dv) == 0);
+    ప్రతిజ్ఞా(m->dvsize == chunksize(m->dv));
+    ప్రతిజ్ఞా(m->dvsize >= MIN_CHUNK_కొలత);
+    ప్రతిజ్ఞా(bin_కనుగొను(m, m->dv) == 0);
   }
 
-  if (m->top != 0) {   /* check top chunk */
-    do_check_top_chunk(m, m->top);
+  ఒకవేళ (m->శిఖరం != 0) {   /* check top chunk */
+    do_check_శిఖరం_chunk(m, m->శిఖరం);
     /*assert(m->topsize == chunksize(m->top)); redundant */
-    assert(m->topsize > 0);
-    assert(bin_find(m, m->top) == 0);
+    ప్రతిజ్ఞా(m->topsize > 0);
+    ప్రతిజ్ఞా(bin_కనుగొను(m, m->శిఖరం) == 0);
   }
 
-  total = traverse_and_check(m);
-  assert(total <= m->footprint);
-  assert(m->footprint <= m->max_footprint);
+  మొత్తం = traverse_and_check(m);
+  ప్రతిజ్ఞా(మొత్తం <= m->footprint);
+  ప్రతిజ్ఞా(m->footprint <= m->max_footprint);
 }
-#endif /* DEBUG */
+#అయితే_ముగింపు /* DEBUG */
 
 /* ----------------------------- statistics ------------------------------ */
 
-#if !NO_MALLINFO
-static struct mallinfo internal_mallinfo(mstate m) {
-  struct mallinfo nm = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+#ఒకవేళ !NO_MALLINFO
+స్థిర నిర్మాణం mallinfo అంతర్గత_mallinfo(mstate m) {
+  నిర్మాణం mallinfo nm = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
   ensure_initialization();
-  if (!PREACTION(m)) {
+  ఒకవేళ (!PREACTION(m)) {
     check_malloc_state(m);
-    if (is_initialized(m)) {
-      size_t nfree = SIZE_T_ONE; /* top always free */
-      size_t mfree = m->topsize + TOP_FOOT_SIZE;
-      size_t sum = mfree;
+    ఒకవేళ (is_initialized(m)) {
+      size_t nfree = కొలత_T_ONE; /* top always free */
+      size_t mfree = m->topsize + శిఖరం_FOOT_కొలత;
+      size_t కూడిక = mfree;
       msegmentptr s = &m->seg;
-      while (s != 0) {
-        mchunkptr q = align_as_chunk(s->base);
-        while (segment_holds(s, q) &&
-               q != m->top && q->head != FENCEPOST_HEAD) {
+      అయితే (s != 0) {
+        mchunkptr q = align_as_chunk(s->పునాది);
+        అయితే (segment_holds(s, q) &&
+               q != m->శిఖరం && q->తల != FENCEPOST_తల) {
           size_t sz = chunksize(q);
-          sum += sz;
-          if (!is_inuse(q)) {
+          కూడిక += sz;
+          ఒకవేళ (!is_inuse(q)) {
             mfree += sz;
             ++nfree;
           }
-          q = next_chunk(q);
+          q = తదుపరి_chunk(q);
         }
-        s = s->next;
+        s = s->తదుపరి;
       }
 
-      nm.arena    = sum;
+      nm.arena    = కూడిక;
       nm.ordblks  = nfree;
-      nm.hblkhd   = m->footprint - sum;
+      nm.hblkhd   = m->footprint - కూడిక;
       nm.usmblks  = m->max_footprint;
       nm.uordblks = m->footprint - mfree;
       nm.fordblks = mfree;
@@ -3673,42 +3673,42 @@ static struct mallinfo internal_mallinfo(mstate m) {
 
     POSTACTION(m);
   }
-  return nm;
+  తిరిగి nm;
 }
-#endif /* !NO_MALLINFO */
+#అయితే_ముగింపు /* !NO_MALLINFO */
 
-#if !NO_MALLOC_STATS
-static void internal_malloc_stats(mstate m) {
+#ఒకవేళ !NO_MALLOC_STATS
+స్థిర శూన్య అంతర్గత_malloc_stats(mstate m) {
   ensure_initialization();
-  if (!PREACTION(m)) {
+  ఒకవేళ (!PREACTION(m)) {
     size_t maxfp = 0;
     size_t fp = 0;
-    size_t used = 0;
+    size_t వాడిన = 0;
     check_malloc_state(m);
-    if (is_initialized(m)) {
+    ఒకవేళ (is_initialized(m)) {
       msegmentptr s = &m->seg;
       maxfp = m->max_footprint;
       fp = m->footprint;
-      used = fp - (m->topsize + TOP_FOOT_SIZE);
+      వాడిన = fp - (m->topsize + శిఖరం_FOOT_కొలత);
 
-      while (s != 0) {
-        mchunkptr q = align_as_chunk(s->base);
-        while (segment_holds(s, q) &&
-               q != m->top && q->head != FENCEPOST_HEAD) {
-          if (!is_inuse(q))
-            used -= chunksize(q);
-          q = next_chunk(q);
+      అయితే (s != 0) {
+        mchunkptr q = align_as_chunk(s->పునాది);
+        అయితే (segment_holds(s, q) &&
+               q != m->శిఖరం && q->తల != FENCEPOST_తల) {
+          ఒకవేళ (!is_inuse(q))
+            వాడిన -= chunksize(q);
+          q = తదుపరి_chunk(q);
         }
-        s = s->next;
+        s = s->తదుపరి;
       }
     }
     POSTACTION(m); /* drop lock */
-    fprintf(stderr, "max system bytes = %10lu\n", (unsigned long)(maxfp));
-    fprintf(stderr, "system bytes     = %10lu\n", (unsigned long)(fp));
-    fprintf(stderr, "in use bytes     = %10lu\n", (unsigned long)(used));
+    fprintf(stderr, "max system bytes = %10lu\n", (గుర్తులేని దీర్ఘ)(maxfp));
+    fprintf(stderr, "system bytes     = %10lu\n", (గుర్తులేని దీర్ఘ)(fp));
+    fprintf(stderr, "in use bytes     = %10lu\n", (గుర్తులేని దీర్ఘ)(వాడిన));
   }
 }
-#endif /* NO_MALLOC_STATS */
+#అయితే_ముగింపు /* NO_MALLOC_STATS */
 
 /* ----------------------- Operations on smallbins ----------------------- */
 
@@ -3720,16 +3720,16 @@ static void internal_malloc_stats(mstate m) {
 */
 
 /* Link a free chunk into a smallbin  */
-#define insert_small_chunk(M, P, S) {\
-  bindex_t I  = small_index(S);\
+#నిర్వచించు చొప్పించు_small_chunk(M, P, S) {\
+  bindex_t I  = small_సూచీ(S);\
   mchunkptr B = smallbin_at(M, I);\
   mchunkptr F = B;\
-  assert(S >= MIN_CHUNK_SIZE);\
-  if (!smallmap_is_marked(M, I))\
+  ప్రతిజ్ఞా(S >= MIN_CHUNK_కొలత);\
+  ఒకవేళ (!smallmap_is_marked(M, I))\
     mark_smallmap(M, I);\
-  else if (RTCHECK(ok_address(M, B->fd)))\
+  లేకపోతే ఒకవేళ (RTCHECK(ok_చిరునామా(M, B->fd)))\
     F = B->fd;\
-  else {\
+  లేకపోతే {\
     CORRUPTION_ERROR_ACTION(M);\
   }\
   B->fd = P;\
@@ -3739,57 +3739,57 @@ static void internal_malloc_stats(mstate m) {
 }
 
 /* Unlink a chunk from a smallbin  */
-#define unlink_small_chunk(M, P, S) {\
+#నిర్వచించు unlink_small_chunk(M, P, S) {\
   mchunkptr F = P->fd;\
   mchunkptr B = P->bk;\
-  bindex_t I = small_index(S);\
-  assert(P != B);\
-  assert(P != F);\
-  assert(chunksize(P) == small_index2size(I));\
-  if (RTCHECK(F == smallbin_at(M,I) || (ok_address(M, F) && F->bk == P))) { \
-    if (B == F) {\
+  bindex_t I = small_సూచీ(S);\
+  ప్రతిజ్ఞా(P != B);\
+  ప్రతిజ్ఞా(P != F);\
+  ప్రతిజ్ఞా(chunksize(P) == small_index2size(I));\
+  ఒకవేళ (RTCHECK(F == smallbin_at(M,I) || (ok_చిరునామా(M, F) && F->bk == P))) { \
+    ఒకవేళ (B == F) {\
       clear_smallmap(M, I);\
     }\
-    else if (RTCHECK(B == smallbin_at(M,I) ||\
-                     (ok_address(M, B) && B->fd == P))) {\
+    లేకపోతే ఒకవేళ (RTCHECK(B == smallbin_at(M,I) ||\
+                     (ok_చిరునామా(M, B) && B->fd == P))) {\
       F->bk = B;\
       B->fd = F;\
     }\
-    else {\
+    లేకపోతే {\
       CORRUPTION_ERROR_ACTION(M);\
     }\
   }\
-  else {\
+  లేకపోతే {\
     CORRUPTION_ERROR_ACTION(M);\
   }\
 }
 
 /* Unlink the first chunk from a smallbin */
-#define unlink_first_small_chunk(M, B, P, I) {\
+#నిర్వచించు unlink_మొదటి_small_chunk(M, B, P, I) {\
   mchunkptr F = P->fd;\
-  assert(P != B);\
-  assert(P != F);\
-  assert(chunksize(P) == small_index2size(I));\
-  if (B == F) {\
+  ప్రతిజ్ఞా(P != B);\
+  ప్రతిజ్ఞా(P != F);\
+  ప్రతిజ్ఞా(chunksize(P) == small_index2size(I));\
+  ఒకవేళ (B == F) {\
     clear_smallmap(M, I);\
   }\
-  else if (RTCHECK(ok_address(M, F) && F->bk == P)) {\
+  లేకపోతే ఒకవేళ (RTCHECK(ok_చిరునామా(M, F) && F->bk == P)) {\
     F->bk = B;\
     B->fd = F;\
   }\
-  else {\
+  లేకపోతే {\
     CORRUPTION_ERROR_ACTION(M);\
   }\
 }
 
 /* Replace dv node, binning the old one */
 /* Used only when dvsize known to be small */
-#define replace_dv(M, P, S) {\
+#నిర్వచించు replace_dv(M, P, S) {\
   size_t DVS = M->dvsize;\
-  assert(is_small(DVS));\
-  if (DVS != 0) {\
+  ప్రతిజ్ఞా(is_small(DVS));\
+  ఒకవేళ (DVS != 0) {\
     mchunkptr DV = M->dv;\
-    insert_small_chunk(M, DV, DVS);\
+    చొప్పించు_small_chunk(M, DV, DVS);\
   }\
   M->dvsize = S;\
   M->dv = P;\
@@ -3798,51 +3798,51 @@ static void internal_malloc_stats(mstate m) {
 /* ------------------------- Operations on trees ------------------------- */
 
 /* Insert chunk into tree */
-#define insert_large_chunk(M, X, S) {\
+#నిర్వచించు చొప్పించు_large_chunk(M, X, S) {\
   tbinptr* H;\
   bindex_t I;\
-  compute_tree_index(S, I);\
+  compute_వృక్షం_సూచీ(S, I);\
   H = treebin_at(M, I);\
-  X->index = I;\
-  X->child[0] = X->child[1] = 0;\
-  if (!treemap_is_marked(M, I)) {\
+  X->సూచీ = I;\
+  X->బిడ్డ[0] = X->బిడ్డ[1] = 0;\
+  ఒకవేళ (!treemap_is_marked(M, I)) {\
     mark_treemap(M, I);\
     *H = X;\
-    X->parent = (tchunkptr)H;\
+    X->మాతృ = (tchunkptr)H;\
     X->fd = X->bk = X;\
   }\
-  else {\
+  లేకపోతే {\
     tchunkptr T = *H;\
-    size_t K = S << leftshift_for_tree_index(I);\
-    for (;;) {\
-      if (chunksize(T) != S) {\
-        tchunkptr* C = &(T->child[(K >> (SIZE_T_BITSIZE-SIZE_T_ONE)) & 1]);\
+    size_t K = S << leftshift_for_వృక్షం_సూచీ(I);\
+    కొరకు (;;) {\
+      ఒకవేళ (chunksize(T) != S) {\
+        tchunkptr* C = &(T->బిడ్డ[(K >> (కొలత_T_BITSIZE-కొలత_T_ONE)) & 1]);\
         K <<= 1;\
-        if (*C != 0)\
+        ఒకవేళ (*C != 0)\
           T = *C;\
-        else if (RTCHECK(ok_address(M, C))) {\
+        లేకపోతే ఒకవేళ (RTCHECK(ok_చిరునామా(M, C))) {\
           *C = X;\
-          X->parent = T;\
+          X->మాతృ = T;\
           X->fd = X->bk = X;\
-          break;\
+          ఆపు;\
         }\
-        else {\
+        లేకపోతే {\
           CORRUPTION_ERROR_ACTION(M);\
-          break;\
+          ఆపు;\
         }\
       }\
-      else {\
+      లేకపోతే {\
         tchunkptr F = T->fd;\
-        if (RTCHECK(ok_address(M, T) && ok_address(M, F))) {\
+        ఒకవేళ (RTCHECK(ok_చిరునామా(M, T) && ok_చిరునామా(M, F))) {\
           T->fd = F->bk = X;\
           X->fd = F;\
           X->bk = T;\
-          X->parent = 0;\
-          break;\
+          X->మాతృ = 0;\
+          ఆపు;\
         }\
-        else {\
+        లేకపోతే {\
           CORRUPTION_ERROR_ACTION(M);\
-          break;\
+          ఆపు;\
         }\
       }\
     }\
@@ -3866,72 +3866,72 @@ static void internal_malloc_stats(mstate m) {
      x's parent and children to x's replacement (or null if none).
 */
 
-#define unlink_large_chunk(M, X) {\
-  tchunkptr XP = X->parent;\
+#నిర్వచించు unlink_large_chunk(M, X) {\
+  tchunkptr XP = X->మాతృ;\
   tchunkptr R;\
-  if (X->bk != X) {\
+  ఒకవేళ (X->bk != X) {\
     tchunkptr F = X->fd;\
     R = X->bk;\
-    if (RTCHECK(ok_address(M, F) && F->bk == X && R->fd == X)) {\
+    ఒకవేళ (RTCHECK(ok_చిరునామా(M, F) && F->bk == X && R->fd == X)) {\
       F->bk = R;\
       R->fd = F;\
     }\
-    else {\
+    లేకపోతే {\
       CORRUPTION_ERROR_ACTION(M);\
     }\
   }\
-  else {\
+  లేకపోతే {\
     tchunkptr* RP;\
-    if (((R = *(RP = &(X->child[1]))) != 0) ||\
-        ((R = *(RP = &(X->child[0]))) != 0)) {\
+    ఒకవేళ (((R = *(RP = &(X->బిడ్డ[1]))) != 0) ||\
+        ((R = *(RP = &(X->బిడ్డ[0]))) != 0)) {\
       tchunkptr* CP;\
-      while ((*(CP = &(R->child[1])) != 0) ||\
-             (*(CP = &(R->child[0])) != 0)) {\
+      అయితే ((*(CP = &(R->బిడ్డ[1])) != 0) ||\
+             (*(CP = &(R->బిడ్డ[0])) != 0)) {\
         R = *(RP = CP);\
       }\
-      if (RTCHECK(ok_address(M, RP)))\
+      ఒకవేళ (RTCHECK(ok_చిరునామా(M, RP)))\
         *RP = 0;\
-      else {\
+      లేకపోతే {\
         CORRUPTION_ERROR_ACTION(M);\
       }\
     }\
   }\
-  if (XP != 0) {\
-    tbinptr* H = treebin_at(M, X->index);\
-    if (X == *H) {\
-      if ((*H = R) == 0) \
-        clear_treemap(M, X->index);\
+  ఒకవేళ (XP != 0) {\
+    tbinptr* H = treebin_at(M, X->సూచీ);\
+    ఒకవేళ (X == *H) {\
+      ఒకవేళ ((*H = R) == 0) \
+        clear_treemap(M, X->సూచీ);\
     }\
-    else if (RTCHECK(ok_address(M, XP))) {\
-      if (XP->child[0] == X) \
-        XP->child[0] = R;\
-      else \
-        XP->child[1] = R;\
+    లేకపోతే ఒకవేళ (RTCHECK(ok_చిరునామా(M, XP))) {\
+      ఒకవేళ (XP->బిడ్డ[0] == X) \
+        XP->బిడ్డ[0] = R;\
+      లేకపోతే \
+        XP->బిడ్డ[1] = R;\
     }\
-    else\
+    లేకపోతే\
       CORRUPTION_ERROR_ACTION(M);\
-    if (R != 0) {\
-      if (RTCHECK(ok_address(M, R))) {\
+    ఒకవేళ (R != 0) {\
+      ఒకవేళ (RTCHECK(ok_చిరునామా(M, R))) {\
         tchunkptr C0, C1;\
-        R->parent = XP;\
-        if ((C0 = X->child[0]) != 0) {\
-          if (RTCHECK(ok_address(M, C0))) {\
-            R->child[0] = C0;\
-            C0->parent = R;\
+        R->మాతృ = XP;\
+        ఒకవేళ ((C0 = X->బిడ్డ[0]) != 0) {\
+          ఒకవేళ (RTCHECK(ok_చిరునామా(M, C0))) {\
+            R->బిడ్డ[0] = C0;\
+            C0->మాతృ = R;\
           }\
-          else\
+          లేకపోతే\
             CORRUPTION_ERROR_ACTION(M);\
         }\
-        if ((C1 = X->child[1]) != 0) {\
-          if (RTCHECK(ok_address(M, C1))) {\
-            R->child[1] = C1;\
-            C1->parent = R;\
+        ఒకవేళ ((C1 = X->బిడ్డ[1]) != 0) {\
+          ఒకవేళ (RTCHECK(ok_చిరునామా(M, C1))) {\
+            R->బిడ్డ[1] = C1;\
+            C1->మాతృ = R;\
           }\
-          else\
+          లేకపోతే\
             CORRUPTION_ERROR_ACTION(M);\
         }\
       }\
-      else\
+      లేకపోతే\
         CORRUPTION_ERROR_ACTION(M);\
     }\
   }\
@@ -3939,31 +3939,31 @@ static void internal_malloc_stats(mstate m) {
 
 /* Relays to large vs small bin operations */
 
-#define insert_chunk(M, P, S)\
-  if (is_small(S)) insert_small_chunk(M, P, S)\
-  else { tchunkptr TP = (tchunkptr)(P); insert_large_chunk(M, TP, S); }
+#నిర్వచించు చొప్పించు_chunk(M, P, S)\
+  ఒకవేళ (is_small(S)) చొప్పించు_small_chunk(M, P, S)\
+  లేకపోతే { tchunkptr TP = (tchunkptr)(P); చొప్పించు_large_chunk(M, TP, S); }
 
-#define unlink_chunk(M, P, S)\
-  if (is_small(S)) unlink_small_chunk(M, P, S)\
-  else { tchunkptr TP = (tchunkptr)(P); unlink_large_chunk(M, TP); }
+#నిర్వచించు unlink_chunk(M, P, S)\
+  ఒకవేళ (is_small(S)) unlink_small_chunk(M, P, S)\
+  లేకపోతే { tchunkptr TP = (tchunkptr)(P); unlink_large_chunk(M, TP); }
 
 
 /* Relays to internal calls to malloc/free from realloc, memalign etc */
 
-#if ONLY_MSPACES
-#define internal_malloc(m, b) mspace_malloc(m, b)
-#define internal_free(m, mem) mspace_free(m,mem);
-#else /* ONLY_MSPACES */
-#if MSPACES
-#define internal_malloc(m, b)\
+#ఒకవేళ ONLY_MSPACES
+#నిర్వచించు అంతర్గత_malloc(m, b) mspace_malloc(m, b)
+#నిర్వచించు అంతర్గత_free(m, mem) mspace_free(m,mem);
+#లేకపోతే /* ONLY_MSPACES */
+#ఒకవేళ MSPACES
+#నిర్వచించు అంతర్గత_malloc(m, b)\
   ((m == gm)? dlmalloc(b) : mspace_malloc(m, b))
-#define internal_free(m, mem)\
-   if (m == gm) dlfree(mem); else mspace_free(m,mem);
-#else /* MSPACES */
-#define internal_malloc(m, b) dlmalloc(b)
-#define internal_free(m, mem) dlfree(mem)
-#endif /* MSPACES */
-#endif /* ONLY_MSPACES */
+#నిర్వచించు అంతర్గత_free(m, mem)\
+   ఒకవేళ (m == gm) dlfree(mem); లేకపోతే mspace_free(m,mem);
+#లేకపోతే /* MSPACES */
+#నిర్వచించు అంతర్గత_malloc(m, b) dlmalloc(b)
+#నిర్వచించు అంతర్గత_free(m, mem) dlfree(mem)
+#అయితే_ముగింపు /* MSPACES */
+#అయితే_ముగింపు /* ONLY_MSPACES */
 
 /* -----------------------  Direct-mmapping chunks ----------------------- */
 
@@ -3976,220 +3976,220 @@ static void internal_malloc_stats(mstate m) {
 */
 
 /* Malloc using mmap */
-static void* mmap_alloc(mstate m, size_t nb) {
-  size_t mmsize = mmap_align(nb + SIX_SIZE_T_SIZES + CHUNK_ALIGN_MASK);
-  if (m->footprint_limit != 0) {
+స్థిర శూన్య* mmap_alloc(mstate m, size_t nb) {
+  size_t mmsize = mmap_align(nb + SIX_కొలత_T_SIZES + CHUNK_ALIGN_ముసుగు);
+  ఒకవేళ (m->footprint_హద్దు != 0) {
     size_t fp = m->footprint + mmsize;
-    if (fp <= m->footprint || fp > m->footprint_limit)
-      return 0;
+    ఒకవేళ (fp <= m->footprint || fp > m->footprint_హద్దు)
+      తిరిగి 0;
   }
-  if (mmsize > nb) {     /* Check for wrap around 0 */
-    char* mm = (char*)(CALL_DIRECT_MMAP(mmsize));
-    if (mm != CMFAIL) {
-      size_t offset = align_offset(chunk2mem(mm));
+  ఒకవేళ (mmsize > nb) {     /* Check for wrap around 0 */
+    అక్షరం* mm = (అక్షరం*)(CALL_ప్రత్యక్ష_MMAP(mmsize));
+    ఒకవేళ (mm != CMFAIL) {
+      size_t offset = align_స్థానభ్రంశం(chunk2mem(mm));
       size_t psize = mmsize - offset - MMAP_FOOT_PAD;
       mchunkptr p = (mchunkptr)(mm + offset);
       p->prev_foot = offset;
-      p->head = psize;
+      p->తల = psize;
       mark_inuse_foot(m, p, psize);
-      chunk_plus_offset(p, psize)->head = FENCEPOST_HEAD;
-      chunk_plus_offset(p, psize+SIZE_T_SIZE)->head = 0;
+      chunk_plus_స్థానభ్రంశం(p, psize)->తల = FENCEPOST_తల;
+      chunk_plus_స్థానభ్రంశం(p, psize+కొలత_T_కొలత)->తల = 0;
 
-      if (m->least_addr == 0 || mm < m->least_addr)
-        m->least_addr = mm;
-      if ((m->footprint += mmsize) > m->max_footprint)
+      ఒకవేళ (m->కనిష్ఠ_addr == 0 || mm < m->కనిష్ఠ_addr)
+        m->కనిష్ఠ_addr = mm;
+      ఒకవేళ ((m->footprint += mmsize) > m->max_footprint)
         m->max_footprint = m->footprint;
-      assert(is_aligned(chunk2mem(p)));
+      ప్రతిజ్ఞా(is_aligned(chunk2mem(p)));
       check_mmapped_chunk(m, p);
-      return chunk2mem(p);
+      తిరిగి chunk2mem(p);
     }
   }
-  return 0;
+  తిరిగి 0;
 }
 
 /* Realloc using mmap */
-static mchunkptr mmap_resize(mstate m, mchunkptr oldp, size_t nb, int flags) {
+స్థిర mchunkptr mmap_resize(mstate m, mchunkptr oldp, size_t nb, పూర్ణాంకం flags) {
   size_t oldsize = chunksize(oldp);
-  (void)flags; /* placate people compiling -Wunused */
-  if (is_small(nb)) /* Can't shrink mmap regions below small size */
-    return 0;
+  (శూన్య)flags; /* placate people compiling -Wunused */
+  ఒకవేళ (is_small(nb)) /* Can't shrink mmap regions below small size */
+    తిరిగి 0;
   /* Keep old chunk if big enough but not too big */
-  if (oldsize >= nb + SIZE_T_SIZE &&
+  ఒకవేళ (oldsize >= nb + కొలత_T_కొలత &&
       (oldsize - nb) <= (mparams.granularity << 1))
-    return oldp;
-  else {
+    తిరిగి oldp;
+  లేకపోతే {
     size_t offset = oldp->prev_foot;
     size_t oldmmsize = oldsize + offset + MMAP_FOOT_PAD;
-    size_t newmmsize = mmap_align(nb + SIX_SIZE_T_SIZES + CHUNK_ALIGN_MASK);
-    char* cp = (char*)CALL_MREMAP((char*)oldp - offset,
+    size_t newmmsize = mmap_align(nb + SIX_కొలత_T_SIZES + CHUNK_ALIGN_ముసుగు);
+    అక్షరం* cp = (అక్షరం*)CALL_MREMAP((అక్షరం*)oldp - offset,
                                   oldmmsize, newmmsize, flags);
-    if (cp != CMFAIL) {
+    ఒకవేళ (cp != CMFAIL) {
       mchunkptr newp = (mchunkptr)(cp + offset);
       size_t psize = newmmsize - offset - MMAP_FOOT_PAD;
-      newp->head = psize;
+      newp->తల = psize;
       mark_inuse_foot(m, newp, psize);
-      chunk_plus_offset(newp, psize)->head = FENCEPOST_HEAD;
-      chunk_plus_offset(newp, psize+SIZE_T_SIZE)->head = 0;
+      chunk_plus_స్థానభ్రంశం(newp, psize)->తల = FENCEPOST_తల;
+      chunk_plus_స్థానభ్రంశం(newp, psize+కొలత_T_కొలత)->తల = 0;
 
-      if (cp < m->least_addr)
-        m->least_addr = cp;
-      if ((m->footprint += newmmsize - oldmmsize) > m->max_footprint)
+      ఒకవేళ (cp < m->కనిష్ఠ_addr)
+        m->కనిష్ఠ_addr = cp;
+      ఒకవేళ ((m->footprint += newmmsize - oldmmsize) > m->max_footprint)
         m->max_footprint = m->footprint;
       check_mmapped_chunk(m, newp);
-      return newp;
+      తిరిగి newp;
     }
   }
-  return 0;
+  తిరిగి 0;
 }
 
 
 /* -------------------------- mspace management -------------------------- */
 
 /* Initialize top chunk and its size */
-static void init_top(mstate m, mchunkptr p, size_t psize) {
+స్థిర శూన్య init_శిఖరం(mstate m, mchunkptr p, size_t psize) {
   /* Ensure alignment */
-  size_t offset = align_offset(chunk2mem(p));
-  p = (mchunkptr)((char*)p + offset);
+  size_t offset = align_స్థానభ్రంశం(chunk2mem(p));
+  p = (mchunkptr)((అక్షరం*)p + offset);
   psize -= offset;
 
-  m->top = p;
+  m->శిఖరం = p;
   m->topsize = psize;
-  p->head = psize | PINUSE_BIT;
+  p->తల = psize | PINUSE_బిట్టు;
   /* set size of fake trailing chunk holding overhead space only once */
-  chunk_plus_offset(p, psize)->head = TOP_FOOT_SIZE;
-  m->trim_check = mparams.trim_threshold; /* reset on each update */
+  chunk_plus_స్థానభ్రంశం(p, psize)->తల = శిఖరం_FOOT_కొలత;
+  m->trim_check = mparams.trim_పరిమితి; /* reset on each update */
 }
 
 /* Initialize bins for a new mstate that is otherwise zeroed out */
-static void init_bins(mstate m) {
+స్థిర శూన్య init_bins(mstate m) {
   /* Establish circular links for smallbins */
   bindex_t i;
-  for (i = 0; i < NSMALLBINS; ++i) {
+  కొరకు (i = 0; i < NSMALLBINS; ++i) {
     sbinptr bin = smallbin_at(m,i);
     bin->fd = bin->bk = bin;
   }
 }
 
-#if PROCEED_ON_ERROR
+#ఒకవేళ PROCEED_ON_ERROR
 
 /* default corruption action */
-static void reset_on_error(mstate m) {
-  int i;
-  ++malloc_corruption_error_count;
+స్థిర శూన్య reset_on_error(mstate m) {
+  పూర్ణాంకం i;
+  ++malloc_corruption_error_లెక్క;
   /* Reinitialize fields to forget about all memory */
   m->smallmap = m->treemap = 0;
   m->dvsize = m->topsize = 0;
-  m->seg.base = 0;
-  m->seg.size = 0;
-  m->seg.next = 0;
-  m->top = m->dv = 0;
-  for (i = 0; i < NTREEBINS; ++i)
+  m->seg.పునాది = 0;
+  m->seg.కొలత = 0;
+  m->seg.తదుపరి = 0;
+  m->శిఖరం = m->dv = 0;
+  కొరకు (i = 0; i < NTREEBINS; ++i)
     *treebin_at(m, i) = 0;
   init_bins(m);
 }
-#endif /* PROCEED_ON_ERROR */
+#అయితే_ముగింపు /* PROCEED_ON_ERROR */
 
 /* Allocate chunk and prepend remainder with chunk in successor base. */
-static void* prepend_alloc(mstate m, char* newbase, char* oldbase,
+స్థిర శూన్య* prepend_alloc(mstate m, అక్షరం* newbase, అక్షరం* oldbase,
                            size_t nb) {
   mchunkptr p = align_as_chunk(newbase);
   mchunkptr oldfirst = align_as_chunk(oldbase);
-  size_t psize = (char*)oldfirst - (char*)p;
-  mchunkptr q = chunk_plus_offset(p, nb);
+  size_t psize = (అక్షరం*)oldfirst - (అక్షరం*)p;
+  mchunkptr q = chunk_plus_స్థానభ్రంశం(p, nb);
   size_t qsize = psize - nb;
-  set_size_and_pinuse_of_inuse_chunk(m, p, nb);
+  సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, p, nb);
 
-  assert((char*)oldfirst > (char*)q);
-  assert(pinuse(oldfirst));
-  assert(qsize >= MIN_CHUNK_SIZE);
+  ప్రతిజ్ఞా((అక్షరం*)oldfirst > (అక్షరం*)q);
+  ప్రతిజ్ఞా(pinuse(oldfirst));
+  ప్రతిజ్ఞా(qsize >= MIN_CHUNK_కొలత);
 
   /* consolidate remainder with first chunk of old base */
-  if (oldfirst == m->top) {
+  ఒకవేళ (oldfirst == m->శిఖరం) {
     size_t tsize = m->topsize += qsize;
-    m->top = q;
-    q->head = tsize | PINUSE_BIT;
-    check_top_chunk(m, q);
+    m->శిఖరం = q;
+    q->తల = tsize | PINUSE_బిట్టు;
+    check_శిఖరం_chunk(m, q);
   }
-  else if (oldfirst == m->dv) {
+  లేకపోతే ఒకవేళ (oldfirst == m->dv) {
     size_t dsize = m->dvsize += qsize;
     m->dv = q;
-    set_size_and_pinuse_of_free_chunk(q, dsize);
+    సమితి_కొలత_and_pinuse_యొక్క_free_chunk(q, dsize);
   }
-  else {
-    if (!is_inuse(oldfirst)) {
+  లేకపోతే {
+    ఒకవేళ (!is_inuse(oldfirst)) {
       size_t nsize = chunksize(oldfirst);
       unlink_chunk(m, oldfirst, nsize);
-      oldfirst = chunk_plus_offset(oldfirst, nsize);
+      oldfirst = chunk_plus_స్థానభ్రంశం(oldfirst, nsize);
       qsize += nsize;
     }
-    set_free_with_pinuse(q, qsize, oldfirst);
-    insert_chunk(m, q, qsize);
+    సమితి_free_with_pinuse(q, qsize, oldfirst);
+    చొప్పించు_chunk(m, q, qsize);
     check_free_chunk(m, q);
   }
 
   check_malloced_chunk(m, chunk2mem(p), nb);
-  return chunk2mem(p);
+  తిరిగి chunk2mem(p);
 }
 
 /* Add a segment to hold a new noncontiguous region */
-static void add_segment(mstate m, char* tbase, size_t tsize, flag_t mmapped) {
+స్థిర శూన్య కూడు_segment(mstate m, అక్షరం* tbase, size_t tsize, flag_t mmapped) {
   /* Determine locations and sizes of segment, fenceposts, old top */
-  char* old_top = (char*)m->top;
-  msegmentptr oldsp = segment_holding(m, old_top);
-  char* old_end = oldsp->base + oldsp->size;
-  size_t ssize = pad_request(sizeof(struct malloc_segment));
-  char* rawsp = old_end - (ssize + FOUR_SIZE_T_SIZES + CHUNK_ALIGN_MASK);
-  size_t offset = align_offset(chunk2mem(rawsp));
-  char* asp = rawsp + offset;
-  char* csp = (asp < (old_top + MIN_CHUNK_SIZE))? old_top : asp;
+  అక్షరం* old_శిఖరం = (అక్షరం*)m->శిఖరం;
+  msegmentptr oldsp = segment_holding(m, old_శిఖరం);
+  అక్షరం* old_చివర = oldsp->పునాది + oldsp->కొలత;
+  size_t ssize = pad_request(పరిమాణం(నిర్మాణం malloc_segment));
+  అక్షరం* rawsp = old_చివర - (ssize + FOUR_కొలత_T_SIZES + CHUNK_ALIGN_ముసుగు);
+  size_t offset = align_స్థానభ్రంశం(chunk2mem(rawsp));
+  అక్షరం* asp = rawsp + offset;
+  అక్షరం* csp = (asp < (old_శిఖరం + MIN_CHUNK_కొలత))? old_శిఖరం : asp;
   mchunkptr sp = (mchunkptr)csp;
   msegmentptr ss = (msegmentptr)(chunk2mem(sp));
-  mchunkptr tnext = chunk_plus_offset(sp, ssize);
+  mchunkptr tnext = chunk_plus_స్థానభ్రంశం(sp, ssize);
   mchunkptr p = tnext;
-  int nfences = 0;
-  (void)nfences; /* Suppress unused variable warning */
+  పూర్ణాంకం nfences = 0;
+  (శూన్య)nfences; /* Suppress unused variable warning */
 
   /* reset top to new space */
-  init_top(m, (mchunkptr)tbase, tsize - TOP_FOOT_SIZE);
+  init_శిఖరం(m, (mchunkptr)tbase, tsize - శిఖరం_FOOT_కొలత);
 
   /* Set up segment record */
-  assert(is_aligned(ss));
-  set_size_and_pinuse_of_inuse_chunk(m, sp, ssize);
+  ప్రతిజ్ఞా(is_aligned(ss));
+  సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, sp, ssize);
   *ss = m->seg; /* Push current record */
-  m->seg.base = tbase;
-  m->seg.size = tsize;
-  (void)set_segment_flags(&m->seg, mmapped);
-  m->seg.next = ss;
+  m->seg.పునాది = tbase;
+  m->seg.కొలత = tsize;
+  (శూన్య)సమితి_segment_flags(&m->seg, mmapped);
+  m->seg.తదుపరి = ss;
 
   /* Insert trailing fenceposts */
-  for (;;) {
-    mchunkptr nextp = chunk_plus_offset(p, SIZE_T_SIZE);
-    p->head = FENCEPOST_HEAD;
+  కొరకు (;;) {
+    mchunkptr nextp = chunk_plus_స్థానభ్రంశం(p, కొలత_T_కొలత);
+    p->తల = FENCEPOST_తల;
     ++nfences;
-    if ((char*)(&(nextp->head)) < old_end)
+    ఒకవేళ ((అక్షరం*)(&(nextp->తల)) < old_చివర)
       p = nextp;
-    else
-      break;
+    లేకపోతే
+      ఆపు;
   }
-  assert(nfences >= 2);
+  ప్రతిజ్ఞా(nfences >= 2);
 
   /* Insert the rest of old top into a bin as an ordinary free chunk */
-  if (csp != old_top) {
-    mchunkptr q = (mchunkptr)old_top;
-    size_t psize = csp - old_top;
-    mchunkptr tn = chunk_plus_offset(q, psize);
-    set_free_with_pinuse(q, psize, tn);
-    insert_chunk(m, q, psize);
+  ఒకవేళ (csp != old_శిఖరం) {
+    mchunkptr q = (mchunkptr)old_శిఖరం;
+    size_t psize = csp - old_శిఖరం;
+    mchunkptr tn = chunk_plus_స్థానభ్రంశం(q, psize);
+    సమితి_free_with_pinuse(q, psize, tn);
+    చొప్పించు_chunk(m, q, psize);
   }
 
-  check_top_chunk(m, m->top);
+  check_శిఖరం_chunk(m, m->శిఖరం);
 }
 
 /* -------------------------- System allocation -------------------------- */
 
 /* Get memory from system using MORECORE or MMAP */
-static void* sys_alloc(mstate m, size_t nb) {
-  char* tbase = CMFAIL;
+స్థిర శూన్య* sys_alloc(mstate m, size_t nb) {
+  అక్షరం* tbase = CMFAIL;
   size_t tsize = 0;
   flag_t mmap_flag = 0;
   size_t asize; /* allocation size */
@@ -4197,19 +4197,19 @@ static void* sys_alloc(mstate m, size_t nb) {
   ensure_initialization();
 
   /* Directly map large chunks, but only if already initialized */
-  if (use_mmap(m) && nb >= mparams.mmap_threshold && m->topsize != 0) {
-    void* mem = mmap_alloc(m, nb);
-    if (mem != 0)
-      return mem;
+  ఒకవేళ (use_mmap(m) && nb >= mparams.mmap_పరిమితి && m->topsize != 0) {
+    శూన్య* mem = mmap_alloc(m, nb);
+    ఒకవేళ (mem != 0)
+      తిరిగి mem;
   }
 
   asize = granularity_align(nb + SYS_ALLOC_PADDING);
-  if (asize <= nb)
-    return 0; /* wraparound */
-  if (m->footprint_limit != 0) {
+  ఒకవేళ (asize <= nb)
+    తిరిగి 0; /* wraparound */
+  ఒకవేళ (m->footprint_హద్దు != 0) {
     size_t fp = m->footprint + asize;
-    if (fp <= m->footprint || fp > m->footprint_limit)
-      return 0;
+    ఒకవేళ (fp <= m->footprint || fp > m->footprint_హద్దు)
+      తిరిగి 0;
   }
 
   /*
@@ -4234,87 +4234,87 @@ static void* sys_alloc(mstate m, size_t nb) {
    not on boundary, and round this up to a granularity unit.
   */
 
-  if (MORECORE_CONTIGUOUS && !use_noncontiguous(m)) {
-    char* br = CMFAIL;
+  ఒకవేళ (MORECORE_CONTIGUOUS && !use_noncontiguous(m)) {
+    అక్షరం* br = CMFAIL;
     size_t ssize = asize; /* sbrk call size */
-    msegmentptr ss = (m->top == 0)? 0 : segment_holding(m, (char*)m->top);
-    ACQUIRE_MALLOC_GLOBAL_LOCK();
+    msegmentptr ss = (m->శిఖరం == 0)? 0 : segment_holding(m, (అక్షరం*)m->శిఖరం);
+    ACQUIRE_MALLOC_GLOBAL_తాళం();
 
-    if (ss == 0) {  /* First time through or recovery */
-      char* base = (char*)CALL_MORECORE(0);
-      if (base != CMFAIL) {
+    ఒకవేళ (ss == 0) {  /* First time through or recovery */
+      అక్షరం* పునాది = (అక్షరం*)CALL_MORECORE(0);
+      ఒకవేళ (పునాది != CMFAIL) {
         size_t fp;
         /* Adjust to end on a page boundary */
-        if (!is_page_aligned(base))
-          ssize += (page_align((size_t)base) - (size_t)base);
+        ఒకవేళ (!is_పుట_aligned(పునాది))
+          ssize += (పుట_align((size_t)పునాది) - (size_t)పునాది);
         fp = m->footprint + ssize; /* recheck limits */
-        if (ssize > nb && ssize < HALF_MAX_SIZE_T &&
-            (m->footprint_limit == 0 ||
-             (fp > m->footprint && fp <= m->footprint_limit)) &&
-            (br = (char*)(CALL_MORECORE(ssize))) == base) {
-          tbase = base;
+        ఒకవేళ (ssize > nb && ssize < HALF_MAX_కొలత_T &&
+            (m->footprint_హద్దు == 0 ||
+             (fp > m->footprint && fp <= m->footprint_హద్దు)) &&
+            (br = (అక్షరం*)(CALL_MORECORE(ssize))) == పునాది) {
+          tbase = పునాది;
           tsize = ssize;
         }
       }
     }
-    else {
+    లేకపోతే {
       /* Subtract out existing available top space from MORECORE request. */
       ssize = granularity_align(nb - m->topsize + SYS_ALLOC_PADDING);
       /* Use mem here only if it did continuously extend old space */
-      if (ssize < HALF_MAX_SIZE_T &&
-          (br = (char*)(CALL_MORECORE(ssize))) == ss->base+ss->size) {
+      ఒకవేళ (ssize < HALF_MAX_కొలత_T &&
+          (br = (అక్షరం*)(CALL_MORECORE(ssize))) == ss->పునాది+ss->కొలత) {
         tbase = br;
         tsize = ssize;
       }
     }
 
-    if (tbase == CMFAIL) {    /* Cope with partial failure */
-      if (br != CMFAIL) {    /* Try to use/extend the space we did get */
-        if (ssize < HALF_MAX_SIZE_T &&
+    ఒకవేళ (tbase == CMFAIL) {    /* Cope with partial failure */
+      ఒకవేళ (br != CMFAIL) {    /* Try to use/extend the space we did get */
+        ఒకవేళ (ssize < HALF_MAX_కొలత_T &&
             ssize < nb + SYS_ALLOC_PADDING) {
           size_t esize = granularity_align(nb + SYS_ALLOC_PADDING - ssize);
-          if (esize < HALF_MAX_SIZE_T) {
-            char* end = (char*)CALL_MORECORE(esize);
-            if (end != CMFAIL)
+          ఒకవేళ (esize < HALF_MAX_కొలత_T) {
+            అక్షరం* చివర = (అక్షరం*)CALL_MORECORE(esize);
+            ఒకవేళ (చివర != CMFAIL)
               ssize += esize;
-            else {            /* Can't use; try to release */
-              (void) CALL_MORECORE(-ssize);
+            లేకపోతే {            /* Can't use; try to release */
+              (శూన్య) CALL_MORECORE(-ssize);
               br = CMFAIL;
             }
           }
         }
       }
-      if (br != CMFAIL) {    /* Use the space we did get */
+      ఒకవేళ (br != CMFAIL) {    /* Use the space we did get */
         tbase = br;
         tsize = ssize;
       }
-      else
+      లేకపోతే
         disable_contiguous(m); /* Don't try contiguous path in the future */
     }
 
-    RELEASE_MALLOC_GLOBAL_LOCK();
+    RELEASE_MALLOC_GLOBAL_తాళం();
   }
 
-  if (HAVE_MMAP && tbase == CMFAIL) {  /* Try MMAP */
-    char* mp = (char*)(CALL_MMAP(asize));
-    if (mp != CMFAIL) {
+  ఒకవేళ (HAVE_MMAP && tbase == CMFAIL) {  /* Try MMAP */
+    అక్షరం* mp = (అక్షరం*)(CALL_MMAP(asize));
+    ఒకవేళ (mp != CMFAIL) {
       tbase = mp;
       tsize = asize;
-      mmap_flag = USE_MMAP_BIT;
+      mmap_flag = USE_MMAP_బిట్టు;
     }
   }
 
-  if (HAVE_MORECORE && tbase == CMFAIL) { /* Try noncontiguous MORECORE */
-    if (asize < HALF_MAX_SIZE_T) {
-      char* br = CMFAIL;
-      char* end = CMFAIL;
-      ACQUIRE_MALLOC_GLOBAL_LOCK();
-      br = (char*)(CALL_MORECORE(asize));
-      end = (char*)(CALL_MORECORE(0));
-      RELEASE_MALLOC_GLOBAL_LOCK();
-      if (br != CMFAIL && end != CMFAIL && br < end) {
-        size_t ssize = end - br;
-        if (ssize > nb + TOP_FOOT_SIZE) {
+  ఒకవేళ (HAVE_MORECORE && tbase == CMFAIL) { /* Try noncontiguous MORECORE */
+    ఒకవేళ (asize < HALF_MAX_కొలత_T) {
+      అక్షరం* br = CMFAIL;
+      అక్షరం* చివర = CMFAIL;
+      ACQUIRE_MALLOC_GLOBAL_తాళం();
+      br = (అక్షరం*)(CALL_MORECORE(asize));
+      చివర = (అక్షరం*)(CALL_MORECORE(0));
+      RELEASE_MALLOC_GLOBAL_తాళం();
+      ఒకవేళ (br != CMFAIL && చివర != CMFAIL && br < చివర) {
+        size_t ssize = చివర - br;
+        ఒకవేళ (ssize > nb + శిఖరం_FOOT_కొలత) {
           tbase = br;
           tsize = ssize;
         }
@@ -4322,266 +4322,266 @@ static void* sys_alloc(mstate m, size_t nb) {
     }
   }
 
-  if (tbase != CMFAIL) {
+  ఒకవేళ (tbase != CMFAIL) {
 
-    if ((m->footprint += tsize) > m->max_footprint)
+    ఒకవేళ ((m->footprint += tsize) > m->max_footprint)
       m->max_footprint = m->footprint;
 
-    if (!is_initialized(m)) { /* first-time initialization */
-      if (m->least_addr == 0 || tbase < m->least_addr)
-        m->least_addr = tbase;
-      m->seg.base = tbase;
-      m->seg.size = tsize;
-      (void)set_segment_flags(&m->seg, mmap_flag);
+    ఒకవేళ (!is_initialized(m)) { /* first-time initialization */
+      ఒకవేళ (m->కనిష్ఠ_addr == 0 || tbase < m->కనిష్ఠ_addr)
+        m->కనిష్ఠ_addr = tbase;
+      m->seg.పునాది = tbase;
+      m->seg.కొలత = tsize;
+      (శూన్య)సమితి_segment_flags(&m->seg, mmap_flag);
       m->magic = mparams.magic;
-      m->release_checks = MAX_RELEASE_CHECK_RATE;
+      m->release_checks = MAX_RELEASE_CHECK_రేటు;
       init_bins(m);
-#if !ONLY_MSPACES
-      if (is_global(m))
-        init_top(m, (mchunkptr)tbase, tsize - TOP_FOOT_SIZE);
-      else
-#endif
+#ఒకవేళ !ONLY_MSPACES
+      ఒకవేళ (is_global(m))
+        init_శిఖరం(m, (mchunkptr)tbase, tsize - శిఖరం_FOOT_కొలత);
+      లేకపోతే
+#అయితే_ముగింపు
       {
         /* Offset top by embedded malloc_state */
-        mchunkptr mn = next_chunk(mem2chunk(m));
-        init_top(m, mn, (size_t)((tbase + tsize) - (char*)mn) -TOP_FOOT_SIZE);
+        mchunkptr mn = తదుపరి_chunk(mem2chunk(m));
+        init_శిఖరం(m, mn, (size_t)((tbase + tsize) - (అక్షరం*)mn) -శిఖరం_FOOT_కొలత);
       }
     }
 
-    else {
+    లేకపోతే {
       /* Try to merge with an existing segment */
       msegmentptr sp = &m->seg;
       /* Only consider most recent segment if traversal suppressed */
-      while (sp != 0 && tbase != sp->base + sp->size)
-        sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->next;
-      if (sp != 0 &&
+      అయితే (sp != 0 && tbase != sp->పునాది + sp->కొలత)
+        sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->తదుపరి;
+      ఒకవేళ (sp != 0 &&
           !is_extern_segment(sp) &&
-          check_segment_merge(sp, tbase, tsize) &&
-          (get_segment_flags(sp) & USE_MMAP_BIT) == mmap_flag &&
-          segment_holds(sp, m->top)) { /* append */
-        sp->size += tsize;
-        init_top(m, m->top, m->topsize + tsize);
+          check_segment_విలీనం(sp, tbase, tsize) &&
+          (get_segment_flags(sp) & USE_MMAP_బిట్టు) == mmap_flag &&
+          segment_holds(sp, m->శిఖరం)) { /* append */
+        sp->కొలత += tsize;
+        init_శిఖరం(m, m->శిఖరం, m->topsize + tsize);
       }
-      else {
-        if (tbase < m->least_addr)
-          m->least_addr = tbase;
+      లేకపోతే {
+        ఒకవేళ (tbase < m->కనిష్ఠ_addr)
+          m->కనిష్ఠ_addr = tbase;
         sp = &m->seg;
-        while (sp != 0 && sp->base != tbase + tsize)
-          sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->next;
-        if (sp != 0 &&
+        అయితే (sp != 0 && sp->పునాది != tbase + tsize)
+          sp = (NO_SEGMENT_TRAVERSAL) ? 0 : sp->తదుపరి;
+        ఒకవేళ (sp != 0 &&
             !is_extern_segment(sp) &&
-            check_segment_merge(sp, tbase, tsize) &&
-            (get_segment_flags(sp) & USE_MMAP_BIT) == mmap_flag) {
-          char* oldbase = sp->base;
-          sp->base = tbase;
-          sp->size += tsize;
-          return prepend_alloc(m, tbase, oldbase, nb);
+            check_segment_విలీనం(sp, tbase, tsize) &&
+            (get_segment_flags(sp) & USE_MMAP_బిట్టు) == mmap_flag) {
+          అక్షరం* oldbase = sp->పునాది;
+          sp->పునాది = tbase;
+          sp->కొలత += tsize;
+          తిరిగి prepend_alloc(m, tbase, oldbase, nb);
         }
-        else
-          add_segment(m, tbase, tsize, mmap_flag);
+        లేకపోతే
+          కూడు_segment(m, tbase, tsize, mmap_flag);
       }
     }
 
-    if (nb < m->topsize) { /* Allocate from new or extended top space */
+    ఒకవేళ (nb < m->topsize) { /* Allocate from new or extended top space */
       size_t rsize = m->topsize -= nb;
-      mchunkptr p = m->top;
-      mchunkptr r = m->top = chunk_plus_offset(p, nb);
-      r->head = rsize | PINUSE_BIT;
-      set_size_and_pinuse_of_inuse_chunk(m, p, nb);
-      check_top_chunk(m, m->top);
+      mchunkptr p = m->శిఖరం;
+      mchunkptr r = m->శిఖరం = chunk_plus_స్థానభ్రంశం(p, nb);
+      r->తల = rsize | PINUSE_బిట్టు;
+      సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, p, nb);
+      check_శిఖరం_chunk(m, m->శిఖరం);
       check_malloced_chunk(m, chunk2mem(p), nb);
-      return chunk2mem(p);
+      తిరిగి chunk2mem(p);
     }
   }
 
   MALLOC_FAILURE_ACTION;
-  return 0;
+  తిరిగి 0;
 }
 
 /* -----------------------  system deallocation -------------------------- */
 
 /* Unmap and unlink any mmapped segments that don't contain used chunks */
-static size_t release_unused_segments(mstate m) {
+స్థిర size_t release_వాడని_segments(mstate m) {
   size_t released = 0;
-  int nsegs = 0;
+  పూర్ణాంకం nsegs = 0;
   msegmentptr pred = &m->seg;
-  msegmentptr sp = pred->next;
-  while (sp != 0) {
-    char* base = sp->base;
-    size_t size = sp->size;
-    msegmentptr next = sp->next;
+  msegmentptr sp = pred->తదుపరి;
+  అయితే (sp != 0) {
+    అక్షరం* పునాది = sp->పునాది;
+    size_t కొలత = sp->కొలత;
+    msegmentptr తదుపరి = sp->తదుపరి;
     ++nsegs;
-    if (is_mmapped_segment(sp) && !is_extern_segment(sp)) {
-      mchunkptr p = align_as_chunk(base);
+    ఒకవేళ (is_mmapped_segment(sp) && !is_extern_segment(sp)) {
+      mchunkptr p = align_as_chunk(పునాది);
       size_t psize = chunksize(p);
       /* Can unmap if first chunk holds entire segment and not pinned */
-      if (!is_inuse(p) && (char*)p + psize >= base + size - TOP_FOOT_SIZE) {
+      ఒకవేళ (!is_inuse(p) && (అక్షరం*)p + psize >= పునాది + కొలత - శిఖరం_FOOT_కొలత) {
         tchunkptr tp = (tchunkptr)p;
-        assert(segment_holds(sp, (char*)sp));
-        if (p == m->dv) {
+        ప్రతిజ్ఞా(segment_holds(sp, (అక్షరం*)sp));
+        ఒకవేళ (p == m->dv) {
           m->dv = 0;
           m->dvsize = 0;
         }
-        else {
+        లేకపోతే {
           unlink_large_chunk(m, tp);
         }
-        if (CALL_MUNMAP(base, size) == 0) {
-          released += size;
-          m->footprint -= size;
+        ఒకవేళ (CALL_MUNMAP(పునాది, కొలత) == 0) {
+          released += కొలత;
+          m->footprint -= కొలత;
           /* unlink obsoleted record */
           sp = pred;
-          sp->next = next;
+          sp->తదుపరి = తదుపరి;
         }
-        else { /* back out if cannot unmap */
-          insert_large_chunk(m, tp, psize);
+        లేకపోతే { /* back out if cannot unmap */
+          చొప్పించు_large_chunk(m, tp, psize);
         }
       }
     }
-    if (NO_SEGMENT_TRAVERSAL) /* scan only first segment */
-      break;
+    ఒకవేళ (NO_SEGMENT_TRAVERSAL) /* scan only first segment */
+      ఆపు;
     pred = sp;
-    sp = next;
+    sp = తదుపరి;
   }
   /* Reset check counter */
-  m->release_checks = (((size_t) nsegs > (size_t) MAX_RELEASE_CHECK_RATE)?
-                       (size_t) nsegs : (size_t) MAX_RELEASE_CHECK_RATE);
-  return released;
+  m->release_checks = (((size_t) nsegs > (size_t) MAX_RELEASE_CHECK_రేటు)?
+                       (size_t) nsegs : (size_t) MAX_RELEASE_CHECK_రేటు);
+  తిరిగి released;
 }
 
-static int sys_trim(mstate m, size_t pad) {
+స్థిర పూర్ణాంకం sys_trim(mstate m, size_t pad) {
   size_t released = 0;
   ensure_initialization();
-  if (pad < MAX_REQUEST && is_initialized(m)) {
-    pad += TOP_FOOT_SIZE; /* ensure enough room for segment overhead */
+  ఒకవేళ (pad < MAX_REQUEST && is_initialized(m)) {
+    pad += శిఖరం_FOOT_కొలత; /* ensure enough room for segment overhead */
 
-    if (m->topsize > pad) {
+    ఒకవేళ (m->topsize > pad) {
       /* Shrink top space in granularity-size units, keeping at least one */
       size_t unit = mparams.granularity;
-      size_t extra = ((m->topsize - pad + (unit - SIZE_T_ONE)) / unit -
-                      SIZE_T_ONE) * unit;
-      msegmentptr sp = segment_holding(m, (char*)m->top);
+      size_t extra = ((m->topsize - pad + (unit - కొలత_T_ONE)) / unit -
+                      కొలత_T_ONE) * unit;
+      msegmentptr sp = segment_holding(m, (అక్షరం*)m->శిఖరం);
 
-      if (sp == 0)
+      ఒకవేళ (sp == 0)
         CORRUPTION_ERROR_ACTION(m);
-      if (!is_extern_segment(sp)) {
-        if (is_mmapped_segment(sp)) {
-          if (HAVE_MMAP &&
-              sp->size >= extra &&
+      ఒకవేళ (!is_extern_segment(sp)) {
+        ఒకవేళ (is_mmapped_segment(sp)) {
+          ఒకవేళ (HAVE_MMAP &&
+              sp->కొలత >= extra &&
               !has_segment_link(m, sp)) { /* can't shrink if pinned */
-            size_t newsize = sp->size - extra;
-            (void)newsize; /* placate people compiling -Wunused-variable */
+            size_t newsize = sp->కొలత - extra;
+            (శూన్య)newsize; /* placate people compiling -Wunused-variable */
             /* Prefer mremap, fall back to munmap */
-            if ((CALL_MREMAP(sp->base, sp->size, newsize, 0) != MFAIL) ||
-                (CALL_MUNMAP(sp->base + newsize, extra) == 0)) {
+            ఒకవేళ ((CALL_MREMAP(sp->పునాది, sp->కొలత, newsize, 0) != MFAIL) ||
+                (CALL_MUNMAP(sp->పునాది + newsize, extra) == 0)) {
               released = extra;
             }
           }
         }
-        else if (HAVE_MORECORE) {
-          if (extra >= HALF_MAX_SIZE_T) /* Avoid wrapping negative */
-            extra = (HALF_MAX_SIZE_T) + SIZE_T_ONE - unit;
-          ACQUIRE_MALLOC_GLOBAL_LOCK();
+        లేకపోతే ఒకవేళ (HAVE_MORECORE) {
+          ఒకవేళ (extra >= HALF_MAX_కొలత_T) /* Avoid wrapping negative */
+            extra = (HALF_MAX_కొలత_T) + కొలత_T_ONE - unit;
+          ACQUIRE_MALLOC_GLOBAL_తాళం();
           {
             /* Make sure end of memory is where we last set it. */
-            char* old_br = (char*)(CALL_MORECORE(0));
-            if (old_br == sp->base + sp->size) {
-              char* rel_br = (char*)(CALL_MORECORE(-extra));
-              char* new_br = (char*)(CALL_MORECORE(0));
-              if (rel_br != CMFAIL && new_br < old_br)
+            అక్షరం* old_br = (అక్షరం*)(CALL_MORECORE(0));
+            ఒకవేళ (old_br == sp->పునాది + sp->కొలత) {
+              అక్షరం* rel_br = (అక్షరం*)(CALL_MORECORE(-extra));
+              అక్షరం* new_br = (అక్షరం*)(CALL_MORECORE(0));
+              ఒకవేళ (rel_br != CMFAIL && new_br < old_br)
                 released = old_br - new_br;
             }
           }
-          RELEASE_MALLOC_GLOBAL_LOCK();
+          RELEASE_MALLOC_GLOBAL_తాళం();
         }
       }
 
-      if (released != 0) {
-        sp->size -= released;
+      ఒకవేళ (released != 0) {
+        sp->కొలత -= released;
         m->footprint -= released;
-        init_top(m, m->top, m->topsize - released);
-        check_top_chunk(m, m->top);
+        init_శిఖరం(m, m->శిఖరం, m->topsize - released);
+        check_శిఖరం_chunk(m, m->శిఖరం);
       }
     }
 
     /* Unmap any unused mmapped segments */
-    if (HAVE_MMAP)
-      released += release_unused_segments(m);
+    ఒకవేళ (HAVE_MMAP)
+      released += release_వాడని_segments(m);
 
     /* On failure, disable autotrim to avoid repeated failed future calls */
-    if (released == 0 && m->topsize > m->trim_check)
-      m->trim_check = MAX_SIZE_T;
+    ఒకవేళ (released == 0 && m->topsize > m->trim_check)
+      m->trim_check = MAX_కొలత_T;
   }
 
-  return (released != 0)? 1 : 0;
+  తిరిగి (released != 0)? 1 : 0;
 }
 
 /* Consolidate and bin a chunk. Differs from exported versions
    of free mainly in that the chunk need not be marked as inuse.
 */
-static void dispose_chunk(mstate m, mchunkptr p, size_t psize) {
-  mchunkptr next = chunk_plus_offset(p, psize);
-  if (!pinuse(p)) {
+స్థిర శూన్య dispose_chunk(mstate m, mchunkptr p, size_t psize) {
+  mchunkptr తదుపరి = chunk_plus_స్థానభ్రంశం(p, psize);
+  ఒకవేళ (!pinuse(p)) {
     mchunkptr prev;
     size_t prevsize = p->prev_foot;
-    if (is_mmapped(p)) {
+    ఒకవేళ (is_mmapped(p)) {
       psize += prevsize + MMAP_FOOT_PAD;
-      if (CALL_MUNMAP((char*)p - prevsize, psize) == 0)
+      ఒకవేళ (CALL_MUNMAP((అక్షరం*)p - prevsize, psize) == 0)
         m->footprint -= psize;
-      return;
+      తిరిగి;
     }
-    prev = chunk_minus_offset(p, prevsize);
+    prev = chunk_minus_స్థానభ్రంశం(p, prevsize);
     psize += prevsize;
     p = prev;
-    if (RTCHECK(ok_address(m, prev))) { /* consolidate backward */
-      if (p != m->dv) {
+    ఒకవేళ (RTCHECK(ok_చిరునామా(m, prev))) { /* consolidate backward */
+      ఒకవేళ (p != m->dv) {
         unlink_chunk(m, p, prevsize);
       }
-      else if ((next->head & INUSE_BITS) == INUSE_BITS) {
+      లేకపోతే ఒకవేళ ((తదుపరి->తల & INUSE_బిట్లు) == INUSE_బిట్లు) {
         m->dvsize = psize;
-        set_free_with_pinuse(p, psize, next);
-        return;
+        సమితి_free_with_pinuse(p, psize, తదుపరి);
+        తిరిగి;
       }
     }
-    else {
+    లేకపోతే {
       CORRUPTION_ERROR_ACTION(m);
-      return;
+      తిరిగి;
     }
   }
-  if (RTCHECK(ok_address(m, next))) {
-    if (!cinuse(next)) {  /* consolidate forward */
-      if (next == m->top) {
+  ఒకవేళ (RTCHECK(ok_చిరునామా(m, తదుపరి))) {
+    ఒకవేళ (!cinuse(తదుపరి)) {  /* consolidate forward */
+      ఒకవేళ (తదుపరి == m->శిఖరం) {
         size_t tsize = m->topsize += psize;
-        m->top = p;
-        p->head = tsize | PINUSE_BIT;
-        if (p == m->dv) {
+        m->శిఖరం = p;
+        p->తల = tsize | PINUSE_బిట్టు;
+        ఒకవేళ (p == m->dv) {
           m->dv = 0;
           m->dvsize = 0;
         }
-        return;
+        తిరిగి;
       }
-      else if (next == m->dv) {
+      లేకపోతే ఒకవేళ (తదుపరి == m->dv) {
         size_t dsize = m->dvsize += psize;
         m->dv = p;
-        set_size_and_pinuse_of_free_chunk(p, dsize);
-        return;
+        సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, dsize);
+        తిరిగి;
       }
-      else {
-        size_t nsize = chunksize(next);
+      లేకపోతే {
+        size_t nsize = chunksize(తదుపరి);
         psize += nsize;
-        unlink_chunk(m, next, nsize);
-        set_size_and_pinuse_of_free_chunk(p, psize);
-        if (p == m->dv) {
+        unlink_chunk(m, తదుపరి, nsize);
+        సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, psize);
+        ఒకవేళ (p == m->dv) {
           m->dvsize = psize;
-          return;
+          తిరిగి;
         }
       }
     }
-    else {
-      set_free_with_pinuse(p, psize, next);
+    లేకపోతే {
+      సమితి_free_with_pinuse(p, psize, తదుపరి);
     }
-    insert_chunk(m, p, psize);
+    చొప్పించు_chunk(m, p, psize);
   }
-  else {
+  లేకపోతే {
     CORRUPTION_ERROR_ACTION(m);
   }
 }
@@ -4589,117 +4589,117 @@ static void dispose_chunk(mstate m, mchunkptr p, size_t psize) {
 /* ---------------------------- malloc --------------------------- */
 
 /* allocate a large request from the best fitting chunk in a treebin */
-static void* tmalloc_large(mstate m, size_t nb) {
+స్థిర శూన్య* tmalloc_large(mstate m, size_t nb) {
   tchunkptr v = 0;
   size_t rsize = -nb; /* Unsigned negation */
   tchunkptr t;
   bindex_t idx;
-  compute_tree_index(nb, idx);
-  if ((t = *treebin_at(m, idx)) != 0) {
+  compute_వృక్షం_సూచీ(nb, idx);
+  ఒకవేళ ((t = *treebin_at(m, idx)) != 0) {
     /* Traverse tree for this bin looking for node with size == nb */
-    size_t sizebits = nb << leftshift_for_tree_index(idx);
+    size_t sizebits = nb << leftshift_for_వృక్షం_సూచీ(idx);
     tchunkptr rst = 0;  /* The deepest untaken right subtree */
-    for (;;) {
+    కొరకు (;;) {
       tchunkptr rt;
       size_t trem = chunksize(t) - nb;
-      if (trem < rsize) {
+      ఒకవేళ (trem < rsize) {
         v = t;
-        if ((rsize = trem) == 0)
-          break;
+        ఒకవేళ ((rsize = trem) == 0)
+          ఆపు;
       }
-      rt = t->child[1];
-      t = t->child[(sizebits >> (SIZE_T_BITSIZE-SIZE_T_ONE)) & 1];
-      if (rt != 0 && rt != t)
+      rt = t->బిడ్డ[1];
+      t = t->బిడ్డ[(sizebits >> (కొలత_T_BITSIZE-కొలత_T_ONE)) & 1];
+      ఒకవేళ (rt != 0 && rt != t)
         rst = rt;
-      if (t == 0) {
+      ఒకవేళ (t == 0) {
         t = rst; /* set t to least subtree holding sizes > nb */
-        break;
+        ఆపు;
       }
       sizebits <<= 1;
     }
   }
-  if (t == 0 && v == 0) { /* set t to root of next non-empty treebin */
-    binmap_t leftbits = left_bits(idx2bit(idx)) & m->treemap;
-    if (leftbits != 0) {
+  ఒకవేళ (t == 0 && v == 0) { /* set t to root of next non-empty treebin */
+    binmap_t leftbits = ఎడమ_బిట్లు(idx2bit(idx)) & m->treemap;
+    ఒకవేళ (leftbits != 0) {
       bindex_t i;
-      binmap_t leastbit = least_bit(leftbits);
+      binmap_t leastbit = కనిష్ఠ_బిట్టు(leftbits);
       compute_bit2idx(leastbit, i);
       t = *treebin_at(m, i);
     }
   }
 
-  while (t != 0) { /* find smallest of tree or subtree */
+  అయితే (t != 0) { /* find smallest of tree or subtree */
     size_t trem = chunksize(t) - nb;
-    if (trem < rsize) {
+    ఒకవేళ (trem < rsize) {
       rsize = trem;
       v = t;
     }
-    t = leftmost_child(t);
+    t = leftmost_బిడ్డ(t);
   }
 
   /*  If dv is a better fit, return 0 so malloc will use it */
-  if (v != 0 && rsize < (size_t)(m->dvsize - nb)) {
-    if (RTCHECK(ok_address(m, v))) { /* split */
-      mchunkptr r = chunk_plus_offset(v, nb);
-      assert(chunksize(v) == rsize + nb);
-      if (RTCHECK(ok_next(v, r))) {
+  ఒకవేళ (v != 0 && rsize < (size_t)(m->dvsize - nb)) {
+    ఒకవేళ (RTCHECK(ok_చిరునామా(m, v))) { /*విభజించు*/
+      mchunkptr r = chunk_plus_స్థానభ్రంశం(v, nb);
+      ప్రతిజ్ఞా(chunksize(v) == rsize + nb);
+      ఒకవేళ (RTCHECK(ok_తదుపరి(v, r))) {
         unlink_large_chunk(m, v);
-        if (rsize < MIN_CHUNK_SIZE)
-          set_inuse_and_pinuse(m, v, (rsize + nb));
-        else {
-          set_size_and_pinuse_of_inuse_chunk(m, v, nb);
-          set_size_and_pinuse_of_free_chunk(r, rsize);
-          insert_chunk(m, r, rsize);
+        ఒకవేళ (rsize < MIN_CHUNK_కొలత)
+          సమితి_inuse_and_pinuse(m, v, (rsize + nb));
+        లేకపోతే {
+          సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, v, nb);
+          సమితి_కొలత_and_pinuse_యొక్క_free_chunk(r, rsize);
+          చొప్పించు_chunk(m, r, rsize);
         }
-        return chunk2mem(v);
+        తిరిగి chunk2mem(v);
       }
     }
     CORRUPTION_ERROR_ACTION(m);
   }
-  return 0;
+  తిరిగి 0;
 }
 
 /* allocate a small request from the best fitting chunk in a treebin */
-static void* tmalloc_small(mstate m, size_t nb) {
+స్థిర శూన్య* tmalloc_small(mstate m, size_t nb) {
   tchunkptr t, v;
   size_t rsize;
   bindex_t i;
-  binmap_t leastbit = least_bit(m->treemap);
+  binmap_t leastbit = కనిష్ఠ_బిట్టు(m->treemap);
   compute_bit2idx(leastbit, i);
   v = t = *treebin_at(m, i);
   rsize = chunksize(t) - nb;
 
-  while ((t = leftmost_child(t)) != 0) {
+  అయితే ((t = leftmost_బిడ్డ(t)) != 0) {
     size_t trem = chunksize(t) - nb;
-    if (trem < rsize) {
+    ఒకవేళ (trem < rsize) {
       rsize = trem;
       v = t;
     }
   }
 
-  if (RTCHECK(ok_address(m, v))) {
-    mchunkptr r = chunk_plus_offset(v, nb);
-    assert(chunksize(v) == rsize + nb);
-    if (RTCHECK(ok_next(v, r))) {
+  ఒకవేళ (RTCHECK(ok_చిరునామా(m, v))) {
+    mchunkptr r = chunk_plus_స్థానభ్రంశం(v, nb);
+    ప్రతిజ్ఞా(chunksize(v) == rsize + nb);
+    ఒకవేళ (RTCHECK(ok_తదుపరి(v, r))) {
       unlink_large_chunk(m, v);
-      if (rsize < MIN_CHUNK_SIZE)
-        set_inuse_and_pinuse(m, v, (rsize + nb));
-      else {
-        set_size_and_pinuse_of_inuse_chunk(m, v, nb);
-        set_size_and_pinuse_of_free_chunk(r, rsize);
+      ఒకవేళ (rsize < MIN_CHUNK_కొలత)
+        సమితి_inuse_and_pinuse(m, v, (rsize + nb));
+      లేకపోతే {
+        సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, v, nb);
+        సమితి_కొలత_and_pinuse_యొక్క_free_chunk(r, rsize);
         replace_dv(m, r, rsize);
       }
-      return chunk2mem(v);
+      తిరిగి chunk2mem(v);
     }
   }
 
   CORRUPTION_ERROR_ACTION(m);
-  return 0;
+  తిరిగి 0;
 }
 
-#if !ONLY_MSPACES
+#ఒకవేళ !ONLY_MSPACES
 
-void* dlmalloc(size_t bytes) {
+శూన్య* dlmalloc(size_t బైట్లు) {
   /*
      Basic algorithm:
      If a small request (< 256 bytes minus per-chunk overhead):
@@ -4723,216 +4723,216 @@ void* dlmalloc(size_t bytes) {
      The ugly goto's here ensure that postaction occurs along all paths.
   */
 
-#if USE_LOCKS
+#ఒకవేళ USE_LOCKS
   ensure_initialization(); /* initialize in sys_alloc if not using locks */
-#endif
+#అయితే_ముగింపు
 
-  if (!PREACTION(gm)) {
-    void* mem;
+  ఒకవేళ (!PREACTION(gm)) {
+    శూన్య* mem;
     size_t nb;
-    if (bytes <= MAX_SMALL_REQUEST) {
+    ఒకవేళ (బైట్లు <= MAX_SMALL_REQUEST) {
       bindex_t idx;
       binmap_t smallbits;
-      nb = (bytes < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(bytes);
-      idx = small_index(nb);
+      nb = (బైట్లు < MIN_REQUEST)? MIN_CHUNK_కొలత : pad_request(బైట్లు);
+      idx = small_సూచీ(nb);
       smallbits = gm->smallmap >> idx;
 
-      if ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
+      ఒకవేళ ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
         mchunkptr b, p;
         idx += ~smallbits & 1;       /* Uses next bin if idx empty */
         b = smallbin_at(gm, idx);
         p = b->fd;
-        assert(chunksize(p) == small_index2size(idx));
-        unlink_first_small_chunk(gm, b, p, idx);
-        set_inuse_and_pinuse(gm, p, small_index2size(idx));
+        ప్రతిజ్ఞా(chunksize(p) == small_index2size(idx));
+        unlink_మొదటి_small_chunk(gm, b, p, idx);
+        సమితి_inuse_and_pinuse(gm, p, small_index2size(idx));
         mem = chunk2mem(p);
         check_malloced_chunk(gm, mem, nb);
-        goto postaction;
+        వెళ్ళు postaction;
       }
 
-      else if (nb > gm->dvsize) {
-        if (smallbits != 0) { /* Use chunk in next nonempty smallbin */
+      లేకపోతే ఒకవేళ (nb > gm->dvsize) {
+        ఒకవేళ (smallbits != 0) { /* Use chunk in next nonempty smallbin */
           mchunkptr b, p, r;
           size_t rsize;
           bindex_t i;
-          binmap_t leftbits = (smallbits << idx) & left_bits(idx2bit(idx));
-          binmap_t leastbit = least_bit(leftbits);
+          binmap_t leftbits = (smallbits << idx) & ఎడమ_బిట్లు(idx2bit(idx));
+          binmap_t leastbit = కనిష్ఠ_బిట్టు(leftbits);
           compute_bit2idx(leastbit, i);
           b = smallbin_at(gm, i);
           p = b->fd;
-          assert(chunksize(p) == small_index2size(i));
-          unlink_first_small_chunk(gm, b, p, i);
+          ప్రతిజ్ఞా(chunksize(p) == small_index2size(i));
+          unlink_మొదటి_small_chunk(gm, b, p, i);
           rsize = small_index2size(i) - nb;
           /* Fit here cannot be remainderless if 4byte sizes */
-          if (SIZE_T_SIZE != 4 && rsize < MIN_CHUNK_SIZE)
-            set_inuse_and_pinuse(gm, p, small_index2size(i));
-          else {
-            set_size_and_pinuse_of_inuse_chunk(gm, p, nb);
-            r = chunk_plus_offset(p, nb);
-            set_size_and_pinuse_of_free_chunk(r, rsize);
+          ఒకవేళ (కొలత_T_కొలత != 4 && rsize < MIN_CHUNK_కొలత)
+            సమితి_inuse_and_pinuse(gm, p, small_index2size(i));
+          లేకపోతే {
+            సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(gm, p, nb);
+            r = chunk_plus_స్థానభ్రంశం(p, nb);
+            సమితి_కొలత_and_pinuse_యొక్క_free_chunk(r, rsize);
             replace_dv(gm, r, rsize);
           }
           mem = chunk2mem(p);
           check_malloced_chunk(gm, mem, nb);
-          goto postaction;
+          వెళ్ళు postaction;
         }
 
-        else if (gm->treemap != 0 && (mem = tmalloc_small(gm, nb)) != 0) {
+        లేకపోతే ఒకవేళ (gm->treemap != 0 && (mem = tmalloc_small(gm, nb)) != 0) {
           check_malloced_chunk(gm, mem, nb);
-          goto postaction;
+          వెళ్ళు postaction;
         }
       }
     }
-    else if (bytes >= MAX_REQUEST)
-      nb = MAX_SIZE_T; /* Too big to allocate. Force failure (in sys alloc) */
-    else {
-      nb = pad_request(bytes);
-      if (gm->treemap != 0 && (mem = tmalloc_large(gm, nb)) != 0) {
+    లేకపోతే ఒకవేళ (బైట్లు >= MAX_REQUEST)
+      nb = MAX_కొలత_T; /* Too big to allocate. Force failure (in sys alloc) */
+    లేకపోతే {
+      nb = pad_request(బైట్లు);
+      ఒకవేళ (gm->treemap != 0 && (mem = tmalloc_large(gm, nb)) != 0) {
         check_malloced_chunk(gm, mem, nb);
-        goto postaction;
+        వెళ్ళు postaction;
       }
     }
 
-    if (nb <= gm->dvsize) {
+    ఒకవేళ (nb <= gm->dvsize) {
       size_t rsize = gm->dvsize - nb;
       mchunkptr p = gm->dv;
-      if (rsize >= MIN_CHUNK_SIZE) { /* split dv */
-        mchunkptr r = gm->dv = chunk_plus_offset(p, nb);
+      ఒకవేళ (rsize >= MIN_CHUNK_కొలత) { /* split dv */
+        mchunkptr r = gm->dv = chunk_plus_స్థానభ్రంశం(p, nb);
         gm->dvsize = rsize;
-        set_size_and_pinuse_of_free_chunk(r, rsize);
-        set_size_and_pinuse_of_inuse_chunk(gm, p, nb);
+        సమితి_కొలత_and_pinuse_యొక్క_free_chunk(r, rsize);
+        సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(gm, p, nb);
       }
-      else { /* exhaust dv */
+      లేకపోతే { /* exhaust dv */
         size_t dvs = gm->dvsize;
         gm->dvsize = 0;
         gm->dv = 0;
-        set_inuse_and_pinuse(gm, p, dvs);
+        సమితి_inuse_and_pinuse(gm, p, dvs);
       }
       mem = chunk2mem(p);
       check_malloced_chunk(gm, mem, nb);
-      goto postaction;
+      వెళ్ళు postaction;
     }
 
-    else if (nb < gm->topsize) { /* Split top */
+    లేకపోతే ఒకవేళ (nb < gm->topsize) { /* Split top */
       size_t rsize = gm->topsize -= nb;
-      mchunkptr p = gm->top;
-      mchunkptr r = gm->top = chunk_plus_offset(p, nb);
-      r->head = rsize | PINUSE_BIT;
-      set_size_and_pinuse_of_inuse_chunk(gm, p, nb);
+      mchunkptr p = gm->శిఖరం;
+      mchunkptr r = gm->శిఖరం = chunk_plus_స్థానభ్రంశం(p, nb);
+      r->తల = rsize | PINUSE_బిట్టు;
+      సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(gm, p, nb);
       mem = chunk2mem(p);
-      check_top_chunk(gm, gm->top);
+      check_శిఖరం_chunk(gm, gm->శిఖరం);
       check_malloced_chunk(gm, mem, nb);
-      goto postaction;
+      వెళ్ళు postaction;
     }
 
     mem = sys_alloc(gm, nb);
 
   postaction:
     POSTACTION(gm);
-    return mem;
+    తిరిగి mem;
   }
 
-  return 0;
+  తిరిగి 0;
 }
 
 /* ---------------------------- free --------------------------- */
 
-void dlfree(void* mem) {
+శూన్య dlfree(శూన్య* mem) {
   /*
      Consolidate freed chunks with preceding or succeeding bordering
      free chunks, if they exist, and then place in a bin.  Intermixed
      with special cases for top, dv, mmapped chunks, and usage errors.
   */
 
-  if (mem != 0) {
+  ఒకవేళ (mem != 0) {
     mchunkptr p  = mem2chunk(mem);
-#if FOOTERS
+#ఒకవేళ FOOTERS
     mstate fm = get_mstate_for(p);
-    if (!ok_magic(fm)) {
+    ఒకవేళ (!ok_magic(fm)) {
       USAGE_ERROR_ACTION(fm, p);
-      return;
+      తిరిగి;
     }
-#else /* FOOTERS */
-#define fm gm
-#endif /* FOOTERS */
-    if (!PREACTION(fm)) {
+#లేకపోతే /* FOOTERS */
+#నిర్వచించు fm gm
+#అయితే_ముగింపు /* FOOTERS */
+    ఒకవేళ (!PREACTION(fm)) {
       check_inuse_chunk(fm, p);
-      if (RTCHECK(ok_address(fm, p) && ok_inuse(p))) {
+      ఒకవేళ (RTCHECK(ok_చిరునామా(fm, p) && ok_inuse(p))) {
         size_t psize = chunksize(p);
-        mchunkptr next = chunk_plus_offset(p, psize);
-        if (!pinuse(p)) {
+        mchunkptr తదుపరి = chunk_plus_స్థానభ్రంశం(p, psize);
+        ఒకవేళ (!pinuse(p)) {
           size_t prevsize = p->prev_foot;
-          if (is_mmapped(p)) {
+          ఒకవేళ (is_mmapped(p)) {
             psize += prevsize + MMAP_FOOT_PAD;
-            if (CALL_MUNMAP((char*)p - prevsize, psize) == 0)
+            ఒకవేళ (CALL_MUNMAP((అక్షరం*)p - prevsize, psize) == 0)
               fm->footprint -= psize;
-            goto postaction;
+            వెళ్ళు postaction;
           }
-          else {
-            mchunkptr prev = chunk_minus_offset(p, prevsize);
+          లేకపోతే {
+            mchunkptr prev = chunk_minus_స్థానభ్రంశం(p, prevsize);
             psize += prevsize;
             p = prev;
-            if (RTCHECK(ok_address(fm, prev))) { /* consolidate backward */
-              if (p != fm->dv) {
+            ఒకవేళ (RTCHECK(ok_చిరునామా(fm, prev))) { /* consolidate backward */
+              ఒకవేళ (p != fm->dv) {
                 unlink_chunk(fm, p, prevsize);
               }
-              else if ((next->head & INUSE_BITS) == INUSE_BITS) {
+              లేకపోతే ఒకవేళ ((తదుపరి->తల & INUSE_బిట్లు) == INUSE_బిట్లు) {
                 fm->dvsize = psize;
-                set_free_with_pinuse(p, psize, next);
-                goto postaction;
+                సమితి_free_with_pinuse(p, psize, తదుపరి);
+                వెళ్ళు postaction;
               }
             }
-            else
-              goto erroraction;
+            లేకపోతే
+              వెళ్ళు erroraction;
           }
         }
 
-        if (RTCHECK(ok_next(p, next) && ok_pinuse(next))) {
-          if (!cinuse(next)) {  /* consolidate forward */
-            if (next == fm->top) {
+        ఒకవేళ (RTCHECK(ok_తదుపరి(p, తదుపరి) && ok_pinuse(తదుపరి))) {
+          ఒకవేళ (!cinuse(తదుపరి)) {  /* consolidate forward */
+            ఒకవేళ (తదుపరి == fm->శిఖరం) {
               size_t tsize = fm->topsize += psize;
-              fm->top = p;
-              p->head = tsize | PINUSE_BIT;
-              if (p == fm->dv) {
+              fm->శిఖరం = p;
+              p->తల = tsize | PINUSE_బిట్టు;
+              ఒకవేళ (p == fm->dv) {
                 fm->dv = 0;
                 fm->dvsize = 0;
               }
-              if (should_trim(fm, tsize))
+              ఒకవేళ (should_trim(fm, tsize))
                 sys_trim(fm, 0);
-              goto postaction;
+              వెళ్ళు postaction;
             }
-            else if (next == fm->dv) {
+            లేకపోతే ఒకవేళ (తదుపరి == fm->dv) {
               size_t dsize = fm->dvsize += psize;
               fm->dv = p;
-              set_size_and_pinuse_of_free_chunk(p, dsize);
-              goto postaction;
+              సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, dsize);
+              వెళ్ళు postaction;
             }
-            else {
-              size_t nsize = chunksize(next);
+            లేకపోతే {
+              size_t nsize = chunksize(తదుపరి);
               psize += nsize;
-              unlink_chunk(fm, next, nsize);
-              set_size_and_pinuse_of_free_chunk(p, psize);
-              if (p == fm->dv) {
+              unlink_chunk(fm, తదుపరి, nsize);
+              సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, psize);
+              ఒకవేళ (p == fm->dv) {
                 fm->dvsize = psize;
-                goto postaction;
+                వెళ్ళు postaction;
               }
             }
           }
-          else
-            set_free_with_pinuse(p, psize, next);
+          లేకపోతే
+            సమితి_free_with_pinuse(p, psize, తదుపరి);
 
-          if (is_small(psize)) {
-            insert_small_chunk(fm, p, psize);
+          ఒకవేళ (is_small(psize)) {
+            చొప్పించు_small_chunk(fm, p, psize);
             check_free_chunk(fm, p);
           }
-          else {
+          లేకపోతే {
             tchunkptr tp = (tchunkptr)p;
-            insert_large_chunk(fm, tp, psize);
+            చొప్పించు_large_chunk(fm, tp, psize);
             check_free_chunk(fm, p);
-            if (--fm->release_checks == 0)
-              release_unused_segments(fm);
+            ఒకవేళ (--fm->release_checks == 0)
+              release_వాడని_segments(fm);
           }
-          goto postaction;
+          వెళ్ళు postaction;
         }
       }
     erroraction:
@@ -4941,133 +4941,133 @@ void dlfree(void* mem) {
       POSTACTION(fm);
     }
   }
-#if !FOOTERS
-#undef fm
-#endif /* FOOTERS */
+#ఒకవేళ !FOOTERS
+#నిర్వచనం_రద్దు fm
+#అయితే_ముగింపు /* FOOTERS */
 }
 
-void* dlcalloc(size_t n_elements, size_t elem_size) {
-  void* mem;
+శూన్య* dlcalloc(size_t n_elements, size_t elem_కొలత) {
+  శూన్య* mem;
   size_t req = 0;
-  if (n_elements != 0) {
-    req = n_elements * elem_size;
-    if (((n_elements | elem_size) & ~(size_t)0xffff) &&
-        (req / n_elements != elem_size))
-      req = MAX_SIZE_T; /* force downstream failure on overflow */
+  ఒకవేళ (n_elements != 0) {
+    req = n_elements * elem_కొలత;
+    ఒకవేళ (((n_elements | elem_కొలత) & ~(size_t)0xffff) &&
+        (req / n_elements != elem_కొలత))
+      req = MAX_కొలత_T; /* force downstream failure on overflow */
   }
   mem = dlmalloc(req);
-  if (mem != 0 && calloc_must_clear(mem2chunk(mem)))
+  ఒకవేళ (mem != 0 && calloc_must_clear(mem2chunk(mem)))
     memset(mem, 0, req);
-  return mem;
+  తిరిగి mem;
 }
 
-#endif /* !ONLY_MSPACES */
+#అయితే_ముగింపు /* !ONLY_MSPACES */
 
 /* ------------ Internal support for realloc, memalign, etc -------------- */
 
 /* Try to realloc; only in-place unless can_move true */
-static mchunkptr try_realloc_chunk(mstate m, mchunkptr p, size_t nb,
-                                   int can_move) {
+స్థిర mchunkptr try_realloc_chunk(mstate m, mchunkptr p, size_t nb,
+                                   పూర్ణాంకం can_move) {
   mchunkptr newp = 0;
   size_t oldsize = chunksize(p);
-  mchunkptr next = chunk_plus_offset(p, oldsize);
-  if (RTCHECK(ok_address(m, p) && ok_inuse(p) &&
-              ok_next(p, next) && ok_pinuse(next))) {
-    if (is_mmapped(p)) {
+  mchunkptr తదుపరి = chunk_plus_స్థానభ్రంశం(p, oldsize);
+  ఒకవేళ (RTCHECK(ok_చిరునామా(m, p) && ok_inuse(p) &&
+              ok_తదుపరి(p, తదుపరి) && ok_pinuse(తదుపరి))) {
+    ఒకవేళ (is_mmapped(p)) {
       newp = mmap_resize(m, p, nb, can_move);
     }
-    else if (oldsize >= nb) {             /* already big enough */
+    లేకపోతే ఒకవేళ (oldsize >= nb) {             /* already big enough */
       size_t rsize = oldsize - nb;
-      if (rsize >= MIN_CHUNK_SIZE) {      /* split off remainder */
-        mchunkptr r = chunk_plus_offset(p, nb);
-        set_inuse(m, p, nb);
-        set_inuse(m, r, rsize);
+      ఒకవేళ (rsize >= MIN_CHUNK_కొలత) {      /* split off remainder */
+        mchunkptr r = chunk_plus_స్థానభ్రంశం(p, nb);
+        సమితి_inuse(m, p, nb);
+        సమితి_inuse(m, r, rsize);
         dispose_chunk(m, r, rsize);
       }
       newp = p;
     }
-    else if (next == m->top) {  /* extend into top */
-      if (oldsize + m->topsize > nb) {
+    లేకపోతే ఒకవేళ (తదుపరి == m->శిఖరం) {  /* extend into top */
+      ఒకవేళ (oldsize + m->topsize > nb) {
         size_t newsize = oldsize + m->topsize;
         size_t newtopsize = newsize - nb;
-        mchunkptr newtop = chunk_plus_offset(p, nb);
-        set_inuse(m, p, nb);
-        newtop->head = newtopsize |PINUSE_BIT;
-        m->top = newtop;
+        mchunkptr newtop = chunk_plus_స్థానభ్రంశం(p, nb);
+        సమితి_inuse(m, p, nb);
+        newtop->తల = newtopsize |PINUSE_బిట్టు;
+        m->శిఖరం = newtop;
         m->topsize = newtopsize;
         newp = p;
       }
     }
-    else if (next == m->dv) { /* extend into dv */
+    లేకపోతే ఒకవేళ (తదుపరి == m->dv) { /* extend into dv */
       size_t dvs = m->dvsize;
-      if (oldsize + dvs >= nb) {
+      ఒకవేళ (oldsize + dvs >= nb) {
         size_t dsize = oldsize + dvs - nb;
-        if (dsize >= MIN_CHUNK_SIZE) {
-          mchunkptr r = chunk_plus_offset(p, nb);
-          mchunkptr n = chunk_plus_offset(r, dsize);
-          set_inuse(m, p, nb);
-          set_size_and_pinuse_of_free_chunk(r, dsize);
+        ఒకవేళ (dsize >= MIN_CHUNK_కొలత) {
+          mchunkptr r = chunk_plus_స్థానభ్రంశం(p, nb);
+          mchunkptr n = chunk_plus_స్థానభ్రంశం(r, dsize);
+          సమితి_inuse(m, p, nb);
+          సమితి_కొలత_and_pinuse_యొక్క_free_chunk(r, dsize);
           clear_pinuse(n);
           m->dvsize = dsize;
           m->dv = r;
         }
-        else { /* exhaust dv */
+        లేకపోతే { /* exhaust dv */
           size_t newsize = oldsize + dvs;
-          set_inuse(m, p, newsize);
+          సమితి_inuse(m, p, newsize);
           m->dvsize = 0;
           m->dv = 0;
         }
         newp = p;
       }
     }
-    else if (!cinuse(next)) { /* extend into next free chunk */
-      size_t nextsize = chunksize(next);
-      if (oldsize + nextsize >= nb) {
+    లేకపోతే ఒకవేళ (!cinuse(తదుపరి)) { /* extend into next free chunk */
+      size_t nextsize = chunksize(తదుపరి);
+      ఒకవేళ (oldsize + nextsize >= nb) {
         size_t rsize = oldsize + nextsize - nb;
-        unlink_chunk(m, next, nextsize);
-        if (rsize < MIN_CHUNK_SIZE) {
+        unlink_chunk(m, తదుపరి, nextsize);
+        ఒకవేళ (rsize < MIN_CHUNK_కొలత) {
           size_t newsize = oldsize + nextsize;
-          set_inuse(m, p, newsize);
+          సమితి_inuse(m, p, newsize);
         }
-        else {
-          mchunkptr r = chunk_plus_offset(p, nb);
-          set_inuse(m, p, nb);
-          set_inuse(m, r, rsize);
+        లేకపోతే {
+          mchunkptr r = chunk_plus_స్థానభ్రంశం(p, nb);
+          సమితి_inuse(m, p, nb);
+          సమితి_inuse(m, r, rsize);
           dispose_chunk(m, r, rsize);
         }
         newp = p;
       }
     }
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(m, chunk2mem(p));
   }
-  return newp;
+  తిరిగి newp;
 }
 
-static void* internal_memalign(mstate m, size_t alignment, size_t bytes) {
-  void* mem = 0;
-  if (alignment <  MIN_CHUNK_SIZE) /* must be at least a minimum chunk size */
-    alignment = MIN_CHUNK_SIZE;
-  if ((alignment & (alignment-SIZE_T_ONE)) != 0) {/* Ensure a power of 2 */
+స్థిర శూన్య* అంతర్గత_memalign(mstate m, size_t alignment, size_t బైట్లు) {
+  శూన్య* mem = 0;
+  ఒకవేళ (alignment <  MIN_CHUNK_కొలత) /* must be at least a minimum chunk size */
+    alignment = MIN_CHUNK_కొలత;
+  ఒకవేళ ((alignment & (alignment-కొలత_T_ONE)) != 0) {/* Ensure a power of 2 */
     size_t a = MALLOC_ALIGNMENT << 1;
-    while (a < alignment) a <<= 1;
+    అయితే (a < alignment) a <<= 1;
     alignment = a;
   }
-  if (bytes >= MAX_REQUEST - alignment) {
-    if (m != 0)  { /* Test isn't needed but avoids compiler warning */
+  ఒకవేళ (బైట్లు >= MAX_REQUEST - alignment) {
+    ఒకవేళ (m != 0)  { /* Test isn't needed but avoids compiler warning */
       MALLOC_FAILURE_ACTION;
     }
   }
-  else {
-    size_t nb = request2size(bytes);
-    size_t req = nb + alignment + MIN_CHUNK_SIZE - CHUNK_OVERHEAD;
-    mem = internal_malloc(m, req);
-    if (mem != 0) {
+  లేకపోతే {
+    size_t nb = request2size(బైట్లు);
+    size_t req = nb + alignment + MIN_CHUNK_కొలత - CHUNK_OVERHEAD;
+    mem = అంతర్గత_malloc(m, req);
+    ఒకవేళ (mem != 0) {
       mchunkptr p = mem2chunk(mem);
-      if (PREACTION(m))
-        return 0;
-      if ((((size_t)(mem)) & (alignment - 1)) != 0) { /* misaligned */
+      ఒకవేళ (PREACTION(m))
+        తిరిగి 0;
+      ఒకవేళ ((((size_t)(mem)) & (alignment - 1)) != 0) { /* misaligned */
         /*
           Find an aligned spot inside chunk.  Since we need to give
           back leading space in a chunk of at least MIN_CHUNK_SIZE, if
@@ -5076,47 +5076,47 @@ static void* internal_memalign(mstate m, size_t alignment, size_t bytes) {
           We've allocated enough total room so that this is always
           possible.
         */
-        char* br = (char*)mem2chunk((size_t)(((size_t)((char*)mem + alignment -
-                                                       SIZE_T_ONE)) &
+        అక్షరం* br = (అక్షరం*)mem2chunk((size_t)(((size_t)((అక్షరం*)mem + alignment -
+                                                       కొలత_T_ONE)) &
                                              -alignment));
-        char* pos = ((size_t)(br - (char*)(p)) >= MIN_CHUNK_SIZE)?
+        అక్షరం* pos = ((size_t)(br - (అక్షరం*)(p)) >= MIN_CHUNK_కొలత)?
           br : br+alignment;
         mchunkptr newp = (mchunkptr)pos;
-        size_t leadsize = pos - (char*)(p);
+        size_t leadsize = pos - (అక్షరం*)(p);
         size_t newsize = chunksize(p) - leadsize;
 
-        if (is_mmapped(p)) { /* For mmapped chunks, just adjust offset */
+        ఒకవేళ (is_mmapped(p)) { /* For mmapped chunks, just adjust offset */
           newp->prev_foot = p->prev_foot + leadsize;
-          newp->head = newsize;
+          newp->తల = newsize;
         }
-        else { /* Otherwise, give back leader, use the rest */
-          set_inuse(m, newp, newsize);
-          set_inuse(m, p, leadsize);
+        లేకపోతే { /* Otherwise, give back leader, use the rest */
+          సమితి_inuse(m, newp, newsize);
+          సమితి_inuse(m, p, leadsize);
           dispose_chunk(m, p, leadsize);
         }
         p = newp;
       }
 
       /* Give back spare room at the end */
-      if (!is_mmapped(p)) {
-        size_t size = chunksize(p);
-        if (size > nb + MIN_CHUNK_SIZE) {
-          size_t remainder_size = size - nb;
-          mchunkptr remainder = chunk_plus_offset(p, nb);
-          set_inuse(m, p, nb);
-          set_inuse(m, remainder, remainder_size);
-          dispose_chunk(m, remainder, remainder_size);
+      ఒకవేళ (!is_mmapped(p)) {
+        size_t కొలత = chunksize(p);
+        ఒకవేళ (కొలత > nb + MIN_CHUNK_కొలత) {
+          size_t remainder_కొలత = కొలత - nb;
+          mchunkptr remainder = chunk_plus_స్థానభ్రంశం(p, nb);
+          సమితి_inuse(m, p, nb);
+          సమితి_inuse(m, remainder, remainder_కొలత);
+          dispose_chunk(m, remainder, remainder_కొలత);
         }
       }
 
       mem = chunk2mem(p);
-      assert (chunksize(p) >= nb);
-      assert(((size_t)mem & (alignment - 1)) == 0);
+      ప్రతిజ్ఞా (chunksize(p) >= nb);
+      ప్రతిజ్ఞా(((size_t)mem & (alignment - 1)) == 0);
       check_inuse_chunk(m, p);
       POSTACTION(m);
     }
   }
-  return mem;
+  తిరిగి mem;
 }
 
 /*
@@ -5126,53 +5126,53 @@ static void* internal_memalign(mstate m, size_t alignment, size_t bytes) {
     bit 0 set if all elements are same size (using sizes[0])
     bit 1 set if elements should be zeroed
 */
-static void** ialloc(mstate m,
+స్థిర శూన్య** ialloc(mstate m,
                      size_t n_elements,
                      size_t* sizes,
-                     int opts,
-                     void* chunks[]) {
+                     పూర్ణాంకం opts,
+                     శూన్య* chunks[]) {
 
-  size_t    element_size;   /* chunksize of each element, if all same */
-  size_t    contents_size;  /* total size of elements */
-  size_t    array_size;     /* request size of pointer array */
-  void*     mem;            /* malloced aggregate space */
+  size_t    element_కొలత;   /* chunksize of each element, if all same */
+  size_t    contents_కొలత;  /* total size of elements */
+  size_t    array_కొలత;     /* request size of pointer array */
+  శూన్య*     mem;            /* malloced aggregate space */
   mchunkptr p;              /* corresponding chunk */
-  size_t    remainder_size; /* remaining bytes while splitting */
-  void**    marray;         /* either "chunks" or malloced ptr array */
+  size_t    remainder_కొలత; /* remaining bytes while splitting */
+  శూన్య**    marray;         /* either "chunks" or malloced ptr array */
   mchunkptr array_chunk;    /* chunk for malloced ptr array */
   flag_t    was_enabled;    /* to disable mmap */
-  size_t    size;
+  size_t    కొలత;
   size_t    i;
 
   ensure_initialization();
   /* compute array length, if needed */
-  if (chunks != 0) {
-    if (n_elements == 0)
-      return chunks; /* nothing to do */
+  ఒకవేళ (chunks != 0) {
+    ఒకవేళ (n_elements == 0)
+      తిరిగి chunks; /* nothing to do */
     marray = chunks;
-    array_size = 0;
+    array_కొలత = 0;
   }
-  else {
+  లేకపోతే {
     /* if empty req, must still return chunk representing empty array */
-    if (n_elements == 0)
-      return (void**)internal_malloc(m, 0);
+    ఒకవేళ (n_elements == 0)
+      తిరిగి (శూన్య**)అంతర్గత_malloc(m, 0);
     marray = 0;
-    array_size = request2size(n_elements * (sizeof(void*)));
+    array_కొలత = request2size(n_elements * (పరిమాణం(శూన్య*)));
   }
 
   /* compute total element size */
-  if (opts & 0x1) { /* all-same-size */
-    element_size = request2size(*sizes);
-    contents_size = n_elements * element_size;
+  ఒకవేళ (opts & 0x1) { /* all-same-size */
+    element_కొలత = request2size(*sizes);
+    contents_కొలత = n_elements * element_కొలత;
   }
-  else { /* add up all the sizes */
-    element_size = 0;
-    contents_size = 0;
-    for (i = 0; i != n_elements; ++i)
-      contents_size += request2size(sizes[i]);
+  లేకపోతే { /* add up all the sizes */
+    element_కొలత = 0;
+    contents_కొలత = 0;
+    కొరకు (i = 0; i != n_elements; ++i)
+      contents_కొలత += request2size(sizes[i]);
   }
 
-  size = contents_size + array_size;
+  కొలత = contents_కొలత + array_కొలత;
 
   /*
      Allocate the aggregate chunk.  First disable direct-mmapping so
@@ -5181,68 +5181,68 @@ static void** ialloc(mstate m,
   */
   was_enabled = use_mmap(m);
   disable_mmap(m);
-  mem = internal_malloc(m, size - CHUNK_OVERHEAD);
-  if (was_enabled)
+  mem = అంతర్గత_malloc(m, కొలత - CHUNK_OVERHEAD);
+  ఒకవేళ (was_enabled)
     enable_mmap(m);
-  if (mem == 0)
-    return 0;
+  ఒకవేళ (mem == 0)
+    తిరిగి 0;
 
-  if (PREACTION(m)) return 0;
+  ఒకవేళ (PREACTION(m)) తిరిగి 0;
   p = mem2chunk(mem);
-  remainder_size = chunksize(p);
+  remainder_కొలత = chunksize(p);
 
-  assert(!is_mmapped(p));
+  ప్రతిజ్ఞా(!is_mmapped(p));
 
-  if (opts & 0x2) {       /* optionally clear the elements */
-    memset((size_t*)mem, 0, remainder_size - SIZE_T_SIZE - array_size);
+  ఒకవేళ (opts & 0x2) {       /* optionally clear the elements */
+    memset((size_t*)mem, 0, remainder_కొలత - కొలత_T_కొలత - array_కొలత);
   }
 
   /* If not provided, allocate the pointer array as final part of chunk */
-  if (marray == 0) {
-    size_t  array_chunk_size;
-    array_chunk = chunk_plus_offset(p, contents_size);
-    array_chunk_size = remainder_size - contents_size;
-    marray = (void**) (chunk2mem(array_chunk));
-    set_size_and_pinuse_of_inuse_chunk(m, array_chunk, array_chunk_size);
-    remainder_size = contents_size;
+  ఒకవేళ (marray == 0) {
+    size_t  array_chunk_కొలత;
+    array_chunk = chunk_plus_స్థానభ్రంశం(p, contents_కొలత);
+    array_chunk_కొలత = remainder_కొలత - contents_కొలత;
+    marray = (శూన్య**) (chunk2mem(array_chunk));
+    సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, array_chunk, array_chunk_కొలత);
+    remainder_కొలత = contents_కొలత;
   }
 
   /* split out elements */
-  for (i = 0; ; ++i) {
+  కొరకు (i = 0; ; ++i) {
     marray[i] = chunk2mem(p);
-    if (i != n_elements-1) {
-      if (element_size != 0)
-        size = element_size;
-      else
-        size = request2size(sizes[i]);
-      remainder_size -= size;
-      set_size_and_pinuse_of_inuse_chunk(m, p, size);
-      p = chunk_plus_offset(p, size);
+    ఒకవేళ (i != n_elements-1) {
+      ఒకవేళ (element_కొలత != 0)
+        కొలత = element_కొలత;
+      లేకపోతే
+        కొలత = request2size(sizes[i]);
+      remainder_కొలత -= కొలత;
+      సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, p, కొలత);
+      p = chunk_plus_స్థానభ్రంశం(p, కొలత);
     }
-    else { /* the final element absorbs any overallocation slop */
-      set_size_and_pinuse_of_inuse_chunk(m, p, remainder_size);
-      break;
+    లేకపోతే { /* the final element absorbs any overallocation slop */
+      సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(m, p, remainder_కొలత);
+      ఆపు;
     }
   }
 
-#if DEBUG
-  if (marray != chunks) {
+#ఒకవేళ DEBUG
+  ఒకవేళ (marray != chunks) {
     /* final element must have exactly exhausted chunk */
-    if (element_size != 0) {
-      assert(remainder_size == element_size);
+    ఒకవేళ (element_కొలత != 0) {
+      ప్రతిజ్ఞా(remainder_కొలత == element_కొలత);
     }
-    else {
-      assert(remainder_size == request2size(sizes[i]));
+    లేకపోతే {
+      ప్రతిజ్ఞా(remainder_కొలత == request2size(sizes[i]));
     }
     check_inuse_chunk(m, mem2chunk(marray));
   }
-  for (i = 0; i != n_elements; ++i)
+  కొరకు (i = 0; i != n_elements; ++i)
     check_inuse_chunk(m, mem2chunk(marray[i]));
 
-#endif /* DEBUG */
+#అయితే_ముగింపు /* DEBUG */
 
   POSTACTION(m);
-  return marray;
+  తిరిగి marray;
 }
 
 /* Try to free all pointers in the given array.
@@ -5252,402 +5252,402 @@ static void** ialloc(mstate m,
    chunks before freeing, which will occur often if allocated
    with ialloc or the array is sorted.
 */
-static size_t internal_bulk_free(mstate m, void* array[], size_t nelem) {
+స్థిర size_t అంతర్గత_bulk_free(mstate m, శూన్య* array[], size_t nelem) {
   size_t unfreed = 0;
-  if (!PREACTION(m)) {
-    void** a;
-    void** fence = &(array[nelem]);
-    for (a = array; a != fence; ++a) {
-      void* mem = *a;
-      if (mem != 0) {
+  ఒకవేళ (!PREACTION(m)) {
+    శూన్య** a;
+    శూన్య** fence = &(array[nelem]);
+    కొరకు (a = array; a != fence; ++a) {
+      శూన్య* mem = *a;
+      ఒకవేళ (mem != 0) {
         mchunkptr p = mem2chunk(mem);
         size_t psize = chunksize(p);
-#if FOOTERS
-        if (get_mstate_for(p) != m) {
+#ఒకవేళ FOOTERS
+        ఒకవేళ (get_mstate_for(p) != m) {
           ++unfreed;
-          continue;
+          కొనసాగు;
         }
-#endif
+#అయితే_ముగింపు
         check_inuse_chunk(m, p);
         *a = 0;
-        if (RTCHECK(ok_address(m, p) && ok_inuse(p))) {
-          void ** b = a + 1; /* try to merge with next chunk */
-          mchunkptr next = next_chunk(p);
-          if (b != fence && *b == chunk2mem(next)) {
-            size_t newsize = chunksize(next) + psize;
-            set_inuse(m, p, newsize);
+        ఒకవేళ (RTCHECK(ok_చిరునామా(m, p) && ok_inuse(p))) {
+          శూన్య ** b = a + 1; /* try to merge with next chunk */
+          mchunkptr తదుపరి = తదుపరి_chunk(p);
+          ఒకవేళ (b != fence && *b == chunk2mem(తదుపరి)) {
+            size_t newsize = chunksize(తదుపరి) + psize;
+            సమితి_inuse(m, p, newsize);
             *b = chunk2mem(p);
           }
-          else
+          లేకపోతే
             dispose_chunk(m, p, psize);
         }
-        else {
+        లేకపోతే {
           CORRUPTION_ERROR_ACTION(m);
-          break;
+          ఆపు;
         }
       }
     }
-    if (should_trim(m, m->topsize))
+    ఒకవేళ (should_trim(m, m->topsize))
       sys_trim(m, 0);
     POSTACTION(m);
   }
-  return unfreed;
+  తిరిగి unfreed;
 }
 
 /* Traversal */
-#if MALLOC_INSPECT_ALL
-static void internal_inspect_all(mstate m,
-                                 void(*handler)(void *start,
-                                                void *end,
-                                                size_t used_bytes,
-                                                void* callback_arg),
-                                 void* arg) {
-  if (is_initialized(m)) {
-    mchunkptr top = m->top;
+#ఒకవేళ MALLOC_INSPECT_ALL
+స్థిర శూన్య అంతర్గత_inspect_all(mstate m,
+                                 శూన్య(*handler)(శూన్య *ప్రారంభం,
+                                                శూన్య *చివర,
+                                                size_t వాడిన_బైట్లు,
+                                                శూన్య* callback_arg),
+                                 శూన్య* arg) {
+  ఒకవేళ (is_initialized(m)) {
+    mchunkptr శిఖరం = m->శిఖరం;
     msegmentptr s;
-    for (s = &m->seg; s != 0; s = s->next) {
-      mchunkptr q = align_as_chunk(s->base);
-      while (segment_holds(s, q) && q->head != FENCEPOST_HEAD) {
-        mchunkptr next = next_chunk(q);
+    కొరకు (s = &m->seg; s != 0; s = s->తదుపరి) {
+      mchunkptr q = align_as_chunk(s->పునాది);
+      అయితే (segment_holds(s, q) && q->తల != FENCEPOST_తల) {
+        mchunkptr తదుపరి = తదుపరి_chunk(q);
         size_t sz = chunksize(q);
-        size_t used;
-        void* start;
-        if (is_inuse(q)) {
-          used = sz - CHUNK_OVERHEAD; /* must not be mmapped */
-          start = chunk2mem(q);
+        size_t వాడిన;
+        శూన్య* ప్రారంభం;
+        ఒకవేళ (is_inuse(q)) {
+          వాడిన = sz - CHUNK_OVERHEAD; /* must not be mmapped */
+          ప్రారంభం = chunk2mem(q);
         }
-        else {
-          used = 0;
-          if (is_small(sz)) {     /* offset by possible bookkeeping */
-            start = (void*)((char*)q + sizeof(struct malloc_chunk));
+        లేకపోతే {
+          వాడిన = 0;
+          ఒకవేళ (is_small(sz)) {     /* offset by possible bookkeeping */
+            ప్రారంభం = (శూన్య*)((అక్షరం*)q + పరిమాణం(నిర్మాణం malloc_chunk));
           }
-          else {
-            start = (void*)((char*)q + sizeof(struct malloc_tree_chunk));
+          లేకపోతే {
+            ప్రారంభం = (శూన్య*)((అక్షరం*)q + పరిమాణం(నిర్మాణం malloc_వృక్షం_chunk));
           }
         }
-        if (start < (void*)next)  /* skip if all space is bookkeeping */
-          handler(start, next, used, arg);
-        if (q == top)
-          break;
-        q = next;
+        ఒకవేళ (ప్రారంభం < (శూన్య*)తదుపరి)  /* skip if all space is bookkeeping */
+          handler(ప్రారంభం, తదుపరి, వాడిన, arg);
+        ఒకవేళ (q == శిఖరం)
+          ఆపు;
+        q = తదుపరి;
       }
     }
   }
 }
-#endif /* MALLOC_INSPECT_ALL */
+#అయితే_ముగింపు /* MALLOC_INSPECT_ALL */
 
 /* ------------------ Exported realloc, memalign, etc -------------------- */
 
-#if !ONLY_MSPACES
+#ఒకవేళ !ONLY_MSPACES
 
-void* dlrealloc(void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem == 0) {
-    mem = dlmalloc(bytes);
+శూన్య* dlrealloc(శూన్య* oldmem, size_t బైట్లు) {
+  శూన్య* mem = 0;
+  ఒకవేళ (oldmem == 0) {
+    mem = dlmalloc(బైట్లు);
   }
-  else if (bytes >= MAX_REQUEST) {
+  లేకపోతే ఒకవేళ (బైట్లు >= MAX_REQUEST) {
     MALLOC_FAILURE_ACTION;
   }
-#ifdef REALLOC_ZERO_BYTES_FREES
-  else if (bytes == 0) {
+#నిర్వచితమైతే REALLOC_ZERO_బైట్లు_FREES
+  లేకపోతే ఒకవేళ (బైట్లు == 0) {
     dlfree(oldmem);
   }
-#endif /* REALLOC_ZERO_BYTES_FREES */
-  else {
-    size_t nb = request2size(bytes);
+#అయితే_ముగింపు /* REALLOC_ZERO_BYTES_FREES */
+  లేకపోతే {
+    size_t nb = request2size(బైట్లు);
     mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ఒకవేళ ! FOOTERS
     mstate m = gm;
-#else /* FOOTERS */
+#లేకపోతే /* FOOTERS */
     mstate m = get_mstate_for(oldp);
-    if (!ok_magic(m)) {
+    ఒకవేళ (!ok_magic(m)) {
       USAGE_ERROR_ACTION(m, oldmem);
-      return 0;
+      తిరిగి 0;
     }
-#endif /* FOOTERS */
-    if (!PREACTION(m)) {
+#అయితే_ముగింపు /* FOOTERS */
+    ఒకవేళ (!PREACTION(m)) {
       mchunkptr newp = try_realloc_chunk(m, oldp, nb, 1);
       POSTACTION(m);
-      if (newp != 0) {
+      ఒకవేళ (newp != 0) {
         check_inuse_chunk(m, newp);
         mem = chunk2mem(newp);
       }
-      else {
-        mem = internal_malloc(m, bytes);
-        if (mem != 0) {
+      లేకపోతే {
+        mem = అంతర్గత_malloc(m, బైట్లు);
+        ఒకవేళ (mem != 0) {
           size_t oc = chunksize(oldp) - overhead_for(oldp);
-          memcpy(mem, oldmem, (oc < bytes)? oc : bytes);
-          internal_free(m, oldmem);
+          జ్ఞాపకం_నకలు(mem, oldmem, (oc < బైట్లు)? oc : బైట్లు);
+          అంతర్గత_free(m, oldmem);
         }
       }
     }
   }
-  return mem;
+  తిరిగి mem;
 }
 
-void* dlrealloc_in_place(void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem != 0) {
-    if (bytes >= MAX_REQUEST) {
+శూన్య* dlrealloc_లోపల_ఉంచు(శూన్య* oldmem, size_t బైట్లు) {
+  శూన్య* mem = 0;
+  ఒకవేళ (oldmem != 0) {
+    ఒకవేళ (బైట్లు >= MAX_REQUEST) {
       MALLOC_FAILURE_ACTION;
     }
-    else {
-      size_t nb = request2size(bytes);
+    లేకపోతే {
+      size_t nb = request2size(బైట్లు);
       mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ఒకవేళ ! FOOTERS
       mstate m = gm;
-#else /* FOOTERS */
+#లేకపోతే /* FOOTERS */
       mstate m = get_mstate_for(oldp);
-      if (!ok_magic(m)) {
+      ఒకవేళ (!ok_magic(m)) {
         USAGE_ERROR_ACTION(m, oldmem);
-        return 0;
+        తిరిగి 0;
       }
-#endif /* FOOTERS */
-      if (!PREACTION(m)) {
+#అయితే_ముగింపు /* FOOTERS */
+      ఒకవేళ (!PREACTION(m)) {
         mchunkptr newp = try_realloc_chunk(m, oldp, nb, 0);
         POSTACTION(m);
-        if (newp == oldp) {
+        ఒకవేళ (newp == oldp) {
           check_inuse_chunk(m, newp);
           mem = oldmem;
         }
       }
     }
   }
-  return mem;
+  తిరిగి mem;
 }
 
-void* dlmemalign(size_t alignment, size_t bytes) {
-  if (alignment <= MALLOC_ALIGNMENT) {
-    return dlmalloc(bytes);
+శూన్య* dlmemalign(size_t alignment, size_t బైట్లు) {
+  ఒకవేళ (alignment <= MALLOC_ALIGNMENT) {
+    తిరిగి dlmalloc(బైట్లు);
   }
-  return internal_memalign(gm, alignment, bytes);
+  తిరిగి అంతర్గత_memalign(gm, alignment, బైట్లు);
 }
 
-int dlposix_memalign(void** pp, size_t alignment, size_t bytes) {
-  void* mem = 0;
-  if (alignment == MALLOC_ALIGNMENT)
-    mem = dlmalloc(bytes);
-  else {
-    size_t d = alignment / sizeof(void*);
-    size_t r = alignment % sizeof(void*);
-    if (r != 0 || d == 0 || (d & (d-SIZE_T_ONE)) != 0)
-      return EINVAL;
-    else if (bytes <= MAX_REQUEST - alignment) {
-      if (alignment <  MIN_CHUNK_SIZE)
-        alignment = MIN_CHUNK_SIZE;
-      mem = internal_memalign(gm, alignment, bytes);
+పూర్ణాంకం dlposix_memalign(శూన్య** pp, size_t alignment, size_t బైట్లు) {
+  శూన్య* mem = 0;
+  ఒకవేళ (alignment == MALLOC_ALIGNMENT)
+    mem = dlmalloc(బైట్లు);
+  లేకపోతే {
+    size_t d = alignment / పరిమాణం(శూన్య*);
+    size_t r = alignment % పరిమాణం(శూన్య*);
+    ఒకవేళ (r != 0 || d == 0 || (d & (d-కొలత_T_ONE)) != 0)
+      తిరిగి EINVAL;
+    లేకపోతే ఒకవేళ (బైట్లు <= MAX_REQUEST - alignment) {
+      ఒకవేళ (alignment <  MIN_CHUNK_కొలత)
+        alignment = MIN_CHUNK_కొలత;
+      mem = అంతర్గత_memalign(gm, alignment, బైట్లు);
     }
   }
-  if (mem == 0)
-    return ENOMEM;
-  else {
+  ఒకవేళ (mem == 0)
+    తిరిగి ENOMEM;
+  లేకపోతే {
     *pp = mem;
-    return 0;
+    తిరిగి 0;
   }
 }
 
-void* dlvalloc(size_t bytes) {
+శూన్య* dlvalloc(size_t బైట్లు) {
   size_t pagesz;
   ensure_initialization();
-  pagesz = mparams.page_size;
-  return dlmemalign(pagesz, bytes);
+  pagesz = mparams.పుట_కొలత;
+  తిరిగి dlmemalign(pagesz, బైట్లు);
 }
 
-void* dlpvalloc(size_t bytes) {
+శూన్య* dlpvalloc(size_t బైట్లు) {
   size_t pagesz;
   ensure_initialization();
-  pagesz = mparams.page_size;
-  return dlmemalign(pagesz, (bytes + pagesz - SIZE_T_ONE) & ~(pagesz - SIZE_T_ONE));
+  pagesz = mparams.పుట_కొలత;
+  తిరిగి dlmemalign(pagesz, (బైట్లు + pagesz - కొలత_T_ONE) & ~(pagesz - కొలత_T_ONE));
 }
 
-void** dlindependent_calloc(size_t n_elements, size_t elem_size,
-                            void* chunks[]) {
-  size_t sz = elem_size; /* serves as 1-element array */
-  return ialloc(gm, n_elements, &sz, 3, chunks);
+శూన్య** dlindependent_calloc(size_t n_elements, size_t elem_కొలత,
+                            శూన్య* chunks[]) {
+  size_t sz = elem_కొలత; /* serves as 1-element array */
+  తిరిగి ialloc(gm, n_elements, &sz, 3, chunks);
 }
 
-void** dlindependent_comalloc(size_t n_elements, size_t sizes[],
-                              void* chunks[]) {
-  return ialloc(gm, n_elements, sizes, 0, chunks);
+శూన్య** dlindependent_comalloc(size_t n_elements, size_t sizes[],
+                              శూన్య* chunks[]) {
+  తిరిగి ialloc(gm, n_elements, sizes, 0, chunks);
 }
 
-size_t dlbulk_free(void* array[], size_t nelem) {
-  return internal_bulk_free(gm, array, nelem);
+size_t dlbulk_free(శూన్య* array[], size_t nelem) {
+  తిరిగి అంతర్గత_bulk_free(gm, array, nelem);
 }
 
-#if MALLOC_INSPECT_ALL
-void dlmalloc_inspect_all(void(*handler)(void *start,
-                                         void *end,
-                                         size_t used_bytes,
-                                         void* callback_arg),
-                          void* arg) {
+#ఒకవేళ MALLOC_INSPECT_ALL
+శూన్య dlmalloc_inspect_all(శూన్య(*handler)(శూన్య *ప్రారంభం,
+                                         శూన్య *చివర,
+                                         size_t వాడిన_బైట్లు,
+                                         శూన్య* callback_arg),
+                          శూన్య* arg) {
   ensure_initialization();
-  if (!PREACTION(gm)) {
-    internal_inspect_all(gm, handler, arg);
+  ఒకవేళ (!PREACTION(gm)) {
+    అంతర్గత_inspect_all(gm, handler, arg);
     POSTACTION(gm);
   }
 }
-#endif /* MALLOC_INSPECT_ALL */
+#అయితే_ముగింపు /* MALLOC_INSPECT_ALL */
 
-int dlmalloc_trim(size_t pad) {
-  int result = 0;
+పూర్ణాంకం dlmalloc_trim(size_t pad) {
+  పూర్ణాంకం ఫలితం = 0;
   ensure_initialization();
-  if (!PREACTION(gm)) {
-    result = sys_trim(gm, pad);
+  ఒకవేళ (!PREACTION(gm)) {
+    ఫలితం = sys_trim(gm, pad);
     POSTACTION(gm);
   }
-  return result;
+  తిరిగి ఫలితం;
 }
 
-size_t dlmalloc_footprint(void) {
-  return gm->footprint;
+size_t dlmalloc_footprint(శూన్య) {
+  తిరిగి gm->footprint;
 }
 
-size_t dlmalloc_max_footprint(void) {
-  return gm->max_footprint;
+size_t dlmalloc_max_footprint(శూన్య) {
+  తిరిగి gm->max_footprint;
 }
 
-size_t dlmalloc_footprint_limit(void) {
-  size_t maf = gm->footprint_limit;
-  return maf == 0 ? MAX_SIZE_T : maf;
+size_t dlmalloc_footprint_హద్దు(శూన్య) {
+  size_t maf = gm->footprint_హద్దు;
+  తిరిగి maf == 0 ? MAX_కొలత_T : maf;
 }
 
-size_t dlmalloc_set_footprint_limit(size_t bytes) {
-  size_t result;  /* invert sense of 0 */
-  if (bytes == 0)
-    result = granularity_align(1); /* Use minimal size */
-  if (bytes == MAX_SIZE_T)
-    result = 0;                    /* disable */
-  else
-    result = granularity_align(bytes);
-  return gm->footprint_limit = result;
+size_t dlmalloc_సమితి_footprint_హద్దు(size_t బైట్లు) {
+  size_t ఫలితం;  /* invert sense of 0 */
+  ఒకవేళ (బైట్లు == 0)
+    ఫలితం = granularity_align(1); /* Use minimal size */
+  ఒకవేళ (బైట్లు == MAX_కొలత_T)
+    ఫలితం = 0;                    /* disable */
+  లేకపోతే
+    ఫలితం = granularity_align(బైట్లు);
+  తిరిగి gm->footprint_హద్దు = ఫలితం;
 }
 
-#if !NO_MALLINFO
-struct mallinfo dlmallinfo(void) {
-  return internal_mallinfo(gm);
+#ఒకవేళ !NO_MALLINFO
+నిర్మాణం mallinfo dlmallinfo(శూన్య) {
+  తిరిగి అంతర్గత_mallinfo(gm);
 }
-#endif /* NO_MALLINFO */
+#అయితే_ముగింపు /* NO_MALLINFO */
 
-#if !NO_MALLOC_STATS
-void dlmalloc_stats(void) {
-  internal_malloc_stats(gm);
+#ఒకవేళ !NO_MALLOC_STATS
+శూన్య dlmalloc_stats(శూన్య) {
+  అంతర్గత_malloc_stats(gm);
 }
-#endif /* NO_MALLOC_STATS */
+#అయితే_ముగింపు /* NO_MALLOC_STATS */
 
-int dlmallopt(int param_number, int value) {
-  return change_mparam(param_number, value);
+పూర్ణాంకం dlmallopt(పూర్ణాంకం param_సంఖ్య, పూర్ణాంకం విలువ) {
+  తిరిగి change_mparam(param_సంఖ్య, విలువ);
 }
 
-size_t dlmalloc_usable_size(void* mem) {
-  if (mem != 0) {
+size_t dlmalloc_usable_కొలత(శూన్య* mem) {
+  ఒకవేళ (mem != 0) {
     mchunkptr p = mem2chunk(mem);
-    if (is_inuse(p))
-      return chunksize(p) - overhead_for(p);
+    ఒకవేళ (is_inuse(p))
+      తిరిగి chunksize(p) - overhead_for(p);
   }
-  return 0;
+  తిరిగి 0;
 }
 
-#endif /* !ONLY_MSPACES */
+#అయితే_ముగింపు /* !ONLY_MSPACES */
 
 /* ----------------------------- user mspaces ---------------------------- */
 
-#if MSPACES
+#ఒకవేళ MSPACES
 
-static mstate init_user_mstate(char* tbase, size_t tsize) {
-  size_t msize = pad_request(sizeof(struct malloc_state));
+స్థిర mstate init_user_mstate(అక్షరం* tbase, size_t tsize) {
+  size_t msize = pad_request(పరిమాణం(నిర్మాణం malloc_state));
   mchunkptr mn;
   mchunkptr msp = align_as_chunk(tbase);
   mstate m = (mstate)(chunk2mem(msp));
   memset(m, 0, msize);
-  (void)INITIAL_LOCK(&m->mutex);
-  msp->head = (msize|INUSE_BITS);
-  m->seg.base = m->least_addr = tbase;
-  m->seg.size = m->footprint = m->max_footprint = tsize;
+  (శూన్య)INITIAL_తాళం(&m->mutex);
+  msp->తల = (msize|INUSE_బిట్లు);
+  m->seg.పునాది = m->కనిష్ఠ_addr = tbase;
+  m->seg.కొలత = m->footprint = m->max_footprint = tsize;
   m->magic = mparams.magic;
-  m->release_checks = MAX_RELEASE_CHECK_RATE;
+  m->release_checks = MAX_RELEASE_CHECK_రేటు;
   m->mflags = mparams.default_mflags;
   m->extp = 0;
   m->exts = 0;
   disable_contiguous(m);
   init_bins(m);
-  mn = next_chunk(mem2chunk(m));
-  init_top(m, mn, (size_t)((tbase + tsize) - (char*)mn) - TOP_FOOT_SIZE);
-  check_top_chunk(m, m->top);
-  return m;
+  mn = తదుపరి_chunk(mem2chunk(m));
+  init_శిఖరం(m, mn, (size_t)((tbase + tsize) - (అక్షరం*)mn) - శిఖరం_FOOT_కొలత);
+  check_శిఖరం_chunk(m, m->శిఖరం);
+  తిరిగి m;
 }
 
-mspace create_mspace(size_t capacity, int locked) {
+mspace create_mspace(size_t సామర్థ్యం, పూర్ణాంకం locked) {
   mstate m = 0;
   size_t msize;
   ensure_initialization();
-  msize = pad_request(sizeof(struct malloc_state));
-  if (capacity < (size_t) -(msize + TOP_FOOT_SIZE + mparams.page_size)) {
-    size_t rs = ((capacity == 0)? mparams.granularity :
-                 (capacity + TOP_FOOT_SIZE + msize));
+  msize = pad_request(పరిమాణం(నిర్మాణం malloc_state));
+  ఒకవేళ (సామర్థ్యం < (size_t) -(msize + శిఖరం_FOOT_కొలత + mparams.పుట_కొలత)) {
+    size_t rs = ((సామర్థ్యం == 0)? mparams.granularity :
+                 (సామర్థ్యం + శిఖరం_FOOT_కొలత + msize));
     size_t tsize = granularity_align(rs);
-    char* tbase = (char*)(CALL_MMAP(tsize));
-    if (tbase != CMFAIL) {
+    అక్షరం* tbase = (అక్షరం*)(CALL_MMAP(tsize));
+    ఒకవేళ (tbase != CMFAIL) {
       m = init_user_mstate(tbase, tsize);
-      set_segment_flags(&m->seg, USE_MMAP_BIT);
-      set_lock(m, locked);
+      సమితి_segment_flags(&m->seg, USE_MMAP_బిట్టు);
+      సమితి_తాళం(m, locked);
     }
   }
-  return (mspace)m;
+  తిరిగి (mspace)m;
 }
 
-mspace create_mspace_with_base(void* base, size_t capacity, int locked) {
+mspace create_mspace_with_పునాది(శూన్య* పునాది, size_t సామర్థ్యం, పూర్ణాంకం locked) {
   mstate m = 0;
   size_t msize;
   ensure_initialization();
-  msize = pad_request(sizeof(struct malloc_state));
-  if (capacity > msize + TOP_FOOT_SIZE &&
-      capacity < (size_t) -(msize + TOP_FOOT_SIZE + mparams.page_size)) {
-    m = init_user_mstate((char*)base, capacity);
-    set_segment_flags(&m->seg, EXTERN_BIT);
-    set_lock(m, locked);
+  msize = pad_request(పరిమాణం(నిర్మాణం malloc_state));
+  ఒకవేళ (సామర్థ్యం > msize + శిఖరం_FOOT_కొలత &&
+      సామర్థ్యం < (size_t) -(msize + శిఖరం_FOOT_కొలత + mparams.పుట_కొలత)) {
+    m = init_user_mstate((అక్షరం*)పునాది, సామర్థ్యం);
+    సమితి_segment_flags(&m->seg, EXTERN_బిట్టు);
+    సమితి_తాళం(m, locked);
   }
-  return (mspace)m;
+  తిరిగి (mspace)m;
 }
 
-int mspace_track_large_chunks(mspace msp, int enable) {
-  int ret = 0;
+పూర్ణాంకం mspace_track_large_chunks(mspace msp, పూర్ణాంకం enable) {
+  పూర్ణాంకం ret = 0;
   mstate ms = (mstate)msp;
-  if (!PREACTION(ms)) {
-    if (!use_mmap(ms)) {
+  ఒకవేళ (!PREACTION(ms)) {
+    ఒకవేళ (!use_mmap(ms)) {
       ret = 1;
     }
-    if (!enable) {
+    ఒకవేళ (!enable) {
       enable_mmap(ms);
-    } else {
+    } లేకపోతే {
       disable_mmap(ms);
     }
     POSTACTION(ms);
   }
-  return ret;
+  తిరిగి ret;
 }
 
 size_t destroy_mspace(mspace msp) {
   size_t freed = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
+  ఒకవేళ (ok_magic(ms)) {
     msegmentptr sp = &ms->seg;
-    (void)DESTROY_LOCK(&ms->mutex); /* destroy before unmapped */
-    while (sp != 0) {
-      char* base = sp->base;
-      size_t size = sp->size;
+    (శూన్య)DESTROY_తాళం(&ms->mutex); /* destroy before unmapped */
+    అయితే (sp != 0) {
+      అక్షరం* పునాది = sp->పునాది;
+      size_t కొలత = sp->కొలత;
       flag_t flag = get_segment_flags(sp);
-      (void)base; /* placate people compiling -Wunused-variable */
-      sp = sp->next;
-      if ((flag & USE_MMAP_BIT) && !(flag & EXTERN_BIT) &&
-          CALL_MUNMAP(base, size) == 0)
-        freed += size;
+      (శూన్య)పునాది; /* placate people compiling -Wunused-variable */
+      sp = sp->తదుపరి;
+      ఒకవేళ ((flag & USE_MMAP_బిట్టు) && !(flag & EXTERN_బిట్టు) &&
+          CALL_MUNMAP(పునాది, కొలత) == 0)
+        freed += కొలత;
     }
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return freed;
+  తిరిగి freed;
 }
 
 /*
@@ -5655,211 +5655,211 @@ size_t destroy_mspace(mspace msp) {
   versions. This is not so nice but better than the alternatives.
 */
 
-void* mspace_malloc(mspace msp, size_t bytes) {
+శూన్య* mspace_malloc(mspace msp, size_t బైట్లు) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ఒకవేళ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    తిరిగి 0;
   }
-  if (!PREACTION(ms)) {
-    void* mem;
+  ఒకవేళ (!PREACTION(ms)) {
+    శూన్య* mem;
     size_t nb;
-    if (bytes <= MAX_SMALL_REQUEST) {
+    ఒకవేళ (బైట్లు <= MAX_SMALL_REQUEST) {
       bindex_t idx;
       binmap_t smallbits;
-      nb = (bytes < MIN_REQUEST)? MIN_CHUNK_SIZE : pad_request(bytes);
-      idx = small_index(nb);
+      nb = (బైట్లు < MIN_REQUEST)? MIN_CHUNK_కొలత : pad_request(బైట్లు);
+      idx = small_సూచీ(nb);
       smallbits = ms->smallmap >> idx;
 
-      if ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
+      ఒకవేళ ((smallbits & 0x3U) != 0) { /* Remainderless fit to a smallbin. */
         mchunkptr b, p;
         idx += ~smallbits & 1;       /* Uses next bin if idx empty */
         b = smallbin_at(ms, idx);
         p = b->fd;
-        assert(chunksize(p) == small_index2size(idx));
-        unlink_first_small_chunk(ms, b, p, idx);
-        set_inuse_and_pinuse(ms, p, small_index2size(idx));
+        ప్రతిజ్ఞా(chunksize(p) == small_index2size(idx));
+        unlink_మొదటి_small_chunk(ms, b, p, idx);
+        సమితి_inuse_and_pinuse(ms, p, small_index2size(idx));
         mem = chunk2mem(p);
         check_malloced_chunk(ms, mem, nb);
-        goto postaction;
+        వెళ్ళు postaction;
       }
 
-      else if (nb > ms->dvsize) {
-        if (smallbits != 0) { /* Use chunk in next nonempty smallbin */
+      లేకపోతే ఒకవేళ (nb > ms->dvsize) {
+        ఒకవేళ (smallbits != 0) { /* Use chunk in next nonempty smallbin */
           mchunkptr b, p, r;
           size_t rsize;
           bindex_t i;
-          binmap_t leftbits = (smallbits << idx) & left_bits(idx2bit(idx));
-          binmap_t leastbit = least_bit(leftbits);
+          binmap_t leftbits = (smallbits << idx) & ఎడమ_బిట్లు(idx2bit(idx));
+          binmap_t leastbit = కనిష్ఠ_బిట్టు(leftbits);
           compute_bit2idx(leastbit, i);
           b = smallbin_at(ms, i);
           p = b->fd;
-          assert(chunksize(p) == small_index2size(i));
-          unlink_first_small_chunk(ms, b, p, i);
+          ప్రతిజ్ఞా(chunksize(p) == small_index2size(i));
+          unlink_మొదటి_small_chunk(ms, b, p, i);
           rsize = small_index2size(i) - nb;
           /* Fit here cannot be remainderless if 4byte sizes */
-          if (SIZE_T_SIZE != 4 && rsize < MIN_CHUNK_SIZE)
-            set_inuse_and_pinuse(ms, p, small_index2size(i));
-          else {
-            set_size_and_pinuse_of_inuse_chunk(ms, p, nb);
-            r = chunk_plus_offset(p, nb);
-            set_size_and_pinuse_of_free_chunk(r, rsize);
+          ఒకవేళ (కొలత_T_కొలత != 4 && rsize < MIN_CHUNK_కొలత)
+            సమితి_inuse_and_pinuse(ms, p, small_index2size(i));
+          లేకపోతే {
+            సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(ms, p, nb);
+            r = chunk_plus_స్థానభ్రంశం(p, nb);
+            సమితి_కొలత_and_pinuse_యొక్క_free_chunk(r, rsize);
             replace_dv(ms, r, rsize);
           }
           mem = chunk2mem(p);
           check_malloced_chunk(ms, mem, nb);
-          goto postaction;
+          వెళ్ళు postaction;
         }
 
-        else if (ms->treemap != 0 && (mem = tmalloc_small(ms, nb)) != 0) {
+        లేకపోతే ఒకవేళ (ms->treemap != 0 && (mem = tmalloc_small(ms, nb)) != 0) {
           check_malloced_chunk(ms, mem, nb);
-          goto postaction;
+          వెళ్ళు postaction;
         }
       }
     }
-    else if (bytes >= MAX_REQUEST)
-      nb = MAX_SIZE_T; /* Too big to allocate. Force failure (in sys alloc) */
-    else {
-      nb = pad_request(bytes);
-      if (ms->treemap != 0 && (mem = tmalloc_large(ms, nb)) != 0) {
+    లేకపోతే ఒకవేళ (బైట్లు >= MAX_REQUEST)
+      nb = MAX_కొలత_T; /* Too big to allocate. Force failure (in sys alloc) */
+    లేకపోతే {
+      nb = pad_request(బైట్లు);
+      ఒకవేళ (ms->treemap != 0 && (mem = tmalloc_large(ms, nb)) != 0) {
         check_malloced_chunk(ms, mem, nb);
-        goto postaction;
+        వెళ్ళు postaction;
       }
     }
 
-    if (nb <= ms->dvsize) {
+    ఒకవేళ (nb <= ms->dvsize) {
       size_t rsize = ms->dvsize - nb;
       mchunkptr p = ms->dv;
-      if (rsize >= MIN_CHUNK_SIZE) { /* split dv */
-        mchunkptr r = ms->dv = chunk_plus_offset(p, nb);
+      ఒకవేళ (rsize >= MIN_CHUNK_కొలత) { /* split dv */
+        mchunkptr r = ms->dv = chunk_plus_స్థానభ్రంశం(p, nb);
         ms->dvsize = rsize;
-        set_size_and_pinuse_of_free_chunk(r, rsize);
-        set_size_and_pinuse_of_inuse_chunk(ms, p, nb);
+        సమితి_కొలత_and_pinuse_యొక్క_free_chunk(r, rsize);
+        సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(ms, p, nb);
       }
-      else { /* exhaust dv */
+      లేకపోతే { /* exhaust dv */
         size_t dvs = ms->dvsize;
         ms->dvsize = 0;
         ms->dv = 0;
-        set_inuse_and_pinuse(ms, p, dvs);
+        సమితి_inuse_and_pinuse(ms, p, dvs);
       }
       mem = chunk2mem(p);
       check_malloced_chunk(ms, mem, nb);
-      goto postaction;
+      వెళ్ళు postaction;
     }
 
-    else if (nb < ms->topsize) { /* Split top */
+    లేకపోతే ఒకవేళ (nb < ms->topsize) { /* Split top */
       size_t rsize = ms->topsize -= nb;
-      mchunkptr p = ms->top;
-      mchunkptr r = ms->top = chunk_plus_offset(p, nb);
-      r->head = rsize | PINUSE_BIT;
-      set_size_and_pinuse_of_inuse_chunk(ms, p, nb);
+      mchunkptr p = ms->శిఖరం;
+      mchunkptr r = ms->శిఖరం = chunk_plus_స్థానభ్రంశం(p, nb);
+      r->తల = rsize | PINUSE_బిట్టు;
+      సమితి_కొలత_and_pinuse_యొక్క_inuse_chunk(ms, p, nb);
       mem = chunk2mem(p);
-      check_top_chunk(ms, ms->top);
+      check_శిఖరం_chunk(ms, ms->శిఖరం);
       check_malloced_chunk(ms, mem, nb);
-      goto postaction;
+      వెళ్ళు postaction;
     }
 
     mem = sys_alloc(ms, nb);
 
   postaction:
     POSTACTION(ms);
-    return mem;
+    తిరిగి mem;
   }
 
-  return 0;
+  తిరిగి 0;
 }
 
-void mspace_free(mspace msp, void* mem) {
-  if (mem != 0) {
+శూన్య mspace_free(mspace msp, శూన్య* mem) {
+  ఒకవేళ (mem != 0) {
     mchunkptr p  = mem2chunk(mem);
-#if FOOTERS
+#ఒకవేళ FOOTERS
     mstate fm = get_mstate_for(p);
-    (void)msp; /* placate people compiling -Wunused */
-#else /* FOOTERS */
+    (శూన్య)msp; /* placate people compiling -Wunused */
+#లేకపోతే /* FOOTERS */
     mstate fm = (mstate)msp;
-#endif /* FOOTERS */
-    if (!ok_magic(fm)) {
+#అయితే_ముగింపు /* FOOTERS */
+    ఒకవేళ (!ok_magic(fm)) {
       USAGE_ERROR_ACTION(fm, p);
-      return;
+      తిరిగి;
     }
-    if (!PREACTION(fm)) {
+    ఒకవేళ (!PREACTION(fm)) {
       check_inuse_chunk(fm, p);
-      if (RTCHECK(ok_address(fm, p) && ok_inuse(p))) {
+      ఒకవేళ (RTCHECK(ok_చిరునామా(fm, p) && ok_inuse(p))) {
         size_t psize = chunksize(p);
-        mchunkptr next = chunk_plus_offset(p, psize);
-        if (!pinuse(p)) {
+        mchunkptr తదుపరి = chunk_plus_స్థానభ్రంశం(p, psize);
+        ఒకవేళ (!pinuse(p)) {
           size_t prevsize = p->prev_foot;
-          if (is_mmapped(p)) {
+          ఒకవేళ (is_mmapped(p)) {
             psize += prevsize + MMAP_FOOT_PAD;
-            if (CALL_MUNMAP((char*)p - prevsize, psize) == 0)
+            ఒకవేళ (CALL_MUNMAP((అక్షరం*)p - prevsize, psize) == 0)
               fm->footprint -= psize;
-            goto postaction;
+            వెళ్ళు postaction;
           }
-          else {
-            mchunkptr prev = chunk_minus_offset(p, prevsize);
+          లేకపోతే {
+            mchunkptr prev = chunk_minus_స్థానభ్రంశం(p, prevsize);
             psize += prevsize;
             p = prev;
-            if (RTCHECK(ok_address(fm, prev))) { /* consolidate backward */
-              if (p != fm->dv) {
+            ఒకవేళ (RTCHECK(ok_చిరునామా(fm, prev))) { /* consolidate backward */
+              ఒకవేళ (p != fm->dv) {
                 unlink_chunk(fm, p, prevsize);
               }
-              else if ((next->head & INUSE_BITS) == INUSE_BITS) {
+              లేకపోతే ఒకవేళ ((తదుపరి->తల & INUSE_బిట్లు) == INUSE_బిట్లు) {
                 fm->dvsize = psize;
-                set_free_with_pinuse(p, psize, next);
-                goto postaction;
+                సమితి_free_with_pinuse(p, psize, తదుపరి);
+                వెళ్ళు postaction;
               }
             }
-            else
-              goto erroraction;
+            లేకపోతే
+              వెళ్ళు erroraction;
           }
         }
 
-        if (RTCHECK(ok_next(p, next) && ok_pinuse(next))) {
-          if (!cinuse(next)) {  /* consolidate forward */
-            if (next == fm->top) {
+        ఒకవేళ (RTCHECK(ok_తదుపరి(p, తదుపరి) && ok_pinuse(తదుపరి))) {
+          ఒకవేళ (!cinuse(తదుపరి)) {  /* consolidate forward */
+            ఒకవేళ (తదుపరి == fm->శిఖరం) {
               size_t tsize = fm->topsize += psize;
-              fm->top = p;
-              p->head = tsize | PINUSE_BIT;
-              if (p == fm->dv) {
+              fm->శిఖరం = p;
+              p->తల = tsize | PINUSE_బిట్టు;
+              ఒకవేళ (p == fm->dv) {
                 fm->dv = 0;
                 fm->dvsize = 0;
               }
-              if (should_trim(fm, tsize))
+              ఒకవేళ (should_trim(fm, tsize))
                 sys_trim(fm, 0);
-              goto postaction;
+              వెళ్ళు postaction;
             }
-            else if (next == fm->dv) {
+            లేకపోతే ఒకవేళ (తదుపరి == fm->dv) {
               size_t dsize = fm->dvsize += psize;
               fm->dv = p;
-              set_size_and_pinuse_of_free_chunk(p, dsize);
-              goto postaction;
+              సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, dsize);
+              వెళ్ళు postaction;
             }
-            else {
-              size_t nsize = chunksize(next);
+            లేకపోతే {
+              size_t nsize = chunksize(తదుపరి);
               psize += nsize;
-              unlink_chunk(fm, next, nsize);
-              set_size_and_pinuse_of_free_chunk(p, psize);
-              if (p == fm->dv) {
+              unlink_chunk(fm, తదుపరి, nsize);
+              సమితి_కొలత_and_pinuse_యొక్క_free_chunk(p, psize);
+              ఒకవేళ (p == fm->dv) {
                 fm->dvsize = psize;
-                goto postaction;
+                వెళ్ళు postaction;
               }
             }
           }
-          else
-            set_free_with_pinuse(p, psize, next);
+          లేకపోతే
+            సమితి_free_with_pinuse(p, psize, తదుపరి);
 
-          if (is_small(psize)) {
-            insert_small_chunk(fm, p, psize);
+          ఒకవేళ (is_small(psize)) {
+            చొప్పించు_small_chunk(fm, p, psize);
             check_free_chunk(fm, p);
           }
-          else {
+          లేకపోతే {
             tchunkptr tp = (tchunkptr)p;
-            insert_large_chunk(fm, tp, psize);
+            చొప్పించు_large_chunk(fm, tp, psize);
             check_free_chunk(fm, p);
-            if (--fm->release_checks == 0)
-              release_unused_segments(fm);
+            ఒకవేళ (--fm->release_checks == 0)
+              release_వాడని_segments(fm);
           }
-          goto postaction;
+          వెళ్ళు postaction;
         }
       }
     erroraction:
@@ -5870,265 +5870,265 @@ void mspace_free(mspace msp, void* mem) {
   }
 }
 
-void* mspace_calloc(mspace msp, size_t n_elements, size_t elem_size) {
-  void* mem;
+శూన్య* mspace_calloc(mspace msp, size_t n_elements, size_t elem_కొలత) {
+  శూన్య* mem;
   size_t req = 0;
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ఒకవేళ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    తిరిగి 0;
   }
-  if (n_elements != 0) {
-    req = n_elements * elem_size;
-    if (((n_elements | elem_size) & ~(size_t)0xffff) &&
-        (req / n_elements != elem_size))
-      req = MAX_SIZE_T; /* force downstream failure on overflow */
+  ఒకవేళ (n_elements != 0) {
+    req = n_elements * elem_కొలత;
+    ఒకవేళ (((n_elements | elem_కొలత) & ~(size_t)0xffff) &&
+        (req / n_elements != elem_కొలత))
+      req = MAX_కొలత_T; /* force downstream failure on overflow */
   }
-  mem = internal_malloc(ms, req);
-  if (mem != 0 && calloc_must_clear(mem2chunk(mem)))
+  mem = అంతర్గత_malloc(ms, req);
+  ఒకవేళ (mem != 0 && calloc_must_clear(mem2chunk(mem)))
     memset(mem, 0, req);
-  return mem;
+  తిరిగి mem;
 }
 
-void* mspace_realloc(mspace msp, void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem == 0) {
-    mem = mspace_malloc(msp, bytes);
+శూన్య* mspace_realloc(mspace msp, శూన్య* oldmem, size_t బైట్లు) {
+  శూన్య* mem = 0;
+  ఒకవేళ (oldmem == 0) {
+    mem = mspace_malloc(msp, బైట్లు);
   }
-  else if (bytes >= MAX_REQUEST) {
+  లేకపోతే ఒకవేళ (బైట్లు >= MAX_REQUEST) {
     MALLOC_FAILURE_ACTION;
   }
-#ifdef REALLOC_ZERO_BYTES_FREES
-  else if (bytes == 0) {
+#నిర్వచితమైతే REALLOC_ZERO_బైట్లు_FREES
+  లేకపోతే ఒకవేళ (బైట్లు == 0) {
     mspace_free(msp, oldmem);
   }
-#endif /* REALLOC_ZERO_BYTES_FREES */
-  else {
-    size_t nb = request2size(bytes);
+#అయితే_ముగింపు /* REALLOC_ZERO_BYTES_FREES */
+  లేకపోతే {
+    size_t nb = request2size(బైట్లు);
     mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ఒకవేళ ! FOOTERS
     mstate m = (mstate)msp;
-#else /* FOOTERS */
+#లేకపోతే /* FOOTERS */
     mstate m = get_mstate_for(oldp);
-    if (!ok_magic(m)) {
+    ఒకవేళ (!ok_magic(m)) {
       USAGE_ERROR_ACTION(m, oldmem);
-      return 0;
+      తిరిగి 0;
     }
-#endif /* FOOTERS */
-    if (!PREACTION(m)) {
+#అయితే_ముగింపు /* FOOTERS */
+    ఒకవేళ (!PREACTION(m)) {
       mchunkptr newp = try_realloc_chunk(m, oldp, nb, 1);
       POSTACTION(m);
-      if (newp != 0) {
+      ఒకవేళ (newp != 0) {
         check_inuse_chunk(m, newp);
         mem = chunk2mem(newp);
       }
-      else {
-        mem = mspace_malloc(m, bytes);
-        if (mem != 0) {
+      లేకపోతే {
+        mem = mspace_malloc(m, బైట్లు);
+        ఒకవేళ (mem != 0) {
           size_t oc = chunksize(oldp) - overhead_for(oldp);
-          memcpy(mem, oldmem, (oc < bytes)? oc : bytes);
+          జ్ఞాపకం_నకలు(mem, oldmem, (oc < బైట్లు)? oc : బైట్లు);
           mspace_free(m, oldmem);
         }
       }
     }
   }
-  return mem;
+  తిరిగి mem;
 }
 
-void* mspace_realloc_in_place(mspace msp, void* oldmem, size_t bytes) {
-  void* mem = 0;
-  if (oldmem != 0) {
-    if (bytes >= MAX_REQUEST) {
+శూన్య* mspace_realloc_లోపల_ఉంచు(mspace msp, శూన్య* oldmem, size_t బైట్లు) {
+  శూన్య* mem = 0;
+  ఒకవేళ (oldmem != 0) {
+    ఒకవేళ (బైట్లు >= MAX_REQUEST) {
       MALLOC_FAILURE_ACTION;
     }
-    else {
-      size_t nb = request2size(bytes);
+    లేకపోతే {
+      size_t nb = request2size(బైట్లు);
       mchunkptr oldp = mem2chunk(oldmem);
-#if ! FOOTERS
+#ఒకవేళ ! FOOTERS
       mstate m = (mstate)msp;
-#else /* FOOTERS */
+#లేకపోతే /* FOOTERS */
       mstate m = get_mstate_for(oldp);
-      (void)msp; /* placate people compiling -Wunused */
-      if (!ok_magic(m)) {
+      (శూన్య)msp; /* placate people compiling -Wunused */
+      ఒకవేళ (!ok_magic(m)) {
         USAGE_ERROR_ACTION(m, oldmem);
-        return 0;
+        తిరిగి 0;
       }
-#endif /* FOOTERS */
-      if (!PREACTION(m)) {
+#అయితే_ముగింపు /* FOOTERS */
+      ఒకవేళ (!PREACTION(m)) {
         mchunkptr newp = try_realloc_chunk(m, oldp, nb, 0);
         POSTACTION(m);
-        if (newp == oldp) {
+        ఒకవేళ (newp == oldp) {
           check_inuse_chunk(m, newp);
           mem = oldmem;
         }
       }
     }
   }
-  return mem;
+  తిరిగి mem;
 }
 
-void* mspace_memalign(mspace msp, size_t alignment, size_t bytes) {
+శూన్య* mspace_memalign(mspace msp, size_t alignment, size_t బైట్లు) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ఒకవేళ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    తిరిగి 0;
   }
-  if (alignment <= MALLOC_ALIGNMENT)
-    return mspace_malloc(msp, bytes);
-  return internal_memalign(ms, alignment, bytes);
+  ఒకవేళ (alignment <= MALLOC_ALIGNMENT)
+    తిరిగి mspace_malloc(msp, బైట్లు);
+  తిరిగి అంతర్గత_memalign(ms, alignment, బైట్లు);
 }
 
-void** mspace_independent_calloc(mspace msp, size_t n_elements,
-                                 size_t elem_size, void* chunks[]) {
-  size_t sz = elem_size; /* serves as 1-element array */
+శూన్య** mspace_independent_calloc(mspace msp, size_t n_elements,
+                                 size_t elem_కొలత, శూన్య* chunks[]) {
+  size_t sz = elem_కొలత; /* serves as 1-element array */
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ఒకవేళ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    తిరిగి 0;
   }
-  return ialloc(ms, n_elements, &sz, 3, chunks);
+  తిరిగి ialloc(ms, n_elements, &sz, 3, chunks);
 }
 
-void** mspace_independent_comalloc(mspace msp, size_t n_elements,
-                                   size_t sizes[], void* chunks[]) {
+శూన్య** mspace_independent_comalloc(mspace msp, size_t n_elements,
+                                   size_t sizes[], శూన్య* chunks[]) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ఒకవేళ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
-    return 0;
+    తిరిగి 0;
   }
-  return ialloc(ms, n_elements, sizes, 0, chunks);
+  తిరిగి ialloc(ms, n_elements, sizes, 0, chunks);
 }
 
-size_t mspace_bulk_free(mspace msp, void* array[], size_t nelem) {
-  return internal_bulk_free((mstate)msp, array, nelem);
+size_t mspace_bulk_free(mspace msp, శూన్య* array[], size_t nelem) {
+  తిరిగి అంతర్గత_bulk_free((mstate)msp, array, nelem);
 }
 
-#if MALLOC_INSPECT_ALL
-void mspace_inspect_all(mspace msp,
-                        void(*handler)(void *start,
-                                       void *end,
-                                       size_t used_bytes,
-                                       void* callback_arg),
-                        void* arg) {
+#ఒకవేళ MALLOC_INSPECT_ALL
+శూన్య mspace_inspect_all(mspace msp,
+                        శూన్య(*handler)(శూన్య *ప్రారంభం,
+                                       శూన్య *చివర,
+                                       size_t వాడిన_బైట్లు,
+                                       శూన్య* callback_arg),
+                        శూన్య* arg) {
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    if (!PREACTION(ms)) {
-      internal_inspect_all(ms, handler, arg);
+  ఒకవేళ (ok_magic(ms)) {
+    ఒకవేళ (!PREACTION(ms)) {
+      అంతర్గత_inspect_all(ms, handler, arg);
       POSTACTION(ms);
     }
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
 }
-#endif /* MALLOC_INSPECT_ALL */
+#అయితే_ముగింపు /* MALLOC_INSPECT_ALL */
 
-int mspace_trim(mspace msp, size_t pad) {
-  int result = 0;
+పూర్ణాంకం mspace_trim(mspace msp, size_t pad) {
+  పూర్ణాంకం ఫలితం = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    if (!PREACTION(ms)) {
-      result = sys_trim(ms, pad);
+  ఒకవేళ (ok_magic(ms)) {
+    ఒకవేళ (!PREACTION(ms)) {
+      ఫలితం = sys_trim(ms, pad);
       POSTACTION(ms);
     }
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  తిరిగి ఫలితం;
 }
 
-#if !NO_MALLOC_STATS
-void mspace_malloc_stats(mspace msp) {
+#ఒకవేళ !NO_MALLOC_STATS
+శూన్య mspace_malloc_stats(mspace msp) {
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    internal_malloc_stats(ms);
+  ఒకవేళ (ok_magic(ms)) {
+    అంతర్గత_malloc_stats(ms);
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
 }
-#endif /* NO_MALLOC_STATS */
+#అయితే_ముగింపు /* NO_MALLOC_STATS */
 
 size_t mspace_footprint(mspace msp) {
-  size_t result = 0;
+  size_t ఫలితం = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    result = ms->footprint;
+  ఒకవేళ (ok_magic(ms)) {
+    ఫలితం = ms->footprint;
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  తిరిగి ఫలితం;
 }
 
 size_t mspace_max_footprint(mspace msp) {
-  size_t result = 0;
+  size_t ఫలితం = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    result = ms->max_footprint;
+  ఒకవేళ (ok_magic(ms)) {
+    ఫలితం = ms->max_footprint;
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  తిరిగి ఫలితం;
 }
 
-size_t mspace_footprint_limit(mspace msp) {
-  size_t result = 0;
+size_t mspace_footprint_హద్దు(mspace msp) {
+  size_t ఫలితం = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    size_t maf = ms->footprint_limit;
-    result = (maf == 0) ? MAX_SIZE_T : maf;
+  ఒకవేళ (ok_magic(ms)) {
+    size_t maf = ms->footprint_హద్దు;
+    ఫలితం = (maf == 0) ? MAX_కొలత_T : maf;
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  తిరిగి ఫలితం;
 }
 
-size_t mspace_set_footprint_limit(mspace msp, size_t bytes) {
-  size_t result = 0;
+size_t mspace_సమితి_footprint_హద్దు(mspace msp, size_t బైట్లు) {
+  size_t ఫలితం = 0;
   mstate ms = (mstate)msp;
-  if (ok_magic(ms)) {
-    if (bytes == 0)
-      result = granularity_align(1); /* Use minimal size */
-    if (bytes == MAX_SIZE_T)
-      result = 0;                    /* disable */
-    else
-      result = granularity_align(bytes);
-    ms->footprint_limit = result;
+  ఒకవేళ (ok_magic(ms)) {
+    ఒకవేళ (బైట్లు == 0)
+      ఫలితం = granularity_align(1); /* Use minimal size */
+    ఒకవేళ (బైట్లు == MAX_కొలత_T)
+      ఫలితం = 0;                    /* disable */
+    లేకపోతే
+      ఫలితం = granularity_align(బైట్లు);
+    ms->footprint_హద్దు = ఫలితం;
   }
-  else {
+  లేకపోతే {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return result;
+  తిరిగి ఫలితం;
 }
 
-#if !NO_MALLINFO
-struct mallinfo mspace_mallinfo(mspace msp) {
+#ఒకవేళ !NO_MALLINFO
+నిర్మాణం mallinfo mspace_mallinfo(mspace msp) {
   mstate ms = (mstate)msp;
-  if (!ok_magic(ms)) {
+  ఒకవేళ (!ok_magic(ms)) {
     USAGE_ERROR_ACTION(ms,ms);
   }
-  return internal_mallinfo(ms);
+  తిరిగి అంతర్గత_mallinfo(ms);
 }
-#endif /* NO_MALLINFO */
+#అయితే_ముగింపు /* NO_MALLINFO */
 
-size_t mspace_usable_size(const void* mem) {
-  if (mem != 0) {
+size_t mspace_usable_కొలత(స్థిరరాశి శూన్య* mem) {
+  ఒకవేళ (mem != 0) {
     mchunkptr p = mem2chunk(mem);
-    if (is_inuse(p))
-      return chunksize(p) - overhead_for(p);
+    ఒకవేళ (is_inuse(p))
+      తిరిగి chunksize(p) - overhead_for(p);
   }
-  return 0;
+  తిరిగి 0;
 }
 
-int mspace_mallopt(int param_number, int value) {
-  return change_mparam(param_number, value);
+పూర్ణాంకం mspace_mallopt(పూర్ణాంకం param_సంఖ్య, పూర్ణాంకం విలువ) {
+  తిరిగి change_mparam(param_సంఖ్య, విలువ);
 }
 
-#endif /* MSPACES */
+#అయితే_ముగింపు /* MSPACES */
 
 
 /* -------------------- Alternative MORECORE functions ------------------- */
