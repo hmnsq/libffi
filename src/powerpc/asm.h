@@ -30,7 +30,7 @@
 /* Macro for a label.  */
 #ifdef	__STDC__
 #define C_LABEL(name)		name##:
-#else
+#បើមិនដូច្នេះ
 #define C_LABEL(name)		name/**/:
 #endif
 
@@ -58,7 +58,7 @@
   mflr  %r11;								      \
   lwz   %r0,0b@got(%r11);						      \
   bl    JUMPTARGET(_mcount);
-#else  /* PIC */
+#បើមិនដូច្នេះ  /* PIC */
 #define CALL_MCOUNT							      \
   .section ".data";							      \
   .align ALIGNARG(2);							      \
@@ -70,7 +70,7 @@
   addi  %r0,%r11,0b@l;							      \
   bl    JUMPTARGET(_mcount);
 #endif /* PIC */
-#else  /* PROF */
+#បើមិនដូច្នេះ  /* PROF */
 #define CALL_MCOUNT		/* Do nothing.  */
 #endif /* PROF */
 
@@ -103,7 +103,7 @@
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   0:
-#else /* PROF */
+#បើមិនដូច្នេះ /* PROF */
 #define EFFI_ALIGN(name, alignt, words)					      \
   ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
   ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
@@ -117,7 +117,7 @@
 
 #ifdef PIC
 #define JUMPTARGET(name) name##@plt
-#else
+#បើមិនដូច្នេះ
 #define JUMPTARGET(name) name
 #endif
 

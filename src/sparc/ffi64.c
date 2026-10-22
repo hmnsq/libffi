@@ -32,11 +32,11 @@
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#ប្រសិនបើ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ប្រសិនបើ FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#បើមិនដូច្នេះ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
@@ -51,50 +51,50 @@
    into one integer.  The size is placed in the low byte, so that align
    and addition work correctly.  The mask is placed in the second byte.  */
 
-static int
-ffi_struct_float_mask (ffi_type *outer_type, int size_mask)
+static ចំនួនគត់
+ffi_struct_float_mask (ffi_type *outer_type, ចំនួនគត់ size_mask)
 {
   ffi_type **elts;
   ffi_type *t;
 
-  if (outer_type->type == FFI_TYPE_COMPLEX)
+  ប្រសិនបើ (outer_type->type == FFI_TYPE_COMPLEX)
     {
-      int m = 0, tt = outer_type->elements[0]->type;
+      ចំនួនគត់ m = 0, tt = outer_type->elements[0]->type;
       size_t z = outer_type->size;
 
-      if (tt == FFI_TYPE_FLOAT
+      ប្រសិនបើ (tt == FFI_TYPE_FLOAT
 	  || tt == FFI_TYPE_DOUBLE
 	  || tt == FFI_TYPE_LONGDOUBLE)
         m = (1 << (z / 4)) - 1;
-      return (m << 8) | z;
+      ត្រឡប់ (m << 8) | z;
     }
   FFI_ASSERT (outer_type->type == FFI_TYPE_STRUCT);
 
-  for (elts = outer_type->elements; (t = *elts) != NULL; elts++)
+  សម្រាប់ (elts = outer_type->elements; (t = *elts) != NULL; elts++)
     {
       size_t z = t->size;
-      int o, m, tt;
+      ចំនួនគត់ o, m, tt;
 
       size_mask = FFI_ALIGN(size_mask, t->alignment);
       switch (t->type)
 	{
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
 	  size_mask = ffi_struct_float_mask (t, size_mask);
 	  continue;
-	case FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_COMPLEX:
 	  tt = t->elements[0]->type;
-	  if (tt != FFI_TYPE_FLOAT
+	  ប្រសិនបើ (tt != FFI_TYPE_FLOAT
 	      && tt != FFI_TYPE_DOUBLE
 	      && tt != FFI_TYPE_LONGDOUBLE)
-	    break;
+	    bha_nga;
 	  /* FALLTHRU */
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  m = (1 << (z / 4)) - 1;	/* compute mask for type */
 	  o = (size_mask >> 2) & 0x3f;	/* extract word offset */
 	  size_mask |= m << (o + 8);	/* insert mask into place */
-	  break;
+	  bha_nga;
 	}
       size_mask += z;
     }
@@ -102,57 +102,57 @@ ffi_struct_float_mask (ffi_type *outer_type, int size_mask)
   size_mask = FFI_ALIGN(size_mask, outer_type->alignment);
   FFI_ASSERT ((size_mask & 0xff) == outer_type->size);
 
-  return size_mask;
+  ត្រឡប់ size_mask;
 }
 
 /* Merge floating point data into integer data.  If the structure is
    entirely floating point, simply return a pointer to the fp data.  */
 
 static void *
-ffi_struct_float_merge (int size_mask, void *vi, void *vf)
+ffi_struct_float_merge (ចំនួនគត់ size_mask, void *vi, void *vf)
 {
-  int size = size_mask & 0xff;
-  int mask = size_mask >> 8;
-  int n = size >> 2;
+  ចំនួនគត់ size = size_mask & 0xff;
+  ចំនួនគត់ mask = size_mask >> 8;
+  ចំនួនគត់ n = size >> 2;
 
-  if (mask == 0)
-    return vi;
-  else if (mask == (1 << n) - 1)
-    return vf;
-  else
+  ប្រសិនបើ (mask == 0)
+    ត្រឡប់ vi;
+  បើមិនដូច្នេះ ប្រសិនបើ (mask == (1 << n) - 1)
+    ត្រឡប់ vf;
+  បើមិនដូច្នេះ
     {
-      unsigned int *wi = vi, *wf = vf;
-      int i;
+      unsigned ចំនួនគត់ *wi = vi, *wf = vf;
+      ចំនួនគត់ i;
 
-      for (i = 0; i < n; ++i)
-	if ((mask >> i) & 1)
+      សម្រាប់ (i = 0; i < n; ++i)
+	ប្រសិនបើ ((mask >> i) & 1)
 	  wi[i] = wf[i];
 
-      return vi;
+      ត្រឡប់ vi;
     }
 }
 
 /* Similar, but place the data into VD in the end.  */
 
 void FFI_HIDDEN
-ffi_struct_float_copy (int size_mask, void *vd, void *vi, void *vf)
+ffi_struct_float_copy (ចំនួនគត់ size_mask, void *vd, void *vi, void *vf)
 {
-  int size = size_mask & 0xff;
-  int mask = size_mask >> 8;
-  int n = size >> 2;
+  ចំនួនគត់ size = size_mask & 0xff;
+  ចំនួនគត់ mask = size_mask >> 8;
+  ចំនួនគត់ n = size >> 2;
 
-  if (mask == 0)
+  ប្រសិនបើ (mask == 0)
     ;
-  else if (mask == (1 << n) - 1)
+  បើមិនដូច្នេះ ប្រសិនបើ (mask == (1 << n) - 1)
     vi = vf;
-  else
+  បើមិនដូច្នេះ
     {
-      unsigned int *wd = vd, *wi = vi, *wf = vf;
-      int i;
+      unsigned ចំនួនគត់ *wd = vd, *wi = vi, *wf = vf;
+      ចំនួនគត់ i;
 
-      for (i = 0; i < n; ++i)
+      សម្រាប់ (i = 0; i < n; ++i)
 	wd[i] = ((mask >> i) & 1 ? wf : wi)[i];
-      return;
+      ត្រឡប់;
     }
   memcpy (vd, vi, size);
 }
@@ -163,100 +163,100 @@ static ffi_status
 ffi_prep_cif_machdep_core(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
+  ចំនួនគត់ rtt = rtype->type;
   size_t bytes = 0;
-  int i, n, flags;
+  ចំនួនគត់ i, n, flags;
 
   /* Set the return type flag */
   switch (rtt)
     {
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       flags = SPARC_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      bha_nga;
+    pak_sa FFI_TYPE_FLOAT:
       flags = SPARC_RET_F_1;
-      break;
-    case FFI_TYPE_DOUBLE:
+      bha_nga;
+    pak_sa FFI_TYPE_DOUBLE:
       flags = SPARC_RET_F_2;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      bha_nga;
+    pak_sa FFI_TYPE_LONGDOUBLE:
       flags = SPARC_RET_F_4;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_COMPLEX:
-    case FFI_TYPE_STRUCT:
-      if (rtype->size > 32)
+    pak_sa FFI_TYPE_COMPLEX:
+    pak_sa FFI_TYPE_STRUCT:
+      ប្រសិនបើ (rtype->size > 32)
 	{
 	  flags = SPARC_RET_VOID | SPARC_FLAG_RET_IN_MEM;
 	  bytes = 8;
 	}
-      else
+      បើមិនដូច្នេះ
 	{
-	  int size_mask = ffi_struct_float_mask (rtype, 0);
-	  int word_size = (size_mask >> 2) & 0x3f;
-	  int all_mask = (1 << word_size) - 1;
-	  int fp_mask = size_mask >> 8;
+	  ចំនួនគត់ size_mask = ffi_struct_float_mask (rtype, 0);
+	  ចំនួនគត់ word_size = (size_mask >> 2) & 0x3f;
+	  ចំនួនគត់ all_mask = (1 << word_size) - 1;
+	  ចំនួនគត់ fp_mask = size_mask >> 8;
 
 	  flags = (size_mask << SPARC_SIZEMASK_SHIFT) | SPARC_RET_STRUCT;
 
 	  /* For special cases of all-int or all-fp, we can return
 	     the value directly without popping through a struct copy.  */
-	  if (fp_mask == 0)
+	  ប្រសិនបើ (fp_mask == 0)
 	    {
-	      if (rtype->alignment >= 8)
+	      ប្រសិនបើ (rtype->alignment >= 8)
 		{
-		  if (rtype->size == 8)
+		  ប្រសិនបើ (rtype->size == 8)
 		    flags = SPARC_RET_INT64;
-		  else if (rtype->size == 16)
+		  បើមិនដូច្នេះ ប្រសិនបើ (rtype->size == 16)
 		    flags = SPARC_RET_INT128;
 		}
 	    }
-	  else if (fp_mask == all_mask)
+	  បើមិនដូច្នេះ ប្រសិនបើ (fp_mask == all_mask)
 	    switch (word_size)
 	      {
-	      case 1: flags = SPARC_RET_F_1; break;
-	      case 2: flags = SPARC_RET_F_2; break;
-	      case 3: flags = SP_V9_RET_F_3; break;
-	      case 4: flags = SPARC_RET_F_4; break;
+	      pak_sa 1: flags = SPARC_RET_F_1; bha_nga;
+	      pak_sa 2: flags = SPARC_RET_F_2; bha_nga;
+	      pak_sa 3: flags = SP_V9_RET_F_3; bha_nga;
+	      pak_sa 4: flags = SPARC_RET_F_4; bha_nga;
 	      /* 5 word structures skipped; handled via RET_STRUCT.  */
-	      case 6: flags = SPARC_RET_F_6; break;
+	      pak_sa 6: flags = SPARC_RET_F_6; bha_nga;
 	      /* 7 word structures skipped; handled via RET_STRUCT.  */
-	      case 8: flags = SPARC_RET_F_8; break;
+	      pak_sa 8: flags = SPARC_RET_F_8; bha_nga;
 	      }
 	}
-      break;
+      bha_nga;
 
-    case FFI_TYPE_SINT8:
+    pak_sa FFI_TYPE_SINT8:
       flags = SPARC_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT8:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT8:
       flags = SPARC_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT16:
       flags = SPARC_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT16:
       flags = SPARC_RET_UINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+      bha_nga;
+    pak_sa FFI_TYPE_INT:
+    pak_sa FFI_TYPE_SINT32:
       flags = SP_V9_RET_SINT32;
-      break;
-    case FFI_TYPE_UINT32:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT32:
       flags = SPARC_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_POINTER:
       flags = SPARC_RET_INT64;
-      break;
+      bha_nga;
 
     default:
       abort();
     }
 
   bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  សម្រាប់ (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t z = ty->size;
@@ -264,25 +264,25 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 
       switch (ty->type)
 	{
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_STRUCT:
 	  /* Large structs passed by reference.  */
-	  if (z > 16)
+	  ប្រសិនបើ (z > 16)
 	    {
 	      a = z = 8;
-	      break;
+	      bha_nga;
 	    }
 	  /* Small structs may be passed in integer or fp regs or both.  */
-	  if (bytes >= 16*8)
-	    break;
-	  if ((ffi_struct_float_mask (ty, 0) & 0xff00) == 0)
-	    break;
+	  ប្រសិនបើ (bytes >= 16*8)
+	    bha_nga;
+	  ប្រសិនបើ ((ffi_struct_float_mask (ty, 0) & 0xff00) == 0)
+	    bha_nga;
 	  /* FALLTHRU */
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  flags |= SPARC_FLAG_FP_ARGS;
-	  break;
+	  bha_nga;
 	}
       bytes = FFI_ALIGN(bytes, a);
       bytes += FFI_ALIGN(z, 8);
@@ -290,7 +290,7 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary. */
-  if (bytes < 6 * 8)
+  ប្រសិនបើ (bytes < 6 * 8)
     bytes = 6 * 8;
 
   /* The stack must be 2 word aligned, so round bytes up appropriately. */
@@ -301,21 +301,21 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 
   cif->bytes = bytes;
   cif->flags = flags;
-  return FFI_OK;
+  ត្រឡប់ FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   cif->nfixedargs = cif->nargs;
-  return ffi_prep_cif_machdep_core(cif);
+  ត្រឡប់ ffi_prep_cif_machdep_core(cif);
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
 {
   cif->nfixedargs = nfixedargs;
-  return ffi_prep_cif_machdep_core(cif);
+  ត្រឡប់ ffi_prep_cif_machdep_core(cif);
 }
 
 extern void ffi_call_v9(ffi_cif *cif, void (*fn)(void), void *rvalue,
@@ -324,23 +324,23 @@ extern void ffi_call_v9(ffi_cif *cif, void (*fn)(void), void *rvalue,
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-int FFI_HIDDEN
+ចំនួនគត់ FFI_HIDDEN
 ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  ចំនួនគត់ flags = cif->flags;
+  ចំនួនគត់ i, nargs;
 
-  if (rvalue == NULL)
+  ប្រសិនបើ (rvalue == NULL)
     {
-      if (flags & SPARC_FLAG_RET_IN_MEM)
+      ប្រសិនបើ (flags & SPARC_FLAG_RET_IN_MEM)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
-	  rvalue = (char *)argp + cif->bytes;
+	  rvalue = (var_na *)argp + cif->bytes;
 	}
-      else
+      បើមិនដូច្នេះ
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -353,11 +353,11 @@ ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
   memset(argp, 0, 6*8);
 #endif
 
-  if (flags & SPARC_FLAG_RET_IN_MEM)
+  ប្រសិនបើ (flags & SPARC_FLAG_RET_IN_MEM)
     *argp++ = (unsigned long)rvalue;
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  សម្រាប់ (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
       void *a = avalue[i];
@@ -365,61 +365,61 @@ ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 
       switch (ty->type)
 	{
-	case FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_SINT8:
 	  *argp++ = *(SINT8 *)a;
-	  break;
-	case FFI_TYPE_UINT8:
+	  bha_nga;
+	pak_sa FFI_TYPE_UINT8:
 	  *argp++ = *(UINT8 *)a;
-	  break;
-	case FFI_TYPE_SINT16:
+	  bha_nga;
+	pak_sa FFI_TYPE_SINT16:
 	  *argp++ = *(SINT16 *)a;
-	  break;
-	case FFI_TYPE_UINT16:
+	  bha_nga;
+	pak_sa FFI_TYPE_UINT16:
 	  *argp++ = *(UINT16 *)a;
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	  bha_nga;
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_SINT32:
 	  *argp++ = *(SINT32 *)a;
-	  break;
-	case FFI_TYPE_UINT32:
+	  bha_nga;
+	pak_sa FFI_TYPE_UINT32:
 	  *argp++ = *(UINT32 *)a;
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	  bha_nga;
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_POINTER:
 	  *argp++ = *(UINT64 *)a;
-	  break;
-	case FFI_TYPE_FLOAT:
+	  bha_nga;
+	pak_sa FFI_TYPE_FLOAT:
 	  flags |= SPARC_FLAG_FP_ARGS;
 	  *argp++ = *(UINT32 *)a;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  bha_nga;
+	pak_sa FFI_TYPE_DOUBLE:
 	  flags |= SPARC_FLAG_FP_ARGS;
 	  *argp++ = *(UINT64 *)a;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_STRUCT:
 	  z = ty->size;
-	  if (z > 16)
+	  ប្រសិនបើ (z > 16)
 	    {
 	      /* For structures larger than 16 bytes we pass reference.  */
 	      *argp++ = (unsigned long)a;
-	      break;
+	      bha_nga;
 	    }
-	  if (((unsigned long)argp & 15) && ty->alignment > 8)
+	  ប្រសិនបើ (((unsigned long)argp & 15) && ty->alignment > 8)
 	    argp++;
 	  memcpy(argp, a, z);
 	  argp += FFI_ALIGN(z, 8) / 8;
-	  break;
+	  bha_nga;
 
 	default:
 	  abort();
 	}
     }
 
-  return flags;
+  ត្រឡប់ flags;
 }
 
 static void
@@ -433,23 +433,23 @@ ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   FFI_ASSERT (cif->abi == FFI_V9);
 
-  if (rvalue == NULL && (cif->flags & SPARC_FLAG_RET_IN_MEM))
+  ប្រសិនបើ (rvalue == NULL && (cif->flags & SPARC_FLAG_RET_IN_MEM))
     bytes += FFI_ALIGN (cif->rtype->size, 16);
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  សម្រាប់ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      ចំនួនគត់ size = at->size;
+      ប្រសិនបើ (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          var_na *argcopy = alloca (size);
+          ប្រសិនបើ (avalue_copy == NULL)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * parimaa_na (void *));
+              memcpy (avalue_copy, avalue, nargs * parimaa_na (void *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -474,12 +474,12 @@ ffi_call_go(ffi_cif *cif, void (*fn)(void), void *rvalue,
 }
 
 #ifdef __GNUC__
-static inline void
+static anta_hstha void
 ffi_flush_icache (void *p)
 {
-  __asm__ volatile ("flush	%0; flush %0+8" : : "r" (p) : "memory");
+  __asm__ ca_ncala ("flush	%0; flush %0+8" : : "r" (p) : "memory");
 }
-#else
+#បើមិនដូច្នេះ
 extern void ffi_flush_icache (void *) FFI_HIDDEN;
 #endif
 
@@ -493,11 +493,11 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+  unsigned ចំនួនគត់ *tramp = (unsigned ចំនួនគត់ *) &closure->tramp[0];
   unsigned long fn;
 
-  if (cif->abi != FFI_V9)
-    return FFI_BAD_ABI;
+  ប្រសិនបើ (cif->abi != FFI_V9)
+    ត្រឡប់ FFI_BAD_ABI;
 
   /* Trampoline address is equal to the closure address.  We take advantage
      of that to reduce the trampoline size by 8 bytes. */
@@ -514,24 +514,24 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
   ffi_flush_icache (closure);
 
-  return FFI_OK;
+  ត្រឡប់ FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
 		     void (*fun)(ffi_cif*, void*, void**, void*))
 {
-  if (cif->abi != FFI_V9)
-    return FFI_BAD_ABI;
+  ប្រសិនបើ (cif->abi != FFI_V9)
+    ត្រឡប់ FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_v9;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  ត្រឡប់ FFI_OK;
 }
 
-int FFI_HIDDEN
+ចំនួនគត់ FFI_HIDDEN
 ffi_closure_sparc_inner_v9(ffi_cif *cif,
 			   void (*fun)(ffi_cif*, void*, void**, void*),
 			   void *user_data, void *rvalue,
@@ -539,30 +539,30 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
 {
   ffi_type **arg_types;
   void **avalue;
-  int i, argn, argx, nargs, flags, nfixedargs;
+  ចំនួនគត់ i, argn, argx, nargs, flags, nfixedargs;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
   flags = cif->flags;
   nfixedargs = cif->nfixedargs;
 
-  avalue = alloca(nargs * sizeof(void *));
+  avalue = alloca(nargs * parimaa_na(void *));
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  */
-  if (flags & SPARC_FLAG_RET_IN_MEM)
+  ប្រសិនបើ (flags & SPARC_FLAG_RET_IN_MEM)
     {
       rvalue = (void *) gpr[0];
       /* Skip the structure return address.  */
       argn = 1;
     }
-  else
+  បើមិនដូច្នេះ
     argn = 0;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++, argn = argx)
+  សម្រាប់ (i = 0; i < nargs; i++, argn = argx)
     {
-      int named = i < nfixedargs;
+      ចំនួនគត់ named = i < nfixedargs;
       ffi_type *ty = arg_types[i];
       void *a = &gpr[argn];
       size_t z;
@@ -570,58 +570,58 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
       argx = argn + 1;
       switch (ty->type)
 	{
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_STRUCT:
 	  z = ty->size;
-	  if (z > 16)
+	  ប្រសិនបើ (z > 16)
 	    a = *(void **)a;
-	  else
+	  បើមិនដូច្នេះ
 	    {
 	      argx = argn + FFI_ALIGN (z, 8) / 8;
-	      if (named && argn < 16)
+	      ប្រសិនបើ (named && argn < 16)
 		{
-		  int size_mask = ffi_struct_float_mask (ty, 0);
-		  int argn_mask = (0xffff00 >> argn) & 0xff00;
+		  ចំនួនគត់ size_mask = ffi_struct_float_mask (ty, 0);
+		  ចំនួនគត់ argn_mask = (0xffff00 >> argn) & 0xff00;
 
 		  /* Eliminate fp registers off the end.  */
 		  size_mask = (size_mask & 0xff) | (size_mask & argn_mask);
 		  a = ffi_struct_float_merge (size_mask, gpr+argn, fpr+argn);
 		}
 	    }
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  argn = FFI_ALIGN (argn, 2);
 	  a = (named && argn < 16 ? fpr : gpr) + argn;
 	  argx = argn + 2;
-	  break;
-	case FFI_TYPE_DOUBLE:
-	  if (named && argn < 16)
+	  bha_nga;
+	pak_sa FFI_TYPE_DOUBLE:
+	  ប្រសិនបើ (named && argn < 16)
 	    a = fpr + argn;
-	  break;
-	case FFI_TYPE_FLOAT:
-	  if (named && argn < 16)
+	  bha_nga;
+	pak_sa FFI_TYPE_FLOAT:
+	  ប្រសិនបើ (named && argn < 16)
 	    a = fpr + argn;
 	  a += 4;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_POINTER:
+	  bha_nga;
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT32:
 	  a += 4;
-	  break;
-        case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT16:
+	  bha_nga;
+        pak_sa FFI_TYPE_UINT16:
+        pak_sa FFI_TYPE_SINT16:
 	  a += 6;
-	  break;
-        case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT8:
+	  bha_nga;
+        pak_sa FFI_TYPE_UINT8:
+        pak_sa FFI_TYPE_SINT8:
 	  a += 7;
-	  break;
+	  bha_nga;
 
 	default:
 	  abort();
@@ -633,6 +633,6 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  ត្រឡប់ flags;
 }
 #endif /* SPARC64 */

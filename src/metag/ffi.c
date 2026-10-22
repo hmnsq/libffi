@@ -34,17 +34,17 @@
  * allocated for the function's arguments
  */
 
-unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
+unsigned ចំនួនគត់ ffi_prep_args(var_na *stack, extended_cif *ecif)
 {
-	register unsigned int i;
-	register void **p_argv;
-	register char *argp;
-	register ffi_type **p_arg;
+	pa_njikaa unsigned ចំនួនគត់ i;
+	pa_njikaa void **p_argv;
+	pa_njikaa var_na *argp;
+	pa_njikaa ffi_type **p_arg;
 
 	argp = stack;
 
 	/* Store return value */
-	if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
+	ប្រសិនបើ ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
 		*(void **) argp = ecif->rvalue;
 	}
@@ -52,7 +52,7 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 	p_argv = ecif->avalue;
 
 	/* point to next location */
-	for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
+	សម្រាប់ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
 	{
 		size_t z;
 
@@ -61,39 +61,39 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 		argp -= z;
 
 		/* Align if necessary */
-		argp = (char *) FFI_ALIGN_DOWN(FFI_ALIGN_DOWN(argp, (*p_arg)->alignment), 4);
+		argp = (var_na *) FFI_ALIGN_DOWN(FFI_ALIGN_DOWN(argp, (*p_arg)->alignment), 4);
 
-		if (z < sizeof(int)) {
-			z = sizeof(int);
+		ប្រសិនបើ (z < parimaa_na(ចំនួនគត់)) {
+			z = parimaa_na(ចំនួនគត់);
 			switch ((*p_arg)->type)
 			{
-			case FFI_TYPE_SINT8:
-				*(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-				break;
-			case FFI_TYPE_UINT8:
-				*(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-			case FFI_TYPE_STRUCT:
+			pak_sa FFI_TYPE_SINT8:
+				*(signed ចំនួនគត់ *) argp = (signed ចំនួនគត់)*(SINT8 *)(* p_argv);
+				bha_nga;
+			pak_sa FFI_TYPE_UINT8:
+				*(unsigned ចំនួនគត់ *) argp = (unsigned ចំនួនគត់)*(UINT8 *)(* p_argv);
+				bha_nga;
+			pak_sa FFI_TYPE_SINT16:
+				*(signed ចំនួនគត់ *) argp = (signed ចំនួនគត់)*(SINT16 *)(* p_argv);
+				bha_nga;
+			pak_sa FFI_TYPE_UINT16:
+				*(unsigned ចំនួនគត់ *) argp = (unsigned ចំនួនគត់)*(UINT16 *)(* p_argv);
+			pak_sa FFI_TYPE_STRUCT:
 				memcpy(argp, *p_argv, (*p_arg)->size);
-				break;
+				bha_nga;
 			default:
 				FFI_ASSERT(0);
 			}
-		} else if ( z == sizeof(int)) {
-			*(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-		} else {
+		} បើមិនដូច្នេះ ប្រសិនបើ ( z == parimaa_na(ចំនួនគត់)) {
+			*(unsigned ចំនួនគត់ *) argp = (unsigned ចំនួនគត់)*(UINT32 *)(* p_argv);
+		} បើមិនដូច្នេះ {
 			memcpy(argp, *p_argv, z);
 		}
 	}
 
 	/* return the size of the arguments to be passed in registers,
 	   padded to an 8 byte boundary to preserve stack alignment */
-	return FFI_ALIGN(MIN(stack - argp, 6*4), 8);
+	ត្រឡប់ FFI_ALIGN(MIN(stack - argp, 6*4), 8);
 }
 
 /* Perform machine dependent cif processing */
@@ -102,16 +102,16 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	ffi_type **ptr;
 	unsigned i, bytes = 0;
 
-	for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
-		if ((*ptr)->size == 0)
-			return FFI_BAD_TYPEDEF;
+	សម្រាប់ (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
+		ប្រសិនបើ ((*ptr)->size == 0)
+			ត្រឡប់ FFI_BAD_TYPEDEF;
 
 		/* Perform a sanity check on the argument type, do this
 		   check after the initialization.  */
 		FFI_ASSERT_VALID_TYPE(*ptr);
 
 		/* Add any padding if necessary */
-		if (((*ptr)->alignment - 1) & bytes)
+		ប្រសិនបើ (((*ptr)->alignment - 1) & bytes)
 			bytes = FFI_ALIGN(bytes, (*ptr)->alignment);
 
 		bytes += FFI_ALIGN((*ptr)->size, 4);
@@ -121,8 +121,8 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	bytes = FFI_ALIGN(bytes, 8);
 
 	/* Make space for the return structure pointer */
-	if (cif->rtype->type == FFI_TYPE_STRUCT) {
-		bytes += sizeof(void*);
+	ប្រសិនបើ (cif->rtype->type == FFI_TYPE_STRUCT) {
+		bytes += parimaa_na(void*);
 
 		/* Ensure stack is aligned to an 8-byte boundary */
 		bytes = FFI_ALIGN(bytes, 8);
@@ -132,35 +132,35 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 
 	/* Set the return type flag */
 	switch (cif->rtype->type) {
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_VOID:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_DOUBLE:
 		cif->flags = (unsigned) cif->rtype->type;
-		break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+		bha_nga;
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
 		cif->flags = (unsigned) FFI_TYPE_SINT64;
-		break;
-	case FFI_TYPE_STRUCT:
+		bha_nga;
+	pak_sa FFI_TYPE_STRUCT:
 		/* Meta can store return values which are <= 64 bits */
-		if (cif->rtype->size <= 4)
+		ប្រសិនបើ (cif->rtype->size <= 4)
 			/* Returned to D0Re0 as 32-bit value */
 			cif->flags = (unsigned)FFI_TYPE_INT;
-		else if ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
+		បើមិនដូច្នេះ ប្រសិនបើ ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
 			/* Returned valued is stored to D1Re0|R0Re0 */
 			cif->flags = (unsigned)FFI_TYPE_DOUBLE;
-		else
+		បើមិនដូច្នេះ
 			/* value stored in memory */
 			cif->flags = (unsigned)FFI_TYPE_STRUCT;
-		break;
+		bha_nga;
 	default:
 		cif->flags = (unsigned)FFI_TYPE_INT;
-		break;
+		bha_nga;
 	}
-	return FFI_OK;
+	ត្រឡប់ FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*fn)(void), extended_cif *, unsigned, unsigned, double *);
+extern void ffi_call_SYSV(void (*fn)(void), extended_cif *, unsigned, unsigned, dviguu_na *);
 
 /*
  * Exported in API. Entry point
@@ -174,46 +174,46 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
 	extended_cif ecif;
 
-	int small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
+	ចំនួនគត់ small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
 	ecif.cif = cif;
 	ecif.avalue = avalue;
 
-	double temp;
+	dviguu_na temp;
 
 	/*
 	 * If the return value is a struct and we don't have a return value address
 	 * then we need to make one
 	 */
 
-	if ((rvalue == NULL ) && (cif->flags == FFI_TYPE_STRUCT))
+	ប្រសិនបើ ((rvalue == NULL ) && (cif->flags == FFI_TYPE_STRUCT))
 		ecif.rvalue = alloca(cif->rtype->size);
-	else if (small_struct)
+	បើមិនដូច្នេះ ប្រសិនបើ (small_struct)
 		ecif.rvalue = &temp;
-	else
+	បើមិនដូច្នេះ
 		ecif.rvalue = rvalue;
 
 	switch (cif->abi) {
-	case FFI_SYSV:
+	pak_sa FFI_SYSV:
 		ffi_call_SYSV(fn, &ecif, cif->bytes, cif->flags, ecif.rvalue);
-		break;
+		bha_nga;
 	default:
 		FFI_ASSERT(0);
-		break;
+		bha_nga;
 	}
 
-	if (small_struct)
+	ប្រសិនបើ (small_struct)
 		memcpy (rvalue, &temp, cif->rtype->size);
 }
 
 /* private members */
 
-static void ffi_prep_incoming_args_SYSV (char *, void **, void **,
+static void ffi_prep_incoming_args_SYSV (var_na *, void **, void **,
 	ffi_cif*, float *);
 
 void ffi_closure_SYSV (ffi_closure *);
 
 /* Do NOT change that without changing the FFI_TRAMPOLINE_SIZE */
-extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
+extern unsigned ចំនួនគត់ ffi_metag_trampoline[10]; /* 10 instructions */
 
 /* end of private members */
 
@@ -224,10 +224,10 @@ extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
  *
  * At this point, tramp[0] == __ctx !
  */
-void ffi_init_trampoline(unsigned char *__tramp, unsigned int __fun, unsigned int __ctx) {
-	memcpy (__tramp, ffi_metag_trampoline, sizeof(ffi_metag_trampoline));
-	*(unsigned int*) &__tramp[40] = __ctx;
-	*(unsigned int*) &__tramp[44] = __fun;
+void ffi_init_trampoline(unsigned var_na *__tramp, unsigned ចំនួនគត់ __fun, unsigned ចំនួនគត់ __ctx) {
+	memcpy (__tramp, ffi_metag_trampoline, parimaa_na(ffi_metag_trampoline));
+	*(unsigned ចំនួនគត់*) &__tramp[40] = __ctx;
+	*(unsigned ចំនួនគត់*) &__tramp[44] = __fun;
 	/* This will flush the instruction cache */
 	__builtin_meta2_cachewd(&__tramp[0], 1);
 	__builtin_meta2_cachewd(&__tramp[47], 1);
@@ -246,26 +246,26 @@ ffi_prep_closure_loc (ffi_closure *closure,
 {
 	void (*closure_func)(ffi_closure*) = NULL;
 
-	if (cif->abi == FFI_SYSV)
+	ប្រសិនបើ (cif->abi == FFI_SYSV)
 		closure_func = &ffi_closure_SYSV;
-	else
-		return FFI_BAD_ABI;
+	បើមិនដូច្នេះ
+		ត្រឡប់ FFI_BAD_ABI;
 
 	ffi_init_trampoline(
-		(unsigned char*)&closure->tramp[0],
-		(unsigned int)closure_func,
-		(unsigned int)codeloc);
+		(unsigned var_na*)&closure->tramp[0],
+		(unsigned ចំនួនគត់)closure_func,
+		(unsigned ចំនួនគត់)codeloc);
 
 	closure->cif = cif;
 	closure->user_data = user_data;
 	closure->fun = fun;
 
-	return FFI_OK;
+	ត្រឡប់ FFI_OK;
 }
 
 
 /* This function is jumped to by the trampoline */
-unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
+unsigned ចំនួនគត់ ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 	ffi_closure *closure;
 	void **respp;
 	void *args;
@@ -275,7 +275,7 @@ unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 	void **arg_area;
 
 	cif = closure->cif;
-	arg_area = (void**) alloca (cif->nargs * sizeof (void*));
+	arg_area = (void**) alloca (cif->nargs * parimaa_na (void*));
 
 	/*
 	 * This call will initialize ARG_AREA, such that each
@@ -288,43 +288,43 @@ unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 
 	(closure->fun) ( cif, *respp, arg_area, closure->user_data);
 
-	return cif->flags;
+	ត្រឡប់ cif->flags;
 }
 
-static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
+static void ffi_prep_incoming_args_SYSV(var_na *stack, void **rvalue,
 	void **avalue, ffi_cif *cif,
 	float *vfp_stack)
 {
-	register unsigned int i;
-	register void **p_argv;
-	register char *argp;
-	register ffi_type **p_arg;
+	pa_njikaa unsigned ចំនួនគត់ i;
+	pa_njikaa void **p_argv;
+	pa_njikaa var_na *argp;
+	pa_njikaa ffi_type **p_arg;
 
 	/* stack points to original arguments */
 	argp = stack;
 
 	/* Store return value */
-	if ( cif->flags == FFI_TYPE_STRUCT ) {
+	ប្រសិនបើ ( cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
 		*rvalue = *(void **) argp;
 	}
 
 	p_argv = avalue;
 
-	for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
+	សម្រាប់ (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
 		size_t z;
 		size_t alignment;
 
 		alignment = (*p_arg)->alignment;
-		if (alignment < 4)
+		ប្រសិនបើ (alignment < 4)
 			alignment = 4;
-		if ((alignment - 1) & (unsigned)argp)
-			argp = (char *) FFI_ALIGN(argp, alignment);
+		ប្រសិនបើ ((alignment - 1) & (unsigned)argp)
+			argp = (var_na *) FFI_ALIGN(argp, alignment);
 
 		z = (*p_arg)->size;
 		*p_argv = (void*) argp;
 		p_argv++;
 		argp -= z;
 	}
-	return;
+	ត្រឡប់;
 }

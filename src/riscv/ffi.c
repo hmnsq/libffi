@@ -35,71 +35,71 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#if __riscv_float_abi_double
+#ប្រសិនបើ __riscv_float_abi_double
 #define ABI_FLEN 64
-typedef union {
+typedef sa_ngha {
     uint64_t i;
-    double d;
+    dviguu_na d;
 } float_reg;
 #elif __riscv_float_abi_single
 #define ABI_FLEN 32
-typedef union {
+typedef sa_ngha {
     float f;
 } float_reg;
 #endif
 
 #define NARGREG 8
 #define STKALIGN 16
-#define MAXCOPYARG (2 * sizeof(double))
+#define MAXCOPYARG (2 * parimaa_na(dviguu_na))
 
-typedef struct call_context
+typedef sa_nracanaa call_context
 {
-#if ABI_FLEN
+#ប្រសិនបើ ABI_FLEN
     float_reg fa[8];
 #endif
     size_t a[8];
     /* used by the assembly code to in-place construct its own stack frame */
-    char frame[16];
+    var_na frame[16];
 } call_context;
 
-typedef struct call_builder
+typedef sa_nracanaa call_builder
 {
     call_context *aregs;
-    int used_integer;
-    int used_float;
+    ចំនួនគត់ used_integer;
+    ចំនួនគត់ used_float;
     size_t *used_stack;
     void *struct_stack;
 } call_builder;
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if __SIZEOF_POINTER__ == 8
+#ប្រសិនបើ __SIZEOF_POINTER__ == 8
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#បើមិនដូច្នេះ
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
 #endif
 
-#if ABI_FLEN
-typedef struct {
-    char as_elements, type1, offset2, type2;
+#ប្រសិនបើ ABI_FLEN
+typedef sa_nracanaa {
+    var_na as_elements, type1, offset2, type2;
 } float_struct_info;
 
-#if ABI_FLEN >= 64
+#ប្រសិនបើ ABI_FLEN >= 64
 #define IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
-#else
+#បើមិនដូច្នេះ
 #define IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
 #endif
 
 static ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
-    int i;
-    if (out == out_end) return out;
-    if (in->type != FFI_TYPE_STRUCT) {
+    ចំនួនគត់ i;
+    ប្រសិនបើ (out == out_end) ត្រឡប់ out;
+    ប្រសិនបើ (in->type != FFI_TYPE_STRUCT) {
         *(out++) = in;
-    } else {
-        for (i = 0; in->elements[i]; i++)
+    } បើមិនដូច្នេះ {
+        សម្រាប់ (i = 0; in->elements[i]; i++)
             out = flatten_struct(in->elements[i], out, out_end);
     }
-    return out;
+    ត្រឡប់ out;
 }
 
 /* Structs with at most two fields after flattening, one of which is of
@@ -108,23 +108,23 @@ static ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_en
 static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *top) {
     float_struct_info ret = {0, 0, 0, 0};
     ffi_type *fields[3];
-    int num_floats, num_ints;
-    int num_fields = flatten_struct(top, fields, fields + 3) - fields;
+    ចំនួនគត់ num_floats, num_ints;
+    ចំនួនគត់ num_fields = flatten_struct(top, fields, fields + 3) - fields;
 
-    if (num_fields == 1) {
-        if (IS_FLOAT(fields[0]->type)) {
+    ប្រសិនបើ (num_fields == 1) {
+        ប្រសិនបើ (IS_FLOAT(fields[0]->type)) {
             ret.as_elements = 1;
             ret.type1 = fields[0]->type;
         }
-    } else if (num_fields == 2) {
+    } បើមិនដូច្នេះ ប្រសិនបើ (num_fields == 2) {
         num_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
         num_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
-        if (num_floats == 0 || num_floats + num_ints != 2)
-            return ret;
-        if (cb->used_float + num_floats > NARGREG || cb->used_integer + (2 - num_floats) > NARGREG)
-            return ret;
-        if (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
-            return ret;
+        ប្រសិនបើ (num_floats == 0 || num_floats + num_ints != 2)
+            ត្រឡប់ ret;
+        ប្រសិនបើ (cb->used_float + num_floats > NARGREG || cb->used_integer + (2 - num_floats) > NARGREG)
+            ត្រឡប់ ret;
+        ប្រសិនបើ (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
+            ត្រឡប់ ret;
 
         ret.type1 = fields[0]->type;
         ret.type2 = fields[1]->type;
@@ -132,13 +132,13 @@ static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *t
         ret.as_elements = 1;
     }
 
-    return ret;
+    ត្រឡប់ ret;
 }
 
-#if ABI_FLEN >= 64
+#ប្រសិនបើ ABI_FLEN >= 64
 /* Float values in wider RISC-V FP registers are NaN-boxed */
 static void marshal_float(call_builder *cb, void *data) {
-    union {
+    sa_ngha {
         uint32_t i;
         float f;
     } value;
@@ -149,7 +149,7 @@ static void marshal_float(call_builder *cb, void *data) {
 }
 
 static void unmarshal_float(call_builder *cb, void *data) {
-    union {
+    sa_ngha {
         uint32_t i;
         float f;
     } value;
@@ -161,209 +161,209 @@ static void unmarshal_float(call_builder *cb, void *data) {
 #endif
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
+static void marshal_atom(call_builder *cb, ចំនួនគត់ type, void *data) {
     size_t value = 0;
     switch (type) {
-        case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
-        case FFI_TYPE_SINT8: value = *(int8_t *)data; break;
-        case FFI_TYPE_UINT16: value = *(uint16_t *)data; break;
-        case FFI_TYPE_SINT16: value = *(int16_t *)data; break;
+        pak_sa FFI_TYPE_UINT8: value = *(uint8_t *)data; bha_nga;
+        pak_sa FFI_TYPE_SINT8: value = *(int8_t *)data; bha_nga;
+        pak_sa FFI_TYPE_UINT16: value = *(uint16_t *)data; bha_nga;
+        pak_sa FFI_TYPE_SINT16: value = *(int16_t *)data; bha_nga;
         /* 32-bit quantities are always sign-extended in the ABI */
-        case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
-        case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
-        case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
+        pak_sa FFI_TYPE_UINT32: value = *(int32_t *)data; bha_nga;
+        pak_sa FFI_TYPE_SINT32: value = *(int32_t *)data; bha_nga;
+#ប្រសិនបើ __SIZEOF_POINTER__ == 8
+        pak_sa FFI_TYPE_UINT64: value = *(uint64_t *)data; bha_nga;
+        pak_sa FFI_TYPE_SINT64: value = *(int64_t *)data; bha_nga;
 #endif
-        case FFI_TYPE_POINTER: value = *(size_t *)data; break;
+        pak_sa FFI_TYPE_POINTER: value = *(size_t *)data; bha_nga;
 
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+#ប្រសិនបើ ABI_FLEN >= 64
+        pak_sa FFI_TYPE_FLOAT:
             marshal_float(cb, data);
-            return;
+            ត្រឡប់;
 #elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
+        pak_sa FFI_TYPE_FLOAT:
             __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(float *)data));
-            return;
+            ត្រឡប់;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(double *)data));
-            return;
+#ប្រសិនបើ ABI_FLEN >= 64
+        pak_sa FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(dviguu_na *)data));
+            ត្រឡប់;
 #endif
-        default: FFI_ASSERT(0); break;
+        default: FFI_ASSERT(0); bha_nga;
     }
 
-    if (cb->used_integer == NARGREG) {
+    ប្រសិនបើ (cb->used_integer == NARGREG) {
         *cb->used_stack++ = value;
-    } else {
+    } បើមិនដូច្នេះ {
         cb->aregs->a[cb->used_integer++] = value;
     }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
+static void unmarshal_atom(call_builder *cb, ចំនួនគត់ type, void *data) {
     size_t value;
     switch (type) {
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+#ប្រសិនបើ ABI_FLEN >= 64
+        pak_sa FFI_TYPE_FLOAT:
             unmarshal_float(cb, data);
-            return;
+            ត្រឡប់;
 #elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
+        pak_sa FFI_TYPE_FLOAT:
             __asm__("" : "=f"(*(float *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
-            return;
+            ត្រឡប់;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(*(double *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
-            return;
+#ប្រសិនបើ ABI_FLEN >= 64
+        pak_sa FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(*(dviguu_na *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
+            ត្រឡប់;
 #endif
     }
 
-    if (cb->used_integer == NARGREG) {
+    ប្រសិនបើ (cb->used_integer == NARGREG) {
         value = *cb->used_stack++;
-    } else {
+    } បើមិនដូច្នេះ {
         value = cb->aregs->a[cb->used_integer++];
     }
 
     switch (type) {
-        case FFI_TYPE_UINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_SINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_UINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
-        case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
-        case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
+        pak_sa FFI_TYPE_UINT8: *(uint8_t *)data = value; bha_nga;
+        pak_sa FFI_TYPE_SINT8: *(uint8_t *)data = value; bha_nga;
+        pak_sa FFI_TYPE_UINT16: *(uint16_t *)data = value; bha_nga;
+        pak_sa FFI_TYPE_SINT16: *(uint16_t *)data = value; bha_nga;
+        pak_sa FFI_TYPE_UINT32: *(uint32_t *)data = value; bha_nga;
+        pak_sa FFI_TYPE_SINT32: *(uint32_t *)data = value; bha_nga;
+#ប្រសិនបើ __SIZEOF_POINTER__ == 8
+        pak_sa FFI_TYPE_UINT64: *(uint64_t *)data = value; bha_nga;
+        pak_sa FFI_TYPE_SINT64: *(uint64_t *)data = value; bha_nga;
 #endif
-        case FFI_TYPE_POINTER: *(size_t *)data = value; break;
-        default: FFI_ASSERT(0); break;
+        pak_sa FFI_TYPE_POINTER: *(size_t *)data = value; bha_nga;
+        default: FFI_ASSERT(0); bha_nga;
     }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
+static void marshal(call_builder *cb, ffi_type *type, ចំនួនគត់ var, void *data) {
     size_t realign[2];
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#ប្រសិនបើ ABI_FLEN
+    ប្រសិនបើ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        ប្រសិនបើ (fsi.as_elements) {
             marshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                marshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return;
+            ប្រសិនបើ (fsi.offset2)
+                marshal_atom(cb, fsi.type2, ((var_na*)data) + fsi.offset2);
+            ត្រឡប់;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    ប្រសិនបើ (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         marshal_atom(cb, type->type, data);
-        return;
+        ត្រឡប់;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    ប្រសិនបើ (type->size > 2 * __SIZEOF_POINTER__) {
         /* copy to stack and pass by reference */
         data = memcpy (cb->struct_stack, data, type->size);
-        cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
+        cb->struct_stack = (size_t *) FFI_ALIGN ((var_na *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
         marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+    } បើមិនដូច្នេះ ប្រសិនបើ (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         marshal_atom(cb, type->type, data);
-    } else {
+    } បើមិនដូច្នេះ {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        ប្រសិនបើ (type->alignment > __SIZEOF_POINTER__) {
+            ប្រសិនបើ (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
             cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
         }
 
         memcpy(realign, data, type->size);
-        if (type->size > 0)
+        ប្រសិនបើ (type->size > 0)
             marshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        ប្រសិនបើ (type->size > __SIZEOF_POINTER__)
             marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
     }
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
+static void *unmarshal(call_builder *cb, ffi_type *type, ចំនួនគត់ var, void *data) {
     size_t realign[2];
     void *pointer;
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#ប្រសិនបើ ABI_FLEN
+    ប្រសិនបើ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        ប្រសិនបើ (fsi.as_elements) {
             unmarshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                unmarshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return data;
+            ប្រសិនបើ (fsi.offset2)
+                unmarshal_atom(cb, fsi.type2, ((var_na*)data) + fsi.offset2);
+            ត្រឡប់ data;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    ប្រសិនបើ (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         unmarshal_atom(cb, type->type, data);
-        return data;
+        ត្រឡប់ data;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    ប្រសិនបើ (type->size > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
-        unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+        unmarshal_atom(cb, FFI_TYPE_POINTER, (var_na*)&pointer);
+        ត្រឡប់ pointer;
+    } បើមិនដូច្នេះ ប្រសិនបើ (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         unmarshal_atom(cb, type->type, data);
-        return data;
-    } else {
+        ត្រឡប់ data;
+    } បើមិនដូច្នេះ {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        ប្រសិនបើ (type->alignment > __SIZEOF_POINTER__) {
+            ប្រសិនបើ (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
             cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
         }
 
-        if (type->size > 0)
+        ប្រសិនបើ (type->size > 0)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        ប្រសិនបើ (type->size > __SIZEOF_POINTER__)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
         memcpy(data, realign, type->size);
-        return data;
+        ត្រឡប់ data;
     }
 }
 
-static int passed_by_ref(call_builder *cb, ffi_type *type, int var) {
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+static ចំនួនគត់ passed_by_ref(call_builder *cb, ffi_type *type, ចំនួនគត់ var) {
+#ប្រសិនបើ ABI_FLEN
+    ប្រសិនបើ (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) return 0;
+        ប្រសិនបើ (fsi.as_elements) ត្រឡប់ 0;
     }
 #endif
 
-    return type->size > 2 * __SIZEOF_POINTER__;
+    ត្រឡប់ type->size > 2 * __SIZEOF_POINTER__;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif) {
     cif->riscv_nfixedargs = cif->nargs;
-    return FFI_OK;
+    ត្រឡប់ FFI_OK;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs) {
+ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned ចំនួនគត់ nfixedargs, unsigned ចំនួនគត់ ntotalargs) {
     cif->riscv_nfixedargs = nfixedargs;
-    return FFI_OK;
+    ត្រឡប់ FFI_OK;
 }
 
 /* Low level routine for calling functions */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
+extern void ffi_call_asm (void *stack, sa_nracanaa call_context *regs,
 			  void (*fn) (void), void *closure) FFI_HIDDEN;
 
 static void
@@ -373,28 +373,28 @@ ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
     /* this is a conservative estimate, assuming a complex return value and
        that all remaining arguments are long long / __int128 */
     size_t arg_bytes = cif->nargs <= 3 ? 0 :
-        FFI_ALIGN(2 * sizeof(size_t) * (cif->nargs - 3), STKALIGN);
+        FFI_ALIGN(2 * parimaa_na(size_t) * (cif->nargs - 3), STKALIGN);
     /* Allocate space for copies of big structures.  */
     size_t struct_bytes = FFI_ALIGN (cif->bytes, STKALIGN);
     size_t rval_bytes = 0;
-    if (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
+    ប្រសិនបើ (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
         rval_bytes = FFI_ALIGN(cif->rtype->size, STKALIGN);
-    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + sizeof(call_context);
+    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + parimaa_na(call_context);
 
     /* the assembly code will deallocate all stack data at lower addresses
        than the argument region, so we need to allocate the frame and the
        return value after the arguments in a single allocation */
     size_t alloc_base;
     /* Argument region must be 16-byte aligned */
-    if (_Alignof(max_align_t) >= STKALIGN) {
+    ប្រសិនបើ (_Alignof(max_align_t) >= STKALIGN) {
         /* since sizeof long double is normally 16, the compiler will
            guarantee alloca alignment to at least that much */
         alloc_base = (size_t)alloca(alloc_size);
-    } else {
+    } បើមិនដូច្នេះ {
         alloc_base = FFI_ALIGN(alloca(alloc_size + STKALIGN - 1), STKALIGN);
     }
 
-    if (rval_bytes)
+    ប្រសិនបើ (rval_bytes)
         rvalue = (void*)(alloc_base + arg_bytes);
 
     call_builder cb;
@@ -403,42 +403,42 @@ ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
     cb.used_stack = (void*)alloc_base;
     cb.struct_stack = (void *) (alloc_base + arg_bytes + rval_bytes);
 
-    int return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    ចំនួនគត់ return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
+    ប្រសិនបើ (return_by_ref)
         marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-    int i;
-    for (i = 0; i < cif->nargs; i++)
+    ចំនួនគត់ i;
+    សម្រាប់ (i = 0; i < cif->nargs; i++)
         marshal(&cb, cif->arg_types[i], i >= cif->riscv_nfixedargs, avalue[i]);
 
     ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
 
     cb.used_float = cb.used_integer = 0;
-    if (!return_by_ref && rvalue)
+    ប្រសិនបើ (!return_by_ref && rvalue)
       {
-	if (IS_INT(cif->rtype->type)
-	    && cif->rtype->size < sizeof (ffi_arg))
+	ប្រសិនបើ (IS_INT(cif->rtype->type)
+	    && cif->rtype->size < parimaa_na (ffi_arg))
 	  {
 	    /* Integer types smaller than ffi_arg need to be extended.  */
 	    switch (cif->rtype->type)
 	      {
-	      case FFI_TYPE_SINT8:
-	      case FFI_TYPE_SINT16:
-	      case FFI_TYPE_SINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+	      pak_sa FFI_TYPE_SINT8:
+	      pak_sa FFI_TYPE_SINT16:
+	      pak_sa FFI_TYPE_SINT32:
+		unmarshal_atom (&cb, (parimaa_na (ffi_arg) > 4
 				      ? FFI_TYPE_SINT64 : FFI_TYPE_SINT32),
 				rvalue);
-		break;
-	      case FFI_TYPE_UINT8:
-	      case FFI_TYPE_UINT16:
-	      case FFI_TYPE_UINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+		bha_nga;
+	      pak_sa FFI_TYPE_UINT8:
+	      pak_sa FFI_TYPE_UINT16:
+	      pak_sa FFI_TYPE_UINT32:
+		unmarshal_atom (&cb, (parimaa_na (ffi_arg) > 4
 				      ? FFI_TYPE_UINT64 : FFI_TYPE_UINT32),
 				rvalue);
-		break;
+		bha_nga;
 	      }
 	  }
-	else
+	បើមិនដូច្នេះ
 	  unmarshal(&cb, cif->rtype, 0, rvalue);
       }
 }
@@ -460,17 +460,17 @@ extern void ffi_closure_asm(void) FFI_HIDDEN;
 
 ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(ffi_cif*,void*,void**,void*), void *user_data, void *codeloc)
 {
-    if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-        return FFI_BAD_ABI;
+    ប្រសិនបើ (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+        ត្រឡប់ FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present (closure))
+  ប្រសិនបើ (ffi_tramp_is_present (closure))
     {
       /* Initialize the static trampoline's parameters. */
       void (*dest)(void) = ffi_closure_asm;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  បើមិនដូច្នេះ
 #endif
     {
       uint32_t *tramp = (uint32_t *) &closure->tramp[0];
@@ -480,16 +480,16 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
 	 as the memory is readable it should work */
 
       tramp[0] = 0x00000317; /* auipc t1, 0 (i.e. t0 <- codeloc) */
-#if __SIZEOF_POINTER__ == 8
+#ប្រសិនបើ __SIZEOF_POINTER__ == 8
       tramp[1] = 0x01033383; /* ld t2, 16(t1) */
-#else
+#បើមិនដូច្នេះ
       tramp[1] = 0x01032383; /* lw t2, 16(t1) */
 #endif
       tramp[2] = 0x00038067; /* jr t2 */
       tramp[3] = 0x00000013; /* nop */
       tramp[4] = fn;
       tramp[5] = fn >> 32;
-#if !defined(__FreeBSD__)
+#ប្រសិនបើ !defined(__FreeBSD__)
     __builtin___clear_cache(codeloc, codeloc + FFI_TRAMPOLINE_SIZE);
 #endif
     }
@@ -498,7 +498,7 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
     closure->fun = fun;
     closure->user_data = user_data;
 
-    return FFI_OK;
+    ត្រឡប់ FFI_OK;
 }
 
 extern void ffi_go_closure_asm (void) FFI_HIDDEN;
@@ -507,14 +507,14 @@ ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 		     void (*fun) (ffi_cif *, void *, void **, void *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  ប្រសិនបើ (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    ត្រឡប់ FFI_BAD_ABI;
 
   closure->tramp = (void *) ffi_go_closure_asm;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  ត្រឡប់ FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
@@ -526,34 +526,34 @@ ffi_closure_inner (ffi_cif *cif,
 		   void *user_data,
 		   size_t *stack, call_context *aregs)
 {
-    void **avalue = alloca(cif->nargs * sizeof(void*));
+    void **avalue = alloca(cif->nargs * parimaa_na(void*));
     /* storage for arguments which will be copied by unmarshal().  We could
        theoretically avoid the copies in many cases and use at most 128 bytes
        of memory, but allocating disjoint storage for each argument is
        simpler. */
-    char *astorage = alloca(cif->nargs * MAXCOPYARG);
+    var_na *astorage = alloca(cif->nargs * MAXCOPYARG);
     void *rvalue;
     call_builder cb;
-    int return_by_ref;
-    int i;
+    ចំនួនគត់ return_by_ref;
+    ចំនួនគត់ i;
 
     cb.aregs = aregs;
     cb.used_integer = cb.used_float = 0;
     cb.used_stack = stack;
 
     return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    ប្រសិនបើ (return_by_ref)
         unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
+    បើមិនដូច្នេះ
         rvalue = alloca(cif->rtype->size);
 
-    for (i = 0; i < cif->nargs; i++)
+    សម្រាប់ (i = 0; i < cif->nargs; i++)
         avalue[i] = unmarshal(&cb, cif->arg_types[i],
             i >= cif->riscv_nfixedargs, astorage + i*MAXCOPYARG);
 
     fun (cif, rvalue, avalue, user_data);
 
-    if (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
+    ប្រសិនបើ (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
         cb.used_integer = cb.used_float = 0;
         marshal(&cb, cif->rtype, 0, rvalue);
     }
@@ -566,6 +566,6 @@ ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
   extern void *trampoline_code_table;
   *tramp_size = RISCV_TRAMP_SIZE;
   *map_size = RISCV_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  ត្រឡប់ &trampoline_code_table;
 }
 #endif

@@ -5,25 +5,25 @@
 #define C1(X, Y)  C2(X, Y)
 #ifdef __USER_LABEL_PREFIX__
 # define C(X)     C1(__USER_LABEL_PREFIX__, X)
-#else
+#បើមិនដូច្នេះ
 # define C(X)     X
 #endif
 
 #ifdef __APPLE__
 # define L(X)     C1(L, X)
-#else
+#បើមិនដូច្នេះ
 # define L(X)     C1(.L, X)
 #endif
 
-#if defined(__ELF__) && defined(__PIC__)
+#ប្រសិនបើ defined(__ELF__) && defined(__PIC__)
 # define PLT(X)	  X@PLT
-#else
+#បើមិនដូច្នេះ
 # define PLT(X)	  X
 #endif
 
 #ifdef __ELF__
 # define ENDF(X)  .type	X,@function; .size X, . - X
-#else
+#បើមិនដូច្នេះ
 # define ENDF(X)
 #endif
 
