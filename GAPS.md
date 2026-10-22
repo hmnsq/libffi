@@ -1,0 +1,536 @@
+# What is still missing
+
+76 languages. Each line says in how many languages it is missing.
+
+## Files in languages BURP cannot read yet
+
+
+## Keywords with no word in a language's table
+
+- yantra:OUT: 75
+- yantra:ALIGN: 75
+- yantra:ENTRY: 75
+- yantra:SP: 75
+- yantra:QWORD: 75
+- yantra:MACRO: 75
+- yantra:DWORD: 75
+- yantra:ENDM: 75
+- yantra:LABEL: 75
+- yantra:DS: 75
+- yantra:ORG: 75
+- yantra:SETS: 75
+- yantra:FS: 75
+- yantra:SIZE: 75
+- yantra:ENDIF: 75
+- yantra:NOP: 75
+- yantra:ECX: 75
+- yantra:LEA: 75
+- yantra:STC: 75
+- yantra:ENDP: 75
+- yantra:EXTRN: 75
+- yantra:SEGMENT: 75
+- yantra:CMP: 75
+- yantra:JA: 75
+- yantra:JMP: 75
+- yantra:LEAVE: 75
+- yantra:RET: 75
+- yantra:NEAR: 75
+- guru:size_t: 71
+- guru:abort: 71
+- guru:errno: 71
+- guru:ptrdiff_t: 71
+- guru:offsetof: 71
+- guru:fprintf: 71
+- guru:stderr: 71
+- guru:FILE: 71
+- guru:strchr: 71
+- guru:fclose: 71
+- guru:close: 71
+- guru:LDBL_MANT_DIG: 71
+- guru:fopen: 71
+- guru:getenv: 71
+- guru:realloc: 71
+- guru:time: 71
+- guru:feof: 71
+- guru:fgets: 71
+- guru:memset: 70
+- guru:open: 70
+- guru:#define: 66
+- guru:#endif: 66
+- guru:#ifdef: 66
+- guru:#ifndef: 66
+- guru:#error: 66
+- guru:#undef: 66
+- guru:#pragma: 66
+- guru:unsigned: 62
+- guru:long: 62
+- guru:memcpy: 62
+- guru:signed: 62
+- guru:short: 62
+- guru:printf: 62
+- guru:malloc: 62
+- guru:calloc: 62
+- guru:template: 62
+- guru:strncmp: 62
+- guru:strlen: 62
+- guru:sscanf: 62
+- yantra:global: 45
+- yantra:call: 26
+- guru:void: 25
+- yantra:OR: 25
+- guru:static: 25
+- guru:switch: 25
+- guru:NULL: 25
+- guru:default: 25
+- guru:typedef: 25
+- guru:extern: 25
+- guru:assert: 25
+- guru:const: 25
+- guru:float: 25
+- guru:goto: 25
+- guru:#elif: 25
+- guru:continue: 25
+- guru:free: 25
+- yantra:PTR: 25
+- yantra:END: 25
+- guru:do: 25
+- yantra:PUBLIC: 25
+- yantra:PROC: 25
+- yantra:TYPE: 25
+- guru:write: 25
+- guru:read: 25
+- yantra:CALL: 25
+- guru:for: 9
+- guru:case: 9
+- guru:break: 9
+- guru:char: 9
+- guru:sizeof: 9
+- guru:struct: 9
+- guru:double: 9
+- guru:register: 9
+- guru:enum: 9
+- guru:volatile: 9
+- guru:union: 9
+- guru:inline: 9
+- yantra:IN: 8
+- yantra:NOT: 8
+- yantra:AND: 8
+- guru:if: 1
+- guru:int: 1
+- guru:return: 1
+- guru:else: 1
+- guru:#if: 1
+- guru:#else: 1
+- guru:while: 1
+
+## Names with no dictionary entry (the most common first)
+
+- `cif`: 76
+- `i`: 76
+- `type`: 76
+- `flags`: 76
+- `avalue`: 76
+- `rvalue`: 76
+- `m`: 76
+- `p`: 76
+- `argp`: 76
+- `rtype`: 76
+- `ffi_cif`: 76
+- `defined`: 76
+- `tramp`: 76
+- `ecif`: 76
+- `z`: 76
+- `p_argv`: 76
+- `FFI_TYPE_STRUCT`: 76
+- `ptr`: 76
+- `arg_types`: 76
+- `nargs`: 76
+- `abi`: 76
+- `ffi_type`: 76
+- `fn`: 76
+- `p_arg`: 76
+- `fun`: 76
+- `s`: 76
+- `cb`: 76
+- `FFI_TYPE_DOUBLE`: 76
+- `addr`: 76
+- `FFI_TYPE_LONGDOUBLE`: 76
+- `alignment`: 76
+- `FFI_TYPE_FLOAT`: 76
+- `elements`: 76
+- `a`: 76
+- `UINT64`: 76
+- `arg`: 76
+- `n`: 76
+- `FFI_ASSERT`: 76
+- `t`: 76
+- `M`: 76
+- `FFI_HIDDEN`: 76
+- `ecx`: 76
+- `define`: 76
+- `nb`: 76
+- `ty`: 76
+- `var`: 76
+- `FFI_ALIGN`: 76
+- `mchunkptr`: 76
+- `FFI_TYPE_UINT64`: 76
+- `FFI_TYPE_UINT8`: 76
+- `ms`: 76
+- `nfixedargs`: 76
+- `mem`: 76
+- `codeloc`: 76
+- `FFI_TYPE_SINT8`: 76
+- `FFI_TYPE_UINT16`: 76
+- `FFI_TYPE_SINT64`: 76
+- `u`: 76
+- `FFI_TYPE_SINT16`: 76
+- `FFI_OK`: 76
+- `FFI_TYPE_UINT32`: 76
+- `argn`: 76
+- `FFI_TYPE_SINT32`: 76
+- `UINT32`: 76
+- `rsize`: 76
+- `mstate`: 76
+- `ret`: 76
+- `ffi_arg`: 76
+- `j`: 76
+- `sp`: 76
+- `FFI_TYPE_COMPLEX`: 76
+- `X`: 76
+- `d`: 76
+- `extended_cif`: 76
+- `edx`: 76
+- `align`: 76
+- `fd`: 76
+- `FFI_SYSV`: 76
+- `psize`: 76
+- `dest`: 76
+- `pgr`: 76
+- `pfr`: 76
+- `pst`: 76
+- `FFI_TYPE_INT`: 76
+- `S`: 76
+- `endif`: 76
+- `ffi_abi`: 76
+- `ul`: 76
+- `x`: 76
+- `avn`: 76
+- `v`: 76
+- `gm`: 76
+- `FFI_BAD_ABI`: 76
+- `fm`: 76
+- `raw`: 76
+- `FFI_SIZEOF_ARG`: 76
+- `FFI_DEFAULT_ABI`: 76
+- `c`: 76
+- `double_tmp`: 76
+- `plan`: 76
+- `FFI_TYPE_VOID`: 76
+- `msp`: 76
+- `q`: 76
+- `f`: 76
+- `r`: 76
+- `greg`: 76
+- `valp`: 76
+- `P`: 76
+- `epilogue`: 76
+- `classes`: 76
+- `b`: 76
+- `tramp_globals`: 76
+- `ffi_sarg`: 76
+- `lk`: 76
+- `chunksize`: 76
+- `freg`: 76
+- `gpcount`: 76
+- `I`: 76
+- `ffi_prep_cif_machdep`: 76
+- `sl`: 76
+- `SINT16`: 76
+- `name`: 76
+- `mparams`: 76
+- `ffi_call_int`: 76
+- `tsize`: 76
+- `UINT8`: 76
+- `SINT8`: 76
+- `UINT16`: 76
+- `ffi_call`: 76
+- `FFI_CLOSURES`: 76
+- `DLMALLOC_EXPORT`: 76
+- `arg_reg`: 76
+- `seg`: 76
+- `mspace`: 76
+- `dv`: 76
+- `avalue_copy`: 76
+- `elt`: 76
+- `cur_ptr`: 76
+- `FFI_EXEC_STATIC_TRAMP`: 76
+- `DEREF_U32`: 76
+- `candidate`: 76
+- `chunk2mem`: 76
+- `dvsize`: 76
+- `sz`: 76
+- `tp`: 76
+- `at`: 76
+- `gprvalue`: 76
+- `len`: 76
+- `aregs`: 76
+- `POWERPC64`: 76
+- `ngrn`: 76
+- `src`: 76
+- `h`: 76
+- `val`: 76
+- `regp`: 76
+- `ffi_call_SYSV`: 76
+- `tchunkptr`: 76
+- `tbase`: 76
+- `LIBFFI_ASM`: 76
+- `e`: 76
+- `newp`: 76
+- `n_gpr`: 76
+- `uintptr_t`: 76
+- `FFI_NATIVE_RAW_API`: 76
+- `FFI_BAD_TYPEDEF`: 76
+- `K`: 76
+- `fields`: 76
+- `f128`: 76
+- `DEC_PTR`: 76
+- `reg`: 76
+- `call_builder`: 76
+- `idx`: 76
+- `cval`: 76
+- `n_elements`: 76
+- `bindex_t`: 76
+- `topsize`: 76
+- `gprcount`: 76
+- `ssecount`: 76
+- `FFI_GO_CLOSURES`: 76
+- `unmarshal_atom`: 76
+- `RTCHECK`: 76
+- `arg_ptr`: 76
+- `sig`: 76
+- `call_context`: 76
+- `LIBFFI_H`: 76
+- `realign`: 76
+- `tmp`: 76
+- `magic`: 76
+- `F`: 76
+- `postaction`: 76
+- `fsi`: 76
+- `NGREGARG`: 76
+- `msegmentptr`: 76
+- `soft_float`: 76
+- `avaluep`: 76
+- `ENC_PTR`: 76
+- `SINT32`: 76
+- `_MSC_VER`: 76
+- `ntotalargs`: 76
+- `ifdef`: 76
+- `bk`: 76
+- `footprint`: 76
+- `USAGE_ERROR_ACTION`: 76
+- `float128`: 76
+- `_CALL_ELF`: 76
+- `Y`: 76
+- `nfpr`: 76
+- `n_ov`: 76
+- `DEREF_PTR`: 76
+- `_WIN32`: 76
+- `marshal_atom`: 76
+- `arg_area`: 76
+- `ssize`: 76
+- `oldmem`: 76
+- `gp_regs`: 76
+- `argcopy`: 76
+- `rest`: 76
+- `FFI_TYPE_UINT128`: 76
+- `cabi`: 76
+- `LONG`: 76
+- `oldp`: 76
+- `SINT64`: 76
+- `r0`: 76
+- `elnum`: 76
+- `context`: 76
+- `uint32_t`: 76
+- `buf`: 76
+- `ok_magic`: 76
+- `fpcount`: 76
+- `stackp`: 76
+- `debug`: 76
+- `fp`: 76
+- `CMFAIL`: 76
+- `PREACTION`: 76
+- `POSTACTION`: 76
+- `CORRUPTION_ERROR_ACTION`: 76
+- `Lfinish`: 76
+- `putgpr`: 76
+- `tt`: 76
+- `pabi`: 76
+- `ftramp`: 76
+- `br`: 76
+- `dst`: 76
+- `mem2chunk`: 76
+- `R`: 76
+- `cl`: 76
+- `POWERPC_DARWIN64`: 76
+- `DEREF_U64`: 76
+- `carg_idx`: 76
+- `N_X_ARG_REG`: 76
+- `NARGREG`: 76
+- `regs`: 76
+- `req`: 76
+- `B`: 76
+- `ar`: 76
+- `FLAG_FP_ARGUMENTS`: 76
+- `FFI_LINUX_LONG_DOUBLE_IEEE128`: 76
+- `IS_INT`: 76
+- `dir`: 76
+- `ss`: 76
+- `prevsize`: 76
+- `IS_FLOAT`: 76
+- `regused`: 76
+- `ng`: 76
+- `p_gpr`: 76
+- `ngpr`: 76
+- `nsse`: 76
+- `FFI_TYPE_SINT128`: 76
+- `STKALIGN`: 76
+- `return_by_ref`: 76
+- `MAX_GPRARGS`: 76
+- `WIN32`: 76
+- `fpr`: 76
+- `rv`: 76
+- `p_ov`: 76
+- `NFREGARG`: 76
+- `narg_reg`: 76
+- `trampoline`: 76
+- `MFAIL`: 76
+- `newsize`: 76
+- `check_malloced_chunk`: 76
+- `oldsize`: 76
+- `fldw`: 76
+- `nf`: 76
+- `ffi_call_plan`: 76
+- `n_fpr`: 76
+- `return_type`: 76
+- `gpr`: 76
+- `ffi_call_go`: 76
+- `uint64_t`: 76
+- `malloc_getpagesize`: 76
+- `file`: 76
+- `HAVE_MMAP`: 76
+- `chunks`: 76
+- `is_inuse`: 76
+- `is_mmapped`: 76
+- `nm`: 76
+- `fpreg`: 76
+- `argv`: 76
+- `FFI_MIPS_O32`: 76
+
+## Comments with no translation
+
+- ---- Definitions for closures -----------------------------------------: 76
+- Perform machine dependent cif processing: 76
+- FOOTERS: 76
+- # DW_CFA_advance_loc4: 76
+- Set the return type flag: 76
+- Invoke the closure.: 76
+- ffi_prep_args is called by the assembly routine once stack space
+   has been allocated for the funct: 76
+- Fall through.: 76
+- Initialize the static trampoline's parameters.: 76
+- Perform machine dependent cif processing.: 76
+- ---- System specific configurations -----------------------------------: 76
+- Grab the addresses of the arguments from the stack frame.: 76
+- WIN32: 76
+- USE_LOCKS: 76
+- ONLY_MSPACES: 76
+- HAVE_MMAP: 76
+- # FDE initial location: 76
+- movq	%rax, (%r8): 76
+- FFI_CLOSURES: 76
+- Align if necessary: 76
+- If the return value is a struct and we don't have a return: 76
+- value address then we need to make one: 76
+- ---- Generic type definitions -----------------------------------------: 76
+- NO_MALLINFO: 76
+- __cplusplus: 76
+- DEBUG: 76
+- # FDE Length: 76
+- # FDE CIE offset: 76
+- # FDE address range: 76
+- Augmentation size: 76
+- Now for the arguments.: 76
+- Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
+   all further uses in this file wil: 76
+- FFI_GO_CLOSURES: 76
+- Initialize the dynamic trampoline.: 76
+- FALLTHRU: 76
+- If the return value is a struct and we don't have a return
+     value address then we need to make o: 76
+- HAVE_MORECORE: 76
+- MSPACES: 76
+- MALLOC_INSPECT_ALL: 76
+- MORECORE_CONTIGUOUS: 76
+- NO_MALLOC_STATS: 76
+- GNUC: 76
+- Not supported yet.: 76
+- Align if necessary.: 76
+- If we have any large structure arguments, make a copy so we are passing
+     by value.  The pointer : 76
+- DW_CFA_advance_loc4: 76
+- ======================== End of Routine ============================: 76
+- defined (__linux__) || defined (__CYGWIN__): 76
+- nop: 76
+- fake entry point exists only to generate exists only to: 76
+- generate .pdata for exception unwinding: 76
+- save fp and lr for unwind: 76
+- save argument regs: 76
+- Find the address of each argument.: 76
+- MMAP_CLEARS: 76
+- PROCEED_ON_ERROR: 76
+- MORECORE_CANNOT_TRIM: 76
+- !INSECURE: 76
+- WORDS_BIGENDIAN: 76
+- If the return value is a struct and we don't have a return value
+     address then we need to make o: 76
+- FFI_MIPS_O32: 76
+- # DW_CFA_offset, column 0x3: 76
+- # DW_CFA_def_cfa_register = r3: 76
+- Register LR: 76
+- Offset -2 (8/16): 76
+- bctr: 76
+- POWERPC64: 76
+- rept256; rept256; rept256: 76
+- LIBFFI_ASM: 76
+- Set the return type flag.: 76
+- Called by the assembly code with aregs pointing to saved argument registers
+   and stack pointing to: 76
+- load cif: 76
+- load fun: 76
+- load user_data: 76
+- Debugging: 76
+- This function is jumped to by the trampoline: 76
+- HAVE_MNTENT: 76
+- ABORT_ON_ASSERT_FAILURE: 76
+- linux: 76
+- always 0: 76
+- !ONLY_MSPACES: 76
+- placate people compiling -Wunused: 76
+- consolidate backward: 76
+- consolidate forward: 76
+- exhaust dv: 76
+- Lay the register arguments down in a continuous chunk of memory.: 76
+- Pointer to ffi_closure_unix.: 76
+- Pointer to closure, installed as gp.: 76
+- Real gp value.: 76
+- preserve struct type return pointer passing: 76
+- O32 stack frames have 32bit integer args: 76
+- N32 and N64 frames have 64bit integer args: 76
+- !LIBFFI_ASM: 76
+- First 4 args go in fr4L - fr7L.: 76
+- # Length of Common Information Entry: 76
+- # CIE Identifier Tag: 76
+- # CIE Version: 76
+- # CIE Augmentation: 76
+- # CIE Code Alignment Factor: 76
+- # CIE Data Alignment Factor: 76
