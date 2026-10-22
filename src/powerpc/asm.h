@@ -26,11 +26,11 @@
 #define ASM_GLOBAL_DIRECTIVE .globl
 
 
-#define C_SYMBOL_NAME(name) name
+#define C_ಚಿಹ್ನೆ_NAME(name) name
 /* Macro for a label.  */
 #ifdef	__STDC__
 #define C_LABEL(name)		name##:
-#else
+#ಅನ್ಯಥಾ
 #define C_LABEL(name)		name/**/:
 #endif
 
@@ -58,7 +58,7 @@
   mflr  %r11;								      \
   lwz   %r0,0b@got(%r11);						      \
   bl    JUMPTARGET(_mcount);
-#else  /* PIC */
+#ಅನ್ಯಥಾ  /* PIC */
 #define CALL_MCOUNT							      \
   .section ".data";							      \
   .align ALIGNARG(2);							      \
@@ -70,13 +70,13 @@
   addi  %r0,%r11,0b@l;							      \
   bl    JUMPTARGET(_mcount);
 #endif /* PIC */
-#else  /* PROF */
+#ಅನ್ಯಥಾ  /* PROF */
 #define CALL_MCOUNT		/* Do nothing.  */
 #endif /* PROF */
 
 #define	ENTRY(name)							      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+  ASM_GLOBAL_DIRECTIVE C_ಚಿಹ್ನೆ_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_ಚಿಹ್ನೆ_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT
@@ -93,9 +93,9 @@
 /* EALIGN is like ENTRY, but does alignment to 'words'*4 bytes
    past a 2^align boundary.  */
 #ifdef PROF
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#define EFFI_ALIGN(name, alignt, ಪದಗಳು)					      \
+  ASM_GLOBAL_DIRECTIVE C_ಚಿಹ್ನೆ_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_ಚಿಹ್ನೆ_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT								      \
@@ -103,10 +103,10 @@
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   0:
-#else /* PROF */
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#ಅನ್ಯಥಾ /* PROF */
+#define EFFI_ALIGN(name, alignt, ಪದಗಳು)					      \
+  ASM_GLOBAL_DIRECTIVE C_ಚಿಹ್ನೆ_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_ಚಿಹ್ನೆ_NAME(name),@function)			      \
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   C_LABEL(name)
@@ -117,7 +117,7 @@
 
 #ifdef PIC
 #define JUMPTARGET(name) name##@plt
-#else
+#ಅನ್ಯಥಾ
 #define JUMPTARGET(name) name
 #endif
 

@@ -12,12 +12,12 @@ The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
+EXPRESS ವಾ IMPLIED, INCLUDING BUT ನ LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ಚ NONINFRINGEMENT.
+ಅನ್ತಃ NO EVENT SHALL THE AUTHORS ವಾ COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES ವಾ OTHER LIABILITY, WHETHER ಅನ್ತಃ AN ACTION OF CONTRACT,
+TORT ವಾ OTHERWISE, ARISING FROM, OUT OF ವಾ ಅನ್ತಃ CONNECTION WITH THE
+SOFTWARE ವಾ THE USE ವಾ OTHER DEALINGS ಅನ್ತಃ THE SOFTWARE.  */
 
 #if defined(__kvx__)
 #define LIBFFI_ASM
@@ -27,7 +27,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #include <kvx/asm.h>
 
 .text
-.global ffi_call_SYSV
+.ವೈಶ್ವಿಕ ffi_call_SYSV
 .type ffi_call_SYSV, @function
 .type ffi_prep_args, @function
 .align 8
@@ -36,9 +36,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
   r0: total size to allocate on stack
   r1: size of arg slots
-  r2: extended cif structure, DO NOT REMOVE: it is used by ffi_prep_args()
+  r2: extended cif structure, DO ನ REMOVE: it is used by ffi_prep_args()
   r3: return value address
-  r4: function to call
+  r4: function to ಆಹ್ವಾನ
   r5: integer sign extension method to be used
 */
 ffi_call_SYSV:
@@ -55,7 +55,7 @@ ffi_call_SYSV:
 	copyd $r21 = $r3
 	copyd $r22 = $r4
 	copyd $r24 = $r5
-	call ffi_prep_args
+	ಆಹ್ವಾನ ffi_prep_args
 	;;
 	lo $r8r9r10r11 = (64)[$r12]
 	;;

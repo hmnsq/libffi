@@ -25,11 +25,11 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
 
 #define ROUND_UP(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
 
@@ -37,19 +37,19 @@
 #define DEBUG_LEVEL   0
 
 #define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
+  __asm__ ಚಞ್ಚಲ ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
 #define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
+  __asm__ ಚಞ್ಚಲ ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
 #define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+  __asm__ ಚಞ್ಚಲ ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
 #define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ ಚಞ್ಚಲ ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) ಕುರು { ಯದಿ (lvl <= DEBUG_LEVEL) { printf(x); } } ಯಾವತ್ (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+ಸ್ಥಿರ ಅನ್ತಃಸ್ಥ ಪೂರ್ಣಾಙ್ಕ ffi_struct_type(ffi_type *t)
 {
-  int sz = t->size;
+  ಪೂರ್ಣಾಙ್ಕ sz = t->size;
 
   /* Small structure results are returned in registers 28 and 29,
      larger ones are in a buffer allocated by the callee.  The
@@ -57,10 +57,10 @@ static inline int ffi_struct_type(ffi_type *t)
      to be aligned on a 16-byte boundary.   Register return values are
      padded on the right.  The pad bits on the right are undefined.  */
 
-  if (sz <= 16)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT;
+  ಯದಿ (sz <= 16)
+    ಪ್ರತ್ಯಾಗಮ -sz;
+  ಅನ್ಯಥಾ
+    ಪ್ರತ್ಯಾಗಮ FFI_TYPE_STRUCT;
 }
 
 /* PA has a downward growing stack, which looks like this.  Stack
@@ -123,112 +123,112 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
+ಶೂನ್ಯ ffi_prep_args_pa64(UINT64 *ರಾಶಿ, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
+  ಪಞ್ಜಿಕಾ unsigned ಪೂರ್ಣಾಙ್ಕ i;
+  ಪಞ್ಜಿಕಾ ffi_type **p_arg;
+  ಪಞ್ಜಿಕಾ ಶೂನ್ಯ **p_argv;
+  unsigned ಪೂರ್ಣಾಙ್ಕ slot = FIRST_ARG_SLOT;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, ರಾಶಿ,
 	ecif, bytes);
 
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  ಪ್ರತಿ (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      ಪೂರ್ಣಾಙ್ಕ type = (*p_arg)->type;
 
       len = (*p_arg)->size;
 
-      switch (type)
+      ವಿಕಲ್ಪ (type)
 	{
-	case FFI_TYPE_SINT8:
-	  *(SINT64 *)(stack + slot) = *(SINT8 *)(*p_argv);
-	  break;
+	ಪಕ್ಷ FFI_TYPE_SINT8:
+	  *(SINT64 *)(ರಾಶಿ + slot) = *(SINT8 *)(*p_argv);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_UINT8:
-	  *(UINT64 *)(stack + slot) = *(UINT8 *)(*p_argv);
-	  break;
+	ಪಕ್ಷ FFI_TYPE_UINT8:
+	  *(UINT64 *)(ರಾಶಿ + slot) = *(UINT8 *)(*p_argv);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_SINT16:
-	  *(SINT64 *)(stack + slot) = *(SINT16 *)(*p_argv);
-	  break;
+	ಪಕ್ಷ FFI_TYPE_SINT16:
+	  *(SINT64 *)(ರಾಶಿ + slot) = *(SINT16 *)(*p_argv);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_UINT16:
-	  *(UINT64 *)(stack + slot) = *(UINT16 *)(*p_argv);
-	  break;
+	ಪಕ್ಷ FFI_TYPE_UINT16:
+	  *(UINT64 *)(ರಾಶಿ + slot) = *(UINT16 *)(*p_argv);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_SINT32:
-	  *(SINT64 *)(stack + slot) = *(SINT32 *)(*p_argv);
-	  break;
+	ಪಕ್ಷ FFI_TYPE_SINT32:
+	  *(SINT64 *)(ರಾಶಿ + slot) = *(SINT32 *)(*p_argv);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_UINT32:
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  break;
+	ಪಕ್ಷ FFI_TYPE_UINT32:
+	  *(UINT64 *)(ರಾಶಿ + slot) = *(UINT32 *)(*p_argv);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	ಪಕ್ಷ FFI_TYPE_UINT64:
+	ಪಕ್ಷ FFI_TYPE_SINT64:
+	ಪಕ್ಷ FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT64 %lu in slot %u\n", *(UINT64 *)(*p_argv),
 		slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  *(UINT64 *)(ರಾಶಿ + slot) = *(UINT64 *)(*p_argv);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_FLOAT:
+	ಪಕ್ಷ FFI_TYPE_FLOAT:
 	  /* First 8 args go in fr4L - fr11L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(ರಾಶಿ + slot) = *(UINT32 *)(*p_argv);
+	  ವಿಕಲ್ಪ (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack + slot, fr4); break;
-	    case 1: fldw(stack + slot, fr5); break;
-	    case 2: fldw(stack + slot, fr6); break;
-	    case 3: fldw(stack + slot, fr7); break;
-	    case 4: fldw(stack + slot, fr8); break;
-	    case 5: fldw(stack + slot, fr9); break;
-	    case 6: fldw(stack + slot, fr10); break;
-	    case 7: fldw(stack + slot, fr11); break;
+	    ಪಕ್ಷ 0: fldw(ರಾಶಿ + slot, fr4); ಭಙ್ಗ;
+	    ಪಕ್ಷ 1: fldw(ರಾಶಿ + slot, fr5); ಭಙ್ಗ;
+	    ಪಕ್ಷ 2: fldw(ರಾಶಿ + slot, fr6); ಭಙ್ಗ;
+	    ಪಕ್ಷ 3: fldw(ರಾಶಿ + slot, fr7); ಭಙ್ಗ;
+	    ಪಕ್ಷ 4: fldw(ರಾಶಿ + slot, fr8); ಭಙ್ಗ;
+	    ಪಕ್ಷ 5: fldw(ರಾಶಿ + slot, fr9); ಭಙ್ಗ;
+	    ಪಕ್ಷ 6: fldw(ರಾಶಿ + slot, fr10); ಭಙ್ಗ;
+	    ಪಕ್ಷ 7: fldw(ರಾಶಿ + slot, fr11); ಭಙ್ಗ;
 	    }
-	  break;
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_DOUBLE:
+	ಪಕ್ಷ FFI_TYPE_DOUBLE:
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(ರಾಶಿ + slot) = *(UINT64 *)(*p_argv);
+	  ವಿಕಲ್ಪ (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 8 args go in fr4 to fr11.  */
-	    case 0: fldd(stack + slot, fr4); break;
-	    case 1: fldd(stack + slot, fr5); break;
-	    case 2: fldd(stack + slot, fr6); break;
-	    case 3: fldd(stack + slot, fr7); break;
-	    case 4: fldd(stack + slot, fr8); break;
-	    case 5: fldd(stack + slot, fr9); break;
-	    case 6: fldd(stack + slot, fr10); break;
-	    case 7: fldd(stack + slot, fr11); break;
+	    ಪಕ್ಷ 0: fldd(ರಾಶಿ + slot, fr4); ಭಙ್ಗ;
+	    ಪಕ್ಷ 1: fldd(ರಾಶಿ + slot, fr5); ಭಙ್ಗ;
+	    ಪಕ್ಷ 2: fldd(ರಾಶಿ + slot, fr6); ಭಙ್ಗ;
+	    ಪಕ್ಷ 3: fldd(ರಾಶಿ + slot, fr7); ಭಙ್ಗ;
+	    ಪಕ್ಷ 4: fldd(ರಾಶಿ + slot, fr8); ಭಙ್ಗ;
+	    ಪಕ್ಷ 5: fldd(ರಾಶಿ + slot, fr9); ಭಙ್ಗ;
+	    ಪಕ್ಷ 6: fldd(ರಾಶಿ + slot, fr10); ಭಙ್ಗ;
+	    ಪಕ್ಷ 7: fldd(ರಾಶಿ + slot, fr11); ಭಙ್ಗ;
 	    }
-	  break;
+	  ಭಙ್ಗ;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	ಪಕ್ಷ FFI_TYPE_LONGDOUBLE:
 	  /* Align slot to a 16-byte boundary.  */
 	  slot += (slot & 1);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  *(UINT64 *)(stack + slot + 1) = *(UINT64 *)(*p_argv + 8);
-	  break;
+	  *(UINT64 *)(ರಾಶಿ + slot) = *(UINT64 *)(*p_argv);
+	  *(UINT64 *)(ರಾಶಿ + slot + 1) = *(UINT64 *)(*p_argv + 8);
+	  ಭಙ್ಗ;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	ಪಕ್ಷ FFI_TYPE_STRUCT:
 	  /* Structs larger than 8 bytes are aligned on a 16-byte boundary. */
-	  if (len > 8)
+	  ಯದಿ (len > 8)
 	    slot += (slot & 1);
-	  memcpy((char *)(stack + slot), (char *)*p_argv, len);
-	  break;
+	  memcpy((ವರ್ಣ *)(ರಾಶಿ + slot), (ವರ್ಣ *)*p_argv, len);
+	  ಭಙ್ಗ;
 
-	default:
+	ಸ್ವಭಾವ:
 	  FFI_ASSERT(0);
 	}
 
@@ -239,44 +239,44 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 
   FFI_ASSERT(slot * 8 <= bytes);
 
-  return;
+  ಪ್ರತ್ಯಾಗಮ;
 }
 
-static void ffi_size_stack_pa64(ffi_cif *cif)
+ಸ್ಥಿರ ಶೂನ್ಯ ffi_size_ರಾಶಿ_pa64(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  ಪೂರ್ಣಾಙ್ಕ i;
+  ಪೂರ್ಣಾಙ್ಕ z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  ಪ್ರತಿ (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
-      int size = (*ptr)->size;
+      ಪೂರ್ಣಾಙ್ಕ type = (*ptr)->type;
+      ಪೂರ್ಣಾಙ್ಕ size = (*ptr)->size;
 
-      switch (type)
+      ವಿಕಲ್ಪ (type)
 	{
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	ಪಕ್ಷ FFI_TYPE_LONGDOUBLE:
 	  z += 2 + (z & 1);
-	  break;
+	  ಭಙ್ಗ;
 #endif
 
-	case FFI_TYPE_STRUCT:
-	  if (size > 8)
+	ಪಕ್ಷ FFI_TYPE_STRUCT:
+	  ಯದಿ (size > 8)
 	    z += (z & 1);
 	  z += ROUND_UP (size, 8) >> 3;
-	  break;
+	  ಭಙ್ಗ;
 
-	default: /* 64-bit values */
+	ಸ್ವಭಾವ: /* 64-bit values */
 	  z++;
 	}
     }
 
   /* We need a minimum of 8 argument slots.  Stack must be 16-byte
      aligned.  */
-  if (z <= 8)
+  ಯದಿ (z <= 8)
     z = 8;
-  else
+  ಅನ್ಯಥಾ
     z += (z & 1);
 
   /* Add 16 bytes for frame marker.  */
@@ -288,44 +288,44 @@ static void ffi_size_stack_pa64(ffi_cif *cif)
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag for jump table.  */
-  switch (cif->rtype->type)
+  ವಿಕಲ್ಪ (cif->rtype->type)
     {
-    case FFI_TYPE_COMPLEX:
-    case FFI_TYPE_STRUCT:
+    ಪಕ್ಷ FFI_TYPE_COMPLEX:
+    ಪಕ್ಷ FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 8 bytes, the result is given back
 	 in one register. If the size is smaller or equal 16 bytes than we
 	 return the result in two registers. If the size is bigger than
 	 16 bytes, the return is in a buffer allocated by the caller.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      ಭಙ್ಗ;
 
-    default:
+    ಸ್ವಭಾವ:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      ಭಙ್ಗ;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
-  switch (cif->abi)
+  ವಿಕಲ್ಪ (cif->abi)
     {
-    case FFI_PA64:
-      ffi_size_stack_pa64(cif);
-      break;
+    ಪಕ್ಷ FFI_PA64:
+      ffi_size_ರಾಶಿ_pa64(cif);
+      ಭಙ್ಗ;
 
-    default:
+    ಸ್ವಭಾವ:
       FFI_ASSERT(0);
-      break;
+      ಭಙ್ಗ;
     }
 
-  return FFI_OK;
+  ಪ್ರತ್ಯಾಗಮ FFI_OK;
 }
 
-extern void ffi_call_pa64(void (*)(UINT64 *, extended_cif *, unsigned),
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_call_pa64(ಶೂನ್ಯ (*)(UINT64 *, extended_cif *, unsigned),
 			  extended_cif *, unsigned, unsigned, unsigned *,
-			  void (*fn)(void));
+			  ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+ಶೂನ್ಯ ffi_call(ffi_cif *cif, ಶೂನ್ಯ (*fn)(ಶೂನ್ಯ), ಶೂನ್ಯ *rvalue, ಶೂನ್ಯ **avalue)
 {
   extended_cif ecif;
 
@@ -335,141 +335,141 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  ಯದಿ (rvalue == ರಿಕ್ತ
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_COMPLEX)
       && cif->rtype->size > 16)
     ecif.rvalue = alloca(ROUND_UP (cif->rtype->size, 16));
-  else
+  ಅನ್ಯಥಾ
     ecif.rvalue = rvalue;
 
 
-  switch (cif->abi)
+  ವಿಕಲ್ಪ (cif->abi)
     {
-    case FFI_PA64:
-      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
+    ಪಕ್ಷ FFI_PA64:
+      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (ಶೂನ್ಯ *)fn);
       ffi_call_pa64(ffi_prep_args_pa64, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      ಭಙ್ಗ;
 
-    default:
+    ಸ್ವಭಾವ:
       FFI_ASSERT(0);
-      break;
+      ಭಙ್ಗ;
     }
 }
 
-#if FFI_CLOSURES
+#ಯದಿ FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
+ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *ರಾಶಿ)
 {
   ffi_cif *cif;
-  void **avalue;
-  void *rvalue;
+  ಶೂನ್ಯ **avalue;
+  ಶೂನ್ಯ *rvalue;
   /* Functions can return up to 128-bits in registers.  Return address
      must be double word aligned.  */
-  union { long double rld; UINT64 ret[2]; } u;
+  ಸಙ್ಘ { long ದ್ವಿಗುಣ rld; UINT64 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT64 r28 __asm__("r28");
+  ವರ್ಣ *tmp;
+  ಪೂರ್ಣಾಙ್ಕ i, avn;
+  unsigned ಪೂರ್ಣಾಙ್ಕ slot = FIRST_ARG_SLOT;
+  ಪಞ್ಜಿಕಾ UINT64 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
-    rvalue = (void *)r28;
-  else
+  ಯದಿ (cif->flags == FFI_TYPE_STRUCT)
+    rvalue = (ಶೂನ್ಯ *)r28;
+  ಅನ್ಯಥಾ
     rvalue = &u;
 
-  avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
+  avalue = (ಶೂನ್ಯ **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  ಪ್ರತಿ (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      ಪೂರ್ಣಾಙ್ಕ type = (*p_arg)->type;
 
-      switch (type)
+      ವಿಕಲ್ಪ (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	  avalue[i] = (void *)(stack + slot) + 7;
-	  break;
+	ಪಕ್ಷ FFI_TYPE_SINT8:
+	ಪಕ್ಷ FFI_TYPE_UINT8:
+	  avalue[i] = (ಶೂನ್ಯ *)(ರಾಶಿ + slot) + 7;
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	  avalue[i] = (void *)(stack + slot) + 6;
-	  break;
+	ಪಕ್ಷ FFI_TYPE_SINT16:
+	ಪಕ್ಷ FFI_TYPE_UINT16:
+	  avalue[i] = (ಶೂನ್ಯ *)(ರಾಶಿ + slot) + 6;
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	ಪಕ್ಷ FFI_TYPE_SINT32:
+	ಪಕ್ಷ FFI_TYPE_UINT32:
+	  avalue[i] = (ಶೂನ್ಯ *)(ರಾಶಿ + slot) + 4;
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	ಪಕ್ಷ FFI_TYPE_POINTER:
+	ಪಕ್ಷ FFI_TYPE_SINT64:
+	ಪಕ್ಷ FFI_TYPE_UINT64:
+	  avalue[i] = (ಶೂನ್ಯ *)(ರಾಶಿ + slot);
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_FLOAT:
+	ಪಕ್ಷ FFI_TYPE_FLOAT:
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
 	     in the floating point registers instead of the general
 	     registers.  So, we need to replace what was previously
 	     stored in the current slot with the value in the
 	     corresponding floating point register.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  ವಿಕಲ್ಪ (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack + slot)); break;
-	    case 1: fstw(fr5, (void *)(stack + slot)); break;
-	    case 2: fstw(fr6, (void *)(stack + slot)); break;
-	    case 3: fstw(fr7, (void *)(stack + slot)); break;
-	    case 4: fstw(fr8, (void *)(stack + slot)); break;
-	    case 5: fstw(fr9, (void *)(stack + slot)); break;
-	    case 6: fstw(fr10, (void *)(stack + slot)); break;
-	    case 7: fstw(fr11, (void *)(stack + slot)); break;
+	    ಪಕ್ಷ 0: fstw(fr4, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 1: fstw(fr5, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 2: fstw(fr6, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 3: fstw(fr7, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 4: fstw(fr8, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 5: fstw(fr9, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 6: fstw(fr10, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 7: fstw(fr11, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
 	    }
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	  avalue[i] = (ಶೂನ್ಯ *)(ರಾಶಿ + slot) + 4;
+	  ಭಙ್ಗ;
 
-	case FFI_TYPE_DOUBLE:
+	ಪಕ್ಷ FFI_TYPE_DOUBLE:
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  ವಿಕಲ್ಪ (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstd(fr4, (void *)(stack + slot)); break;
-	    case 1: fstd(fr5, (void *)(stack + slot)); break;
-	    case 2: fstd(fr6, (void *)(stack + slot)); break;
-	    case 3: fstd(fr7, (void *)(stack + slot)); break;
-	    case 4: fstd(fr8, (void *)(stack + slot)); break;
-	    case 5: fstd(fr9, (void *)(stack + slot)); break;
-	    case 6: fstd(fr10, (void *)(stack + slot)); break;
-	    case 7: fstd(fr11, (void *)(stack + slot)); break;
+	    ಪಕ್ಷ 0: fstd(fr4, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 1: fstd(fr5, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 2: fstd(fr6, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 3: fstd(fr7, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 4: fstd(fr8, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 5: fstd(fr9, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 6: fstd(fr10, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
+	    ಪಕ್ಷ 7: fstd(fr11, (ಶೂನ್ಯ *)(ರಾಶಿ + slot)); ಭಙ್ಗ;
 	    }
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  avalue[i] = (ಶೂನ್ಯ *)(ರಾಶಿ + slot);
+	  ಭಙ್ಗ;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	ಪಕ್ಷ FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
 	  slot += (slot & 1);
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  avalue[i] = (ಶೂನ್ಯ *)(ರಾಶಿ + slot);
+	  ಭಙ್ಗ;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	ಪಕ್ಷ FFI_TYPE_STRUCT:
 	  /* All structs are passed in registers.  Structs larger
 	     than 8 bytes are aligned on a 16-byte boundary.  */
-	  if((*p_arg)->size > 8)
+	  ಯದಿ((*p_arg)->size > 8)
 	    slot += (slot & 1);
-	  avalue[i] = (void *) (stack + slot);
-	  break;
+	  avalue[i] = (ಶೂನ್ಯ *) (ರಾಶಿ + slot);
+	  ಭಙ್ಗ;
 
-	default:
+	ಸ್ವಭಾವ:
 	  FFI_ASSERT(0);
 	}
 
@@ -484,97 +484,97 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 	u.ret[1]);
 
   /* Store the result using the lower 2 bytes of the flags.  */
-  switch (cif->flags)
+  ವಿಕಲ್ಪ (cif->flags)
     {
-    case FFI_TYPE_UINT8:
-      *(stack + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
-      *(stack + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
-      *(stack + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
-      *(stack + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      *(stack + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
-      break;
-    case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
+    ಪಕ್ಷ FFI_TYPE_UINT8:
+      *(ರಾಶಿ + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
+      ಭಙ್ಗ;
+    ಪಕ್ಷ FFI_TYPE_SINT8:
+      *(ರಾಶಿ + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
+      ಭಙ್ಗ;
+    ಪಕ್ಷ FFI_TYPE_UINT16:
+      *(ರಾಶಿ + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
+      ಭಙ್ಗ;
+    ಪಕ್ಷ FFI_TYPE_SINT16:
+      *(ರಾಶಿ + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
+      ಭಙ್ಗ;
+    ಪಕ್ಷ FFI_TYPE_INT:
+    ಪಕ್ಷ FFI_TYPE_SINT32:
+      *(ರಾಶಿ + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
+      ಭಙ್ಗ;
+    ಪಕ್ಷ FFI_TYPE_UINT32:
+      *(ರಾಶಿ - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
+      ಭಙ್ಗ;
+    ಪಕ್ಷ FFI_TYPE_SINT64:
+    ಪಕ್ಷ FFI_TYPE_UINT64:
+    ಪಕ್ಷ FFI_TYPE_POINTER:
+      *(ರಾಶಿ - FIRST_ARG_SLOT) = u.ret[0];
+      ಭಙ್ಗ;
 
-    case FFI_TYPE_LONGDOUBLE:
-      *(stack + FIRST_ARG_SLOT) = u.ret[0];
-      *(stack + FIRST_ARG_SLOT + 1) = u.ret[1];
-      break;
+    ಪಕ್ಷ FFI_TYPE_LONGDOUBLE:
+      *(ರಾಶಿ + FIRST_ARG_SLOT) = u.ret[0];
+      *(ರಾಶಿ + FIRST_ARG_SLOT + 1) = u.ret[1];
+      ಭಙ್ಗ;
 
-    case FFI_TYPE_DOUBLE:
+    ಪಕ್ಷ FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      ಭಙ್ಗ;
 
-    case FFI_TYPE_FLOAT:
+    ಪಕ್ಷ FFI_TYPE_FLOAT:
       /* Adjust for address adjustment in fldw macro.  */
       fldw(rvalue - 4, fr4);
-      break;
+      ಭಙ್ಗ;
 
-    case FFI_TYPE_STRUCT:
+    ಪಕ್ಷ FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      ಭಙ್ಗ;
 
-    case -1:
-    case -2:
-    case -3:
-    case -4:
-    case -5:
-    case -6:
-    case -7:
-    case -8:
-    case -9:
-    case -10:
-    case -11:
-    case -12:
-    case -13:
-    case -14:
-    case -15:
-    case -16:
-      tmp = (void*)(stack + FIRST_ARG_SLOT);
-      memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+    ಪಕ್ಷ -1:
+    ಪಕ್ಷ -2:
+    ಪಕ್ಷ -3:
+    ಪಕ್ಷ -4:
+    ಪಕ್ಷ -5:
+    ಪಕ್ಷ -6:
+    ಪಕ್ಷ -7:
+    ಪಕ್ಷ -8:
+    ಪಕ್ಷ -9:
+    ಪಕ್ಷ -10:
+    ಪಕ್ಷ -11:
+    ಪಕ್ಷ -12:
+    ಪಕ್ಷ -13:
+    ಪಕ್ಷ -14:
+    ಪಕ್ಷ -15:
+    ಪಕ್ಷ -16:
+      tmp = (ಶೂನ್ಯ*)(ರಾಶಿ + FIRST_ARG_SLOT);
+      memcpy((ಶೂನ್ಯ*)tmp, &u, cif->rtype->size);
+      ಭಙ್ಗ;
 
-    case FFI_TYPE_VOID:
-      break;
+    ಪಕ್ಷ FFI_TYPE_VOID:
+      ಭಙ್ಗ;
 
-    default:
+    ಸ್ವಭಾವ:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      ಭಙ್ಗ;
     }
-  return FFI_OK;
+  ಪ್ರತ್ಯಾಗಮ FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
    cif specifies the argument and result types for fun.
    The cif must already be prep'ed.  */
 
-extern void ffi_closure_pa64(void);
+ಬಾಹ್ಯ ಶೂನ್ಯ ffi_closure_pa64(ಶೂನ್ಯ);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      ಶೂನ್ಯ (*fun)(ffi_cif*,ಶೂನ್ಯ*,ಶೂನ್ಯ**,ಶೂನ್ಯ*),
+		      ಶೂನ್ಯ *user_data,
+		      ಶೂನ್ಯ *codeloc)
 {
   /* The layout of a function descriptor.  */
-  struct pa64_fd
+  ಸಂರಚನಾ pa64_fd
   {
     UINT64 tmp1;
     UINT64 tmp2;
@@ -582,7 +582,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 gp;
   };
 
-  struct ffi_pa64_trampoline_struct
+  ಸಂರಚನಾ ffi_pa64_trampoline_struct
   {
     UINT64 real_gp;             /* Real gp value.  */
     UINT64 tmp2;
@@ -590,17 +590,17 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 fake_gp;             /* Pointer to closure, installed as gp.  */
   };
 
-  struct ffi_pa64_trampoline_struct *tramp;
-  struct pa64_fd *fd;
+  ಸಂರಚನಾ ffi_pa64_trampoline_struct *tramp;
+  ಸಂರಚನಾ pa64_fd *fd;
 
-  if (cif->abi != FFI_PA64)
-    return FFI_BAD_ABI;
+  ಯದಿ (cif->abi != FFI_PA64)
+    ಪ್ರತ್ಯಾಗಮ FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa64.  */
-  fd = (struct pa64_fd *)((UINT64)ffi_closure_pa64);
+  fd = (ಸಂರಚನಾ pa64_fd *)((UINT64)ffi_closure_pa64);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa64_trampoline_struct *)closure->tramp;
+  tramp = (ಸಂರಚನಾ ffi_pa64_trampoline_struct *)closure->tramp;
   tramp->code_pointer = fd->code_pointer;
   tramp->fake_gp = (UINT64)codeloc;
   tramp->real_gp = fd->gp;
@@ -609,6 +609,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  ಪ್ರತ್ಯಾಗಮ FFI_OK;
 }
 #endif

@@ -33,10 +33,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+ಪ್ರಕಾರನಿರ್ದೇಶ unsigned long          ffi_arg;
+ಪ್ರಕಾರನಿರ್ದೇಶ signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಗಣನಾ ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -44,7 +44,7 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_EXTRA_CIF_FIELDS unsigned int rstruct_flag
+#define FFI_EXTRA_CIF_FIELDS unsigned ಪೂರ್ಣಾಙ್ಕ rstruct_flag
 
 /* Definitions for closures */
 

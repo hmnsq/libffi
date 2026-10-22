@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ವಾ IMPLIED, INCLUDING BUT ನ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ಚ
+   NONINFRINGEMENT.  ಅನ್ತಃ NO EVENT SHALL THE AUTHORS ವಾ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ವಾ OTHER LIABILITY,
+   WHETHER ಅನ್ತಃ AN ACTION OF CONTRACT, TORT ವಾ OTHERWISE, ARISING FROM,
+   OUT OF ವಾ ಅನ್ತಃ CONNECTION WITH THE SOFTWARE ವಾ THE USE ವಾ OTHER
+   DEALINGS ಅನ್ತಃ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -121,7 +121,7 @@ ffi_call_tile:
          addi   TMP, sp, REG_SIZE
          /* Prepare to memcpy stack args. */
          addi   OUTGOING_STACK_ARGS, sp, LINKAGE_SIZE
-         /* Save REG_ARGS which we will need after we call the subroutine. */
+         /* Save REG_ARGS which we will need after we ಆಹ್ವಾನ the subroutine. */
          SW     TMP2, REG_ARGS
         }
         {
@@ -160,10 +160,10 @@ ffi_call_tile:
         }
 
         /* Load up argument registers from the REG_ARGS array. */
-#define LOAD_REG(REG, PTR) \
+#define LOAD_REG(REG, ನಿರ್ದೇಶಕ) \
         { \
-         LW     REG, PTR ; \
-         addi   PTR, PTR, REG_SIZE \
+         LW     REG, ನಿರ್ದೇಶಕ ; \
+         addi   ನಿರ್ದೇಶಕ, ನಿರ್ದೇಶಕ, REG_SIZE \
         }
 
         LOAD_REG(r1, REG_ADDR_PTR)
@@ -201,10 +201,10 @@ ffi_call_tile:
          LW     r52, TMP
         }
 
-#define STORE_REG(REG, PTR) \
+#define STORE_REG(REG, ನಿರ್ದೇಶಕ) \
         { \
-         SW     PTR, REG ; \
-         addi   PTR, PTR, REG_SIZE \
+         SW     ನಿರ್ದೇಶಕ, REG ; \
+         addi   ನಿರ್ದೇಶಕ, ನಿರ್ದೇಶಕ, REG_SIZE \
         }
 
         /* Return all register values by reference. */
@@ -352,7 +352,7 @@ ffi_template_tramp_tile:
         { shl16insli r11, r11, 0 ; shl16insli r10, r10, 0 }
         { info 2+8 /* for backtracer: -> pc in lr, frame size 0 */ ; jr r10 }
 #else
-        /* 'jal .' yields a PC-relative offset of zero so we can OR in the
+        /* 'jal .' yields a PC-relative offset of zero so we can ವಾ in the
            right offset at runtime. */
         { move r10, lr ; jal . /* ffi_closure_tile */ }
 #endif

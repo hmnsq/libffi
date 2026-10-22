@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ವಾ IMPLIED, INCLUDING BUT ನ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ಚ
+   NONINFRINGEMENT.  ಅನ್ತಃ NO EVENT SHALL THE AUTHORS ವಾ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ವಾ OTHER LIABILITY,
+   WHETHER ಅನ್ತಃ AN ACTION OF CONTRACT, TORT ವಾ OTHERWISE, ARISING FROM,
+   OUT OF ವಾ ಅನ್ತಃ CONNECTION WITH THE SOFTWARE ವಾ THE USE ವಾ OTHER
+   DEALINGS ಅನ್ತಃ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifdef __i386__
@@ -118,7 +118,7 @@ L(UW1):
 	movl	20+R_EDX*4(%ebp), %edx
 	movl	20+R_ECX*4(%ebp), %ecx
 
-	call	*8(%ebp)
+	ಆಹ್ವಾನ	*8(%ebp)
 
 	movl	12(%ebp), %ecx		/* load return type code */
 	movl	%ebx, 8(%ebp)		/* preserve %ebx */
@@ -127,7 +127,7 @@ L(UW2):
 
 	andl	$X86_RET_TYPE_MASK, %ecx
 #ifdef __PIC__
-	call	C(__x86.get_pc_thunk.bx)
+	ಆಹ್ವಾನ	C(__x86.get_pc_thunk.bx)
 L(pc1):
 	leal	L(store_table)-L(pc1)(%ebx, %ecx, 8), %ebx
 #else
@@ -251,7 +251,7 @@ ENDF(ffi_call_i386)
 #endif
 
 #define FFI_CLOSURE_CALL_INNER(UWN) \
-	call	ffi_closure_inner
+	ಆಹ್ವಾನ	ffi_closure_inner
 
 #define FFI_CLOSURE_MASK_AND_JUMP(N, UW)				\
 	andl	$X86_RET_TYPE_MASK, %eax;				\
@@ -264,7 +264,7 @@ ENDF(ffi_call_i386)
 #  undef FFI_CLOSURE_MASK_AND_JUMP
 #  define FFI_CLOSURE_MASK_AND_JUMP(N, UW)				\
 	andl	$X86_RET_TYPE_MASK, %eax;				\
-	call	C(__x86.get_pc_thunk.dx);				\
+	ಆಹ್ವಾನ	C(__x86.get_pc_thunk.dx);				\
 L(C1(pc,N)):								\
 	leal	L(C1(load_table,N))-L(C1(pc,N))(%edx, %eax, 8), %edx;	\
 	movl	closure_CF(%esp), %eax;		/* optimiztic load */	\
@@ -276,9 +276,9 @@ L(C1(pc,N)):								\
 	movl	%ebx, 40(%esp);			/* save ebx */		\
 L(C1(UW,UWN)):								\
 	/* cfi_rel_offset(%ebx, 40); */					\
-	call	C(__x86.get_pc_thunk.bx);	/* load got register */	\
+	ಆಹ್ವಾನ	C(__x86.get_pc_thunk.bx);	/* load got register */	\
 	addl	$C(_GLOBAL_OFFSET_TABLE_), %ebx;			\
-	call	ffi_closure_inner@PLT
+	ಆಹ್ವಾನ	ffi_closure_inner@PLT
 #  undef FFI_CLOSURE_MASK_AND_JUMP
 #  define FFI_CLOSURE_MASK_AND_JUMP(N, UWN)				\
 	andl	$X86_RET_TYPE_MASK, %eax;				\
@@ -644,10 +644,10 @@ C(trampoline_code_table):
 	_CET_ENDBR
 	sub	$8, %esp
 	movl	%eax, (%esp)			/* Save %eax on stack */
-	call	1f				/* Get next PC into %eax */
+	ಆಹ್ವಾನ	1f				/* Get next PC into %eax */
 	movl	X86_DATA_OFFSET(%eax), %eax	/* Copy data into %eax */
 	movl	%eax, 4(%esp)			/* Save data on stack */
-	call	1f				/* Get next PC into %eax */
+	ಆಹ್ವಾನ	1f				/* Get next PC into %eax */
 	movl	X86_CODE_OFFSET(%eax), %eax	/* Copy code into %eax */
 	jmp	*%eax				/* Jump to code */
 1:
@@ -685,12 +685,12 @@ L(UW34):
 	movl	%edx, 4(%esp)
 	movl	FFI_TRAMPOLINE_SIZE(%eax), %ebx		/* load cl->cif */
 	movl	%ebx, (%esp)
-	call	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* call cl->fun */
+	ಆಹ್ವಾನ	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* ಆಹ್ವಾನ cl->fun */
 
 	movl	20(%ebx), %eax				/* load cif->flags */
 	andl	$X86_RET_TYPE_MASK, %eax
 #ifdef __PIC__
-	call	C(__x86.get_pc_thunk.bx)
+	ಆಹ್ವಾನ	C(__x86.get_pc_thunk.bx)
 L(pc4):
 	leal	L(load_table4)-L(pc4)(%ebx, %eax, 8), %ecx
 #else
@@ -802,12 +802,12 @@ L(UW46):
 	movl	%edx, 4(%esp)
 	movl	FFI_TRAMPOLINE_SIZE(%eax), %ebx		/* load cl->cif */
 	movl	%ebx, (%esp)
-	call	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* call cl->fun */
+	ಆಹ್ವಾನ	*FFI_TRAMPOLINE_SIZE+4(%eax)		/* ಆಹ್ವಾನ cl->fun */
 
 	movl	20(%ebx), %eax				/* load cif->flags */
 	andl	$X86_RET_TYPE_MASK, %eax
 #ifdef __PIC__
-	call	C(__x86.get_pc_thunk.bx)
+	ಆಹ್ವಾನ	C(__x86.get_pc_thunk.bx)
 L(pc5):
 	leal	L(load_table5)-L(pc5)(%ebx, %eax, 8), %ecx
 #else

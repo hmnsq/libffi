@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ವಾ IMPLIED, INCLUDING BUT ನ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ಚ
+   NONINFRINGEMENT.  ಅನ್ತಃ NO EVENT SHALL THE AUTHORS ವಾ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ವಾ OTHER LIABILITY,
+   WHETHER ಅನ್ತಃ AN ACTION OF CONTRACT, TORT ವಾ OTHERWISE, ARISING FROM,
+   OUT OF ವಾ ಅನ್ತಃ CONNECTION WITH THE SOFTWARE ವಾ THE USE ವಾ OTHER
+   DEALINGS ಅನ್ತಃ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #ifndef __x86_64__
@@ -53,7 +53,7 @@
     .686P
     .MODEL FLAT
 
-EXTRN	@ffi_closure_inner@8:PROC
+EXTRN	@ffi_closure_inner@8:ವಿಧಿ
 _TEXT SEGMENT
 
 /* This is declared as
@@ -68,8 +68,8 @@ _TEXT SEGMENT
 */
 
 ALIGN 16
-PUBLIC @ffi_call_i386@8
-@ffi_call_i386@8 PROC
+ಸಾರ್ವಜನಿಕ @ffi_call_i386@8
+@ffi_call_i386@8 ವಿಧಿ
 L(UW0):
 	cfi_startproc
  #if !HAVE_FASTCALL
@@ -97,7 +97,7 @@ L(UW1):
 	mov 	edx, [20+R_EDX*4+ebp]
 	mov	    ecx, [20+R_ECX*4+ebp]
 
-	call	dword ptr [ebp+8]
+	ಆಹ್ವಾನ	dword ptr [ebp+8]
 
 	mov	    ecx, [12+ebp]		/* load return type code */
 	mov 	[ebp+8], ebx		/* preserve %ebx */
@@ -112,13 +112,13 @@ L(UW2):
 	ALIGN	8
 L(store_table):
 E(L(store_table), X86_RET_FLOAT)
-	fstp	DWORD PTR [ecx]
+	fstp	DWORD ನಿರ್ದೇಶಕ [ecx]
 	jmp	L(e1)
 E(L(store_table), X86_RET_DOUBLE)
-	fstp	QWORD PTR [ecx]
+	fstp	QWORD ನಿರ್ದೇಶಕ [ecx]
 	jmp	L(e1)
 E(L(store_table), X86_RET_LDOUBLE)
-	fstp	QWORD PTR [ecx]
+	fstp	QWORD ನಿರ್ದೇಶಕ [ecx]
 	jmp	L(e1)
 E(L(store_table), X86_RET_SINT8)
 	movsx	eax, al
@@ -228,7 +228,7 @@ ENDM
 #endif
 
 FFI_CLOSURE_CALL_INNER MACRO UWN
-	call	@ffi_closure_inner@8
+	ಆಹ್ವಾನ	@ffi_closure_inner@8
 ENDM
 
 FFI_CLOSURE_MASK_AND_JUMP MACRO LABEL
@@ -239,8 +239,8 @@ FFI_CLOSURE_MASK_AND_JUMP MACRO LABEL
 ENDM
 
 ALIGN 16
-PUBLIC ffi_go_closure_EAX
-ffi_go_closure_EAX PROC C
+ಸಾರ್ವಜನಿಕ ffi_go_closure_EAX
+ffi_go_closure_EAX ವಿಧಿ C
 L(UW6):
 	/* cfi_startproc */
 	sub	esp, closure_FS
@@ -258,8 +258,8 @@ L(UW8):
 ENDF(ffi_go_closure_EAX)
 
 ALIGN 16
-PUBLIC ffi_go_closure_ECX
-ffi_go_closure_ECX PROC C
+ಸಾರ್ವಜನಿಕ ffi_go_closure_ECX
+ffi_go_closure_ECX ವಿಧಿ C
 L(UW9):
 	/* cfi_startproc */
 	sub 	esp, closure_FS
@@ -280,8 +280,8 @@ ENDF(ffi_go_closure_ECX)
    On entry, %eax contains the address of the ffi_closure.  */
 
 ALIGN 16
-PUBLIC ffi_closure_i386
-ffi_closure_i386 PROC C
+ಸಾರ್ವಜನಿಕ ffi_closure_i386
+ffi_closure_i386 ವಿಧಿ C
 L(UW12):
 	/* cfi_startproc */
 	sub	    esp, closure_FS
@@ -362,8 +362,8 @@ L(UW20):
 ENDF(ffi_closure_i386)
 
 ALIGN 16
-PUBLIC	ffi_go_closure_STDCALL
-ffi_go_closure_STDCALL PROC C
+ಸಾರ್ವಜನಿಕ	ffi_go_closure_STDCALL
+ffi_go_closure_STDCALL ವಿಧಿ C
 L(UW21):
 	/* cfi_startproc */
 	sub 	esp, closure_FS
@@ -384,8 +384,8 @@ ENDF(ffi_go_closure_STDCALL)
    enter here having pushed the closure onto the stack.  */
 
 ALIGN 16
-PUBLIC ffi_closure_REGISTER
-ffi_closure_REGISTER PROC C
+ಸಾರ್ವಜನಿಕ ffi_closure_REGISTER
+ffi_closure_REGISTER ವಿಧಿ C
 L(UW24):
 	/* cfi_startproc */
 	/* cfi_def_cfa(%esp, 8) */
@@ -405,8 +405,8 @@ ENDF(ffi_closure_REGISTER)
    is returned to us from ffi_closure_inner.  */
 
 ALIGN 16
-PUBLIC ffi_closure_STDCALL
-ffi_closure_STDCALL PROC C
+ಸಾರ್ವಜನಿಕ ffi_closure_STDCALL
+ffi_closure_STDCALL ವಿಧಿ C
 L(UW27):
 	/* cfi_startproc */
 	sub 	esp, closure_FS
@@ -443,15 +443,15 @@ L(do_closure_STDCALL)::
     ALIGN 8
 L(load_table3):
 E(L(load_table3), X86_RET_FLOAT)
-	fld    DWORD PTR [esp+closure_CF]
+	fld    DWORD ನಿರ್ದೇಶಕ [esp+closure_CF]
 	mov     esp, ecx
 	ret
 E(L(load_table3), X86_RET_DOUBLE)
-	fld    QWORD PTR [esp+closure_CF]
+	fld    QWORD ನಿರ್ದೇಶಕ [esp+closure_CF]
 	mov     esp, ecx
 	ret
 E(L(load_table3), X86_RET_LDOUBLE)
-	fld    QWORD PTR [esp+closure_CF]
+	fld    QWORD ನಿರ್ದೇಶಕ [esp+closure_CF]
 	mov     esp, ecx
 	ret
 E(L(load_table3), X86_RET_SINT8)
@@ -510,8 +510,8 @@ ENDF(ffi_closure_STDCALL)
 #define raw_closure_S_FS	(16+16+12)
 
 ALIGN 16
-PUBLIC ffi_closure_raw_SYSV
-ffi_closure_raw_SYSV PROC C
+ಸಾರ್ವಜನಿಕ ffi_closure_raw_SYSV
+ffi_closure_raw_SYSV ವಿಧಿ C
 L(UW32):
 	/* cfi_startproc */
 	sub 	esp, raw_closure_S_FS
@@ -529,12 +529,12 @@ L(UW34):
 	mov 	[esp+4], edx
 	mov 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
 	mov 	[esp], ebx
-	call	DWORD PTR [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
+	ಆಹ್ವಾನ	DWORD ನಿರ್ದೇಶಕ [eax+FFI_TRAMPOLINE_SIZE+4]		/* ಆಹ್ವಾನ cl->fun */
 
 	mov 	eax, [ebx+20]			/* load cif->flags */
 	and 	eax, X86_RET_TYPE_MASK
 /* #ifdef __PIC__ */
-/* 	call	__x86.get_pc_thunk.bx */
+/* 	ಆಹ್ವಾನ	__x86.get_pc_thunk.bx */
 /* L(pc4): */
 /* 	lea 	ecx, L(load_table4)-L(pc4)(%ebx, %eax, 8), %ecx */
 /* #else */
@@ -549,13 +549,13 @@ L(UW35):
 	ALIGN 8
 L(load_table4):
 E(L(load_table4), X86_RET_FLOAT)
-	fld 	DWORD PTR [esp +16]
+	fld 	DWORD ನಿರ್ದೇಶಕ [esp +16]
 	jmp	L(e4)
 E(L(load_table4), X86_RET_DOUBLE)
-	fld 	QWORD PTR [esp +16]
+	fld 	QWORD ನಿರ್ದೇಶಕ [esp +16]
 	jmp	L(e4)
 E(L(load_table4), X86_RET_LDOUBLE)
-	fld 	QWORD PTR [esp +16]
+	fld 	QWORD ನಿರ್ದೇಶಕ [esp +16]
 	jmp	L(e4)
 E(L(load_table4), X86_RET_SINT8)
 	movsx	eax, al
@@ -612,8 +612,8 @@ ENDF(ffi_closure_raw_SYSV)
 #define raw_closure_T_FS	(16+16+8)
 
 ALIGN 16
-PUBLIC ffi_closure_raw_THISCALL
-ffi_closure_raw_THISCALL PROC C
+ಸಾರ್ವಜನಿಕ ffi_closure_raw_THISCALL
+ffi_closure_raw_THISCALL ವಿಧಿ C
 L(UW41):
 	/* cfi_startproc */
 	/* Rearrange the stack such that %ecx is the first argument.
@@ -644,12 +644,12 @@ L(UW46):
 	mov 	[esp+4], edx
 	mov 	ebx, [eax+FFI_TRAMPOLINE_SIZE]		/* load cl->cif */
 	mov 	[esp], ebx
-	call	DWORD PTR [eax+FFI_TRAMPOLINE_SIZE+4]		/* call cl->fun */
+	ಆಹ್ವಾನ	DWORD ನಿರ್ದೇಶಕ [eax+FFI_TRAMPOLINE_SIZE+4]		/* ಆಹ್ವಾನ cl->fun */
 
 	mov 	eax, [ebx+20]				/* load cif->flags */
 	and 	eax, X86_RET_TYPE_MASK
 /* #ifdef __PIC__ */
-/* 	call	__x86.get_pc_thunk.bx */
+/* 	ಆಹ್ವಾನ	__x86.get_pc_thunk.bx */
 /* L(pc5): */
 /* 	leal	L(load_table5)-L(pc5)(%ebx, %eax, 8), %ecx */
 /* #else */
@@ -659,18 +659,18 @@ L(UW46):
 L(UW47):
 	/* cfi_restore(%ebx) */
 	mov 	eax, [esp+16]				/* Optimistic load */
-	jmp	    DWORD PTR [ecx]
+	jmp	    DWORD ನಿರ್ದೇಶಕ [ecx]
 
 	AlIGN 4
 L(load_table5):
 E(L(load_table5), X86_RET_FLOAT)
-	fld	DWORD PTR [esp +16]
+	fld	DWORD ನಿರ್ದೇಶಕ [esp +16]
 	jmp	L(e5)
 E(L(load_table5), X86_RET_DOUBLE)
-	fld	QWORD PTR [esp +16]
+	fld	QWORD ನಿರ್ದೇಶಕ [esp +16]
 	jmp	L(e5)
 E(L(load_table5), X86_RET_LDOUBLE)
-	fld	QWORD PTR [esp+16]
+	fld	QWORD ನಿರ್ದೇಶಕ [esp+16]
 	jmp	L(e5)
 E(L(load_table5), X86_RET_SINT8)
 	movsx	eax, al
@@ -735,7 +735,7 @@ ENDF(ffi_closure_raw_THISCALL)
 #elif defined __ELF__ && !(defined(__sun__) && defined(__svr4__))
 # define COMDAT(X)							\
 	.section .text.X,"axG",@progbits,X,comdat;			\
-	PUBLIC	X;							\
+	ಸಾರ್ವಜನಿಕ	X;							\
 	FFI_HIDDEN(X)
 #else
 # define COMDAT(X)
@@ -985,7 +985,7 @@ L(EFDE9):
 	.scl	3;
 	.type	0;
 	.endef
-	PUBLIC	@feat.00
+	ಸಾರ್ವಜನಿಕ	@feat.00
 @feat.00 = 1
 #endif
 
@@ -997,4 +997,4 @@ L(EFDE9):
 #endif
 #endif
 
-END
+ಅನ್ತ

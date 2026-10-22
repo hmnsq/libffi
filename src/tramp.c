@@ -26,7 +26,7 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <fficonfig.h>
+#ಅನ್ತರ್ಭಾವ <fficonfig.h>
 
 #ifdef FFI_EXEC_STATIC_TRAMP
 
@@ -35,28 +35,28 @@
  * Add support for other OSes later. For now, it is just Linux and Cygwin.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ಯದಿ defined (__linux__) || defined (__CYGWIN__)
 #ifdef __linux__
 #define _GNU_SOURCE 1
 #endif
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ಅನ್ತರ್ಭಾವ <ffi.h>
+#ಅನ್ತರ್ಭಾವ <ffi_common.h>
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fcntl.h>
-#include <pthread.h>
-#include <sys/mman.h>
-#include <tramp.h>
+#ಅನ್ತರ್ಭಾವ <stdio.h>
+#ಅನ್ತರ್ಭಾವ <unistd.h>
+#ಅನ್ತರ್ಭಾವ <stdlib.h>
+#ಅನ್ತರ್ಭಾವ <stdint.h>
+#ಅನ್ತರ್ಭಾವ <fcntl.h>
+#ಅನ್ತರ್ಭಾವ <pthread.h>
+#ಅನ್ತರ್ಭಾವ <sys/mman.h>
+#ಅನ್ತರ್ಭಾವ <tramp.h>
 #ifdef __linux__
-#include <linux/limits.h>
-#include <linux/types.h>
+#ಅನ್ತರ್ಭಾವ <linux/limits.h>
+#ಅನ್ತರ್ಭಾವ <linux/types.h>
 #endif
 #ifdef __CYGWIN__
-#include <limits.h>
+#ಅನ್ತರ್ಭಾವ <limits.h>
 #endif
 #endif
 
@@ -70,12 +70,12 @@
  *	- the size of each trampoline in the trampoline code table
  *	- the size of the mapping for the whole trampoline code table
  */
-void __attribute__((weak)) *ffi_tramp_arch (size_t *tramp_size,
+ಶೂನ್ಯ __attribute__((weak)) *ffi_tramp_arch (size_t *tramp_size,
   size_t *map_size);
 
 /* ------------------------- Trampoline Data Structures --------------------*/
 
-struct tramp;
+ಸಂರಚನಾ tramp;
 
 /*
  * Trampoline table. Manages one trampoline code table and one trampoline
@@ -88,15 +88,15 @@ struct tramp;
  * free		List of free trampolines.
  * nfree	Number of free trampolines.
  */
-struct tramp_table
+ಸಂರಚನಾ tramp_table
 {
-  struct tramp_table *prev;
-  struct tramp_table *next;
-  void *code_table;
-  void *parm_table;
-  struct tramp *array;
-  struct tramp *free;
-  int nfree;
+  ಸಂರಚನಾ tramp_table *prev;
+  ಸಂರಚನಾ tramp_table *next;
+  ಶೂನ್ಯ *code_table;
+  ಶೂನ್ಯ *parm_table;
+  ಸಂರಚನಾ tramp *array;
+  ಸಂರಚನಾ tramp *ಮುಕ್ತ;
+  ಪೂರ್ಣಾಙ್ಕ nfree;
 };
 
 /*
@@ -107,10 +107,10 @@ struct tramp_table
  * target
  *	Target code that the trampoline jumps to.
  */
-struct tramp_parm
+ಸಂರಚನಾ tramp_parm
 {
-  void *data;
-  void *target;
+  ಶೂನ್ಯ *data;
+  ಶೂನ್ಯ *target;
 };
 
 /*
@@ -122,16 +122,16 @@ struct tramp_parm
  * parm		Address of this trampoline's parameters in the parameter
  *		table mapping.
  */
-struct tramp
+ಸಂರಚನಾ tramp
 {
-  struct tramp *prev;
-  struct tramp *next;
-  struct tramp_table *table;
-  void *code;
-  struct tramp_parm *parm;
+  ಸಂರಚನಾ tramp *prev;
+  ಸಂರಚನಾ tramp *next;
+  ಸಂರಚನಾ tramp_table *table;
+  ಶೂನ್ಯ *code;
+  ಸಂರಚನಾ tramp_parm *parm;
 };
 
-enum tramp_globals_status {
+ಗಣನಾ tramp_globals_status {
 	TRAMP_GLOBALS_UNINITIALIZED = 0,
 	TRAMP_GLOBALS_PASSED,
 	TRAMP_GLOBALS_FAILED,
@@ -159,20 +159,20 @@ enum tramp_globals_status {
  * status
  *	Initialization status.
  */
-struct tramp_globals
+ಸಂರಚನಾ tramp_globals
 {
-  int fd;
+  ಪೂರ್ಣಾಙ್ಕ fd;
   off_t offset;
-  void *text;
+  ಶೂನ್ಯ *text;
   size_t map_size;
   size_t size;
-  int ntramp;
-  struct tramp_table *free_tables;
-  int nfree_tables;
-  enum tramp_globals_status status;
+  ಪೂರ್ಣಾಙ್ಕ ntramp;
+  ಸಂರಚನಾ tramp_table *free_tables;
+  ಪೂರ್ಣಾಙ್ಕ nfree_tables;
+  ಗಣನಾ tramp_globals_status status;
 };
 
-static struct tramp_globals tramp_globals;
+ಸ್ಥಿರ ಸಂರಚನಾ tramp_globals tramp_globals;
 
 /* --------------------- Trampoline File Initialization --------------------*/
 
@@ -197,85 +197,85 @@ static struct tramp_globals tramp_globals;
  * directly remapped (e.g., MACH vm_remap ()), then we don't need the
  * trampoline file.
  */
-static int tramp_table_alloc (void);
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ tramp_table_alloc (ಶೂನ್ಯ);
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ಯದಿ defined (__linux__) || defined (__CYGWIN__)
 
 /* Stringify a macro value for use in a scanf field-width specifier.  */
 #define FFI_TRAMP_STR_(x) #x
 #define FFI_TRAMP_STR(x)  FFI_TRAMP_STR_(x)
 
-static int
-ffi_tramp_get_libffi (void)
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ
+ffi_tramp_get_libffi (ಶೂನ್ಯ)
 {
   FILE *fp;
   /* `file' is sized PATH_MAX+1 so a scanf field width of PATH_MAX
      (which permits PATH_MAX characters plus the terminating NUL) cannot
      overflow.  */
-  char file[PATH_MAX+1], line[PATH_MAX+100], perm[10], dev[10];
+  ವರ್ಣ file[PATH_MAX+1], ಸಾಲು[PATH_MAX+100], perm[10], dev[10];
   unsigned long start, end, offset, inode;
   uintptr_t addr = (uintptr_t) tramp_globals.text;
-  int nfields, found;
-  int open_flags = O_RDONLY;
+  ಪೂರ್ಣಾಙ್ಕ nfields, found;
+  ಪೂರ್ಣಾಙ್ಕ open_flags = O_RDONLY;
 
 #ifdef O_CLOEXEC
   open_flags |= O_CLOEXEC;
 #endif
 
-  snprintf (file, sizeof (file), "/proc/%d/maps", getpid());
+  snprintf (file, ಪರಿಮಾಣ (file), "/proc/%d/maps", getpid());
   fp = fopen (file, "r");
-  if (fp == NULL)
-    return 0;
+  ಯದಿ (fp == ರಿಕ್ತ)
+    ಪ್ರತ್ಯಾಗಮ 0;
 
   found = 0;
-  while (feof (fp) == 0) {
-    if (fgets (line, sizeof (line), fp) == 0)
-      break;
+  ಯಾವತ್ (feof (fp) == 0) {
+    ಯದಿ (fgets (ಸಾಲು, ಪರಿಮಾಣ (ಸಾಲು), fp) == 0)
+      ಭಙ್ಗ;
 
     /* Bound the path field width so a long mapping name cannot overflow
        the fixed-size `file' buffer.  */
-    nfields = sscanf (line,
+    nfields = sscanf (ಸಾಲು,
       "%lx-%lx %9s %lx %9s %ld %" FFI_TRAMP_STR(PATH_MAX) "s",
       &start, &end, perm, &offset, dev, &inode, file);
-    if (nfields != 7)
-      continue;
+    ಯದಿ (nfields != 7)
+      ಅನುವರ್ತ;
 
-    if (addr >= start && addr < end) {
+    ಯದಿ (addr >= start && addr < end) {
       tramp_globals.offset = offset + (addr - start);
       found = 1;
-      break;
+      ಭಙ್ಗ;
     }
   }
   fclose (fp);
 
-  if (!found)
-    return 0;
+  ಯದಿ (!found)
+    ಪ್ರತ್ಯಾಗಮ 0;
 
   tramp_globals.fd = open (file, open_flags);
-  if (tramp_globals.fd == -1)
-    return 0;
+  ಯದಿ (tramp_globals.fd == -1)
+    ಪ್ರತ್ಯಾಗಮ 0;
 
   /*
    * Allocate a trampoline table just to make sure that the trampoline code
    * table can be mapped.
    */
-  if (!tramp_table_alloc ())
+  ಯದಿ (!tramp_table_alloc ())
     {
       close (tramp_globals.fd);
       tramp_globals.fd = -1;
-      return 0;
+      ಪ್ರತ್ಯಾಗಮ 0;
     }
-  return 1;
+  ಪ್ರತ್ಯಾಗಮ 1;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ಯದಿ defined (__linux__) || defined (__CYGWIN__)
 
-static int
-ffi_tramp_get_temp_file (void)
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ
+ffi_tramp_get_temp_file (ಶೂನ್ಯ)
 {
-  ssize_t count;
+  ssize_t ಎಣಿಕೆ;
 
   tramp_globals.offset = 0;
   tramp_globals.fd = open_temp_exec_file ();
@@ -284,45 +284,45 @@ ffi_tramp_get_temp_file (void)
    * Write the trampoline code table into the temporary file and allocate a
    * trampoline table to make sure that the temporary file can be mapped.
    */
-  count = write(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
-  if (count >=0 && (size_t)count == tramp_globals.map_size && tramp_table_alloc ())
-    return 1;
+  ಎಣಿಕೆ = ಲಿಖ(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
+  ಯದಿ (ಎಣಿಕೆ >=0 && (size_t)ಎಣಿಕೆ == tramp_globals.map_size && tramp_table_alloc ())
+    ಪ್ರತ್ಯಾಗಮ 1;
 
   close (tramp_globals.fd);
   tramp_globals.fd = -1;
-  return 0;
+  ಪ್ರತ್ಯಾಗಮ 0;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* ------------------------ OS-specific Initialization ----------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ಯದಿ defined (__linux__) || defined (__CYGWIN__)
 
-static int
-ffi_tramp_init_os (void)
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ
+ffi_tramp_init_os (ಶೂನ್ಯ)
 {
-  if (ffi_tramp_get_libffi ())
-    return 1;
-  return ffi_tramp_get_temp_file ();
+  ಯದಿ (ffi_tramp_get_libffi ())
+    ಪ್ರತ್ಯಾಗಮ 1;
+  ಪ್ರತ್ಯಾಗಮ ffi_tramp_get_temp_file ();
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* --------------------------- OS-specific Locking -------------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ಯದಿ defined (__linux__) || defined (__CYGWIN__)
 
-static pthread_mutex_t tramp_globals_mutex = PTHREAD_MUTEX_INITIALIZER;
+ಸ್ಥಿರ pthread_mutex_t tramp_globals_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-static void
-ffi_tramp_lock(void)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_tramp_lock(ಶೂನ್ಯ)
 {
   pthread_mutex_lock (&tramp_globals_mutex);
 }
 
-static void
-ffi_tramp_unlock(void)
+ಸ್ಥಿರ ಶೂನ್ಯ
+ffi_tramp_unlock(ಶೂನ್ಯ)
 {
   pthread_mutex_unlock (&tramp_globals_mutex);
 }
@@ -346,41 +346,41 @@ ffi_tramp_unlock(void)
  * sizeof (struct tramp_parm) cannot exceed the size of a parameter block.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ಯದಿ defined (__linux__) || defined (__CYGWIN__)
 
-static int
-tramp_table_map (struct tramp_table *table)
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ
+tramp_table_map (ಸಂರಚನಾ tramp_table *table)
 {
-  char *addr;
+  ವರ್ಣ *addr;
 
   /*
    * Create an anonymous mapping twice the map size. The top half will be used
    * for the code table. The bottom half will be used for the parameter table.
    */
-  addr = mmap (NULL, tramp_globals.map_size * 2, PROT_READ | PROT_WRITE,
+  addr = mmap (ರಿಕ್ತ, tramp_globals.map_size * 2, PROT_READ | PROT_WRITE,
     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-  if (addr == MAP_FAILED)
-    return 0;
+  ಯದಿ (addr == MAP_FAILED)
+    ಪ್ರತ್ಯಾಗಮ 0;
 
   /*
    * Replace the top half of the anonymous mapping with the code table mapping.
    */
   table->code_table = mmap (addr, tramp_globals.map_size, PROT_READ | PROT_EXEC,
     MAP_PRIVATE | MAP_FIXED, tramp_globals.fd, tramp_globals.offset);
-  if (table->code_table == MAP_FAILED)
+  ಯದಿ (table->code_table == MAP_FAILED)
     {
-      (void) munmap (addr, tramp_globals.map_size * 2);
-      return 0;
+      (ಶೂನ್ಯ) munmap (addr, tramp_globals.map_size * 2);
+      ಪ್ರತ್ಯಾಗಮ 0;
     }
   table->parm_table = table->code_table + tramp_globals.map_size;
-  return 1;
+  ಪ್ರತ್ಯಾಗಮ 1;
 }
 
-static void
-tramp_table_unmap (struct tramp_table *table)
+ಸ್ಥಿರ ಶೂನ್ಯ
+tramp_table_unmap (ಸಂರಚನಾ tramp_table *table)
 {
-  (void) munmap (table->code_table, tramp_globals.map_size);
-  (void) munmap (table->parm_table, tramp_globals.map_size);
+  (ಶೂನ್ಯ) munmap (table->code_table, tramp_globals.map_size);
+  (ಶೂನ್ಯ) munmap (table->parm_table, tramp_globals.map_size);
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
@@ -390,24 +390,24 @@ tramp_table_unmap (struct tramp_table *table)
 /*
  * Initialize the static trampoline feature.
  */
-static int
-ffi_tramp_init (void)
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ
+ffi_tramp_init (ಶೂನ್ಯ)
 {
   long page_size;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_PASSED)
-    return 1;
+  ಯದಿ (tramp_globals.status == TRAMP_GLOBALS_PASSED)
+    ಪ್ರತ್ಯಾಗಮ 1;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_FAILED)
-    return 0;
+  ಯದಿ (tramp_globals.status == TRAMP_GLOBALS_FAILED)
+    ಪ್ರತ್ಯಾಗಮ 0;
 
-  if (ffi_tramp_arch == NULL)
+  ಯದಿ (ffi_tramp_arch == ರಿಕ್ತ)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      ಪ್ರತ್ಯಾಗಮ 0;
     }
 
-  tramp_globals.free_tables = NULL;
+  tramp_globals.free_tables = ರಿಕ್ತ;
   tramp_globals.nfree_tables = 0;
 
   /*
@@ -425,77 +425,77 @@ ffi_tramp_init (void)
    * whole initialization on every allocation.
    */
   page_size = sysconf (_SC_PAGESIZE);
-  if (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
+  ಯದಿ (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      ಪ್ರತ್ಯಾಗಮ 0;
     }
 
-  if (ffi_tramp_init_os ())
+  ಯದಿ (ffi_tramp_init_os ())
     {
       tramp_globals.status = TRAMP_GLOBALS_PASSED;
-      return 1;
+      ಪ್ರತ್ಯಾಗಮ 1;
     }
 
   tramp_globals.status = TRAMP_GLOBALS_FAILED;
-  return 0;
+  ಪ್ರತ್ಯಾಗಮ 0;
 }
 
 /* ---------------------- Trampoline Table functions ---------------------- */
 
 /* This code assumes that malloc () is available on all OSes. */
 
-static void tramp_add (struct tramp *tramp);
+ಸ್ಥಿರ ಶೂನ್ಯ tramp_add (ಸಂರಚನಾ tramp *tramp);
 
 /*
  * Allocate and initialize a trampoline table.
  */
-static int
-tramp_table_alloc (void)
+ಸ್ಥಿರ ಪೂರ್ಣಾಙ್ಕ
+tramp_table_alloc (ಶೂನ್ಯ)
 {
-  struct tramp_table *table;
-  struct tramp *tramp_array, *tramp;
+  ಸಂರಚನಾ tramp_table *table;
+  ಸಂರಚನಾ tramp *tramp_array, *tramp;
   size_t size;
-  char *code, *parm;
-  int i;
+  ವರ್ಣ *code, *parm;
+  ಪೂರ್ಣಾಙ್ಕ i;
 
   /*
    * If we already have tables with free trampolines, there is no need to
    * allocate a new table.
    */
-  if (tramp_globals.nfree_tables > 0)
-    return 1;
+  ಯದಿ (tramp_globals.nfree_tables > 0)
+    ಪ್ರತ್ಯಾಗಮ 1;
 
   /*
    * Allocate a new trampoline table structure.
    */
-  table = malloc (sizeof (*table));
-  if (table == NULL)
-    return 0;
+  table = malloc (ಪರಿಮಾಣ (*table));
+  ಯದಿ (table == ರಿಕ್ತ)
+    ಪ್ರತ್ಯಾಗಮ 0;
 
   /*
    * Allocate new trampoline structures.
    */
-  tramp_array = malloc (sizeof (*tramp) * tramp_globals.ntramp);
-  if (tramp_array == NULL)
-    goto free_table;
+  tramp_array = malloc (ಪರಿಮಾಣ (*tramp) * tramp_globals.ntramp);
+  ಯದಿ (tramp_array == ರಿಕ್ತ)
+    ಗಚ್ಛ free_table;
 
   /*
    * Map a code table and a parameter table into the caller's address space.
    */
-  if (!tramp_table_map (table))
+  ಯದಿ (!tramp_table_map (table))
     {
       /*
        * Failed to map the code and parameter tables.
        */
-      goto free_tramp_array;
+      ಗಚ್ಛ free_tramp_array;
     }
 
   /*
    * Initialize the trampoline table.
    */
   table->array = tramp_array;
-  table->free = NULL;
+  table->ಮುಕ್ತ = ರಿಕ್ತ;
   table->nfree = 0;
 
   /*
@@ -505,48 +505,48 @@ tramp_table_alloc (void)
   size = tramp_globals.size;
   code = table->code_table;
   parm = table->parm_table;
-  for (i = 0; i < tramp_globals.ntramp; i++)
+  ಪ್ರತಿ (i = 0; i < tramp_globals.ntramp; i++)
     {
       tramp = &tramp_array[i];
       tramp->table = table;
       tramp->code = code;
-      tramp->parm = (struct tramp_parm *) parm;
+      tramp->parm = (ಸಂರಚನಾ tramp_parm *) parm;
       tramp_add (tramp);
 
       code += size;
       parm += size;
     }
   /* Success */
-  return 1;
+  ಪ್ರತ್ಯಾಗಮ 1;
 
 /* Failure */
 free_tramp_array:
-  free (tramp_array);
+  ಮುಕ್ತ (tramp_array);
 free_table:
-  free (table);
-  return 0;
+  ಮುಕ್ತ (table);
+  ಪ್ರತ್ಯಾಗಮ 0;
 }
 
 /*
  * Free a trampoline table.
  */
-static void
-tramp_table_free (struct tramp_table *table)
+ಸ್ಥಿರ ಶೂನ್ಯ
+tramp_table_free (ಸಂರಚನಾ tramp_table *table)
 {
   tramp_table_unmap (table);
-  free (table->array);
-  free (table);
+  ಮುಕ್ತ (table->array);
+  ಮುಕ್ತ (table);
 }
 
 /*
  * Add a new trampoline table to the global table list.
  */
-static void
-tramp_table_add (struct tramp_table *table)
+ಸ್ಥಿರ ಶೂನ್ಯ
+tramp_table_add (ಸಂರಚನಾ tramp_table *table)
 {
   table->next = tramp_globals.free_tables;
-  table->prev = NULL;
-  if (tramp_globals.free_tables != NULL)
+  table->prev = ರಿಕ್ತ;
+  ಯದಿ (tramp_globals.free_tables != ರಿಕ್ತ)
     tramp_globals.free_tables->prev = table;
   tramp_globals.free_tables = table;
   tramp_globals.nfree_tables++;
@@ -555,15 +555,15 @@ tramp_table_add (struct tramp_table *table)
 /*
  * Delete a trampoline table from the global table list.
  */
-static void
-tramp_table_del (struct tramp_table *table)
+ಸ್ಥಿರ ಶೂನ್ಯ
+tramp_table_del (ಸಂರಚನಾ tramp_table *table)
 {
   tramp_globals.nfree_tables--;
-  if (table->prev != NULL)
+  ಯದಿ (table->prev != ರಿಕ್ತ)
     table->prev->next = table->next;
-  if (table->next != NULL)
+  ಯದಿ (table->next != ರಿಕ್ತ)
     table->next->prev = table->prev;
-  if (tramp_globals.free_tables == table)
+  ಯದಿ (tramp_globals.free_tables == table)
     tramp_globals.free_tables = table->next;
 }
 
@@ -572,25 +572,25 @@ tramp_table_del (struct tramp_table *table)
 /*
  * Add a trampoline to its trampoline table.
  */
-static void
-tramp_add (struct tramp *tramp)
+ಸ್ಥಿರ ಶೂನ್ಯ
+tramp_add (ಸಂರಚನಾ tramp *tramp)
 {
-  struct tramp_table *table = tramp->table;
+  ಸಂರಚನಾ tramp_table *table = tramp->table;
 
-  tramp->next = table->free;
-  tramp->prev = NULL;
-  if (table->free != NULL)
-    table->free->prev = tramp;
-  table->free = tramp;
+  tramp->next = table->ಮುಕ್ತ;
+  tramp->prev = ರಿಕ್ತ;
+  ಯದಿ (table->ಮುಕ್ತ != ರಿಕ್ತ)
+    table->ಮುಕ್ತ->prev = tramp;
+  table->ಮುಕ್ತ = tramp;
   table->nfree++;
 
-  if (table->nfree == 1)
+  ಯದಿ (table->nfree == 1)
     tramp_table_add (table);
 
   /*
    * We don't want to keep too many free trampoline tables lying around.
    */
-  if (table->nfree == tramp_globals.ntramp &&
+  ಯದಿ (table->nfree == tramp_globals.ntramp &&
     tramp_globals.nfree_tables > 1)
     {
       tramp_table_del (table);
@@ -601,73 +601,73 @@ tramp_add (struct tramp *tramp)
 /*
  * Remove a trampoline from its trampoline table.
  */
-static void
-tramp_del (struct tramp *tramp)
+ಸ್ಥಿರ ಶೂನ್ಯ
+tramp_del (ಸಂರಚನಾ tramp *tramp)
 {
-  struct tramp_table *table = tramp->table;
+  ಸಂರಚನಾ tramp_table *table = tramp->table;
 
   table->nfree--;
-  if (tramp->prev != NULL)
+  ಯದಿ (tramp->prev != ರಿಕ್ತ)
     tramp->prev->next = tramp->next;
-  if (tramp->next != NULL)
+  ಯದಿ (tramp->next != ರಿಕ್ತ)
     tramp->next->prev = tramp->prev;
-  if (table->free == tramp)
-    table->free = tramp->next;
+  ಯದಿ (table->ಮುಕ್ತ == tramp)
+    table->ಮುಕ್ತ = tramp->next;
 
-  if (table->nfree == 0)
+  ಯದಿ (table->nfree == 0)
     tramp_table_del (table);
 }
 
 /* ------------------------ Trampoline API functions ------------------------ */
 
-int
-ffi_tramp_is_supported(void)
+ಪೂರ್ಣಾಙ್ಕ
+ffi_tramp_is_supported(ಶೂನ್ಯ)
 {
-  int ret;
+  ಪೂರ್ಣಾಙ್ಕ ret;
 
   ffi_tramp_lock();
   ret = ffi_tramp_init ();
   ffi_tramp_unlock();
-  return ret;
+  ಪ್ರತ್ಯಾಗಮ ret;
 }
 
 /*
  * Allocate a trampoline and return its opaque address.
  */
-void *
-ffi_tramp_alloc (int flags)
+ಶೂನ್ಯ *
+ffi_tramp_alloc (ಪೂರ್ಣಾಙ್ಕ flags)
 {
-  struct tramp *tramp;
+  ಸಂರಚನಾ tramp *tramp;
 
   ffi_tramp_lock();
 
-  if (!ffi_tramp_init () || flags != 0)
+  ಯದಿ (!ffi_tramp_init () || flags != 0)
     {
       ffi_tramp_unlock();
-      return NULL;
+      ಪ್ರತ್ಯಾಗಮ ರಿಕ್ತ;
     }
 
-  if (!tramp_table_alloc ())
+  ಯದಿ (!tramp_table_alloc ())
     {
       ffi_tramp_unlock();
-      return NULL;
+      ಪ್ರತ್ಯಾಗಮ ರಿಕ್ತ;
     }
 
-  tramp = tramp_globals.free_tables->free;
+  tramp = tramp_globals.free_tables->ಮುಕ್ತ;
   tramp_del (tramp);
 
   ffi_tramp_unlock();
 
-  return tramp;
+  ಪ್ರತ್ಯಾಗಮ tramp;
 }
 
 /*
  * Set the parameters for a trampoline.
  */
-void
-ffi_tramp_set_parms (void *arg, void *target, void *data)
+ಶೂನ್ಯ
+ffi_tramp_set_parms (ಶೂನ್ಯ *arg, ಶೂನ್ಯ *target, ಶೂನ್ಯ *data)
 {
-  struct tramp *tramp = arg;
+  ಸಂರಚನಾ tramp *tramp = arg;
 
   ffi_tramp_lock();
   tramp->parm->target = target;
@@ -678,26 +678,26 @@ ffi_tramp_set_parms (void *arg, void *target, void *data)
 /*
  * Get the invocation address of a trampoline.
  */
-void *
-ffi_tramp_get_addr (void *arg)
+ಶೂನ್ಯ *
+ffi_tramp_get_addr (ಶೂನ್ಯ *arg)
 {
-  struct tramp *tramp = arg;
-  void *addr;
+  ಸಂರಚನಾ tramp *tramp = arg;
+  ಶೂನ್ಯ *addr;
 
   ffi_tramp_lock();
   addr = tramp->code;
   ffi_tramp_unlock();
 
-  return addr;
+  ಪ್ರತ್ಯಾಗಮ addr;
 }
 
 /*
  * Free a trampoline.
  */
-void
-ffi_tramp_free (void *arg)
+ಶೂನ್ಯ
+ffi_tramp_free (ಶೂನ್ಯ *arg)
 {
-  struct tramp *tramp = arg;
+  ಸಂರಚನಾ tramp *tramp = arg;
 
   ffi_tramp_lock();
   tramp_add (tramp);
@@ -706,35 +706,35 @@ ffi_tramp_free (void *arg)
 
 /* ------------------------------------------------------------------------- */
 
-#else /* !FFI_EXEC_STATIC_TRAMP */
+#ಅನ್ಯಥಾ /* !FFI_EXEC_STATIC_TRAMP */
 
-#include <stddef.h>
+#ಅನ್ತರ್ಭಾವ <stddef.h>
 
-int
-ffi_tramp_is_supported(void)
+ಪೂರ್ಣಾಙ್ಕ
+ffi_tramp_is_supported(ಶೂನ್ಯ)
 {
-  return 0;
+  ಪ್ರತ್ಯಾಗಮ 0;
 }
 
-void *
-ffi_tramp_alloc (int flags)
+ಶೂನ್ಯ *
+ffi_tramp_alloc (ಪೂರ್ಣಾಙ್ಕ flags)
 {
-  return NULL;
+  ಪ್ರತ್ಯಾಗಮ ರಿಕ್ತ;
 }
 
-void
-ffi_tramp_set_parms (void *arg, void *target, void *data)
+ಶೂನ್ಯ
+ffi_tramp_set_parms (ಶೂನ್ಯ *arg, ಶೂನ್ಯ *target, ಶೂನ್ಯ *data)
 {
 }
 
-void *
-ffi_tramp_get_addr (void *arg)
+ಶೂನ್ಯ *
+ffi_tramp_get_addr (ಶೂನ್ಯ *arg)
 {
-  return NULL;
+  ಪ್ರತ್ಯಾಗಮ ರಿಕ್ತ;
 }
 
-void
-ffi_tramp_free (void *arg)
+ಶೂನ್ಯ
+ffi_tramp_free (ಶೂನ್ಯ *arg)
 {
 }
 

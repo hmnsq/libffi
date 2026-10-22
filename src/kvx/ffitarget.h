@@ -34,10 +34,10 @@
 /* ---- System specific configurations ----------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+ಪ್ರಕಾರನಿರ್ದೇಶ unsigned long          ffi_arg;
+ಪ್ರಕಾರನಿರ್ದೇಶ signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಗಣನಾ ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -47,7 +47,7 @@ typedef enum ffi_abi {
 /* Those values are set depending on return type
  * they are used in the assembly code in sysv.S
  */
-typedef enum kvx_intext_method {
+ಪ್ರಕಾರನಿರ್ದೇಶ ಗಣನಾ kvx_intext_method {
   KVX_RET_NONE = 0,
   KVX_RET_SXBD = 1,
   KVX_RET_SXHD = 2,

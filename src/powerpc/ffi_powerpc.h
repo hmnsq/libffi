@@ -60,14 +60,14 @@
 #define PPC32_SYSV_LD_STRUCT_5	PPC32_LD_R3R4
 #define PPC32_SYSV_LD_STRUCT_6	PPC32_LD_R3R4
 #define PPC32_SYSV_LD_STRUCT_7	PPC32_LD_R3R4
-#else
+#ಅನ್ಯಥಾ
 #define PPC32_SYSV_LD_STRUCT_3	11
 #define PPC32_SYSV_LD_STRUCT_5	12
 #define PPC32_SYSV_LD_STRUCT_6	13
 #define PPC32_SYSV_LD_STRUCT_7	14
 #endif
 
-#else /* POWERPC64 */
+#ಅನ್ಯಥಾ /* POWERPC64 */
 
 #define PPC_LD_U32		10
 #define PPC_LD_S32		11
@@ -84,7 +84,7 @@
 #define PPC64_LD_STRUCT_5	PPC_LD_I64
 #define PPC64_LD_STRUCT_6	PPC_LD_I64
 #define PPC64_LD_STRUCT_7	PPC_LD_I64
-#else
+#ಅನ್ಯಥಾ
 #define PPC64_LD_STRUCT_3	16
 #define PPC64_LD_STRUCT_5	17
 #define PPC64_LD_STRUCT_6	18
@@ -95,7 +95,7 @@
 
 #ifndef LIBFFI_ASM
 
-enum {
+ಗಣನಾ {
   /* The assembly depends on these exact flags.  */
   /* These go in cr7 */
   FLAG_RETURNS_SMST     = 1 << (31-31), /* Used for FFI_SYSV small structs.  */
@@ -118,56 +118,56 @@ enum {
   FLAG_VEC_ARGUMENTS    = 1 << (31- 3),
 };
 
-typedef union
+ಪ್ರಕಾರನಿರ್ದೇಶ ಸಙ್ಘ
 {
-  float f;
-  double d;
+  ಭಿನ್ನ f;
+  ದ್ವಿಗುಣ d;
 } ffi_dblfl;
 
-#if defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
-typedef _Float128 float128;
-#elif defined(__FLOAT128__)
-typedef __float128 float128;
-#else
-typedef char float128[16] __attribute__((aligned(16)));
+#ಯದಿ defined(__FLOAT128_TYPE__) && defined(__HAVE_FLOAT128)
+ಪ್ರಕಾರನಿರ್ದೇಶ _Float128 float128;
+#ನೋಚೇದ್ಯದಿ defined(__FLOAT128__)
+ಪ್ರಕಾರನಿರ್ದೇಶ __float128 float128;
+#ಅನ್ಯಥಾ
+ಪ್ರಕಾರನಿರ್ದೇಶ ವರ್ಣ float128[16] __attribute__((aligned(16)));
 #endif
 
-void FFI_HIDDEN ffi_closure_SYSV (void);
-void FFI_HIDDEN ffi_go_closure_sysv (void);
-void FFI_HIDDEN ffi_call_SYSV(extended_cif *, void (*)(void), void *,
-			      unsigned, void *, int);
+ಶೂನ್ಯ FFI_HIDDEN ffi_closure_SYSV (ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_go_closure_sysv (ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_call_SYSV(extended_cif *, ಶೂನ್ಯ (*)(ಶೂನ್ಯ), ಶೂನ್ಯ *,
+			      unsigned, ಶೂನ್ಯ *, ಪೂರ್ಣಾಙ್ಕ);
 
-void FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
+ಶೂನ್ಯ FFI_HIDDEN ffi_prep_types_sysv (ffi_abi);
 ffi_status FFI_HIDDEN ffi_prep_cif_sysv (ffi_cif *);
 ffi_status FFI_HIDDEN ffi_prep_closure_loc_sysv (ffi_closure *,
 						 ffi_cif *,
-						 void (*) (ffi_cif *, void *,
-							   void **, void *),
-						 void *, void *);
-int FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
-					void (*) (ffi_cif *, void *,
-						  void **, void *),
-					void *, void *, unsigned long *,
+						 ಶೂನ್ಯ (*) (ffi_cif *, ಶೂನ್ಯ *,
+							   ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+						 ಶೂನ್ಯ *, ಶೂನ್ಯ *);
+ಪೂರ್ಣಾಙ್ಕ FFI_HIDDEN ffi_closure_helper_SYSV (ffi_cif *,
+					ಶೂನ್ಯ (*) (ffi_cif *, ಶೂನ್ಯ *,
+						  ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+					ಶೂನ್ಯ *, ಶೂನ್ಯ *, unsigned long *,
 					ffi_dblfl *, unsigned long *);
 
-void FFI_HIDDEN ffi_call_LINUX64(extended_cif *, void (*) (void), void *,
-				 unsigned long, void *, long);
-void FFI_HIDDEN ffi_closure_LINUX64 (void);
-void FFI_HIDDEN ffi_go_closure_linux64 (void);
+ಶೂನ್ಯ FFI_HIDDEN ffi_call_LINUX64(extended_cif *, ಶೂನ್ಯ (*) (ಶೂನ್ಯ), ಶೂನ್ಯ *,
+				 unsigned long, ಶೂನ್ಯ *, long);
+ಶೂನ್ಯ FFI_HIDDEN ffi_closure_LINUX64 (ಶೂನ್ಯ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_go_closure_linux64 (ಶೂನ್ಯ);
 
-void FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
+ಶೂನ್ಯ FFI_HIDDEN ffi_prep_types_linux64 (ffi_abi);
 ffi_status FFI_HIDDEN ffi_prep_cif_linux64 (ffi_cif *);
-ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned int,
-						unsigned int);
-void FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *const);
+ffi_status FFI_HIDDEN ffi_prep_cif_linux64_var (ffi_cif *, unsigned ಪೂರ್ಣಾಙ್ಕ,
+						unsigned ಪೂರ್ಣಾಙ್ಕ);
+ಶೂನ್ಯ FFI_HIDDEN ffi_prep_args64 (extended_cif *, unsigned long *ಧ್ರುವ);
 ffi_status FFI_HIDDEN ffi_prep_closure_loc_linux64 (ffi_closure *, ffi_cif *,
-						    void (*) (ffi_cif *, void *,
-							      void **, void *),
-						    void *, void *);
-int FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
-					   void (*) (ffi_cif *, void *,
-						     void **, void *),
-					   void *, void *,
+						    ಶೂನ್ಯ (*) (ffi_cif *, ಶೂನ್ಯ *,
+							      ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+						    ಶೂನ್ಯ *, ಶೂನ್ಯ *);
+ಪೂರ್ಣಾಙ್ಕ FFI_HIDDEN ffi_closure_helper_LINUX64 (ffi_cif *,
+					   ಶೂನ್ಯ (*) (ffi_cif *, ಶೂನ್ಯ *,
+						     ಶೂನ್ಯ **, ಶೂನ್ಯ *),
+					   ಶೂನ್ಯ *, ಶೂನ್ಯ *,
 					   unsigned long *, ffi_dblfl *,
 					   float128 *);
 

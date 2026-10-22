@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS ವಾ IMPLIED, INCLUDING BUT ನ LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE ಚ
+   NONINFRINGEMENT.  ಅನ್ತಃ NO EVENT SHALL THE AUTHORS ವಾ COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES ವಾ OTHER LIABILITY,
+   WHETHER ಅನ್ತಃ AN ACTION OF CONTRACT, TORT ವಾ OTHERWISE, ARISING FROM,
+   OUT OF ವಾ ಅನ್ತಃ CONNECTION WITH THE SOFTWARE ವಾ THE USE ವಾ OTHER
+   DEALINGS ಅನ್ತಃ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -93,7 +93,7 @@ CSKY_FUNC_START ffi_call_SYSV
 
  ldw l1, (l0, 0) /* load fn() in advance */
 
- /* call (fn) (...) */
+ /* ಆಹ್ವಾನ (fn) (...) */
  jsr l1
 
  /* Remove the space we pushed for the args */
@@ -119,7 +119,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return ಪೂರ್ಣಾಙ್ಕ */
  stw a0, (a2, 0x0)
 
 .Lepilogue:
@@ -259,7 +259,7 @@ CSKY_FUNC_START ffi_call_SYSV
 
  ldw l1, (l0, 0) /* load fn() in advance */
 
- /* call (fn) (...) */
+ /* ಆಹ್ವಾನ (fn) (...) */
  jsr l1
 
  /* Remove the space we pushed for the args */
@@ -285,7 +285,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return ಪೂರ್ಣಾಙ್ಕ */
  stw a0, (a2, 0x0)
 
 .Lepilogue:
