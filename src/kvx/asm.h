@@ -1,5 +1,5 @@
 /* args are passed on registers from r0 up to r11 => 12*8 bytes */
-#define REG_ARGS_SIZE (12*8)
-#define KVX_REGISTER_SIZE (8)
-#define KVX_ABI_SLOT_SIZE (KVX_REGISTER_SIZE)
-#define KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE (4*KVX_ABI_SLOT_SIZE)
+#تعریف_کرو REG_دلیلاں_ناپ (12*8)
+#تعریف_کرو KVX_رجسٹر_ناپ (8)
+#تعریف_کرو KVX_ABI_تھاں_ناپ (KVX_رجسٹر_ناپ)
+#تعریف_کرو KVX_ABI_MAX_AGGREGATE_وچ_REG_ناپ (4*KVX_ABI_تھاں_ناپ)

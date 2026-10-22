@@ -27,63 +27,63 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جے_بنا_تعریف LIBFFI_ASM
+تعريفنوع بنانشانی لما          ffi_arg;
+تعريفنوع نشانیوالا لما            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_SYSV,
   FFI_VFP,
-  FFI_LAST_ABI,
-#if defined(__ARM_PCS_VFP) || defined(_WIN32)
+  FFI_آخری_ABI,
+#إذا defined(__ARM_PCS_VFP) || defined(_WIN32)
   FFI_DEFAULT_ABI = FFI_VFP,
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_SYSV,
-#endif
+#جے_انت
 } ffi_abi;
-#endif
+#جے_انت
 
-#define FFI_EXTRA_CIF_FIELDS			\
-  int vfp_used;					\
-  unsigned short vfp_reg_free, vfp_nargs;	\
-  signed char vfp_args[16]			\
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS			\
+  صحيح vfp_ورتیا;					\
+  بنانشانی چھوٹا vfp_reg_free, vfp_nargs;	\
+  نشانیوالا حرف vfp_دلیلاں[16]			\
 
-#define FFI_TARGET_SPECIFIC_VARIADIC
-#ifndef _WIN32
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#تعریف_کرو FFI_نشانہ_SPECIFIC_VARIADIC
+#جے_بنا_تعریف _WIN32
+#تعریف_کرو FFI_نشانہ_HAS_COMPLEX_TYPE
+#جے_انت
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_GO_CLOSURES 1
+#تعریف_کرو FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#إذا defined (FFI_EXEC_TRAMPOLINE_جدول) && FFI_EXEC_TRAMPOLINE_جدول
 
-#ifdef __MACH__
-#define FFI_TRAMPOLINE_SIZE 12
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET 8
-#else
-#error "No trampoline table implementation"
-#endif
+#جے_تعریف_شدہ __MACH__
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 12
+#تعریف_کرو FFI_TRAMPOLINE_گھیرا_وتھ 8
+#وإلا
+#غلطی "No trampoline table implementation"
+#جے_انت
 
-#else
-#ifdef _WIN32
-#define FFI_TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_CLOSURE_FUNCTION 12
-#else
-#define FFI_TRAMPOLINE_SIZE 12
-#endif
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
-#endif
+#وإلا
+#جے_تعریف_شدہ _WIN32
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 16
+#تعریف_کرو FFI_TRAMPOLINE_گھیرا_FUNCTION 12
+#وإلا
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 12
+#جے_انت
+#تعریف_کرو FFI_TRAMPOLINE_گھیرا_وتھ FFI_TRAMPOLINE_ناپ
+#جے_انت
 
-#endif
+#جے_انت

@@ -25,55 +25,55 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+تعريفنوع بنانشانی لما ffi_arg;
+تعريفنوع نشانیوالا لما ffi_sarg;
 
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
-typedef void (*ffi_fp)(void);
+تعريفنوع فراغ (*ffi_fp)(فراغ);
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
+#إذا __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
-#elif __SIZEOF_POINTER__ == 8
+#وإلاإذا __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
-#error "Unknown pointer size"
-#endif
-  FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
-#ifdef __EMSCRIPTEN__
+#وإلا
+#غلطی "Unknown pointer size"
+#جے_انت
+  FFI_آخری_ABI,
+#إذا __SIZEOF_POINTER__ == 4
+#جے_تعریف_شدہ __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_WASM32
-#endif
-#elif __SIZEOF_POINTER__ == 8
-#ifdef __EMSCRIPTEN__
+#جے_انت
+#وإلاإذا __SIZEOF_POINTER__ == 8
+#جے_تعریف_شدہ __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#وإلا
   FFI_DEFAULT_ABI = FFI_WASM64
-#endif
-#else
-#error "Unknown pointer size"
-#endif
+#جے_انت
+#وإلا
+#غلطی "Unknown pointer size"
+#جے_انت
 } ffi_abi;
 
-#define FFI_CLOSURES 1
+#تعریف_کرو FFI_CLOSURES 1
 // #define FFI_GO_CLOSURES 0
-#define FFI_TRAMPOLINE_SIZE 4
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 4
 // #define FFI_NATIVE_RAW_API 0
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#تعریف_کرو FFI_نشانہ_SPECIFIC_VARIADIC 1
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS  بنانشانی صحيح nfixedargs
 
-#endif
+#جے_انت

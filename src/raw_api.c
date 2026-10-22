@@ -26,174 +26,174 @@
 
 /* This file defines generic functions for use with the raw api. */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#إذا !FFI_NO_RAW_API
 
 size_t
-ffi_raw_size (ffi_cif *cif)
+ffi_raw_ناپ (ffi_cif *cif)
 {
-  size_t result = 0;
-  int i;
+  size_t نتیجہ = 0;
+  صحيح i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  لكل (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
-#endif
-	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
+#إذا !FFI_NO_STRUCTS
+      إذا ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_سمتیہ)
+	نتیجہ += FFI_ALIGN (حجم (فراغ*), FFI_SIZEOF_ARG);
+      وإلا
+#جے_انت
+	نتیجہ += FFI_ALIGN ((*at)->ناپ, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  أرجع نتیجہ;
 }
 
 
-void
-ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
+فراغ
+ffi_raw_منزل_ptrarray (ffi_cif *cif, ffi_raw *raw, فراغ **دلیلاں)
 {
-  unsigned i;
+  بنانشانی i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#إذا الفاظ_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  لكل (i = 0; i < cif->nargs; i++, tp++, دلیلاں++)
     {	  
-      switch ((*tp)->type)
+      بدل ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	حالة FFI_TYPE_UINT8:
+	حالة FFI_TYPE_SINT8:
+	  *دلیلاں = (فراغ*) ((حرف*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  اكسر;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	حالة FFI_TYPE_UINT16:
+	حالة FFI_TYPE_SINT16:
+	  *دلیلاں = (فراغ*) ((حرف*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  اكسر;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
-#endif
+#إذا FFI_SIZEOF_ARG >= 4	  
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT32:
+	  *دلیلاں = (فراغ*) ((حرف*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  اكسر;
+#جے_انت
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  *args = (raw++)->ptr;
-	  break;
-#endif
+#إذا !FFI_NO_STRUCTS
+	حالة FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_سمتیہ:
+	  *دلیلاں = (raw++)->ptr;
+	  اكسر;
+#جے_انت
 
-	case FFI_TYPE_COMPLEX:
-	  *args = (raw++)->ptr;
-	  break;
+	حالة FFI_TYPE_COMPLEX:
+	  *دلیلاں = (raw++)->ptr;
+	  اكسر;
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	حالة FFI_TYPE_اشارہ_گر:
+	  *دلیلاں = (فراغ*) &(raw++)->ptr;
+	  اكسر;
 	  
-	default:
-	  *args = raw;
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	افتراضي:
+	  *دلیلاں = raw;
+	  raw += FFI_ALIGN ((*tp)->ناپ, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#وإلا /* WORDS_BIGENDIAN */
 
-#if !PDP
+#إذا !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  لكل (i = 0; i < cif->nargs; i++, tp++, دلیلاں++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#إذا !FFI_NO_STRUCTS
+      إذا ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_سمتیہ)
 	{
-	  *args = (raw++)->ptr;
+	  *دلیلاں = (raw++)->ptr;
 	}
-      else
-#endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      وإلا
+#جے_انت
+      إذا ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
-	  *args = (raw++)->ptr;
+	  *دلیلاں = (raw++)->ptr;
 	}
-      else
+      وإلا
 	{
-	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  *دلیلاں = (فراغ*) raw;
+	  raw += FFI_ALIGN ((*tp)->ناپ, حجم (فراغ*)) / حجم (فراغ*);
 	}
     }
 
-#else
-#error "pdp endian not supported"
-#endif /* ! PDP */
+#وإلا
+#غلطی "pdp endian not supported"
+#جے_انت /* ! PDP */
 
-#endif /* WORDS_BIGENDIAN */
+#جے_انت /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
+فراغ
+ffi_ptrarray_منزل_raw (ffi_cif *cif, فراغ **دلیلاں, ffi_raw *raw)
 {
-  unsigned i;
+  بنانشانی i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  لكل (i = 0; i < cif->nargs; i++, tp++, دلیلاں++)
     {	  
-      switch ((*tp)->type)
+      بدل ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	حالة FFI_TYPE_UINT8:
+	  (raw++)->uint = *(UINT8*) (*دلیلاں);
+	  اكسر;
 
-	case FFI_TYPE_SINT8:
-	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	حالة FFI_TYPE_SINT8:
+	  (raw++)->sint = *(SINT8*) (*دلیلاں);
+	  اكسر;
 
-	case FFI_TYPE_UINT16:
-	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	حالة FFI_TYPE_UINT16:
+	  (raw++)->uint = *(UINT16*) (*دلیلاں);
+	  اكسر;
 
-	case FFI_TYPE_SINT16:
-	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	حالة FFI_TYPE_SINT16:
+	  (raw++)->sint = *(SINT16*) (*دلیلاں);
+	  اكسر;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
-	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+#إذا FFI_SIZEOF_ARG >= 4
+	حالة FFI_TYPE_UINT32:
+	  (raw++)->uint = *(UINT32*) (*دلیلاں);
+	  اكسر;
 
-	case FFI_TYPE_SINT32:
-	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
-#endif
+	حالة FFI_TYPE_SINT32:
+	  (raw++)->sint = *(SINT32*) (*دلیلاں);
+	  اكسر;
+#جے_انت
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	  (raw++)->ptr = *args;
-	  break;
-#endif
+#إذا !FFI_NO_STRUCTS
+	حالة FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_سمتیہ:
+	  (raw++)->ptr = *دلیلاں;
+	  اكسر;
+#جے_انت
 
-	case FFI_TYPE_COMPLEX:
-	  (raw++)->ptr = *args;
-	  break;
+	حالة FFI_TYPE_COMPLEX:
+	  (raw++)->ptr = *دلیلاں;
+	  اكسر;
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	حالة FFI_TYPE_اشارہ_گر:
+	  (raw++)->ptr = **(فراغ***) دلیلاں;
+	  اكسر;
 
-	default:
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
-	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
+	افتراضي:
+	  حافظہ_نقل ((فراغ*) raw->انکڑے, (فراغ*)*دلیلاں, (*tp)->ناپ);
+	  raw += FFI_ALIGN ((*tp)->ناپ, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#إذا !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -203,67 +203,67 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
+فراغ ffi_raw_call (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  ffi_raw_to_ptrarray (cif, raw, avalue);
+  فراغ **avalue = (فراغ**) alloca (cif->nargs * حجم (فراغ*));
+  ffi_raw_منزل_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#إذا FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+ساكن فراغ
+ffi_translate_دلیلاں (ffi_cif *cif, فراغ *rvalue,
+		    فراغ **avalue, فراغ *user_انکڑے)
 {
-  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_size (cif));
-  ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
+  ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_ناپ (cif));
+  ffi_raw_گھیرا *cl = (ffi_raw_گھیرا*)user_انکڑے;
 
-  ffi_ptrarray_to_raw (cif, avalue, raw);
-  (*cl->fun) (cif, rvalue, raw, cl->user_data);
+  ffi_ptrarray_منزل_raw (cif, avalue, raw);
+  (*cl->fun) (cif, rvalue, raw, cl->user_انکڑے);
 }
 
-ffi_status
-ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
+ffi_حالت
+ffi_prep_raw_گھیرا_loc (ffi_raw_گھیرا* cl,
 			  ffi_cif *cif,
-			  void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-			  void *user_data,
-			  void *codeloc)
+			  فراغ (*fun)(ffi_cif*,فراغ*,ffi_raw*,فراغ*),
+			  فراغ *user_انکڑے,
+			  فراغ *codeloc)
 {
-  ffi_status status;
+  ffi_حالت status;
 
-  status = ffi_prep_closure_loc ((ffi_closure*) cl,
+  status = ffi_prep_گھیرا_loc ((ffi_گھیرا*) cl,
 				 cif,
-				 &ffi_translate_args,
+				 &ffi_translate_دلیلاں,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  إذا (status == FFI_OK)
     {
       cl->fun       = fun;
-      cl->user_data = user_data;
+      cl->user_انکڑے = user_انکڑے;
     }
 
-  return status;
+  أرجع status;
 }
 
-#endif /* FFI_CLOSURES */
-#endif /* !FFI_NATIVE_RAW_API */
+#جے_انت /* FFI_CLOSURES */
+#جے_انت /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#إذا FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
  * the pointer-array format, to the raw format */
 
-ffi_status
-ffi_prep_raw_closure (ffi_raw_closure* cl,
+ffi_حالت
+ffi_prep_raw_گھیرا (ffi_raw_گھیرا* cl,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-		      void *user_data)
+		      فراغ (*fun)(ffi_cif*,فراغ*,ffi_raw*,فراغ*),
+		      فراغ *user_انکڑے)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  أرجع ffi_prep_raw_گھیرا_loc (cl, cif, fun, user_انکڑے, cl);
 }
 
-#endif /* FFI_CLOSURES */
+#جے_انت /* FFI_CLOSURES */
 
-#endif /* !FFI_NO_RAW_API */
+#جے_انت /* !FFI_NO_RAW_API */

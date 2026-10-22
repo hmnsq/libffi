@@ -25,32 +25,32 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
-#ifndef LIBFFI_ASM
-typedef unsigned long long          ffi_arg;
-typedef signed long long            ffi_sarg;
+#جے_بنا_تعریف LIBFFI_ASM
+تعريفنوع بنانشانی لما لما          ffi_arg;
+تعريفنوع نشانیوالا لما لما            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_UNIX,   	/* Linux and all Unix variants use the same conventions	*/
-  FFI_LAST_ABI,
+  FFI_آخری_ABI,
   FFI_DEFAULT_ABI = FFI_UNIX
 } ffi_abi;
-#endif
+#جے_انت
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24  /* Really the following struct, which 	*/
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 24  /* Really the following struct, which 	*/
 				/* can be interpreted as a C function	*/
 				/* descriptor:				*/
-#define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
+#تعریف_کرو FFI_نشانہ_SPECIFIC_VARIADIC 1
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS بنانشانی nfixedargs
 
-#endif
+#جے_انت

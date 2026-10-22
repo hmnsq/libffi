@@ -19,85 +19,85 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
-#ifndef LIBFFI_ASM
-#ifdef __ILP32__
-#define FFI_SIZEOF_ARG 8
-#define FFI_SIZEOF_JAVA_RAW  4
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#elif defined(_WIN32)
-#define FFI_SIZEOF_ARG 8
-typedef unsigned long long ffi_arg;
-typedef signed long long ffi_sarg;
-#else
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
-#endif
+#جے_بنا_تعریف LIBFFI_ASM
+#جے_تعریف_شدہ __ILP32__
+#تعریف_کرو FFI_SIZEOF_ARG 8
+#تعریف_کرو FFI_SIZEOF_JAVA_RAW  4
+تعريفنوع بنانشانی لما لما ffi_arg;
+تعريفنوع نشانیوالا لما لما ffi_sarg;
+#وإلاإذا defined(_WIN32)
+#تعریف_کرو FFI_SIZEOF_ARG 8
+تعريفنوع بنانشانی لما لما ffi_arg;
+تعريفنوع نشانیوالا لما لما ffi_sarg;
+#وإلا
+تعريفنوع بنانشانی لما ffi_arg;
+تعريفنوع نشانیوالا لما ffi_sarg;
+#جے_انت
 
-typedef enum ffi_abi
+تعريفنوع تعداد ffi_abi
   {
-    FFI_FIRST_ABI = 0,
+    FFI_پہلا_ABI = 0,
     FFI_SYSV,
     FFI_WIN64,
-    FFI_LAST_ABI,
-#if defined(_WIN32)
+    FFI_آخری_ABI,
+#إذا defined(_WIN32)
     FFI_DEFAULT_ABI = FFI_WIN64
-#else
+#وإلا
     FFI_DEFAULT_ABI = FFI_SYSV
-#endif
+#جے_انت
   } ffi_abi;
-#endif
+#جے_انت
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_NATIVE_RAW_API 0
 
-#if defined (FFI_EXEC_TRAMPOLINE_TABLE) && FFI_EXEC_TRAMPOLINE_TABLE
+#إذا defined (FFI_EXEC_TRAMPOLINE_جدول) && FFI_EXEC_TRAMPOLINE_جدول
 
-#ifdef __MACH__
-#define FFI_TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET 16
-#else
-#error "No trampoline table implementation"
-#endif
+#جے_تعریف_شدہ __MACH__
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 16
+#تعریف_کرو FFI_TRAMPOLINE_گھیرا_وتھ 16
+#وإلا
+#غلطی "No trampoline table implementation"
+#جے_انت
 
-#else
-#define FFI_TRAMPOLINE_SIZE 24
-#define FFI_TRAMPOLINE_CLOSURE_OFFSET FFI_TRAMPOLINE_SIZE
-#endif
+#وإلا
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 24
+#تعریف_کرو FFI_TRAMPOLINE_گھیرا_وتھ FFI_TRAMPOLINE_ناپ
+#جے_انت
 
-#ifdef _WIN32
-#define FFI_EXTRA_CIF_FIELDS unsigned is_variadic
-#endif
-#define FFI_TARGET_SPECIFIC_VARIADIC
+#جے_تعریف_شدہ _WIN32
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS بنانشانی is_variadic
+#جے_انت
+#تعریف_کرو FFI_نشانہ_SPECIFIC_VARIADIC
 
 /* ---- Internal ---- */
 
-#if defined (__APPLE__)
-#define FFI_EXTRA_CIF_FIELDS unsigned aarch64_nfixedargs
-#elif !defined(_WIN32) && !defined(__ANDROID__)
+#إذا defined (__APPLE__)
+#تعریف_کرو FFI_EXTRA_CIF_FIELDS بنانشانی aarch64_nfixedargs
+#وإلاإذا !defined(_WIN32) && !defined(__ANDROID__)
 /* iOS, Windows and Android reserve x18 for the system.  Disable Go closures until
    a new static chain is chosen.  */
-#define FFI_GO_CLOSURES 1
-#endif
+#تعریف_کرو FFI_GO_CLOSURES 1
+#جے_انت
 
-#ifndef _WIN32
+#جے_بنا_تعریف _WIN32
 /* No complex type on Windows */
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#تعریف_کرو FFI_نشانہ_HAS_COMPLEX_TYPE
+#جے_انت
 
 /* AAPCS64 passes 8- and 16-byte vectors in V/Q registers and homogeneous
    vector aggregates in consecutive V/Q registers; see is_vfp_type.  */
-#define FFI_TARGET_HAS_VECTOR_TYPE
+#تعریف_کرو FFI_نشانہ_HAS_سمتیہ_TYPE
 
-#define FFI_TARGET_HAS_INT128 1
+#تعریف_کرو FFI_نشانہ_HAS_INT128 1
 
-#endif
+#جے_انت

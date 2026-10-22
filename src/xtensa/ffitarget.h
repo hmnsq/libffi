@@ -23,35 +23,35 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
-#ifndef LIBFFI_ASM
-typedef unsigned long	ffi_arg;
-typedef signed long	ffi_sarg;
+#جے_بنا_تعریف LIBFFI_ASM
+تعريفنوع بنانشانی لما	ffi_arg;
+تعريفنوع نشانیوالا لما	ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخری_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#جے_انت
 
-#define FFI_REGISTER_NARGS	6
-#define XTENSA_STACK_ALIGNMENT	16
-#define FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
-				  XTENSA_STACK_ALIGNMENT - 1) & \
-				  -XTENSA_STACK_ALIGNMENT)
+#تعریف_کرو FFI_رجسٹر_NARGS	6
+#تعریف_کرو XTENSA_ڈھیر_ALIGNMENT	16
+#تعریف_کرو FFI_رجسٹر_دلیلاں_SPACE ((FFI_رجسٹر_NARGS * 4 + \
+				  XTENSA_ڈھیر_ALIGNMENT - 1) & \
+				  -XTENSA_ڈھیر_ALIGNMENT)
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#define FFI_TRAMPOLINE_SIZE 24
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 24
 
-#endif
+#جے_انت

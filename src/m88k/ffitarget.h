@@ -25,25 +25,25 @@
  * m88k Foreign Function Interface
  */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_ASM
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+#جے_بنا_تعریف LIBFFI_ASM
+تعريفنوع بنانشانی لما ffi_arg;
+تعريفنوع نشانیوالا لما ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_OBSD,
   FFI_DEFAULT_ABI = FFI_OBSD,
-  FFI_LAST_ABI = FFI_DEFAULT_ABI + 1
+  FFI_آخری_ABI = FFI_DEFAULT_ABI + 1
 } ffi_abi;
-#endif
+#جے_انت
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 0x14
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 0x14
+#تعریف_کرو FFI_NATIVE_RAW_API 0
 
-#endif
+#جے_انت

@@ -25,47 +25,47 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
-#if defined (__s390x__)
-#ifndef S390X
-#define S390X
-#endif
-#endif
+#إذا defined (__s390x__)
+#جے_بنا_تعریف S390X
+#تعریف_کرو S390X
+#جے_انت
+#جے_انت
 
 /* ---- System specific configurations ----------------------------------- */
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جے_بنا_تعریف LIBFFI_ASM
+تعريفنوع بنانشانی لما          ffi_arg;
+تعريفنوع نشانیوالا لما            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخری_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
-#endif
+#جے_انت
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
-#define FFI_TARGET_HAS_COMPLEX_TYPE
-#define FFI_TARGET_HAS_INT128
+#تعریف_کرو FFI_نشانہ_SPECIFIC_ڈھیر_SPACE_ونڈ
+#تعریف_کرو FFI_نشانہ_HAS_COMPLEX_TYPE
+#تعریف_کرو FFI_نشانہ_HAS_INT128
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_GO_CLOSURES 1
-#ifdef S390X
-#define FFI_TRAMPOLINE_SIZE 32
-#else
-#define FFI_TRAMPOLINE_SIZE 16
-#endif
-#define FFI_NATIVE_RAW_API 0
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_GO_CLOSURES 1
+#جے_تعریف_شدہ S390X
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 32
+#وإلا
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 16
+#جے_انت
+#تعریف_کرو FFI_NATIVE_RAW_API 0
 
-#endif
+#جے_انت
 

@@ -27,52 +27,52 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined (POWERPC) && defined (__powerpc64__)	/* linux64 */
-#ifndef POWERPC64
-#define POWERPC64
-#endif
-#elif defined (POWERPC_DARWIN) && defined (__ppc64__)	/* Darwin64 */
-#ifndef POWERPC64
-#define POWERPC64
-#endif
-#ifndef POWERPC_DARWIN64
-#define POWERPC_DARWIN64
-#endif
-#elif defined (POWERPC_AIX) && defined (__64BIT__)	/* AIX64 */
-#ifndef POWERPC64
-#define POWERPC64
-#endif
-#endif
+#إذا defined (POWERPC) && defined (__powerpc64__)	/* linux64 */
+#جے_بنا_تعریف POWERPC64
+#تعریف_کرو POWERPC64
+#جے_انت
+#وإلاإذا defined (POWERPC_DARWIN) && defined (__ppc64__)	/* Darwin64 */
+#جے_بنا_تعریف POWERPC64
+#تعریف_کرو POWERPC64
+#جے_انت
+#جے_بنا_تعریف POWERPC_DARWIN64
+#تعریف_کرو POWERPC_DARWIN64
+#جے_انت
+#وإلاإذا defined (POWERPC_AIX) && defined (__64BIT__)	/* AIX64 */
+#جے_بنا_تعریف POWERPC64
+#تعریف_کرو POWERPC64
+#جے_انت
+#جے_انت
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جے_بنا_تعریف LIBFFI_ASM
+تعريفنوع بنانشانی لما          ffi_arg;
+تعريفنوع نشانیوالا لما            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
 
-#if defined (POWERPC_AIX)
+#إذا defined (POWERPC_AIX)
   FFI_AIX,
   FFI_DARWIN,
   FFI_DEFAULT_ABI = FFI_AIX,
-  FFI_LAST_ABI
+  FFI_آخری_ABI
 
-#elif defined (POWERPC_DARWIN)
+#وإلاإذا defined (POWERPC_DARWIN)
   FFI_AIX,
   FFI_DARWIN,
   FFI_DEFAULT_ABI = FFI_DARWIN,
-  FFI_LAST_ABI
+  FFI_آخری_ABI
 
-#else
+#وإلا
   /* The FFI_COMPAT values are used by old code.  Since libffi may be
      a shared library we have to support old values for backwards
      compatibility.  */
@@ -82,7 +82,7 @@ typedef enum ffi_abi {
   FFI_COMPAT_LINUX,
   FFI_COMPAT_LINUX_SOFT_FLOAT,
 
-# if defined (POWERPC64)
+# إذا defined (POWERPC64)
   /* This bit, always set in new code, must not be set in any of the
      old FFI_COMPAT values that might be used for 64-bit linux.  We
      only need worry about FFI_COMPAT_LINUX64, but to be safe avoid
@@ -103,9 +103,9 @@ typedef enum ffi_abi {
 #   endif
 #  endif
 		     ),
-  FFI_LAST_ABI = 16
+  FFI_آخری_ABI = 16
 
-# else
+# وإلا
   /* This bit, always set in new code, must not be set in any of the
      old FFI_COMPAT values that might be used for 32-bit linux/sysv/bsd.  */
   FFI_SYSV = 8,
@@ -119,36 +119,36 @@ typedef enum ffi_abi {
 #  ifdef __NO_FPRS__
 		     | FFI_SYSV_SOFT_FLOAT
 #  endif
-#  if (defined (__SVR4_STRUCT_RETURN)					\
+#  إذا (defined (__SVR4_STRUCT_RETURN)					\
        || defined (POWERPC_FREEBSD) && !defined (__AIX_STRUCT_RETURN))
 		     | FFI_SYSV_STRUCT_RET
 #  endif
-#  if __LDBL_MANT_DIG__ == 106
+#  إذا __LDBL_MANT_DIG__ == 106
 		     | FFI_SYSV_IBM_LONG_DOUBLE
 #  endif
 #  ifdef __LONG_DOUBLE_128__
 		     | FFI_SYSV_LONG_DOUBLE_128
 #  endif
 		     ),
-  FFI_LAST_ABI = 32
+  FFI_آخری_ABI = 32
 # endif
-#endif
+#جے_انت
 
 } ffi_abi;
-#endif
+#جے_انت
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#if defined (POWERPC) || defined (POWERPC_FREEBSD)
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_NATIVE_RAW_API 0
+#إذا defined (POWERPC) || defined (POWERPC_FREEBSD)
 # define FFI_GO_CLOSURES 1
-# define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
-#endif
-#if defined (POWERPC_AIX)
+# define FFI_نشانہ_SPECIFIC_VARIADIC 1
+# define FFI_EXTRA_CIF_FIELDS بنانشانی nfixedargs
+#جے_انت
+#إذا defined (POWERPC_AIX)
 # define FFI_GO_CLOSURES 1
-#endif
+#جے_انت
 
 /* Complex types are supported on ELFv2 (the only PowerPC64 variant where
    the assembly and C-side passing/return logic has been wired up).  Under
@@ -156,22 +156,22 @@ typedef enum ffi_abi {
    homogeneous floating-point aggregate, but each scalar half consumes a
    GPR shadow slot of its own — i.e. the same way the underlying C ABI
    handles them, which is what GCC's split_complex_arg emits.  */
-#if defined(POWERPC64) && _CALL_ELF == 2
-# define FFI_TARGET_HAS_COMPLEX_TYPE
-#endif
+#إذا defined(POWERPC64) && _CALL_ELF == 2
+# define FFI_نشانہ_HAS_COMPLEX_TYPE
+#جے_انت
 
-#if _CALL_ELF == 2
-# define FFI_TRAMPOLINE_SIZE 32
-#else
-# if defined(POWERPC64) || defined(POWERPC_AIX)
-#  if defined(POWERPC_DARWIN64)
-#    define FFI_TRAMPOLINE_SIZE 48
-#  else
-#    define FFI_TRAMPOLINE_SIZE 24
+#إذا _CALL_ELF == 2
+# define FFI_TRAMPOLINE_ناپ 32
+#وإلا
+# إذا defined(POWERPC64) || defined(POWERPC_AIX)
+#  إذا defined(POWERPC_DARWIN64)
+#    define FFI_TRAMPOLINE_ناپ 48
+#  وإلا
+#    define FFI_TRAMPOLINE_ناپ 24
 #  endif
-# else /* POWERPC || POWERPC_AIX */
-#  define FFI_TRAMPOLINE_SIZE 40
+# وإلا /* POWERPC || POWERPC_AIX */
+#  define FFI_TRAMPOLINE_ناپ 40
 # endif
-#endif
+#جے_انت
 
-#endif
+#جے_انت

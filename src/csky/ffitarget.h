@@ -27,37 +27,37 @@
 
    ----------------------------------------------------------------------- */
 
-#ifndef LIBFFI_TARGET_H
-#define LIBFFI_TARGET_H
+#جے_بنا_تعریف LIBFFI_نشانہ_H
+#تعریف_کرو LIBFFI_نشانہ_H
 
-#ifndef LIBFFI_H
-#error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
-#endif
+#جے_بنا_تعریف LIBFFI_H
+#غلطی "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
+#جے_انت
 
-#ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+#جے_بنا_تعریف LIBFFI_ASM
+تعريفنوع بنانشانی لما          ffi_arg;
+تعريفنوع نشانیوالا لما            ffi_sarg;
 
-typedef enum ffi_abi {
-  FFI_FIRST_ABI = 0,
+تعريفنوع تعداد ffi_abi {
+  FFI_پہلا_ABI = 0,
   FFI_SYSV,
-  FFI_LAST_ABI,
+  FFI_آخری_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV,
 } ffi_abi;
-#endif
+#جے_انت
 
-#ifdef __CSKYABIV2__
-#define FFI_ASM_ARGREG_SIZE 16
-#define TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_ASM_ARGREG_SIZE 24
-#define TRAMPOLINE_SIZE 20
-#define FFI_TRAMPOLINE_SIZE 28
-#endif
+#جے_تعریف_شدہ __CSKYABIV2__
+#تعریف_کرو FFI_ASM_ARGREG_ناپ 16
+#تعریف_کرو TRAMPOLINE_ناپ 16
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 24
+#وإلا
+#تعریف_کرو FFI_ASM_ARGREG_ناپ 24
+#تعریف_کرو TRAMPOLINE_ناپ 20
+#تعریف_کرو FFI_TRAMPOLINE_ناپ 28
+#جے_انت
 
 /* ---- Definitions for closures ----------------------------------------- */
 
-#define FFI_CLOSURES 1
-#define FFI_NATIVE_RAW_API 0
-#endif
+#تعریف_کرو FFI_CLOSURES 1
+#تعریف_کرو FFI_NATIVE_RAW_API 0
+#جے_انت
