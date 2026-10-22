@@ -38,7 +38,7 @@
 typedef unsigned long          ffi_arg;
 typedef signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+typedef ga_nanaa ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -50,7 +50,7 @@ typedef enum ffi_abi {
 #define FFI_ASM_ARGREG_SIZE 16
 #define TRAMPOLINE_SIZE 16
 #define FFI_TRAMPOLINE_SIZE 24
-#else
+#ᨀᨘᨁ
 #define FFI_ASM_ARGREG_SIZE 24
 #define TRAMPOLINE_SIZE 20
 #define FFI_TRAMPOLINE_SIZE 28
