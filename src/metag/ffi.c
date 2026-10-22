@@ -34,9 +34,9 @@
  * allocated for the function's arguments
  */
 
-unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
+unsigned целое ffi_prep_args(char *stack, extended_cif *ecif)
 {
-	register unsigned int i;
+	register unsigned целое i;
 	register void **p_argv;
 	register char *argp;
 	register ffi_type **p_arg;
@@ -44,7 +44,7 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 	argp = stack;
 
 	/* Store return value */
-	if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
+	если ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
 		*(void **) argp = ecif->rvalue;
 	}
@@ -52,7 +52,7 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 	p_argv = ecif->avalue;
 
 	/* point to next location */
-	for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
+	для (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
 	{
 		size_t z;
 
@@ -63,37 +63,37 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 		/* Align if necessary */
 		argp = (char *) FFI_ALIGN_DOWN(FFI_ALIGN_DOWN(argp, (*p_arg)->alignment), 4);
 
-		if (z < sizeof(int)) {
-			z = sizeof(int);
+		если (z < sizeof(целое)) {
+			z = sizeof(целое);
 			switch ((*p_arg)->type)
 			{
 			case FFI_TYPE_SINT8:
-				*(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
+				*(signed целое *) argp = (signed целое)*(SINT8 *)(* p_argv);
 				break;
 			case FFI_TYPE_UINT8:
-				*(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
+				*(unsigned целое *) argp = (unsigned целое)*(UINT8 *)(* p_argv);
 				break;
 			case FFI_TYPE_SINT16:
-				*(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
+				*(signed целое *) argp = (signed целое)*(SINT16 *)(* p_argv);
 				break;
 			case FFI_TYPE_UINT16:
-				*(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
+				*(unsigned целое *) argp = (unsigned целое)*(UINT16 *)(* p_argv);
 			case FFI_TYPE_STRUCT:
 				memcpy(argp, *p_argv, (*p_arg)->size);
 				break;
 			default:
 				FFI_ASSERT(0);
 			}
-		} else if ( z == sizeof(int)) {
-			*(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-		} else {
+		} иначе если ( z == sizeof(целое)) {
+			*(unsigned целое *) argp = (unsigned целое)*(UINT32 *)(* p_argv);
+		} иначе {
 			memcpy(argp, *p_argv, z);
 		}
 	}
 
 	/* return the size of the arguments to be passed in registers,
 	   padded to an 8 byte boundary to preserve stack alignment */
-	return FFI_ALIGN(MIN(stack - argp, 6*4), 8);
+	вернуть FFI_ALIGN(MIN(stack - argp, 6*4), 8);
 }
 
 /* Perform machine dependent cif processing */
@@ -102,16 +102,16 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	ffi_type **ptr;
 	unsigned i, bytes = 0;
 
-	for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
-		if ((*ptr)->size == 0)
-			return FFI_BAD_TYPEDEF;
+	для (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
+		если ((*ptr)->size == 0)
+			вернуть FFI_BAD_TYPEDEF;
 
 		/* Perform a sanity check on the argument type, do this
 		   check after the initialization.  */
 		FFI_ASSERT_VALID_TYPE(*ptr);
 
 		/* Add any padding if necessary */
-		if (((*ptr)->alignment - 1) & bytes)
+		если (((*ptr)->alignment - 1) & bytes)
 			bytes = FFI_ALIGN(bytes, (*ptr)->alignment);
 
 		bytes += FFI_ALIGN((*ptr)->size, 4);
@@ -121,7 +121,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	bytes = FFI_ALIGN(bytes, 8);
 
 	/* Make space for the return structure pointer */
-	if (cif->rtype->type == FFI_TYPE_STRUCT) {
+	если (cif->rtype->type == FFI_TYPE_STRUCT) {
 		bytes += sizeof(void*);
 
 		/* Ensure stack is aligned to an 8-byte boundary */
@@ -143,13 +143,13 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 		break;
 	case FFI_TYPE_STRUCT:
 		/* Meta can store return values which are <= 64 bits */
-		if (cif->rtype->size <= 4)
+		если (cif->rtype->size <= 4)
 			/* Returned to D0Re0 as 32-bit value */
 			cif->flags = (unsigned)FFI_TYPE_INT;
-		else if ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
+		иначе если ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
 			/* Returned valued is stored to D1Re0|R0Re0 */
 			cif->flags = (unsigned)FFI_TYPE_DOUBLE;
-		else
+		иначе
 			/* value stored in memory */
 			cif->flags = (unsigned)FFI_TYPE_STRUCT;
 		break;
@@ -157,7 +157,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 		cif->flags = (unsigned)FFI_TYPE_INT;
 		break;
 	}
-	return FFI_OK;
+	вернуть FFI_OK;
 }
 
 extern void ffi_call_SYSV(void (*fn)(void), extended_cif *, unsigned, unsigned, double *);
@@ -174,7 +174,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
 	extended_cif ecif;
 
-	int small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
+	целое small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
 	ecif.cif = cif;
 	ecif.avalue = avalue;
 
@@ -185,11 +185,11 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 	 * then we need to make one
 	 */
 
-	if ((rvalue == NULL ) && (cif->flags == FFI_TYPE_STRUCT))
+	если ((rvalue == NULL ) && (cif->flags == FFI_TYPE_STRUCT))
 		ecif.rvalue = alloca(cif->rtype->size);
-	else if (small_struct)
+	иначе если (small_struct)
 		ecif.rvalue = &temp;
-	else
+	иначе
 		ecif.rvalue = rvalue;
 
 	switch (cif->abi) {
@@ -201,7 +201,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 		break;
 	}
 
-	if (small_struct)
+	если (small_struct)
 		memcpy (rvalue, &temp, cif->rtype->size);
 }
 
@@ -213,7 +213,7 @@ static void ffi_prep_incoming_args_SYSV (char *, void **, void **,
 void ffi_closure_SYSV (ffi_closure *);
 
 /* Do NOT change that without changing the FFI_TRAMPOLINE_SIZE */
-extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
+extern unsigned целое ffi_metag_trampoline[10]; /* 10 instructions */
 
 /* end of private members */
 
@@ -224,10 +224,10 @@ extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
  *
  * At this point, tramp[0] == __ctx !
  */
-void ffi_init_trampoline(unsigned char *__tramp, unsigned int __fun, unsigned int __ctx) {
+void ffi_init_trampoline(unsigned char *__tramp, unsigned целое __fun, unsigned целое __ctx) {
 	memcpy (__tramp, ffi_metag_trampoline, sizeof(ffi_metag_trampoline));
-	*(unsigned int*) &__tramp[40] = __ctx;
-	*(unsigned int*) &__tramp[44] = __fun;
+	*(unsigned целое*) &__tramp[40] = __ctx;
+	*(unsigned целое*) &__tramp[44] = __fun;
 	/* This will flush the instruction cache */
 	__builtin_meta2_cachewd(&__tramp[0], 1);
 	__builtin_meta2_cachewd(&__tramp[47], 1);
@@ -246,26 +246,26 @@ ffi_prep_closure_loc (ffi_closure *closure,
 {
 	void (*closure_func)(ffi_closure*) = NULL;
 
-	if (cif->abi == FFI_SYSV)
+	если (cif->abi == FFI_SYSV)
 		closure_func = &ffi_closure_SYSV;
-	else
-		return FFI_BAD_ABI;
+	иначе
+		вернуть FFI_BAD_ABI;
 
 	ffi_init_trampoline(
 		(unsigned char*)&closure->tramp[0],
-		(unsigned int)closure_func,
-		(unsigned int)codeloc);
+		(unsigned целое)closure_func,
+		(unsigned целое)codeloc);
 
 	closure->cif = cif;
 	closure->user_data = user_data;
 	closure->fun = fun;
 
-	return FFI_OK;
+	вернуть FFI_OK;
 }
 
 
 /* This function is jumped to by the trampoline */
-unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
+unsigned целое ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 	ffi_closure *closure;
 	void **respp;
 	void *args;
@@ -288,14 +288,14 @@ unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 
 	(closure->fun) ( cif, *respp, arg_area, closure->user_data);
 
-	return cif->flags;
+	вернуть cif->flags;
 }
 
 static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 	void **avalue, ffi_cif *cif,
 	float *vfp_stack)
 {
-	register unsigned int i;
+	register unsigned целое i;
 	register void **p_argv;
 	register char *argp;
 	register ffi_type **p_arg;
@@ -304,21 +304,21 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 	argp = stack;
 
 	/* Store return value */
-	if ( cif->flags == FFI_TYPE_STRUCT ) {
+	если ( cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
 		*rvalue = *(void **) argp;
 	}
 
 	p_argv = avalue;
 
-	for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
+	для (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
 		size_t z;
 		size_t alignment;
 
 		alignment = (*p_arg)->alignment;
-		if (alignment < 4)
+		если (alignment < 4)
 			alignment = 4;
-		if ((alignment - 1) & (unsigned)argp)
+		если ((alignment - 1) & (unsigned)argp)
 			argp = (char *) FFI_ALIGN(argp, alignment);
 
 		z = (*p_arg)->size;
@@ -326,5 +326,5 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 		p_argv++;
 		argp -= z;
 	}
-	return;
+	вернуть;
 }

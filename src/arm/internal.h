@@ -6,7 +6,7 @@
 #define ARM_TYPE_VOID	5
 #define ARM_TYPE_STRUCT	6
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#если defined(FFI_EXEC_STATIC_TRAMP)
 /*
  * For the trampoline table mapping, a mapping size of 4K (base page size)
  * is chosen.

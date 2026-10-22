@@ -34,22 +34,22 @@
 
 void *ffi_prep_args(char *stack, extended_cif *ecif)
 {
-  register unsigned int i;
+  register unsigned целое i;
   register void **p_argv;
   register char *argp;
   register ffi_type **p_arg;
-  register int count = 0;
+  register целое count = 0;
 
   p_argv = ecif->avalue;
   argp = stack;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
+  если (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
     {
       *(void **) argp = ecif->rvalue;
       argp += 4;
     }
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  для (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0);
        i--, p_arg++)
     {
@@ -57,41 +57,41 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
 
       z = (*p_arg)->size;
 
-      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+      если ((*p_arg)->type == FFI_TYPE_STRUCT)
 	{
 	  z = sizeof(void*);
 	  *(void **) argp = *p_argv;
 	}
-      else if (z < sizeof(int))
+      иначе если (z < sizeof(целое))
 	{
-	  z = sizeof(int);
+	  z = sizeof(целое);
 	  switch ((*p_arg)->type)
 	    {
 	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
+	      *(signed целое *) argp = (signed целое)*(SINT8 *)(* p_argv);
 	      break;
 
 	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
+	      *(unsigned целое *) argp = (unsigned целое)*(UINT8 *)(* p_argv);
 	      break;
 
 	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
+	      *(signed целое *) argp = (signed целое)*(SINT16 *)(* p_argv);
 	      break;
 
 	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
+	      *(unsigned целое *) argp = (unsigned целое)*(UINT16 *)(* p_argv);
 	      break;
 
 	    default:
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof(int))
+      иначе если (z == sizeof(целое))
 	{
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned целое *) argp = (unsigned целое)*(UINT32 *)(* p_argv);
 	}
-      else
+      иначе
 	{
 	  memcpy(argp, *p_argv, z);
 	}
@@ -100,20 +100,20 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
       count += z;
     }
 
-  return (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
+  вернуть (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  если (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = -1;
-  else
+  иначе
     cif->flags = cif->rtype->size;
 
   cif->bytes = FFI_ALIGN (cif->bytes, 8);
 
-  return FFI_OK;
+  вернуть FFI_OK;
 }
 
 extern void ffi_call_EABI(void *(*)(char *, extended_cif *),
@@ -130,32 +130,32 @@ void ffi_call(ffi_cif *cif,
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  целое i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if ((rvalue == NULL) &&
+  если ((rvalue == NULL) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  иначе
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  для (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT) /*  && size > 4) All struct args?? */
+      целое size = at->size;
+      если (at->type == FFI_TYPE_STRUCT) /*  && size > 4) All struct args?? */
         {
           char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          если (avalue_copy == NULL)
             {
               avalue_copy = alloca (nargs * sizeof (void *));
               memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -207,16 +207,16 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
   ffi_type **arg_types = cif->arg_types;
   void **avalue = alloca (cif->nargs * sizeof(void *));
   char *ptr = (char *) register_args;
-  int i;
+  целое i;
 
   /* preserve struct type return pointer passing */
-  if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+  если ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
     ptr += 4;
     register_args_ptr = (char *)&register_args[1];
   }
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  для (i = 0; i < cif->nargs; i++)
     {
       switch (arg_types[i]->type)
 	{
@@ -236,19 +236,19 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 	  break;
 	case FFI_TYPE_STRUCT:
           {
-            if (arg_types[i]->size > 4)
+            если (arg_types[i]->size > 4)
               {
                 void *copy = alloca(arg_types[i]->size);
                 memcpy(copy, *(void**)ptr, arg_types[i]->size);
                 avalue[i] = copy;
               }
-            else
+            иначе
               avalue[i] = *(void**)ptr;
           }
 	  break;
 	default:
 	  /* This is an 8-byte value.  */
-	  if (ptr == (char *) &register_args[5])
+	  если (ptr == (char *) &register_args[5])
 	    {
 	      /* The value is split across two locations */
 	      unsigned *ip = alloca(8);
@@ -256,7 +256,7 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 	      ip[0] = *(unsigned *) ptr;
 	      ip[1] = *(unsigned *) stack_args;
 	    }
-	  else
+	  иначе
 	    {
 	      avalue[i] = ptr;
 	    }
@@ -267,18 +267,18 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 
       /* If we've handled more arguments than fit in registers,
 	 start looking at the those passed on the stack.  */
-      if (ptr == (char *) &register_args[6])
+      если (ptr == (char *) &register_args[6])
 	ptr = stack_args;
-      else if (ptr == (char *) &register_args[7])
+      иначе если (ptr == (char *) &register_args[7])
 	ptr = stack_args + 4;
     }
 
   /* Invoke the closure.  */
-  if (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
+  если (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       (closure->fun) (cif, struct_rvalue, avalue, closure->user_data);
     }
-  else
+  иначе
     {
       /* Allocate space for the return value and call the function.  */
       long long rvalue;
@@ -298,8 +298,8 @@ ffi_prep_closure_loc (ffi_closure* closure,
   unsigned long fn = (long) ffi_closure_eabi;
   unsigned long cls = (long) codeloc;
 
-  if (cif->abi != FFI_EABI)
-    return FFI_BAD_ABI;
+  если (cif->abi != FFI_EABI)
+    вернуть FFI_BAD_ABI;
 
   fn = (unsigned long) ffi_closure_eabi;
 
@@ -314,5 +314,5 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  вернуть FFI_OK;
 }

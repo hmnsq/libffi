@@ -45,11 +45,11 @@
 #define fstd(fpreg, addr) \
   __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) do { если (lvl <= DEBUG_LEVEL) { printf(x); } } пока (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+static inline целое ffi_struct_type(ffi_type *t)
 {
-  int sz = t->size;
+  целое sz = t->size;
 
   /* Small structure results are returned in registers 28 and 29,
      larger ones are in a buffer allocated by the callee.  The
@@ -57,10 +57,10 @@ static inline int ffi_struct_type(ffi_type *t)
      to be aligned on a 16-byte boundary.   Register return values are
      padded on the right.  The pad bits on the right are undefined.  */
 
-  if (sz <= 16)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT;
+  если (sz <= 16)
+    вернуть -sz;
+  иначе
+    вернуть FFI_TYPE_STRUCT;
 }
 
 /* PA has a downward growing stack, which looks like this.  Stack
@@ -125,10 +125,10 @@ static inline int ffi_struct_type(ffi_type *t)
 
 void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
+  register unsigned целое i;
   register ffi_type **p_arg;
   register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
+  unsigned целое slot = FIRST_ARG_SLOT;
   size_t len;
 
   debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
@@ -137,9 +137,9 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  для (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      целое type = (*p_arg)->type;
 
       len = (*p_arg)->size;
 
@@ -223,7 +223,7 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 
 	case FFI_TYPE_STRUCT:
 	  /* Structs larger than 8 bytes are aligned on a 16-byte boundary. */
-	  if (len > 8)
+	  если (len > 8)
 	    slot += (slot & 1);
 	  memcpy((char *)(stack + slot), (char *)*p_argv, len);
 	  break;
@@ -239,19 +239,19 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 
   FFI_ASSERT(slot * 8 <= bytes);
 
-  return;
+  вернуть;
 }
 
 static void ffi_size_stack_pa64(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  целое i;
+  целое z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  для (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
-      int size = (*ptr)->size;
+      целое type = (*ptr)->type;
+      целое size = (*ptr)->size;
 
       switch (type)
 	{
@@ -262,7 +262,7 @@ static void ffi_size_stack_pa64(ffi_cif *cif)
 #endif
 
 	case FFI_TYPE_STRUCT:
-	  if (size > 8)
+	  если (size > 8)
 	    z += (z & 1);
 	  z += ROUND_UP (size, 8) >> 3;
 	  break;
@@ -274,9 +274,9 @@ static void ffi_size_stack_pa64(ffi_cif *cif)
 
   /* We need a minimum of 8 argument slots.  Stack must be 16-byte
      aligned.  */
-  if (z <= 8)
+  если (z <= 8)
     z = 8;
-  else
+  иначе
     z += (z & 1);
 
   /* Add 16 bytes for frame marker.  */
@@ -318,7 +318,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
       break;
     }
 
-  return FFI_OK;
+  вернуть FFI_OK;
 }
 
 extern void ffi_call_pa64(void (*)(UINT64 *, extended_cif *, unsigned),
@@ -335,12 +335,12 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  если (rvalue == NULL
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_COMPLEX)
       && cif->rtype->size > 16)
     ecif.rvalue = alloca(ROUND_UP (cif->rtype->size, 16));
-  else
+  иначе
     ecif.rvalue = rvalue;
 
 
@@ -358,7 +358,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 }
 
-#if FFI_CLOSURES
+#если FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
@@ -373,25 +373,25 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
   union { long double rld; UINT64 ret[2]; } u;
   ffi_type **p_arg;
   char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
+  целое i, avn;
+  unsigned целое slot = FIRST_ARG_SLOT;
   register UINT64 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  если (cif->flags == FFI_TYPE_STRUCT)
     rvalue = (void *)r28;
-  else
+  иначе
     rvalue = &u;
 
   avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  для (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      целое type = (*p_arg)->type;
 
       switch (type)
 	{
@@ -464,7 +464,7 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 	case FFI_TYPE_STRUCT:
 	  /* All structs are passed in registers.  Structs larger
 	     than 8 bytes are aligned on a 16-byte boundary.  */
-	  if((*p_arg)->size > 8)
+	  если((*p_arg)->size > 8)
 	    slot += (slot & 1);
 	  avalue[i] = (void *) (stack + slot);
 	  break;
@@ -557,7 +557,7 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
       FFI_ASSERT(0);
       break;
     }
-  return FFI_OK;
+  вернуть FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
@@ -593,8 +593,8 @@ ffi_prep_closure_loc (ffi_closure* closure,
   struct ffi_pa64_trampoline_struct *tramp;
   struct pa64_fd *fd;
 
-  if (cif->abi != FFI_PA64)
-    return FFI_BAD_ABI;
+  если (cif->abi != FFI_PA64)
+    вернуть FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa64.  */
   fd = (struct pa64_fd *)((UINT64)ffi_closure_pa64);
@@ -609,6 +609,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  вернуть FFI_OK;
 }
 #endif

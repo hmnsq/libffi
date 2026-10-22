@@ -94,11 +94,11 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
           cif->flags = FFIBFIN_RET_INT64;
           break;
       case FFI_TYPE_STRUCT:
-         if (cif->rtype->size <= 4){
+         если (cif->rtype->size <= 4){
         	 cif->flags = FFIBFIN_RET_INT32;
-         }else if (cif->rtype->size == 8){
+         }иначе если (cif->rtype->size == 8){
         	 cif->flags = FFIBFIN_RET_INT64;
-         }else{
+         }иначе{
         	 //it will return via a hidden pointer in P0
         	 cif->flags = FFIBFIN_RET_VOID;
          }
@@ -107,7 +107,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
          FFI_ASSERT(0);
          break;
    }
-   return FFI_OK;
+   вернуть FFI_OK;
 }
 
 /*
@@ -119,7 +119,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
  */
 void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 {
-   int ret_type = cif->flags;
+   целое ret_type = cif->flags;
    extended_cif ecif;
    ecif.cif = cif;
    ecif.avalue = avalue;
@@ -143,37 +143,37 @@ void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 */
 void ffi_prep_args(unsigned char *stack, extended_cif *ecif)
 {
-   register unsigned int i = 0;
+   register unsigned целое i = 0;
    void **p_argv;
    unsigned char *argp;
    ffi_type **p_arg;
    argp = stack;
    p_argv = ecif->avalue;
-   for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+   для (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
         (i != 0);
         i--, p_arg++) {
       size_t z;
       z = (*p_arg)->size;
-      if (z < sizeof(int)) {
-         z = sizeof(int);
+      если (z < sizeof(целое)) {
+         z = sizeof(целое);
          switch ((*p_arg)->type) {
             case FFI_TYPE_SINT8: {
                   signed char v = *(SINT8 *)(* p_argv);
-                  signed int t = v;
-                  *(signed int *) argp = t;
+                  signed целое t = v;
+                  *(signed целое *) argp = t;
                }
                break;
             case FFI_TYPE_UINT8: {
                   unsigned char v = *(UINT8 *)(* p_argv);
-                  unsigned int t = v;
-                  *(unsigned int *) argp = t;
+                  unsigned целое t = v;
+                  *(unsigned целое *) argp = t;
                }
                break;
             case FFI_TYPE_SINT16:
-               *(signed int *) argp = (signed int) * (SINT16 *)(* p_argv);
+               *(signed целое *) argp = (signed целое) * (SINT16 *)(* p_argv);
                break;
             case FFI_TYPE_UINT16:
-               *(unsigned int *) argp = (unsigned int) * (UINT16 *)(* p_argv);
+               *(unsigned целое *) argp = (unsigned целое) * (UINT16 *)(* p_argv);
                break;
             case FFI_TYPE_STRUCT:
                memcpy(argp, *p_argv, (*p_arg)->size);
@@ -182,9 +182,9 @@ void ffi_prep_args(unsigned char *stack, extended_cif *ecif)
                FFI_ASSERT(0);
                break;
          }
-      } else if (z == sizeof(int)) {
-         *(unsigned int *) argp = (unsigned int) * (UINT32 *)(* p_argv);
-      } else {
+      } иначе если (z == sizeof(целое)) {
+         *(unsigned целое *) argp = (unsigned целое) * (UINT32 *)(* p_argv);
+      } иначе {
          memcpy(argp, *p_argv, z);
       }
       p_argv++;

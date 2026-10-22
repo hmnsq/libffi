@@ -34,23 +34,23 @@
 /* Return a version string. */
 const char *ffi_get_version (void)
 {
-  return FFI_VERSION_STRING;
+  вернуть FFI_VERSION_STRING;
 }
 
 /* Return the version as an unsigned long value: (x * 10000 + y * 100 + z) */
 unsigned long ffi_get_version_number (void)
 {
-  return FFI_VERSION_NUMBER;
+  вернуть FFI_VERSION_NUMBER;
 }
 
-unsigned int ffi_get_default_abi (void)
+unsigned целое ffi_get_default_abi (void)
 {
-  return FFI_DEFAULT_ABI;
+  вернуть FFI_DEFAULT_ABI;
 }
 
 size_t ffi_get_closure_size (void)
 {
-  return sizeof(ffi_closure);
+  вернуть sizeof(ffi_closure);
 }
 
 /* Type definitions */
@@ -102,9 +102,9 @@ FFI_TYPEDEF(pointer, void*, FFI_TYPE_POINTER, const);
 FFI_TYPEDEF(float, float, FFI_TYPE_FLOAT, const);
 FFI_TYPEDEF(double, double, FFI_TYPE_DOUBLE, const);
 
-#if !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
+#если !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
 #define FFI_LDBL_CONST const
-#else
+#иначе
 #define FFI_LDBL_CONST
 #endif
 
@@ -113,11 +113,11 @@ FFI_TYPEDEF(double, double, FFI_TYPE_DOUBLE, const);
    maintain binary compatibility, as -mlong-double-128 can be used
    at any time.  */
 /* Validate the hard-coded number below.  */
-# if defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
+# если defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
 const ffi_type ffi_type_longdouble = { 16, 16, 4, NULL };
-#else
+#иначе
 FFI_TYPEDEF(longdouble, long double, FFI_TYPE_LONGDOUBLE, FFI_LDBL_CONST);
 #endif
 
@@ -131,7 +131,7 @@ FFI_COMPLEX_TYPEDEF(longdouble, long double, FFI_LDBL_CONST);
 # ifdef HAVE_INT128
 FFI_TYPEDEF(uint128, __uint128_t, FFI_TYPE_UINT128, const);
 FFI_TYPEDEF(sint128, __int128_t, FFI_TYPE_SINT128, const);
-# else
+# иначе
 /* We don't actually need compiler support for __int128_t, as we don't
    use the type itself within libffi.  Obviously the size is 16; make
    the conservative assumption that the alignment must also be 16. */

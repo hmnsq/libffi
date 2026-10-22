@@ -33,24 +33,24 @@
 #define NGREGARG 8
 #define NFREGARG 12
 
-static int
+static целое
 return_type (ffi_type *arg)
 {
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  если (arg->type != FFI_TYPE_STRUCT)
+    вернуть arg->type;
 
   /* gcc uses r2 if the result can be packed in on register.  */
-  if (arg->size <= sizeof (UINT8))
-    return FFI_TYPE_UINT8;
-  else if (arg->size <= sizeof (UINT16))
-    return FFI_TYPE_UINT16;
-  else if (arg->size <= sizeof (UINT32))
-    return FFI_TYPE_UINT32;
-  else if (arg->size <= sizeof (UINT64))
-    return FFI_TYPE_UINT64;
+  если (arg->size <= sizeof (UINT8))
+    вернуть FFI_TYPE_UINT8;
+  иначе если (arg->size <= sizeof (UINT16))
+    вернуть FFI_TYPE_UINT16;
+  иначе если (arg->size <= sizeof (UINT32))
+    вернуть FFI_TYPE_UINT32;
+  иначе если (arg->size <= sizeof (UINT64))
+    вернуть FFI_TYPE_UINT64;
 
-  return FFI_TYPE_STRUCT;
+  вернуть FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
@@ -58,15 +58,15 @@ return_type (ffi_type *arg)
 
 void ffi_prep_args(char *stack, extended_cif *ecif)
 {
-  register unsigned int i;
-  register unsigned int avn;
+  register unsigned целое i;
+  register unsigned целое avn;
   register void **p_argv;
   register char *argp;
   register ffi_type **p_arg;
 
   argp = stack;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  если (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
       *(void **) argp = ecif->rvalue;
       argp += sizeof (UINT64);
@@ -75,14 +75,14 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  для (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
-      int align;
+      целое align;
 
       z = (*p_arg)->size;
       align = (*p_arg)->alignment;
-      if (z < sizeof (UINT32))
+      если (z < sizeof (UINT32))
 	{
 	  switch ((*p_arg)->type)
 	    {
@@ -111,7 +111,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	    }
 	  argp += sizeof (UINT64);
 	}
-      else if (z == sizeof (UINT32) && align == sizeof (UINT32))
+      иначе если (z == sizeof (UINT32) && align == sizeof (UINT32))
 	{
 	  switch ((*p_arg)->type)
 	    {
@@ -133,40 +133,40 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	    }
 	  argp += sizeof (UINT64);
 	}
-      else if (z == sizeof (UINT64)
+      иначе если (z == sizeof (UINT64)
 	       && align == sizeof (UINT64)
-	       && ((int) *p_argv & (sizeof (UINT64) - 1)) == 0)
+	       && ((целое) *p_argv & (sizeof (UINT64) - 1)) == 0)
 	{
 	  *(UINT64 *) argp = *(UINT64 *) (*p_argv);
 	  argp += sizeof (UINT64);
 	}
-      else
+      иначе
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  целое n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
 
 	  memcpy (argp, *p_argv, z);
 	  argp += n * sizeof (UINT64);
 	}
     }
 
-  return;
+  вернуть;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-  int freg;
-  int fpair = -1;
+  целое i, j;
+  целое size, type;
+  целое n, m;
+  целое greg;
+  целое freg;
+  целое fpair = -1;
 
   greg = (return_type (cif->rtype) == FFI_TYPE_STRUCT ? 1 : 0);
   freg = 0;
   cif->flags2 = 0;
 
-  for (i = j = 0; i < cif->nargs; i++)
+  для (i = j = 0; i < cif->nargs; i++)
     {
       type = (cif->arg_types)[i]->type;
       switch (type)
@@ -174,42 +174,42 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	case FFI_TYPE_FLOAT:
 	  greg++;
 	  cif->bytes += sizeof (UINT64) - sizeof (float);
-	  if (freg >= NFREGARG - 1)
+	  если (freg >= NFREGARG - 1)
 	    continue;
-	  if (fpair < 0)
+	  если (fpair < 0)
 	    {
 	      fpair = freg;
 	      freg += 2;
 	    }
-	  else
+	  иначе
 	    fpair = -1;
 	  cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
 	  break;
 
 	case FFI_TYPE_DOUBLE:
-	  if (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
+	  если (greg++ >= NGREGARG && (freg + 1) >= NFREGARG)
 	    continue;
-	  if ((freg + 1) < NFREGARG)
+	  если ((freg + 1) < NFREGARG)
 	    {
 	      freg += 2;
 	      cif->flags2 += ((cif->arg_types)[i]->type) << (2 * j++);
 	    }
-	  else
+	  иначе
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
 	  break;
 	      
 	default:
 	  size = (cif->arg_types)[i]->size;
-	  if (size < sizeof (UINT64))
+	  если (size < sizeof (UINT64))
 	    cif->bytes += sizeof (UINT64) - size;
 	  n = (size + sizeof (UINT64) - 1) / sizeof (UINT64);
-	  if (greg >= NGREGARG)
+	  если (greg >= NGREGARG)
 	    continue;
-	  else if (greg + n - 1 >= NGREGARG)
+	  иначе если (greg + n - 1 >= NGREGARG)
 	    greg = NGREGARG;
-	  else
+	  иначе
 	    greg += n;
-	  for (m = 0; m < n; m++)
+	  для (m = 0; m < n; m++)
 	    cif->flags2 += FFI_TYPE_INT << (2 * j++);
 	  break;
 	}
@@ -235,7 +235,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
       break;
     }
 
-  return FFI_OK;
+  вернуть FFI_OK;
 }
 
 /*@-declundef@*/
@@ -262,15 +262,15 @@ void ffi_call(/*@dependent@*/ ffi_cif *cif,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  если (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  иначе если ((rvalue == NULL) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  иначе
     ecif.rvalue = rvalue;
 
   switch (cif->abi) 
@@ -284,7 +284,7 @@ void ffi_call(/*@dependent@*/ ffi_cif *cif,
       break;
     }
 
-  if (rvalue
+  если (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     memcpy (rvalue, &trvalue, cif->rtype->size);
@@ -300,12 +300,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp;
+  unsigned целое *tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  если (cif->abi != FFI_SYSV)
+    вернуть FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned целое *) &closure->tramp[0];
   /* Since ffi_closure is an aligned object, the ffi trampoline is
      called as an SHcompact code.  Sigh.
      SHcompact part:
@@ -316,7 +316,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0x7001c701;
   tramp[1] = 0x0009402b;
-#else
+#иначе
   tramp[0] = 0xc7017001;
   tramp[1] = 0x402b0009;
 #endif
@@ -335,7 +335,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
   __asm__ volatile ("ocbwb %0,0; synco; icbi %1,0; synci" : : "r" (tramp),
 		"r"(codeloc));
 
-  return FFI_OK;
+  вернуть FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -346,28 +346,28 @@ ffi_prep_closure_loc (ffi_closure *closure,
  * following helper function to do most of the work.
  */
 
-int
+целое
 ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue, 
 			 UINT64 *pgr, UINT64 *pfr, UINT64 *pst)
 {
   void **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int greg, freg;
+  целое i, avn;
+  целое greg, freg;
   ffi_cif *cif;
-  int fpair = -1;
+  целое fpair = -1;
 
   cif = closure->cif;
   avalue = alloca (cif->nargs * sizeof (void *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (return_type (cif->rtype) == FFI_TYPE_STRUCT)
+  если (return_type (cif->rtype) == FFI_TYPE_STRUCT)
     {
       rvalue = (UINT64 *) *pgr;
       greg = 1;
     }
-  else
+  иначе
     greg = 0;
 
   freg = 0;
@@ -375,13 +375,13 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  для (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
       void *p;
 
       z = (*p_arg)->size;
-      if (z < sizeof (UINT32))
+      если (z < sizeof (UINT32))
 	{
 	  p = pgr + greg++;
 
@@ -394,7 +394,7 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
 	    case FFI_TYPE_STRUCT:
 #ifdef __LITTLE_ENDIAN__
 	      avalue[i] = p;
-#else
+#иначе
 	      avalue[i] = ((char *) p) + sizeof (UINT32) - z;
 #endif
 	      break;
@@ -403,58 +403,58 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof (UINT32))
+      иначе если (z == sizeof (UINT32))
 	{
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+	  если ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg < NFREGARG - 1)
+	      если (freg < NFREGARG - 1)
 		{
-		  if (fpair >= 0)
+		  если (fpair >= 0)
 		    {
 		      avalue[i] = (UINT32 *) pfr + fpair;
 		      fpair = -1;
 		    }
-		  else
+		  иначе
 		    {
 #ifdef __LITTLE_ENDIAN__
 		      fpair = freg;
 		      avalue[i] = (UINT32 *) pfr + (1 ^ freg);
-#else
+#иначе
 		      fpair = 1 ^ freg;
 		      avalue[i] = (UINT32 *) pfr + freg;
 #endif
 		      freg += 2;
 		    }
 		}
-	      else
+	      иначе
 #ifdef __LITTLE_ENDIAN__
 		avalue[i] = pgr + greg;
-#else
+#иначе
 		avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	    }
-	  else
+	  иначе
 #ifdef __LITTLE_ENDIAN__
 	    avalue[i] = pgr + greg;
-#else
+#иначе
 	    avalue[i] = (UINT32 *) (pgr + greg) + 1;
 #endif
 	  greg++;
 	}
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+      иначе если ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
+	  если (freg + 1 >= NFREGARG)
 	    avalue[i] = pgr + greg;
-	  else
+	  иначе
 	    {
 	      avalue[i] = pfr + (freg >> 1);
 	      freg += 2;
 	    }
 	  greg++;
 	}
-      else
+      иначе
 	{
-	  int n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
+	  целое n = (z + sizeof (UINT64) - 1) / sizeof (UINT64);
 
 	  avalue[i] = pgr + greg;
 	  greg += n;
@@ -464,6 +464,6 @@ ffi_closure_helper_SYSV (ffi_closure *closure, UINT64 *rvalue,
   (closure->fun) (cif, rvalue, avalue, closure->user_data);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  вернуть return_type (cif->rtype);
 }
 
