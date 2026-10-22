@@ -25,104 +25,104 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#અન્તર્ભાવ <ffi.h>
+#અન્તર્ભાવ <ffi_common.h>
 
-#include <stdlib.h>
+#અન્તર્ભાવ <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+શૂન્ય ffi_prep_args(અક્ષર *ઢગલો, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  unsigned પૂર્ણાંક i;
+  પૂર્ણાંક tmp;
+  unsigned પૂર્ણાંક avn;
+  શૂન્ય **p_argv;
+  અક્ષર *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = ઢગલો;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  જો (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(શૂન્ય **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  માટે (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      જો (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (અક્ષર *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      જો (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  જો (z < કદ (પૂર્ણાંક))
 	    {
-	      z = sizeof (int);
+	      z = કદ (પૂર્ણાંક);
 
-	      switch ((*p_arg)->type)
+	      પસંદગી ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		સ્થિતિ FFI_TYPE_SINT8:
+		  *(signed પૂર્ણાંક *) argp = (signed પૂર્ણાંક)*(SINT8 *)(* p_argv);
+		  તોડો;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		સ્થિતિ FFI_TYPE_UINT8:
+		  *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT8 *)(* p_argv);
+		  તોડો;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		સ્થિતિ FFI_TYPE_SINT16:
+		  *(signed પૂર્ણાંક *) argp = (signed પૂર્ણાંક)*(SINT16 *)(* p_argv);
+		  તોડો;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		સ્થિતિ FFI_TYPE_UINT16:
+		  *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT16 *)(* p_argv);
+		  તોડો;
 
-		case FFI_TYPE_STRUCT:
+		સ્થિતિ FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  જો ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  નહીંતર
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = કદ (પૂર્ણાંક);
+		  તોડો;
 
-		default:
+		મૂળભૂત:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  નહીંતર જો (z == કદ (પૂર્ણાંક))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  નહીંતર
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      જો ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  જો (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)(શૂન્ય *)(* p_argv);
+		      z = કદ(શૂન્ય *);
 		    }
-		  else
+		  નહીંતર
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      નહીંતર
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  પાછા;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -141,74 +141,74 @@ ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  પસંદગી (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    સ્થિતિ FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      તોડો;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    સ્થિતિ FFI_TYPE_STRUCT:
+      જો (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      નહીંતર જો (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      નહીંતર
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      તોડો;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    સ્થિતિ FFI_TYPE_SINT64:
+    સ્થિતિ FFI_TYPE_UINT64:
+    સ્થિતિ FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      તોડો;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    સ્થિતિ FFI_TYPE_FLOAT:
+    મૂળભૂત:
       cif->flags = FFI_TYPE_INT;
-      break;
+      તોડો;
     }
 
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+બાહ્ય શૂન્ય ffi_call_SYSV(શૂન્ય (*)(અક્ષર *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, શૂન્ય (*fn)(શૂન્ય));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+શૂન્ય ffi_call(ffi_cif *cif, શૂન્ય (*fn)(શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  શૂન્ય **avalue_copy = ખાલી;
+  પૂર્ણાંક i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  જો ((rvalue == ખાલી) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  નહીંતર
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  માટે (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      પૂર્ણાંક size = at->size;
+      જો (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          અક્ષર *argcopy = alloca (size);
+          જો (avalue_copy == ખાલી)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * કદ (શૂન્ય *));
+              memcpy (avalue_copy, avalue, nargs * કદ (શૂન્ય *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -217,41 +217,41 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  પસંદગી (cif->abi)
     {
-    case FFI_SYSV:
+    સ્થિતિ FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      જો (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  પૂર્ણાંક size = cif->rtype->size;
+	  પૂર્ણાંક align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  જો (size < 4)
 	    {
-	      if (align == 1)
+	      જો (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  નહીંતર જો (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      જો (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      નહીંતર જો (align == 2)
 		{
-		  if (size & 1)
+		  જો (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  જો (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      તોડો;
 
-    default:
+    મૂળભૂત:
       FFI_ASSERT(0);
-      break;
+      તોડો;
     }
 }

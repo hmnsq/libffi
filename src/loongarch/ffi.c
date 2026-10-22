@@ -26,28 +26,28 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <tramp.h>
+#અન્તર્ભાવ <ffi.h>
+#અન્તર્ભાવ <ffi_common.h>
+#અન્તર્ભાવ <tramp.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <stdint.h>
 
-#if defined(__loongarch_soft_float)
+#જો defined(__loongarch_soft_float)
 # define ABI_FRLEN 0
-#elif defined(__loongarch_single_float)
+#અથવાજો defined(__loongarch_single_float)
 # define ABI_FRLEN 32
-# define ABI_FLOAT float
-#elif defined(__loongarch_double_float)
+# define ABI_FLOAT દશાંશ
+#અથવાજો defined(__loongarch_double_float)
 # define ABI_FRLEN 64
-# define ABI_FLOAT double
-#else
+# define ABI_FLOAT દ્વિગુણ
+#નહીંતર
 #error unsupported LoongArch floating-point ABI
 #endif
 
 #define NARGREG 8
 #define STKALIGN 16
-#define MAXCOPYARG (2 * sizeof (double))
+#define MAXCOPYARG (2 * કદ (દ્વિગુણ))
 
 /* call_context registers
    - 8 floating point parameter/result registers.
@@ -57,210 +57,210 @@
      - frame register
      - return register
 */
-typedef struct call_context
+પ્રકારવ્યાખ્યા સંરચના call_context
 {
-#if !defined(__loongarch_soft_float)
+#જો !defined(__loongarch_soft_float)
   ABI_FLOAT fa[8];
 #endif
   size_t a[10];
 } call_context;
 
-typedef struct call_builder
+પ્રકારવ્યાખ્યા સંરચના call_builder
 {
   call_context *aregs;
-  int used_integer;
-  int used_float;
-  size_t *used_stack;	    /* Stack pointer.  */
-  size_t *stack;	    /* Place for arguments pass by reference.  */
+  પૂર્ણાંક used_integer;
+  પૂર્ણાંક used_float;
+  size_t *used_ઢગલો;	    /* Stack pointer.  */
+  size_t *ઢગલો;	    /* Place for arguments pass by reference.  */
   size_t next_struct_area;  /* Offset for arguments pass by reference.  */
 } call_builder;
 
 /* Integer (not pointer) less than ABI GRLEN.  */
 /* FFI_TYPE_INT does not appear to be used.  */
-#if __SIZEOF_POINTER__ == 8
+#જો __SIZEOF_POINTER__ == 8
 # define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#નહીંતર
 # define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
 #endif
 
-#if ABI_FRLEN
-typedef struct float_struct_info
+#જો ABI_FRLEN
+પ્રકારવ્યાખ્યા સંરચના float_struct_info
 {
-  char as_elements;
-  char type1;
-  char offset2;
-  char type2;
+  અક્ષર as_elements;
+  અક્ષર type1;
+  અક્ષર offset2;
+  અક્ષર type2;
 } float_struct_info;
 
-#if ABI_FRLEN >= 64
+#જો ABI_FRLEN >= 64
 # define IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
-#else
+#નહીંતર
 # define IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
 #endif
 
-static ffi_type **
+સ્થિર ffi_type **
 flatten_struct (ffi_type *in, ffi_type **out, ffi_type **out_end)
 {
-  int i;
+  પૂર્ણાંક i;
 
-  if (out == out_end)
-    return out;
-  if (in->type != FFI_TYPE_STRUCT)
+  જો (out == out_end)
+    પાછા out;
+  જો (in->type != FFI_TYPE_STRUCT)
     *(out++) = in;
-  else
-    for (i = 0; in->elements[i]; i++)
+  નહીંતર
+    માટે (i = 0; in->elements[i]; i++)
       out = flatten_struct (in->elements[i], out, out_end);
-  return out;
+  પાછા out;
 }
 
 /* Structs with at most two fields after flattening, one of which is of
    floating point type, are passed in multiple registers if sufficient
    registers are available.  */
-static float_struct_info
-struct_passed_as_elements (call_builder *cb, ffi_type *top)
+સ્થિર float_struct_info
+struct_passed_as_elements (call_builder *cb, ffi_type *ટોચ)
 {
   float_struct_info ret = {0, 0, 0, 0};
   ffi_type *fields[3];
-  int num_floats, num_ints;
-  int num_fields = flatten_struct (top, fields, fields + 3) - fields;
+  પૂર્ણાંક અંક_floats, અંક_ints;
+  પૂર્ણાંક અંક_fields = flatten_struct (ટોચ, fields, fields + 3) - fields;
 
-  if (num_fields == 1)
+  જો (અંક_fields == 1)
     {
-      if (IS_FLOAT (fields[0]->type))
+      જો (IS_FLOAT (fields[0]->type))
 	{
 	  ret.as_elements = 1;
 	  ret.type1 = fields[0]->type;
 	}
     }
-  else if (num_fields == 2)
+  નહીંતર જો (અંક_fields == 2)
     {
-      num_floats = IS_FLOAT (fields[0]->type) + IS_FLOAT (fields[1]->type);
-      num_ints = IS_INT (fields[0]->type) + IS_INT (fields[1]->type);
-      if (num_floats == 0 || num_floats + num_ints != 2)
-	return ret;
-      if (cb->used_float + num_floats > NARGREG
-	  || cb->used_integer + (2 - num_floats) > NARGREG)
-	return ret;
-      if (!IS_FLOAT (fields[0]->type) && !IS_FLOAT (fields[1]->type))
-	return ret;
+      અંક_floats = IS_FLOAT (fields[0]->type) + IS_FLOAT (fields[1]->type);
+      અંક_ints = IS_INT (fields[0]->type) + IS_INT (fields[1]->type);
+      જો (અંક_floats == 0 || અંક_floats + અંક_ints != 2)
+	પાછા ret;
+      જો (cb->used_float + અંક_floats > NARGREG
+	  || cb->used_integer + (2 - અંક_floats) > NARGREG)
+	પાછા ret;
+      જો (!IS_FLOAT (fields[0]->type) && !IS_FLOAT (fields[1]->type))
+	પાછા ret;
 
       ret.type1 = fields[0]->type;
       ret.type2 = fields[1]->type;
       ret.offset2 = FFI_ALIGN (fields[0]->size, fields[1]->alignment);
       ret.as_elements = 1;
     }
-  return ret;
+  પાછા ret;
 }
 #endif
 
 /* Allocates a single register, float register, or GRLEN-sized stack slot to a
    datum.  */
-static void
-marshal_atom (call_builder *cb, int type, void *data)
+સ્થિર શૂન્ય
+marshal_atom (call_builder *cb, પૂર્ણાંક type, શૂન્ય *data)
 {
-  size_t value = 0;
-  switch (type)
+  size_t કિંમત = 0;
+  પસંદગી (type)
     {
-    case FFI_TYPE_UINT8:
-      value = *(uint8_t *) data;
-      break;
-    case FFI_TYPE_SINT8:
-      value = *(int8_t *) data;
-      break;
-    case FFI_TYPE_UINT16:
-      value = *(uint16_t *) data;
-      break;
-    case FFI_TYPE_SINT16:
-      value = *(int16_t *) data;
-      break;
+    સ્થિતિ FFI_TYPE_UINT8:
+      કિંમત = *(uint8_t *) data;
+      તોડો;
+    સ્થિતિ FFI_TYPE_SINT8:
+      કિંમત = *(int8_t *) data;
+      તોડો;
+    સ્થિતિ FFI_TYPE_UINT16:
+      કિંમત = *(uint16_t *) data;
+      તોડો;
+    સ્થિતિ FFI_TYPE_SINT16:
+      કિંમત = *(int16_t *) data;
+      તોડો;
     /* 32-bit quantities are always sign-extended in the ABI.  */
-    case FFI_TYPE_UINT32:
-      value = *(int32_t *) data;
-      break;
-    case FFI_TYPE_SINT32:
-      value = *(int32_t *) data;
-      break;
-#if __SIZEOF_POINTER__ == 8
-    case FFI_TYPE_UINT64:
-      value = *(uint64_t *) data;
-      break;
-    case FFI_TYPE_SINT64:
-      value = *(int64_t *) data;
-      break;
+    સ્થિતિ FFI_TYPE_UINT32:
+      કિંમત = *(int32_t *) data;
+      તોડો;
+    સ્થિતિ FFI_TYPE_SINT32:
+      કિંમત = *(int32_t *) data;
+      તોડો;
+#જો __SIZEOF_POINTER__ == 8
+    સ્થિતિ FFI_TYPE_UINT64:
+      કિંમત = *(uint64_t *) data;
+      તોડો;
+    સ્થિતિ FFI_TYPE_SINT64:
+      કિંમત = *(int64_t *) data;
+      તોડો;
 #endif
-    case FFI_TYPE_POINTER:
-      value = *(size_t *) data;
-      break;
+    સ્થિતિ FFI_TYPE_POINTER:
+      કિંમત = *(size_t *) data;
+      તોડો;
 
-#if ABI_FRLEN >= 32
-    case FFI_TYPE_FLOAT:
-      *(float *)(cb->aregs->fa + cb->used_float++) = *(float *) data;
-      return;
+#જો ABI_FRLEN >= 32
+    સ્થિતિ FFI_TYPE_FLOAT:
+      *(દશાંશ *)(cb->aregs->fa + cb->used_float++) = *(દશાંશ *) data;
+      પાછા;
 #endif
-#if ABI_FRLEN >= 64
-    case FFI_TYPE_DOUBLE:
-      (cb->aregs->fa[cb->used_float++]) = *(double *) data;
-      return;
+#જો ABI_FRLEN >= 64
+    સ્થિતિ FFI_TYPE_DOUBLE:
+      (cb->aregs->fa[cb->used_float++]) = *(દ્વિગુણ *) data;
+      પાછા;
 #endif
-    default:
+    મૂળભૂત:
       FFI_ASSERT (0);
-      break;
+      તોડો;
     }
 
-  if (cb->used_integer == NARGREG)
-    *cb->used_stack++ = value;
-  else
-    cb->aregs->a[cb->used_integer++] = value;
+  જો (cb->used_integer == NARGREG)
+    *cb->used_ઢગલો++ = કિંમત;
+  નહીંતર
+    cb->aregs->a[cb->used_integer++] = કિંમત;
 }
 
-static void
-unmarshal_atom (call_builder *cb, int type, void *data)
+સ્થિર શૂન્ય
+unmarshal_atom (call_builder *cb, પૂર્ણાંક type, શૂન્ય *data)
 {
-  size_t value;
-  switch (type)
+  size_t કિંમત;
+  પસંદગી (type)
     {
-#if ABI_FRLEN >= 32
-    case FFI_TYPE_FLOAT:
-      *(float *) data = *(float *)(cb->aregs->fa + cb->used_float++);
-      return;
+#જો ABI_FRLEN >= 32
+    સ્થિતિ FFI_TYPE_FLOAT:
+      *(દશાંશ *) data = *(દશાંશ *)(cb->aregs->fa + cb->used_float++);
+      પાછા;
 #endif
-#if ABI_FRLEN >= 64
-    case FFI_TYPE_DOUBLE:
-      *(double *) data = cb->aregs->fa[cb->used_float++];
-      return;
+#જો ABI_FRLEN >= 64
+    સ્થિતિ FFI_TYPE_DOUBLE:
+      *(દ્વિગુણ *) data = cb->aregs->fa[cb->used_float++];
+      પાછા;
 #endif
     }
 
-  if (cb->used_integer == NARGREG)
-    value = *cb->used_stack++;
-  else
-    value = cb->aregs->a[cb->used_integer++];
+  જો (cb->used_integer == NARGREG)
+    કિંમત = *cb->used_ઢગલો++;
+  નહીંતર
+    કિંમત = cb->aregs->a[cb->used_integer++];
 
-  switch (type)
+  પસંદગી (type)
     {
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-#if __SIZEOF_POINTER__ == 8
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    સ્થિતિ FFI_TYPE_UINT8:
+    સ્થિતિ FFI_TYPE_SINT8:
+    સ્થિતિ FFI_TYPE_UINT16:
+    સ્થિતિ FFI_TYPE_SINT16:
+    સ્થિતિ FFI_TYPE_UINT32:
+    સ્થિતિ FFI_TYPE_SINT32:
+#જો __SIZEOF_POINTER__ == 8
+    સ્થિતિ FFI_TYPE_UINT64:
+    સ્થિતિ FFI_TYPE_SINT64:
 #endif
-    case FFI_TYPE_POINTER:
-      *(ffi_arg *)data = value;
-      break;
-    default:
+    સ્થિતિ FFI_TYPE_POINTER:
+      *(ffi_arg *)data = કિંમત;
+      તોડો;
+    મૂળભૂત:
       FFI_ASSERT (0);
-      break;
+      તોડો;
     }
 }
 
 /* Allocate and copy a structure that is passed by value on the stack and
    return a pointer to it.  */
-static void *
-allocate_and_copy_struct_to_stack (call_builder *cb, void *data,
+સ્થિર શૂન્ય *
+allocate_and_copy_struct_to_ઢગલો (call_builder *cb, શૂન્ય *data,
 				   ffi_type *type)
 {
   size_t dest = cb->next_struct_area - type->size;
@@ -268,160 +268,160 @@ allocate_and_copy_struct_to_stack (call_builder *cb, void *data,
   dest = FFI_ALIGN_DOWN (dest, type->alignment);
   cb->next_struct_area = dest;
 
-  return memcpy ((char *)cb->stack + dest, data, type->size);
+  પાછા memcpy ((અક્ષર *)cb->ઢગલો + dest, data, type->size);
 }
 
 /* Adds an argument to a call, or a not by reference return value.  */
-static void
-marshal (call_builder *cb, ffi_type *type, int var, void *data)
+સ્થિર શૂન્ય
+marshal (call_builder *cb, ffi_type *type, પૂર્ણાંક var, શૂન્ય *data)
 {
   size_t realign[2];
 
-#if ABI_FRLEN
-  if (!var && type->type == FFI_TYPE_STRUCT)
+#જો ABI_FRLEN
+  જો (!var && type->type == FFI_TYPE_STRUCT)
     {
       float_struct_info fsi = struct_passed_as_elements (cb, type);
-      if (fsi.as_elements)
+      જો (fsi.as_elements)
 	{
 	  marshal_atom (cb, fsi.type1, data);
-	  if (fsi.offset2)
-	    marshal_atom (cb, fsi.type2, ((char *) data) + fsi.offset2);
-	  return;
+	  જો (fsi.offset2)
+	    marshal_atom (cb, fsi.type2, ((અક્ષર *) data) + fsi.offset2);
+	  પાછા;
 	}
     }
 
-  if (!var && cb->used_float < NARGREG
+  જો (!var && cb->used_float < NARGREG
       && IS_FLOAT (type->type))
     {
       marshal_atom (cb, type->type, data);
-      return;
+      પાછા;
     }
 
-  double promoted;
-  if (var && type->type == FFI_TYPE_FLOAT)
+  દ્વિગુણ promoted;
+  જો (var && type->type == FFI_TYPE_FLOAT)
     {
       /* C standard requires promoting float -> double for variable arg.  */
-      promoted = *(float *) data;
+      promoted = *(દશાંશ *) data;
       type = &ffi_type_double;
       data = &promoted;
     }
 #endif
 
-  if (type->size > 2 * __SIZEOF_POINTER__)
+  જો (type->size > 2 * __SIZEOF_POINTER__)
     /* Pass by reference.  */
     {
-      allocate_and_copy_struct_to_stack (cb, data, type);
-      data = (char *)cb->stack + cb->next_struct_area;
+      allocate_and_copy_struct_to_ઢગલો (cb, data, type);
+      data = (અક્ષર *)cb->ઢગલો + cb->next_struct_area;
       marshal_atom (cb, FFI_TYPE_POINTER, &data);
     }
-  else if (IS_INT (type->type) || type->type == FFI_TYPE_POINTER)
+  નહીંતર જો (IS_INT (type->type) || type->type == FFI_TYPE_POINTER)
     marshal_atom (cb, type->type, data);
-  else
+  નહીંતર
     {
       /* Overlong integers, soft-float floats, and structs without special
 	 float handling are treated identically from this point on.  */
 
       /* Variadics are aligned even in registers.  */
-      if (type->alignment > __SIZEOF_POINTER__)
+      જો (type->alignment > __SIZEOF_POINTER__)
 	{
-	  if (var)
+	  જો (var)
 	    cb->used_integer = FFI_ALIGN (cb->used_integer, 2);
-	  cb->used_stack
-	    = (size_t *) FFI_ALIGN (cb->used_stack, 2 * __SIZEOF_POINTER__);
+	  cb->used_ઢગલો
+	    = (size_t *) FFI_ALIGN (cb->used_ઢગલો, 2 * __SIZEOF_POINTER__);
 	}
 
       memcpy (realign, data, type->size);
-      if (type->size > 0)
+      જો (type->size > 0)
 	marshal_atom (cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
+      જો (type->size > __SIZEOF_POINTER__)
 	marshal_atom (cb, FFI_TYPE_POINTER, realign + 1);
     }
 }
 
 /* For arguments passed by reference returns the pointer, otherwise the arg
    is copied (up to MAXCOPYARG bytes).  */
-static void *
-unmarshal (call_builder *cb, ffi_type *type, int var, void *data)
+સ્થિર શૂન્ય *
+unmarshal (call_builder *cb, ffi_type *type, પૂર્ણાંક var, શૂન્ય *data)
 {
   size_t realign[2];
-  void *pointer;
+  શૂન્ય *pointer;
 
-#if ABI_FRLEN
-  if (!var && type->type == FFI_TYPE_STRUCT)
+#જો ABI_FRLEN
+  જો (!var && type->type == FFI_TYPE_STRUCT)
     {
       float_struct_info fsi = struct_passed_as_elements (cb, type);
-      if (fsi.as_elements)
+      જો (fsi.as_elements)
 	{
 	  unmarshal_atom (cb, fsi.type1, data);
-	  if (fsi.offset2)
-	    unmarshal_atom (cb, fsi.type2, ((char *) data) + fsi.offset2);
-	  return data;
+	  જો (fsi.offset2)
+	    unmarshal_atom (cb, fsi.type2, ((અક્ષર *) data) + fsi.offset2);
+	  પાછા data;
 	}
     }
 
-  if (!var && cb->used_float < NARGREG
+  જો (!var && cb->used_float < NARGREG
       && IS_FLOAT (type->type))
     {
       unmarshal_atom (cb, type->type, data);
-      return data;
+      પાછા data;
     }
 
-  if (var && type->type == FFI_TYPE_FLOAT)
+  જો (var && type->type == FFI_TYPE_FLOAT)
     {
-      int m = cb->used_integer;
-      void *promoted
-	= m < NARGREG ? cb->aregs->a + m : cb->used_stack + m - NARGREG + 1;
-      *(float *) promoted = *(double *) promoted;
+      પૂર્ણાંક m = cb->used_integer;
+      શૂન્ય *promoted
+	= m < NARGREG ? cb->aregs->a + m : cb->used_ઢગલો + m - NARGREG + 1;
+      *(દશાંશ *) promoted = *(દ્વિગુણ *) promoted;
     }
 #endif
 
-  if (type->size > 2 * __SIZEOF_POINTER__)
+  જો (type->size > 2 * __SIZEOF_POINTER__)
     {
       /* Pass by reference.  */
-      unmarshal_atom (cb, FFI_TYPE_POINTER, (char *) &pointer);
-      return pointer;
+      unmarshal_atom (cb, FFI_TYPE_POINTER, (અક્ષર *) &pointer);
+      પાછા pointer;
     }
-  else if (IS_INT (type->type) || type->type == FFI_TYPE_POINTER)
+  નહીંતર જો (IS_INT (type->type) || type->type == FFI_TYPE_POINTER)
     {
       unmarshal_atom (cb, type->type, data);
-      return data;
+      પાછા data;
     }
-  else
+  નહીંતર
     {
       /* Overlong integers, soft-float floats, and structs without special
 	 float handling are treated identically from this point on.  */
 
       /* Variadics are aligned even in registers.  */
-      if (type->alignment > __SIZEOF_POINTER__)
+      જો (type->alignment > __SIZEOF_POINTER__)
 	{
-	  if (var)
+	  જો (var)
 	    cb->used_integer = FFI_ALIGN (cb->used_integer, 2);
-	  cb->used_stack
-	    = (size_t *) FFI_ALIGN (cb->used_stack, 2 * __SIZEOF_POINTER__);
+	  cb->used_ઢગલો
+	    = (size_t *) FFI_ALIGN (cb->used_ઢગલો, 2 * __SIZEOF_POINTER__);
 	}
 
-      if (type->size > 0)
+      જો (type->size > 0)
 	unmarshal_atom (cb, FFI_TYPE_POINTER, realign);
-      if (type->size > __SIZEOF_POINTER__)
+      જો (type->size > __SIZEOF_POINTER__)
 	unmarshal_atom (cb, FFI_TYPE_POINTER, realign + 1);
       memcpy (data, realign, type->size);
-      return data;
+      પાછા data;
     }
 }
 
-static int
-passed_by_ref (call_builder *cb, ffi_type *type, int var)
+સ્થિર પૂર્ણાંક
+passed_by_ref (call_builder *cb, ffi_type *type, પૂર્ણાંક var)
 {
-#if ABI_FRLEN
-  if (!var && type->type == FFI_TYPE_STRUCT)
+#જો ABI_FRLEN
+  જો (!var && type->type == FFI_TYPE_STRUCT)
     {
       float_struct_info fsi = struct_passed_as_elements (cb, type);
-      if (fsi.as_elements)
-	return 0;
+      જો (fsi.as_elements)
+	પાછા 0;
     }
 #endif
 
-  return type->size > 2 * __SIZEOF_POINTER__;
+  પાછા type->size > 2 * __SIZEOF_POINTER__;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -429,108 +429,108 @@ ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   cif->loongarch_nfixedargs = cif->nargs;
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
 /* Perform machine dependent cif processing when we have a variadic
    function.  */
 ffi_status
-ffi_prep_cif_machdep_var (ffi_cif *cif, unsigned int nfixedargs,
-			  unsigned int ntotalargs)
+ffi_prep_cif_machdep_var (ffi_cif *cif, unsigned પૂર્ણાંક nfixedargs,
+			  unsigned પૂર્ણાંક ntotalargs)
 {
   cif->loongarch_nfixedargs = nfixedargs;
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
 /* Low level routine for calling functions.  */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+બાહ્ય શૂન્ય ffi_call_asm (શૂન્ય *ઢગલો, સંરચના call_context *regs,
+			  શૂન્ય (*fn) (શૂન્ય), શૂન્ય *closure) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+સ્થિર શૂન્ય
+ffi_call_int (ffi_cif *cif, શૂન્ય (*fn) (શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue,
+	      શૂન્ય *closure)
 {
   size_t arg_bytes = FFI_ALIGN (cif->bytes, STKALIGN);
 
   /* This is a conservative estimate, assuming a complex return value and
      that all remaining arguments are long long / __int128 */
   size_t extra_bytes = cif->nargs <= 3 ? 0 :
-      FFI_ALIGN(2 * sizeof(size_t) * (cif->nargs - 3), STKALIGN);
+      FFI_ALIGN(2 * કદ(size_t) * (cif->nargs - 3), STKALIGN);
 
   size_t rval_bytes = 0;
-  if (rvalue == NULL && cif->rtype->size > 2 * __SIZEOF_POINTER__)
+  જો (rvalue == ખાલી && cif->rtype->size > 2 * __SIZEOF_POINTER__)
     rval_bytes = FFI_ALIGN (cif->rtype->size, STKALIGN);
-  size_t alloc_size = arg_bytes + extra_bytes + rval_bytes + sizeof (call_context);
+  size_t alloc_size = arg_bytes + extra_bytes + rval_bytes + કદ (call_context);
 
   /* The assembly code will deallocate all stack data at lower addresses
      than the argument region, so we need to allocate the frame and the
      return value after the arguments in a single allocation.  */
   size_t alloc_base;
   /* Argument region must be 16-byte aligned in LP64 ABIs.  */
-  if (_Alignof(max_align_t) >= STKALIGN)
+  જો (_Alignof(max_align_t) >= STKALIGN)
     /* Since sizeof long double is normally 16, the compiler will
        guarantee alloca alignment to at least that much.  */
     alloc_base = (size_t) alloca (alloc_size);
-  else
+  નહીંતર
     alloc_base = FFI_ALIGN (alloca (alloc_size + STKALIGN - 1), STKALIGN);
 
-  if (rval_bytes)
-    rvalue = (void *) (alloc_base + arg_bytes);
+  જો (rval_bytes)
+    rvalue = (શૂન્ય *) (alloc_base + arg_bytes);
 
   call_builder cb;
   cb.used_float = cb.used_integer = 0;
   cb.aregs = (call_context *) (alloc_base + arg_bytes + extra_bytes + rval_bytes);
-  cb.used_stack = (size_t *)((char *) alloc_base);
-  cb.stack = (size_t *)((char *) alloc_base + extra_bytes + rval_bytes);
+  cb.used_ઢગલો = (size_t *)((અક્ષર *) alloc_base);
+  cb.ઢગલો = (size_t *)((અક્ષર *) alloc_base + extra_bytes + rval_bytes);
   cb.next_struct_area = arg_bytes;
 
-  int return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
-  if (return_by_ref)
+  પૂર્ણાંક return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
+  જો (return_by_ref)
     cb.aregs->a[cb.used_integer++] = (size_t)rvalue;
 
-  int i;
-  for (i = 0; i < cif->nargs; i++)
+  પૂર્ણાંક i;
+  માટે (i = 0; i < cif->nargs; i++)
     marshal (&cb, cif->arg_types[i], i >= cif->loongarch_nfixedargs,
 	     avalue[i]);
 
-  ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+  ffi_call_asm ((શૂન્ય *) alloc_base, cb.aregs, fn, closure);
 
   cb.used_float = cb.used_integer = 0;
-  if (!return_by_ref && rvalue)
+  જો (!return_by_ref && rvalue)
     unmarshal (&cb, cif->rtype, 0, rvalue);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+શૂન્ય
+ffi_call (ffi_cif *cif, શૂન્ય (*fn) (શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ખાલી);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+શૂન્ય
+ffi_call_go (ffi_cif *cif, શૂન્ય (*fn) (શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue,
+	     શૂન્ય *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
 
-extern void ffi_closure_asm (void) FFI_HIDDEN;
+બાહ્ય શૂન્ય ffi_closure_asm (શૂન્ય) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      શૂન્ય (*fun) (ffi_cif *, શૂન્ય *, શૂન્ય **, શૂન્ય *),
+		      શૂન્ય *user_data, શૂન્ય *codeloc)
 {
   uint32_t *tramp = (uint32_t *) &closure->tramp[0];
   uint64_t fn = (uint64_t) (uintptr_t) ffi_closure_asm;
 
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  જો (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    પાછા FFI_BAD_ABI;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#જો defined(FFI_EXEC_STATIC_TRAMP)
+  જો (ffi_tramp_is_present(closure))
     {
       ffi_tramp_set_parms (closure->ftramp, ffi_closure_asm, closure);
-      goto out;
+      જાઓ out;
     }
 #endif
 
@@ -545,84 +545,84 @@ ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
 
   __builtin___clear_cache (codeloc, codeloc + FFI_TRAMPOLINE_SIZE);
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#જો defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+બાહ્ય શૂન્ય ffi_go_closure_asm (શૂન્ય) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     શૂન્ય (*fun) (ffi_cif *, શૂન્ય *, શૂન્ય **, શૂન્ય *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  જો (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    પાછા FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
+  closure->tramp = (શૂન્ય *) ffi_go_closure_asm;
   closure->cif = cif;
   closure->fun = fun;
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs.  */
-void FFI_HIDDEN
+શૂન્ય FFI_HIDDEN
 ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data, size_t *stack, call_context *aregs)
+		   શૂન્ય (*fun) (ffi_cif *, શૂન્ય *, શૂન્ય **, શૂન્ય *),
+		   શૂન્ય *user_data, size_t *ઢગલો, call_context *aregs)
 {
-  void **avalue = alloca (cif->nargs * sizeof (void *));
+  શૂન્ય **avalue = alloca (cif->nargs * કદ (શૂન્ય *));
   /* Storage for arguments which will be copied by unmarshal().  We could
      theoretically avoid the copies in many cases and use at most 128 bytes
      of memory, but allocating disjoint storage for each argument is
      simpler.  */
-  char *astorage = alloca (cif->nargs * MAXCOPYARG);
-  void *rvalue;
+  અક્ષર *astorage = alloca (cif->nargs * MAXCOPYARG);
+  શૂન્ય *rvalue;
   call_builder cb;
-  int return_by_ref;
-  int i;
+  પૂર્ણાંક return_by_ref;
+  પૂર્ણાંક i;
 
   cb.aregs = aregs;
   cb.used_integer = cb.used_float = 0;
-  cb.used_stack = stack;
+  cb.used_ઢગલો = ઢગલો;
 
   return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
-  if (return_by_ref)
+  જો (return_by_ref)
     unmarshal (&cb, &ffi_type_pointer, 0, &rvalue);
-  else
+  નહીંતર
     rvalue = alloca (cif->rtype->size);
 
-  for (i = 0; i < cif->nargs; i++)
+  માટે (i = 0; i < cif->nargs; i++)
     avalue[i]
       = unmarshal (&cb, cif->arg_types[i], i >= cif->loongarch_nfixedargs,
 		   astorage + i * MAXCOPYARG);
 
   fun (cif, rvalue, avalue, user_data);
 
-  if (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID)
+  જો (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID)
     {
       cb.used_integer = cb.used_float = 0;
       marshal (&cb, cif->rtype, 0, rvalue);
     }
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
+#જો defined(FFI_EXEC_STATIC_TRAMP)
+શૂન્ય *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  બાહ્ય શૂન્ય *trampoline_code_table;
 
   *tramp_size = 16;
   /* A mapping size of 64K is chosen to cover the page sizes of 4K, 16K, and
      64K.  */
   *map_size = 1 << 16;
-  return &trampoline_code_table;
+  પાછા &trampoline_code_table;
 }
 #endif

@@ -32,10 +32,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+પ્રકારવ્યાખ્યા unsigned long          ffi_arg;
+પ્રકારવ્યાખ્યા signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+પ્રકારવ્યાખ્યા ગણના ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_DEFAULT_ABI = FFI_SYSV,

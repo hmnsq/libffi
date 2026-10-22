@@ -24,77 +24,77 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#અન્તર્ભાવ <ffi.h>
+#અન્તર્ભાવ <ffi_common.h>
 
-extern void ffi_call_SYSV(void (*)(void*, extended_cif*), extended_cif*,
-		unsigned int, unsigned int, unsigned int*, void (*fn)(void),
-		unsigned int, unsigned int);
+બાહ્ય શૂન્ય ffi_call_SYSV(શૂન્ય (*)(શૂન્ય*, extended_cif*), extended_cif*,
+		unsigned પૂર્ણાંક, unsigned પૂર્ણાંક, unsigned પૂર્ણાંક*, શૂન્ય (*fn)(શૂન્ય),
+		unsigned પૂર્ણાંક, unsigned પૂર્ણાંક);
 
-extern void ffi_closure_SYSV(void);
+બાહ્ય શૂન્ય ffi_closure_SYSV(શૂન્ય);
 
-#define WORD_SIZE			sizeof(unsigned int)
+#define WORD_SIZE			કદ(unsigned પૂર્ણાંક)
 #define ARGS_REGISTER_SIZE	(WORD_SIZE * 6)
 #define WORD_FFI_ALIGN(x)		FFI_ALIGN(x, WORD_SIZE)
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
-void ffi_prep_args(void* stack, extended_cif* ecif)
+શૂન્ય ffi_prep_args(શૂન્ય* ઢગલો, extended_cif* ecif)
 {
-	unsigned int i;
+	unsigned પૂર્ણાંક i;
 	ffi_type** p_arg;
-	void** p_argv;
-	void* stack_args_p = stack;
+	શૂન્ય** p_argv;
+	શૂન્ય* ઢગલો_args_p = ઢગલો;
 
-	if (ecif == NULL || ecif->cif == NULL) {
-		return; /* no description to prepare */
+	જો (ecif == ખાલી || ecif->cif == ખાલી) {
+		પાછા; /* no description to prepare */
 	}
 
 	p_argv = ecif->avalue;
 
-	if ((ecif->cif->rtype != NULL) &&
+	જો ((ecif->cif->rtype != ખાલી) &&
 			(ecif->cif->rtype->type == FFI_TYPE_STRUCT))
 	{
 		/* if return type is a struct which is referenced on the stack/reg5,
 		 * by a pointer. Stored the return value pointer in r5.
 		 */
-		char* addr = stack_args_p;
+		અક્ષર* addr = ઢગલો_args_p;
 		memcpy(addr, &(ecif->rvalue), WORD_SIZE);
-		stack_args_p += WORD_SIZE;
+		ઢગલો_args_p += WORD_SIZE;
 	}
 
-	if (ecif->avalue == NULL) {
-		return; /* no arguments to prepare */
+	જો (ecif->avalue == ખાલી) {
+		પાછા; /* no arguments to prepare */
 	}
 
-	for (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+	માટે (i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
 			i++, p_arg++)
 	{
 		size_t size = (*p_arg)->size;
-		int type = (*p_arg)->type;
-		void* value = p_argv[i];
-		char* addr = stack_args_p;
-		int aligned_size = WORD_FFI_ALIGN(size);
+		પૂર્ણાંક type = (*p_arg)->type;
+		શૂન્ય* કિંમત = p_argv[i];
+		અક્ષર* addr = ઢગલો_args_p;
+		પૂર્ણાંક aligned_size = WORD_FFI_ALIGN(size);
 
 		/* force word alignment on the stack */
-		stack_args_p += aligned_size;
+		ઢગલો_args_p += aligned_size;
 		
-		switch (type)
+		પસંદગી (type)
 		{
-			case FFI_TYPE_UINT8:
-				*(unsigned int *)addr = (unsigned int)*(UINT8*)(value);
-				break;
-			case FFI_TYPE_SINT8:
-				*(signed int *)addr = (signed int)*(SINT8*)(value);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *)addr = (unsigned int)*(UINT16*)(value);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *)addr = (signed int)*(SINT16*)(value);
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+			સ્થિતિ FFI_TYPE_UINT8:
+				*(unsigned પૂર્ણાંક *)addr = (unsigned પૂર્ણાંક)*(UINT8*)(કિંમત);
+				તોડો;
+			સ્થિતિ FFI_TYPE_SINT8:
+				*(signed પૂર્ણાંક *)addr = (signed પૂર્ણાંક)*(SINT8*)(કિંમત);
+				તોડો;
+			સ્થિતિ FFI_TYPE_UINT16:
+				*(unsigned પૂર્ણાંક *)addr = (unsigned પૂર્ણાંક)*(UINT16*)(કિંમત);
+				તોડો;
+			સ્થિતિ FFI_TYPE_SINT16:
+				*(signed પૂર્ણાંક *)addr = (signed પૂર્ણાંક)*(SINT16*)(કિંમત);
+				તોડો;
+			સ્થિતિ FFI_TYPE_STRUCT:
+#જો __BIG_ENDIAN__
 				/*
 				 * MicroBlaze toolchain appears to emit:
 				 * bsrli r5, r5, 8 (caller)
@@ -117,20 +117,20 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 				 * above mentioned case, it will re-align the contents of a
 				 * <= 3-byte struct value.
 				 */
-				if (size < WORD_SIZE)
+				જો (size < WORD_SIZE)
 				{
-				  memcpy (addr + (WORD_SIZE - size), value, size);
-				  break;
+				  memcpy (addr + (WORD_SIZE - size), કિંમત, size);
+				  તોડો;
 				}
 #endif
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_DOUBLE:
-			default:
-				memcpy(addr, value, aligned_size);
+			સ્થિતિ FFI_TYPE_SINT32:
+			સ્થિતિ FFI_TYPE_UINT32:
+			સ્થિતિ FFI_TYPE_FLOAT:
+			સ્થિતિ FFI_TYPE_SINT64:
+			સ્થિતિ FFI_TYPE_UINT64:
+			સ્થિતિ FFI_TYPE_DOUBLE:
+			મૂળભૂત:
+				memcpy(addr, કિંમત, aligned_size);
 		}
 	}
 }
@@ -138,17 +138,17 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 ffi_status ffi_prep_cif_machdep(ffi_cif* cif)
 {
 	/* check ABI */
-	switch (cif->abi)
+	પસંદગી (cif->abi)
 	{
-		case FFI_SYSV:
-			break;
-		default:
-			return FFI_BAD_ABI;
+		સ્થિતિ FFI_SYSV:
+			તોડો;
+		મૂળભૂત:
+			પાછા FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	પાછા FFI_OK;
 }
 
-void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
+શૂન્ય ffi_call(ffi_cif* cif, શૂન્ય (*fn)(શૂન્ય), શૂન્ય* rvalue, શૂન્ય** avalue)
 {
 	extended_cif ecif;
 	ecif.cif = cif;
@@ -156,27 +156,27 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 
 	/* If the return value is a struct and we don't have a return */
 	/* value address then we need to make one */
-	if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+	જો ((rvalue == ખાલી) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
 		ecif.rvalue = alloca(cif->rtype->size);
-	} else {
+	} નહીંતર {
 		ecif.rvalue = rvalue;
 	}
 
-	switch (cif->abi)
+	પસંદગી (cif->abi)
 	{
-	case FFI_SYSV:
+	સ્થિતિ FFI_SYSV:
 		ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags,
 				ecif.rvalue, fn, cif->rtype->type, cif->rtype->size);
-		break;
-	default:
+		તોડો;
+	મૂળભૂત:
 		FFI_ASSERT(0);
-		break;
+		તોડો;
 	}
 }
 
-void ffi_closure_call_SYSV(void* register_args, void* stack_args,
-			ffi_closure* closure, void* rvalue,
-			unsigned int* rtype, unsigned int* rsize)
+શૂન્ય ffi_closure_call_SYSV(શૂન્ય* register_args, શૂન્ય* ઢગલો_args,
+			ffi_closure* closure, શૂન્ય* rvalue,
+			unsigned પૂર્ણાંક* rtype, unsigned પૂર્ણાંક* rsize)
 {
 	/* prepare arguments for closure call */
 	ffi_cif* cif = closure->cif;
@@ -187,77 +187,77 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	 * required to store the value of args in the lower 6 words in the stack
 	 * (although they are allocated in the stack).
 	 */
-	char* stackclone = alloca(cif->bytes);
-	void** avalue = alloca(cif->nargs * sizeof(void*));
-	void* struct_rvalue = NULL;
-	char* ptr = stackclone;
-	int i;
+	અક્ષર* stackclone = alloca(cif->bytes);
+	શૂન્ય** avalue = alloca(cif->nargs * કદ(શૂન્ય*));
+	શૂન્ય* struct_rvalue = ખાલી;
+	અક્ષર* ptr = stackclone;
+	પૂર્ણાંક i;
 
 	/* copy registers into stack clone */
-	int registers_used = cif->bytes;
-	if (registers_used > ARGS_REGISTER_SIZE) {
+	પૂર્ણાંક registers_used = cif->bytes;
+	જો (registers_used > ARGS_REGISTER_SIZE) {
 		registers_used = ARGS_REGISTER_SIZE;
 	}
 	memcpy(stackclone, register_args, registers_used);
 
 	/* copy stack allocated args into stack clone */
-	if (cif->bytes > ARGS_REGISTER_SIZE) {
-		int stack_used = cif->bytes - ARGS_REGISTER_SIZE;
-		memcpy(stackclone + ARGS_REGISTER_SIZE, stack_args, stack_used);
+	જો (cif->bytes > ARGS_REGISTER_SIZE) {
+		પૂર્ણાંક ઢગલો_used = cif->bytes - ARGS_REGISTER_SIZE;
+		memcpy(stackclone + ARGS_REGISTER_SIZE, ઢગલો_args, ઢગલો_used);
 	}
 
 	/* preserve struct type return pointer passing */
-	if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
-		struct_rvalue = *((void**)ptr);
+	જો ((cif->rtype != ખાલી) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
+		struct_rvalue = *((શૂન્ય**)ptr);
 		ptr += WORD_SIZE;
 	}
 
 	/* populate arg pointer list */
-	for (i = 0; i < cif->nargs; i++)
+	માટે (i = 0; i < cif->nargs; i++)
 	{
-		switch (arg_types[i]->type)
+		પસંદગી (arg_types[i]->type)
 		{
-			case FFI_TYPE_SINT8:
-			case FFI_TYPE_UINT8:
+			સ્થિતિ FFI_TYPE_SINT8:
+			સ્થિતિ FFI_TYPE_UINT8:
 #ifdef __BIG_ENDIAN__
 				avalue[i] = ptr + 3;
-#else
+#નહીંતર
 				avalue[i] = ptr;
 #endif
-				break;
-			case FFI_TYPE_SINT16:
-			case FFI_TYPE_UINT16:
+				તોડો;
+			સ્થિતિ FFI_TYPE_SINT16:
+			સ્થિતિ FFI_TYPE_UINT16:
 #ifdef __BIG_ENDIAN__
 				avalue[i] = ptr + 2;
-#else
+#નહીંતર
 				avalue[i] = ptr;
 #endif
-				break;
-			case FFI_TYPE_STRUCT:
-#if __BIG_ENDIAN__
+				તોડો;
+			સ્થિતિ FFI_TYPE_STRUCT:
+#જો __BIG_ENDIAN__
 				/*
 				 * Work around strange ABI behaviour.
 				 * (see info in ffi_prep_args)
 				 */
-				if (arg_types[i]->size < WORD_SIZE)
+				જો (arg_types[i]->size < WORD_SIZE)
 				{
 				  memcpy (ptr, ptr + (WORD_SIZE - arg_types[i]->size), arg_types[i]->size);
 				}
 #endif
-				avalue[i] = (void*)ptr;
-				break;
-			case FFI_TYPE_UINT64:
-			case FFI_TYPE_SINT64:
-			case FFI_TYPE_DOUBLE:
+				avalue[i] = (શૂન્ય*)ptr;
+				તોડો;
+			સ્થિતિ FFI_TYPE_UINT64:
+			સ્થિતિ FFI_TYPE_SINT64:
+			સ્થિતિ FFI_TYPE_DOUBLE:
 				avalue[i] = ptr;
-				break;
-			case FFI_TYPE_SINT32:
-			case FFI_TYPE_UINT32:
-			case FFI_TYPE_FLOAT:
-			default:
+				તોડો;
+			સ્થિતિ FFI_TYPE_SINT32:
+			સ્થિતિ FFI_TYPE_UINT32:
+			સ્થિતિ FFI_TYPE_FLOAT:
+			મૂળભૂત:
 				/* default 4-byte argument */
 				avalue[i] = ptr;
-				break;
+				તોડો;
 		}
 		ptr += WORD_FFI_ALIGN(arg_types[i]->size);
 	}
@@ -265,19 +265,19 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 	/* set the return type info passed back to the wrapper */
 	*rsize = cif->rtype->size;
 	*rtype = cif->rtype->type;
-	if (struct_rvalue != NULL) {
+	જો (struct_rvalue != ખાલી) {
 		closure->fun(cif, struct_rvalue, avalue, closure->user_data);
 		/* copy struct return pointer value into function return value */
-		*((void**)rvalue) = struct_rvalue;
-	} else {
+		*((શૂન્ય**)rvalue) = struct_rvalue;
+	} નહીંતર {
 		closure->fun(cif, rvalue, avalue, closure->user_data);
 	}
 }
 
 ffi_status ffi_prep_closure_loc(
 		ffi_closure* closure, ffi_cif* cif,
-		void (*fun)(ffi_cif*, void*, void**, void*),
-		void* user_data, void* codeloc)
+		શૂન્ય (*fun)(ffi_cif*, શૂન્ય*, શૂન્ય**, શૂન્ય*),
+		શૂન્ય* user_data, શૂન્ય* codeloc)
 {
 	unsigned long* tramp = (unsigned long*)&(closure->tramp[0]);
 	unsigned long cls = (unsigned long)codeloc;
@@ -288,9 +288,9 @@ ffi_status ffi_prep_closure_loc(
 	closure->fun = fun;
 	closure->user_data = user_data;
 
-	switch (cif->abi)
+	પસંદગી (cif->abi)
 	{
-	case FFI_SYSV:
+	સ્થિતિ FFI_SYSV:
 		fn = (unsigned long)ffi_closure_SYSV;
 
 		/* load r11 (temp) with fn */
@@ -313,9 +313,9 @@ ffi_status ffi_prep_closure_loc(
 		/* branch/jump to address stored in r11 (fn) */
 		tramp[6] = 0x98085800; /* bra r11 */
 
-		break;
-	default:
-		return FFI_BAD_ABI;
+		તોડો;
+	મૂળભૂત:
+		પાછા FFI_BAD_ABI;
 	}
-	return FFI_OK;
+	પાછા FFI_OK;
 }

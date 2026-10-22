@@ -25,112 +25,112 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#અન્તર્ભાવ <ffi.h>
+#અન્તર્ભાવ <ffi_common.h>
 
-#include <stdlib.h>
+#અન્તર્ભાવ <stdlib.h>
 
 #define NGREGARG 4
-#if defined(__SH4__)
+#જો defined(__SH4__)
 #define NFREGARG 8
 #endif
 
-#if defined(__HITACHI__)
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 1
-#else
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 0
+#જો defined(__HITACHI__)
+#define STRUCT_કિંમત_ADDRESS_WITH_ARG 1
+#નહીંતર
+#define STRUCT_કિંમત_ADDRESS_WITH_ARG 0
 #endif
 
 /* If the structure has essentially an unique element, return its type.  */
-static int
+સ્થિર પૂર્ણાંક
 simple_type (ffi_type *arg)
 {
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
-  else if (arg->elements[1])
-    return FFI_TYPE_STRUCT;
+  જો (arg->type != FFI_TYPE_STRUCT)
+    પાછા arg->type;
+  નહીંતર જો (arg->elements[1])
+    પાછા FFI_TYPE_STRUCT;
 
-  return simple_type (arg->elements[0]);
+  પાછા simple_type (arg->elements[0]);
 }
 
-static int
+સ્થિર પૂર્ણાંક
 return_type (ffi_type *arg)
 {
   unsigned short type;
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  જો (arg->type != FFI_TYPE_STRUCT)
+    પાછા arg->type;
 
   type = simple_type (arg->elements[0]);
-  if (! arg->elements[1])
+  જો (! arg->elements[1])
     {
-      switch (type)
+      પસંદગી (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  return FFI_TYPE_INT;
+	સ્થિતિ FFI_TYPE_SINT8:
+	સ્થિતિ FFI_TYPE_UINT8:
+	સ્થિતિ FFI_TYPE_SINT16:
+	સ્થિતિ FFI_TYPE_UINT16:
+	સ્થિતિ FFI_TYPE_SINT32:
+	સ્થિતિ FFI_TYPE_UINT32:
+	  પાછા FFI_TYPE_INT;
 
-	default:
-	  return type;
+	મૂળભૂત:
+	  પાછા type;
 	}
     }
 
   /* gcc uses r0/r1 pair for some kind of structures.  */
-  if (arg->size <= 2 * sizeof (int))
+  જો (arg->size <= 2 * કદ (પૂર્ણાંક))
     {
-      int i = 0;
+      પૂર્ણાંક i = 0;
       ffi_type *e;
 
-      while ((e = arg->elements[i++]))
+      જ્યારે ((e = arg->elements[i++]))
 	{
 	  type = simple_type (e);
-	  switch (type)
+	  પસંદગી (type)
 	    {
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_FLOAT:
-	      return FFI_TYPE_UINT64;
+	    સ્થિતિ FFI_TYPE_SINT32:
+	    સ્થિતિ FFI_TYPE_UINT32:
+	    સ્થિતિ FFI_TYPE_INT:
+	    સ્થિતિ FFI_TYPE_FLOAT:
+	      પાછા FFI_TYPE_UINT64;
 
-	    default:
-	      break;
+	    મૂળભૂત:
+	      તોડો;
 	    }
 	}
     }
 
-  return FFI_TYPE_STRUCT;
+  પાછા FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+શૂન્ય ffi_prep_args(અક્ષર *ઢગલો, extended_cif *ecif)
 {
-  register unsigned int i;
-  register int tmp;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
-  int greg, ireg;
-#if defined(__SH4__)
-  int freg = 0;
+  નોંધણી unsigned પૂર્ણાંક i;
+  નોંધણી પૂર્ણાંક tmp;
+  નોંધણી unsigned પૂર્ણાંક avn;
+  નોંધણી શૂન્ય **p_argv;
+  નોંધણી અક્ષર *argp;
+  નોંધણી ffi_type **p_arg;
+  પૂર્ણાંક greg, ireg;
+#જો defined(__SH4__)
+  પૂર્ણાંક freg = 0;
 #endif
 
   tmp = 0;
-  argp = stack;
+  argp = ઢગલો;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  જો (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
-      *(void **) argp = ecif->rvalue;
+      *(શૂન્ય **) argp = ecif->rvalue;
       argp += 4;
-      ireg = STRUCT_VALUE_ADDRESS_WITH_ARG ? 1 : 0;
+      ireg = STRUCT_કિંમત_ADDRESS_WITH_ARG ? 1 : 0;
     }
-  else
+  નહીંતર
     ireg = 0;
 
   /* Set arguments for registers.  */
@@ -138,278 +138,278 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  માટે (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      જો (z < કદ(પૂર્ણાંક))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  જો (greg++ >= NGREGARG)
+	    ચાલુ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = કદ(પૂર્ણાંક);
+	  પસંદગી ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT8:
+	      *(signed પૂર્ણાંક *) argp = (signed પૂર્ણાંક)*(SINT8 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_UINT8:
+	      *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT8 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT16:
+	      *(signed પૂર્ણાંક *) argp = (signed પૂર્ણાંક)*(SINT16 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_UINT16:
+	      *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT16 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_STRUCT:
+	      *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT32 *)(* p_argv);
+	      તોડો;
 
-	    default:
+	    મૂળભૂત:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      નહીંતર જો (z == કદ(પૂર્ણાંક))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#જો defined(__SH4__)
+	  જો ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      જો (freg++ >= NFREGARG)
+		ચાલુ;
 	    }
-	  else
+	  નહીંતર
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      જો (greg++ >= NGREGARG)
+		ચાલુ;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#જો defined(__SH4__)
+      નહીંતર જો ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
+	  જો (freg + 1 >= NFREGARG)
+	    ચાલુ;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  memcpy (argp, *p_argv, z);
 	  argp += z;
 	}
 #endif
-      else
+      નહીંતર
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
+	  પૂર્ણાંક n = (z + કદ (પૂર્ણાંક) - 1) / કદ (પૂર્ણાંક);
+#જો defined(__SH4__)
+	  જો (greg + n - 1 >= NGREGARG)
+	    ચાલુ;
+#નહીંતર
+	  જો (greg >= NGREGARG)
+	    ચાલુ;
 #endif
 	  greg += n;
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  argp += n * કદ (પૂર્ણાંક);
 	}
     }
 
   /* Set arguments on stack.  */
   greg = ireg;
-#if defined(__SH4__)
+#જો defined(__SH4__)
   freg = 0;
 #endif
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  માટે (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      જો (z < કદ(પૂર્ણાંક))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  જો (greg++ < NGREGARG)
+	    ચાલુ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = કદ(પૂર્ણાંક);
+	  પસંદગી ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT8:
+	      *(signed પૂર્ણાંક *) argp = (signed પૂર્ણાંક)*(SINT8 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_UINT8:
+	      *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT8 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT16:
+	      *(signed પૂર્ણાંક *) argp = (signed પૂર્ણાંક)*(SINT16 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_UINT16:
+	      *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT16 *)(* p_argv);
+	      તોડો;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    સ્થિતિ FFI_TYPE_STRUCT:
+	      *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT32 *)(* p_argv);
+	      તોડો;
 
-	    default:
+	    મૂળભૂત:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      નહીંતર જો (z == કદ(પૂર્ણાંક))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#જો defined(__SH4__)
+	  જો ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      જો (freg++ < NFREGARG)
+		ચાલુ;
 	    }
-	  else
+	  નહીંતર
 #endif
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      જો (greg++ < NGREGARG)
+		ચાલુ;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#જો defined(__SH4__)
+      નહીંતર જો ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  જો (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      ચાલુ;
 	    }
 	  memcpy (argp, *p_argv, z);
 	  argp += z;
 	}
 #endif
-      else
+      નહીંતર
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  પૂર્ણાંક n = (z + કદ (પૂર્ણાંક) - 1) / કદ (પૂર્ણાંક);
+	  જો (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      ચાલુ;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#જો (! defined(__SH4__))
+	  નહીંતર જો (greg < NGREGARG)
 	    {
 	      greg = NGREGARG;
-	      continue;
+	      ચાલુ;
 	    }
 #endif
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  argp += n * કદ (પૂર્ણાંક);
 	}
     }
 
-  return;
+  પાછા;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-#if defined(__SH4__)
-  int freg = 0;
+  પૂર્ણાંક i, j;
+  પૂર્ણાંક size, type;
+  પૂર્ણાંક n, m;
+  પૂર્ણાંક greg;
+#જો defined(__SH4__)
+  પૂર્ણાંક freg = 0;
 #endif
 
   cif->flags = 0;
 
   greg = ((return_type (cif->rtype) == FFI_TYPE_STRUCT) &&
-	  STRUCT_VALUE_ADDRESS_WITH_ARG) ? 1 : 0;
+	  STRUCT_કિંમત_ADDRESS_WITH_ARG) ? 1 : 0;
 
-#if defined(__SH4__)
-  for (i = j = 0; i < cif->nargs && j < 12; i++)
+#જો defined(__SH4__)
+  માટે (i = j = 0; i < cif->nargs && j < 12; i++)
     {
       type = (cif->arg_types)[i]->type;
-      switch (type)
+      પસંદગી (type)
 	{
-	case FFI_TYPE_FLOAT:
-	  if (freg >= NFREGARG)
-	    continue;
+	સ્થિતિ FFI_TYPE_FLOAT:
+	  જો (freg >= NFREGARG)
+	    ચાલુ;
 	  freg++;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  તોડો;
 
-	case FFI_TYPE_DOUBLE:
-	  if ((freg + 1) >= NFREGARG)
-	    continue;
+	સ્થિતિ FFI_TYPE_DOUBLE:
+	  જો ((freg + 1) >= NFREGARG)
+	    ચાલુ;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  તોડો;
 	      
-	default:
+	મૂળભૂત:
 	  size = (cif->arg_types)[i]->size;
-	  n = (size + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 >= NGREGARG)
-		continue;
+	  n = (size + કદ (પૂર્ણાંક) - 1) / કદ (પૂર્ણાંક);
+	  જો (greg + n - 1 >= NGREGARG)
+		ચાલુ;
 	  greg += n;
-	  for (m = 0; m < n; m++)
+	  માટે (m = 0; m < n; m++)
 	    cif->flags += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  તોડો;
 	}
     }
-#else
-  for (i = j = 0; i < cif->nargs && j < 4; i++)
+#નહીંતર
+  માટે (i = j = 0; i < cif->nargs && j < 4; i++)
     {
       size = (cif->arg_types)[i]->size;
-      n = (size + sizeof (int) - 1) / sizeof (int);
-      if (greg >= NGREGARG)
-	continue;
-      else if (greg + n - 1 >= NGREGARG)
+      n = (size + કદ (પૂર્ણાંક) - 1) / કદ (પૂર્ણાંક);
+      જો (greg >= NGREGARG)
+	ચાલુ;
+      નહીંતર જો (greg + n - 1 >= NGREGARG)
 	n = NGREGARG - greg;
       greg += n;
-      for (m = 0; m < n; m++)
+      માટે (m = 0; m < n; m++)
         cif->flags += FFI_TYPE_INT << (2 * j++);
     }
 #endif
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  પસંદગી (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
+    સ્થિતિ FFI_TYPE_STRUCT:
       cif->flags += (unsigned) (return_type (cif->rtype)) << 24;
-      break;
+      તોડો;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    સ્થિતિ FFI_TYPE_VOID:
+    સ્થિતિ FFI_TYPE_FLOAT:
+    સ્થિતિ FFI_TYPE_DOUBLE:
+    સ્થિતિ FFI_TYPE_SINT64:
+    સ્થિતિ FFI_TYPE_UINT64:
       cif->flags += (unsigned) cif->rtype->type << 24;
-      break;
+      તોડો;
 
-    default:
+    મૂળભૂત:
       cif->flags += FFI_TYPE_INT << 24;
-      break;
+      તોડો;
     }
 
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+બાહ્ય શૂન્ય ffi_call_SYSV(શૂન્ય (*)(અક્ષર *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, શૂન્ય (*fn)(શૂન્ય));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+શૂન્ય ffi_call(ffi_cif *cif, શૂન્ય (*fn)(શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue)
 {
   extended_cif ecif;
   UINT64 trvalue;
@@ -420,53 +420,53 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  જો (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  નહીંતર જો ((rvalue == ખાલી) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  નહીંતર
     ecif.rvalue = rvalue;
 
-  switch (cif->abi) 
+  પસંદગી (cif->abi) 
     {
-    case FFI_SYSV:
+    સ્થિતિ FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, ecif.rvalue,
 		    fn);
-      break;
-    default:
+      તોડો;
+    મૂળભૂત:
       FFI_ASSERT(0);
-      break;
+      તોડો;
     }
 
-  if (rvalue
+  જો (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     memcpy (rvalue, &trvalue, cif->rtype->size);
 }
 
-extern void ffi_closure_SYSV (void);
-#if defined(__SH4__)
-extern void __ic_invalidate (void *line);
+બાહ્ય શૂન્ય ffi_closure_SYSV (શૂન્ય);
+#જો defined(__SH4__)
+બાહ્ય શૂન્ય __ic_invalidate (શૂન્ય *લીટી);
 #endif
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      શૂન્ય (*fun)(ffi_cif*, શૂન્ય*, શૂન્ય**, શૂન્ય*),
+		      શૂન્ય *user_data,
+		      શૂન્ય *codeloc)
 {
-  unsigned int *tramp;
-  unsigned int insn;
+  unsigned પૂર્ણાંક *tramp;
+  unsigned પૂર્ણાંક insn;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  જો (cif->abi != FFI_SYSV)
+    પાછા FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned પૂર્ણાંક *) &closure->tramp[0];
   /* Set T bit if the function returns a struct pointed with R2.  */
   insn = (return_type (cif->rtype) == FFI_TYPE_STRUCT
 	  ? 0x0018 /* sett */
@@ -475,23 +475,23 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0xd301d102;
   tramp[1] = 0x0000412b | (insn << 16);
-#else
+#નહીંતર
   tramp[0] = 0xd102d301;
   tramp[1] = 0x412b0000 | insn;
 #endif
-  *(void **) &tramp[2] = (void *)codeloc;          /* ctx */
-  *(void **) &tramp[3] = (void *)ffi_closure_SYSV; /* funaddr */
+  *(શૂન્ય **) &tramp[2] = (શૂન્ય *)codeloc;          /* ctx */
+  *(શૂન્ય **) &tramp[3] = (શૂન્ય *)ffi_closure_SYSV; /* funaddr */
 
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-#if defined(__SH4__)
+#જો defined(__SH4__)
   /* Flush the icache.  */
   __ic_invalidate(codeloc);
 #endif
 
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -505,36 +505,36 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
 #define OFS_INT8	0
 #define OFS_INT16	0
-#else
+#નહીંતર
 #define OFS_INT8	3
 #define OFS_INT16	2
 #endif
 
-int
-ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue, 
+પૂર્ણાંક
+ffi_closure_helper_SYSV (ffi_closure *closure, શૂન્ય *rvalue, 
 			 unsigned long *pgr, unsigned long *pfr, 
 			 unsigned long *pst)
 {
-  void **avalue;
+  શૂન્ય **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int ireg, greg = 0;
-#if defined(__SH4__)
-  int freg = 0;
+  પૂર્ણાંક i, avn;
+  પૂર્ણાંક ireg, greg = 0;
+#જો defined(__SH4__)
+  પૂર્ણાંક freg = 0;
 #endif
   ffi_cif *cif; 
 
   cif = closure->cif;
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * કદ(શૂન્ય *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_VALUE_ADDRESS_WITH_ARG)
+  જો (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_કિંમત_ADDRESS_WITH_ARG)
     {
-      rvalue = (void *) *pgr++;
+      rvalue = (શૂન્ય *) *pgr++;
       ireg = 1;
     }
-  else
+  નહીંતર
     ireg = 0;
 
   cif = closure->cif;
@@ -542,63 +542,63 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  માટે (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      જો (z < કદ(પૂર્ણાંક))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  જો (greg++ >= NGREGARG)
+	    ચાલુ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = કદ(પૂર્ણાંક);
+	  પસંદગી ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pgr) + OFS_INT8);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT8:
+	    સ્થિતિ FFI_TYPE_UINT8:
+	      avalue[i] = (((અક્ષર *)pgr) + OFS_INT8);
+	      તોડો;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pgr) + OFS_INT16);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT16:
+	    સ્થિતિ FFI_TYPE_UINT16:
+	      avalue[i] = (((અક્ષર *)pgr) + OFS_INT16);
+	      તોડો;
   
-	    case FFI_TYPE_STRUCT:
+	    સ્થિતિ FFI_TYPE_STRUCT:
 	      avalue[i] = pgr;
-	      break;
+	      તોડો;
 
-	    default:
+	    મૂળભૂત:
 	      FFI_ASSERT(0);
 	    }
 	  pgr++;
 	}
-      else if (z == sizeof(int))
+      નહીંતર જો (z == કદ(પૂર્ણાંક))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#જો defined(__SH4__)
+	  જો ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      જો (freg++ >= NFREGARG)
+		ચાલુ;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  નહીંતર
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      જો (greg++ >= NGREGARG)
+		ચાલુ;
 	      avalue[i] = pgr;
 	      pgr++;
 	    }
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#જો defined(__SH4__)
+      નહીંતર જો ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
-	  if (freg & 1)
+	  જો (freg + 1 >= NFREGARG)
+	    ચાલુ;
+	  જો (freg & 1)
 	    pfr++;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
@@ -606,15 +606,15 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
 	  pfr += 2;
 	}
 #endif
-      else
+      નહીંતર
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
+	  પૂર્ણાંક n = (z + કદ (પૂર્ણાંક) - 1) / કદ (પૂર્ણાંક);
+#જો defined(__SH4__)
+	  જો (greg + n - 1 >= NGREGARG)
+	    ચાલુ;
+#નહીંતર
+	  જો (greg >= NGREGARG)
+	    ચાલુ;
 #endif
 	  greg += n;
 	  avalue[i] = pgr;
@@ -623,86 +623,86 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
     }
 
   greg = ireg;
-#if defined(__SH4__)
+#જો defined(__SH4__)
   freg = 0;
 #endif
 
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  માટે (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
-      if (z < sizeof(int))
+      જો (z < કદ(પૂર્ણાંક))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  જો (greg++ < NGREGARG)
+	    ચાલુ;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = કદ(પૂર્ણાંક);
+	  પસંદગી ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pst) + OFS_INT8);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT8:
+	    સ્થિતિ FFI_TYPE_UINT8:
+	      avalue[i] = (((અક્ષર *)pst) + OFS_INT8);
+	      તોડો;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pst) + OFS_INT16);
-	      break;
+	    સ્થિતિ FFI_TYPE_SINT16:
+	    સ્થિતિ FFI_TYPE_UINT16:
+	      avalue[i] = (((અક્ષર *)pst) + OFS_INT16);
+	      તોડો;
   
-	    case FFI_TYPE_STRUCT:
+	    સ્થિતિ FFI_TYPE_STRUCT:
 	      avalue[i] = pst;
-	      break;
+	      તોડો;
 
-	    default:
+	    મૂળભૂત:
 	      FFI_ASSERT(0);
 	    }
 	  pst++;
 	}
-      else if (z == sizeof(int))
+      નહીંતર જો (z == કદ(પૂર્ણાંક))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#જો defined(__SH4__)
+	  જો ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      જો (freg++ < NFREGARG)
+		ચાલુ;
 	    }
-	  else
+	  નહીંતર
 #endif
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      જો (greg++ < NGREGARG)
+		ચાલુ;
 	    }
 	  avalue[i] = pst;
 	  pst++;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#જો defined(__SH4__)
+      નહીંતર જો ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  જો (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      ચાલુ;
 	    }
 	  avalue[i] = pst;
 	  pst += 2;
 	}
 #endif
-      else
+      નહીંતર
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  પૂર્ણાંક n = (z + કદ (પૂર્ણાંક) - 1) / કદ (પૂર્ણાંક);
+	  જો (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      ચાલુ;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#જો (! defined(__SH4__))
+	  નહીંતર જો (greg < NGREGARG)
 	    {
 	      greg += n;
 	      pst += greg - NGREGARG;
-	      continue;
+	      ચાલુ;
 	    }
 #endif
 	  avalue[i] = pst;
@@ -713,5 +713,5 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
   (closure->fun) (cif, rvalue, avalue, closure->user_data);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  પાછા return_type (cif->rtype);
 }

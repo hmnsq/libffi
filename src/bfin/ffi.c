@@ -24,11 +24,11 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
-#include <ffi.h>
-#include <ffi_common.h>
+#અન્તર્ભાવ <ffi.h>
+#અન્તર્ભાવ <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#અન્તર્ભાવ <stdlib.h>
+#અન્તર્ભાવ <stdio.h>
 
 /* Maximum number of GPRs available for argument passing.  */
 #define MAX_GPRARGS 3
@@ -45,14 +45,14 @@
 /*====================================================================*/
 /*                          PROTOTYPE          *
  /*====================================================================*/
-void ffi_prep_args(unsigned char *, extended_cif *);
+શૂન્ય ffi_prep_args(unsigned અક્ષર *, extended_cif *);
 
 /*====================================================================*/
 /*                          Externals                                 */
 /*                          (Assembly)                                */
 /*====================================================================*/
 
-extern void ffi_call_SYSV(unsigned, extended_cif *, void(*)(unsigned char *, extended_cif *), unsigned, void *, void(*fn)(void));
+બાહ્ય શૂન્ય ffi_call_SYSV(unsigned, extended_cif *, શૂન્ય(*)(unsigned અક્ષર *, extended_cif *), unsigned, શૂન્ય *, શૂન્ય(*fn)(શૂન્ય));
 
 /*====================================================================*/
 /*                          Implementation                            */
@@ -69,45 +69,45 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
    /* --------------------------------------*
     *   Return handling                *
     * --------------------------------------*/
-   switch (cif->rtype->type) {
-      case FFI_TYPE_VOID:
+   પસંદગી (cif->rtype->type) {
+      સ્થિતિ FFI_TYPE_VOID:
          cif->flags = FFIBFIN_RET_VOID;
-         break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+         તોડો;
+      સ્થિતિ FFI_TYPE_UINT16:
+      સ્થિતિ FFI_TYPE_SINT16:
          cif->flags = FFIBFIN_RET_HALFWORD;
-         break;
-      case FFI_TYPE_UINT8:
+         તોડો;
+      સ્થિતિ FFI_TYPE_UINT8:
          cif->flags = FFIBFIN_RET_BYTE;
-         break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_SINT8:
+         તોડો;
+      સ્થિતિ FFI_TYPE_INT:
+      સ્થિતિ FFI_TYPE_UINT32:
+      સ્થિતિ FFI_TYPE_SINT32:
+      સ્થિતિ FFI_TYPE_FLOAT:
+      સ્થિતિ FFI_TYPE_POINTER:
+      સ્થિતિ FFI_TYPE_SINT8:
          cif->flags = FFIBFIN_RET_INT32;
-         break;
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_DOUBLE:
+         તોડો;
+      સ્થિતિ FFI_TYPE_SINT64:
+      સ્થિતિ FFI_TYPE_UINT64:
+      સ્થિતિ FFI_TYPE_DOUBLE:
           cif->flags = FFIBFIN_RET_INT64;
-          break;
-      case FFI_TYPE_STRUCT:
-         if (cif->rtype->size <= 4){
+          તોડો;
+      સ્થિતિ FFI_TYPE_STRUCT:
+         જો (cif->rtype->size <= 4){
         	 cif->flags = FFIBFIN_RET_INT32;
-         }else if (cif->rtype->size == 8){
+         }નહીંતર જો (cif->rtype->size == 8){
         	 cif->flags = FFIBFIN_RET_INT64;
-         }else{
+         }નહીંતર{
         	 //it will return via a hidden pointer in P0
         	 cif->flags = FFIBFIN_RET_VOID;
          }
-         break;
-      default:
+         તોડો;
+      મૂળભૂત:
          FFI_ASSERT(0);
-         break;
+         તોડો;
    }
-   return FFI_OK;
+   પાછા FFI_OK;
 }
 
 /*
@@ -117,21 +117,21 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
  * rvalue = the return value
  * avalue = the arguments
  */
-void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
+શૂન્ય ffi_call(ffi_cif *cif, શૂન્ય(*fn)(શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue)
 {
-   int ret_type = cif->flags;
+   પૂર્ણાંક ret_type = cif->flags;
    extended_cif ecif;
    ecif.cif = cif;
    ecif.avalue = avalue;
    ecif.rvalue = rvalue;
 
-   switch (cif->abi) {
-      case FFI_SYSV:
+   પસંદગી (cif->abi) {
+      સ્થિતિ FFI_SYSV:
          ffi_call_SYSV(cif->bytes, &ecif, ffi_prep_args, ret_type, ecif.rvalue, fn);
-         break;
-      default:
+         તોડો;
+      મૂળભૂત:
          FFI_ASSERT(0);
-         break;
+         તોડો;
    }
 }
 
@@ -141,50 +141,50 @@ void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 *  to call the function (ffi_prep_args is called by the assembly routine in file
 *  sysv.S, which also calls the actual function)
 */
-void ffi_prep_args(unsigned char *stack, extended_cif *ecif)
+શૂન્ય ffi_prep_args(unsigned અક્ષર *ઢગલો, extended_cif *ecif)
 {
-   register unsigned int i = 0;
-   void **p_argv;
-   unsigned char *argp;
+   નોંધણી unsigned પૂર્ણાંક i = 0;
+   શૂન્ય **p_argv;
+   unsigned અક્ષર *argp;
    ffi_type **p_arg;
-   argp = stack;
+   argp = ઢગલો;
    p_argv = ecif->avalue;
-   for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+   માટે (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
         (i != 0);
         i--, p_arg++) {
       size_t z;
       z = (*p_arg)->size;
-      if (z < sizeof(int)) {
-         z = sizeof(int);
-         switch ((*p_arg)->type) {
-            case FFI_TYPE_SINT8: {
-                  signed char v = *(SINT8 *)(* p_argv);
-                  signed int t = v;
-                  *(signed int *) argp = t;
+      જો (z < કદ(પૂર્ણાંક)) {
+         z = કદ(પૂર્ણાંક);
+         પસંદગી ((*p_arg)->type) {
+            સ્થિતિ FFI_TYPE_SINT8: {
+                  signed અક્ષર v = *(SINT8 *)(* p_argv);
+                  signed પૂર્ણાંક t = v;
+                  *(signed પૂર્ણાંક *) argp = t;
                }
-               break;
-            case FFI_TYPE_UINT8: {
-                  unsigned char v = *(UINT8 *)(* p_argv);
-                  unsigned int t = v;
-                  *(unsigned int *) argp = t;
+               તોડો;
+            સ્થિતિ FFI_TYPE_UINT8: {
+                  unsigned અક્ષર v = *(UINT8 *)(* p_argv);
+                  unsigned પૂર્ણાંક t = v;
+                  *(unsigned પૂર્ણાંક *) argp = t;
                }
-               break;
-            case FFI_TYPE_SINT16:
-               *(signed int *) argp = (signed int) * (SINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_UINT16:
-               *(unsigned int *) argp = (unsigned int) * (UINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_STRUCT:
+               તોડો;
+            સ્થિતિ FFI_TYPE_SINT16:
+               *(signed પૂર્ણાંક *) argp = (signed પૂર્ણાંક) * (SINT16 *)(* p_argv);
+               તોડો;
+            સ્થિતિ FFI_TYPE_UINT16:
+               *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક) * (UINT16 *)(* p_argv);
+               તોડો;
+            સ્થિતિ FFI_TYPE_STRUCT:
                memcpy(argp, *p_argv, (*p_arg)->size);
-               break;
-            default:
+               તોડો;
+            મૂળભૂત:
                FFI_ASSERT(0);
-               break;
+               તોડો;
          }
-      } else if (z == sizeof(int)) {
-         *(unsigned int *) argp = (unsigned int) * (UINT32 *)(* p_argv);
-      } else {
+      } નહીંતર જો (z == કદ(પૂર્ણાંક)) {
+         *(unsigned પૂર્ણાંક *) argp = (unsigned પૂર્ણાંક) * (UINT32 *)(* p_argv);
+      } નહીંતર {
          memcpy(argp, *p_argv, z);
       }
       p_argv++;

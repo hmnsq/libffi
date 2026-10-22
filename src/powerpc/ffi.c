@@ -28,21 +28,21 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
-#include "internal.h"
-#include <tramp.h>
+#અન્તર્ભાવ "ffi.h"
+#અન્તર્ભાવ "ffi_common.h"
+#અન્તર્ભાવ "ffi_powerpc.h"
+#અન્તર્ભાવ "internal.h"
+#અન્તર્ભાવ <tramp.h>
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#જો HAVE_LONG_DOUBLE_VARIANT
 /* Adjust ffi_type_longdouble.  */
-void FFI_HIDDEN
+શૂન્ય FFI_HIDDEN
 ffi_prep_types (ffi_abi abi)
 {
-# if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# જો FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 #  ifdef POWERPC64
   ffi_prep_types_linux64 (abi);
-#  else
+#  નહીંતર
   ffi_prep_types_sysv (abi);
 #  endif
 # endif
@@ -54,30 +54,30 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
 #ifdef POWERPC64
-  return ffi_prep_cif_linux64 (cif);
-#else
-  return ffi_prep_cif_sysv (cif);
+  પાછા ffi_prep_cif_linux64 (cif);
+#નહીંતર
+  પાછા ffi_prep_cif_sysv (cif);
 #endif
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep_var (ffi_cif *cif,
-			  unsigned int nfixedargs MAYBE_UNUSED,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  unsigned પૂર્ણાંક nfixedargs MAYBE_UNUSED,
+			  unsigned પૂર્ણાંક ntotalargs MAYBE_UNUSED)
 {
 #ifdef POWERPC64
-  return ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
-#else
-  return ffi_prep_cif_sysv (cif);
+  પાછા ffi_prep_cif_linux64_var (cif, nfixedargs, ntotalargs);
+#નહીંતર
+  પાછા ffi_prep_cif_sysv (cif);
 #endif
 }
 
-static void
+સ્થિર શૂન્ય
 ffi_call_int (ffi_cif *cif,
-	      void (*fn) (void),
-	      void *rvalue,
-	      void **avalue,
-	      void *closure)
+	      શૂન્ય (*fn) (શૂન્ય),
+	      શૂન્ય *rvalue,
+	      શૂન્ય **avalue,
+	      શૂન્ય *closure)
 {
   /* The final SYSV ABI says that structures smaller or equal 8 bytes
      are returned in r3/r4.  A draft ABI used by linux instead returns
@@ -96,73 +96,73 @@ ffi_call_int (ffi_cif *cif,
   ecif.avalue = avalue;
 
   ecif.rvalue = rvalue;
-  if ((cif->flags & FLAG_RETURNS_SMST) != 0)
+  જો ((cif->flags & FLAG_RETURNS_SMST) != 0)
     ecif.rvalue = smst_buffer;
   /* Ensure that we have a valid struct return value.
      FIXME: Isn't this just papering over a user problem?  */
-  else if (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
+  નહીંતર જો (!rvalue && cif->rtype->type == FFI_TYPE_STRUCT)
     ecif.rvalue = alloca (cif->rtype->size);
 
 #ifdef POWERPC64
   ffi_call_LINUX64 (&ecif, fn, ecif.rvalue, cif->flags, closure,
 		    -(long) cif->bytes);
-#else
+#નહીંતર
   ffi_call_SYSV (&ecif, fn, ecif.rvalue, cif->flags, closure, -cif->bytes);
 #endif
 
   /* Check for a bounce-buffered return value */
-  if (rvalue && ecif.rvalue == smst_buffer)
+  જો (rvalue && ecif.rvalue == smst_buffer)
     {
-      unsigned int rsize = cif->rtype->size;
+      unsigned પૂર્ણાંક rsize = cif->rtype->size;
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
       /* Integer-typed _Complex: the .Lsmall_struct return path stored
 	 r3 at buffer offset 0 and r4 at offset 8.  Extract one inner-
 	 sized half from each slot — right-justified on BE, low-address
 	 on LE — and lay them out as the natural packed complex value
 	 the caller expects (real@0, imag@hsize).  */
-      if (cif->rtype->type == FFI_TYPE_COMPLEX
+      જો (cif->rtype->type == FFI_TYPE_COMPLEX
 	  && (cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	{
 	  size_t hsize = cif->rtype->elements[0]->size;
 #ifndef __LITTLE_ENDIAN__
 	  size_t off = 8 - hsize;
-#else
+#નહીંતર
 	  size_t off = 0;
 #endif
-	  memcpy ((char *) rvalue,         (char *) smst_buffer + off, hsize);
-	  memcpy ((char *) rvalue + hsize, (char *) smst_buffer + 8 + off, hsize);
+	  memcpy ((અક્ષર *) rvalue,         (અક્ષર *) smst_buffer + off, hsize);
+	  memcpy ((અક્ષર *) rvalue + hsize, (અક્ષર *) smst_buffer + 8 + off, hsize);
 	}
-      else
+      નહીંતર
 #endif
 #ifndef __LITTLE_ENDIAN__
       /* The SYSV ABI returns a structure of up to 4 bytes in size
 	 left-padded in r3.  */
 # ifndef POWERPC64
-      if (rsize <= 4)
-	memcpy (rvalue, (char *) smst_buffer + 4 - rsize, rsize);
-      else
+      જો (rsize <= 4)
+	memcpy (rvalue, (અક્ષર *) smst_buffer + 4 - rsize, rsize);
+      નહીંતર
 # endif
 	/* The SYSV ABI returns a structure of up to 8 bytes in size
 	   left-padded in r3/r4, and the ELFv2 ABI similarly returns a
 	   structure of up to 8 bytes in size left-padded in r3. But
 	   note that a structure of a single float is not paddded.  */
-	if (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
-	  memcpy (rvalue, (char *) smst_buffer + 8 - rsize, rsize);
-	else
+	જો (rsize <= 8 && (cif->flags & FLAG_RETURNS_FP) == 0)
+	  memcpy (rvalue, (અક્ષર *) smst_buffer + 8 - rsize, rsize);
+	નહીંતર
 #endif
 	  memcpy (rvalue, smst_buffer, rsize);
     }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+શૂન્ય
+ffi_call (ffi_cif *cif, શૂન્ય (*fn) (શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, ખાલી);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	     void *closure)
+શૂન્ય
+ffi_call_go (ffi_cif *cif, શૂન્ય (*fn) (શૂન્ય), શૂન્ય *rvalue, શૂન્ય **avalue,
+	     શૂન્ય *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
@@ -170,45 +170,45 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 		      ffi_cif *cif,
-		      void (*fun) (ffi_cif *, void *, void **, void *),
-		      void *user_data,
-		      void *codeloc)
+		      શૂન્ય (*fun) (ffi_cif *, શૂન્ય *, શૂન્ય **, શૂન્ય *),
+		      શૂન્ય *user_data,
+		      શૂન્ય *codeloc)
 {
 #ifdef POWERPC64
-  return ffi_prep_closure_loc_linux64 (closure, cif, fun, user_data, codeloc);
-#else
-  return ffi_prep_closure_loc_sysv (closure, cif, fun, user_data, codeloc);
+  પાછા ffi_prep_closure_loc_linux64 (closure, cif, fun, user_data, codeloc);
+#નહીંતર
+  પાછા ffi_prep_closure_loc_sysv (closure, cif, fun, user_data, codeloc);
 #endif
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure,
 		     ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     શૂન્ય (*fun) (ffi_cif *, શૂન્ય *, શૂન્ય **, શૂન્ય *))
 {
 #ifdef POWERPC64
   closure->tramp = ffi_go_closure_linux64;
-#else
+#નહીંતર
   closure->tramp = ffi_go_closure_sysv;
 #endif
   closure->cif = cif;
   closure->fun = fun;
-  return FFI_OK;
+  પાછા FFI_OK;
 }
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-void *
+શૂન્ય *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  બાહ્ય શૂન્ય *trampoline_code_table;
   *tramp_size = PPC_TRAMP_SIZE;
   *map_size = PPC_TRAMP_MAP_SIZE;
-#if defined (_CALL_AIX) || _CALL_ELF == 1
+#જો defined (_CALL_AIX) || _CALL_ELF == 1
   /* The caller wants the entry point address of the trampoline code,
      not the address of the function descriptor.  */
-  return *(void **)trampoline_code_table;
-#else
-  return &trampoline_code_table;
+  પાછા *(શૂન્ય **)trampoline_code_table;
+#નહીંતર
+  પાછા &trampoline_code_table;
 #endif
 }
 #endif

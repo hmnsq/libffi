@@ -73,7 +73,7 @@ C(ffi_call_win64):
 	movq	24(%rsp), %r9
 	movsd	24(%rsp), %xmm3
 
-	call	*16(%rbp)
+	બોલાવો	*16(%rbp)
 
 	movl	24(%rbp), %ecx
 	movq	32(%rbp), %r8
@@ -109,7 +109,7 @@ E(0b, FFI_TYPE_DOUBLE)
 	epilogue
 // FFI_TYPE_LONGDOUBLE may be FFI_TYPE_DOUBLE but we need a different value here.
 E(0b, FFI_TYPE_DOUBLE + 1)
-	call	PLT(C(abort))
+	બોલાવો	PLT(C(abort))
 E(0b, FFI_TYPE_UINT8)
 	movzbl	%al, %eax
 	movq	%rax, (%r8)
@@ -144,7 +144,7 @@ E(0b, FFI_TYPE_POINTER)
 	movq	%rax, (%r8)
 	epilogue
 E(0b, FFI_TYPE_COMPLEX)
-	call	PLT(C(abort))
+	બોલાવો	PLT(C(abort))
 E(0b, FFI_TYPE_UINT128)
 	movdqu	%xmm0, (%r8)
 	epilogue
@@ -155,7 +155,7 @@ E(0b, FFI_TYPE_SINT128)
    FFI_TYPE_SMALL_STRUCT_* codes are FFI_TYPE_LAST-relative, so this slot must
    exist to keep the table contiguous and the small-struct entries aligned.  */
 E(0b, FFI_TYPE_VECTOR)
-	call	PLT(C(abort))
+	બોલાવો	PLT(C(abort))
 E(0b, FFI_TYPE_SMALL_STRUCT_1B)
 	movb	%al, (%r8)
 	epilogue
@@ -167,7 +167,7 @@ E(0b, FFI_TYPE_SMALL_STRUCT_4B)
 	epilogue
 
 	.align	8
-99:	call	PLT(C(abort))
+99:	બોલાવો	PLT(C(abort))
 
 	epilogue
 
@@ -232,7 +232,7 @@ C(ffi_closure_win64):
 	movsd	%xmm3, ffi_clo_OFF_X+24(%rsp)
 
 	leaq	ffi_clo_OFF_R(%rsp), %r9
-	call	PLT(C(ffi_closure_win64_inner))
+	બોલાવો	PLT(C(ffi_closure_win64_inner))
 
 	/* Load the result into both possible result registers.  */
 	movq    ffi_clo_OFF_R(%rsp), %rax

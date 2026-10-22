@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS અથવા IMPLIED, INCLUDING BUT નહીં LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE અને
+   NONINFRINGEMENT.  માં NO EVENT SHALL THE AUTHORS અથવા COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES અથવા OTHER LIABILITY,
+   WHETHER માં AN ACTION OF CONTRACT, TORT અથવા OTHERWISE, ARISING FROM,
+   OUT OF અથવા માં CONNECTION WITH THE SOFTWARE અથવા THE USE અથવા OTHER
+   DEALINGS માં THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -65,7 +65,7 @@ ffi_call_osf:
 
 	stq	$18, 16($17)		# save flags into frame
 	stq	$19, 24($17)		# save rvalue into frame
-	mov	$20, $27		# fn into place for call
+	mov	$20, $27		# fn into place for બોલાવો
 	mov	$21, $1			# closure into static chain
 
 	# Load up all of the (potential) argument registers.
