@@ -28,35 +28,35 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include "ffi.h"
-#include <tramp.h>
-#include <stdlib.h>
+#अन्तर्भाव "ffi.h"
+#अन्तर्भाव <tramp.h>
+#अन्तर्भाव <stdlib.h>
 
 #ifdef POWERPC64
-#include "ffi_common.h"
-#include "ffi_powerpc.h"
+#अन्तर्भाव "ffi_common.h"
+#अन्तर्भाव "ffi_powerpc.h"
 
 
 /* About the LINUX64 ABI.  */
-enum {
-  NUM_GPR_ARG_REGISTERS64 = 8,
-  NUM_FPR_ARG_REGISTERS64 = 13,
-  NUM_VEC_ARG_REGISTERS64 = 12,
+गणना {
+  अङ्कः_GPR_ARG_REGISTERS64 = 8,
+  अङ्कः_FPR_ARG_REGISTERS64 = 13,
+  अङ्कः_VEC_ARG_REGISTERS64 = 12,
 };
-enum { ASM_NEEDS_REGISTERS64 = 4 };
+गणना { ASM_NEEDS_REGISTERS64 = 4 };
 
 
-#if HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#सचे HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 /* Adjust size of ffi_type_longdouble.  */
-void FFI_HIDDEN
+शून्य FFI_HIDDEN
 ffi_prep_types_linux64 (ffi_abi abi)
 {
-  if ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
+  सचे ((abi & (FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128)) == FFI_LINUX)
     {
       ffi_type_longdouble.size = 8;
       ffi_type_longdouble.alignment = 8;
     }
-  else
+  अञ्ञथा
     {
       ffi_type_longdouble.size = 16;
       ffi_type_longdouble.alignment = 16;
@@ -76,49 +76,49 @@ ffi_prep_types_linux64 (ffi_abi abi)
 #endif
 
 
-static unsigned int
+स्थिर unsigned पूर्णाङ्क
 discover_homogeneous_aggregate (ffi_abi abi,
-                                const ffi_type *t,
-                                unsigned int *elnum)
+                                ध्रुव ffi_type *t,
+                                unsigned पूर्णाङ्क *elnum)
 {
-  switch (t->type)
+  विकल्प (t->type)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    पक्ष FFI_TYPE_LONGDOUBLE:
       /* 64-bit long doubles are equivalent to doubles. */
-      if ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
+      सचे ((abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
         {
           *elnum = 1;
-          return FFI_TYPE_DOUBLE;
+          पटिनिवत्त FFI_TYPE_DOUBLE;
         }
       /* IBM extended precision values use unaligned pairs
          of FPRs, but according to the ABI must be considered
          distinct from doubles. They are also limited to a
          maximum of four members in a homogeneous aggregate. */
-      else if ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
+      अञ्ञथा सचे ((abi & FFI_LINUX_LONG_DOUBLE_IEEE128) == 0)
         {
           *elnum = 2;
-          return FFI_TYPE_LONGDOUBLE;
+          पटिनिवत्त FFI_TYPE_LONGDOUBLE;
         }
       /* Fall through. */
 #endif
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
+    पक्ष FFI_TYPE_FLOAT:
+    पक्ष FFI_TYPE_DOUBLE:
       *elnum = 1;
-      return (int) t->type;
+      पटिनिवत्त (पूर्णाङ्क) t->type;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    पक्ष FFI_TYPE_COMPLEX:
       /* Count complex of an FP base as two elements of that base, so a
 	 struct containing complex members is recognised as an HFA.  This
 	 only affects FFI_TYPE_COMPLEX *inside* structs; the top-level
 	 complex arg path has its own case in the cif/args/closure loops
 	 and never reaches the FFI_TYPE_STRUCT branches.  */
       {
-	unsigned int inner_elnum = 0;
-	unsigned int inner
+	unsigned पूर्णाङ्क inner_elnum = 0;
+	unsigned पूर्णाङ्क inner
 	  = discover_homogeneous_aggregate (abi, t->elements[0], &inner_elnum);
-	if (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
+	सचे (inner == FFI_TYPE_FLOAT || inner == FFI_TYPE_DOUBLE
 	    || inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* A _Complex of an FP base counts as two of that base: an
@@ -126,159 +126,159 @@ discover_homogeneous_aggregate (ffi_abi abi,
 	       itself two FPRs (inner_elnum == 2), so a _Complex long double
 	       contributes four FPRs.  */
 	    *elnum = 2 * inner_elnum;
-	    return inner;
+	    पटिनिवत्त inner;
 	  }
-	return 0;
+	पटिनिवत्त 0;
       }
 #endif
 
-    case FFI_TYPE_STRUCT:;
+    पक्ष FFI_TYPE_STRUCT:;
       {
-	unsigned int base_elt = 0, total_elnum = 0;
+	unsigned पूर्णाङ्क base_elt = 0, total_elnum = 0;
 	ffi_type **el = t->elements;
-	while (*el)
+	याव (*el)
 	  {
-	    unsigned int el_elt, el_elnum = 0;
+	    unsigned पूर्णाङ्क el_elt, el_elnum = 0;
 	    el_elt = discover_homogeneous_aggregate (abi, *el, &el_elnum);
-	    if (el_elt == 0
+	    सचे (el_elt == 0
 		|| (base_elt && base_elt != el_elt))
-	      return 0;
+	      पटिनिवत्त 0;
 	    base_elt = el_elt;
 	    total_elnum += el_elnum;
-#if _CALL_ELF == 2
-	    if (total_elnum > 8)
-	      return 0;
-#else
-	    if (total_elnum > 1)
-	      return 0;
+#सचे _CALL_ELF == 2
+	    सचे (total_elnum > 8)
+	      पटिनिवत्त 0;
+#अञ्ञथा
+	    सचे (total_elnum > 1)
+	      पटिनिवत्त 0;
 #endif
 	    el++;
 	  }
 	*elnum = total_elnum;
-	return base_elt;
+	पटिनिवत्त base_elt;
       }
 
-    default:
-      return 0;
+    स्वभाव:
+      पटिनिवत्त 0;
     }
 }
 
 
 /* Perform machine dependent cif processing */
-static ffi_status
+स्थिर ffi_status
 ffi_prep_cif_linux64_core (ffi_cif *cif)
 {
   ffi_type **ptr;
   unsigned bytes;
-  unsigned i, fparg_count = 0, intarg_count = 0, vecarg_count = 0;
+  unsigned i, fparg_गणनम् = 0, intarg_गणनम् = 0, vecarg_गणनम् = 0;
   unsigned flags = cif->flags;
   unsigned elt, elnum, rtype;
 
-#if FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
+#सचे FFI_TYPE_LONGDOUBLE == FFI_TYPE_DOUBLE
   /* If compiled without long double support... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
+  सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0 ||
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#elif !defined(__VEC__)
+    पटिनिवत्त FFI_BAD_ABI;
+#नोचेद्यदि !defined(__VEC__)
   /* If compiled without vector register support (used by assembly)... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
-#else
+  सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+    पटिनिवत्त FFI_BAD_ABI;
+#अञ्ञथा
   /* If the IEEE128 flag is set, but long double is only 64 bits wide... */
-  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
+  सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0 &&
       (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-    return FFI_BAD_ABI;
+    पटिनिवत्त FFI_BAD_ABI;
 #endif
 
   /* The machine-independent calculation of cif->bytes doesn't work
      for us.  Redo the calculation.  */
-#if _CALL_ELF == 2
+#सचे _CALL_ELF == 2
   /* Space for backchain, CR, LR, TOC and the asm's temp regs.  */
-  bytes = (4 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  bytes = (4 + ASM_NEEDS_REGISTERS64) * परिमाण (long);
 
   /* Space for the general registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS64 * sizeof (long);
-#else
+  bytes += अङ्कः_GPR_ARG_REGISTERS64 * परिमाण (long);
+#अञ्ञथा
   /* Space for backchain, CR, LR, cc/ld doubleword, TOC and the asm's temp
      regs.  */
-  bytes = (6 + ASM_NEEDS_REGISTERS64) * sizeof (long);
+  bytes = (6 + ASM_NEEDS_REGISTERS64) * परिमाण (long);
 
   /* Space for the mandatory parm save area and general registers.  */
-  bytes += 2 * NUM_GPR_ARG_REGISTERS64 * sizeof (long);
+  bytes += 2 * अङ्कः_GPR_ARG_REGISTERS64 * परिमाण (long);
 #endif
 
   /* Return value handling.  */
   rtype = cif->rtype->type;
-#if _CALL_ELF == 2
+#सचे _CALL_ELF == 2
 homogeneous:
 #endif
-  switch (rtype)
+  विकल्प (rtype)
     {
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+    पक्ष FFI_TYPE_LONGDOUBLE:
+      सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
         {
           flags |= FLAG_RETURNS_VEC;
-          break;
+          भङ्ग;
         }
-      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+      सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	flags |= FLAG_RETURNS_128BITS;
       /* Fall through.  */
 #endif
-    case FFI_TYPE_DOUBLE:
+    पक्ष FFI_TYPE_DOUBLE:
       flags |= FLAG_RETURNS_64BITS;
       /* Fall through.  */
-    case FFI_TYPE_FLOAT:
+    पक्ष FFI_TYPE_FLOAT:
       flags |= FLAG_RETURNS_FP;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
+    पक्ष FFI_TYPE_UINT64:
+    पक्ष FFI_TYPE_SINT64:
+    पक्ष FFI_TYPE_POINTER:
       flags |= FLAG_RETURNS_64BITS;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_STRUCT:
-#if _CALL_ELF == 2
+    पक्ष FFI_TYPE_STRUCT:
+#सचे _CALL_ELF == 2
       elt = discover_homogeneous_aggregate (cif->abi, cif->rtype, &elnum);
-      if (elt)
+      सचे (elt)
         {
           flags |= FLAG_RETURNS_SMST;
           rtype = elt;
-          goto homogeneous;
+          गच्छ homogeneous;
         }
-      if (cif->rtype->size <= 16)
+      सचे (cif->rtype->size <= 16)
         {
           flags |= FLAG_RETURNS_SMST;
-          break;
+          भङ्ग;
         }
 #endif
-      intarg_count++;
+      intarg_गणनम्++;
       flags |= FLAG_RETVAL_REFERENCE;
       /* Fall through.  */
-    case FFI_TYPE_VOID:
+    पक्ष FFI_TYPE_VOID:
       flags |= FLAG_RETURNS_NOTHING;
-      break;
+      भङ्ग;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    पक्ष FFI_TYPE_COMPLEX:
       rtype = cif->rtype->elements[0]->type;
-      switch (rtype)
+      विकल्प (rtype)
         {
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_DOUBLE:
+        पक्ष FFI_TYPE_FLOAT:
+        पक्ष FFI_TYPE_DOUBLE:
           /* float/double _Complex are returned in (f1, f2), matching
              the assembly path for a 2-element FP HFA.  */
           flags |= FLAG_RETURNS_SMST;
-          goto homogeneous;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-        case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+          गच्छ homogeneous;
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+        पक्ष FFI_TYPE_LONGDOUBLE:
+          सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
               /* IEEE-128 _Complex long double: real in v2, imag in v3.
                  Return via the vector-homogeneous small-struct path.  */
               flags |= FLAG_RETURNS_SMST | FLAG_RETURNS_VEC;
-              break;
+              भङ्ग;
             }
           /* IBM-128 _Complex long double is returned like a homogeneous
              aggregate of doubles: real in f1:f2, imag in f3:f4.  (For a
@@ -286,204 +286,204 @@ homogeneous:
              real in f1 and imag in f2.)  */
           flags |= FLAG_RETURNS_SMST;
           rtype = FFI_TYPE_DOUBLE;
-          goto homogeneous;
+          गच्छ homogeneous;
 #endif
-        case FFI_TYPE_INT:
-        case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-        case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-        case FFI_TYPE_POINTER:
+        पक्ष FFI_TYPE_INT:
+        पक्ष FFI_TYPE_SINT8:  पक्ष FFI_TYPE_UINT8:
+        पक्ष FFI_TYPE_SINT16: पक्ष FFI_TYPE_UINT16:
+        पक्ष FFI_TYPE_SINT32: पक्ष FFI_TYPE_UINT32:
+        पक्ष FFI_TYPE_SINT64: पक्ष FFI_TYPE_UINT64:
+        पक्ष FFI_TYPE_POINTER:
           /* Integer-typed _Complex: real returned in r3, imag in r4.
              Take the .Lsmall_struct return path (FLAG_RETURNS_SMST
              without FP/VEC) and let the bounce-buffer logic in
              ffi_call_int repack the two halves.  */
           flags |= FLAG_RETURNS_SMST;
-          break;
-        default:
-          return FFI_BAD_TYPEDEF;
+          भङ्ग;
+        स्वभाव:
+          पटिनिवत्त FFI_BAD_TYPEDEF;
         }
-      break;
+      भङ्ग;
 #endif
 
-    default:
+    स्वभाव:
       /* Returns 32-bit integer, or similar.  Nothing to do here.  */
-      break;
+      भङ्ग;
     }
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  अत्थाय (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      unsigned int align;
+      unsigned पूर्णाङ्क align;
 
-      switch ((*ptr)->type)
+      विकल्प ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	पक्ष FFI_TYPE_LONGDOUBLE:
+          सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count++;
+              vecarg_गणनम्++;
               /* Align to 16 bytes, plus the 16-byte argument. */
-              intarg_count = (intarg_count + 3) & ~0x1;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              intarg_गणनम् = (intarg_गणनम् + 3) & ~0x1;
+              सचे (vecarg_गणनम् > अङ्कः_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              भङ्ग;
             }
-	  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      fparg_count++;
-	      intarg_count++;
+	      fparg_गणनम्++;
+	      intarg_गणनम्++;
 	    }
 	  /* Fall through.  */
 #endif
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_FLOAT:
-	  fparg_count++;
-	  intarg_count++;
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	पक्ष FFI_TYPE_DOUBLE:
+	पक्ष FFI_TYPE_FLOAT:
+	  fparg_गणनम्++;
+	  intarg_गणनम्++;
+	  सचे (fparg_गणनम् > अङ्कः_FPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	पक्ष FFI_TYPE_STRUCT:
+	  सचे ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      सचे (align > 16)
 		align = 16;
 	      align = align / 8;
-	      if (align > 1)
-		intarg_count = FFI_ALIGN (intarg_count, align);
+	      सचे (align > 1)
+		intarg_गणनम् = FFI_ALIGN (intarg_गणनम्, align);
 	    }
-	  intarg_count += ((*ptr)->size + 7) / 8;
+	  intarg_गणनम् += ((*ptr)->size + 7) / 8;
 	  elt = discover_homogeneous_aggregate (cif->abi, *ptr, &elnum);
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-          if (elt == FFI_TYPE_LONGDOUBLE &&
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+          सचे (elt == FFI_TYPE_LONGDOUBLE &&
               (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count += elnum;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              vecarg_गणनम् += elnum;
+              सचे (vecarg_गणनम् > अङ्कः_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
-              break;
+              भङ्ग;
             }
-	  else
+	  अञ्ञथा
 #endif
-	  if (elt)
+	  सचे (elt)
 	    {
-	      fparg_count += elnum;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_गणनम् += elnum;
+	      सचे (fparg_गणनम् > अङ्कः_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  else
+	  अञ्ञथा
 	    {
-	      if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	      सचे (intarg_गणनम् > अङ्कः_GPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
+	पक्ष FFI_TYPE_POINTER:
+	पक्ष FFI_TYPE_UINT64:
+	पक्ष FFI_TYPE_SINT64:
+	पक्ष FFI_TYPE_INT:
+	पक्ष FFI_TYPE_UINT32:
+	पक्ष FFI_TYPE_SINT32:
+	पक्ष FFI_TYPE_UINT16:
+	पक्ष FFI_TYPE_SINT16:
+	पक्ष FFI_TYPE_UINT8:
+	पक्ष FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 8-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  intarg_count++;
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  intarg_गणनम्++;
+	  सचे (intarg_गणनम् > अङ्कः_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  भङ्ग;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+	पक्ष FFI_TYPE_COMPLEX:
 	  /* Each half of a _Complex argument is passed independently: an FP
 	     half in its own FPR (and its own GPR shadow slot); an integer
 	     half in its own GPR slot.  This matches GCC's split_complex_arg
 	     under ELFv2, and is what differentiates _Complex from a
 	     same-sized struct{T;T;} which uses fewer GPR shadow slots.  */
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  सचे (elt == FFI_TYPE_LONGDOUBLE
 	      && (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
 #endif
-	  switch (elt)
+	  विकल्प (elt)
 	    {
-	    case FFI_TYPE_FLOAT:
-	    case FFI_TYPE_DOUBLE:
-	      fparg_count += 2;
-	      intarg_count += 2;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	    पक्ष FFI_TYPE_FLOAT:
+	    पक्ष FFI_TYPE_DOUBLE:
+	      fparg_गणनम् += 2;
+	      intarg_गणनम् += 2;
+	      सचे (fparg_गणनम् > अङ्कः_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	    case FFI_TYPE_LONGDOUBLE:
-	      if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      भङ्ग;
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	    पक्ष FFI_TYPE_LONGDOUBLE:
+	      सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 		{
 		  /* Two IEEE-128 halves: each occupies a vector register plus
 		     two GPR shadow doublewords, the pair 16-byte aligned.  */
-		  vecarg_count += 2;
-		  intarg_count = (intarg_count + 1) & ~0x1;
-		  intarg_count += 4;
-		  if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+		  vecarg_गणनम् += 2;
+		  intarg_गणनम् = (intarg_गणनम् + 1) & ~0x1;
+		  intarg_गणनम् += 4;
+		  सचे (vecarg_गणनम् > अङ्कः_VEC_ARG_REGISTERS64)
 		    flags |= FLAG_ARG_NEEDS_PSAVE;
-		  break;
+		  भङ्ग;
 		}
 	      /* IBM-128: each half is a pair of FPRs, and each FPR half
 		 consumes a GPR shadow doubleword -- four of each in total.  */
-	      fparg_count += 4;
-	      intarg_count += 4;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_गणनम् += 4;
+	      intarg_गणनम् += 4;
+	      सचे (fparg_गणनम् > अङ्कः_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
-	      break;
+	      भङ्ग;
 #endif
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:  case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16: case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
-	    case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	      intarg_count += 2;
-	      break;
-	    default:
-	      return FFI_BAD_TYPEDEF;
+	    पक्ष FFI_TYPE_INT:
+	    पक्ष FFI_TYPE_SINT8:  पक्ष FFI_TYPE_UINT8:
+	    पक्ष FFI_TYPE_SINT16: पक्ष FFI_TYPE_UINT16:
+	    पक्ष FFI_TYPE_SINT32: पक्ष FFI_TYPE_UINT32:
+	    पक्ष FFI_TYPE_SINT64: पक्ष FFI_TYPE_UINT64:
+	    पक्ष FFI_TYPE_POINTER:
+	      intarg_गणनम् += 2;
+	      भङ्ग;
+	    स्वभाव:
+	      पटिनिवत्त FFI_BAD_TYPEDEF;
 	    }
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  सचे (intarg_गणनम् > अङ्कः_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
-	  break;
+	  भङ्ग;
 #endif
 
-	default:
+	स्वभाव:
 	  FFI_ASSERT (0);
 	}
     }
 
-  if (fparg_count != 0)
+  सचे (fparg_गणनम् != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (intarg_count > 4)
+  सचे (intarg_गणनम् > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
-  if (vecarg_count != 0)
+  सचे (vecarg_गणनम् != 0)
     flags |= FLAG_VEC_ARGUMENTS;
 
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS64 * sizeof (double);
+  सचे (fparg_गणनम् != 0)
+    bytes += अङ्कः_FPR_ARG_REGISTERS64 * परिमाण (द्विगुण);
   /* Space for the vector registers, if needed, aligned to 16 bytes. */
-  if (vecarg_count != 0) {
+  सचे (vecarg_गणनम् != 0) {
     bytes = (bytes + 15) & ~0xF;
-    bytes += NUM_VEC_ARG_REGISTERS64 * sizeof (float128);
+    bytes += अङ्कः_VEC_ARG_REGISTERS64 * परिमाण (float128);
   }
 
   /* Stack space.  */
-#if _CALL_ELF == 2
-  if ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
-    bytes += intarg_count * sizeof (long);
-#else
-  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
-    bytes += (intarg_count - NUM_GPR_ARG_REGISTERS64) * sizeof (long);
+#सचे _CALL_ELF == 2
+  सचे ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
+    bytes += intarg_गणनम् * परिमाण (long);
+#अञ्ञथा
+  सचे (intarg_गणनम् > अङ्कः_GPR_ARG_REGISTERS64)
+    bytes += (intarg_गणनम् - अङ्कः_GPR_ARG_REGISTERS64) * परिमाण (long);
 #endif
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
@@ -492,16 +492,16 @@ homogeneous:
   cif->flags = flags;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  पटिनिवत्त FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_linux64 (ffi_cif *cif)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  सचे ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = cif->nargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#सचे _CALL_ELF != 2
+  अञ्ञथा सचे (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -510,20 +510,20 @@ ffi_prep_cif_linux64 (ffi_cif *cif)
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
 #endif
-  else
-    return FFI_BAD_ABI;
-  return ffi_prep_cif_linux64_core (cif);
+  अञ्ञथा
+    पटिनिवत्त FFI_BAD_ABI;
+  पटिनिवत्त ffi_prep_cif_linux64_core (cif);
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_linux64_var (ffi_cif *cif,
-			  unsigned int nfixedargs,
-			  unsigned int ntotalargs MAYBE_UNUSED)
+			  unsigned पूर्णाङ्क nfixedargs,
+			  unsigned पूर्णाङ्क ntotalargs MAYBE_UNUSED)
 {
-  if ((cif->abi & FFI_LINUX) != 0)
+  सचे ((cif->abi & FFI_LINUX) != 0)
     cif->nfixedargs = nfixedargs;
-#if _CALL_ELF != 2
-  else if (cif->abi == FFI_COMPAT_LINUX64)
+#सचे _CALL_ELF != 2
+  अञ्ञथा सचे (cif->abi == FFI_COMPAT_LINUX64)
     {
       /* This call is from old code.  Don't touch cif->nfixedargs
 	 since old code will be using a smaller cif.  */
@@ -532,12 +532,12 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
       cif->abi = FFI_LINUX | FFI_LINUX_LONG_DOUBLE_128;
     }
 #endif
-  else
-    return FFI_BAD_ABI;
-#if _CALL_ELF == 2
+  अञ्ञथा
+    पटिनिवत्त FFI_BAD_ABI;
+#सचे _CALL_ELF == 2
   cif->flags |= FLAG_ARG_NEEDS_PSAVE;
 #endif
-  return ffi_prep_cif_linux64_core (cif);
+  पटिनिवत्त ffi_prep_cif_linux64_core (cif);
 }
 
 
@@ -577,18 +577,18 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
 
 */
 
-void FFI_HIDDEN
-ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
+शून्य FFI_HIDDEN
+ffi_prep_args64 (extended_cif *ecif, unsigned long *ध्रुव राशिः)
 {
-  const unsigned long bytes = ecif->cif->bytes;
-  const unsigned long flags = ecif->cif->flags;
+  ध्रुव unsigned long bytes = ecif->cif->bytes;
+  ध्रुव unsigned long flags = ecif->cif->flags;
 
-  typedef union
+  प्रकारनिर्देश सङ्घ
   {
-    char *c;
+    वर्ण *c;
     unsigned long *ul;
-    float *f;
-    double *d;
+    भिन्न *f;
+    द्विगुण *d;
     float128 *f128;
     size_t p;
   } valp;
@@ -606,55 +606,55 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
   /* 'fpr_base' points at the space for f1, and grows upwards as
      we use FPR registers.  */
   valp fpr_base;
-  unsigned int fparg_count;
+  unsigned पूर्णाङ्क fparg_गणनम्;
 
   /* 'vec_base' points at the space for v2, and grows upwards as
      we use vector registers.  */
   valp vec_base;
-  unsigned int vecarg_count;
+  unsigned पूर्णाङ्क vecarg_गणनम्;
 
-  unsigned int i, words, nargs, nfixedargs;
+  unsigned पूर्णाङ्क i, शब्दाः, nargs, nfixedargs;
   ffi_type **ptr;
-  double double_tmp;
-  union
+  द्विगुण double_tmp;
+  सङ्घ
   {
-    void **v;
-    char **c;
-    signed char **sc;
-    unsigned char **uc;
+    शून्य **v;
+    वर्ण **c;
+    signed वर्ण **sc;
+    unsigned वर्ण **uc;
     signed short **ss;
     unsigned short **us;
-    signed int **si;
-    unsigned int **ui;
+    signed पूर्णाङ्क **si;
+    unsigned पूर्णाङ्क **ui;
     unsigned long **ul;
-    float **f;
-    double **d;
+    भिन्न **f;
+    द्विगुण **d;
     float128 **f128;
   } p_argv;
   unsigned long gprvalue;
   unsigned long align;
 
-  stacktop.c = (char *) stack + bytes;
-  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - NUM_GPR_ARG_REGISTERS64;
-  gpr_end.ul = gpr_base.ul + NUM_GPR_ARG_REGISTERS64;
-#if _CALL_ELF == 2
-  rest.ul = stack + 4 + NUM_GPR_ARG_REGISTERS64;
-#else
-  rest.ul = stack + 6 + NUM_GPR_ARG_REGISTERS64;
+  stacktop.c = (वर्ण *) राशिः + bytes;
+  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - अङ्कः_GPR_ARG_REGISTERS64;
+  gpr_end.ul = gpr_base.ul + अङ्कः_GPR_ARG_REGISTERS64;
+#सचे _CALL_ELF == 2
+  rest.ul = राशिः + 4 + अङ्कः_GPR_ARG_REGISTERS64;
+#अञ्ञथा
+  rest.ul = राशिः + 6 + अङ्कः_GPR_ARG_REGISTERS64;
 #endif
-  fpr_base.d = gpr_base.d - NUM_FPR_ARG_REGISTERS64;
-  fparg_count = 0;
+  fpr_base.d = gpr_base.d - अङ्कः_FPR_ARG_REGISTERS64;
+  fparg_गणनम् = 0;
   /* Place the vector args below the FPRs, if used, else the GPRs. */
-  if (ecif->cif->flags & FLAG_FP_ARGUMENTS)
+  सचे (ecif->cif->flags & FLAG_FP_ARGUMENTS)
     vec_base.p = fpr_base.p & ~0xF;
-  else
+  अञ्ञथा
     vec_base.p = gpr_base.p;
-  vec_base.f128 -= NUM_VEC_ARG_REGISTERS64;
-  vecarg_count = 0;
+  vec_base.f128 -= अङ्कः_VEC_ARG_REGISTERS64;
+  vecarg_गणनम् = 0;
   next_arg.ul = gpr_base.ul;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT (((unsigned long) (char *) stack & 0xF) == 0);
+  FFI_ASSERT (((unsigned long) (वर्ण *) राशिः & 0xF) == 0);
   FFI_ASSERT (((unsigned long) stacktop.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) gpr_base.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) gpr_end.c  & 0xF) == 0);
@@ -662,410 +662,410 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
   FFI_ASSERT ((bytes & 0xF) == 0);
 
   /* Deal with return values that are actually pass-by-reference.  */
-  if (flags & FLAG_RETVAL_REFERENCE)
-    *next_arg.ul++ = (unsigned long) (char *) ecif->rvalue;
+  सचे (flags & FLAG_RETVAL_REFERENCE)
+    *next_arg.ul++ = (unsigned long) (वर्ण *) ecif->rvalue;
 
   /* Now for the arguments.  */
   p_argv.v = ecif->avalue;
   nargs = ecif->cif->nargs;
-#if _CALL_ELF != 2
+#सचे _CALL_ELF != 2
   nfixedargs = (unsigned) -1;
-  if ((flags & FLAG_COMPAT) == 0)
+  सचे ((flags & FLAG_COMPAT) == 0)
 #endif
     nfixedargs = ecif->cif->nfixedargs;
-  for (ptr = ecif->cif->arg_types, i = 0;
+  अत्थाय (ptr = ecif->cif->arg_types, i = 0;
        i < nargs;
        i++, ptr++, p_argv.v++)
     {
-      unsigned int elt, elnum;
+      unsigned पूर्णाङ्क elt, elnum;
 
-      switch ((*ptr)->type)
+      विकल्प ((*ptr)->type)
 	{
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	पक्ष FFI_TYPE_LONGDOUBLE:
+          सचे ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
               next_arg.p = FFI_ALIGN (next_arg.p, 16);
-              if (next_arg.ul == gpr_end.ul)
+              सचे (next_arg.ul == gpr_end.ul)
                 next_arg.ul = rest.ul;
-              if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		memcpy (vec_base.f128++, *p_argv.f128, sizeof (float128));
-              else
-		memcpy (next_arg.f128, *p_argv.f128, sizeof (float128));
-              if (++next_arg.f128 == gpr_end.f128)
+              सचे (vecarg_गणनम् < अङ्कः_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		memcpy (vec_base.f128++, *p_argv.f128, परिमाण (float128));
+              अञ्ञथा
+		memcpy (next_arg.f128, *p_argv.f128, परिमाण (float128));
+              सचे (++next_arg.f128 == gpr_end.f128)
                 next_arg.f128 = rest.f128;
-              vecarg_count++;
+              vecarg_गणनम्++;
               FFI_ASSERT (__LDBL_MANT_DIG__ == 113);
               FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-              break;
+              भङ्ग;
             }
-	  if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+	  सचे ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
 	      double_tmp = (*p_argv.d)[0];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
 		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
+# सचे _CALL_ELF != 2
+		  सचे ((flags & FLAG_COMPAT) != 0)
 		    *next_arg.d = double_tmp;
 # endif
 		}
-	      else
+	      अञ्ञथा
 		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
+	      सचे (++next_arg.ul == gpr_end.ul)
 		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      fparg_गणनम्++;
 	      double_tmp = (*p_argv.d)[1];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
 		  *fpr_base.d++ = double_tmp;
-# if _CALL_ELF != 2
-		  if ((flags & FLAG_COMPAT) != 0)
+# सचे _CALL_ELF != 2
+		  सचे ((flags & FLAG_COMPAT) != 0)
 		    *next_arg.d = double_tmp;
 # endif
 		}
-	      else
+	      अञ्ञथा
 		*next_arg.d = double_tmp;
-	      if (++next_arg.ul == gpr_end.ul)
+	      सचे (++next_arg.ul == gpr_end.ul)
 		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      fparg_गणनम्++;
 	      FFI_ASSERT (__LDBL_MANT_DIG__ == 106);
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      भङ्ग;
 	    }
 	  /* Fall through.  */
 #endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+	पक्ष FFI_TYPE_DOUBLE:
+#सचे _CALL_ELF != 2
 	do_double:
 #endif
 	  double_tmp = **p_argv.d;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
 	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
+#सचे _CALL_ELF != 2
+	      सचे ((flags & FLAG_COMPAT) != 0)
 		*next_arg.d = double_tmp;
 #endif
 	    }
-	  else
+	  अञ्ञथा
 	    *next_arg.d = double_tmp;
-	  if (++next_arg.ul == gpr_end.ul)
+	  सचे (++next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  fparg_गणनम्++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	पक्ष FFI_TYPE_FLOAT:
+#सचे _CALL_ELF != 2
 	do_float:
 #endif
 	  double_tmp = **p_argv.f;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
 	      *fpr_base.d++ = double_tmp;
-#if _CALL_ELF != 2
-	      if ((flags & FLAG_COMPAT) != 0)
+#सचे _CALL_ELF != 2
+	      सचे ((flags & FLAG_COMPAT) != 0)
 		{
 # ifndef __LITTLE_ENDIAN__
-		  next_arg.f[1] = (float) double_tmp;
-# else
-		  next_arg.f[0] = (float) double_tmp;
+		  next_arg.f[1] = (भिन्न) double_tmp;
+# अञ्ञथा
+		  next_arg.f[0] = (भिन्न) double_tmp;
 # endif
 		}
 #endif
 	    }
-	  else
+	  अञ्ञथा
 	    {
 # ifndef __LITTLE_ENDIAN__
-	      next_arg.f[1] = (float) double_tmp;
-# else
-	      next_arg.f[0] = (float) double_tmp;
+	      next_arg.f[1] = (भिन्न) double_tmp;
+# अञ्ञथा
+	      next_arg.f[0] = (भिन्न) double_tmp;
 # endif
 	    }
-	  if (++next_arg.ul == gpr_end.ul)
+	  सचे (++next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  fparg_गणनम्++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	  break;
+	  भङ्ग;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+	पक्ष FFI_TYPE_COMPLEX:
 	  elt = (*ptr)->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	  /* A 64-bit long double is passed exactly like a double.  */
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  सचे (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	    elt = FFI_TYPE_DOUBLE;
-	  if (elt == FFI_TYPE_LONGDOUBLE
+	  सचे (elt == FFI_TYPE_LONGDOUBLE
 	      && (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	    {
 	      /* IEEE-128 _Complex long double: each half goes in its own
 		 vector register (or the parameter save area), 16-byte
 		 aligned, consuming two GPR shadow doublewords.  */
 	      float128 *cval = (float128 *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      unsigned पूर्णाङ्क j;
+	      अत्थाय (j = 0; j < 2; j++)
 		{
 		  next_arg.p = FFI_ALIGN (next_arg.p, 16);
-		  if (next_arg.ul == gpr_end.ul)
+		  सचे (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
-		    memcpy (vec_base.f128++, cval + j, sizeof (float128));
-		  else
-		    memcpy (next_arg.f128, cval + j, sizeof (float128));
-		  if (++next_arg.f128 == gpr_end.f128)
+		  सचे (vecarg_गणनम् < अङ्कः_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		    memcpy (vec_base.f128++, cval + j, परिमाण (float128));
+		  अञ्ञथा
+		    memcpy (next_arg.f128, cval + j, परिमाण (float128));
+		  सचे (++next_arg.f128 == gpr_end.f128)
 		    next_arg.f128 = rest.f128;
-		  vecarg_count++;
+		  vecarg_गणनम्++;
 		}
 	      FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
-	      break;
+	      भङ्ग;
 	    }
-	  if (elt == FFI_TYPE_LONGDOUBLE)
+	  सचे (elt == FFI_TYPE_LONGDOUBLE)
 	    {
 	      /* IBM-128 _Complex long double: four doubles (real hi/lo,
 		 imag hi/lo) into consecutive FPRs, each with a GPR shadow
 		 doubleword.  */
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 4; j++)
+	      द्विगुण *cval = (द्विगुण *) *p_argv.v;
+	      unsigned पूर्णाङ्क j;
+	      अत्थाय (j = 0; j < 4; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
-		  else
+		  अञ्ञथा
 		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
+		  सचे (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_गणनम्++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
-	      break;
+	      भङ्ग;
 	    }
 #endif
-	  if (elt == FFI_TYPE_FLOAT)
+	  सचे (elt == FFI_TYPE_FLOAT)
 	    {
-	      float *cval = (float *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      भिन्न *cval = (भिन्न *) *p_argv.v;
+	      unsigned पूर्णाङ्क j;
+	      अत्थाय (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
-		  else
+		  अञ्ञथा
 		    {
 # ifndef __LITTLE_ENDIAN__
-		      next_arg.f[1] = (float) double_tmp;
-# else
-		      next_arg.f[0] = (float) double_tmp;
+		      next_arg.f[1] = (भिन्न) double_tmp;
+# अञ्ञथा
+		      next_arg.f[0] = (भिन्न) double_tmp;
 # endif
 		    }
-		  if (++next_arg.ul == gpr_end.ul)
+		  सचे (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_गणनम्++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else if (elt == FFI_TYPE_DOUBLE)
+	  अञ्ञथा सचे (elt == FFI_TYPE_DOUBLE)
 	    {
-	      double *cval = (double *) *p_argv.v;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      द्विगुण *cval = (द्विगुण *) *p_argv.v;
+	      unsigned पूर्णाङ्क j;
+	      अत्थाय (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
-		  else
+		  अञ्ञथा
 		    *next_arg.d = double_tmp;
-		  if (++next_arg.ul == gpr_end.ul)
+		  सचे (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_गणनम्++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
-	  else
+	  अञ्ञथा
 	    {
 	      /* Integer-typed _Complex: each half consumes one GPR slot,
 		 sign-/zero-extended to a doubleword.  */
-	      char *cval = (char *) *p_argv.v;
+	      वर्ण *cval = (वर्ण *) *p_argv.v;
 	      size_t hsize = (*ptr)->elements[0]->size;
-	      unsigned int j;
-	      for (j = 0; j < 2; j++)
+	      unsigned पूर्णाङ्क j;
+	      अत्थाय (j = 0; j < 2; j++)
 		{
-		  char *half = cval + j * hsize;
+		  वर्ण *half = cval + j * hsize;
 		  unsigned long gprvalue;
-		  switch (elt)
+		  विकल्प (elt)
 		    {
-		    case FFI_TYPE_UINT8:
-		      gprvalue = *(unsigned char *) half; break;
-		    case FFI_TYPE_SINT8:
-		      gprvalue = (unsigned long) (long) *(signed char *) half;
-		      break;
-		    case FFI_TYPE_UINT16:
-		      gprvalue = *(unsigned short *) half; break;
-		    case FFI_TYPE_SINT16:
+		    पक्ष FFI_TYPE_UINT8:
+		      gprvalue = *(unsigned वर्ण *) half; भङ्ग;
+		    पक्ष FFI_TYPE_SINT8:
+		      gprvalue = (unsigned long) (long) *(signed वर्ण *) half;
+		      भङ्ग;
+		    पक्ष FFI_TYPE_UINT16:
+		      gprvalue = *(unsigned short *) half; भङ्ग;
+		    पक्ष FFI_TYPE_SINT16:
 		      gprvalue = (unsigned long) (long) *(signed short *) half;
-		      break;
-		    case FFI_TYPE_UINT32:
-		      gprvalue = *(unsigned int *) half; break;
-		    case FFI_TYPE_INT:
-		    case FFI_TYPE_SINT32:
-		      gprvalue = (unsigned long) (long) *(signed int *) half;
-		      break;
-		    case FFI_TYPE_SINT64:
-		    case FFI_TYPE_UINT64:
-		    case FFI_TYPE_POINTER:
-		    default:
-		      gprvalue = *(unsigned long *) half; break;
+		      भङ्ग;
+		    पक्ष FFI_TYPE_UINT32:
+		      gprvalue = *(unsigned पूर्णाङ्क *) half; भङ्ग;
+		    पक्ष FFI_TYPE_INT:
+		    पक्ष FFI_TYPE_SINT32:
+		      gprvalue = (unsigned long) (long) *(signed पूर्णाङ्क *) half;
+		      भङ्ग;
+		    पक्ष FFI_TYPE_SINT64:
+		    पक्ष FFI_TYPE_UINT64:
+		    पक्ष FFI_TYPE_POINTER:
+		    स्वभाव:
+		      gprvalue = *(unsigned long *) half; भङ्ग;
 		    }
 		  *next_arg.ul++ = gprvalue;
-		  if (next_arg.ul == gpr_end.ul)
+		  सचे (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
 		}
 	    }
-	  break;
+	  भङ्ग;
 #endif
 
-	case FFI_TYPE_STRUCT:
-	  if ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	पक्ष FFI_TYPE_STRUCT:
+	  सचे ((ecif->cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = (*ptr)->alignment;
-	      if (align > 16)
+	      सचे (align > 16)
 		align = 16;
-	      if (align > 1)
+	      सचे (align > 1)
                 {
                   next_arg.p = FFI_ALIGN (next_arg.p, align);
-                  if (next_arg.ul == gpr_end.ul)
+                  सचे (next_arg.ul == gpr_end.ul)
                     next_arg.ul = rest.ul;
                 }
 	    }
 	  elt = discover_homogeneous_aggregate (ecif->cif->abi, *ptr, &elnum);
-	  if (elt)
+	  सचे (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
-		float *f;
-		double *d;
+#सचे _CALL_ELF == 2
+	      सङ्घ {
+		शून्य *v;
+		भिन्न *f;
+		द्विगुण *d;
 		float128 *f128;
 	      } arg;
 
 	      arg.v = *p_argv.v;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              सचे (elt == FFI_TYPE_LONGDOUBLE &&
                   (ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  करोहि
                     {
-                      if (vecarg_count < NUM_VEC_ARG_REGISTERS64
+                      सचे (vecarg_गणनम् < अङ्कः_VEC_ARG_REGISTERS64
                           && i < nfixedargs)
-		        memcpy (vec_base.f128++, arg.f128++, sizeof (float128));
-                      else
-		        memcpy (next_arg.f128, arg.f128++, sizeof (float128));
-                      if (++next_arg.f128 == gpr_end.f128)
+		        memcpy (vec_base.f128++, arg.f128++, परिमाण (float128));
+                      अञ्ञथा
+		        memcpy (next_arg.f128, arg.f128++, परिमाण (float128));
+                      सचे (++next_arg.f128 == gpr_end.f128)
                         next_arg.f128 = rest.f128;
-                      vecarg_count++;
+                      vecarg_गणनम्++;
                     }
-                  while (--elnum != 0);
+                  याव (--elnum != 0);
                 }
-              else
+              अञ्ञथा
 #endif
-	      if (elt == FFI_TYPE_FLOAT)
+	      सचे (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  करोहि
 		    {
 		      double_tmp = *arg.f++;
-		      if (fparg_count < NUM_FPR_ARG_REGISTERS64
+		      सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64
 			  && i < nfixedargs)
 			*fpr_base.d++ = double_tmp;
-		      else
-			*next_arg.f = (float) double_tmp;
-		      if (++next_arg.f == gpr_end.f)
+		      अञ्ञथा
+			*next_arg.f = (भिन्न) double_tmp;
+		      सचे (++next_arg.f == gpr_end.f)
 			next_arg.f = rest.f;
-		      fparg_count++;
+		      fparg_गणनम्++;
 		    }
-		  while (--elnum != 0);
-		  if ((next_arg.p & 7) != 0)
-                    if (++next_arg.f == gpr_end.f)
+		  याव (--elnum != 0);
+		  सचे ((next_arg.p & 7) != 0)
+                    सचे (++next_arg.f == gpr_end.f)
                       next_arg.f = rest.f;
 		}
-	      else
-		do
+	      अञ्ञथा
+		करोहि
 		  {
 		    double_tmp = *arg.d++;
-		    if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    सचे (fparg_गणनम् < अङ्कः_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		      *fpr_base.d++ = double_tmp;
-		    else
+		    अञ्ञथा
 		      *next_arg.d = double_tmp;
-		    if (++next_arg.d == gpr_end.d)
+		    सचे (++next_arg.d == gpr_end.d)
 		      next_arg.d = rest.d;
-		    fparg_count++;
+		    fparg_गणनम्++;
 		  }
-		while (--elnum != 0);
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
+		याव (--elnum != 0);
+#अञ्ञथा
+	      सचे (elt == FFI_TYPE_FLOAT)
+		गच्छ do_float;
+	      अञ्ञथा
+		गच्छ do_double;
 #endif
 	    }
-	  else
+	  अञ्ञथा
 	    {
-	      words = ((*ptr)->size + 7) / 8;
-	      if (next_arg.ul >= gpr_base.ul && next_arg.ul + words > gpr_end.ul)
+	      शब्दाः = ((*ptr)->size + 7) / 8;
+	      सचे (next_arg.ul >= gpr_base.ul && next_arg.ul + शब्दाः > gpr_end.ul)
 		{
 		  size_t first = gpr_end.c - next_arg.c;
 		  memcpy (next_arg.c, *p_argv.c, first);
 		  memcpy (rest.c, *p_argv.c + first, (*ptr)->size - first);
-		  next_arg.c = rest.c + words * 8 - first;
+		  next_arg.c = rest.c + शब्दाः * 8 - first;
 		}
-	      else
+	      अञ्ञथा
 		{
-		  char *where = next_arg.c;
+		  वर्ण *where = next_arg.c;
 
 #ifndef __LITTLE_ENDIAN__
 		  /* Structures with size less than eight bytes are passed
 		     left-padded.  */
-		  if ((*ptr)->size < 8)
+		  सचे ((*ptr)->size < 8)
 		    where += 8 - (*ptr)->size;
 #endif
 		  memcpy (where, *p_argv.c, (*ptr)->size);
-		  next_arg.ul += words;
-		  if (next_arg.ul == gpr_end.ul)
+		  next_arg.ul += शब्दाः;
+		  सचे (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
 		}
 	    }
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_UINT8:
+	पक्ष FFI_TYPE_UINT8:
 	  gprvalue = **p_argv.uc;
-	  goto putgpr;
-	case FFI_TYPE_SINT8:
+	  गच्छ putgpr;
+	पक्ष FFI_TYPE_SINT8:
 	  gprvalue = **p_argv.sc;
-	  goto putgpr;
-	case FFI_TYPE_UINT16:
+	  गच्छ putgpr;
+	पक्ष FFI_TYPE_UINT16:
 	  gprvalue = **p_argv.us;
-	  goto putgpr;
-	case FFI_TYPE_SINT16:
+	  गच्छ putgpr;
+	पक्ष FFI_TYPE_SINT16:
 	  gprvalue = **p_argv.ss;
-	  goto putgpr;
-	case FFI_TYPE_UINT32:
+	  गच्छ putgpr;
+	पक्ष FFI_TYPE_UINT32:
 	  gprvalue = **p_argv.ui;
-	  goto putgpr;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	  गच्छ putgpr;
+	पक्ष FFI_TYPE_INT:
+	पक्ष FFI_TYPE_SINT32:
 	  gprvalue = **p_argv.si;
-	  goto putgpr;
+	  गच्छ putgpr;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	पक्ष FFI_TYPE_UINT64:
+	पक्ष FFI_TYPE_SINT64:
+	पक्ष FFI_TYPE_POINTER:
 	  gprvalue = **p_argv.ul;
 	putgpr:
 	  *next_arg.ul++ = gprvalue;
-	  if (next_arg.ul == gpr_end.ul)
+	  सचे (next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  break;
+	  भङ्ग;
 	}
     }
 
@@ -1075,17 +1075,17 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 }
 
 
-#if _CALL_ELF == 2
-#define MIN_CACHE_LINE_SIZE 8
+#सचे _CALL_ELF == 2
+#define MIN_CACHE_पङ्क्तिः_SIZE 8
 
-static void
-flush_icache (char *wraddr, char *xaddr, int size)
+स्थिर शून्य
+flush_icache (वर्ण *wraddr, वर्ण *xaddr, पूर्णाङ्क size)
 {
-  int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
-    __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
+  पूर्णाङ्क i;
+  अत्थाय (i = 0; i < size; i += MIN_CACHE_पङ्क्तिः_SIZE)
+    __asm__ चञ्चल ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
-  __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
+  __asm__ चञ्चल ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
 		    : : "r"(xaddr + size - 1), "r"(wraddr + size - 1)
 		    : "memory");
 }
@@ -1095,40 +1095,40 @@ flush_icache (char *wraddr, char *xaddr, int size)
 ffi_status FFI_HIDDEN
 ffi_prep_closure_loc_linux64 (ffi_closure *closure,
 			      ffi_cif *cif,
-			      void (*fun) (ffi_cif *, void *, void **, void *),
-			      void *user_data,
-			      void *codeloc)
+			      शून्य (*fun) (ffi_cif *, शून्य *, शून्य **, शून्य *),
+			      शून्य *user_data,
+			      शून्य *codeloc)
 {
-  if (cif->abi < FFI_LINUX || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  सचे (cif->abi < FFI_LINUX || cif->abi >= FFI_LAST_ABI)
+    पटिनिवत्त FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present(closure))
+  सचे (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_LINUX64;
+      शून्य (*dest)(शून्य) = ffi_closure_LINUX64;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  अञ्ञथा
 #endif
     {
-#if _CALL_ELF == 2
-      unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+#सचे _CALL_ELF == 2
+      unsigned पूर्णाङ्क *tramp = (unsigned पूर्णाङ्क *) &closure->tramp[0];
       tramp[0] = 0xe96c0018;	/* 0:	ld	11,2f-0b(12)	*/
       tramp[1] = 0xe98c0010;	/*	ld	12,1f-0b(12)	*/
       tramp[2] = 0x7d8903a6;	/*	mtctr	12		*/
       tramp[3] = 0x4e800420;	/*	bctr			*/
 				/* 1:	.quad	function_addr	*/
 				/* 2:	.quad	context		*/
-      *(void **) &tramp[4] = (void *) ffi_closure_LINUX64;
-      *(void **) &tramp[6] = codeloc;
-      flush_icache ((char *) tramp, (char *) codeloc, 4 * 4);
-#else
+      *(शून्य **) &tramp[4] = (शून्य *) ffi_closure_LINUX64;
+      *(शून्य **) &tramp[6] = codeloc;
+      flush_icache ((वर्ण *) tramp, (वर्ण *) codeloc, 4 * 4);
+#अञ्ञथा
       /* Copy function address and TOC from ffi_closure_LINUX64 OPD.  */
-      void **tramp = (void **) &closure->tramp[0];
-      memcpy (&tramp[0], (void **) ffi_closure_LINUX64, sizeof (void *));
+      शून्य **tramp = (शून्य **) &closure->tramp[0];
+      memcpy (&tramp[0], (शून्य **) ffi_closure_LINUX64, परिमाण (शून्य *));
       tramp[1] = codeloc;
-      memcpy (&tramp[2], (void **) ffi_closure_LINUX64 + 1, sizeof (void *));
+      memcpy (&tramp[2], (शून्य **) ffi_closure_LINUX64 + 1, परिमाण (शून्य *));
 #endif
     }
 
@@ -1136,15 +1136,15 @@ ffi_prep_closure_loc_linux64 (ffi_closure *closure,
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  पटिनिवत्त FFI_OK;
 }
 
 
-int FFI_HIDDEN
+पूर्णाङ्क FFI_HIDDEN
 ffi_closure_helper_LINUX64 (ffi_cif *cif,
-			    void (*fun) (ffi_cif *, void *, void **, void *),
-			    void *user_data,
-			    void *rvalue,
+			    शून्य (*fun) (ffi_cif *, शून्य *, शून्य **, शून्य *),
+			    शून्य *user_data,
+			    शून्य *rvalue,
 			    unsigned long *pst,
                             ffi_dblfl *pfr,
                             float128 *pvec)
@@ -1155,89 +1155,89 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
   /* pfr is the pointer to where f1-f13 are stored in ffi_closure_LINUX64 */
   /* pvec is the pointer to where v2-v13 are stored in ffi_closure_LINUX64 */
 
-  void **avalue;
+  शून्य **avalue;
   ffi_type **arg_types;
   unsigned long i, avn, nfixedargs;
-  ffi_dblfl *end_pfr = pfr + NUM_FPR_ARG_REGISTERS64;
-  float128 *end_pvec = pvec + NUM_VEC_ARG_REGISTERS64;
+  ffi_dblfl *end_pfr = pfr + अङ्कः_FPR_ARG_REGISTERS64;
+  float128 *end_pvec = pvec + अङ्कः_VEC_ARG_REGISTERS64;
   unsigned long align;
 
-  avalue = alloca (cif->nargs * sizeof (void *));
+  avalue = alloca (cif->nargs * परिमाण (शून्य *));
 
   /* Copy the caller's structure return value address so that the
      closure returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  सचे (cif->rtype->type == FFI_TYPE_STRUCT
       && (cif->flags & FLAG_RETURNS_SMST) == 0)
     {
-      rvalue = (void *) *pst;
+      rvalue = (शून्य *) *pst;
       pst++;
     }
 
   i = 0;
   avn = cif->nargs;
-#if _CALL_ELF != 2
+#सचे _CALL_ELF != 2
   nfixedargs = (unsigned) -1;
-  if ((cif->flags & FLAG_COMPAT) == 0)
+  सचे ((cif->flags & FLAG_COMPAT) == 0)
 #endif
     nfixedargs = cif->nfixedargs;
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  while (i < avn)
+  याव (i < avn)
     {
-      unsigned int elt, elnum;
+      unsigned पूर्णाङ्क elt, elnum;
 
-      switch (arg_types[i]->type)
+      विकल्प (arg_types[i]->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	पक्ष FFI_TYPE_SINT8:
+	पक्ष FFI_TYPE_UINT8:
 #ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 7;
+	  avalue[i] = (वर्ण *) pst + 7;
 	  pst++;
-	  break;
+	  भङ्ग;
 #endif
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	पक्ष FFI_TYPE_SINT16:
+	पक्ष FFI_TYPE_UINT16:
 #ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 6;
+	  avalue[i] = (वर्ण *) pst + 6;
 	  pst++;
-	  break;
+	  भङ्ग;
 #endif
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	पक्ष FFI_TYPE_SINT32:
+	पक्ष FFI_TYPE_UINT32:
 #ifndef __LITTLE_ENDIAN__
-	  avalue[i] = (char *) pst + 4;
+	  avalue[i] = (वर्ण *) pst + 4;
 	  pst++;
-	  break;
+	  भङ्ग;
 #endif
 
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	पक्ष FFI_TYPE_SINT64:
+	पक्ष FFI_TYPE_UINT64:
+	पक्ष FFI_TYPE_POINTER:
 	  avalue[i] = pst;
 	  pst++;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_STRUCT:
-	  if ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
+	पक्ष FFI_TYPE_STRUCT:
+	  सचे ((cif->abi & FFI_LINUX_STRUCT_ALIGN) != 0)
 	    {
 	      align = arg_types[i]->alignment;
-	      if (align > 16)
+	      सचे (align > 16)
 		align = 16;
-	      if (align > 1)
+	      सचे (align > 1)
 		pst = (unsigned long *) FFI_ALIGN ((size_t) pst, align);
 	    }
 	  elt = discover_homogeneous_aggregate (cif->abi, arg_types[i], &elnum);
-	  if (elt)
+	  सचे (elt)
 	    {
-#if _CALL_ELF == 2
-	      union {
-		void *v;
+#सचे _CALL_ELF == 2
+	      सङ्घ {
+		शून्य *v;
 		unsigned long *ul;
-		float *f;
-		double *d;
+		भिन्न *f;
+		द्विगुण *d;
 		float128 *f128;
 		size_t p;
 	      } to, from;
@@ -1246,117 +1246,117 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 		 aggregate size is not greater than the space taken by
 		 the registers so store back to the register/parameter
 		 save arrays.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              सचे (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  if (pvec + elnum <= end_pvec)
+                  सचे (pvec + elnum <= end_pvec)
                     to.v = pvec;
-                  else
+                  अञ्ञथा
                     to.v = pst;
                 }
-              else
+              अञ्ञथा
 #endif
-	      if (pfr + elnum <= end_pfr)
+	      सचे (pfr + elnum <= end_pfr)
 		to.v = pfr;
-	      else
+	      अञ्ञथा
 		to.v = pst;
 
 	      avalue[i] = to.v;
 	      from.ul = pst;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-              if (elt == FFI_TYPE_LONGDOUBLE &&
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+              सचे (elt == FFI_TYPE_LONGDOUBLE &&
                   (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
                 {
-                  do
+                  करोहि
                     {
-                      if (pvec < end_pvec && i < nfixedargs)
-		        memcpy (to.f128, pvec++, sizeof (float128));
-                      else
-		        memcpy (to.f128, from.f128, sizeof (float128));
+                      सचे (pvec < end_pvec && i < nfixedargs)
+		        memcpy (to.f128, pvec++, परिमाण (float128));
+                      अञ्ञथा
+		        memcpy (to.f128, from.f128, परिमाण (float128));
                       to.f128++;
                       from.f128++;
                     }
-                  while (--elnum != 0);
+                  याव (--elnum != 0);
                 }
-              else
+              अञ्ञथा
 #endif
-	      if (elt == FFI_TYPE_FLOAT)
+	      सचे (elt == FFI_TYPE_FLOAT)
 		{
-		  do
+		  करोहि
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      सचे (pfr < end_pfr && i < nfixedargs)
 			{
-			  *to.f = (float) pfr->d;
+			  *to.f = (भिन्न) pfr->d;
 			  pfr++;
 			}
-		      else
+		      अञ्ञथा
 			*to.f = *from.f;
 		      to.f++;
 		      from.f++;
 		    }
-		  while (--elnum != 0);
+		  याव (--elnum != 0);
 		}
-	      else
+	      अञ्ञथा
 		{
-		  do
+		  करोहि
 		    {
-		      if (pfr < end_pfr && i < nfixedargs)
+		      सचे (pfr < end_pfr && i < nfixedargs)
 			{
 			  *to.d = pfr->d;
 			  pfr++;
 			}
-		      else
+		      अञ्ञथा
 			*to.d = *from.d;
 		      to.d++;
 		      from.d++;
 		    }
-		  while (--elnum != 0);
+		  याव (--elnum != 0);
 		}
-#else
-	      if (elt == FFI_TYPE_FLOAT)
-		goto do_float;
-	      else
-		goto do_double;
+#अञ्ञथा
+	      सचे (elt == FFI_TYPE_FLOAT)
+		गच्छ do_float;
+	      अञ्ञथा
+		गच्छ do_double;
 #endif
 	    }
-	  else
+	  अञ्ञथा
 	    {
 #ifndef __LITTLE_ENDIAN__
 	      /* Structures with size less than eight bytes are passed
 		 left-padded.  */
-	      if (arg_types[i]->size < 8)
-		avalue[i] = (char *) pst + 8 - arg_types[i]->size;
-	      else
+	      सचे (arg_types[i]->size < 8)
+		avalue[i] = (वर्ण *) pst + 8 - arg_types[i]->size;
+	      अञ्ञथा
 #endif
 		avalue[i] = pst;
 	    }
 	  pst += (arg_types[i]->size + 7) / 8;
-	  break;
+	  भङ्ग;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
-          if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	पक्ष FFI_TYPE_LONGDOUBLE:
+          सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              if (((unsigned long) pst & 0xF) != 0)
+              सचे (((unsigned long) pst & 0xF) != 0)
                 ++pst;
-              if (pvec < end_pvec && i < nfixedargs)
+              सचे (pvec < end_pvec && i < nfixedargs)
                 avalue[i] = pvec++;
-              else
+              अञ्ञथा
                 avalue[i] = pst;
               pst += 2;
-              break;
+              भङ्ग;
             }
-          else if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
+          अञ्ञथा सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      if (pfr + 1 < end_pfr && i + 1 < nfixedargs)
+	      सचे (pfr + 1 < end_pfr && i + 1 < nfixedargs)
 		{
 		  avalue[i] = pfr;
 		  pfr += 2;
 		}
-	      else
+	      अञ्ञथा
 		{
-		  if (pfr < end_pfr && i < nfixedargs)
+		  सचे (pfr < end_pfr && i < nfixedargs)
 		    {
 		      /* Passed partly in f13 and partly on the stack.
 			 Move it all to the stack.  */
@@ -1366,154 +1366,154 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 		  avalue[i] = pst;
 		}
 	      pst += 2;
-	      break;
+	      भङ्ग;
 	    }
 	  /* Fall through.  */
 #endif
-	case FFI_TYPE_DOUBLE:
-#if _CALL_ELF != 2
+	पक्ष FFI_TYPE_DOUBLE:
+#सचे _CALL_ELF != 2
 	do_double:
 #endif
 	  /* On the outgoing stack all values are aligned to 8 */
 	  /* there are 13 64bit floating point registers */
 
-	  if (pfr < end_pfr && i < nfixedargs)
+	  सचे (pfr < end_pfr && i < nfixedargs)
 	    {
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  अञ्ञथा
 	    avalue[i] = pst;
 	  pst++;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_FLOAT:
-#if _CALL_ELF != 2
+	पक्ष FFI_TYPE_FLOAT:
+#सचे _CALL_ELF != 2
 	do_float:
 #endif
-	  if (pfr < end_pfr && i < nfixedargs)
+	  सचे (pfr < end_pfr && i < nfixedargs)
 	    {
 	      /* Float values are stored as doubles in the
 		 ffi_closure_LINUX64 code.  Fix them here.  */
-	      pfr->f = (float) pfr->d;
+	      pfr->f = (भिन्न) pfr->d;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  अञ्ञथा
 	    {
 #ifndef __LITTLE_ENDIAN__
-	      avalue[i] = (char *) pst + 4;
-#else
+	      avalue[i] = (वर्ण *) pst + 4;
+#अञ्ञथा
 	      avalue[i] = pst;
 #endif
 	    }
 	  pst++;
-	  break;
+	  भङ्ग;
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-	case FFI_TYPE_COMPLEX:
+	पक्ष FFI_TYPE_COMPLEX:
 	  /* Reassemble each _Complex argument from successive registers (or
 	     parameter-save slots when registers are exhausted) into a
 	     contiguous in-memory value for the closure.  */
 	  {
-	    unsigned int j;
+	    unsigned पूर्णाङ्क j;
 	    elt = arg_types[i]->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	    /* A 64-bit long double arrives exactly like a double.  */
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    सचे (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_128) == 0)
 	      elt = FFI_TYPE_DOUBLE;
-	    if (elt == FFI_TYPE_LONGDOUBLE
+	    सचे (elt == FFI_TYPE_LONGDOUBLE
 		&& (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
 	      {
 		/* IEEE-128: each half arrives in a vector register (or the
 		   16-byte-aligned parameter save area) with two GPR shadow
 		   doublewords.  */
-		float128 *cval = alloca (2 * sizeof (float128));
-		if (((unsigned long) pst & 0xF) != 0)
+		float128 *cval = alloca (2 * परिमाण (float128));
+		सचे (((unsigned long) pst & 0xF) != 0)
 		  ++pst;
-		for (j = 0; j < 2; j++)
+		अत्थाय (j = 0; j < 2; j++)
 		  {
-		    if (pvec < end_pvec && i < nfixedargs)
-		      memcpy (&cval[j], pvec++, sizeof (float128));
-		    else
-		      memcpy (&cval[j], pst, sizeof (float128));
+		    सचे (pvec < end_pvec && i < nfixedargs)
+		      memcpy (&cval[j], pvec++, परिमाण (float128));
+		    अञ्ञथा
+		      memcpy (&cval[j], pst, परिमाण (float128));
 		    pst += 2;
 		  }
 		avalue[i] = cval;
-		break;
+		भङ्ग;
 	      }
-	    if (elt == FFI_TYPE_LONGDOUBLE)
+	    सचे (elt == FFI_TYPE_LONGDOUBLE)
 	      {
 		/* IBM-128: four doubles, each in an FPR (or one GPR shadow
 		   doubleword) -- real hi/lo then imag hi/lo.  */
-		double *cval = alloca (4 * sizeof (double));
-		for (j = 0; j < 4; j++)
+		द्विगुण *cval = alloca (4 * परिमाण (द्विगुण));
+		अत्थाय (j = 0; j < 4; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    सचे (pfr < end_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    अञ्ञथा
+		      cval[j] = *(द्विगुण *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
-		break;
+		भङ्ग;
 	      }
 #endif
-	    if (elt == FFI_TYPE_FLOAT)
+	    सचे (elt == FFI_TYPE_FLOAT)
 	      {
-		float *cval = alloca (2 * sizeof (float));
-		for (j = 0; j < 2; j++)
+		भिन्न *cval = alloca (2 * परिमाण (भिन्न));
+		अत्थाय (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    सचे (pfr < end_pfr && i < nfixedargs)
 		      {
-			cval[j] = (float) pfr->d;
+			cval[j] = (भिन्न) pfr->d;
 			pfr++;
 		      }
-		    else
+		    अञ्ञथा
 		      {
 #ifndef __LITTLE_ENDIAN__
-			cval[j] = ((float *) pst)[1];
-#else
-			cval[j] = ((float *) pst)[0];
+			cval[j] = ((भिन्न *) pst)[1];
+#अञ्ञथा
+			cval[j] = ((भिन्न *) pst)[0];
 #endif
 		      }
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else if (elt == FFI_TYPE_DOUBLE)
+	    अञ्ञथा सचे (elt == FFI_TYPE_DOUBLE)
 	      {
-		double *cval = alloca (2 * sizeof (double));
-		for (j = 0; j < 2; j++)
+		द्विगुण *cval = alloca (2 * परिमाण (द्विगुण));
+		अत्थाय (j = 0; j < 2; j++)
 		  {
-		    if (pfr < end_pfr && i < nfixedargs)
+		    सचे (pfr < end_pfr && i < nfixedargs)
 		      {
 			cval[j] = pfr->d;
 			pfr++;
 		      }
-		    else
-		      cval[j] = *(double *) pst;
+		    अञ्ञथा
+		      cval[j] = *(द्विगुण *) pst;
 		    pst++;
 		  }
 		avalue[i] = cval;
 	      }
-	    else
+	    अञ्ञथा
 	      {
 		/* Integer-typed _Complex: each half lives in its own GPR
 		   slot, right-justified on BE, low-address on LE.  */
 		size_t hsize = arg_types[i]->elements[0]->size;
-		char *cval = alloca (2 * hsize);
-		for (j = 0; j < 2; j++)
+		वर्ण *cval = alloca (2 * hsize);
+		अत्थाय (j = 0; j < 2; j++)
 		  {
-		    char *src;
+		    वर्ण *src;
 #ifndef __LITTLE_ENDIAN__
-		    src = (char *) pst + (8 - hsize);
-#else
-		    src = (char *) pst;
+		    src = (वर्ण *) pst + (8 - hsize);
+#अञ्ञथा
+		    src = (वर्ण *) pst;
 #endif
 		    memcpy (cval + j * hsize, src, hsize);
 		    pst++;
@@ -1521,10 +1521,10 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 		avalue[i] = cval;
 	      }
 	  }
-	  break;
+	  भङ्ग;
 #endif
 
-	default:
+	स्वभाव:
 	  FFI_ASSERT (0);
 	}
 
@@ -1534,56 +1534,56 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
   (*fun) (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_LINUX64 how to perform return type promotions.  */
-  switch (cif->rtype->type)
+  विकल्प (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
-      return PPC_LD_NONE;
-    case FFI_TYPE_FLOAT:
-      return PPC_LD_F32;
-    case FFI_TYPE_DOUBLE:
-      return PPC_LD_F64;
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-    case FFI_TYPE_LONGDOUBLE:
-      if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	return PPC64_LD_VECTOR;
-      return PPC_LD_F128;
+    पक्ष FFI_TYPE_VOID:
+      पटिनिवत्त PPC_LD_NONE;
+    पक्ष FFI_TYPE_FLOAT:
+      पटिनिवत्त PPC_LD_F32;
+    पक्ष FFI_TYPE_DOUBLE:
+      पटिनिवत्त PPC_LD_F64;
+#सचे FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+    पक्ष FFI_TYPE_LONGDOUBLE:
+      सचे ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	पटिनिवत्त PPC64_LD_VECTOR;
+      पटिनिवत्त PPC_LD_F128;
 #endif
-    case FFI_TYPE_UINT8:
-      return PPC_LD_U8;
-    case FFI_TYPE_SINT8:
-      return PPC_LD_S8;
-    case FFI_TYPE_UINT16:
-      return PPC_LD_U16;
-    case FFI_TYPE_SINT16:
-      return PPC_LD_S16;
-    case FFI_TYPE_UINT32:
-      return PPC_LD_U32;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      return PPC_LD_S32;
-    case FFI_TYPE_POINTER:
-      return PPC_LD_PTR;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      return PPC_LD_I64;
+    पक्ष FFI_TYPE_UINT8:
+      पटिनिवत्त PPC_LD_U8;
+    पक्ष FFI_TYPE_SINT8:
+      पटिनिवत्त PPC_LD_S8;
+    पक्ष FFI_TYPE_UINT16:
+      पटिनिवत्त PPC_LD_U16;
+    पक्ष FFI_TYPE_SINT16:
+      पटिनिवत्त PPC_LD_S16;
+    पक्ष FFI_TYPE_UINT32:
+      पटिनिवत्त PPC_LD_U32;
+    पक्ष FFI_TYPE_INT:
+    पक्ष FFI_TYPE_SINT32:
+      पटिनिवत्त PPC_LD_S32;
+    पक्ष FFI_TYPE_POINTER:
+      पटिनिवत्त PPC_LD_PTR;
+    पक्ष FFI_TYPE_UINT64:
+    पक्ष FFI_TYPE_SINT64:
+      पटिनिवत्त PPC_LD_I64;
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-    case FFI_TYPE_COMPLEX:
+    पक्ष FFI_TYPE_COMPLEX:
       {
-	int inner = cif->rtype->elements[0]->type;
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	if (inner == FFI_TYPE_LONGDOUBLE)
+	पूर्णाङ्क inner = cif->rtype->elements[0]->type;
+#सचे FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	सचे (inner == FFI_TYPE_LONGDOUBLE)
 	  {
 	    /* IEEE-128 _Complex long double returns in v2:v3; IBM-128 in
 	       f1:f2 (real) and f3:f4 (imag), i.e. as a double HFA.  */
-	    if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
-	      return PPC64_LD_VECTOR_HOMOG;
+	    सचे ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
+	      पटिनिवत्त PPC64_LD_VECTOR_HOMOG;
 	    inner = FFI_TYPE_DOUBLE;
 	  }
 #endif
-	if (inner == FFI_TYPE_FLOAT)
-	  return PPC64_LD_FLOAT_HOMOG;
-	if (inner == FFI_TYPE_DOUBLE)
-	  return PPC64_LD_DOUBLE_HOMOG;
+	सचे (inner == FFI_TYPE_FLOAT)
+	  पटिनिवत्त PPC64_LD_FLOAT_HOMOG;
+	सचे (inner == FFI_TYPE_DOUBLE)
+	  पटिनिवत्त PPC64_LD_DOUBLE_HOMOG;
 	/* Integer-typed _Complex: the user wrote the natural packed
 	   complex layout into rvalue (real@0, imag@hsize).  Repack into
 	   two sign-/zero-extended doublewords so the closure assembly
@@ -1591,89 +1591,89 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
 	   recovers real in r3 and imag in r4.  The RETVAL stack area is
 	   large enough (64 or 128 bytes) to hold the 16-byte repack.  */
 	{
-	  char *rv = rvalue;
+	  वर्ण *rv = rvalue;
 	  unsigned long re, im;
-	  switch (inner)
+	  विकल्प (inner)
 	    {
-	    case FFI_TYPE_UINT8:
-	      re = ((unsigned char *) rv)[0];
-	      im = ((unsigned char *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT8:
-	      re = (unsigned long) (long) ((signed char *) rv)[0];
-	      im = (unsigned long) (long) ((signed char *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT16:
+	    पक्ष FFI_TYPE_UINT8:
+	      re = ((unsigned वर्ण *) rv)[0];
+	      im = ((unsigned वर्ण *) rv)[1];
+	      भङ्ग;
+	    पक्ष FFI_TYPE_SINT8:
+	      re = (unsigned long) (long) ((signed वर्ण *) rv)[0];
+	      im = (unsigned long) (long) ((signed वर्ण *) rv)[1];
+	      भङ्ग;
+	    पक्ष FFI_TYPE_UINT16:
 	      re = ((unsigned short *) rv)[0];
 	      im = ((unsigned short *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT16:
+	      भङ्ग;
+	    पक्ष FFI_TYPE_SINT16:
 	      re = (unsigned long) (long) ((signed short *) rv)[0];
 	      im = (unsigned long) (long) ((signed short *) rv)[1];
-	      break;
-	    case FFI_TYPE_UINT32:
-	      re = ((unsigned int *) rv)[0];
-	      im = ((unsigned int *) rv)[1];
-	      break;
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT32:
-	      re = (unsigned long) (long) ((signed int *) rv)[0];
-	      im = (unsigned long) (long) ((signed int *) rv)[1];
-	      break;
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
-	    case FFI_TYPE_POINTER:
-	    default:
+	      भङ्ग;
+	    पक्ष FFI_TYPE_UINT32:
+	      re = ((unsigned पूर्णाङ्क *) rv)[0];
+	      im = ((unsigned पूर्णाङ्क *) rv)[1];
+	      भङ्ग;
+	    पक्ष FFI_TYPE_INT:
+	    पक्ष FFI_TYPE_SINT32:
+	      re = (unsigned long) (long) ((signed पूर्णाङ्क *) rv)[0];
+	      im = (unsigned long) (long) ((signed पूर्णाङ्क *) rv)[1];
+	      भङ्ग;
+	    पक्ष FFI_TYPE_SINT64:
+	    पक्ष FFI_TYPE_UINT64:
+	    पक्ष FFI_TYPE_POINTER:
+	    स्वभाव:
 	      re = ((unsigned long *) rv)[0];
 	      im = ((unsigned long *) rv)[1];
-	      break;
+	      भङ्ग;
 	    }
 	  ((unsigned long *) rv)[0] = re;
 	  ((unsigned long *) rv)[1] = im;
-	  return PPC_LD_R3R4;
+	  पटिनिवत्त PPC_LD_R3R4;
 	}
       }
 #endif
-    case FFI_TYPE_STRUCT:
-      if ((cif->flags & FLAG_RETURNS_SMST) != 0)
+    पक्ष FFI_TYPE_STRUCT:
+      सचे ((cif->flags & FLAG_RETURNS_SMST) != 0)
 	{
-	  if ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
+	  सचे ((cif->flags & (FLAG_RETURNS_FP | FLAG_RETURNS_VEC)) == 0)
 	    {
 	      /* A struct smaller than a dword is returned in the low bits
 		 of r3 right justified.  Larger structs are passed left
 		 justified in r3 and r4.  The return value area on the
 		 stack will have the structs as they are usually stored
 		 in memory. */
-	      switch (cif->rtype->size)
+	      विकल्प (cif->rtype->size)
 		{
-		case 0:
-		  return PPC_LD_NONE;
-		case 1:
-		  return PPC_LD_U8;
-		case 2:
-		  return PPC_LD_U16;
-		case 3:
-		  return PPC64_LD_STRUCT_3;
-		case 4:
-		  return PPC_LD_U32;
-		case 5:
-		  return PPC64_LD_STRUCT_5;
-		case 6:
-		  return PPC64_LD_STRUCT_6;
-		case 7:
-		  return PPC64_LD_STRUCT_7;
-		case 8 ... 16:
-		  return PPC_LD_R3R4;
+		पक्ष 0:
+		  पटिनिवत्त PPC_LD_NONE;
+		पक्ष 1:
+		  पटिनिवत्त PPC_LD_U8;
+		पक्ष 2:
+		  पटिनिवत्त PPC_LD_U16;
+		पक्ष 3:
+		  पटिनिवत्त PPC64_LD_STRUCT_3;
+		पक्ष 4:
+		  पटिनिवत्त PPC_LD_U32;
+		पक्ष 5:
+		  पटिनिवत्त PPC64_LD_STRUCT_5;
+		पक्ष 6:
+		  पटिनिवत्त PPC64_LD_STRUCT_6;
+		पक्ष 7:
+		  पटिनिवत्त PPC64_LD_STRUCT_7;
+		पक्ष 8 ... 16:
+		  पटिनिवत्त PPC_LD_R3R4;
 		}
-	      break;
+	      भङ्ग;
 	    }
-	  if ((cif->flags & FLAG_RETURNS_VEC) != 0)
-	    return PPC64_LD_VECTOR_HOMOG;
-	  if ((cif->flags & FLAG_RETURNS_64BITS) != 0)
-	    return PPC64_LD_DOUBLE_HOMOG;
-	  return PPC64_LD_FLOAT_HOMOG;
+	  सचे ((cif->flags & FLAG_RETURNS_VEC) != 0)
+	    पटिनिवत्त PPC64_LD_VECTOR_HOMOG;
+	  सचे ((cif->flags & FLAG_RETURNS_64BITS) != 0)
+	    पटिनिवत्त PPC64_LD_DOUBLE_HOMOG;
+	  पटिनिवत्त PPC64_LD_FLOAT_HOMOG;
         }
-      return PPC_LD_NONE;
+      पटिनिवत्त PPC_LD_NONE;
     }
   abort();
 }

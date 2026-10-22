@@ -36,43 +36,43 @@
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined (POWERPC) && defined (__powerpc64__)	/* linux64 */
+#सचे defined (POWERPC) && defined (__powerpc64__)	/* linux64 */
 #ifndef POWERPC64
 #define POWERPC64
 #endif
-#elif defined (POWERPC_DARWIN) && defined (__ppc64__)	/* Darwin64 */
+#नोचेद्यदि defined (POWERPC_DARWIN) && defined (__ppc64__)	/* Darwin64 */
 #ifndef POWERPC64
 #define POWERPC64
 #endif
 #ifndef POWERPC_DARWIN64
 #define POWERPC_DARWIN64
 #endif
-#elif defined (POWERPC_AIX) && defined (__64BIT__)	/* AIX64 */
+#नोचेद्यदि defined (POWERPC_AIX) && defined (__64BIT__)	/* AIX64 */
 #ifndef POWERPC64
 #define POWERPC64
 #endif
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+प्रकारनिर्देश unsigned long          ffi_arg;
+प्रकारनिर्देश signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
 
-#if defined (POWERPC_AIX)
+#सचे defined (POWERPC_AIX)
   FFI_AIX,
   FFI_DARWIN,
   FFI_DEFAULT_ABI = FFI_AIX,
   FFI_LAST_ABI
 
-#elif defined (POWERPC_DARWIN)
+#नोचेद्यदि defined (POWERPC_DARWIN)
   FFI_AIX,
   FFI_DARWIN,
   FFI_DEFAULT_ABI = FFI_DARWIN,
   FFI_LAST_ABI
 
-#else
+#अञ्ञथा
   /* The FFI_COMPAT values are used by old code.  Since libffi may be
      a shared library we have to support old values for backwards
      compatibility.  */
@@ -82,7 +82,7 @@ typedef enum ffi_abi {
   FFI_COMPAT_LINUX,
   FFI_COMPAT_LINUX_SOFT_FLOAT,
 
-# if defined (POWERPC64)
+# सचे defined (POWERPC64)
   /* This bit, always set in new code, must not be set in any of the
      old FFI_COMPAT values that might be used for 64-bit linux.  We
      only need worry about FFI_COMPAT_LINUX64, but to be safe avoid
@@ -105,7 +105,7 @@ typedef enum ffi_abi {
 		     ),
   FFI_LAST_ABI = 16
 
-# else
+# अञ्ञथा
   /* This bit, always set in new code, must not be set in any of the
      old FFI_COMPAT values that might be used for 32-bit linux/sysv/bsd.  */
   FFI_SYSV = 8,
@@ -119,11 +119,11 @@ typedef enum ffi_abi {
 #  ifdef __NO_FPRS__
 		     | FFI_SYSV_SOFT_FLOAT
 #  endif
-#  if (defined (__SVR4_STRUCT_RETURN)					\
+#  सचे (defined (__SVR4_STRUCT_RETURN)					\
        || defined (POWERPC_FREEBSD) && !defined (__AIX_STRUCT_RETURN))
 		     | FFI_SYSV_STRUCT_RET
 #  endif
-#  if __LDBL_MANT_DIG__ == 106
+#  सचे __LDBL_MANT_DIG__ == 106
 		     | FFI_SYSV_IBM_LONG_DOUBLE
 #  endif
 #  ifdef __LONG_DOUBLE_128__
@@ -141,12 +141,12 @@ typedef enum ffi_abi {
 
 #define FFI_CLOSURES 1
 #define FFI_NATIVE_RAW_API 0
-#if defined (POWERPC) || defined (POWERPC_FREEBSD)
+#सचे defined (POWERPC) || defined (POWERPC_FREEBSD)
 # define FFI_GO_CLOSURES 1
 # define FFI_TARGET_SPECIFIC_VARIADIC 1
 # define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
 #endif
-#if defined (POWERPC_AIX)
+#सचे defined (POWERPC_AIX)
 # define FFI_GO_CLOSURES 1
 #endif
 
@@ -156,20 +156,20 @@ typedef enum ffi_abi {
    homogeneous floating-point aggregate, but each scalar half consumes a
    GPR shadow slot of its own — i.e. the same way the underlying C ABI
    handles them, which is what GCC's split_complex_arg emits.  */
-#if defined(POWERPC64) && _CALL_ELF == 2
+#सचे defined(POWERPC64) && _CALL_ELF == 2
 # define FFI_TARGET_HAS_COMPLEX_TYPE
 #endif
 
-#if _CALL_ELF == 2
+#सचे _CALL_ELF == 2
 # define FFI_TRAMPOLINE_SIZE 32
-#else
-# if defined(POWERPC64) || defined(POWERPC_AIX)
-#  if defined(POWERPC_DARWIN64)
+#अञ्ञथा
+# सचे defined(POWERPC64) || defined(POWERPC_AIX)
+#  सचे defined(POWERPC_DARWIN64)
 #    define FFI_TRAMPOLINE_SIZE 48
-#  else
+#  अञ्ञथा
 #    define FFI_TRAMPOLINE_SIZE 24
 #  endif
-# else /* POWERPC || POWERPC_AIX */
+# अञ्ञथा /* POWERPC || POWERPC_AIX */
 #  define FFI_TRAMPOLINE_SIZE 40
 # endif
 #endif

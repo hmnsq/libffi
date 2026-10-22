@@ -25,39 +25,39 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव "internal.h"
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if defined(__LONG_DOUBLE_128__)
-# if FFI_TYPE_LONGDOUBLE != 4
+#सचे defined(__LONG_DOUBLE_128__)
+# सचे FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#अञ्ञथा
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
 
-extern void ffi_call_osf(void *stack, void *frame, unsigned flags,
-			 void *raddr, void (*fn)(void), void *closure)
+बाह्य शून्य ffi_call_osf(शून्य *राशिः, शून्य *frame, unsigned flags,
+			 शून्य *raddr, शून्य (*fn)(शून्य), शून्य *closure)
 	FFI_HIDDEN;
-extern void ffi_closure_osf(void) FFI_HIDDEN;
-extern void ffi_go_closure_osf(void) FFI_HIDDEN;
+बाह्य शून्य ffi_closure_osf(शून्य) FFI_HIDDEN;
+बाह्य शून्य ffi_go_closure_osf(शून्य) FFI_HIDDEN;
 
 /* Promote a float value to its in-register double representation.
    Unlike actually casting to double, this does not trap on NaN.  */
-static inline UINT64 lds(void *ptr)
+स्थिर अन्तःस्थ UINT64 lds(शून्य *ptr)
 {
   UINT64 ret;
   __asm__("lds %0,%1" : "=f"(ret) : "m"(*(UINT32 *)ptr));
-  return ret;
+  पटिनिवत्त ret;
 }
 
 /* And the reverse.  */
-static inline void sts(void *ptr, UINT64 val)
+स्थिर अन्तःस्थ शून्य sts(शून्य *ptr, UINT64 val)
 {
   __asm__("sts %1,%0" : "=m"(*(UINT32 *)ptr) : "f"(val));
 }
@@ -66,180 +66,180 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   size_t bytes = 0;
-  int flags, i, avn;
+  पूर्णाङ्क flags, i, avn;
   ffi_type *rtype, *itype;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  सचे (cif->abi != FFI_OSF)
+    पटिनिवत्त FFI_BAD_ABI;
 
   /* Compute the size of the argument area.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  अत्थाय (i = 0, avn = cif->nargs; i < avn; i++)
     {
       itype = cif->arg_types[i];
-      switch (itype->type)
+      विकल्प (itype->type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	पक्ष FFI_TYPE_INT:
+	पक्ष FFI_TYPE_SINT8:
+	पक्ष FFI_TYPE_UINT8:
+	पक्ष FFI_TYPE_SINT16:
+	पक्ष FFI_TYPE_UINT16:
+	पक्ष FFI_TYPE_SINT32:
+	पक्ष FFI_TYPE_UINT32:
+	पक्ष FFI_TYPE_SINT64:
+	पक्ष FFI_TYPE_UINT64:
+	पक्ष FFI_TYPE_POINTER:
+	पक्ष FFI_TYPE_FLOAT:
+	पक्ष FFI_TYPE_DOUBLE:
+	पक्ष FFI_TYPE_LONGDOUBLE:
 	  /* All take one 8 byte slot.  */
 	  bytes += 8;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	पक्ष FFI_TYPE_SINT128:
+	पक्ष FFI_TYPE_UINT128:
+	पक्ष FFI_TYPE_VOID:
+	पक्ष FFI_TYPE_STRUCT:
 	  /* Passed by value in N slots.  */
 	  bytes += FFI_ALIGN(itype->size, FFI_SIZEOF_ARG);
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_COMPLEX:
+	पक्ष FFI_TYPE_COMPLEX:
 	  /* _Complex long double passed by reference; others in 2 slots.  */
-	  if (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+	  सचे (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
 	    bytes += 8;
-	  else
+	  अञ्ञथा
 	    bytes += 16;
-	  break;
+	  भङ्ग;
 
-	default:
+	स्वभाव:
 	  abort();
 	}
     }
 
   /* Set the return type flag */
   rtype = cif->rtype;
-  switch (rtype->type)
+  विकल्प (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    पक्ष FFI_TYPE_VOID:
       flags = ALPHA_FLAGS(ALPHA_ST_VOID, ALPHA_LD_VOID);
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+      भङ्ग;
+    पक्ष FFI_TYPE_INT:
+    पक्ष FFI_TYPE_UINT32:
+    पक्ष FFI_TYPE_SINT32:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT32);
-      break;
-    case FFI_TYPE_FLOAT:
+      भङ्ग;
+    पक्ष FFI_TYPE_FLOAT:
       flags = ALPHA_FLAGS(ALPHA_ST_FLOAT, ALPHA_LD_FLOAT);
-      break;
-    case FFI_TYPE_DOUBLE:
+      भङ्ग;
+    पक्ष FFI_TYPE_DOUBLE:
       flags = ALPHA_FLAGS(ALPHA_ST_DOUBLE, ALPHA_LD_DOUBLE);
-      break;
-    case FFI_TYPE_UINT8:
+      भङ्ग;
+    पक्ष FFI_TYPE_UINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT8);
-      break;
-    case FFI_TYPE_SINT8:
+      भङ्ग;
+    पक्ष FFI_TYPE_SINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT8);
-      break;
-    case FFI_TYPE_UINT16:
+      भङ्ग;
+    पक्ष FFI_TYPE_UINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT16);
-      break;
-    case FFI_TYPE_SINT16:
+      भङ्ग;
+    पक्ष FFI_TYPE_SINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT16);
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
+      भङ्ग;
+    पक्ष FFI_TYPE_UINT64:
+    पक्ष FFI_TYPE_SINT64:
+    पक्ष FFI_TYPE_POINTER:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-      break;
-    case FFI_TYPE_SINT128:
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
+      भङ्ग;
+    पक्ष FFI_TYPE_SINT128:
+    पक्ष FFI_TYPE_UINT128:
+    पक्ष FFI_TYPE_LONGDOUBLE:
+    पक्ष FFI_TYPE_STRUCT:
       /* Passed in memory, with a hidden pointer.  */
       flags = ALPHA_RET_IN_MEM;
-      break;
-    case FFI_TYPE_COMPLEX:
+      भङ्ग;
+    पक्ष FFI_TYPE_COMPLEX:
       itype = rtype->elements[0];
-      switch (itype->type)
+      विकल्प (itype->type)
 	{
-	case FFI_TYPE_FLOAT:
+	पक्ष FFI_TYPE_FLOAT:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXF, ALPHA_LD_CPLXF);
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  भङ्ग;
+	पक्ष FFI_TYPE_DOUBLE:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXD, ALPHA_LD_CPLXD);
-	  break;
-	default:
-	  if (rtype->size <= 8)
+	  भङ्ग;
+	स्वभाव:
+	  सचे (rtype->size <= 8)
 	    flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-	  else
+	  अञ्ञथा
 	    flags = ALPHA_RET_IN_MEM;
-	  break;
+	  भङ्ग;
 	}
-      break;
-    default:
+      भङ्ग;
+    स्वभाव:
       abort();
     }
   cif->flags = flags;
 
   /* Include the hidden structure pointer in args requirement.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  सचे (flags == ALPHA_RET_IN_MEM)
     bytes += 8;
   /* Minimum size is 6 slots, so that ffi_call_osf can pop them.  */
-  if (bytes < 6*8)
+  सचे (bytes < 6*8)
     bytes = 6*8;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  पटिनिवत्त FFI_OK;
 }
 
-static unsigned long
-extend_basic_type(void *valp, int type, int argn)
+स्थिर unsigned long
+extend_basic_type(शून्य *valp, पूर्णाङ्क type, पूर्णाङ्क argn)
 {
-  switch (type)
+  विकल्प (type)
     {
-    case FFI_TYPE_SINT8:
-      return *(SINT8 *)valp;
-    case FFI_TYPE_UINT8:
-      return *(UINT8 *)valp;
-    case FFI_TYPE_SINT16:
-      return *(SINT16 *)valp;
-    case FFI_TYPE_UINT16:
-      return *(UINT16 *)valp;
+    पक्ष FFI_TYPE_SINT8:
+      पटिनिवत्त *(SINT8 *)valp;
+    पक्ष FFI_TYPE_UINT8:
+      पटिनिवत्त *(UINT8 *)valp;
+    पक्ष FFI_TYPE_SINT16:
+      पटिनिवत्त *(SINT16 *)valp;
+    पक्ष FFI_TYPE_UINT16:
+      पटिनिवत्त *(UINT16 *)valp;
 
-    case FFI_TYPE_FLOAT:
-      if (argn < 6)
-	return lds(valp);
+    पक्ष FFI_TYPE_FLOAT:
+      सचे (argn < 6)
+	पटिनिवत्त lds(valp);
       /* FALLTHRU */
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    पक्ष FFI_TYPE_INT:
+    पक्ष FFI_TYPE_SINT32:
+    पक्ष FFI_TYPE_UINT32:
       /* Note that unsigned 32-bit quantities are sign extended.  */
-      return *(SINT32 *)valp;
+      पटिनिवत्त *(SINT32 *)valp;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_DOUBLE:
-      return *(UINT64 *)valp;
+    पक्ष FFI_TYPE_SINT64:
+    पक्ष FFI_TYPE_UINT64:
+    पक्ष FFI_TYPE_POINTER:
+    पक्ष FFI_TYPE_DOUBLE:
+      पटिनिवत्त *(UINT64 *)valp;
 
-    default:
+    स्वभाव:
       abort();
     }
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+स्थिर शून्य
+ffi_call_int (ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue,
+	      शून्य **avalue, शून्य *closure)
 {
   unsigned long *argp;
   long i, avn, argn, flags = cif->flags;
   ffi_type **arg_types;
-  void *frame;
+  शून्य *frame;
 
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
-  if (rvalue == NULL && flags == ALPHA_RET_IN_MEM)
+  सचे (rvalue == रिक्त && flags == ALPHA_RET_IN_MEM)
     rvalue = alloca(cif->rtype->size);
 
   /* Allocate the space for the arguments, plus 4 words of temp
@@ -248,65 +248,65 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   frame += cif->bytes;
 
   argn = 0;
-  if (flags == ALPHA_RET_IN_MEM)
+  सचे (flags == ALPHA_RET_IN_MEM)
     argp[argn++] = (unsigned long)rvalue;
 
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  अत्थाय (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *valp = avalue[i];
-      int type = ty->type;
+      शून्य *valp = avalue[i];
+      पूर्णाङ्क type = ty->type;
       size_t size;
 
-      switch (type)
+      विकल्प (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	पक्ष FFI_TYPE_INT:
+	पक्ष FFI_TYPE_SINT8:
+	पक्ष FFI_TYPE_UINT8:
+	पक्ष FFI_TYPE_SINT16:
+	पक्ष FFI_TYPE_UINT16:
+	पक्ष FFI_TYPE_SINT32:
+	पक्ष FFI_TYPE_UINT32:
+	पक्ष FFI_TYPE_SINT64:
+	पक्ष FFI_TYPE_UINT64:
+	पक्ष FFI_TYPE_POINTER:
+	पक्ष FFI_TYPE_FLOAT:
+	पक्ष FFI_TYPE_DOUBLE:
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argn++;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_LONGDOUBLE:
+	पक्ष FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Note that 128-bit long double is passed by reference.  */
 	  argp[argn++] = (unsigned long)valp;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	पक्ष FFI_TYPE_SINT128:
+	पक्ष FFI_TYPE_UINT128:
+	पक्ष FFI_TYPE_VOID:
+	पक्ष FFI_TYPE_STRUCT:
 	  size = ty->size;
 	  memcpy(argp + argn, valp, size);
 	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_COMPLEX:
+	पक्ष FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  if (type == FFI_TYPE_LONGDOUBLE)
-	    goto by_reference;
+	  सचे (type == FFI_TYPE_LONGDOUBLE)
+	    गच्छ by_reference;
 
 	  /* Most complex types passed as two separate arguments.  */
 	  size = ty->elements[0]->size;
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argp[argn + 1] = extend_basic_type(valp + size, type, argn + 1);
 	  argn += 2;
-	  break;
+	  भङ्ग;
 
-	default:
+	स्वभाव:
 	  abort();
 	}
     }
@@ -315,15 +315,15 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   ffi_call_osf(argp, frame, flags, rvalue, fn, closure);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+शून्य
+ffi_call (ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue, शून्य **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, रिक्त);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+शून्य
+ffi_call_go (ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue,
+	     शून्य **avalue, शून्य *closure)
 {
   ffi_call_int(cif, fn, rvalue, avalue, closure);
 }
@@ -331,21 +331,21 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      शून्य (*fun)(ffi_cif*, शून्य*, शून्य**, शून्य*),
+		      शून्य *user_data,
+		      शून्य *codeloc)
 {
-  unsigned int *tramp;
+  unsigned पूर्णाङ्क *tramp;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  सचे (cif->abi != FFI_OSF)
+    पटिनिवत्त FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned पूर्णाङ्क *) &closure->tramp[0];
   tramp[0] = 0x47fb0401;	/* mov $27,$1		*/
   tramp[1] = 0xa77b0010;	/* ldq $27,16($27)	*/
   tramp[2] = 0x6bfb0000;	/* jmp $31,($27),0	*/
   tramp[3] = 0x47ff041f;	/* nop			*/
-  *(void **) &tramp[4] = ffi_closure_osf;
+  *(शून्य **) &tramp[4] = ffi_closure_osf;
 
   closure->cif = cif;
   closure->fun = fun;
@@ -357,164 +357,164 @@ ffi_prep_closure_loc (ffi_closure* closure,
      instead, since both Compaq as and gas can handle it.
 
      0x86 is PAL_imb in Tru64 UNIX <alpha/pal.h>.  */
-  __asm__ volatile ("call_pal 0x86" : : : "memory");
+  __asm__ चञ्चल ("call_pal 0x86" : : : "memory");
 
-  return FFI_OK;
+  पटिनिवत्त FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure,
 		     ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     शून्य (*fun)(ffi_cif*, शून्य*, शून्य**, शून्य*))
 {
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  सचे (cif->abi != FFI_OSF)
+    पटिनिवत्त FFI_BAD_ABI;
 
-  closure->tramp = (void *)ffi_go_closure_osf;
+  closure->tramp = (शून्य *)ffi_go_closure_osf;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  पटिनिवत्त FFI_OK;
 }
 
 long FFI_HIDDEN
 ffi_closure_osf_inner (ffi_cif *cif,
-		       void (*fun)(ffi_cif*, void*, void**, void*),
-		       void *user_data,
-		       void *rvalue, unsigned long *argp)
+		       शून्य (*fun)(ffi_cif*, शून्य*, शून्य**, शून्य*),
+		       शून्य *user_data,
+		       शून्य *rvalue, unsigned long *argp)
 {
-  void **avalue;
+  शून्य **avalue;
   ffi_type **arg_types;
   long i, avn, argn, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * परिमाण(शून्य *));
   flags = cif->flags;
   argn = 0;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  सचे (flags == ALPHA_RET_IN_MEM)
     {
-      rvalue = (void *) argp[0];
+      rvalue = (शून्य *) argp[0];
       argn = 1;
     }
 
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  अत्थाय (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      int type = ty->type;
-      void *valp = &argp[argn];
+      पूर्णाङ्क type = ty->type;
+      शून्य *valp = &argp[argn];
       size_t size;
 
-      switch (type)
+      विकल्प (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	पक्ष FFI_TYPE_INT:
+	पक्ष FFI_TYPE_SINT8:
+	पक्ष FFI_TYPE_UINT8:
+	पक्ष FFI_TYPE_SINT16:
+	पक्ष FFI_TYPE_UINT16:
+	पक्ष FFI_TYPE_SINT32:
+	पक्ष FFI_TYPE_UINT32:
+	पक्ष FFI_TYPE_SINT64:
+	पक्ष FFI_TYPE_UINT64:
+	पक्ष FFI_TYPE_POINTER:
 	  argn += 1;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	पक्ष FFI_TYPE_SINT128:
+	पक्ष FFI_TYPE_UINT128:
+	पक्ष FFI_TYPE_VOID:
+	पक्ष FFI_TYPE_STRUCT:
 	  size = ty->size;
 	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_FLOAT:
+	पक्ष FFI_TYPE_FLOAT:
 	  /* Floats coming from registers need conversion from double
 	     back to float format.  */
-	  if (argn < 6)
+	  सचे (argn < 6)
 	    {
 	      valp = &argp[argn - 6];
 	      sts(valp, argp[argn - 6]);
 	    }
 	  argn += 1;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_DOUBLE:
-	  if (argn < 6)
+	पक्ष FFI_TYPE_DOUBLE:
+	  सचे (argn < 6)
 	    valp = &argp[argn - 6];
 	  argn += 1;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_LONGDOUBLE:
+	पक्ष FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* 128-bit long double is passed by reference.  */
-	  valp = (void *)argp[argn];
+	  valp = (शून्य *)argp[argn];
 	  argn += 1;
-	  break;
+	  भङ्ग;
 
-	case FFI_TYPE_COMPLEX:
+	पक्ष FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  switch (type)
+	  विकल्प (type)
 	    {
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
+	    पक्ष FFI_TYPE_SINT64:
+	    पक्ष FFI_TYPE_UINT64:
 	      /* Passed as separate arguments, but they wind up sequential.  */
-	      break;
+	      भङ्ग;
 
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
+	    पक्ष FFI_TYPE_INT:
+	    पक्ष FFI_TYPE_SINT8:
+	    पक्ष FFI_TYPE_UINT8:
+	    पक्ष FFI_TYPE_SINT16:
+	    पक्ष FFI_TYPE_UINT16:
+	    पक्ष FFI_TYPE_SINT32:
+	    पक्ष FFI_TYPE_UINT32:
 	      /* Passed as separate arguments.  Disjoint, but there's room
 		 enough in one slot to hold the pair.  */
 	      size = ty->elements[0]->size;
 	      memcpy(valp + size, valp + 8, size);
-	      break;
+	      भङ्ग;
 
-	    case FFI_TYPE_FLOAT:
+	    पक्ष FFI_TYPE_FLOAT:
 	      /* Passed as separate arguments.  Disjoint, and each piece
 		 may need conversion back to float.  */
-	      if (argn < 6)
+	      सचे (argn < 6)
 		{
 		  valp = &argp[argn - 6];
 		  sts(valp, argp[argn - 6]);
 		}
-	      if (argn + 1 < 6)
+	      सचे (argn + 1 < 6)
 		sts(valp + 4, argp[argn + 1 - 6]);
-	      else
+	      अञ्ञथा
 		*(UINT32 *)(valp + 4) = argp[argn + 1];
-	      break;
+	      भङ्ग;
 
-	    case FFI_TYPE_DOUBLE:
+	    पक्ष FFI_TYPE_DOUBLE:
 	      /* Passed as separate arguments.  Only disjoint if one part
 		 is in fp regs and the other is on the stack.  */
-	      if (argn < 5)
+	      सचे (argn < 5)
 		valp = &argp[argn - 6];
-	      else if (argn == 5)
+	      अञ्ञथा सचे (argn == 5)
 		{
 		  valp = alloca(16);
 		  ((UINT64 *)valp)[0] = argp[5 - 6];
 		  ((UINT64 *)valp)[1] = argp[6];
 		}
-	      break;
+	      भङ्ग;
 
-	    case FFI_TYPE_LONGDOUBLE:
-	      goto by_reference;
+	    पक्ष FFI_TYPE_LONGDOUBLE:
+	      गच्छ by_reference;
 
-	    default:
+	    स्वभाव:
 	      abort();
 	    }
 	  argn += 2;
-	  break;
+	  भङ्ग;
 
-	default:
+	स्वभाव:
 	  abort ();
 	}
 
@@ -525,5 +525,5 @@ ffi_closure_osf_inner (ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_osf how to perform return type promotions.  */
-  return (flags >> ALPHA_LD_SHIFT) & 0xff;
+  पटिनिवत्त (flags >> ALPHA_LD_SHIFT) & 0xff;
 }

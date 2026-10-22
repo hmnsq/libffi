@@ -32,12 +32,12 @@
 
 #ifndef LIBFFI_ASM
 
-#include <arch/abi.h>
+#अन्तर्भाव <arch/abi.h>
 
-typedef uint_reg_t ffi_arg;
-typedef int_reg_t  ffi_sarg;
+प्रकारनिर्देश uint_reg_t ffi_arg;
+प्रकारनिर्देश int_reg_t  ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_UNIX,
   FFI_LAST_ABI,
@@ -53,10 +53,10 @@ typedef enum ffi_abi {
 # define FFI_SIZEOF_ARG 8
 # ifdef __LP64__
 #  define FFI_TRAMPOLINE_SIZE (8 * 5)  /* 5 bundles */
-# else
+# अञ्ञथा
 #  define FFI_TRAMPOLINE_SIZE (8 * 3)  /* 3 bundles */
 # endif
-#else
+#अञ्ञथा
 # define FFI_SIZEOF_ARG 4
 # define FFI_TRAMPOLINE_SIZE 8 /* 1 bundle */
 #endif
