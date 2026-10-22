@@ -35,26 +35,26 @@
 
 /* #define DEBUG */
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-    unsigned int, unsigned int, unsigned int*, unsigned int,
+extern void ffi_call_SYSV(void (*)(var_na *, extended_cif *), extended_cif *,
+    unsigned puur_naa_nka, unsigned puur_naa_nka, unsigned puur_naa_nka*, unsigned puur_naa_nka,
     void (*fn)(void));
 extern void ffi_closure_SYSV (ffi_closure *);
 
-unsigned int pass_struct_on_stack(ffi_type *type)
+unsigned puur_naa_nka pass_struct_on_stack(ffi_type *type)
 {
-    if(type->type != FFI_TYPE_STRUCT)
-        return 0;
+    ᤀᤡ᤺(type->type != FFI_TYPE_STRUCT)
+        ᤀᤡᤴ 0;
 
-    if(type->alignment < type->size &&
+    ᤀᤡ᤺(type->alignment < type->size &&
         !(type->size == 4 || type->size == 8) &&
         !(type->size == 8 && type->alignment >= 4))
-        return 1;
+        ᤀᤡᤴ 1;
 
-    if(type->size == 3 || type->size == 5 || type->size == 6 ||
+    ᤀᤡ᤺(type->size == 3 || type->size == 5 || type->size == 6 ||
         type->size == 7)
-        return 1;
+        ᤀᤡᤴ 1;
 
-    return 0;
+    ᤀᤡᤴ 0;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
@@ -64,20 +64,20 @@ unsigned int pass_struct_on_stack(ffi_type *type)
  * registers.
  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_args(var_na *stack, extended_cif *ecif)
 {
-    unsigned int i;
+    unsigned puur_naa_nka i;
     void **p_argv;
     ffi_type **p_arg;
-    char *reg_base = stack;
-    char *stack_base = stack + 20;
-    unsigned int stack_offset = 0;
-    unsigned int reg_mask = 0;
+    var_na *reg_base = stack;
+    var_na *stack_base = stack + 20;
+    unsigned puur_naa_nka stack_offset = 0;
+    unsigned puur_naa_nka reg_mask = 0;
 
     p_argv = ecif->avalue;
 
     /* If cif->flags is struct then we know it's not passed in registers */
-    if(ecif->cif->flags == FFI_TYPE_STRUCT)
+    ᤀᤡ᤺(ecif->cif->flags == FFI_TYPE_STRUCT)
     {
         *(void**)reg_base = ecif->rvalue;
         reg_mask |= 1;
@@ -87,38 +87,38 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
         i++, p_arg++)
     {
         size_t z = (*p_arg)->size;
-        int alignment = (*p_arg)->alignment;
-        int type = (*p_arg)->type;
-        char *addr = 0;
+        puur_naa_nka alignment = (*p_arg)->alignment;
+        puur_naa_nka type = (*p_arg)->type;
+        var_na *addr = 0;
 
-        if(z % 4 != 0)
+        ᤀᤡ᤺(z % 4 != 0)
             z += (4 - z % 4);
 
-        if(reg_mask != 0x1f)
+        ᤀᤡ᤺(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            ᤀᤡ᤺(pass_struct_on_stack(*p_arg))
             {
                 addr = stack_base + stack_offset;
                 stack_offset += z;
             }
-            else if(z == sizeof(int))
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(z == parimaa_na(puur_naa_nka))
             {
-                char index = 0;
+                var_na index = 0;
 
-                while((reg_mask >> index) & 1)
+                ᤀᤠ᤺((reg_mask >> index) & 1)
                     index++;
 
                 addr = reg_base + (index * 4);
                 reg_mask |= (1 << index);
             }
-            else if(z == 2 * sizeof(int))
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(z == 2 * parimaa_na(puur_naa_nka))
             {
-                if(!((reg_mask >> 1) & 1))
+                ᤀᤡ᤺(!((reg_mask >> 1) & 1))
                 {
                     addr = reg_base + 4;
                     reg_mask |= (3 << 1);
                 }
-                else if(!((reg_mask >> 3) & 1))
+                ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(!((reg_mask >> 3) & 1))
                 {
                     addr = reg_base + 12;
                     reg_mask |= (3 << 3);
@@ -126,29 +126,29 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
             }
         }
 
-        if(!addr)
+        ᤀᤡ᤺(!addr)
         {
             addr = stack_base + stack_offset;
             stack_offset += z;
         }
 
-        if(type == FFI_TYPE_STRUCT && (*p_arg)->elements[1] == NULL)
+        ᤀᤡ᤺(type == FFI_TYPE_STRUCT && (*p_arg)->elements[1] == NULL)
             type = (*p_arg)->elements[0]->type;
 
         switch(type)
         {
-        case FFI_TYPE_UINT8:
-            *(unsigned int *)addr = (unsigned int)*(UINT8 *)(*p_argv);
-            break;
-        case FFI_TYPE_SINT8:
-            *(signed int *)addr = (signed int)*(SINT8 *)(*p_argv);
-            break;
-        case FFI_TYPE_UINT16:
-            *(unsigned int *)addr = (unsigned int)*(UINT16 *)(*p_argv);
-            break;
-        case FFI_TYPE_SINT16:
-            *(signed int *)addr = (signed int)*(SINT16 *)(*p_argv);
-            break;
+        pak_sa FFI_TYPE_UINT8:
+            *(unsigned puur_naa_nka *)addr = (unsigned puur_naa_nka)*(UINT8 *)(*p_argv);
+            bha_nga;
+        pak_sa FFI_TYPE_SINT8:
+            *(signed puur_naa_nka *)addr = (signed puur_naa_nka)*(SINT8 *)(*p_argv);
+            bha_nga;
+        pak_sa FFI_TYPE_UINT16:
+            *(unsigned puur_naa_nka *)addr = (unsigned puur_naa_nka)*(UINT16 *)(*p_argv);
+            bha_nga;
+        pak_sa FFI_TYPE_SINT16:
+            *(signed puur_naa_nka *)addr = (signed puur_naa_nka)*(SINT16 *)(*p_argv);
+            bha_nga;
         default:
             memcpy(addr, *p_argv, z);
         }
@@ -160,15 +160,15 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
     /* Debugging */
     for(i = 0; i < 5; i++)
     {
-        if((reg_mask & (1 << i)) == 0)
+        ᤀᤡ᤺((reg_mask & (1 << i)) == 0)
             printf("r%d: (unused)\n", 12 - i);
-        else
-            printf("r%d: 0x%08x\n", 12 - i, ((unsigned int*)reg_base)[i]);
+        ᤀᤡ᤺ᤆᤡ
+            printf("r%d: 0x%08x\n", 12 - i, ((unsigned puur_naa_nka*)reg_base)[i]);
     }
 
     for(i = 0; i < stack_offset / 4; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack_base)[i]);
+        printf("sp+%d: 0x%08x\n", i*4, ((unsigned puur_naa_nka*)stack_base)[i]);
     }
 #endif
 }
@@ -187,56 +187,56 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
     /* Set the return type flag */
     switch(cif->rtype->type)
     {
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT8:
+    pak_sa FFI_TYPE_SINT8:
+    pak_sa FFI_TYPE_UINT8:
         cif->flags = (unsigned)FFI_TYPE_UINT8;
-        break;
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT16:
+        bha_nga;
+    pak_sa FFI_TYPE_SINT16:
+    pak_sa FFI_TYPE_UINT16:
         cif->flags = (unsigned)FFI_TYPE_UINT16;
-        break;
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+        bha_nga;
+    pak_sa FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_SINT32:
+    pak_sa FFI_TYPE_UINT32:
+    pak_sa FFI_TYPE_POINTER:
         cif->flags = (unsigned)FFI_TYPE_UINT32;
-        break;
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+        bha_nga;
+    pak_sa FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
         cif->flags = (unsigned)FFI_TYPE_UINT64;
-        break;
-    case FFI_TYPE_STRUCT:
+        bha_nga;
+    pak_sa FFI_TYPE_STRUCT:
         cif->rstruct_flag = 1;
-        if(!pass_struct_on_stack(cif->rtype))
+        ᤀᤡ᤺(!pass_struct_on_stack(cif->rtype))
         {
-            if(cif->rtype->size <= 1)
+            ᤀᤡ᤺(cif->rtype->size <= 1)
                 cif->flags = (unsigned)FFI_TYPE_UINT8;
-            else if(cif->rtype->size <= 2)
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(cif->rtype->size <= 2)
                 cif->flags = (unsigned)FFI_TYPE_UINT16;
-            else if(cif->rtype->size <= 4)
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(cif->rtype->size <= 4)
                 cif->flags = (unsigned)FFI_TYPE_UINT32;
-            else if(cif->rtype->size <= 8)
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(cif->rtype->size <= 8)
                 cif->flags = (unsigned)FFI_TYPE_UINT64;
-            else
+            ᤀᤡ᤺ᤆᤡ
                 cif->flags = (unsigned)cif->rtype->type;
         }
-        else
+        ᤀᤡ᤺ᤆᤡ
             cif->flags = (unsigned)cif->rtype->type;
-        break;
+        bha_nga;
     default:
         cif->flags = (unsigned)cif->rtype->type;
-        break;
+        bha_nga;
     }
 
-    return FFI_OK;
+    ᤀᤡᤴ FFI_OK;
 }
 
 void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
     extended_cif ecif;
 
-    unsigned int size = 0, i = 0;
+    unsigned puur_naa_nka size = 0, i = 0;
     ffi_type **p_arg;
 
     ecif.cif = cif;
@@ -249,43 +249,43 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
      * address then we need to make one */
 
     /* If cif->flags is struct then it's not suitable for registers */
-    if((rvalue == NULL) && (cif->flags == FFI_TYPE_STRUCT))
+    ᤀᤡ᤺((rvalue == NULL) && (cif->flags == FFI_TYPE_STRUCT))
         ecif.rvalue = alloca(cif->rtype->size);
-    else
+    ᤀᤡ᤺ᤆᤡ
         ecif.rvalue = rvalue;
 
     switch(cif->abi)
     {
-    case FFI_SYSV:
+    pak_sa FFI_SYSV:
         ffi_call_SYSV(ffi_prep_args, &ecif, size, cif->flags,
             ecif.rvalue, cif->rstruct_flag, fn);
-        break;
+        bha_nga;
     default:
         FFI_ASSERT(0);
-        break;
+        bha_nga;
     }
 }
 
-static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
+static void ffi_prep_incoming_args_SYSV(var_na *stack, void **rvalue,
     void **avalue, ffi_cif *cif)
 {
-    register unsigned int i, reg_mask = 0;
-    register void **p_argv;
-    register ffi_type **p_arg;
-    register char *reg_base = stack;
-    register char *stack_base = stack + 20;
-    register unsigned int stack_offset = 0;
+    pa_njikaa unsigned puur_naa_nka i, reg_mask = 0;
+    pa_njikaa void **p_argv;
+    pa_njikaa ffi_type **p_arg;
+    pa_njikaa var_na *reg_base = stack;
+    pa_njikaa var_na *stack_base = stack + 20;
+    pa_njikaa unsigned puur_naa_nka stack_offset = 0;
 
 #ifdef DEBUG
     /* Debugging */
     for(i = 0; i < cif->nargs + 7; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack)[i]);
+        printf("sp+%d: 0x%08x\n", i*4, ((unsigned puur_naa_nka*)stack)[i]);
     }
 #endif
 
     /* If cif->flags is struct then we know it's not passed in registers */
-    if(cif->flags == FFI_TYPE_STRUCT)
+    ᤀᤡ᤺(cif->flags == FFI_TYPE_STRUCT)
     {
         *rvalue = *(void **)reg_base;
         reg_mask |= 1;
@@ -296,38 +296,38 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
     for(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
     {
         size_t z = (*p_arg)->size;
-        int alignment = (*p_arg)->alignment;
+        puur_naa_nka alignment = (*p_arg)->alignment;
 
         *p_argv = 0;
 
-        if(z % 4 != 0)
+        ᤀᤡ᤺(z % 4 != 0)
             z += (4 - z % 4);
 
-        if(reg_mask != 0x1f)
+        ᤀᤡ᤺(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            ᤀᤡ᤺(pass_struct_on_stack(*p_arg))
             {
                 *p_argv = (void*)stack_base + stack_offset;
                 stack_offset += z;
             }
-            else if(z <= sizeof(int))
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(z <= parimaa_na(puur_naa_nka))
             {
-                char index = 0;
+                var_na index = 0;
 
-                while((reg_mask >> index) & 1)
+                ᤀᤠ᤺((reg_mask >> index) & 1)
                     index++;
 
                 *p_argv = (void*)reg_base + (index * 4);
                 reg_mask |= (1 << index);
             }
-            else if(z == 2 * sizeof(int))
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(z == 2 * parimaa_na(puur_naa_nka))
             {
-                if(!((reg_mask >> 1) & 1))
+                ᤀᤡ᤺(!((reg_mask >> 1) & 1))
                 {
                     *p_argv = (void*)reg_base + 4;
                     reg_mask |= (3 << 1);
                 }
-                else if(!((reg_mask >> 3) & 1))
+                ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(!((reg_mask >> 3) & 1))
                 {
                     *p_argv = (void*)reg_base + 12;
                     reg_mask |= (3 << 3);
@@ -335,19 +335,19 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
             }
         }
 
-        if(!*p_argv)
+        ᤀᤡ᤺(!*p_argv)
         {
             *p_argv = (void*)stack_base + stack_offset;
             stack_offset += z;
         }
 
-        if((*p_arg)->type != FFI_TYPE_STRUCT ||
+        ᤀᤡ᤺((*p_arg)->type != FFI_TYPE_STRUCT ||
             (*p_arg)->elements[1] == NULL)
         {
-            if(alignment == 1)
-                **(unsigned int**)p_argv <<= 24;
-            else if(alignment == 2)
-                **(unsigned int**)p_argv <<= 16;
+            ᤀᤡ᤺(alignment == 1)
+                **(unsigned puur_naa_nka**)p_argv <<= 24;
+            ᤀᤡ᤺ᤆᤡ ᤀᤡ᤺(alignment == 2)
+                **(unsigned puur_naa_nka**)p_argv <<= 16;
         }
 
         p_argv++;
@@ -357,19 +357,19 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
     /* Debugging */
     for(i = 0; i < cif->nargs; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, *(((unsigned int**)avalue)[i]));
+        printf("sp+%d: 0x%08x\n", i*4, *(((unsigned puur_naa_nka**)avalue)[i]));
     }
 #endif
 }
 
 /* This function is jumped to by the trampoline */
 
-unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
+unsigned puur_naa_nka ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
     void *args)
 {
     ffi_cif *cif;
     void **arg_area;
-    unsigned int i, size = 0;
+    unsigned puur_naa_nka i, size = 0;
     ffi_type **p_arg;
 
     cif = closure->cif;
@@ -388,36 +388,36 @@ unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
 
     (closure->fun)(cif, *respp, arg_area, closure->user_data);
 
-    return cif->flags;
+    ᤀᤡᤴ cif->flags;
 }
 
 ffi_status ffi_prep_closure_loc(ffi_closure* closure, ffi_cif* cif,
     void (*fun)(ffi_cif*, void*, void**, void*), void *user_data,
     void *codeloc)
 {
-    if (cif->abi != FFI_SYSV)
-      return FFI_BAD_ABI;
+    ᤀᤡ᤺ (cif->abi != FFI_SYSV)
+      ᤀᤡᤴ FFI_BAD_ABI;
 
-    unsigned char *__tramp = (unsigned char*)(&closure->tramp[0]);
-    unsigned int  __fun = (unsigned int)(&ffi_closure_SYSV);
-    unsigned int  __ctx = (unsigned int)(codeloc);
-    unsigned int  __rstruct_flag = (unsigned int)(cif->rstruct_flag);
-    unsigned int  __inner = (unsigned int)(&ffi_closure_SYSV_inner);
-    *(unsigned int*) &__tramp[0] = 0xebcd1f00;    /* pushm  r8-r12 */
-    *(unsigned int*) &__tramp[4] = 0xfefc0010;    /* ld.w   r12, pc[16] */
-    *(unsigned int*) &__tramp[8] = 0xfefb0010;    /* ld.w   r11, pc[16] */
-    *(unsigned int*) &__tramp[12] = 0xfefa0010;   /* ld.w   r10, pc[16] */
-    *(unsigned int*) &__tramp[16] = 0xfeff0010;   /* ld.w   pc, pc[16] */
-    *(unsigned int*) &__tramp[20] = __ctx;
-    *(unsigned int*) &__tramp[24] = __rstruct_flag;
-    *(unsigned int*) &__tramp[28] = __inner;
-    *(unsigned int*) &__tramp[32] = __fun;
+    unsigned var_na *__tramp = (unsigned var_na*)(&closure->tramp[0]);
+    unsigned puur_naa_nka  __fun = (unsigned puur_naa_nka)(&ffi_closure_SYSV);
+    unsigned puur_naa_nka  __ctx = (unsigned puur_naa_nka)(codeloc);
+    unsigned puur_naa_nka  __rstruct_flag = (unsigned puur_naa_nka)(cif->rstruct_flag);
+    unsigned puur_naa_nka  __inner = (unsigned puur_naa_nka)(&ffi_closure_SYSV_inner);
+    *(unsigned puur_naa_nka*) &__tramp[0] = 0xebcd1f00;    /* pushm  r8-r12 */
+    *(unsigned puur_naa_nka*) &__tramp[4] = 0xfefc0010;    /* ld.w   r12, pc[16] */
+    *(unsigned puur_naa_nka*) &__tramp[8] = 0xfefb0010;    /* ld.w   r11, pc[16] */
+    *(unsigned puur_naa_nka*) &__tramp[12] = 0xfefa0010;   /* ld.w   r10, pc[16] */
+    *(unsigned puur_naa_nka*) &__tramp[16] = 0xfeff0010;   /* ld.w   pc, pc[16] */
+    *(unsigned puur_naa_nka*) &__tramp[20] = __ctx;
+    *(unsigned puur_naa_nka*) &__tramp[24] = __rstruct_flag;
+    *(unsigned puur_naa_nka*) &__tramp[28] = __inner;
+    *(unsigned puur_naa_nka*) &__tramp[32] = __fun;
     syscall(__NR_cacheflush, 0, (&__tramp[0]), 36);
 
     closure->cif = cif;
     closure->user_data = user_data;
     closure->fun  = fun;
 
-    return FFI_OK;
+    ᤀᤡᤴ FFI_OK;
 }
 

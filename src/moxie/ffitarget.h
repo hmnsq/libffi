@@ -33,7 +33,7 @@
 typedef unsigned long          ffi_arg;
 typedef signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+typedef ga_nanaa ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_EABI,
   FFI_DEFAULT_ABI = FFI_EABI,

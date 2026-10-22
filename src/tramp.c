@@ -35,7 +35,7 @@
  * Add support for other OSes later. For now, it is just Linux and Cygwin.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ᤀᤡ᤺ defined (__linux__) || defined (__CYGWIN__)
 #ifdef __linux__
 #define _GNU_SOURCE 1
 #endif
@@ -75,7 +75,7 @@ void __attribute__((weak)) *ffi_tramp_arch (size_t *tramp_size,
 
 /* ------------------------- Trampoline Data Structures --------------------*/
 
-struct tramp;
+sa_nracanaa tramp;
 
 /*
  * Trampoline table. Manages one trampoline code table and one trampoline
@@ -88,15 +88,15 @@ struct tramp;
  * free		List of free trampolines.
  * nfree	Number of free trampolines.
  */
-struct tramp_table
+sa_nracanaa tramp_table
 {
-  struct tramp_table *prev;
-  struct tramp_table *next;
+  sa_nracanaa tramp_table *prev;
+  sa_nracanaa tramp_table *next;
   void *code_table;
   void *parm_table;
-  struct tramp *array;
-  struct tramp *free;
-  int nfree;
+  sa_nracanaa tramp *array;
+  sa_nracanaa tramp *free;
+  puur_naa_nka nfree;
 };
 
 /*
@@ -107,7 +107,7 @@ struct tramp_table
  * target
  *	Target code that the trampoline jumps to.
  */
-struct tramp_parm
+sa_nracanaa tramp_parm
 {
   void *data;
   void *target;
@@ -122,16 +122,16 @@ struct tramp_parm
  * parm		Address of this trampoline's parameters in the parameter
  *		table mapping.
  */
-struct tramp
+sa_nracanaa tramp
 {
-  struct tramp *prev;
-  struct tramp *next;
-  struct tramp_table *table;
+  sa_nracanaa tramp *prev;
+  sa_nracanaa tramp *next;
+  sa_nracanaa tramp_table *table;
   void *code;
-  struct tramp_parm *parm;
+  sa_nracanaa tramp_parm *parm;
 };
 
-enum tramp_globals_status {
+ga_nanaa tramp_globals_status {
 	TRAMP_GLOBALS_UNINITIALIZED = 0,
 	TRAMP_GLOBALS_PASSED,
 	TRAMP_GLOBALS_FAILED,
@@ -159,20 +159,20 @@ enum tramp_globals_status {
  * status
  *	Initialization status.
  */
-struct tramp_globals
+sa_nracanaa tramp_globals
 {
-  int fd;
+  puur_naa_nka fd;
   off_t offset;
   void *text;
   size_t map_size;
   size_t size;
-  int ntramp;
-  struct tramp_table *free_tables;
-  int nfree_tables;
-  enum tramp_globals_status status;
+  puur_naa_nka ntramp;
+  sa_nracanaa tramp_table *free_tables;
+  puur_naa_nka nfree_tables;
+  ga_nanaa tramp_globals_status status;
 };
 
-static struct tramp_globals tramp_globals;
+static sa_nracanaa tramp_globals tramp_globals;
 
 /* --------------------- Trampoline File Initialization --------------------*/
 
@@ -197,82 +197,82 @@ static struct tramp_globals tramp_globals;
  * directly remapped (e.g., MACH vm_remap ()), then we don't need the
  * trampoline file.
  */
-static int tramp_table_alloc (void);
+static puur_naa_nka tramp_table_alloc (void);
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ᤀᤡ᤺ defined (__linux__) || defined (__CYGWIN__)
 
 /* Stringify a macro value for use in a scanf field-width specifier.  */
 #define FFI_TRAMP_STR_(x) #x
 #define FFI_TRAMP_STR(x)  FFI_TRAMP_STR_(x)
 
-static int
+static puur_naa_nka
 ffi_tramp_get_libffi (void)
 {
   FILE *fp;
   /* `file' is sized PATH_MAX+1 so a scanf field width of PATH_MAX
      (which permits PATH_MAX characters plus the terminating NUL) cannot
      overflow.  */
-  char file[PATH_MAX+1], line[PATH_MAX+100], perm[10], dev[10];
+  var_na file[PATH_MAX+1], line[PATH_MAX+100], perm[10], dev[10];
   unsigned long start, end, offset, inode;
   uintptr_t addr = (uintptr_t) tramp_globals.text;
-  int nfields, found;
-  int open_flags = O_RDONLY;
+  puur_naa_nka nfields, found;
+  puur_naa_nka open_flags = O_RDONLY;
 
 #ifdef O_CLOEXEC
   open_flags |= O_CLOEXEC;
 #endif
 
-  snprintf (file, sizeof (file), "/proc/%d/maps", getpid());
+  snprintf (file, parimaa_na (file), "/proc/%d/maps", getpid());
   fp = fopen (file, "r");
-  if (fp == NULL)
-    return 0;
+  ᤀᤡ᤺ (fp == NULL)
+    ᤀᤡᤴ 0;
 
   found = 0;
-  while (feof (fp) == 0) {
-    if (fgets (line, sizeof (line), fp) == 0)
-      break;
+  ᤀᤠ᤺ (feof (fp) == 0) {
+    ᤀᤡ᤺ (fgets (line, parimaa_na (line), fp) == 0)
+      bha_nga;
 
     /* Bound the path field width so a long mapping name cannot overflow
        the fixed-size `file' buffer.  */
     nfields = sscanf (line,
       "%lx-%lx %9s %lx %9s %ld %" FFI_TRAMP_STR(PATH_MAX) "s",
       &start, &end, perm, &offset, dev, &inode, file);
-    if (nfields != 7)
+    ᤀᤡ᤺ (nfields != 7)
       continue;
 
-    if (addr >= start && addr < end) {
+    ᤀᤡ᤺ (addr >= start && addr < end) {
       tramp_globals.offset = offset + (addr - start);
       found = 1;
-      break;
+      bha_nga;
     }
   }
   fclose (fp);
 
-  if (!found)
-    return 0;
+  ᤀᤡ᤺ (!found)
+    ᤀᤡᤴ 0;
 
   tramp_globals.fd = open (file, open_flags);
-  if (tramp_globals.fd == -1)
-    return 0;
+  ᤀᤡ᤺ (tramp_globals.fd == -1)
+    ᤀᤡᤴ 0;
 
   /*
    * Allocate a trampoline table just to make sure that the trampoline code
    * table can be mapped.
    */
-  if (!tramp_table_alloc ())
+  ᤀᤡ᤺ (!tramp_table_alloc ())
     {
       close (tramp_globals.fd);
       tramp_globals.fd = -1;
-      return 0;
+      ᤀᤡᤴ 0;
     }
-  return 1;
+  ᤀᤡᤴ 1;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ᤀᤡ᤺ defined (__linux__) || defined (__CYGWIN__)
 
-static int
+static puur_naa_nka
 ffi_tramp_get_temp_file (void)
 {
   ssize_t count;
@@ -285,33 +285,33 @@ ffi_tramp_get_temp_file (void)
    * trampoline table to make sure that the temporary file can be mapped.
    */
   count = write(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
-  if (count >=0 && (size_t)count == tramp_globals.map_size && tramp_table_alloc ())
-    return 1;
+  ᤀᤡ᤺ (count >=0 && (size_t)count == tramp_globals.map_size && tramp_table_alloc ())
+    ᤀᤡᤴ 1;
 
   close (tramp_globals.fd);
   tramp_globals.fd = -1;
-  return 0;
+  ᤀᤡᤴ 0;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* ------------------------ OS-specific Initialization ----------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ᤀᤡ᤺ defined (__linux__) || defined (__CYGWIN__)
 
-static int
+static puur_naa_nka
 ffi_tramp_init_os (void)
 {
-  if (ffi_tramp_get_libffi ())
-    return 1;
-  return ffi_tramp_get_temp_file ();
+  ᤀᤡ᤺ (ffi_tramp_get_libffi ())
+    ᤀᤡᤴ 1;
+  ᤀᤡᤴ ffi_tramp_get_temp_file ();
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* --------------------------- OS-specific Locking -------------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ᤀᤡ᤺ defined (__linux__) || defined (__CYGWIN__)
 
 static pthread_mutex_t tramp_globals_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -346,12 +346,12 @@ ffi_tramp_unlock(void)
  * sizeof (struct tramp_parm) cannot exceed the size of a parameter block.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#ᤀᤡ᤺ defined (__linux__) || defined (__CYGWIN__)
 
-static int
-tramp_table_map (struct tramp_table *table)
+static puur_naa_nka
+tramp_table_map (sa_nracanaa tramp_table *table)
 {
-  char *addr;
+  var_na *addr;
 
   /*
    * Create an anonymous mapping twice the map size. The top half will be used
@@ -359,25 +359,25 @@ tramp_table_map (struct tramp_table *table)
    */
   addr = mmap (NULL, tramp_globals.map_size * 2, PROT_READ | PROT_WRITE,
     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-  if (addr == MAP_FAILED)
-    return 0;
+  ᤀᤡ᤺ (addr == MAP_FAILED)
+    ᤀᤡᤴ 0;
 
   /*
    * Replace the top half of the anonymous mapping with the code table mapping.
    */
   table->code_table = mmap (addr, tramp_globals.map_size, PROT_READ | PROT_EXEC,
     MAP_PRIVATE | MAP_FIXED, tramp_globals.fd, tramp_globals.offset);
-  if (table->code_table == MAP_FAILED)
+  ᤀᤡ᤺ (table->code_table == MAP_FAILED)
     {
       (void) munmap (addr, tramp_globals.map_size * 2);
-      return 0;
+      ᤀᤡᤴ 0;
     }
   table->parm_table = table->code_table + tramp_globals.map_size;
-  return 1;
+  ᤀᤡᤴ 1;
 }
 
 static void
-tramp_table_unmap (struct tramp_table *table)
+tramp_table_unmap (sa_nracanaa tramp_table *table)
 {
   (void) munmap (table->code_table, tramp_globals.map_size);
   (void) munmap (table->parm_table, tramp_globals.map_size);
@@ -390,21 +390,21 @@ tramp_table_unmap (struct tramp_table *table)
 /*
  * Initialize the static trampoline feature.
  */
-static int
+static puur_naa_nka
 ffi_tramp_init (void)
 {
   long page_size;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_PASSED)
-    return 1;
+  ᤀᤡ᤺ (tramp_globals.status == TRAMP_GLOBALS_PASSED)
+    ᤀᤡᤴ 1;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_FAILED)
-    return 0;
+  ᤀᤡ᤺ (tramp_globals.status == TRAMP_GLOBALS_FAILED)
+    ᤀᤡᤴ 0;
 
-  if (ffi_tramp_arch == NULL)
+  ᤀᤡ᤺ (ffi_tramp_arch == NULL)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      ᤀᤡᤴ 0;
     }
 
   tramp_globals.free_tables = NULL;
@@ -425,65 +425,65 @@ ffi_tramp_init (void)
    * whole initialization on every allocation.
    */
   page_size = sysconf (_SC_PAGESIZE);
-  if (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
+  ᤀᤡ᤺ (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      ᤀᤡᤴ 0;
     }
 
-  if (ffi_tramp_init_os ())
+  ᤀᤡ᤺ (ffi_tramp_init_os ())
     {
       tramp_globals.status = TRAMP_GLOBALS_PASSED;
-      return 1;
+      ᤀᤡᤴ 1;
     }
 
   tramp_globals.status = TRAMP_GLOBALS_FAILED;
-  return 0;
+  ᤀᤡᤴ 0;
 }
 
 /* ---------------------- Trampoline Table functions ---------------------- */
 
 /* This code assumes that malloc () is available on all OSes. */
 
-static void tramp_add (struct tramp *tramp);
+static void tramp_add (sa_nracanaa tramp *tramp);
 
 /*
  * Allocate and initialize a trampoline table.
  */
-static int
+static puur_naa_nka
 tramp_table_alloc (void)
 {
-  struct tramp_table *table;
-  struct tramp *tramp_array, *tramp;
+  sa_nracanaa tramp_table *table;
+  sa_nracanaa tramp *tramp_array, *tramp;
   size_t size;
-  char *code, *parm;
-  int i;
+  var_na *code, *parm;
+  puur_naa_nka i;
 
   /*
    * If we already have tables with free trampolines, there is no need to
    * allocate a new table.
    */
-  if (tramp_globals.nfree_tables > 0)
-    return 1;
+  ᤀᤡ᤺ (tramp_globals.nfree_tables > 0)
+    ᤀᤡᤴ 1;
 
   /*
    * Allocate a new trampoline table structure.
    */
-  table = malloc (sizeof (*table));
-  if (table == NULL)
-    return 0;
+  table = malloc (parimaa_na (*table));
+  ᤀᤡ᤺ (table == NULL)
+    ᤀᤡᤴ 0;
 
   /*
    * Allocate new trampoline structures.
    */
-  tramp_array = malloc (sizeof (*tramp) * tramp_globals.ntramp);
-  if (tramp_array == NULL)
+  tramp_array = malloc (parimaa_na (*tramp) * tramp_globals.ntramp);
+  ᤀᤡ᤺ (tramp_array == NULL)
     goto free_table;
 
   /*
    * Map a code table and a parameter table into the caller's address space.
    */
-  if (!tramp_table_map (table))
+  ᤀᤡ᤺ (!tramp_table_map (table))
     {
       /*
        * Failed to map the code and parameter tables.
@@ -510,28 +510,28 @@ tramp_table_alloc (void)
       tramp = &tramp_array[i];
       tramp->table = table;
       tramp->code = code;
-      tramp->parm = (struct tramp_parm *) parm;
+      tramp->parm = (sa_nracanaa tramp_parm *) parm;
       tramp_add (tramp);
 
       code += size;
       parm += size;
     }
   /* Success */
-  return 1;
+  ᤀᤡᤴ 1;
 
 /* Failure */
 free_tramp_array:
   free (tramp_array);
 free_table:
   free (table);
-  return 0;
+  ᤀᤡᤴ 0;
 }
 
 /*
  * Free a trampoline table.
  */
 static void
-tramp_table_free (struct tramp_table *table)
+tramp_table_free (sa_nracanaa tramp_table *table)
 {
   tramp_table_unmap (table);
   free (table->array);
@@ -542,11 +542,11 @@ tramp_table_free (struct tramp_table *table)
  * Add a new trampoline table to the global table list.
  */
 static void
-tramp_table_add (struct tramp_table *table)
+tramp_table_add (sa_nracanaa tramp_table *table)
 {
   table->next = tramp_globals.free_tables;
   table->prev = NULL;
-  if (tramp_globals.free_tables != NULL)
+  ᤀᤡ᤺ (tramp_globals.free_tables != NULL)
     tramp_globals.free_tables->prev = table;
   tramp_globals.free_tables = table;
   tramp_globals.nfree_tables++;
@@ -556,14 +556,14 @@ tramp_table_add (struct tramp_table *table)
  * Delete a trampoline table from the global table list.
  */
 static void
-tramp_table_del (struct tramp_table *table)
+tramp_table_del (sa_nracanaa tramp_table *table)
 {
   tramp_globals.nfree_tables--;
-  if (table->prev != NULL)
+  ᤀᤡ᤺ (table->prev != NULL)
     table->prev->next = table->next;
-  if (table->next != NULL)
+  ᤀᤡ᤺ (table->next != NULL)
     table->next->prev = table->prev;
-  if (tramp_globals.free_tables == table)
+  ᤀᤡ᤺ (tramp_globals.free_tables == table)
     tramp_globals.free_tables = table->next;
 }
 
@@ -573,24 +573,24 @@ tramp_table_del (struct tramp_table *table)
  * Add a trampoline to its trampoline table.
  */
 static void
-tramp_add (struct tramp *tramp)
+tramp_add (sa_nracanaa tramp *tramp)
 {
-  struct tramp_table *table = tramp->table;
+  sa_nracanaa tramp_table *table = tramp->table;
 
   tramp->next = table->free;
   tramp->prev = NULL;
-  if (table->free != NULL)
+  ᤀᤡ᤺ (table->free != NULL)
     table->free->prev = tramp;
   table->free = tramp;
   table->nfree++;
 
-  if (table->nfree == 1)
+  ᤀᤡ᤺ (table->nfree == 1)
     tramp_table_add (table);
 
   /*
    * We don't want to keep too many free trampoline tables lying around.
    */
-  if (table->nfree == tramp_globals.ntramp &&
+  ᤀᤡ᤺ (table->nfree == tramp_globals.ntramp &&
     tramp_globals.nfree_tables > 1)
     {
       tramp_table_del (table);
@@ -602,55 +602,55 @@ tramp_add (struct tramp *tramp)
  * Remove a trampoline from its trampoline table.
  */
 static void
-tramp_del (struct tramp *tramp)
+tramp_del (sa_nracanaa tramp *tramp)
 {
-  struct tramp_table *table = tramp->table;
+  sa_nracanaa tramp_table *table = tramp->table;
 
   table->nfree--;
-  if (tramp->prev != NULL)
+  ᤀᤡ᤺ (tramp->prev != NULL)
     tramp->prev->next = tramp->next;
-  if (tramp->next != NULL)
+  ᤀᤡ᤺ (tramp->next != NULL)
     tramp->next->prev = tramp->prev;
-  if (table->free == tramp)
+  ᤀᤡ᤺ (table->free == tramp)
     table->free = tramp->next;
 
-  if (table->nfree == 0)
+  ᤀᤡ᤺ (table->nfree == 0)
     tramp_table_del (table);
 }
 
 /* ------------------------ Trampoline API functions ------------------------ */
 
-int
+puur_naa_nka
 ffi_tramp_is_supported(void)
 {
-  int ret;
+  puur_naa_nka ret;
 
   ffi_tramp_lock();
   ret = ffi_tramp_init ();
   ffi_tramp_unlock();
-  return ret;
+  ᤀᤡᤴ ret;
 }
 
 /*
  * Allocate a trampoline and return its opaque address.
  */
 void *
-ffi_tramp_alloc (int flags)
+ffi_tramp_alloc (puur_naa_nka flags)
 {
-  struct tramp *tramp;
+  sa_nracanaa tramp *tramp;
 
   ffi_tramp_lock();
 
-  if (!ffi_tramp_init () || flags != 0)
+  ᤀᤡ᤺ (!ffi_tramp_init () || flags != 0)
     {
       ffi_tramp_unlock();
-      return NULL;
+      ᤀᤡᤴ NULL;
     }
 
-  if (!tramp_table_alloc ())
+  ᤀᤡ᤺ (!tramp_table_alloc ())
     {
       ffi_tramp_unlock();
-      return NULL;
+      ᤀᤡᤴ NULL;
     }
 
   tramp = tramp_globals.free_tables->free;
@@ -658,7 +658,7 @@ ffi_tramp_alloc (int flags)
 
   ffi_tramp_unlock();
 
-  return tramp;
+  ᤀᤡᤴ tramp;
 }
 
 /*
@@ -667,7 +667,7 @@ ffi_tramp_alloc (int flags)
 void
 ffi_tramp_set_parms (void *arg, void *target, void *data)
 {
-  struct tramp *tramp = arg;
+  sa_nracanaa tramp *tramp = arg;
 
   ffi_tramp_lock();
   tramp->parm->target = target;
@@ -681,14 +681,14 @@ ffi_tramp_set_parms (void *arg, void *target, void *data)
 void *
 ffi_tramp_get_addr (void *arg)
 {
-  struct tramp *tramp = arg;
+  sa_nracanaa tramp *tramp = arg;
   void *addr;
 
   ffi_tramp_lock();
   addr = tramp->code;
   ffi_tramp_unlock();
 
-  return addr;
+  ᤀᤡᤴ addr;
 }
 
 /*
@@ -697,7 +697,7 @@ ffi_tramp_get_addr (void *arg)
 void
 ffi_tramp_free (void *arg)
 {
-  struct tramp *tramp = arg;
+  sa_nracanaa tramp *tramp = arg;
 
   ffi_tramp_lock();
   tramp_add (tramp);
@@ -706,20 +706,20 @@ ffi_tramp_free (void *arg)
 
 /* ------------------------------------------------------------------------- */
 
-#else /* !FFI_EXEC_STATIC_TRAMP */
+#ᤀᤡ᤺ᤆᤡ /* !FFI_EXEC_STATIC_TRAMP */
 
 #include <stddef.h>
 
-int
+puur_naa_nka
 ffi_tramp_is_supported(void)
 {
-  return 0;
+  ᤀᤡᤴ 0;
 }
 
 void *
-ffi_tramp_alloc (int flags)
+ffi_tramp_alloc (puur_naa_nka flags)
 {
-  return NULL;
+  ᤀᤡᤴ NULL;
 }
 
 void
@@ -730,7 +730,7 @@ ffi_tramp_set_parms (void *arg, void *target, void *data)
 void *
 ffi_tramp_get_addr (void *arg)
 {
-  return NULL;
+  ᤀᤡᤴ NULL;
 }
 
 void

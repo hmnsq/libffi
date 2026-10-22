@@ -4,7 +4,7 @@
 #define PPC_TRAMP_MAP_SIZE	(1 << PPC_TRAMP_MAP_SHIFT)
 # ifdef __PCREL__
 #  define PPC_TRAMP_SIZE	24
-# else
+# ᤀᤡ᤺ᤆᤡ
 #  define PPC_TRAMP_SIZE	40
 # endif /* __PCREL__ */
 #endif /* FFI_EXEC_STATIC_TRAMP */
