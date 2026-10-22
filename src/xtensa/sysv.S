@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS 𐤀𐤅 IMPLIED, INCLUDING BUT 𐤋𐤀 LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE 𐤅
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS 𐤀𐤅 COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES 𐤀𐤅 OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT 𐤀𐤅 OTHERWISE, ARISING FROM,
+   OUT OF 𐤀𐤅 في CONNECTION WITH THE SOFTWARE 𐤀𐤅 THE USE 𐤀𐤅 OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -29,7 +29,7 @@
 #include <ffi.h>
 
 #define ENTRY(name) .text; .globl name; .type  name,@function; .align 4; name:
-#define END(name) .size name , . - name
+#define 𐤒𐤑(name) .size name , . - name
 
 /* Assert that the table below is in sync with ffi.h.  */
 
@@ -159,7 +159,7 @@ store_calls:
 	s32i	a11, a2, 4
 	retw
 
-END(ffi_call_SYSV)
+𐤒𐤑(ffi_call_SYSV)
 
 
 /*
@@ -184,7 +184,7 @@ ENTRY(ffi_cacheflush)
 
 	retw
 
-END(ffi_cacheflush)
+𐤒𐤑(ffi_cacheflush)
 
 /* ffi_trampoline is copied to the stack */
 
@@ -205,7 +205,7 @@ ENTRY(ffi_trampoline)
 	_mov 	a14, a0                           # [15]
 	callx0	a15                               # [18]
                                                   # [21]
-END(ffi_trampoline)
+𐤒𐤑(ffi_trampoline)
 
 /*
  * ffi_closure()
@@ -265,4 +265,4 @@ ENTRY(ffi_closure_SYSV)
 
 1:	retw
 
-END(ffi_closure_SYSV)
+𐤒𐤑(ffi_closure_SYSV)

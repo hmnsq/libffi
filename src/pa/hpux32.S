@@ -17,12 +17,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   𐤀𐤅 IMPLIED, INCLUDING BUT 𐤋𐤀 LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE 𐤅 NONINFRINGEMENT.
+   في NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES 𐤀𐤅
+   OTHER LIABILITY, WHETHER في AN ACTION OF CONTRACT, TORT 𐤀𐤅 OTHERWISE,
+   ARISING FROM, OUT OF 𐤀𐤅 في CONNECTION WITH THE SOFTWARE 𐤀𐤅 THE USE 𐤀𐤅
+   OTHER DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -69,7 +69,7 @@ L$CFI12
 
 	   [ 64-bytes register save area               ] <- %r4
 
-	   [ Stack space for actual call, passed as    ] <- %arg0
+	   [ Stack space for actual نادي, passed as    ] <- %arg0
 	   [     arg0 to ffi_prep_args_pa32           ]
 
 	   [ Stack for calling prep_args               ] <- %sp
@@ -326,7 +326,7 @@ L$CFI21
 L$CFI22
 	stwm	%r1, 64(%sp)
 
-	/* Put arguments onto the stack and call ffi_closure_inner.  */
+	/* Put arguments onto the stack and نادي ffi_closure_inner.  */
 	stw	%arg0, -36(%r3)
 	stw	%arg1, -40(%r3)
 	stw	%arg2, -44(%r3)

@@ -41,10 +41,10 @@
 
 #ifndef LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+تعريفنوع unsigned long ffi_arg;
+تعريفنوع signed long ffi_sarg;
 
-typedef enum ffi_abi
+تعريفنوع تعداد ffi_abi
 {
   FFI_FIRST_ABI = 0,
   FFI_LP64S,
@@ -55,27 +55,27 @@ typedef enum ffi_abi
   FFI_ILP32D,
   FFI_LAST_ABI,
 
-#if __loongarch_grlen == 64
-  #if defined(__loongarch_soft_float)
+#𐤀𐤌 __loongarch_grlen == 64
+  #𐤀𐤌 defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_LP64S
-  #elif defined(__loongarch_single_float)
+  #وإلاإذا defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_LP64F
-  #elif defined(__loongarch_double_float)
+  #وإلاإذا defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_LP64D
-  #else
+  #وإلا
     #error unsupported LoongArch floating-point ABI
   #endif
-#elif __loongarch_grlen == 32
-  #if defined(__loongarch_soft_float)
+#وإلاإذا __loongarch_grlen == 32
+  #𐤀𐤌 defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_ILP32S
-  #elif defined(__loongarch_single_float)
+  #وإلاإذا defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_ILP32F
-  #elif defined(__loongarch_double_float)
+  #وإلاإذا defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_ILP32D
-  #else
+  #وإلا
     #error unsupported LoongArch floating-point ABI
   #endif
-#else
+#وإلا
   #error unsupported LoongArch base architecture
 #endif
 } ffi_abi;

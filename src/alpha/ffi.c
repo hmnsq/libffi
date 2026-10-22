@@ -25,39 +25,39 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include "internal.h"
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
+#ضمن <stdlib.h>
+#ضمن "internal.h"
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if defined(__LONG_DOUBLE_128__)
-# if FFI_TYPE_LONGDOUBLE != 4
+#𐤀𐤌 defined(__LONG_DOUBLE_128__)
+# 𐤀𐤌 FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#وإلا
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
 
-extern void ffi_call_osf(void *stack, void *frame, unsigned flags,
-			 void *raddr, void (*fn)(void), void *closure)
+خارجي فراغ ffi_call_osf(فراغ *stack, فراغ *frame, unsigned flags,
+			 فراغ *raddr, فراغ (*fn)(فراغ), فراغ *closure)
 	FFI_HIDDEN;
-extern void ffi_closure_osf(void) FFI_HIDDEN;
-extern void ffi_go_closure_osf(void) FFI_HIDDEN;
+خارجي فراغ ffi_closure_osf(فراغ) FFI_HIDDEN;
+خارجي فراغ ffi_go_closure_osf(فراغ) FFI_HIDDEN;
 
 /* Promote a float value to its in-register double representation.
    Unlike actually casting to double, this does not trap on NaN.  */
-static inline UINT64 lds(void *ptr)
+ساكن مضمن UINT64 lds(فراغ *ptr)
 {
   UINT64 ret;
   __asm__("lds %0,%1" : "=f"(ret) : "m"(*(UINT32 *)ptr));
-  return ret;
+  أرجع ret;
 }
 
 /* And the reverse.  */
-static inline void sts(void *ptr, UINT64 val)
+ساكن مضمن فراغ sts(فراغ *ptr, UINT64 val)
 {
   __asm__("sts %1,%0" : "=m"(*(UINT32 *)ptr) : "f"(val));
 }
@@ -66,180 +66,180 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   size_t bytes = 0;
-  int flags, i, avn;
+  صحيح flags, i, avn;
   ffi_type *rtype, *itype;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  𐤀𐤌 (cif->abi != FFI_OSF)
+    أرجع FFI_BAD_ABI;
 
   /* Compute the size of the argument area.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  لكل (i = 0, avn = cif->nargs; i < avn; i++)
     {
       itype = cif->arg_types[i];
-      switch (itype->type)
+      بدل (itype->type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_SINT8:
+	حالة FFI_TYPE_UINT8:
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT16:
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_POINTER:
+	حالة FFI_TYPE_FLOAT:
+	حالة FFI_TYPE_DOUBLE:
+	حالة FFI_TYPE_LONGDOUBLE:
 	  /* All take one 8 byte slot.  */
 	  bytes += 8;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_SINT128:
+	حالة FFI_TYPE_UINT128:
+	حالة FFI_TYPE_VOID:
+	حالة FFI_TYPE_STRUCT:
 	  /* Passed by value in N slots.  */
 	  bytes += FFI_ALIGN(itype->size, FFI_SIZEOF_ARG);
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_COMPLEX:
+	حالة FFI_TYPE_COMPLEX:
 	  /* _Complex long double passed by reference; others in 2 slots.  */
-	  if (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+	  𐤀𐤌 (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
 	    bytes += 8;
-	  else
+	  وإلا
 	    bytes += 16;
-	  break;
+	  اكسر;
 
-	default:
+	افتراضي:
 	  abort();
 	}
     }
 
   /* Set the return type flag */
   rtype = cif->rtype;
-  switch (rtype->type)
+  بدل (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    حالة FFI_TYPE_VOID:
       flags = ALPHA_FLAGS(ALPHA_ST_VOID, ALPHA_LD_VOID);
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+      اكسر;
+    حالة FFI_TYPE_INT:
+    حالة FFI_TYPE_UINT32:
+    حالة FFI_TYPE_SINT32:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT32);
-      break;
-    case FFI_TYPE_FLOAT:
+      اكسر;
+    حالة FFI_TYPE_FLOAT:
       flags = ALPHA_FLAGS(ALPHA_ST_FLOAT, ALPHA_LD_FLOAT);
-      break;
-    case FFI_TYPE_DOUBLE:
+      اكسر;
+    حالة FFI_TYPE_DOUBLE:
       flags = ALPHA_FLAGS(ALPHA_ST_DOUBLE, ALPHA_LD_DOUBLE);
-      break;
-    case FFI_TYPE_UINT8:
+      اكسر;
+    حالة FFI_TYPE_UINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT8);
-      break;
-    case FFI_TYPE_SINT8:
+      اكسر;
+    حالة FFI_TYPE_SINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT8);
-      break;
-    case FFI_TYPE_UINT16:
+      اكسر;
+    حالة FFI_TYPE_UINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT16);
-      break;
-    case FFI_TYPE_SINT16:
+      اكسر;
+    حالة FFI_TYPE_SINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT16);
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
+      اكسر;
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
+    حالة FFI_TYPE_POINTER:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-      break;
-    case FFI_TYPE_SINT128:
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
+      اكسر;
+    حالة FFI_TYPE_SINT128:
+    حالة FFI_TYPE_UINT128:
+    حالة FFI_TYPE_LONGDOUBLE:
+    حالة FFI_TYPE_STRUCT:
       /* Passed in memory, with a hidden pointer.  */
       flags = ALPHA_RET_IN_MEM;
-      break;
-    case FFI_TYPE_COMPLEX:
+      اكسر;
+    حالة FFI_TYPE_COMPLEX:
       itype = rtype->elements[0];
-      switch (itype->type)
+      بدل (itype->type)
 	{
-	case FFI_TYPE_FLOAT:
+	حالة FFI_TYPE_FLOAT:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXF, ALPHA_LD_CPLXF);
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  اكسر;
+	حالة FFI_TYPE_DOUBLE:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXD, ALPHA_LD_CPLXD);
-	  break;
-	default:
-	  if (rtype->size <= 8)
+	  اكسر;
+	افتراضي:
+	  𐤀𐤌 (rtype->size <= 8)
 	    flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-	  else
+	  وإلا
 	    flags = ALPHA_RET_IN_MEM;
-	  break;
+	  اكسر;
 	}
-      break;
-    default:
+      اكسر;
+    افتراضي:
       abort();
     }
   cif->flags = flags;
 
   /* Include the hidden structure pointer in args requirement.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  𐤀𐤌 (flags == ALPHA_RET_IN_MEM)
     bytes += 8;
   /* Minimum size is 6 slots, so that ffi_call_osf can pop them.  */
-  if (bytes < 6*8)
+  𐤀𐤌 (bytes < 6*8)
     bytes = 6*8;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
-static unsigned long
-extend_basic_type(void *valp, int type, int argn)
+ساكن unsigned long
+extend_basic_type(فراغ *valp, صحيح type, صحيح argn)
 {
-  switch (type)
+  بدل (type)
     {
-    case FFI_TYPE_SINT8:
-      return *(SINT8 *)valp;
-    case FFI_TYPE_UINT8:
-      return *(UINT8 *)valp;
-    case FFI_TYPE_SINT16:
-      return *(SINT16 *)valp;
-    case FFI_TYPE_UINT16:
-      return *(UINT16 *)valp;
+    حالة FFI_TYPE_SINT8:
+      أرجع *(SINT8 *)valp;
+    حالة FFI_TYPE_UINT8:
+      أرجع *(UINT8 *)valp;
+    حالة FFI_TYPE_SINT16:
+      أرجع *(SINT16 *)valp;
+    حالة FFI_TYPE_UINT16:
+      أرجع *(UINT16 *)valp;
 
-    case FFI_TYPE_FLOAT:
-      if (argn < 6)
-	return lds(valp);
+    حالة FFI_TYPE_FLOAT:
+      𐤀𐤌 (argn < 6)
+	أرجع lds(valp);
       /* FALLTHRU */
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    حالة FFI_TYPE_INT:
+    حالة FFI_TYPE_SINT32:
+    حالة FFI_TYPE_UINT32:
       /* Note that unsigned 32-bit quantities are sign extended.  */
-      return *(SINT32 *)valp;
+      أرجع *(SINT32 *)valp;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_DOUBLE:
-      return *(UINT64 *)valp;
+    حالة FFI_TYPE_SINT64:
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_POINTER:
+    حالة FFI_TYPE_DOUBLE:
+      أرجع *(UINT64 *)valp;
 
-    default:
+    افتراضي:
       abort();
     }
 }
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	      void **avalue, void *closure)
+ساكن فراغ
+ffi_call_int (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue,
+	      فراغ **avalue, فراغ *closure)
 {
   unsigned long *argp;
   long i, avn, argn, flags = cif->flags;
   ffi_type **arg_types;
-  void *frame;
+  فراغ *frame;
 
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
-  if (rvalue == NULL && flags == ALPHA_RET_IN_MEM)
+  𐤀𐤌 (rvalue == عدم && flags == ALPHA_RET_IN_MEM)
     rvalue = alloca(cif->rtype->size);
 
   /* Allocate the space for the arguments, plus 4 words of temp
@@ -248,65 +248,65 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   frame += cif->bytes;
 
   argn = 0;
-  if (flags == ALPHA_RET_IN_MEM)
+  𐤀𐤌 (flags == ALPHA_RET_IN_MEM)
     argp[argn++] = (unsigned long)rvalue;
 
   avn = cif->nargs;
   arg_types = cif->arg_types;
 
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  لكل (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      void *valp = avalue[i];
-      int type = ty->type;
+      فراغ *valp = avalue[i];
+      صحيح type = ty->type;
       size_t size;
 
-      switch (type)
+      بدل (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_SINT8:
+	حالة FFI_TYPE_UINT8:
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT16:
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_POINTER:
+	حالة FFI_TYPE_FLOAT:
+	حالة FFI_TYPE_DOUBLE:
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argn++;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_LONGDOUBLE:
+	حالة FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Note that 128-bit long double is passed by reference.  */
 	  argp[argn++] = (unsigned long)valp;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_SINT128:
+	حالة FFI_TYPE_UINT128:
+	حالة FFI_TYPE_VOID:
+	حالة FFI_TYPE_STRUCT:
 	  size = ty->size;
 	  memcpy(argp + argn, valp, size);
 	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_COMPLEX:
+	حالة FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  if (type == FFI_TYPE_LONGDOUBLE)
-	    goto by_reference;
+	  𐤀𐤌 (type == FFI_TYPE_LONGDOUBLE)
+	    اذهب by_reference;
 
 	  /* Most complex types passed as two separate arguments.  */
 	  size = ty->elements[0]->size;
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argp[argn + 1] = extend_basic_type(valp + size, type, argn + 1);
 	  argn += 2;
-	  break;
+	  اكسر;
 
-	default:
+	افتراضي:
 	  abort();
 	}
     }
@@ -315,15 +315,15 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   ffi_call_osf(argp, frame, flags, rvalue, fn, closure);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+فراغ
+ffi_call (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, فراغ **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, عدم);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
-	     void **avalue, void *closure)
+فراغ
+ffi_call_go (ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue,
+	     فراغ **avalue, فراغ *closure)
 {
   ffi_call_int(cif, fn, rvalue, avalue, closure);
 }
@@ -331,21 +331,21 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      فراغ (*fun)(ffi_cif*, فراغ*, فراغ**, فراغ*),
+		      فراغ *user_data,
+		      فراغ *codeloc)
 {
-  unsigned int *tramp;
+  unsigned صحيح *tramp;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  𐤀𐤌 (cif->abi != FFI_OSF)
+    أرجع FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned صحيح *) &closure->tramp[0];
   tramp[0] = 0x47fb0401;	/* mov $27,$1		*/
   tramp[1] = 0xa77b0010;	/* ldq $27,16($27)	*/
   tramp[2] = 0x6bfb0000;	/* jmp $31,($27),0	*/
   tramp[3] = 0x47ff041f;	/* nop			*/
-  *(void **) &tramp[4] = ffi_closure_osf;
+  *(فراغ **) &tramp[4] = ffi_closure_osf;
 
   closure->cif = cif;
   closure->fun = fun;
@@ -357,164 +357,164 @@ ffi_prep_closure_loc (ffi_closure* closure,
      instead, since both Compaq as and gas can handle it.
 
      0x86 is PAL_imb in Tru64 UNIX <alpha/pal.h>.  */
-  __asm__ volatile ("call_pal 0x86" : : : "memory");
+  __asm__ متطاير ("call_pal 0x86" : : : "memory");
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure,
 		     ffi_cif* cif,
-		     void (*fun)(ffi_cif*, void*, void**, void*))
+		     فراغ (*fun)(ffi_cif*, فراغ*, فراغ**, فراغ*))
 {
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  𐤀𐤌 (cif->abi != FFI_OSF)
+    أرجع FFI_BAD_ABI;
 
-  closure->tramp = (void *)ffi_go_closure_osf;
+  closure->tramp = (فراغ *)ffi_go_closure_osf;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  أرجع FFI_OK;
 }
 
 long FFI_HIDDEN
 ffi_closure_osf_inner (ffi_cif *cif,
-		       void (*fun)(ffi_cif*, void*, void**, void*),
-		       void *user_data,
-		       void *rvalue, unsigned long *argp)
+		       فراغ (*fun)(ffi_cif*, فراغ*, فراغ**, فراغ*),
+		       فراغ *user_data,
+		       فراغ *rvalue, unsigned long *argp)
 {
-  void **avalue;
+  فراغ **avalue;
   ffi_type **arg_types;
   long i, avn, argn, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * حجم(فراغ *));
   flags = cif->flags;
   argn = 0;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  𐤀𐤌 (flags == ALPHA_RET_IN_MEM)
     {
-      rvalue = (void *) argp[0];
+      rvalue = (فراغ *) argp[0];
       argn = 1;
     }
 
   arg_types = cif->arg_types;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, avn = cif->nargs; i < avn; i++)
+  لكل (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      int type = ty->type;
-      void *valp = &argp[argn];
+      صحيح type = ty->type;
+      فراغ *valp = &argp[argn];
       size_t size;
 
-      switch (type)
+      بدل (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	حالة FFI_TYPE_INT:
+	حالة FFI_TYPE_SINT8:
+	حالة FFI_TYPE_UINT8:
+	حالة FFI_TYPE_SINT16:
+	حالة FFI_TYPE_UINT16:
+	حالة FFI_TYPE_SINT32:
+	حالة FFI_TYPE_UINT32:
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
+	حالة FFI_TYPE_POINTER:
 	  argn += 1;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	حالة FFI_TYPE_SINT128:
+	حالة FFI_TYPE_UINT128:
+	حالة FFI_TYPE_VOID:
+	حالة FFI_TYPE_STRUCT:
 	  size = ty->size;
 	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_FLOAT:
+	حالة FFI_TYPE_FLOAT:
 	  /* Floats coming from registers need conversion from double
 	     back to float format.  */
-	  if (argn < 6)
+	  𐤀𐤌 (argn < 6)
 	    {
 	      valp = &argp[argn - 6];
 	      sts(valp, argp[argn - 6]);
 	    }
 	  argn += 1;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_DOUBLE:
-	  if (argn < 6)
+	حالة FFI_TYPE_DOUBLE:
+	  𐤀𐤌 (argn < 6)
 	    valp = &argp[argn - 6];
 	  argn += 1;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_LONGDOUBLE:
+	حالة FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* 128-bit long double is passed by reference.  */
-	  valp = (void *)argp[argn];
+	  valp = (فراغ *)argp[argn];
 	  argn += 1;
-	  break;
+	  اكسر;
 
-	case FFI_TYPE_COMPLEX:
+	حالة FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  switch (type)
+	  بدل (type)
 	    {
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
+	    حالة FFI_TYPE_SINT64:
+	    حالة FFI_TYPE_UINT64:
 	      /* Passed as separate arguments, but they wind up sequential.  */
-	      break;
+	      اكسر;
 
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
+	    حالة FFI_TYPE_INT:
+	    حالة FFI_TYPE_SINT8:
+	    حالة FFI_TYPE_UINT8:
+	    حالة FFI_TYPE_SINT16:
+	    حالة FFI_TYPE_UINT16:
+	    حالة FFI_TYPE_SINT32:
+	    حالة FFI_TYPE_UINT32:
 	      /* Passed as separate arguments.  Disjoint, but there's room
 		 enough in one slot to hold the pair.  */
 	      size = ty->elements[0]->size;
 	      memcpy(valp + size, valp + 8, size);
-	      break;
+	      اكسر;
 
-	    case FFI_TYPE_FLOAT:
+	    حالة FFI_TYPE_FLOAT:
 	      /* Passed as separate arguments.  Disjoint, and each piece
 		 may need conversion back to float.  */
-	      if (argn < 6)
+	      𐤀𐤌 (argn < 6)
 		{
 		  valp = &argp[argn - 6];
 		  sts(valp, argp[argn - 6]);
 		}
-	      if (argn + 1 < 6)
+	      𐤀𐤌 (argn + 1 < 6)
 		sts(valp + 4, argp[argn + 1 - 6]);
-	      else
+	      وإلا
 		*(UINT32 *)(valp + 4) = argp[argn + 1];
-	      break;
+	      اكسر;
 
-	    case FFI_TYPE_DOUBLE:
+	    حالة FFI_TYPE_DOUBLE:
 	      /* Passed as separate arguments.  Only disjoint if one part
 		 is in fp regs and the other is on the stack.  */
-	      if (argn < 5)
+	      𐤀𐤌 (argn < 5)
 		valp = &argp[argn - 6];
-	      else if (argn == 5)
+	      وإلا 𐤀𐤌 (argn == 5)
 		{
 		  valp = alloca(16);
 		  ((UINT64 *)valp)[0] = argp[5 - 6];
 		  ((UINT64 *)valp)[1] = argp[6];
 		}
-	      break;
+	      اكسر;
 
-	    case FFI_TYPE_LONGDOUBLE:
-	      goto by_reference;
+	    حالة FFI_TYPE_LONGDOUBLE:
+	      اذهب by_reference;
 
-	    default:
+	    افتراضي:
 	      abort();
 	    }
 	  argn += 2;
-	  break;
+	  اكسر;
 
-	default:
+	افتراضي:
 	  abort ();
 	}
 
@@ -525,5 +525,5 @@ ffi_closure_osf_inner (ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_osf how to perform return type promotions.  */
-  return (flags >> ALPHA_LD_SHIFT) & 0xff;
+  أرجع (flags >> ALPHA_LD_SHIFT) & 0xff;
 }

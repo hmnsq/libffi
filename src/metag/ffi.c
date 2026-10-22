@@ -22,10 +22,10 @@
   OTHER DEALINGS IN THE SOFTWARE.
 ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
 
-#include <stdlib.h>
+#ضمن <stdlib.h>
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
@@ -34,25 +34,25 @@
  * allocated for the function's arguments
  */
 
-unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
+unsigned صحيح ffi_prep_args(حرف *stack, extended_cif *ecif)
 {
-	register unsigned int i;
-	register void **p_argv;
-	register char *argp;
-	register ffi_type **p_arg;
+	سجل unsigned صحيح i;
+	سجل فراغ **p_argv;
+	سجل حرف *argp;
+	سجل ffi_type **p_arg;
 
 	argp = stack;
 
 	/* Store return value */
-	if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
+	𐤀𐤌 ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
-		*(void **) argp = ecif->rvalue;
+		*(فراغ **) argp = ecif->rvalue;
 	}
 
 	p_argv = ecif->avalue;
 
 	/* point to next location */
-	for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
+	لكل (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
 	{
 		size_t z;
 
@@ -61,39 +61,39 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 		argp -= z;
 
 		/* Align if necessary */
-		argp = (char *) FFI_ALIGN_DOWN(FFI_ALIGN_DOWN(argp, (*p_arg)->alignment), 4);
+		argp = (حرف *) FFI_ALIGN_DOWN(FFI_ALIGN_DOWN(argp, (*p_arg)->alignment), 4);
 
-		if (z < sizeof(int)) {
-			z = sizeof(int);
-			switch ((*p_arg)->type)
+		𐤀𐤌 (z < حجم(صحيح)) {
+			z = حجم(صحيح);
+			بدل ((*p_arg)->type)
 			{
-			case FFI_TYPE_SINT8:
-				*(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-				break;
-			case FFI_TYPE_UINT8:
-				*(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-			case FFI_TYPE_STRUCT:
+			حالة FFI_TYPE_SINT8:
+				*(signed صحيح *) argp = (signed صحيح)*(SINT8 *)(* p_argv);
+				اكسر;
+			حالة FFI_TYPE_UINT8:
+				*(unsigned صحيح *) argp = (unsigned صحيح)*(UINT8 *)(* p_argv);
+				اكسر;
+			حالة FFI_TYPE_SINT16:
+				*(signed صحيح *) argp = (signed صحيح)*(SINT16 *)(* p_argv);
+				اكسر;
+			حالة FFI_TYPE_UINT16:
+				*(unsigned صحيح *) argp = (unsigned صحيح)*(UINT16 *)(* p_argv);
+			حالة FFI_TYPE_STRUCT:
 				memcpy(argp, *p_argv, (*p_arg)->size);
-				break;
-			default:
+				اكسر;
+			افتراضي:
 				FFI_ASSERT(0);
 			}
-		} else if ( z == sizeof(int)) {
-			*(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-		} else {
+		} وإلا 𐤀𐤌 ( z == حجم(صحيح)) {
+			*(unsigned صحيح *) argp = (unsigned صحيح)*(UINT32 *)(* p_argv);
+		} وإلا {
 			memcpy(argp, *p_argv, z);
 		}
 	}
 
 	/* return the size of the arguments to be passed in registers,
 	   padded to an 8 byte boundary to preserve stack alignment */
-	return FFI_ALIGN(MIN(stack - argp, 6*4), 8);
+	أرجع FFI_ALIGN(MIN(stack - argp, 6*4), 8);
 }
 
 /* Perform machine dependent cif processing */
@@ -102,16 +102,16 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	ffi_type **ptr;
 	unsigned i, bytes = 0;
 
-	for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
-		if ((*ptr)->size == 0)
-			return FFI_BAD_TYPEDEF;
+	لكل (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
+		𐤀𐤌 ((*ptr)->size == 0)
+			أرجع FFI_BAD_TYPEDEF;
 
 		/* Perform a sanity check on the argument type, do this
 		   check after the initialization.  */
 		FFI_ASSERT_VALID_TYPE(*ptr);
 
 		/* Add any padding if necessary */
-		if (((*ptr)->alignment - 1) & bytes)
+		𐤀𐤌 (((*ptr)->alignment - 1) & bytes)
 			bytes = FFI_ALIGN(bytes, (*ptr)->alignment);
 
 		bytes += FFI_ALIGN((*ptr)->size, 4);
@@ -121,8 +121,8 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	bytes = FFI_ALIGN(bytes, 8);
 
 	/* Make space for the return structure pointer */
-	if (cif->rtype->type == FFI_TYPE_STRUCT) {
-		bytes += sizeof(void*);
+	𐤀𐤌 (cif->rtype->type == FFI_TYPE_STRUCT) {
+		bytes += حجم(فراغ*);
 
 		/* Ensure stack is aligned to an 8-byte boundary */
 		bytes = FFI_ALIGN(bytes, 8);
@@ -131,36 +131,36 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	cif->bytes = bytes;
 
 	/* Set the return type flag */
-	switch (cif->rtype->type) {
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	بدل (cif->rtype->type) {
+	حالة FFI_TYPE_VOID:
+	حالة FFI_TYPE_FLOAT:
+	حالة FFI_TYPE_DOUBLE:
 		cif->flags = (unsigned) cif->rtype->type;
-		break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+		اكسر;
+	حالة FFI_TYPE_SINT64:
+	حالة FFI_TYPE_UINT64:
 		cif->flags = (unsigned) FFI_TYPE_SINT64;
-		break;
-	case FFI_TYPE_STRUCT:
+		اكسر;
+	حالة FFI_TYPE_STRUCT:
 		/* Meta can store return values which are <= 64 bits */
-		if (cif->rtype->size <= 4)
+		𐤀𐤌 (cif->rtype->size <= 4)
 			/* Returned to D0Re0 as 32-bit value */
 			cif->flags = (unsigned)FFI_TYPE_INT;
-		else if ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
+		وإلا 𐤀𐤌 ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
 			/* Returned valued is stored to D1Re0|R0Re0 */
 			cif->flags = (unsigned)FFI_TYPE_DOUBLE;
-		else
+		وإلا
 			/* value stored in memory */
 			cif->flags = (unsigned)FFI_TYPE_STRUCT;
-		break;
-	default:
+		اكسر;
+	افتراضي:
 		cif->flags = (unsigned)FFI_TYPE_INT;
-		break;
+		اكسر;
 	}
-	return FFI_OK;
+	أرجع FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*fn)(void), extended_cif *, unsigned, unsigned, double *);
+خارجي فراغ ffi_call_SYSV(فراغ (*fn)(فراغ), extended_cif *, unsigned, unsigned, مزدوج *);
 
 /*
  * Exported in API. Entry point
@@ -170,50 +170,50 @@ extern void ffi_call_SYSV(void (*fn)(void), extended_cif *, unsigned, unsigned, 
  * avalue -> vector of void * pointers pointing to memory locations holding the
  * arguments
  */
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+فراغ ffi_call(ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, فراغ **avalue)
 {
 	extended_cif ecif;
 
-	int small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
+	صحيح small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
 	ecif.cif = cif;
 	ecif.avalue = avalue;
 
-	double temp;
+	مزدوج temp;
 
 	/*
 	 * If the return value is a struct and we don't have a return value address
 	 * then we need to make one
 	 */
 
-	if ((rvalue == NULL ) && (cif->flags == FFI_TYPE_STRUCT))
+	𐤀𐤌 ((rvalue == عدم ) && (cif->flags == FFI_TYPE_STRUCT))
 		ecif.rvalue = alloca(cif->rtype->size);
-	else if (small_struct)
+	وإلا 𐤀𐤌 (small_struct)
 		ecif.rvalue = &temp;
-	else
+	وإلا
 		ecif.rvalue = rvalue;
 
-	switch (cif->abi) {
-	case FFI_SYSV:
+	بدل (cif->abi) {
+	حالة FFI_SYSV:
 		ffi_call_SYSV(fn, &ecif, cif->bytes, cif->flags, ecif.rvalue);
-		break;
-	default:
+		اكسر;
+	افتراضي:
 		FFI_ASSERT(0);
-		break;
+		اكسر;
 	}
 
-	if (small_struct)
+	𐤀𐤌 (small_struct)
 		memcpy (rvalue, &temp, cif->rtype->size);
 }
 
 /* private members */
 
-static void ffi_prep_incoming_args_SYSV (char *, void **, void **,
-	ffi_cif*, float *);
+ساكن فراغ ffi_prep_incoming_args_SYSV (حرف *, فراغ **, فراغ **,
+	ffi_cif*, عائم *);
 
-void ffi_closure_SYSV (ffi_closure *);
+فراغ ffi_closure_SYSV (ffi_closure *);
 
 /* Do NOT change that without changing the FFI_TRAMPOLINE_SIZE */
-extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
+خارجي unsigned صحيح ffi_metag_trampoline[10]; /* 10 instructions */
 
 /* end of private members */
 
@@ -224,10 +224,10 @@ extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
  *
  * At this point, tramp[0] == __ctx !
  */
-void ffi_init_trampoline(unsigned char *__tramp, unsigned int __fun, unsigned int __ctx) {
-	memcpy (__tramp, ffi_metag_trampoline, sizeof(ffi_metag_trampoline));
-	*(unsigned int*) &__tramp[40] = __ctx;
-	*(unsigned int*) &__tramp[44] = __fun;
+فراغ ffi_init_trampoline(unsigned حرف *__tramp, unsigned صحيح __fun, unsigned صحيح __ctx) {
+	memcpy (__tramp, ffi_metag_trampoline, حجم(ffi_metag_trampoline));
+	*(unsigned صحيح*) &__tramp[40] = __ctx;
+	*(unsigned صحيح*) &__tramp[44] = __fun;
 	/* This will flush the instruction cache */
 	__builtin_meta2_cachewd(&__tramp[0], 1);
 	__builtin_meta2_cachewd(&__tramp[47], 1);
@@ -240,42 +240,42 @@ void ffi_init_trampoline(unsigned char *__tramp, unsigned int __fun, unsigned in
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 	ffi_cif* cif,
-	void (*fun)(ffi_cif*,void*,void**,void*),
-	void *user_data,
-	void *codeloc)
+	فراغ (*fun)(ffi_cif*,فراغ*,فراغ**,فراغ*),
+	فراغ *user_data,
+	فراغ *codeloc)
 {
-	void (*closure_func)(ffi_closure*) = NULL;
+	فراغ (*closure_func)(ffi_closure*) = عدم;
 
-	if (cif->abi == FFI_SYSV)
+	𐤀𐤌 (cif->abi == FFI_SYSV)
 		closure_func = &ffi_closure_SYSV;
-	else
-		return FFI_BAD_ABI;
+	وإلا
+		أرجع FFI_BAD_ABI;
 
 	ffi_init_trampoline(
-		(unsigned char*)&closure->tramp[0],
-		(unsigned int)closure_func,
-		(unsigned int)codeloc);
+		(unsigned حرف*)&closure->tramp[0],
+		(unsigned صحيح)closure_func,
+		(unsigned صحيح)codeloc);
 
 	closure->cif = cif;
 	closure->user_data = user_data;
 	closure->fun = fun;
 
-	return FFI_OK;
+	أرجع FFI_OK;
 }
 
 
 /* This function is jumped to by the trampoline */
-unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
+unsigned صحيح ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 	ffi_closure *closure;
-	void **respp;
-	void *args;
-	void *vfp_args;
+	فراغ **respp;
+	فراغ *args;
+	فراغ *vfp_args;
 {
 	ffi_cif *cif;
-	void **arg_area;
+	فراغ **arg_area;
 
 	cif = closure->cif;
-	arg_area = (void**) alloca (cif->nargs * sizeof (void*));
+	arg_area = (فراغ**) alloca (cif->nargs * حجم (فراغ*));
 
 	/*
 	 * This call will initialize ARG_AREA, such that each
@@ -288,43 +288,43 @@ unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 
 	(closure->fun) ( cif, *respp, arg_area, closure->user_data);
 
-	return cif->flags;
+	أرجع cif->flags;
 }
 
-static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
-	void **avalue, ffi_cif *cif,
-	float *vfp_stack)
+ساكن فراغ ffi_prep_incoming_args_SYSV(حرف *stack, فراغ **rvalue,
+	فراغ **avalue, ffi_cif *cif,
+	عائم *vfp_stack)
 {
-	register unsigned int i;
-	register void **p_argv;
-	register char *argp;
-	register ffi_type **p_arg;
+	سجل unsigned صحيح i;
+	سجل فراغ **p_argv;
+	سجل حرف *argp;
+	سجل ffi_type **p_arg;
 
 	/* stack points to original arguments */
 	argp = stack;
 
 	/* Store return value */
-	if ( cif->flags == FFI_TYPE_STRUCT ) {
+	𐤀𐤌 ( cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
-		*rvalue = *(void **) argp;
+		*rvalue = *(فراغ **) argp;
 	}
 
 	p_argv = avalue;
 
-	for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
+	لكل (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
 		size_t z;
 		size_t alignment;
 
 		alignment = (*p_arg)->alignment;
-		if (alignment < 4)
+		𐤀𐤌 (alignment < 4)
 			alignment = 4;
-		if ((alignment - 1) & (unsigned)argp)
-			argp = (char *) FFI_ALIGN(argp, alignment);
+		𐤀𐤌 ((alignment - 1) & (unsigned)argp)
+			argp = (حرف *) FFI_ALIGN(argp, alignment);
 
 		z = (*p_arg)->size;
-		*p_argv = (void*) argp;
+		*p_argv = (فراغ*) argp;
 		p_argv++;
 		argp -= z;
 	}
-	return;
+	أرجع;
 }
