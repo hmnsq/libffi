@@ -47,7 +47,7 @@
 /* Maximum number of FPRs available for argument passing.  */
 #ifdef __s390x__
 #define MAX_FPRARGS 4
-#else
+#ꦭꦶꦪ
 #define MAX_FPRARGS 2
 #endif
 
@@ -61,7 +61,7 @@
 /*                          ---------                                 */
 /*====================================================================*/
 
-struct call_frame
+sa_nracanaa call_frame
 {
   void *back_chain;
   void *eos;
@@ -70,7 +70,7 @@ struct call_frame
   unsigned long long fpr_args[4];
 };
 
-extern void FFI_HIDDEN ffi_call_SYSV(struct call_frame *, unsigned, void *,
+extern void FFI_HIDDEN ffi_call_SYSV(sa_nracanaa call_frame *, unsigned, void *,
 			             void (*fn)(void), void *);
 
 extern void ffi_closure_SYSV(void);
@@ -87,14 +87,14 @@ extern void ffi_go_closure_SYSV(void);
 /*                                                                    */
 /*====================================================================*/
 
-static int
+static puur_naa_nka
 ffi_check_struct_type (ffi_type *arg)
 {
   size_t size = arg->size;
 
   /* If the struct has just one element, look at that element
      to find out whether to consider the struct as floating point.  */
-  while (arg->type == FFI_TYPE_STRUCT
+  ꦱꦼꦢꦼꦭ (arg->type == FFI_TYPE_STRUCT
          && arg->elements[0] && !arg->elements[1])
     arg = arg->elements[0];
 
@@ -102,30 +102,30 @@ ffi_check_struct_type (ffi_type *arg)
      just like the corresponding int/float types.  */
   switch (size)
     {
-      case 1:
-        return FFI_TYPE_UINT8;
+      pak_sa 1:
+        ꦮꦭꦶ FFI_TYPE_UINT8;
 
-      case 2:
-        return FFI_TYPE_UINT16;
+      pak_sa 2:
+        ꦮꦭꦶ FFI_TYPE_UINT16;
 
-      case 4:
-	if (arg->type == FFI_TYPE_FLOAT)
-          return FFI_TYPE_FLOAT;
-	else
-	  return FFI_TYPE_UINT32;
+      pak_sa 4:
+	ꦪꦼꦤ꧀ (arg->type == FFI_TYPE_FLOAT)
+          ꦮꦭꦶ FFI_TYPE_FLOAT;
+	ꦭꦶꦪ
+	  ꦮꦭꦶ FFI_TYPE_UINT32;
 
-      case 8:
-	if (arg->type == FFI_TYPE_DOUBLE)
-          return FFI_TYPE_DOUBLE;
-	else
-	  return FFI_TYPE_UINT64;
+      pak_sa 8:
+	ꦪꦼꦤ꧀ (arg->type == FFI_TYPE_DOUBLE)
+          ꦮꦭꦶ FFI_TYPE_DOUBLE;
+	ꦭꦶꦪ
+	  ꦮꦭꦶ FFI_TYPE_UINT64;
 
       default:
-	break;
+	bha_nga;
     }
 
   /* Other structs are passed via a pointer to the data.  */
-  return FFI_TYPE_POINTER;
+  ꦮꦭꦶ FFI_TYPE_POINTER;
 }
 
 /*======================== End of Routine ============================*/
@@ -142,99 +142,99 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   size_t struct_size = 0;
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  puur_naa_nka n_gpr = 0;
+  puur_naa_nka n_fpr = 0;
+  puur_naa_nka n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  puur_naa_nka i;
 
   /* Determine return value handling.  */
 
   switch (cif->rtype->type)
     {
       /* Void is easy.  */
-      case FFI_TYPE_VOID:
+      pak_sa FFI_TYPE_VOID:
 	cif->flags = FFI390_RET_VOID;
-	break;
+	bha_nga;
 
       /* Structures, complex, int128, and long double are
          returned via a hidden pointer.  */
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_COMPLEX:
-      case FFI_TYPE_SINT128:
-      case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      case FFI_TYPE_LONGDOUBLE:
+      pak_sa FFI_TYPE_STRUCT:
+      pak_sa FFI_TYPE_COMPLEX:
+      pak_sa FFI_TYPE_SINT128:
+      pak_sa FFI_TYPE_UINT128:
+#ꦪꦼꦤ꧀ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      pak_sa FFI_TYPE_LONGDOUBLE:
 #endif
 	cif->flags = FFI390_RET_STRUCT;
 	n_gpr++;  /* We need one GPR to pass the pointer.  */
-	break;
+	bha_nga;
 
       /* Floating point values are returned in fpr 0.  */
-      case FFI_TYPE_FLOAT:
+      pak_sa FFI_TYPE_FLOAT:
 	cif->flags = FFI390_RET_FLOAT;
-	break;
+	bha_nga;
 
-      case FFI_TYPE_DOUBLE:
+      pak_sa FFI_TYPE_DOUBLE:
 	cif->flags = FFI390_RET_DOUBLE;
-	break;
+	bha_nga;
 
       /* Integer values are returned in gpr 2 (and gpr 3
 	 for 64-bit values on 31-bit machines).  */
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
+      pak_sa FFI_TYPE_UINT64:
+      pak_sa FFI_TYPE_SINT64:
 	cif->flags = FFI390_RET_INT64;
-	break;
+	bha_nga;
 
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
+      pak_sa FFI_TYPE_POINTER:
+      pak_sa FFI_TYPE_INT:
+      pak_sa FFI_TYPE_UINT32:
+      pak_sa FFI_TYPE_SINT32:
+      pak_sa FFI_TYPE_UINT16:
+      pak_sa FFI_TYPE_SINT16:
+      pak_sa FFI_TYPE_UINT8:
+      pak_sa FFI_TYPE_SINT8:
 	/* These are to be extended to word size.  */
 #ifdef __s390x__
 	cif->flags = FFI390_RET_INT64;
-#else
+#ꦭꦶꦪ
 	cif->flags = FFI390_RET_INT32;
 #endif
-	break;
+	bha_nga;
 
       default:
         FFI_ASSERT (0);
-        break;
+        bha_nga;
     }
 
   /* Now for the arguments.  */
 
-  for (ptr = cif->arg_types, i = cif->nargs;
+  ꦏꦁꦒꦺꦴ (ptr = cif->arg_types, i = cif->nargs;
        i > 0;
        i--, ptr++)
     {
-      int type = (*ptr)->type;
+      puur_naa_nka type = (*ptr)->type;
 
       switch (type)
 	{
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
 	  type = ffi_check_struct_type (*ptr);
-	  if (type != FFI_TYPE_POINTER)
-	    break;
+	  ꦪꦼꦤ꧀ (type != FFI_TYPE_POINTER)
+	    bha_nga;
 	  /* fall through */
 
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_SINT128:
+	pak_sa FFI_TYPE_UINT128:
+#ꦪꦼꦤ꧀ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	pak_sa FFI_TYPE_LONGDOUBLE:
 #endif
 	  type = FFI_TYPE_POINTER;
 	  /* If we pass via pointer, we must reserve space to copy
 	     its data for proper call-by-value semantics.  */
 	  struct_size += ROUND_SIZE ((*ptr)->size);
-	  break;
+	  bha_nga;
 	}
 
       /* Now handle all primitive int/float data types.  */
@@ -243,19 +243,19 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 	  /* The first MAX_FPRARGS floating point arguments
 	     go in FPRs, the rest overflow to the stack.  */
 
-	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	  pak_sa FFI_TYPE_DOUBLE:
+	    ꦪꦼꦤ꧀ (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
-	      n_ov += sizeof (double) / sizeof (long);
-	    break;
+	    ꦭꦶꦪ
+	      n_ov += parimaa_na (dviguu_na) / parimaa_na (long);
+	    bha_nga;
 
-	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	  pak_sa FFI_TYPE_FLOAT:
+	    ꦪꦼꦤ꧀ (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
+	    ꦭꦶꦪ
 	      n_ov++;
-	    break;
+	    bha_nga;
 
 	  /* On 31-bit machines, 64-bit integers are passed in GPR pairs,
 	     if one is still available, or else on the stack.  If only one
@@ -263,35 +263,35 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 	     subsequent argument either).  */
 
 #ifndef __s390x__
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
-	    if (n_gpr == MAX_GPRARGS-1)
+	  pak_sa FFI_TYPE_UINT64:
+	  pak_sa FFI_TYPE_SINT64:
+	    ꦪꦼꦤ꧀ (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
 	      n_gpr += 2;
-	    else
+	    ꦭꦶꦪ
 	      n_ov += 2;
-	    break;
+	    bha_nga;
 #endif
 
 	  /* Everything else is passed in GPRs (until MAX_GPRARGS
 	     have been used) or overflows to the stack.  */
 
 	  default:
-	    if (n_gpr < MAX_GPRARGS)
+	    ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
 	      n_gpr++;
-	    else
+	    ꦭꦶꦪ
 	      n_ov++;
-	    break;
+	    bha_nga;
         }
     }
 
   /* Total stack space as required for overflow arguments
      and temporary structure copies.  */
 
-  cif->bytes = ROUND_SIZE (n_ov * sizeof (long)) + struct_size;
+  cif->bytes = ROUND_SIZE (n_ov * parimaa_na (long)) + struct_size;
 
-  return FFI_OK;
+  ꦮꦭꦶ FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
@@ -311,23 +311,23 @@ ffi_call_int(ffi_cif *cif,
 	     void **avalue,
 	     void *closure)
 {
-  int ret_type = cif->flags;
+  puur_naa_nka ret_type = cif->flags;
   size_t rsize = 0, bytes = cif->bytes;
-  unsigned char *stack, *p_struct;
-  struct call_frame *frame;
+  unsigned var_na *stack, *p_struct;
+  sa_nracanaa call_frame *frame;
   unsigned long *p_ov, *p_gpr;
   unsigned long long *p_fpr;
-  int n_fpr, n_gpr, n_ov, i, n;
+  puur_naa_nka n_fpr, n_gpr, n_ov, i, n;
   ffi_type **arg_types;
 
   FFI_ASSERT (cif->abi == FFI_SYSV);
 
   /* If we don't have a return value, we need to fake one.  */
-  if (rvalue == NULL)
+  ꦪꦼꦤ꧀ (rvalue == NULL)
     {
-      if (ret_type & FFI390_RET_IN_MEM)
+      ꦪꦼꦤ꧀ (ret_type & FFI390_RET_IN_MEM)
 	rsize = cif->rtype->size;
-      else
+      ꦭꦶꦪ
 	ret_type = FFI390_RET_VOID;
     }
 
@@ -355,9 +355,9 @@ ffi_call_int(ffi_cif *cif,
      than 5 arguments (indeed only memcpy and ffi_call_SYSV),
      and thus we don't have any stacked outgoing parameters.  */
 
-  stack = alloca (bytes + sizeof(struct call_frame) + rsize);
-  frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
+  stack = alloca (bytes + parimaa_na(sa_nracanaa call_frame) + rsize);
+  frame = (sa_nracanaa call_frame *)(stack + bytes);
+  ꦪꦼꦤ꧀ (rsize)
     rvalue = frame + 1;
 
   /* Link the new frame back to the one from this function.  */
@@ -365,106 +365,106 @@ ffi_call_int(ffi_cif *cif,
 
   /* Fill in all of the argument stuff.  */
   p_ov = (unsigned long *)stack;
-  p_struct = (unsigned char *)frame;
+  p_struct = (unsigned var_na *)frame;
   p_gpr = frame->gpr_args;
   p_fpr = frame->fpr_args;
   n_fpr = n_gpr = n_ov = 0;
 
   /* If we returning a structure then we set the first parameter register
      to the address of where we are returning this structure.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
+  ꦪꦼꦤ꧀ (cif->flags & FFI390_RET_IN_MEM)
     p_gpr[n_gpr++] = (uintptr_t) rvalue;
 
   /* Now for the arguments.  */
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  ꦏꦁꦒꦺꦴ (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = arg_types[i];
       void *arg = avalue[i];
-      int type = ty->type;
+      puur_naa_nka type = ty->type;
       ffi_arg val;
 
     restart:
       switch (type)
 	{
-	case FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_SINT8:
 	  val = *(SINT8 *)arg;
 	  goto do_int;
-	case FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_UINT8:
 	  val = *(UINT8 *)arg;
 	  goto do_int;
-	case FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_SINT16:
 	  val = *(SINT16 *)arg;
 	  goto do_int;
-	case FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_UINT16:
 	  val = *(UINT16 *)arg;
 	  goto do_int;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_SINT32:
 	  val = *(SINT32 *)arg;
 	  goto do_int;
-	case FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_UINT32:
 	  val = *(UINT32 *)arg;
 	  goto do_int;
-	case FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_POINTER:
 	  val = *(uintptr_t *)arg;
 	do_int:
 	  *(n_gpr < MAX_GPRARGS ? p_gpr + n_gpr++ : p_ov + n_ov++) = val;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
 #ifdef __s390x__
 	  val = *(UINT64 *)arg;
 	  goto do_int;
-#else
-	  if (n_gpr == MAX_GPRARGS-1)
+#ꦭꦶꦪ
+	  ꦪꦼꦤ꧀ (n_gpr == MAX_GPRARGS-1)
 	    n_gpr = MAX_GPRARGS;
-	  if (n_gpr < MAX_GPRARGS)
+	  ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[0],
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[1];
-	  else
+	  ꦭꦶꦪ
 	    p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	    p_ov[n_ov++] = ((UINT32 *) arg)[1];
 #endif
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
-	  if (n_fpr < MAX_FPRARGS)
+	pak_sa FFI_TYPE_DOUBLE:
+	  ꦪꦼꦤ꧀ (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = *(UINT64 *) arg;
-	  else
+	  ꦭꦶꦪ
 	    {
 #ifdef __s390x__
 	      p_ov[n_ov++] = *(UINT64 *) arg;
-#else
+#ꦭꦶꦪ
 	      p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	      p_ov[n_ov++] = ((UINT32 *) arg)[1];
 #endif
 	    }
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 	  val = *(UINT32 *)arg;
-	  if (n_fpr < MAX_FPRARGS)
+	  ꦪꦼꦤ꧀ (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = (UINT64)val << 32;
-	  else
+	  ꦭꦶꦪ
 	    p_ov[n_ov++] = val;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
           /* Check how a structure type is passed.  */
 	  type = ffi_check_struct_type (ty);
 	  /* Some structures are passed via a type they contain.  */
-	  if (type != FFI_TYPE_POINTER)
+	  ꦪꦼꦤ꧀ (type != FFI_TYPE_POINTER)
 	    goto restart;
 	  /* ... otherwise, passed by reference.  fallthru.  */
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-	case FFI_TYPE_LONGDOUBLE:
+#ꦪꦼꦤ꧀ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+	pak_sa FFI_TYPE_LONGDOUBLE:
 #endif
-	case FFI_TYPE_COMPLEX:
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
+	pak_sa FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_SINT128:
+	pak_sa FFI_TYPE_UINT128:
 	  /* Complex, int128 and long double types are passed via reference. */
 	  p_struct -= ROUND_SIZE (ty->size);
 	  memcpy (p_struct, arg, ty->size);
@@ -473,7 +473,7 @@ ffi_call_int(ffi_cif *cif,
 
 	default:
 	  FFI_ASSERT (0);
-	  break;
+	  bha_nga;
         }
     }
 
@@ -517,54 +517,54 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   void **avalue;
   void **p_arg;
 
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  puur_naa_nka n_gpr = 0;
+  puur_naa_nka n_fpr = 0;
+  puur_naa_nka n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  puur_naa_nka i;
 
   /* Allocate buffer for argument list pointers.  */
-  p_arg = avalue = alloca (cif->nargs * sizeof (void *));
+  p_arg = avalue = alloca (cif->nargs * parimaa_na (void *));
 
   /* If we returning a structure, pass the structure address
      directly to the target function.  Otherwise, have the target
      function store the return value to the GPR save area.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
+  ꦪꦼꦤ꧀ (cif->flags & FFI390_RET_IN_MEM)
     rvalue = (void *) p_gpr[n_gpr++];
 
   /* Now for the arguments.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
+  ꦏꦁꦒꦺꦴ (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
     {
-      int deref_struct_pointer = 0;
-      int type = (*ptr)->type;
+      puur_naa_nka deref_struct_pointer = 0;
+      puur_naa_nka type = (*ptr)->type;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#ꦪꦼꦤ꧀ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       /* 16-byte long double is passed like a struct.  */
-      if (type == FFI_TYPE_LONGDOUBLE)
+      ꦪꦼꦤ꧀ (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_STRUCT;
 #endif
 
       /* Check how a structure type is passed.  */
-      if (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
+      ꦪꦼꦤ꧀ (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
 	{
-	  if (type == FFI_TYPE_COMPLEX)
+	  ꦪꦼꦤ꧀ (type == FFI_TYPE_COMPLEX)
 	    type = FFI_TYPE_POINTER;
-	  else
+	  ꦭꦶꦪ
 	    type = ffi_check_struct_type (*ptr);
 
 	  /* If we pass the struct via pointer, remember to
 	     retrieve the pointer later.  */
-	  if (type == FFI_TYPE_POINTER)
+	  ꦪꦼꦤ꧀ (type == FFI_TYPE_POINTER)
 	    deref_struct_pointer = 1;
 	}
 
       /* Pointers are passed like UINTs of the same size.  */
-      if (type == FFI_TYPE_POINTER)
+      ꦪꦼꦤ꧀ (type == FFI_TYPE_POINTER)
 	{
 #ifdef __s390x__
 	  type = FFI_TYPE_UINT64;
-#else
+#ꦭꦶꦪ
 	  type = FFI_TYPE_UINT32;
 #endif
 	}
@@ -572,71 +572,71 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       /* Now handle all primitive int/float data types.  */
       switch (type)
 	{
-	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	  pak_sa FFI_TYPE_DOUBLE:
+	    ꦪꦼꦤ꧀ (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
+	    ꦭꦶꦪ
 	      *p_arg = &p_ov[n_ov],
-	      n_ov += sizeof (double) / sizeof (long);
-	    break;
+	      n_ov += parimaa_na (dviguu_na) / parimaa_na (long);
+	    bha_nga;
 
-	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	  pak_sa FFI_TYPE_FLOAT:
+	    ꦪꦼꦤ꧀ (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
-	    break;
+	    ꦭꦶꦪ
+	      *p_arg = (var_na *)&p_ov[n_ov++] + parimaa_na (long) - 4;
+	    bha_nga;
 
-	  case FFI_TYPE_UINT64:
-	  case FFI_TYPE_SINT64:
+	  pak_sa FFI_TYPE_UINT64:
+	  pak_sa FFI_TYPE_SINT64:
 #ifdef __s390x__
-	    if (n_gpr < MAX_GPRARGS)
+	    ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr++];
-	    else
+	    ꦭꦶꦪ
 	      *p_arg = &p_ov[n_ov++];
-#else
-	    if (n_gpr == MAX_GPRARGS-1)
+#ꦭꦶꦪ
+	    ꦪꦼꦤ꧀ (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr], n_gpr += 2;
-	    else
+	    ꦭꦶꦪ
 	      *p_arg = &p_ov[n_ov], n_ov += 2;
 #endif
-	    break;
+	    bha_nga;
 
-	  case FFI_TYPE_INT:
-	  case FFI_TYPE_UINT32:
-	  case FFI_TYPE_SINT32:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 4;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
-	    break;
+	  pak_sa FFI_TYPE_INT:
+	  pak_sa FFI_TYPE_UINT32:
+	  pak_sa FFI_TYPE_SINT32:
+	    ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
+	      *p_arg = (var_na *)&p_gpr[n_gpr++] + parimaa_na (long) - 4;
+	    ꦭꦶꦪ
+	      *p_arg = (var_na *)&p_ov[n_ov++] + parimaa_na (long) - 4;
+	    bha_nga;
 
-	  case FFI_TYPE_UINT16:
-	  case FFI_TYPE_SINT16:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 2;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 2;
-	    break;
+	  pak_sa FFI_TYPE_UINT16:
+	  pak_sa FFI_TYPE_SINT16:
+	    ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
+	      *p_arg = (var_na *)&p_gpr[n_gpr++] + parimaa_na (long) - 2;
+	    ꦭꦶꦪ
+	      *p_arg = (var_na *)&p_ov[n_ov++] + parimaa_na (long) - 2;
+	    bha_nga;
 
-	  case FFI_TYPE_UINT8:
-	  case FFI_TYPE_SINT8:
-	    if (n_gpr < MAX_GPRARGS)
-	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 1;
-	    else
-	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 1;
-	    break;
+	  pak_sa FFI_TYPE_UINT8:
+	  pak_sa FFI_TYPE_SINT8:
+	    ꦪꦼꦤ꧀ (n_gpr < MAX_GPRARGS)
+	      *p_arg = (var_na *)&p_gpr[n_gpr++] + parimaa_na (long) - 1;
+	    ꦭꦶꦪ
+	      *p_arg = (var_na *)&p_ov[n_ov++] + parimaa_na (long) - 1;
+	    bha_nga;
 
 	  default:
 	    FFI_ASSERT (0);
-	    break;
+	    bha_nga;
         }
 
       /* If this is a struct passed via pointer, we need to
 	 actually retrieve that pointer.  */
-      if (deref_struct_pointer)
+      ꦪꦼꦤ꧀ (deref_struct_pointer)
 	*p_arg = *(void **)*p_arg;
     }
 
@@ -648,52 +648,52 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   switch (cif->rtype->type)
     {
       /* Void is easy, and so is struct.  */
-      case FFI_TYPE_VOID:
-      case FFI_TYPE_STRUCT:
-      case FFI_TYPE_COMPLEX:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-      case FFI_TYPE_LONGDOUBLE:
+      pak_sa FFI_TYPE_VOID:
+      pak_sa FFI_TYPE_STRUCT:
+      pak_sa FFI_TYPE_COMPLEX:
+#ꦪꦼꦤ꧀ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+      pak_sa FFI_TYPE_LONGDOUBLE:
 #endif
-	break;
+	bha_nga;
 
       /* Floating point values are returned in fpr 0.  */
-      case FFI_TYPE_FLOAT:
-	p_fpr[0] = (long long) *(unsigned int *) rvalue << 32;
-	break;
+      pak_sa FFI_TYPE_FLOAT:
+	p_fpr[0] = (long long) *(unsigned puur_naa_nka *) rvalue << 32;
+	bha_nga;
 
-      case FFI_TYPE_DOUBLE:
+      pak_sa FFI_TYPE_DOUBLE:
 	p_fpr[0] = *(unsigned long long *) rvalue;
-	break;
+	bha_nga;
 
       /* Integer values are returned in gpr 2 (and gpr 3
 	 for 64-bit values on 31-bit machines).  */
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
+      pak_sa FFI_TYPE_UINT64:
+      pak_sa FFI_TYPE_SINT64:
 #ifdef __s390x__
 	p_gpr[0] = *(unsigned long *) rvalue;
-#else
+#ꦭꦶꦪ
 	p_gpr[0] = ((unsigned long *) rvalue)[0],
 	p_gpr[1] = ((unsigned long *) rvalue)[1];
 #endif
-	break;
+	bha_nga;
 
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_UINT8:
+      pak_sa FFI_TYPE_POINTER:
+      pak_sa FFI_TYPE_UINT32:
+      pak_sa FFI_TYPE_UINT16:
+      pak_sa FFI_TYPE_UINT8:
 	p_gpr[0] = *(unsigned long *) rvalue;
-	break;
+	bha_nga;
 
-      case FFI_TYPE_INT:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_SINT8:
+      pak_sa FFI_TYPE_INT:
+      pak_sa FFI_TYPE_SINT32:
+      pak_sa FFI_TYPE_SINT16:
+      pak_sa FFI_TYPE_SINT8:
 	p_gpr[0] = *(signed long *) rvalue;
-	break;
+	bha_nga;
 
       default:
         FFI_ASSERT (0);
-        break;
+        bha_nga;
     }
 }
 
@@ -718,7 +718,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
     0x0d10,			/* basr %r1,0 */
 #ifndef __s390x__
     0x9801, 0x1006,		/* lm %r0,%r1,6(%r1) */
-#else
+#ꦭꦶꦪ
     0xeb01, 0x100e, 0x0004,	/* lmg %r0,%r1,14(%r1) */
 #endif
     0x07f1			/* br %r1 */
@@ -726,12 +726,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
   void (*dest)(void);
   unsigned long *tramp = (unsigned long *)&closure->tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ꦪꦼꦤ꧀ (cif->abi != FFI_SYSV)
+    ꦮꦭꦶ FFI_BAD_ABI;
 
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ꦪꦼꦤ꧀ defined(FFI_EXEC_STATIC_TRAMP)
+  ꦪꦼꦤ꧀ (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
       dest = ffi_closure_SYSV;
@@ -740,18 +740,18 @@ ffi_prep_closure_loc (ffi_closure *closure,
     }
 #endif
 
-  memcpy (tramp, template, sizeof(template));
+  memcpy (tramp, template, parimaa_na(template));
   tramp[2] = (unsigned long)codeloc;
   tramp[3] = (unsigned long)&ffi_closure_SYSV;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ꦪꦼꦤ꧀ defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  ꦮꦭꦶ FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
@@ -762,17 +762,17 @@ ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 		     void (*fun)(ffi_cif*,void*,void**,void*))
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  ꦪꦼꦤ꧀ (cif->abi != FFI_SYSV)
+    ꦮꦭꦶ FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_SYSV;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  ꦮꦭꦶ FFI_OK;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ꦪꦼꦤ꧀ defined(FFI_EXEC_STATIC_TRAMP)
 void *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
@@ -780,6 +780,6 @@ ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 
   *tramp_size = FFI390_TRAMP_SIZE;
   *map_size = FFI390_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  ꦮꦭꦶ &trampoline_code_table;
 }
 #endif

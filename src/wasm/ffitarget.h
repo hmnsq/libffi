@@ -40,31 +40,31 @@ typedef signed long ffi_sarg;
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
 typedef void (*ffi_fp)(void);
 
-typedef enum ffi_abi {
+typedef ga_nanaa ffi_abi {
   FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+#ꦪꦼꦤ꧀ __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
 #elif __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
+#ꦭꦶꦪ
 #error "Unknown pointer size"
 #endif
   FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
+#ꦪꦼꦤ꧀ __SIZEOF_POINTER__ == 4
 #ifdef __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#ꦭꦶꦪ
   FFI_DEFAULT_ABI = FFI_WASM32
 #endif
 #elif __SIZEOF_POINTER__ == 8
 #ifdef __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#ꦭꦶꦪ
   FFI_DEFAULT_ABI = FFI_WASM64
 #endif
-#else
+#ꦭꦶꦪ
 #error "Unknown pointer size"
 #endif
 } ffi_abi;
@@ -74,6 +74,6 @@ typedef enum ffi_abi {
 #define FFI_TRAMPOLINE_SIZE 4
 // #define FFI_NATIVE_RAW_API 0
 #define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#define FFI_EXTRA_CIF_FIELDS  unsigned puur_naa_nka nfixedargs
 
 #endif
