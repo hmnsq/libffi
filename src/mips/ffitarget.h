@@ -53,15 +53,15 @@
 #    define _ABIO32 _MIPS_SIM_ABI32
 #  endif
 
-#if !defined(_MIPS_SIM)
+#якщо !defined(_MIPS_SIM)
 # error -- something is very wrong --
-#else
-#  if (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
+#інакше
+#  якщо (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
 #    define FFI_MIPS_N32
-#  else
-#    if (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
+#  інакше
+#    якщо (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
 #      define FFI_MIPS_O32
-#    else
+#    інакше
 #     error -- this is an unsupported platform --
 #    endif
 #  endif
@@ -70,10 +70,10 @@
 #ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
 #  define FFI_SIZEOF_ARG    4
-#else
+#інакше
 /* N32 and N64 frames have 64bit integer args */
 #  define FFI_SIZEOF_ARG    8
-#  if _MIPS_SIM == _ABIN32
+#  якщо _MIPS_SIM == _ABIN32
 #    define FFI_SIZEOF_JAVA_RAW  4
 #  endif
 #endif
@@ -95,11 +95,11 @@
 #define FFI_TYPE_SMALLSTRUCT  FFI_TYPE_UINT8
 #define FFI_TYPE_SMALLSTRUCT2 FFI_TYPE_SINT8
 
-#if 0
+#якщо 0
 /* The SGI assembler can't handle this.. */
 #define FFI_TYPE_STRUCT_DD (( FFI_ARGS_DD ) << 4) + FFI_TYPE_STRUCT
 /* (and so on) */
-#else
+#інакше
 /* ...so we calculate these by hand! */
 #define FFI_TYPE_STRUCT_D      61
 #define FFI_TYPE_STRUCT_F      45
@@ -156,40 +156,40 @@
 # define ADDU	addu
 # define SRL	srl
 # define LI	li
-#else /* !FFI_MIPS_O32 */
+#інакше /* !FFI_MIPS_O32 */
 # define REG_L	ld
 # define REG_S	sd
 # define SUBU	dsubu
 # define ADDU	daddu
 # define SRL	dsrl
 # define LI 	dli
-# if (_MIPS_SIM==_ABI64)
+# якщо (_MIPS_SIM==_ABI64)
 #  define LA dla
 #  define EH_FRAME_ALIGN 3
 #  define FDE_ADDR_BYTES .8byte
-# else
+# інакше
 #  define LA la
 #  define EH_FRAME_ALIGN 2
 #  define FDE_ADDR_BYTES .4byte
 # endif /* _MIPS_SIM==_ABI64 */
 #endif /* !FFI_MIPS_O32 */
-#else /* !LIBFFI_ASM */
+#інакше /* !LIBFFI_ASM */
 # ifdef __GNUC__
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__SI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__SI__)));
-#else
+typedef unsigned ціле     ffi_arg __attribute__((__mode__(__SI__)));
+typedef signed   ціле     ffi_sarg __attribute__((__mode__(__SI__)));
+#інакше
 /* N32 and N64 frames have 64bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__DI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__DI__)));
+typedef unsigned ціле     ffi_arg __attribute__((__mode__(__DI__)));
+typedef signed   ціле     ffi_sarg __attribute__((__mode__(__DI__)));
 #  endif
-# else
+# інакше
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
 typedef __uint32_t ffi_arg;
 typedef __int32_t ffi_sarg;
-#  else
+#  інакше
 /* N32 and N64 frames have 64bit integer args */
 typedef __uint64_t ffi_arg;
 typedef __int64_t ffi_sarg;
@@ -209,20 +209,20 @@ typedef enum ffi_abi {
 #ifdef FFI_MIPS_O32
 #ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_O32_SOFT_FLOAT
-#else
+#інакше
   FFI_DEFAULT_ABI = FFI_O32
 #endif
-#else
-# if _MIPS_SIM==_ABI64
+#інакше
+# якщо _MIPS_SIM==_ABI64
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N64_SOFT_FLOAT
-#  else
+#  інакше
   FFI_DEFAULT_ABI = FFI_N64
 #  endif
-# else
+# інакше
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N32_SOFT_FLOAT
-#  else
+#  інакше
   FFI_DEFAULT_ABI = FFI_N32
 #  endif
 # endif
@@ -239,9 +239,9 @@ typedef enum ffi_abi {
 #define FFI_GO_CLOSURES 1
 #define FFI_NATIVE_RAW_API 0
 
-#if defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
+#якщо defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
 # define FFI_TRAMPOLINE_SIZE 20
-#else
+#інакше
 # define FFI_TRAMPOLINE_SIZE 56
 #endif
 

@@ -34,11 +34,11 @@
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#якщо FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# якщо FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#інакше
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
@@ -48,9 +48,9 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
+  ціле rtt = rtype->type;
   size_t bytes;
-  int i, n, flags;
+  ціле i, n, flags;
 
   /* Set the return type flag */
   switch (rtt)
@@ -131,11 +131,11 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   cif->flags = flags;
 
   bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  для (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t z = ty->size;
-      int tt = ty->type;
+      ціле tt = ty->type;
 
       switch (tt)
 	{
@@ -148,7 +148,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 
 	case FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
+	  якщо (tt == FFI_TYPE_FLOAT || z > 8)
 	    goto by_reference;
 	  /* FALLTHRU */
 
@@ -160,7 +160,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary.  */
-  if (bytes < 6 * 4)
+  якщо (bytes < 6 * 4)
     bytes = 6 * 4;
 
   /* The ABI always requires space for the struct return pointer.  */
@@ -173,29 +173,29 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   bytes += 4*16 + 4*8;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  повернути FFI_OK;
 }
 
 extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
 			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
 
-int FFI_HIDDEN
+ціле FFI_HIDDEN
 ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  ціле flags = cif->flags;
+  ціле i, nargs;
 
-  if (rvalue == NULL)
+  якщо (rvalue == NULL)
     {
-      if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+      якщо ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
 	  rvalue = (char *)argp + cif->bytes;
 	}
-      else
+      інакше
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -213,11 +213,11 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 #endif
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  для (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
       void *a = avalue[i];
-      int tt = ty->type;
+      ціле tt = ty->type;
       size_t z;
 
       switch (tt)
@@ -259,14 +259,14 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
         case FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
 	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
+	  якщо (tt == FFI_TYPE_FLOAT || z > 8)
 	    goto by_reference;
-	  if (z < 4)
+	  якщо (z < 4)
 	    {
 	      memcpy((char *)argp + 4 - z, a, z);
 	      argp++;
 	    }
-	  else
+	  інакше
 	    {
 	      memcpy(argp, a, z);
 	      argp += z / 4;
@@ -278,7 +278,7 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 	}
     }
 
-  return flags;
+  повернути flags;
 }
 
 static void
@@ -294,21 +294,21 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If we've not got a return value, we need to create one if we've
      got to pass the return value to the callee.  Otherwise ignore it.  */
-  if (rvalue == NULL
+  якщо (rvalue == NULL
       && (cif->flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
     bytes += FFI_ALIGN (cif->rtype->size, 8);
 
   /* If we have any structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  для (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT)
+      ціле size = at->size;
+      якщо (at->type == FFI_TYPE_STRUCT)
         {
           char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          якщо (avalue_copy == NULL)
             {
               avalue_copy = alloca (nargs * sizeof (void *));
               memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -343,7 +343,7 @@ ffi_flush_icache (void *p)
   __asm__ volatile ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
 		: : "r" (p) : "memory");
 }
-#else
+#інакше
 extern void ffi_flush_icache (void *) FFI_HIDDEN;
 #endif
 
@@ -357,12 +357,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+  unsigned ціле *tramp = (unsigned ціле *) &closure->tramp[0];
   unsigned long ctx = (unsigned long) closure;
   unsigned long fn = (unsigned long) ffi_closure_v8;
 
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  якщо (cif->abi != FFI_V8)
+    повернути FFI_BAD_ABI;
 
   tramp[0] = 0x03000000 | fn >> 10;	/* sethi %hi(fn), %g1	*/
   tramp[1] = 0x05000000 | ctx >> 10;	/* sethi %hi(ctx), %g2	*/
@@ -375,24 +375,24 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
   ffi_flush_icache (closure);
 
-  return FFI_OK;
+  повернути FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 		     void (*fun)(ffi_cif*, void*, void**, void*))
 {
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  якщо (cif->abi != FFI_V8)
+    повернути FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_v8;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  повернути FFI_OK;
 }
 
-int FFI_HIDDEN
+ціле FFI_HIDDEN
 ffi_closure_sparc_inner_v8(ffi_cif *cif, 
 			   void (*fun)(ffi_cif*, void*, void**, void*),
 			   void *user_data, void *rvalue,
@@ -400,7 +400,7 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 {
   ffi_type **arg_types;
   void **avalue;
-  int i, nargs, flags;
+  ціле i, nargs, flags;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
@@ -410,7 +410,7 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  Also install it so we
      can return the address in %o0.  */
-  if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+  якщо ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
     {
       void *new_rvalue = (void *)*argp;
       *(void **)rvalue = new_rvalue;
@@ -421,10 +421,10 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   argp++;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++)
+  для (i = 0; i < nargs; i++)
     {
       ffi_type *ty = arg_types[i];
-      int tt = ty->type;
+      ціле tt = ty->type;
       void *a = argp;
       size_t z;
 
@@ -440,7 +440,7 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 	case FFI_TYPE_DOUBLE:
 	case FFI_TYPE_SINT64:
 	case FFI_TYPE_UINT64:
-	  if ((unsigned long)a & 7)
+	  якщо ((unsigned long)a & 7)
 	    {
 	      /* Align on a 8-byte boundary.  */
 	      UINT64 *tmp = alloca(8);
@@ -468,11 +468,11 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
         case FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
 	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
+	  якщо (tt == FFI_TYPE_FLOAT || z > 8)
 	    goto by_reference;
-	  if (z < 4)
+	  якщо (z < 4)
 	    a += 4 - z;
-	  else if (z > 4)
+	  інакше якщо (z > 4)
 	    argp++;
 	  break;
 
@@ -487,6 +487,6 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  повернути flags;
 }
 #endif /* !SPARC64 */

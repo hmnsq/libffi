@@ -36,7 +36,7 @@
 #ifdef DEBUG_F
 #define LOG_DEBUG(args...)  \
   console.warn(`====LIBFFI(line __LINE__)`, args)
-#else
+#інакше
 #define LOG_DEBUG(args...) 0
 #endif
 
@@ -60,7 +60,7 @@ EM_JS_DEPS(libffi, "$getWasmTableEntry,$setWasmTableEntry,$getEmptyTableSlot,$wa
     offsetof(struct, field) == offset,                                             \
     "Memory layout of '" #struct "' has changed: '" #field "' is in an unexpected location");
 
-#if __SIZEOF_POINTER__ == 4
+#якщо __SIZEOF_POINTER__ == 4
 
 #define FFI_EMSCRIPTEN_ABI FFI_WASM32_EMSCRIPTEN
 #define PTR_SIG 'i'
@@ -153,7 +153,7 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 16);
 #define FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 10, 0)
 #define FFI_TYPE__ELEMENTS(addr) DEREF_U64(addr + 16, 0)
 
-#else
+#інакше
 #error "Unknown pointer size"
 #endif
 
@@ -176,21 +176,21 @@ _Static_assert(FFI_BAD_TYPEDEF_MACRO == FFI_BAD_TYPEDEF, "FFI_BAD_TYPEDEF must b
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
+  якщо (cif->abi != FFI_EMSCRIPTEN_ABI)
+    повернути FFI_BAD_ABI;
   // This is called after ffi_prep_cif_machdep_var so we need to avoid
   // overwriting cif->nfixedargs.
-  if (!(cif->flags & VARARGS_FLAG))
+  якщо (!(cif->flags & VARARGS_FLAG))
     cif->nfixedargs = cif->nargs;
-  if (cif->nargs > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  if (cif->rtype->type == FFI_TYPE_COMPLEX)
-    return FFI_BAD_TYPEDEF;
+  якщо (cif->nargs > MAX_ARGS)
+    повернути FFI_BAD_TYPEDEF;
+  якщо (cif->rtype->type == FFI_TYPE_COMPLEX)
+    повернути FFI_BAD_TYPEDEF;
   // If they put the COMPLEX type into a struct we won't notice, but whatever.
-  for (int i = 0; i < cif->nargs; i++)
-    if (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
-      return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  для (ціле i = 0; i < cif->nargs; i++)
+    якщо (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
+      повернути FFI_BAD_TYPEDEF;
+  повернути FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
@@ -199,9 +199,9 @@ ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
   cif->flags |= VARARGS_FLAG;
   cif->nfixedargs = nfixedargs;
   // The varargs takes up one extra argument
-  if (cif->nfixedargs + 1 > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  якщо (cif->nfixedargs + 1 > MAX_ARGS)
+    повернути FFI_BAD_TYPEDEF;
+  повернути FFI_OK;
 }
 
 /**
@@ -222,7 +222,7 @@ void,
 unbox_small_structs, (ffi_type type_ptr), {
   type_ptr = DEC_PTR(type_ptr);
   var type_id = FFI_TYPE__TYPEID(type_ptr);
-  while (type_id === FFI_TYPE_STRUCT) {
+  поки (type_id === FFI_TYPE_STRUCT) {
     // Don't unbox single element structs if they are bigger than 16 bytes. This
     // is a work around for the fact that Python will give incorrect values for
     // the size of the field in these cases: it says that the struct has pointer
@@ -233,22 +233,22 @@ unbox_small_structs, (ffi_type type_ptr), {
     //
     // See the Python comment here:
     // https://github.com/python/cpython/blob/a16a9f978f42b8a09297c1efbf33877f6388c403/Modules/_ctypes/stgdict.c#L718-L779
-    if (DEC_PTR(FFI_TYPE__SIZE(type_ptr)) > 16) {
+    якщо (DEC_PTR(FFI_TYPE__SIZE(type_ptr)) > 16) {
       break;
     }
     var elements = DEC_PTR(FFI_TYPE__ELEMENTS(type_ptr));
     var first_element = DEREF_PTR_NUMBER(elements, 0);
-    if (first_element === 0) {
+    якщо (first_element === 0) {
       type_id = FFI_TYPE_VOID;
       break;
-    } else if (DEREF_PTR_NUMBER(elements, 1) === 0) {
+    } інакше якщо (DEREF_PTR_NUMBER(elements, 1) === 0) {
       type_ptr = first_element;
       type_id = FFI_TYPE__TYPEID(first_element);
-    } else {
+    } інакше {
       break;
     }
   }
-  return [type_ptr, type_id];
+  повернути [type_ptr, type_id];
 })
 
 EM_JS_MACROS(
@@ -279,10 +279,10 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // no matter what.
   var ret_by_arg = false;
 
-  if (rtype_id === FFI_TYPE_COMPLEX) {
+  якщо (rtype_id === FFI_TYPE_COMPLEX) {
     throw new Error('complex ret marshalling nyi');
   }
-  if (rtype_id < 0 || rtype_id > FFI_TYPE_LAST) {
+  якщо (rtype_id < 0 || rtype_id > FFI_TYPE_LAST) {
     throw new Error('Unexpected rtype ' + rtype_id);
   }
   // If the return type is a struct with multiple entries or a long double, the
@@ -290,8 +290,8 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Conveniently, we've already received a pointer to return value, so we can
   // just use this. We also mark a flag that we don't need to convert the return
   // value of the dynamic call back to C.
-  if (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
-    if (rvalue === 0) {
+  якщо (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
+    якщо (rvalue === 0) {
       // NULL rvalue: the caller discards the result, but the callee still
       // needs somewhere to write it. Allocate scratch space on the stack;
       // it is released by the stackRestore after the call.
@@ -308,7 +308,7 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // the wasm function. The Javascript wrapper does a type conversion from
   // Javascript to C automatically, here we manually do the inverse conversion
   // from C to Javascript.
-  for (var i = 0; i < nfixedargs; i++) {
+  для (var i = 0; i < nfixedargs; i++) {
     var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
@@ -379,9 +379,9 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // We don't have any way of knowing how many args were actually passed, so we
   // just always copy extra nonsense past the end. The ownwards call will know
   // not to look at it.
-  if (flags & VARARGS_FLAG) {
+  якщо (flags & VARARGS_FLAG) {
     var struct_arg_info = [];
-    for (var i = nargs - 1;  i >= nfixedargs; i--) {
+    для (var i = nargs - 1;  i >= nfixedargs; i--) {
       var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
       var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
       var arg_type_ptr = arg_unboxed[0];
@@ -438,7 +438,7 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
     // extra normal argument which is the pointer to the varargs.
     args.push(ENC_PTR(cur_stack_ptr));
     // Now allocate variable struct args on stack too.
-    for (var i = 0; i < struct_arg_info.length; i++) {
+    для (var i = 0; i < struct_arg_info.length; i++) {
       var struct_info = struct_arg_info[i];
       var arg_target = struct_info[0];
       var arg_ptr = struct_info[1];
@@ -459,13 +459,13 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
 
   // We need to return by argument. If return value was a nontrivial struct or
   // long double, the onwards call already put the return value in rvalue
-  if (ret_by_arg) {
-    return;
+  якщо (ret_by_arg) {
+    повернути;
   }
 
   // A NULL rvalue means the caller discards the return value.
-  if (rvalue === 0) {
-    return;
+  якщо (rvalue === 0) {
+    повернути;
   }
 
   // Otherwise the result was automatically converted from C into Javascript and
@@ -478,15 +478,15 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
     break;
   case FFI_TYPE_INT:
   case FFI_TYPE_SINT32:
-    if (rtype_widen)
+    якщо (rtype_widen)
       STORE_ARG_WIDENED_SIGNED(rvalue, result | 0);
-    else
+    інакше
       DEREF_U32(rvalue, 0) = result;
     break;
   case FFI_TYPE_UINT32:
-    if (rtype_widen)
+    якщо (rtype_widen)
       STORE_ARG_WIDENED_UNSIGNED(rvalue, result | 0);
-    else
+    інакше
       DEREF_U32(rvalue, 0) = result;
     break;
   case FFI_TYPE_FLOAT:
@@ -496,27 +496,27 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
     DEREF_F64(rvalue, 0) = result;
     break;
   case FFI_TYPE_UINT8:
-    if (rtype_widen)
+    якщо (rtype_widen)
       STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xff);
-    else
+    інакше
       DEREF_U8(rvalue, 0) = result;
     break;
   case FFI_TYPE_SINT8:
-    if (rtype_widen)
+    якщо (rtype_widen)
       STORE_ARG_WIDENED_SIGNED(rvalue, (result << 24) >> 24);
-    else
+    інакше
       DEREF_U8(rvalue, 0) = result;
     break;
   case FFI_TYPE_UINT16:
-    if (rtype_widen)
+    якщо (rtype_widen)
       STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xffff);
-    else
+    інакше
       DEREF_U16(rvalue, 0) = result;
     break;
   case FFI_TYPE_SINT16:
-    if (rtype_widen)
+    якщо (rtype_widen)
       STORE_ARG_WIDENED_SIGNED(rvalue, (result << 16) >> 16);
-    else
+    інакше
       DEREF_U16(rvalue, 0) = result;
     break;
   case FFI_TYPE_UINT64:
@@ -537,7 +537,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue) {
   ffi_call_js(cif, fn, rvalue, avalue);
 }
 
-#if __SIZEOF_POINTER__ == 4
+#якщо __SIZEOF_POINTER__ == 4
 
 CHECK_FIELD_OFFSET(ffi_closure, ftramp, 4*0);
 CHECK_FIELD_OFFSET(ffi_closure, cif, 4*1);
@@ -561,7 +561,7 @@ CHECK_FIELD_OFFSET(ffi_closure, user_data, 24);
 #define CLOSURE__fun(addr) DEREF_U64(addr, 2)
 #define CLOSURE__user_data(addr) DEREF_U64(addr, 3)
 
-#else
+#інакше
 #error "Unknown pointer size"
 #endif
 
@@ -572,12 +572,12 @@ EM_JS_MACROS(void *, ffi_closure_alloc_js, (size_t size, void **code), {
   var index = getEmptyTableSlot();
   DEREF_PTR(code, 0) = ENC_PTR(index);
   CLOSURE__wrapper(closure) = ENC_PTR(index);
-  return ENC_PTR(closure);
+  повернути ENC_PTR(closure);
 })
 
 void * __attribute__ ((visibility ("default")))
 ffi_closure_alloc(size_t size, void **code) {
-  return ffi_closure_alloc_js(size, code);
+  повернути ffi_closure_alloc_js(size, code);
 }
 
 EM_JS_MACROS(void, ffi_closure_free_js, (void *closure), {
@@ -589,7 +589,7 @@ EM_JS_MACROS(void, ffi_closure_free_js, (void *closure), {
 
 void __attribute__ ((visibility ("default")))
 ffi_closure_free(void *closure) {
-  return ffi_closure_free_js(closure);
+  повернути ffi_closure_free_js(closure);
 }
 
 
@@ -646,14 +646,14 @@ ffi_prep_closure_loc_js,
     );
   } catch (e) {
     LOG_DEBUG("CREATE_CLOSURE_FAILED", e);
-    return FFI_BAD_TYPEDEF_MACRO;
+    повернути FFI_BAD_TYPEDEF_MACRO;
   }
   var wasm_trampoline = instance.exports["f"];
   setWasmTableEntry(codeloc, wasm_trampoline);
   CLOSURE__cif(closure) = ENC_PTR(cif);
   CLOSURE__fun(closure) = ENC_PTR(fun);
   CLOSURE__user_data(closure) = ENC_PTR(user_data);
-  return FFI_OK_MACRO;
+  повернути FFI_OK_MACRO;
 }
 
 // Walk the CIF and compute the metadata we need for ffi_closure_prelude
@@ -710,14 +710,14 @@ function ffi_cif_to_call_info(cif) {
   }
   var unboxed_arg_type_id_list = [];
   var unboxed_arg_type_info_list = [];
-  for (var i = 0; i < nargs; i++) {
+  для (var i = 0; i < nargs; i++) {
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
     unboxed_arg_type_id_list.push(arg_type_id);
     unboxed_arg_type_info_list.push([DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
   }
-  for (var i = 0; i < nfixedargs; i++) {
+  для (var i = 0; i < nfixedargs; i++) {
     switch (unboxed_arg_type_id_list[i]) {
     case FFI_TYPE_INT:
     case FFI_TYPE_UINT8:
@@ -751,11 +751,11 @@ function ffi_cif_to_call_info(cif) {
       throw new Error('Unexpected argtype ' + arg_type_id);
     }
   }
-  if (nfixedargs < nargs) {
+  якщо (nfixedargs < nargs) {
     // extra pointer to varargs stack
     sig += PTR_SIG;
   }
-  return {
+  повернути {
     sig,
     call_info: {
       nfixedargs,
@@ -780,7 +780,7 @@ function ffi_closure_prelude(
     unboxed_arg_type_id_list,
   },
 ) {
-  return function prelude() {
+  повернути function prelude() {
     var args = arguments;
     var orig_stack_ptr = stackSave();
     var cur_ptr = orig_stack_ptr;
@@ -788,9 +788,9 @@ function ffi_closure_prelude(
     var jsarg_idx = 0;
     // Should we return by argument or not? The onwards call returns by argument
     // no matter what. (Warning: ret_by_arg means the opposite in ffi_call)
-    if (ret_by_arg) {
+    якщо (ret_by_arg) {
       ret_ptr = DEC_PTR(args[jsarg_idx++]);
-    } else {
+    } інакше {
       // We might return 4 bytes or 8 bytes, allocate 8 just in case.
       STACK_ALLOC(cur_ptr, 8, 8);
       ret_ptr = cur_ptr;
@@ -803,7 +803,7 @@ function ffi_closure_prelude(
     // pointer to the ith argument. If the argument is a struct, just store the
     // pointer. Otherwise allocate stack space and copy the js argument onto the
     // stack.
-    for (; carg_idx < nfixedargs; carg_idx++) {
+    для (; carg_idx < nfixedargs; carg_idx++) {
       // jsarg_idx might start out as 0 or 1 depending on ret_by_arg
       // it advances an extra time for long double
       var cur_arg = args[jsarg_idx++];
@@ -879,19 +879,19 @@ function ffi_closure_prelude(
     // We either have a pointer to the argument if the argument is not a struct
     // or a pointer to pointer to struct. We need to store a pointer to the
     // argument into args_ptr[i]
-    for (; carg_idx < nargs; carg_idx++) {
+    для (; carg_idx < nargs; carg_idx++) {
       var arg_type_id = unboxed_arg_type_id_list[carg_idx];
       var arg_type_info = unboxed_arg_type_info_list[carg_idx];
       var arg_size = arg_type_info[0];
       var arg_align = arg_type_info[1];
-      if (arg_type_id === FFI_TYPE_STRUCT) {
+      якщо (arg_type_id === FFI_TYPE_STRUCT) {
         // In this case varargs is a pointer to pointer to struct so we need to
         // deref once
         var struct_ptr = DEREF_PTR_NUMBER(varargs, 0);
         STACK_ALLOC(cur_ptr, arg_size, arg_align);
         HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(struct_ptr, struct_ptr + arg_size));
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
-      } else {
+      } інакше {
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(varargs);
       }
       varargs += __SIZEOF_POINTER__;
@@ -904,7 +904,7 @@ function ffi_closure_prelude(
     //    return epilogue(ret_ptr, orig_stack_ptr);
     //
     // We return these arguments in reverse order because stack is LIFO.
-    return [
+    повернути [
       ENC_PTR(ret_ptr),          // epilogue args (in correct order)
       ENC_PTR(orig_stack_ptr),
 
@@ -929,9 +929,9 @@ function ffi_closure_epilogue(sig) {
   case 'd': load = (ptr) => DEREF_F64(ptr, 0); break;
   default:  load = (ptr) => undefined; break;
   }
-  return function epilogue(ret_ptr, orig_stack_ptr) {
+  повернути function epilogue(ret_ptr, orig_stack_ptr) {
     stackRestore(DEC_PTR(orig_stack_ptr));
-    return load(DEC_PTR(ret_ptr));
+    повернути load(DEC_PTR(ret_ptr));
   };
 }
 
@@ -939,8 +939,8 @@ var ffi_closure_trampoline_module_cache = new Map();
 function ffi_closure_trampoline_module(sig) {
   var cache = ffi_closure_trampoline_module_cache;
   var module = cache.get(sig);
-  if (module) {
-    return module;
+  якщо (module) {
+    повернути module;
   }
 
   function uleb128(n) {
@@ -948,22 +948,22 @@ function ffi_closure_trampoline_module(sig) {
     do {
       var byte = n & 0x7f;
       n >>>= 7;
-      if (n) {
+      якщо (n) {
         byte |= 0x80;
       }
       result.push(byte);
-    } while (n);
-    return result;
+    } поки (n);
+    повернути result;
   }
   // A vector of single-byte items
   function vec(bytes) {
-    return [...uleb128(bytes.length), ...bytes];
+    повернути [...uleb128(bytes.length), ...bytes];
   }
   function section(id, bytes) {
-    return [id, ...vec(bytes)];
+    повернути [id, ...vec(bytes)];
   }
   function funcType(params, results) {
-    return [0x60, ...vec(params), ...vec(results)];
+    повернути [0x60, ...vec(params), ...vec(results)];
   }
 
   var typeCodes = { 'i': 0x7f, 'j': 0x7e, 'f': 0x7d, 'd': 0x7c };
@@ -1003,7 +1003,7 @@ function ffi_closure_trampoline_module(sig) {
 
   // Function body
   var body = [0x00]; // no locals
-  for (var i = 0; i < nparams; i++) {
+  для (var i = 0; i < nparams; i++) {
     body.push(0x20, ...uleb128(i)); // local.get i
   }
   body.push(0x10, 0x00); // call prelude
@@ -1028,7 +1028,7 @@ function ffi_closure_trampoline_module(sig) {
   // The module is tiny so compiling synchronously is fine.
   module = new WebAssembly.Module(bytes);
   cache.set(sig, module);
-  return module;
+  повернути module;
 }
 )
 
@@ -1037,8 +1037,8 @@ function ffi_closure_trampoline_module(sig) {
 ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif,
                                 void (*fun)(ffi_cif *, void *, void **, void *),
                                 void *user_data, void *codeloc) {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
-  return ffi_prep_closure_loc_js(closure, cif, (void *)fun, user_data,
+  якщо (cif->abi != FFI_EMSCRIPTEN_ABI)
+    повернути FFI_BAD_ABI;
+  повернути ffi_prep_closure_loc_js(closure, cif, (void *)fun, user_data,
                                      codeloc);
 }

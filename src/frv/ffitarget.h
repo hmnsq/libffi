@@ -54,7 +54,7 @@ typedef enum ffi_abi {
 #ifdef __FRV_FDPIC__
 /* Trampolines are 8 4-byte instructions long.  */
 #define FFI_TRAMPOLINE_SIZE (8*4)
-#else
+#інакше
 /* Trampolines are 5 4-byte instructions long.  */
 #define FFI_TRAMPOLINE_SIZE (5*4)
 #endif
