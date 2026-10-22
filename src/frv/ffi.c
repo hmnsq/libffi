@@ -36,16 +36,16 @@
 
 void *ffi_prep_args(char *stack, extended_cif *ecif)
 {
-  register unsigned int i;
+  register unsigned 整数 i;
   register void **p_argv;
   register char *argp;
   register ffi_type **p_arg;
-  register int count = 0;
+  register 整数 count = 0;
 
   p_argv = ecif->avalue;
   argp = stack;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  为 (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0);
        i--, p_arg++)
     {
@@ -53,7 +53,7 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
       
       z = (*p_arg)->size;
 
-      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+      如果 ((*p_arg)->type == FFI_TYPE_STRUCT)
 	{
 	  z = sizeof(void*);
 	  *(void **) argp = *p_argv;
@@ -69,36 +69,36 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
 	  else
 	    *(void **) argp = *(void **)(* p_argv);
 	}  */
-      else if (z < sizeof(int))
+      否则 如果 (z < sizeof(整数))
 	{
-	  z = sizeof(int);
+	  z = sizeof(整数);
 	  switch ((*p_arg)->type)
 	    {
 	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
+	      *(signed 整数 *) argp = (signed 整数)*(SINT8 *)(* p_argv);
 	      break;
 	      
 	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
+	      *(unsigned 整数 *) argp = (unsigned 整数)*(UINT8 *)(* p_argv);
 	      break;
 	      
 	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
+	      *(signed 整数 *) argp = (signed 整数)*(SINT16 *)(* p_argv);
 	      break;
 		  
 	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
+	      *(unsigned 整数 *) argp = (unsigned 整数)*(UINT16 *)(* p_argv);
 	      break;
 		  
 	    default:
 	      FFI_ASSERT(0);
 	    }
 	}
-      else if (z == sizeof(int))
+      否则 如果 (z == sizeof(整数))
 	{
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned 整数 *) argp = (unsigned 整数)*(UINT32 *)(* p_argv);
 	}
-      else
+      否则
 	{
 	  memcpy(argp, *p_argv, z);
 	}
@@ -107,20 +107,20 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
       count += z;
     }
 
-  return (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
+  返回 (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  如果 (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = -1;
-  else
+  否则
     cif->flags = cif->rtype->size;
 
   cif->bytes = FFI_ALIGN (cif->bytes, 8);
 
-  return FFI_OK;
+  返回 FFI_OK;
 }
 
 extern void ffi_call_EABI(void *(*)(char *, extended_cif *), 
@@ -142,12 +142,12 @@ void ffi_call(ffi_cif *cif,
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if ((rvalue == NULL) && 
+  如果 ((rvalue == NULL) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca(cif->rtype->size);
     }
-  else
+  否则
     ecif.rvalue = rvalue;
     
   
@@ -185,10 +185,10 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
   ffi_type **arg_types = cif->arg_types;
   void **avalue = alloca (cif->nargs * sizeof(void *));
   char *ptr = (char *) register_args;
-  int i;
+  整数 i;
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  为 (i = 0; i < cif->nargs; i++)
     {
       switch (arg_types[i]->type)
 	{
@@ -218,12 +218,12 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 
       /* If we've handled more arguments than fit in registers,
 	 start looking at the those passed on the stack.  */
-      if (ptr == ((char *)register_args + (6*4)))
+      如果 (ptr == ((char *)register_args + (6*4)))
 	ptr = stack_args;
     }
 
   /* Invoke the closure.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  如果 (cif->rtype->type == FFI_TYPE_STRUCT)
     {
       /* The caller allocates space for the return structure, and
        passes a pointer to this space in gr3.  Use this value directly
@@ -231,7 +231,7 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
       register void *return_struct_ptr __asm__("gr3");
       (closure->fun) (cif, return_struct_ptr, avalue, closure->user_data);
     }
-  else
+  否则
     {
       /* Allocate space for the return value and call the function.  */
       long long rvalue;
@@ -241,7 +241,7 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 	 values also use gr9.  We fill the both, even for small return
 	 values, just to avoid a branch.  */ 
       __asm__ ("ldi  @(%0, #0), gr8" : : "r" (&rvalue));
-      __asm__ ("ldi  @(%0, #0), gr9" : : "r" (&((int *) &rvalue)[1]));
+      __asm__ ("ldi  @(%0, #0), gr9" : : "r" (&((整数 *) &rvalue)[1]));
     }
 }
 
@@ -252,18 +252,18 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+  unsigned 整数 *tramp = (unsigned 整数 *) &closure->tramp[0];
   unsigned long fn = (long) ffi_closure_eabi;
   unsigned long cls = (long) codeloc;
 #ifdef __FRV_FDPIC__
   register void *got __asm__("gr15");
 #endif
-  int i;
+  整数 i;
 
   fn = (unsigned long) ffi_closure_eabi;
 
 #ifdef __FRV_FDPIC__
-  tramp[0] = &((unsigned int *)codeloc)[2];
+  tramp[0] = &((unsigned 整数 *)codeloc)[2];
   tramp[1] = got;
   tramp[2] = 0x8cfc0000 + (fn  & 0xffff); /* setlos lo(fn), gr6    */
   tramp[3] = 0x8efc0000 + (cls & 0xffff); /* setlos lo(cls), gr7   */
@@ -271,7 +271,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
   tramp[5] = 0x8ef80000 + (cls >> 16);    /* sethi hi(cls), gr7    */
   tramp[6] = 0x9cc86000;                  /* ldi @(gr6, #0), gr14  */
   tramp[7] = 0x8030e000;                  /* jmpl @(gr14, gr0)     */
-#else
+#否则
   tramp[0] = 0x8cfc0000 + (fn  & 0xffff); /* setlos lo(fn), gr6    */
   tramp[1] = 0x8efc0000 + (cls & 0xffff); /* setlos lo(cls), gr7   */
   tramp[2] = 0x8cf80000 + (fn  >> 16);	  /* sethi hi(fn), gr6     */
@@ -284,9 +284,9 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
 
   /* Cache flushing.  */
-  for (i = 0; i < FFI_TRAMPOLINE_SIZE; i++)
+  为 (i = 0; i < FFI_TRAMPOLINE_SIZE; i++)
     __asm__ volatile ("dcf @(%0,%1)\n\tici @(%2,%1)" :: "r" (tramp), "r" (i),
 		      "r" (codeloc));
 
-  return FFI_OK;
+  返回 FFI_OK;
 }

@@ -19,7 +19,7 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__kvx__)
+#如果 defined(__kvx__)
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -35,16 +35,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
 #ifdef FFI_DEBUG
-#define DEBUG_PRINT(...) do{ fprintf( stderr, __VA_ARGS__ ); } while(0)
-#else
+#define DEBUG_PRINT(...) do{ fprintf( stderr, __VA_ARGS__ ); } 当(0)
+#否则
 #define DEBUG_PRINT(...)
 #endif
 
 struct ret_value {
-	unsigned long int r0;
-	unsigned long int r1;
-	unsigned long int r2;
-	unsigned long int r3;
+	unsigned long 整数 r0;
+	unsigned long 整数 r1;
+	unsigned long 整数 r2;
+	unsigned long 整数 r3;
 };
 
 extern struct ret_value ffi_call_SYSV(unsigned total_size,
@@ -58,19 +58,19 @@ extern struct ret_value ffi_call_SYSV(unsigned total_size,
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
   cif->flags = cif->rtype->size;
-  return FFI_OK;
+  返回 FFI_OK;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, unsigned int arg_slots_size, extended_cif *ecif)
+void *ffi_prep_args(char *stack, unsigned 整数 arg_slots_size, extended_cif *ecif)
 {
   char *stacktemp = stack;
   char *current_arg_passed_by_value = stack + arg_slots_size;
-  int i, s;
+  整数 i, s;
   ffi_type **arg;
-  int count = 0;
+  整数 count = 0;
   ffi_cif *cif = ecif->cif;
   void **argv = ecif->avalue;
 
@@ -82,7 +82,7 @@ void *ffi_prep_args(char *stack, unsigned int arg_slots_size, extended_cif *ecif
   DEBUG_PRINT("ecif: %p\n", ecif);
   DEBUG_PRINT("ecif->avalue: %p\n", ecif->avalue);
 
-  for (i = 0; i < cif->nargs; i++) {
+  为 (i = 0; i < cif->nargs; i++) {
 
     s = KVX_ABI_SLOT_SIZE;
     switch((*arg)->type) {
@@ -102,25 +102,25 @@ void *ffi_prep_args(char *stack, unsigned int arg_slots_size, extended_cif *ecif
         break;
 
       case FFI_TYPE_COMPLEX:
-        if ((*arg)->size == 8)
+        如果 ((*arg)->size == 8)
           *(_Complex float *) stack = *(_Complex float *)(* argv);
-        else if ((*arg)->size == 16) {
+        否则 如果 ((*arg)->size == 16) {
           *(_Complex double *) stack = *(_Complex double *)(* argv);
           s = 16;
-        } else
+        } 否则
           abort();
         break;
       case FFI_TYPE_STRUCT: {
         char *value;
-        unsigned int written_size = 0;
+        unsigned 整数 written_size = 0;
         DEBUG_PRINT("struct by value @%p\n", stack);
-        if ((*arg)->size > KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
+        如果 ((*arg)->size > KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
           DEBUG_PRINT("big struct\n");
           *(uint64_t *) stack = (uintptr_t)current_arg_passed_by_value;
           value = current_arg_passed_by_value;
           current_arg_passed_by_value += (*arg)->size;
           written_size = KVX_ABI_SLOT_SIZE;
-        } else {
+        } 否则 {
           value = stack;
           written_size = (*arg)->size;
         }
@@ -142,16 +142,16 @@ void *ffi_prep_args(char *stack, unsigned int arg_slots_size, extended_cif *ecif
 #ifdef FFI_DEBUG
   FFI_ASSERT(((intptr_t)(stacktemp + REG_ARGS_SIZE) & (KVX_ABI_STACK_ALIGNMENT-1)) == 0);
 #endif
-  return stacktemp + REG_ARGS_SIZE;
+  返回 stacktemp + REG_ARGS_SIZE;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-                                    unsigned int ntotalargs)
+ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned 整数 nfixedargs,
+                                    unsigned 整数 ntotalargs)
 {
   cif->flags = cif->rtype->size;
-  return FFI_OK;
+  返回 FFI_OK;
 }
 
 static unsigned long handle_small_int_ext(kvx_intext_method *int_ext_method,
@@ -160,40 +160,40 @@ static unsigned long handle_small_int_ext(kvx_intext_method *int_ext_method,
   switch (rtype->type) {
     case FFI_TYPE_SINT8:
       *int_ext_method = KVX_RET_SXBD;
-      return KVX_REGISTER_SIZE;
+      返回 KVX_REGISTER_SIZE;
 
     case FFI_TYPE_SINT16:
       *int_ext_method = KVX_RET_SXHD;
-      return KVX_REGISTER_SIZE;
+      返回 KVX_REGISTER_SIZE;
 
     case FFI_TYPE_SINT32:
       *int_ext_method = KVX_RET_SXWD;
-      return KVX_REGISTER_SIZE;
+      返回 KVX_REGISTER_SIZE;
 
     case FFI_TYPE_UINT8:
       *int_ext_method = KVX_RET_ZXBD;
-      return KVX_REGISTER_SIZE;
+      返回 KVX_REGISTER_SIZE;
 
     case FFI_TYPE_UINT16:
       *int_ext_method = KVX_RET_ZXHD;
-      return KVX_REGISTER_SIZE;
+      返回 KVX_REGISTER_SIZE;
 
     case FFI_TYPE_UINT32:
       *int_ext_method = KVX_RET_ZXWD;
-      return KVX_REGISTER_SIZE;
+      返回 KVX_REGISTER_SIZE;
 
     default:
       *int_ext_method = KVX_RET_NONE;
-      return rtype->size;
+      返回 rtype->size;
   }
 }
 
 void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
-  int i;
-  unsigned long int slot_fitting_args_size = 0;
-  unsigned long int total_size = 0;
-  unsigned long int big_struct_size = 0;
+  整数 i;
+  unsigned long 整数 slot_fitting_args_size = 0;
+  unsigned long 整数 total_size = 0;
+  unsigned long 整数 big_struct_size = 0;
   kvx_intext_method int_extension_method;
   ffi_type **arg;
   struct ret_value local_rvalue = {0};
@@ -201,18 +201,18 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 
 
   /* Calculate size to allocate on stack */
-  for (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
+  为 (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
     DEBUG_PRINT("argument %d, type %d, size %lu\n", i, (*arg)->type, (*arg)->size);
-    if (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
-      if ((*arg)->size <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
+    如果 (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
+      如果 ((*arg)->size <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
         slot_fitting_args_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
-      } else {
+      } 否则 {
         slot_fitting_args_size += KVX_ABI_SLOT_SIZE; /* aggregate passed by reference */
         big_struct_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
       }
-    } else if ((*arg)->size <= KVX_ABI_SLOT_SIZE) {
+    } 否则 如果 ((*arg)->size <= KVX_ABI_SLOT_SIZE) {
       slot_fitting_args_size += KVX_ABI_SLOT_SIZE;
-    } else {
+    } 否则 {
       printf("Error: unsupported arg size %ld arg type %d\n", (*arg)->size, (*arg)->type);
       abort(); /* should never happen? */
     }
@@ -249,7 +249,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
       DEBUG_PRINT("int_extension_method: %u\n", int_extension_method);
       local_rvalue = ffi_call_SYSV(total_size, slot_fitting_args_size,
                                    &ecif, rvalue, fn, int_extension_method);
-      if ((cif->flags <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE)
+      如果 ((cif->flags <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE)
           && (cif->rtype->type != FFI_TYPE_VOID))
         memcpy(rvalue, &local_rvalue, wb_size);
       break;
@@ -267,7 +267,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
                       void *user_data,
                       void *codeloc)
 {
-  return FFI_BAD_ABI;
+  返回 FFI_BAD_ABI;
 }
 
 #endif /* (__kvx__) */

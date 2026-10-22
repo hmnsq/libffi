@@ -36,25 +36,25 @@
 /* #define DEBUG */
 
 extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-    unsigned int, unsigned int, unsigned int*, unsigned int,
+    unsigned 整数, unsigned 整数, unsigned 整数*, unsigned 整数,
     void (*fn)(void));
 extern void ffi_closure_SYSV (ffi_closure *);
 
-unsigned int pass_struct_on_stack(ffi_type *type)
+unsigned 整数 pass_struct_on_stack(ffi_type *type)
 {
-    if(type->type != FFI_TYPE_STRUCT)
-        return 0;
+    如果(type->type != FFI_TYPE_STRUCT)
+        返回 0;
 
-    if(type->alignment < type->size &&
+    如果(type->alignment < type->size &&
         !(type->size == 4 || type->size == 8) &&
         !(type->size == 8 && type->alignment >= 4))
-        return 1;
+        返回 1;
 
-    if(type->size == 3 || type->size == 5 || type->size == 6 ||
+    如果(type->size == 3 || type->size == 5 || type->size == 6 ||
         type->size == 7)
-        return 1;
+        返回 1;
 
-    return 0;
+    返回 0;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
@@ -66,59 +66,59 @@ unsigned int pass_struct_on_stack(ffi_type *type)
 
 void ffi_prep_args(char *stack, extended_cif *ecif)
 {
-    unsigned int i;
+    unsigned 整数 i;
     void **p_argv;
     ffi_type **p_arg;
     char *reg_base = stack;
     char *stack_base = stack + 20;
-    unsigned int stack_offset = 0;
-    unsigned int reg_mask = 0;
+    unsigned 整数 stack_offset = 0;
+    unsigned 整数 reg_mask = 0;
 
     p_argv = ecif->avalue;
 
     /* If cif->flags is struct then we know it's not passed in registers */
-    if(ecif->cif->flags == FFI_TYPE_STRUCT)
+    如果(ecif->cif->flags == FFI_TYPE_STRUCT)
     {
         *(void**)reg_base = ecif->rvalue;
         reg_mask |= 1;
     }
 
-    for(i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+    为(i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
         i++, p_arg++)
     {
         size_t z = (*p_arg)->size;
-        int alignment = (*p_arg)->alignment;
-        int type = (*p_arg)->type;
+        整数 alignment = (*p_arg)->alignment;
+        整数 type = (*p_arg)->type;
         char *addr = 0;
 
-        if(z % 4 != 0)
+        如果(z % 4 != 0)
             z += (4 - z % 4);
 
-        if(reg_mask != 0x1f)
+        如果(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            如果(pass_struct_on_stack(*p_arg))
             {
                 addr = stack_base + stack_offset;
                 stack_offset += z;
             }
-            else if(z == sizeof(int))
+            否则 如果(z == sizeof(整数))
             {
                 char index = 0;
 
-                while((reg_mask >> index) & 1)
+                当((reg_mask >> index) & 1)
                     index++;
 
                 addr = reg_base + (index * 4);
                 reg_mask |= (1 << index);
             }
-            else if(z == 2 * sizeof(int))
+            否则 如果(z == 2 * sizeof(整数))
             {
-                if(!((reg_mask >> 1) & 1))
+                如果(!((reg_mask >> 1) & 1))
                 {
                     addr = reg_base + 4;
                     reg_mask |= (3 << 1);
                 }
-                else if(!((reg_mask >> 3) & 1))
+                否则 如果(!((reg_mask >> 3) & 1))
                 {
                     addr = reg_base + 12;
                     reg_mask |= (3 << 3);
@@ -126,28 +126,28 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
             }
         }
 
-        if(!addr)
+        如果(!addr)
         {
             addr = stack_base + stack_offset;
             stack_offset += z;
         }
 
-        if(type == FFI_TYPE_STRUCT && (*p_arg)->elements[1] == NULL)
+        如果(type == FFI_TYPE_STRUCT && (*p_arg)->elements[1] == NULL)
             type = (*p_arg)->elements[0]->type;
 
         switch(type)
         {
         case FFI_TYPE_UINT8:
-            *(unsigned int *)addr = (unsigned int)*(UINT8 *)(*p_argv);
+            *(unsigned 整数 *)addr = (unsigned 整数)*(UINT8 *)(*p_argv);
             break;
         case FFI_TYPE_SINT8:
-            *(signed int *)addr = (signed int)*(SINT8 *)(*p_argv);
+            *(signed 整数 *)addr = (signed 整数)*(SINT8 *)(*p_argv);
             break;
         case FFI_TYPE_UINT16:
-            *(unsigned int *)addr = (unsigned int)*(UINT16 *)(*p_argv);
+            *(unsigned 整数 *)addr = (unsigned 整数)*(UINT16 *)(*p_argv);
             break;
         case FFI_TYPE_SINT16:
-            *(signed int *)addr = (signed int)*(SINT16 *)(*p_argv);
+            *(signed 整数 *)addr = (signed 整数)*(SINT16 *)(*p_argv);
             break;
         default:
             memcpy(addr, *p_argv, z);
@@ -158,17 +158,17 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 
 #ifdef DEBUG
     /* Debugging */
-    for(i = 0; i < 5; i++)
+    为(i = 0; i < 5; i++)
     {
-        if((reg_mask & (1 << i)) == 0)
+        如果((reg_mask & (1 << i)) == 0)
             printf("r%d: (unused)\n", 12 - i);
-        else
-            printf("r%d: 0x%08x\n", 12 - i, ((unsigned int*)reg_base)[i]);
+        否则
+            printf("r%d: 0x%08x\n", 12 - i, ((unsigned 整数*)reg_base)[i]);
     }
 
-    for(i = 0; i < stack_offset / 4; i++)
+    为(i = 0; i < stack_offset / 4; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack_base)[i]);
+        printf("sp+%d: 0x%08x\n", i*4, ((unsigned 整数*)stack_base)[i]);
     }
 #endif
 }
@@ -208,20 +208,20 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
         break;
     case FFI_TYPE_STRUCT:
         cif->rstruct_flag = 1;
-        if(!pass_struct_on_stack(cif->rtype))
+        如果(!pass_struct_on_stack(cif->rtype))
         {
-            if(cif->rtype->size <= 1)
+            如果(cif->rtype->size <= 1)
                 cif->flags = (unsigned)FFI_TYPE_UINT8;
-            else if(cif->rtype->size <= 2)
+            否则 如果(cif->rtype->size <= 2)
                 cif->flags = (unsigned)FFI_TYPE_UINT16;
-            else if(cif->rtype->size <= 4)
+            否则 如果(cif->rtype->size <= 4)
                 cif->flags = (unsigned)FFI_TYPE_UINT32;
-            else if(cif->rtype->size <= 8)
+            否则 如果(cif->rtype->size <= 8)
                 cif->flags = (unsigned)FFI_TYPE_UINT64;
-            else
+            否则
                 cif->flags = (unsigned)cif->rtype->type;
         }
-        else
+        否则
             cif->flags = (unsigned)cif->rtype->type;
         break;
     default:
@@ -229,29 +229,29 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
         break;
     }
 
-    return FFI_OK;
+    返回 FFI_OK;
 }
 
 void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
     extended_cif ecif;
 
-    unsigned int size = 0, i = 0;
+    unsigned 整数 size = 0, i = 0;
     ffi_type **p_arg;
 
     ecif.cif = cif;
     ecif.avalue = avalue;
 
-    for(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
+    为(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
         size += (*p_arg)->size + (4 - (*p_arg)->size % 4);
 
     /* If the return value is a struct and we don't have a return value
      * address then we need to make one */
 
     /* If cif->flags is struct then it's not suitable for registers */
-    if((rvalue == NULL) && (cif->flags == FFI_TYPE_STRUCT))
+    如果((rvalue == NULL) && (cif->flags == FFI_TYPE_STRUCT))
         ecif.rvalue = alloca(cif->rtype->size);
-    else
+    否则
         ecif.rvalue = rvalue;
 
     switch(cif->abi)
@@ -269,23 +269,23 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
     void **avalue, ffi_cif *cif)
 {
-    register unsigned int i, reg_mask = 0;
+    register unsigned 整数 i, reg_mask = 0;
     register void **p_argv;
     register ffi_type **p_arg;
     register char *reg_base = stack;
     register char *stack_base = stack + 20;
-    register unsigned int stack_offset = 0;
+    register unsigned 整数 stack_offset = 0;
 
 #ifdef DEBUG
     /* Debugging */
-    for(i = 0; i < cif->nargs + 7; i++)
+    为(i = 0; i < cif->nargs + 7; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack)[i]);
+        printf("sp+%d: 0x%08x\n", i*4, ((unsigned 整数*)stack)[i]);
     }
 #endif
 
     /* If cif->flags is struct then we know it's not passed in registers */
-    if(cif->flags == FFI_TYPE_STRUCT)
+    如果(cif->flags == FFI_TYPE_STRUCT)
     {
         *rvalue = *(void **)reg_base;
         reg_mask |= 1;
@@ -293,41 +293,41 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 
     p_argv = avalue;
 
-    for(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
+    为(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
     {
         size_t z = (*p_arg)->size;
-        int alignment = (*p_arg)->alignment;
+        整数 alignment = (*p_arg)->alignment;
 
         *p_argv = 0;
 
-        if(z % 4 != 0)
+        如果(z % 4 != 0)
             z += (4 - z % 4);
 
-        if(reg_mask != 0x1f)
+        如果(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            如果(pass_struct_on_stack(*p_arg))
             {
                 *p_argv = (void*)stack_base + stack_offset;
                 stack_offset += z;
             }
-            else if(z <= sizeof(int))
+            否则 如果(z <= sizeof(整数))
             {
                 char index = 0;
 
-                while((reg_mask >> index) & 1)
+                当((reg_mask >> index) & 1)
                     index++;
 
                 *p_argv = (void*)reg_base + (index * 4);
                 reg_mask |= (1 << index);
             }
-            else if(z == 2 * sizeof(int))
+            否则 如果(z == 2 * sizeof(整数))
             {
-                if(!((reg_mask >> 1) & 1))
+                如果(!((reg_mask >> 1) & 1))
                 {
                     *p_argv = (void*)reg_base + 4;
                     reg_mask |= (3 << 1);
                 }
-                else if(!((reg_mask >> 3) & 1))
+                否则 如果(!((reg_mask >> 3) & 1))
                 {
                     *p_argv = (void*)reg_base + 12;
                     reg_mask |= (3 << 3);
@@ -335,19 +335,19 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
             }
         }
 
-        if(!*p_argv)
+        如果(!*p_argv)
         {
             *p_argv = (void*)stack_base + stack_offset;
             stack_offset += z;
         }
 
-        if((*p_arg)->type != FFI_TYPE_STRUCT ||
+        如果((*p_arg)->type != FFI_TYPE_STRUCT ||
             (*p_arg)->elements[1] == NULL)
         {
-            if(alignment == 1)
-                **(unsigned int**)p_argv <<= 24;
-            else if(alignment == 2)
-                **(unsigned int**)p_argv <<= 16;
+            如果(alignment == 1)
+                **(unsigned 整数**)p_argv <<= 24;
+            否则 如果(alignment == 2)
+                **(unsigned 整数**)p_argv <<= 16;
         }
 
         p_argv++;
@@ -355,26 +355,26 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 
 #ifdef DEBUG
     /* Debugging */
-    for(i = 0; i < cif->nargs; i++)
+    为(i = 0; i < cif->nargs; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, *(((unsigned int**)avalue)[i]));
+        printf("sp+%d: 0x%08x\n", i*4, *(((unsigned 整数**)avalue)[i]));
     }
 #endif
 }
 
 /* This function is jumped to by the trampoline */
 
-unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
+unsigned 整数 ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
     void *args)
 {
     ffi_cif *cif;
     void **arg_area;
-    unsigned int i, size = 0;
+    unsigned 整数 i, size = 0;
     ffi_type **p_arg;
 
     cif = closure->cif;
 
-    for(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
+    为(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
         size += (*p_arg)->size + (4 - (*p_arg)->size % 4);
 
     arg_area = (void **)alloca(size);
@@ -388,36 +388,36 @@ unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
 
     (closure->fun)(cif, *respp, arg_area, closure->user_data);
 
-    return cif->flags;
+    返回 cif->flags;
 }
 
 ffi_status ffi_prep_closure_loc(ffi_closure* closure, ffi_cif* cif,
     void (*fun)(ffi_cif*, void*, void**, void*), void *user_data,
     void *codeloc)
 {
-    if (cif->abi != FFI_SYSV)
-      return FFI_BAD_ABI;
+    如果 (cif->abi != FFI_SYSV)
+      返回 FFI_BAD_ABI;
 
     unsigned char *__tramp = (unsigned char*)(&closure->tramp[0]);
-    unsigned int  __fun = (unsigned int)(&ffi_closure_SYSV);
-    unsigned int  __ctx = (unsigned int)(codeloc);
-    unsigned int  __rstruct_flag = (unsigned int)(cif->rstruct_flag);
-    unsigned int  __inner = (unsigned int)(&ffi_closure_SYSV_inner);
-    *(unsigned int*) &__tramp[0] = 0xebcd1f00;    /* pushm  r8-r12 */
-    *(unsigned int*) &__tramp[4] = 0xfefc0010;    /* ld.w   r12, pc[16] */
-    *(unsigned int*) &__tramp[8] = 0xfefb0010;    /* ld.w   r11, pc[16] */
-    *(unsigned int*) &__tramp[12] = 0xfefa0010;   /* ld.w   r10, pc[16] */
-    *(unsigned int*) &__tramp[16] = 0xfeff0010;   /* ld.w   pc, pc[16] */
-    *(unsigned int*) &__tramp[20] = __ctx;
-    *(unsigned int*) &__tramp[24] = __rstruct_flag;
-    *(unsigned int*) &__tramp[28] = __inner;
-    *(unsigned int*) &__tramp[32] = __fun;
+    unsigned 整数  __fun = (unsigned 整数)(&ffi_closure_SYSV);
+    unsigned 整数  __ctx = (unsigned 整数)(codeloc);
+    unsigned 整数  __rstruct_flag = (unsigned 整数)(cif->rstruct_flag);
+    unsigned 整数  __inner = (unsigned 整数)(&ffi_closure_SYSV_inner);
+    *(unsigned 整数*) &__tramp[0] = 0xebcd1f00;    /* pushm  r8-r12 */
+    *(unsigned 整数*) &__tramp[4] = 0xfefc0010;    /* ld.w   r12, pc[16] */
+    *(unsigned 整数*) &__tramp[8] = 0xfefb0010;    /* ld.w   r11, pc[16] */
+    *(unsigned 整数*) &__tramp[12] = 0xfefa0010;   /* ld.w   r10, pc[16] */
+    *(unsigned 整数*) &__tramp[16] = 0xfeff0010;   /* ld.w   pc, pc[16] */
+    *(unsigned 整数*) &__tramp[20] = __ctx;
+    *(unsigned 整数*) &__tramp[24] = __rstruct_flag;
+    *(unsigned 整数*) &__tramp[28] = __inner;
+    *(unsigned 整数*) &__tramp[32] = __fun;
     syscall(__NR_cacheflush, 0, (&__tramp[0]), 36);
 
     closure->cif = cif;
     closure->user_data = user_data;
     closure->fun  = fun;
 
-    return FFI_OK;
+    返回 FFI_OK;
 }
 
