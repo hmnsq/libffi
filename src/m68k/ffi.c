@@ -4,115 +4,115 @@
    m68k Foreign Function Interface
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <unistd.h>
 #ifdef __rtems__
-void rtems_cache_flush_multiple_data_lines( const void *, size_t );
-#else
-#include <sys/syscall.h>
+शून्य rtems_cache_flush_multiple_data_ओळी( ध्रुव शून्य *, size_t );
+#अन्यथा
+#अन्तर्भाव <sys/syscall.h>
 #ifdef __MINT__
-#include <mint/mintbind.h>
-#include <mint/ssystem.h>
-#else
-#include <asm/cachectl.h>
+#अन्तर्भाव <mint/mintbind.h>
+#अन्तर्भाव <mint/ssystem.h>
+#अन्यथा
+#अन्तर्भाव <asm/cachectl.h>
 #endif
 #endif
 
-void ffi_call_SYSV (extended_cif *,
+शून्य ffi_call_SYSV (extended_cif *,
 		    unsigned, unsigned,
-		    void *, void (*fn) ());
-void *ffi_prep_args (void *stack, extended_cif *ecif);
-void ffi_closure_SYSV (ffi_closure *);
-void ffi_closure_struct_SYSV (ffi_closure *);
-unsigned int ffi_closure_SYSV_inner (ffi_closure *closure,
-				     void *resp, void *args);
+		    शून्य *, शून्य (*fn) ());
+शून्य *ffi_prep_args (शून्य *चळत, extended_cif *ecif);
+शून्य ffi_closure_SYSV (ffi_closure *);
+शून्य ffi_closure_struct_SYSV (ffi_closure *);
+unsigned पूर्णाङ्क ffi_closure_SYSV_inner (ffi_closure *closure,
+				     शून्य *resp, शून्य *args);
 
 /* ffi_prep_args is called by the assembly routine once stack space has
    been allocated for the function's arguments.  */
 
-void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+शून्य *
+ffi_prep_args (शून्य *चळत, extended_cif *ecif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  unsigned पूर्णाङ्क i;
+  शून्य **p_argv;
+  वर्ण *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  शून्य *struct_मूल्य_ptr;
 
-  argp = stack;
+  argp = चळत;
 
-  if (
+  यदि (
 #ifdef __MINT__
       (ecif->cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
 #endif
       (((ecif->cif->rtype->type == FFI_TYPE_STRUCT)
         && !ecif->cif->flags)))
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_मूल्य_ptr = ecif->rvalue;
+  अन्यथा
+    struct_मूल्य_ptr = रिक्त;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  प्रति (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z = (*p_arg)->size;
-      int type = (*p_arg)->type;
+      पूर्णाङ्क type = (*p_arg)->type;
 
-      if (z < sizeof (int))
+      यदि (z < परिमाण (पूर्णाङ्क))
 	{
-	  switch (type)
+	  विकल्प (type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    पक्ष FFI_TYPE_SINT8:
+	      *(signed पूर्णाङ्क *) argp = (signed पूर्णाङ्क) *(SINT8 *) *p_argv;
+	      भङ्ग;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    पक्ष FFI_TYPE_UINT8:
+	      *(unsigned पूर्णाङ्क *) argp = (unsigned पूर्णाङ्क) *(UINT8 *) *p_argv;
+	      भङ्ग;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    पक्ष FFI_TYPE_SINT16:
+	      *(signed पूर्णाङ्क *) argp = (signed पूर्णाङ्क) *(SINT16 *) *p_argv;
+	      भङ्ग;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    पक्ष FFI_TYPE_UINT16:
+	      *(unsigned पूर्णाङ्क *) argp = (unsigned पूर्णाङ्क) *(UINT16 *) *p_argv;
+	      भङ्ग;
 
-	    case FFI_TYPE_STRUCT:
+	    पक्ष FFI_TYPE_STRUCT:
 #ifdef __MINT__
-	      if (z == 1 || z == 2)
+	      यदि (z == 1 || z == 2)
 		memcpy (argp + 2, *p_argv, z);
-              else
+              अन्यथा
 		memcpy (argp, *p_argv, z);
-#else
-	      memcpy (argp + sizeof (int) - z, *p_argv, z);
+#अन्यथा
+	      memcpy (argp + परिमाण (पूर्णाङ्क) - z, *p_argv, z);
 #endif
-	      break;
+	      भङ्ग;
 
-	    default:
+	    स्वभाव:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = परिमाण (पूर्णाङ्क);
 	}
-      else
+      अन्यथा
 	{
 	  memcpy (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  यदि ((परिमाण(पूर्णाङ्क) - 1) & z)
+	    z = FFI_ALIGN(z, परिमाण(पूर्णाङ्क));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  प्रत्यागम struct_मूल्य_ptr;
 }
 
 #define CIF_FLAGS_INT		1
@@ -131,95 +131,95 @@ ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  विकल्प (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    पक्ष FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    पक्ष FFI_TYPE_STRUCT:
+      यदि (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
           cif->rtype->elements[1])
         {
           cif->flags = 0;
-          break;
+          भङ्ग;
         }
 
-      switch (cif->rtype->size)
+      विकल्प (cif->rtype->size)
 	{
-	case 1:
+	पक्ष 1:
 #ifdef __MINT__
 	  cif->flags = CIF_FLAGS_STRUCT2;
-#else
+#अन्यथा
 	  cif->flags = CIF_FLAGS_STRUCT1;
 #endif
-	  break;
-	case 2:
+	  भङ्ग;
+	पक्ष 2:
 	  cif->flags = CIF_FLAGS_STRUCT2;
-	  break;
+	  भङ्ग;
 #ifdef __MINT__
-	case 3:
+	पक्ष 3:
 #endif
-	case 4:
+	पक्ष 4:
 	  cif->flags = CIF_FLAGS_INT;
-	  break;
+	  भङ्ग;
 #ifdef __MINT__
-	case 7:
+	पक्ष 7:
 #endif
-	case 8:
+	पक्ष 8:
 	  cif->flags = CIF_FLAGS_DINT;
-	  break;
-	default:
+	  भङ्ग;
+	स्वभाव:
 	  cif->flags = 0;
-	  break;
+	  भङ्ग;
 	}
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_FLOAT:
+    पक्ष FFI_TYPE_FLOAT:
       cif->flags = CIF_FLAGS_FLOAT;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_DOUBLE:
+    पक्ष FFI_TYPE_DOUBLE:
       cif->flags = CIF_FLAGS_DOUBLE;
-      break;
+      भङ्ग;
 
-#if (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
-    case FFI_TYPE_LONGDOUBLE:
+#यदि (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
+    पक्ष FFI_TYPE_LONGDOUBLE:
 #ifdef __MINT__
       cif->flags = 0;
-#else
+#अन्यथा
       cif->flags = CIF_FLAGS_LDOUBLE;
 #endif
-      break;
+      भङ्ग;
 #endif
 
-    case FFI_TYPE_POINTER:
+    पक्ष FFI_TYPE_POINTER:
       cif->flags = CIF_FLAGS_POINTER;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    पक्ष FFI_TYPE_SINT64:
+    पक्ष FFI_TYPE_UINT64:
       cif->flags = CIF_FLAGS_DINT;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_SINT16:
+    पक्ष FFI_TYPE_SINT16:
       cif->flags = CIF_FLAGS_SINT16;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_SINT8:
+    पक्ष FFI_TYPE_SINT8:
       cif->flags = CIF_FLAGS_SINT8;
-      break;
+      भङ्ग;
 
-    default:
+    स्वभाव:
       cif->flags = CIF_FLAGS_INT;
-      break;
+      भङ्ग;
     }
 
-  return FFI_OK;
+  प्रत्यागम FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+शून्य
+ffi_call (ffi_cif *cif, शून्य (*fn) (), शून्य *rvalue, शून्य **avalue)
 {
   extended_cif ecif;
 
@@ -229,75 +229,75 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  यदि (rvalue == रिक्त
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->rtype->size > 8)
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  अन्यथा
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  विकल्प (cif->abi)
     {
-    case FFI_SYSV:
+    पक्ष FFI_SYSV:
       ffi_call_SYSV (&ecif, cif->bytes, cif->flags,
 		     ecif.rvalue, fn);
-      break;
+      भङ्ग;
 
-    default:
+    स्वभाव:
       FFI_ASSERT (0);
-      break;
+      भङ्ग;
     }
 }
 
-static void
-ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
+स्थिर शून्य
+ffi_prep_incoming_args_SYSV (वर्ण *चळत, शून्य **avalue, ffi_cif *cif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  unsigned पूर्णाङ्क i;
+  शून्य **p_argv;
+  वर्ण *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = चळत;
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
+  प्रति (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
 #ifdef __MINT__
-      if (cif->flags &&
+      यदि (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 1 || z == 2))
  	{
-	  *p_argv = (void *) (argp + 2);
+	  *p_argv = (शून्य *) (argp + 2);
 
 	  z = 4;
 	}
-      else
-      if (cif->flags &&
+      अन्यथा
+      यदि (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 3 || z == 4))
  	{
-	  *p_argv = (void *) (argp);
+	  *p_argv = (शून्य *) (argp);
 
 	  z = 4;
 	}
-      else
+      अन्यथा
 #endif
-      if (z <= 4)
+      यदि (z <= 4)
 	{
-	  *p_argv = (void *) (argp + 4 - z);
+	  *p_argv = (शून्य *) (argp + 4 - z);
 
 	  z = 4;
 	}
-      else
+      अन्यथा
 	{
-	  *p_argv = (void *) argp;
+	  *p_argv = (शून्य *) argp;
 
 	  /* Align if necessary */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  यदि ((परिमाण(पूर्णाङ्क) - 1) & z)
+	    z = FFI_ALIGN(z, परिमाण(पूर्णाङ्क));
 	}
 
       p_argv++;
@@ -305,52 +305,52 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
     }
 }
 
-unsigned int
-ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
+unsigned पूर्णाङ्क
+ffi_closure_SYSV_inner (ffi_closure *closure, शून्य *resp, शून्य *args)
 {
   ffi_cif *cif;
-  void **arg_area;
+  शून्य **arg_area;
 
   cif = closure->cif;
-  arg_area = (void**) alloca (cif->nargs * sizeof (void *));
+  arg_area = (शून्य**) alloca (cif->nargs * परिमाण (शून्य *));
 
   ffi_prep_incoming_args_SYSV(args, arg_area, cif);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  प्रत्यागम cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      शून्य (*fun)(ffi_cif*,शून्य*,शून्य**,शून्य*),
+		      शून्य *user_data,
+		      शून्य *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  यदि (cif->abi != FFI_SYSV)
+    प्रत्यागम FFI_BAD_ABI;
 
   *(unsigned short *)closure->tramp = 0x207c;
-  *(void **)(closure->tramp + 2) = codeloc;
+  *(शून्य **)(closure->tramp + 2) = codeloc;
   *(unsigned short *)(closure->tramp + 6) = 0x4ef9;
 
-  if (
+  यदि (
 #ifdef __MINT__
       (cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
 #endif
       (((cif->rtype->type == FFI_TYPE_STRUCT)
          && !cif->flags)))
-    *(void **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
-  else
-    *(void **)(closure->tramp + 8) = ffi_closure_SYSV;
+    *(शून्य **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
+  अन्यथा
+    *(शून्य **)(closure->tramp + 8) = ffi_closure_SYSV;
 
 #ifdef __rtems__
-  rtems_cache_flush_multiple_data_lines( codeloc, FFI_TRAMPOLINE_SIZE );
-#elif defined(__MINT__)
+  rtems_cache_flush_multiple_data_ओळी( codeloc, FFI_TRAMPOLINE_SIZE );
+#नोचेद्यदि defined(__MINT__)
   Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_SIZE);
-#else
-  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_LINE,
+#अन्यथा
+  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_ओळ,
 	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_SIZE);
 #endif
 
@@ -358,5 +358,5 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  प्रत्यागम FFI_OK;
 }
