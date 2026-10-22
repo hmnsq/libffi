@@ -39,7 +39,7 @@
 #define _MIPS_SIM_ABI32		1
 #define _MIPS_SIM_NABI32	2
 #define _MIPS_SIM_ABI64		3
-#elif !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__linux__)
+#नोचेद्यदि !defined(__OpenBSD__) && !defined(__FreeBSD__) && !defined(__linux__)
 # include <sgidefs.h>
 #endif
 
@@ -53,15 +53,15 @@
 #    define _ABIO32 _MIPS_SIM_ABI32
 #  endif
 
-#if !defined(_MIPS_SIM)
+#यदि !defined(_MIPS_SIM)
 # error -- something is very wrong --
-#else
-#  if (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
+#अन्यथा
+#  यदि (_MIPS_SIM==_ABIN32 && defined(_ABIN32)) || (_MIPS_SIM==_ABI64 && defined(_ABI64))
 #    define FFI_MIPS_N32
-#  else
-#    if (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
+#  अन्यथा
+#    यदि (_MIPS_SIM==_ABIO32 && defined(_ABIO32))
 #      define FFI_MIPS_O32
-#    else
+#    अन्यथा
 #     error -- this is an unsupported platform --
 #    endif
 #  endif
@@ -70,10 +70,10 @@
 #ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
 #  define FFI_SIZEOF_ARG    4
-#else
+#अन्यथा
 /* N32 and N64 frames have 64bit integer args */
 #  define FFI_SIZEOF_ARG    8
-#  if _MIPS_SIM == _ABIN32
+#  यदि _MIPS_SIM == _ABIN32
 #    define FFI_SIZEOF_JAVA_RAW  4
 #  endif
 #endif
@@ -95,11 +95,11 @@
 #define FFI_TYPE_SMALLSTRUCT  FFI_TYPE_UINT8
 #define FFI_TYPE_SMALLSTRUCT2 FFI_TYPE_SINT8
 
-#if 0
+#यदि 0
 /* The SGI assembler can't handle this.. */
 #define FFI_TYPE_STRUCT_DD (( FFI_ARGS_DD ) << 4) + FFI_TYPE_STRUCT
 /* (and so on) */
-#else
+#अन्यथा
 /* ...so we calculate these by hand! */
 #define FFI_TYPE_STRUCT_D      61
 #define FFI_TYPE_STRUCT_F      45
@@ -156,47 +156,47 @@
 # define ADDU	addu
 # define SRL	srl
 # define LI	li
-#else /* !FFI_MIPS_O32 */
+#अन्यथा /* !FFI_MIPS_O32 */
 # define REG_L	ld
 # define REG_S	sd
 # define SUBU	dsubu
 # define ADDU	daddu
 # define SRL	dsrl
 # define LI 	dli
-# if (_MIPS_SIM==_ABI64)
+# यदि (_MIPS_SIM==_ABI64)
 #  define LA dla
 #  define EH_FRAME_ALIGN 3
 #  define FDE_ADDR_BYTES .8byte
-# else
+# अन्यथा
 #  define LA la
 #  define EH_FRAME_ALIGN 2
 #  define FDE_ADDR_BYTES .4byte
 # endif /* _MIPS_SIM==_ABI64 */
 #endif /* !FFI_MIPS_O32 */
-#else /* !LIBFFI_ASM */
+#अन्यथा /* !LIBFFI_ASM */
 # ifdef __GNUC__
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__SI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__SI__)));
-#else
+प्रकारनिर्देश अचिन्हित पूर्णाङ्क     ffi_arg __attribute__((__mode__(__SI__)));
+प्रकारनिर्देश चिन्हित   पूर्णाङ्क     ffi_sarg __attribute__((__mode__(__SI__)));
+#अन्यथा
 /* N32 and N64 frames have 64bit integer args */
-typedef unsigned int     ffi_arg __attribute__((__mode__(__DI__)));
-typedef signed   int     ffi_sarg __attribute__((__mode__(__DI__)));
+प्रकारनिर्देश अचिन्हित पूर्णाङ्क     ffi_arg __attribute__((__mode__(__DI__)));
+प्रकारनिर्देश चिन्हित   पूर्णाङ्क     ffi_sarg __attribute__((__mode__(__DI__)));
 #  endif
-# else
+# अन्यथा
 #  ifdef FFI_MIPS_O32
 /* O32 stack frames have 32bit integer args */
-typedef __uint32_t ffi_arg;
-typedef __int32_t ffi_sarg;
-#  else
+प्रकारनिर्देश __uint32_t ffi_arg;
+प्रकारनिर्देश __int32_t ffi_sarg;
+#  अन्यथा
 /* N32 and N64 frames have 64bit integer args */
-typedef __uint64_t ffi_arg;
-typedef __int64_t ffi_sarg;
+प्रकारनिर्देश __uint64_t ffi_arg;
+प्रकारनिर्देश __int64_t ffi_sarg;
 #  endif
 # endif /* __GNUC__ */
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_O32,
   FFI_N32,
@@ -209,27 +209,27 @@ typedef enum ffi_abi {
 #ifdef FFI_MIPS_O32
 #ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_O32_SOFT_FLOAT
-#else
+#अन्यथा
   FFI_DEFAULT_ABI = FFI_O32
 #endif
-#else
-# if _MIPS_SIM==_ABI64
+#अन्यथा
+# यदि _MIPS_SIM==_ABI64
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N64_SOFT_FLOAT
-#  else
+#  अन्यथा
   FFI_DEFAULT_ABI = FFI_N64
 #  endif
-# else
+# अन्यथा
 #  ifdef __mips_soft_float
   FFI_DEFAULT_ABI = FFI_N32_SOFT_FLOAT
-#  else
+#  अन्यथा
   FFI_DEFAULT_ABI = FFI_N32
 #  endif
 # endif
 #endif
 } ffi_abi;
 
-#define FFI_EXTRA_CIF_FIELDS unsigned rstruct_flag; unsigned mips_nfixedargs
+#define FFI_EXTRA_CIF_FIELDS अचिन्हित rstruct_flag; अचिन्हित mips_nfixedargs
 #define FFI_TARGET_SPECIFIC_VARIADIC
 #endif /* !LIBFFI_ASM */
 
@@ -239,9 +239,9 @@ typedef enum ffi_abi {
 #define FFI_GO_CLOSURES 1
 #define FFI_NATIVE_RAW_API 0
 
-#if defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
+#यदि defined(FFI_MIPS_O32) || (_MIPS_SIM ==_ABIN32)
 # define FFI_TRAMPOLINE_SIZE 20
-#else
+#अन्यथा
 # define FFI_TRAMPOLINE_SIZE 56
 #endif
 
