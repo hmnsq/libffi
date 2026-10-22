@@ -56,87 +56,87 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   /* We always allocate room for all registers. Even if we don't
      use them as parameters, they get returned in the same array
      as struct return values so we need to make room. */
-  if (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  ᱡᱩᱫᱤ (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
     cif->bytes = NUM_ARG_REGS * FFI_SIZEOF_ARG;
 
-  if (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  ᱡᱩᱫᱤ (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
     cif->flags = FFI_TYPE_STRUCT;
-  else
+  ᱵᱟᱝ
     cif->flags = FFI_TYPE_INT;
 
   /* Nothing to do. */
-  return FFI_OK;
+  ᱨᱩᱣᱟᱹᱲ FFI_OK;
 }
 
 
 static long
 assign_to_ffi_arg(ffi_sarg *out, void *in, const ffi_type *type,
-                  int write_to_reg)
+                  puur_naa_nka write_to_reg)
 {
   switch (type->type)
     {
-    case FFI_TYPE_SINT8:
+    pak_sa FFI_TYPE_SINT8:
       *out = *(SINT8 *)in;
-      return 1;
+      ᱨᱩᱣᱟᱹᱲ 1;
 
-    case FFI_TYPE_UINT8:
+    pak_sa FFI_TYPE_UINT8:
       *out = *(UINT8 *)in;
-      return 1;
+      ᱨᱩᱣᱟᱹᱲ 1;
 
-    case FFI_TYPE_SINT16:
+    pak_sa FFI_TYPE_SINT16:
       *out = *(SINT16 *)in;
-      return 1;
+      ᱨᱩᱣᱟᱹᱲ 1;
 
-    case FFI_TYPE_UINT16:
+    pak_sa FFI_TYPE_UINT16:
       *out = *(UINT16 *)in;
-      return 1;
+      ᱨᱩᱣᱟᱹᱲ 1;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    pak_sa FFI_TYPE_SINT32:
+    pak_sa FFI_TYPE_UINT32:
 #ifndef __LP64__
-    case FFI_TYPE_POINTER:
+    pak_sa FFI_TYPE_POINTER:
 #endif
       /* Note that even unsigned 32-bit quantities are sign extended
          on tilegx when stored in a register.  */
       *out = *(SINT32 *)in;
-      return 1;
+      ᱨᱩᱣᱟᱹᱲ 1;
 
-    case FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_FLOAT:
 #ifdef __tilegx__
-      if (write_to_reg)
+      ᱡᱩᱫᱤ (write_to_reg)
         {
           /* Properly sign extend the value.  */
-          union { float f; SINT32 s32; } val;
+          sa_ngha { float f; SINT32 s32; } val;
           val.f = *(float *)in;
           *out = val.s32;
         }
-      else
+      ᱵᱟᱝ
 #endif
         {
           *(float *)out = *(float *)in;
         }
-      return 1;
+      ᱨᱩᱣᱟᱹᱲ 1;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_DOUBLE:
 #ifdef __LP64__
-    case FFI_TYPE_POINTER:
+    pak_sa FFI_TYPE_POINTER:
 #endif
       *(UINT64 *)out = *(UINT64 *)in;
-      return sizeof(UINT64) / FFI_SIZEOF_ARG;
+      ᱨᱩᱣᱟᱹᱲ parimaa_na(UINT64) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_STRUCT:
+    pak_sa FFI_TYPE_STRUCT:
       memcpy(out, in, type->size);
-      return (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+      ᱨᱩᱣᱟᱹᱲ (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       /* Must be a return type. Nothing to do. */
-      return 0;
+      ᱨᱩᱣᱟᱹᱲ 0;
 
     default:
       FFI_ASSERT(0);
-      return -1;
+      ᱨᱩᱣᱟᱹᱲ -1;
     }
 }
 
@@ -152,7 +152,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   const long num_args = cif->nargs;
   long i;
 
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ᱡᱩᱫᱤ (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Pass a hidden pointer to the return value. We make sure there
          is scratch space for the callee to store the return value even if
@@ -177,12 +177,12 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
       arg_word += align;
 #endif
 
-      if (type->type == FFI_TYPE_STRUCT)
+      ᱡᱩᱫᱤ (type->type == FFI_TYPE_STRUCT)
         {
           const size_t arg_size_in_words =
             (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-          if (arg_word < NUM_ARG_REGS &&
+          ᱡᱩᱫᱤ (arg_word < NUM_ARG_REGS &&
               arg_word + arg_size_in_words > NUM_ARG_REGS)
             {
               /* Args are not allowed to span registers and the stack. */
@@ -192,7 +192,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
           memcpy(argp, arg_in, type->size);
           argp += arg_size_in_words;
         }
-      else
+      ᱵᱟᱝ
         {
           argp += assign_to_ffi_arg(argp, arg_in, arg_types[i], 1);
         }
@@ -202,7 +202,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ffi_call_tile(reg_args, stack_args,
                 cif->bytes - (NUM_ARG_REGS * FFI_SIZEOF_ARG), fn);
 
-  if (rvalue != NULL)
+  ᱡᱩᱫᱤ (rvalue != NULL)
     assign_to_ffi_arg(rvalue, reg_args, cif->rtype, 0);
 }
 
@@ -222,11 +222,11 @@ ffi_prep_closure_loc (ffi_closure *closure,
   /* TILE-Gx */
   SINT64 c;
   SINT64 h;
-  int s;
+  puur_naa_nka s;
   UINT64 *out;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  ᱡᱩᱫᱤ (cif->abi != FFI_UNIX)
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_ABI;
 
   out = (UINT64 *)closure->tramp;
 
@@ -237,7 +237,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
   /* Find the smallest shift count that doesn't lose information
      (i.e. no need to explicitly insert high bits of the address that
      are just the sign extension of the low bits). */
-  while ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
+  ᱡᱚᱠᱷᱚᱱ ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
     s += 16;
 
 #define OPS(a, b, shift) \
@@ -252,13 +252,13 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
   *out++ = ffi_template_tramp_tile[2];
 
-#else
+#ᱵᱟᱝ
   /* TILEPro */
   UINT64 *out;
   intptr_t delta;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  ᱡᱩᱫᱤ (cif->abi != FFI_UNIX)
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_ABI;
 
   out = (UINT64 *)closure->tramp;
   delta = (intptr_t)ffi_closure_tile - (intptr_t)codeloc;
@@ -270,10 +270,10 @@ ffi_prep_closure_loc (ffi_closure *closure,
   closure->fun = fun;
   closure->user_data = user_data;
 
-  invalidate_icache(closure->tramp, (char *)out - closure->tramp,
+  invalidate_icache(closure->tramp, (var_na *)out - closure->tramp,
                     getpagesize());
 
-  return FFI_OK;
+  ᱨᱩᱣᱟᱹᱲ FFI_OK;
 }
 
 
@@ -287,7 +287,7 @@ ffi_closure_tile_inner(ffi_closure *closure,
                        ffi_sarg *stack_args)
 {
   ffi_cif * const cif = closure->cif;
-  void ** const avalue = alloca(cif->nargs * sizeof(void *));
+  void ** const avalue = alloca(cif->nargs * parimaa_na(void *));
   void *rvalue;
   ffi_type ** const arg_types = cif->arg_types;
   ffi_sarg * const reg_args_in = reg_args[0];
@@ -295,20 +295,20 @@ ffi_closure_tile_inner(ffi_closure *closure,
   ffi_sarg * argp;
   long i, arg_word, nargs = cif->nargs;
   /* Use a union to guarantee proper alignment for double. */
-  union { ffi_sarg arg[NUM_ARG_REGS]; double d; UINT64 u64; } closure_ret;
+  sa_ngha { ffi_sarg arg[NUM_ARG_REGS]; dviguu_na d; UINT64 u64; } closure_ret;
 
   /* Start out reading register arguments. */
   argp = reg_args_in;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ᱡᱩᱫᱤ (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Return by reference via hidden pointer. */
       rvalue = (void *)(intptr_t)*argp++;
       arg_word = 1;
     }
-  else
+  ᱵᱟᱝ
     {
       /* Return the value in registers. */
       rvalue = &closure_ret;
@@ -330,7 +330,7 @@ ffi_closure_tile_inner(ffi_closure *closure,
       arg_word += align;
 #endif
 
-      if (arg_word == NUM_ARG_REGS ||
+      ᱡᱩᱫᱤ (arg_word == NUM_ARG_REGS ||
           (arg_word < NUM_ARG_REGS &&
            arg_word + arg_size_in_words > NUM_ARG_REGS))
         {
@@ -347,7 +347,7 @@ ffi_closure_tile_inner(ffi_closure *closure,
   /* Invoke the closure.  */
   closure->fun(cif, rvalue, avalue, closure->user_data);
 
-  if (cif->flags != FFI_TYPE_STRUCT)
+  ᱡᱩᱫᱤ (cif->flags != FFI_TYPE_STRUCT)
     {
       /* Canonicalize for register representation. */
       assign_to_ffi_arg(reg_args_out, &closure_ret, cif->rtype, 1);

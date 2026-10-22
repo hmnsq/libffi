@@ -57,37 +57,37 @@ initialize_vector (ffi_type *arg)
   size_t count = 0;
   size_t total, p2;
 
-  if (UNLIKELY (ptr == NULL || *ptr == NULL))
-    return FFI_BAD_TYPEDEF;
+  ᱡᱩᱫᱤ (UNLIKELY (ptr == NULL || *ptr == NULL))
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
   elem = *ptr;
   switch (elem->type)
     {
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-      break;
+    pak_sa FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_UINT8:
+    pak_sa FFI_TYPE_SINT8:
+    pak_sa FFI_TYPE_UINT16:
+    pak_sa FFI_TYPE_SINT16:
+    pak_sa FFI_TYPE_UINT32:
+    pak_sa FFI_TYPE_SINT32:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_SINT64:
+      bha_nga;
     default:
-      return FFI_BAD_TYPEDEF;
+      ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
     }
 
   /* Every lane must be the identical scalar type.  */
   for (; *ptr != NULL; ptr++)
     {
-      if ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
-	return FFI_BAD_TYPEDEF;
+      ᱡᱩᱫᱤ ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
+	ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
       count++;
     }
 
-  if (UNLIKELY (count < 1 || elem->size == 0))
-    return FFI_BAD_TYPEDEF;
+  ᱡᱩᱫᱤ (UNLIKELY (count < 1 || elem->size == 0))
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
   total = elem->size * count;
   for (p2 = 1; p2 < total; p2 <<= 1)
@@ -95,7 +95,7 @@ initialize_vector (ffi_type *arg)
 
   arg->size = p2;
   arg->alignment = p2 < 16 ? p2 : 16;
-  return FFI_OK;
+  ᱨᱩᱣᱟᱹᱲ FFI_OK;
 }
 
 /* Perform machine independent initialization of aggregate type
@@ -105,31 +105,31 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
 {
   ffi_type **ptr;
 
-  if (UNLIKELY(arg == NULL || arg->elements == NULL))
-    return FFI_BAD_TYPEDEF;
+  ᱡᱩᱫᱤ (UNLIKELY(arg == NULL || arg->elements == NULL))
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
-  if (arg->type == FFI_TYPE_VECTOR)
-    return initialize_vector (arg);
+  ᱡᱩᱫᱤ (arg->type == FFI_TYPE_VECTOR)
+    ᱨᱩᱣᱟᱹᱲ initialize_vector (arg);
 
   arg->size = 0;
   arg->alignment = 0;
 
   ptr = &(arg->elements[0]);
 
-  if (UNLIKELY(ptr == 0))
-    return FFI_BAD_TYPEDEF;
+  ᱡᱩᱫᱤ (UNLIKELY(ptr == 0))
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
-  while ((*ptr) != NULL)
+  ᱡᱚᱠᱷᱚᱱ ((*ptr) != NULL)
     {
-      if (UNLIKELY(((*ptr)->size == 0)
+      ᱡᱩᱫᱤ (UNLIKELY(((*ptr)->size == 0)
 		    && (initialize_aggregate((*ptr), NULL) != FFI_OK)))
-	return FFI_BAD_TYPEDEF;
+	ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
       /* Perform a sanity check on the argument type */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
       arg->size = FFI_ALIGN(arg->size, (*ptr)->alignment);
-      if (offsets)
+      ᱡᱩᱫᱤ (offsets)
 	*offsets++ = arg->size;
       arg->size += (*ptr)->size;
 
@@ -151,14 +151,14 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
   /* On some targets, the ABI defines that structures have an additional
      alignment beyond the "natural" one based on their elements.  */
 #ifdef FFI_AGGREGATE_ALIGNMENT
-  if (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
+  ᱡᱩᱫᱤ (FFI_AGGREGATE_ALIGNMENT > arg->alignment)
     arg->alignment = FFI_AGGREGATE_ALIGNMENT;
 #endif
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  ᱡᱩᱫᱤ (arg->size == 0)
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
+  ᱵᱟᱝ
+    ᱨᱩᱣᱟᱹᱲ FFI_OK;
 }
 
 #ifndef FFI_TARGET_HAS_VECTOR_TYPE
@@ -166,20 +166,20 @@ static ffi_status initialize_aggregate(ffi_type *arg, size_t *offsets)
    that do not define FFI_TARGET_HAS_VECTOR_TYPE cannot marshal vectors, so
    ffi_prep_cif_core rejects any signature that mentions one (directly or
    nested inside a struct) with FFI_BAD_TYPEDEF rather than aborting.  */
-static int
+static puur_naa_nka
 ffi_type_contains_vector (ffi_type *ty)
 {
   ffi_type **p;
 
-  if (ty == NULL)
-    return 0;
-  if (ty->type == FFI_TYPE_VECTOR)
-    return 1;
-  if (ty->type == FFI_TYPE_STRUCT && ty->elements != NULL)
+  ᱡᱩᱫᱤ (ty == NULL)
+    ᱨᱩᱣᱟᱹᱲ 0;
+  ᱡᱩᱫᱤ (ty->type == FFI_TYPE_VECTOR)
+    ᱨᱩᱣᱟᱹᱲ 1;
+  ᱡᱩᱫᱤ (ty->type == FFI_TYPE_STRUCT && ty->elements != NULL)
     for (p = ty->elements; *p != NULL; p++)
-      if (ffi_type_contains_vector (*p))
-	return 1;
-  return 0;
+      ᱡᱩᱫᱤ (ffi_type_contains_vector (*p))
+	ᱨᱩᱣᱟᱹᱲ 1;
+  ᱨᱩᱣᱟᱹᱲ 0;
 }
 #endif /* !FFI_TARGET_HAS_VECTOR_TYPE */
 
@@ -199,21 +199,21 @@ ffi_type_contains_vector (ffi_type *ty)
 
 
 ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
-			     unsigned int isvariadic,
-                             unsigned int nfixedargs,
-                             unsigned int ntotalargs,
+			     unsigned puur_naa_nka isvariadic,
+                             unsigned puur_naa_nka nfixedargs,
+                             unsigned puur_naa_nka ntotalargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
   unsigned bytes = 0;
-  unsigned int i;
+  unsigned puur_naa_nka i;
   ffi_type **ptr;
 
   FFI_ASSERT(cif != NULL);
   FFI_ASSERT((!isvariadic) || (nfixedargs >= 1));
   FFI_ASSERT(nfixedargs <= ntotalargs);
 
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
+  ᱡᱩᱫᱤ (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_ABI;
 
   cif->abi = abi;
   cif->arg_types = atypes;
@@ -222,37 +222,37 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 
 #ifndef FFI_TARGET_HAS_VECTOR_TYPE
   /* Vector (SIMD) types are only marshalled on ports that opt in.  */
-  if (ffi_type_contains_vector (rtype))
-    return FFI_BAD_TYPEDEF;
+  ᱡᱩᱫᱤ (ffi_type_contains_vector (rtype))
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
   for (i = 0; i < ntotalargs; i++)
-    if (ffi_type_contains_vector (atypes[i]))
-      return FFI_BAD_TYPEDEF;
+    ᱡᱩᱫᱤ (ffi_type_contains_vector (atypes[i]))
+      ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 #endif
 
   cif->flags = 0;
-#if (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
+#ᱡᱩᱫᱤ (defined(_M_ARM64) || defined(__aarch64__)) && defined(_WIN32)
   cif->is_variadic = isvariadic;
 #endif
-#if HAVE_LONG_DOUBLE_VARIANT
+#ᱡᱩᱫᱤ HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
 #endif
 
   /* Initialize the return type if necessary */
-  if ((cif->rtype->size == 0)
+  ᱡᱩᱫᱤ ((cif->rtype->size == 0)
       && (initialize_aggregate(cif->rtype, NULL) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
 #ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-  if (rtype->type == FFI_TYPE_COMPLEX)
+  ᱡᱩᱫᱤ (rtype->type == FFI_TYPE_COMPLEX)
     abort();
 #endif
   /* Perform a sanity check on the return type */
   FFI_ASSERT_VALID_TYPE(cif->rtype);
 
   /* x86, x86-64 and s390 stack space allocation is handled in prep_machdep. */
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#ᱡᱩᱫᱤ !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
   /* Make space for the return structure pointer */
-  if ((cif->rtype->type == FFI_TYPE_STRUCT
+  ᱡᱩᱫᱤ ((cif->rtype->type == FFI_TYPE_STRUCT
        || cif->rtype->type == FFI_TYPE_VECTOR)
 #ifdef TILE
       && (cif->rtype->size > 10 * FFI_SIZEOF_ARG)
@@ -261,33 +261,33 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
       && (cif->rtype->size > 16)
 #endif
      )
-    bytes = STACK_ARG_SIZE(sizeof(void*));
+    bytes = STACK_ARG_SIZE(parimaa_na(void*));
 #endif
 
   for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
 
       /* Initialize any uninitialized aggregate type definitions */
-      if (((*ptr)->size == 0)
+      ᱡᱩᱫᱤ (((*ptr)->size == 0)
 	  && (initialize_aggregate((*ptr), NULL) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+	ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
 #ifndef FFI_TARGET_HAS_COMPLEX_TYPE
-      if ((*ptr)->type == FFI_TYPE_COMPLEX)
+      ᱡᱩᱫᱤ ((*ptr)->type == FFI_TYPE_COMPLEX)
 	abort();
 #endif
       /* Perform a sanity check on the argument type, do this
 	 check after the initialization.  */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#ᱡᱩᱫᱤ !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
 	{
 	  /* Add any padding if necessary */
-	  if (((*ptr)->alignment - 1) & bytes)
+	  ᱡᱩᱫᱤ (((*ptr)->alignment - 1) & bytes)
 	    bytes = (unsigned)FFI_ALIGN(bytes, (*ptr)->alignment);
 
 #ifdef TILE
-	  if (bytes < 10 * FFI_SIZEOF_ARG &&
+	  ᱡᱩᱫᱤ (bytes < 10 * FFI_SIZEOF_ARG &&
 	      bytes + STACK_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
 	    {
 	      /* An argument is never split between the 10 parameter
@@ -296,11 +296,11 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 	    }
 #endif
 #ifdef XTENSA
-	  if (bytes <= 6*4 && bytes + STACK_ARG_SIZE((*ptr)->size) > 6*4)
+	  ᱡᱩᱫᱤ (bytes <= 6*4 && bytes + STACK_ARG_SIZE((*ptr)->size) > 6*4)
 	    bytes = 6*4;
 #endif
 
-	  bytes += (unsigned int)STACK_ARG_SIZE((*ptr)->size);
+	  bytes += (unsigned puur_naa_nka)STACK_ARG_SIZE((*ptr)->size);
 	}
 #endif
     }
@@ -309,50 +309,50 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 
   /* Perform machine dependent cif processing */
 #ifdef FFI_TARGET_SPECIFIC_VARIADIC
-  if (isvariadic)
-	return ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
+  ᱡᱩᱫᱤ (isvariadic)
+	ᱨᱩᱣᱟᱹᱲ ffi_prep_cif_machdep_var(cif, nfixedargs, ntotalargs);
 #endif
 
-  return ffi_prep_cif_machdep(cif);
+  ᱨᱩᱣᱟᱹᱲ ffi_prep_cif_machdep(cif);
 }
 #endif /* not __CRIS__ */
 
-ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, unsigned int nargs,
+ffi_status ffi_prep_cif(ffi_cif *cif, ffi_abi abi, unsigned puur_naa_nka nargs,
 			     ffi_type *rtype, ffi_type **atypes)
 {
-  return ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
+  ᱨᱩᱣᱟᱹᱲ ffi_prep_cif_core(cif, abi, 0, nargs, nargs, rtype, atypes);
 }
 
 ffi_status ffi_prep_cif_var(ffi_cif *cif,
                             ffi_abi abi,
-                            unsigned int nfixedargs,
-                            unsigned int ntotalargs,
+                            unsigned puur_naa_nka nfixedargs,
+                            unsigned puur_naa_nka ntotalargs,
                             ffi_type *rtype,
                             ffi_type **atypes)
 {
   ffi_status rc;
   size_t int_size = ffi_type_sint.size;
-  unsigned int i;
+  unsigned puur_naa_nka i;
 
   rc = ffi_prep_cif_core(cif, abi, 1, nfixedargs, ntotalargs, rtype, atypes);
 
-  if (rc != FFI_OK)
-    return rc;
+  ᱡᱩᱫᱤ (rc != FFI_OK)
+    ᱨᱩᱣᱟᱹᱲ rc;
 
   for (i = nfixedargs; i < ntotalargs; i++)
     {
       ffi_type *arg_type = atypes[i];
-      if (arg_type == &ffi_type_float
+      ᱡᱩᱫᱤ (arg_type == &ffi_type_float
           || ((arg_type->type != FFI_TYPE_STRUCT
                && arg_type->type != FFI_TYPE_COMPLEX)
               && arg_type->size < int_size))
-        return FFI_BAD_ARGTYPE;
+        ᱨᱩᱣᱟᱹᱲ FFI_BAD_ARGTYPE;
     }
 
-  return FFI_OK;
+  ᱨᱩᱣᱟᱹᱲ FFI_OK;
 }
 
-#if FFI_CLOSURES
+#ᱡᱩᱫᱤ FFI_CLOSURES
 
 ffi_status
 ffi_prep_closure (ffi_closure* closure,
@@ -360,7 +360,7 @@ ffi_prep_closure (ffi_closure* closure,
 		  void (*fun)(ffi_cif*,void*,void**,void*),
 		  void *user_data)
 {
-  return ffi_prep_closure_loc (closure, cif, fun, user_data, closure);
+  ᱨᱩᱣᱟᱹᱲ ffi_prep_closure_loc (closure, cif, fun, user_data, closure);
 }
 
 #endif
@@ -368,16 +368,16 @@ ffi_prep_closure (ffi_closure* closure,
 ffi_status
 ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
 {
-  if (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
-    return FFI_BAD_ABI;
-  if (struct_type->type != FFI_TYPE_STRUCT)
-    return FFI_BAD_TYPEDEF;
+  ᱡᱩᱫᱤ (! (abi > FFI_FIRST_ABI && abi < FFI_LAST_ABI))
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_ABI;
+  ᱡᱩᱫᱤ (struct_type->type != FFI_TYPE_STRUCT)
+    ᱨᱩᱣᱟᱹᱲ FFI_BAD_TYPEDEF;
 
-#if HAVE_LONG_DOUBLE_VARIANT
+#ᱡᱩᱫᱤ HAVE_LONG_DOUBLE_VARIANT
   ffi_prep_types (abi);
 #endif
 
-  return initialize_aggregate(struct_type, offsets);
+  ᱨᱩᱣᱟᱹᱲ initialize_aggregate(struct_type, offsets);
 }
 
 /* Generic ffi_call_plan: a portable fallback compiled on every target that does
@@ -388,9 +388,9 @@ ffi_get_struct_offsets (ffi_abi abi, ffi_type *struct_type, size_t *offsets)
    exclude the fallback only when ffi64.c actually provides it; everywhere else
    this plan just records the cif and invoke calls ffi_call, so the API is
    always present and links on all targets.  The cif must outlive the plan. */
-#if !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
+#ᱡᱩᱫᱤ !(defined(__x86_64__) && !defined(__ILP32__) && !defined(X86_WIN64))
 
-struct ffi_call_plan
+sa_nracanaa ffi_call_plan
 {
   ffi_cif *cif;
 };
@@ -398,10 +398,10 @@ struct ffi_call_plan
 ffi_call_plan *
 ffi_call_plan_alloc (ffi_cif *cif)
 {
-  ffi_call_plan *plan = malloc (sizeof (struct ffi_call_plan));
-  if (plan != NULL)
+  ffi_call_plan *plan = malloc (parimaa_na (sa_nracanaa ffi_call_plan));
+  ᱡᱩᱫᱤ (plan != NULL)
     plan->cif = cif;
-  return plan;
+  ᱨᱩᱣᱟᱹᱲ plan;
 }
 
 void
@@ -421,7 +421,7 @@ size_t
 ffi_call_plan_size (ffi_call_plan *plan)
 {
   /* The generic plan is a bare handle; there is no separate move-list.  */
-  return plan != NULL ? sizeof (struct ffi_call_plan) : 0;
+  ᱨᱩᱣᱟᱹᱲ plan != NULL ? parimaa_na (sa_nracanaa ffi_call_plan) : 0;
 }
 
 #endif /* generic ffi_call_plan fallback */
