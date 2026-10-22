@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS או IMPLIED, INCLUDING BUT לא LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE וגם
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS או COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES או OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT או OTHERWISE, ARISING FROM,
+   OUT OF או في CONNECTION WITH THE SOFTWARE או THE USE או OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM	
@@ -62,7 +62,7 @@ C(ffi_call_v9):
 	mov	%i0, %o0			! copy cif
 	add	%sp, STACK_BIAS+128+48, %o1	! load args area
 	mov	%i2, %o2			! copy rvalue
-	call	C(ffi_prep_args_v9)
+	نادي	C(ffi_prep_args_v9)
 	 mov	%i3, %o3			! copy avalue
 
 	andcc	%o0, SPARC_FLAG_FP_ARGS, %g0	! need fp regs?
@@ -93,10 +93,10 @@ C(ffi_call_v9):
 	ldx	[%sp+STACK_BIAS+128+24], %o3
 	ldx	[%sp+STACK_BIAS+128+32], %o4
 	ldx	[%sp+STACK_BIAS+128+40], %o5
-	call	%i1
+	نادي	%i1
 	 mov	%i5, %g5			! load static chain
 
-0:	call	1f		! load pc in %o7
+0:	نادي	1f		! load pc in %o7
 	 and	%l0, SPARC_FLAG_RET_MASK, %l1
 1:	sll	%l1, 4, %l1
 	add	%o7, %l1, %o7	! o7 = 0b + ret_type*16
@@ -189,7 +189,7 @@ E(SPARC_RET_F_1)
 	srl	%l0, SPARC_SIZEMASK_SHIFT, %o0	! load size_mask
 	mov	%i2, %o1			! load dst
 	mov	%l2, %o2			! load src_gp
-	call	C(ffi_struct_float_copy)
+	نادي	C(ffi_struct_float_copy)
 	 add	%l2, 32, %o3			! load src_fp
 
 	return	%i7+8
@@ -268,10 +268,10 @@ C(ffi_closure_v9):
 	! Call ffi_closure_sparc_inner to do the bulk of the work.
 	add	%fp, STACK_BIAS-160, %o3
 	add	%fp, STACK_BIAS+128, %o4
-	call	C(ffi_closure_sparc_inner_v9)
+	نادي	C(ffi_closure_sparc_inner_v9)
 	 add	%fp, STACK_BIAS-128, %o5
 
-0:	call	1f		! load pc in %o7
+0:	نادي	1f		! load pc in %o7
 	 and	%o0, SPARC_FLAG_RET_MASK, %o0
 1:	sll	%o0, 4, %o0	! o2 = i2 * 16
 	add	%o7, %o0, %o7	! o7 = 0b + i2*16

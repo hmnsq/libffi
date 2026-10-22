@@ -35,10 +35,10 @@
 /* ---- System specific configurations ----------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+تعريفنوع unsigned long          ffi_arg;
+تعريفنوع signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+تعريفنوع تعداد ffi_abi {
   FFI_FIRST_ABI = 0,
 
 #ifdef PA_LINUX
@@ -67,9 +67,9 @@ typedef enum ffi_abi {
 
 #define FFI_CLOSURES 1
 #define FFI_NATIVE_RAW_API 0
-#if defined(PA64_HPUX)
+#אם defined(PA64_HPUX)
 #define FFI_TRAMPOLINE_SIZE 32
-#else
+#אחרת
 #define FFI_TRAMPOLINE_SIZE 12
 #endif
 
@@ -100,7 +100,7 @@ typedef enum ffi_abi {
 /* Tripwire: when a new generic type is added FFI_TYPE_LAST changes and this
    fires, forcing a review of ffi_prep_cif_machdep and the linux.S / hpux32.S
    jump tables before FFI_PA_TYPE_LAST above is bumped.  */
-#if FFI_TYPE_LAST != FFI_PA_TYPE_LAST
+#אם FFI_TYPE_LAST != FFI_PA_TYPE_LAST
 # error "You likely have broken jump tables"
 #endif
 

@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS או IMPLIED, INCLUDING BUT לא LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE וגם
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS או COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES או OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT או OTHERWISE, ARISING FROM,
+   OUT OF או في CONNECTION WITH THE SOFTWARE או THE USE או OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -93,7 +93,7 @@ CSKY_FUNC_START ffi_call_SYSV
 
  ldw l1, (l0, 0) /* load fn() in advance */
 
- /* call (fn) (...) */
+ /* نادي (fn) (...) */
  jsr l1
 
  /* Remove the space we pushed for the args */
@@ -119,7 +119,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return صحيح */
  stw a0, (a2, 0x0)
 
 .Lepilogue:
@@ -259,7 +259,7 @@ CSKY_FUNC_START ffi_call_SYSV
 
  ldw l1, (l0, 0) /* load fn() in advance */
 
- /* call (fn) (...) */
+ /* نادي (fn) (...) */
  jsr l1
 
  /* Remove the space we pushed for the args */
@@ -285,7 +285,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return صحيح */
  stw a0, (a2, 0x0)
 
 .Lepilogue:

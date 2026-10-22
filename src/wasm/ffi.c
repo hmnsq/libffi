@@ -25,18 +25,18 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#ضمن <ffi.h>
+#ضمن <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#ضمن <stdlib.h>
+#ضمن <stdint.h>
 
-#include <emscripten/emscripten.h>
+#ضمن <emscripten/emscripten.h>
 
 #ifdef DEBUG_F
 #define LOG_DEBUG(args...)  \
   console.warn(`====LIBFFI(line __LINE__)`, args)
-#else
+#אחרת
 #define LOG_DEBUG(args...) 0
 #endif
 
@@ -55,12 +55,12 @@ EM_JS_DEPS(libffi, "$getWasmTableEntry,$setWasmTableEntry,$getEmptyTableSlot,$wa
 #define DEREF_F64(addr, offset) HEAPF64[(addr >> 3) + offset]
 #define DEREF_U64(addr, offset) HEAPU64[(addr >> 3) + offset]
 
-#define CHECK_FIELD_OFFSET(struct, field, offset)                                  \
+#define CHECK_FIELD_OFFSET(بنية, field, offset)                                  \
   _Static_assert(                                                                  \
-    offsetof(struct, field) == offset,                                             \
+    offsetof(بنية, field) == offset,                                             \
     "Memory layout of '" #struct "' has changed: '" #field "' is in an unexpected location");
 
-#if __SIZEOF_POINTER__ == 4
+#אם __SIZEOF_POINTER__ == 4
 
 #define FFI_EMSCRIPTEN_ABI FFI_WASM32_EMSCRIPTEN
 #define PTR_SIG 'i'
@@ -103,7 +103,7 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 8);
 #define FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 6, 0)
 #define FFI_TYPE__ELEMENTS(addr) DEREF_U32(addr + 8, 0)
 
-#elif __SIZEOF_POINTER__ == 8
+#وإلاإذا __SIZEOF_POINTER__ == 8
 
 #define FFI_EMSCRIPTEN_ABI FFI_WASM64_EMSCRIPTEN
 #define PTR_SIG 'j'
@@ -153,7 +153,7 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 16);
 #define FFI_TYPE__TYPEID(addr) DEREF_U16(addr + 10, 0)
 #define FFI_TYPE__ELEMENTS(addr) DEREF_U64(addr + 16, 0)
 
-#else
+#אחרת
 #error "Unknown pointer size"
 #endif
 
@@ -163,7 +163,7 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 16);
 // Most wasm runtimes support at most 1000 Js trampoline args.
 #define MAX_ARGS 1000
 
-#include <stddef.h>
+#ضمن <stddef.h>
 
 #define VARARGS_FLAG 1
 
@@ -176,21 +176,21 @@ _Static_assert(FFI_BAD_TYPEDEF_MACRO == FFI_BAD_TYPEDEF, "FFI_BAD_TYPEDEF must b
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
+  אם (cif->abi != FFI_EMSCRIPTEN_ABI)
+    החזר FFI_BAD_ABI;
   // This is called after ffi_prep_cif_machdep_var so we need to avoid
   // overwriting cif->nfixedargs.
-  if (!(cif->flags & VARARGS_FLAG))
+  אם (!(cif->flags & VARARGS_FLAG))
     cif->nfixedargs = cif->nargs;
-  if (cif->nargs > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  if (cif->rtype->type == FFI_TYPE_COMPLEX)
-    return FFI_BAD_TYPEDEF;
+  אם (cif->nargs > MAX_ARGS)
+    החזר FFI_BAD_TYPEDEF;
+  אם (cif->rtype->type == FFI_TYPE_COMPLEX)
+    החזר FFI_BAD_TYPEDEF;
   // If they put the COMPLEX type into a struct we won't notice, but whatever.
-  for (int i = 0; i < cif->nargs; i++)
-    if (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
-      return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  עבור (صحيح i = 0; i < cif->nargs; i++)
+    אם (cif->arg_types[i]->type == FFI_TYPE_COMPLEX)
+      החזר FFI_BAD_TYPEDEF;
+  החזר FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
@@ -199,9 +199,9 @@ ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
   cif->flags |= VARARGS_FLAG;
   cif->nfixedargs = nfixedargs;
   // The varargs takes up one extra argument
-  if (cif->nfixedargs + 1 > MAX_ARGS)
-    return FFI_BAD_TYPEDEF;
-  return FFI_OK;
+  אם (cif->nfixedargs + 1 > MAX_ARGS)
+    החזר FFI_BAD_TYPEDEF;
+  החזר FFI_OK;
 }
 
 /**
@@ -218,11 +218,11 @@ ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
  * By always unboxing structs up front, we can avoid messy casework later.
  */
 EM_JS_MACROS(
-void,
+فراغ,
 unbox_small_structs, (ffi_type type_ptr), {
   type_ptr = DEC_PTR(type_ptr);
   var type_id = FFI_TYPE__TYPEID(type_ptr);
-  while (type_id === FFI_TYPE_STRUCT) {
+  כלעוד (type_id === FFI_TYPE_STRUCT) {
     // Don't unbox single element structs if they are bigger than 16 bytes. This
     // is a work around for the fact that Python will give incorrect values for
     // the size of the field in these cases: it says that the struct has pointer
@@ -233,27 +233,27 @@ unbox_small_structs, (ffi_type type_ptr), {
     //
     // See the Python comment here:
     // https://github.com/python/cpython/blob/a16a9f978f42b8a09297c1efbf33877f6388c403/Modules/_ctypes/stgdict.c#L718-L779
-    if (DEC_PTR(FFI_TYPE__SIZE(type_ptr)) > 16) {
-      break;
+    אם (DEC_PTR(FFI_TYPE__SIZE(type_ptr)) > 16) {
+      اكسر;
     }
     var elements = DEC_PTR(FFI_TYPE__ELEMENTS(type_ptr));
     var first_element = DEREF_PTR_NUMBER(elements, 0);
-    if (first_element === 0) {
+    אם (first_element === 0) {
       type_id = FFI_TYPE_VOID;
-      break;
-    } else if (DEREF_PTR_NUMBER(elements, 1) === 0) {
+      اكسر;
+    } אחרת אם (DEREF_PTR_NUMBER(elements, 1) === 0) {
       type_ptr = first_element;
       type_id = FFI_TYPE__TYPEID(first_element);
-    } else {
-      break;
+    } אחרת {
+      اكسر;
     }
   }
-  return [type_ptr, type_id];
+  החזר [type_ptr, type_id];
 })
 
 EM_JS_MACROS(
-void,
-ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
+فراغ,
+ffi_call_js, (ffi_cif *cif, ffi_fp fn, فراغ *rvalue, فراغ **avalue),
 {
   cif = DEC_PTR(cif);
   fn = DEC_PTR(fn);
@@ -279,10 +279,10 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // no matter what.
   var ret_by_arg = false;
 
-  if (rtype_id === FFI_TYPE_COMPLEX) {
+  אם (rtype_id === FFI_TYPE_COMPLEX) {
     throw new Error('complex ret marshalling nyi');
   }
-  if (rtype_id < 0 || rtype_id > FFI_TYPE_LAST) {
+  אם (rtype_id < 0 || rtype_id > FFI_TYPE_LAST) {
     throw new Error('Unexpected rtype ' + rtype_id);
   }
   // If the return type is a struct with multiple entries or a long double, the
@@ -290,8 +290,8 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Conveniently, we've already received a pointer to return value, so we can
   // just use this. We also mark a flag that we don't need to convert the return
   // value of the dynamic call back to C.
-  if (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
-    if (rvalue === 0) {
+  אם (rtype_id === FFI_TYPE_LONGDOUBLE || rtype_id === FFI_TYPE_STRUCT) {
+    אם (rvalue === 0) {
       // NULL rvalue: the caller discards the result, but the callee still
       // needs somewhere to write it. Allocate scratch space on the stack;
       // it is released by the stackRestore after the call.
@@ -308,7 +308,7 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // the wasm function. The Javascript wrapper does a type conversion from
   // Javascript to C automatically, here we manually do the inverse conversion
   // from C to Javascript.
-  for (var i = 0; i < nfixedargs; i++) {
+  עבור (var i = 0; i < nfixedargs; i++) {
     var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
@@ -317,40 +317,40 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
     // It's okay here to always use unsigned integers as long as the size is 32
     // or 64 bits. Smaller sizes get extended to 32 bits differently according
     // to whether they are signed or unsigned.
-    switch (arg_type_id) {
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    بدل (arg_type_id) {
+    حالة FFI_TYPE_INT:
+    حالة FFI_TYPE_SINT32:
+    حالة FFI_TYPE_UINT32:
       args.push(DEREF_U32(arg_ptr, 0));
-      break;
-    case FFI_TYPE_FLOAT:
+      اكسر;
+    حالة FFI_TYPE_FLOAT:
       args.push(DEREF_F32(arg_ptr, 0));
-      break;
-    case FFI_TYPE_DOUBLE:
+      اكسر;
+    حالة FFI_TYPE_DOUBLE:
       args.push(DEREF_F64(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT8:
+      اكسر;
+    حالة FFI_TYPE_UINT8:
       args.push(DEREF_U8(arg_ptr, 0));
-      break;
-    case FFI_TYPE_SINT8:
+      اكسر;
+    حالة FFI_TYPE_SINT8:
       args.push(DEREF_S8(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT16:
+      اكسر;
+    حالة FFI_TYPE_UINT16:
       args.push(DEREF_U16(arg_ptr, 0));
-      break;
-    case FFI_TYPE_SINT16:
+      اكسر;
+    حالة FFI_TYPE_SINT16:
       args.push(DEREF_S16(arg_ptr, 0));
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      اكسر;
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
       args.push(DEREF_U64(arg_ptr, 0));
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      اكسر;
+    حالة FFI_TYPE_LONGDOUBLE:
       // long double is passed as a pair of BigInts.
       args.push(DEREF_U64(arg_ptr, 0));
       args.push(DEREF_U64(arg_ptr, 1));
-      break;
-    case FFI_TYPE_STRUCT:
+      اكسر;
+    حالة FFI_TYPE_STRUCT:
       // Nontrivial structs are passed by pointer.
       // Have to copy the struct onto the stack though because C ABI says it's
       // call by value.
@@ -359,13 +359,13 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
       STACK_ALLOC(cur_stack_ptr, size, align);
       HEAP8.subarray(cur_stack_ptr, cur_stack_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
       args.push(ENC_PTR(cur_stack_ptr));
-      break;
-    case FFI_TYPE_POINTER:
+      اكسر;
+    حالة FFI_TYPE_POINTER:
       args.push(DEREF_PTR(arg_ptr, 0));
-      break;
-    case FFI_TYPE_COMPLEX:
+      اكسر;
+    حالة FFI_TYPE_COMPLEX:
       throw new Error('complex marshalling nyi');
-    default:
+    افتراضي:
       throw new Error('Unexpected type ' + arg_type_id);
     }
   }
@@ -379,66 +379,66 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // We don't have any way of knowing how many args were actually passed, so we
   // just always copy extra nonsense past the end. The ownwards call will know
   // not to look at it.
-  if (flags & VARARGS_FLAG) {
+  אם (flags & VARARGS_FLAG) {
     var struct_arg_info = [];
-    for (var i = nargs - 1;  i >= nfixedargs; i--) {
+    עבור (var i = nargs - 1;  i >= nfixedargs; i--) {
       var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
       var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
       var arg_type_ptr = arg_unboxed[0];
       var arg_type_id = arg_unboxed[1];
-      switch (arg_type_id) {
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
+      بدل (arg_type_id) {
+      حالة FFI_TYPE_UINT8:
+      حالة FFI_TYPE_SINT8:
         STACK_ALLOC(cur_stack_ptr, 1, 1);
         DEREF_U8(cur_stack_ptr, 0) = DEREF_U8(arg_ptr, 0);
-        break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+        اكسر;
+      حالة FFI_TYPE_UINT16:
+      حالة FFI_TYPE_SINT16:
         STACK_ALLOC(cur_stack_ptr, 2, 2);
         DEREF_U16(cur_stack_ptr, 0) = DEREF_U16(arg_ptr, 0);
-        break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_FLOAT:
+        اكسر;
+      حالة FFI_TYPE_INT:
+      حالة FFI_TYPE_UINT32:
+      حالة FFI_TYPE_SINT32:
+      حالة FFI_TYPE_FLOAT:
         STACK_ALLOC(cur_stack_ptr, 4, 4);
         DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        break;
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
+        اكسر;
+      حالة FFI_TYPE_DOUBLE:
+      حالة FFI_TYPE_UINT64:
+      حالة FFI_TYPE_SINT64:
         STACK_ALLOC(cur_stack_ptr, 8, 8);
         DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
         DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
-        break;
-      case FFI_TYPE_LONGDOUBLE:
+        اكسر;
+      حالة FFI_TYPE_LONGDOUBLE:
         STACK_ALLOC(cur_stack_ptr, 16, 8);
         DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
         DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
         DEREF_U32(cur_stack_ptr, 2) = DEREF_U32(arg_ptr, 2);
         DEREF_U32(cur_stack_ptr, 3) = DEREF_U32(arg_ptr, 3);
-        break;
-      case FFI_TYPE_STRUCT:
+        اكسر;
+      حالة FFI_TYPE_STRUCT:
         // Again, struct must be passed by pointer.
         // But ABI is by value, so have to copy struct onto stack.
         // Currently arguments are going onto stack so we can't put it there now. Come back for this.
         STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
         struct_arg_info.push([cur_stack_ptr, arg_ptr, DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
-        break;
-      case FFI_TYPE_POINTER:
+        اكسر;
+      حالة FFI_TYPE_POINTER:
         STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
         DEREF_PTR(cur_stack_ptr, 0) = DEREF_PTR(arg_ptr, 0);
-        break;
-      case FFI_TYPE_COMPLEX:
+        اكسر;
+      حالة FFI_TYPE_COMPLEX:
         throw new Error('complex arg marshalling nyi');
-      default:
+      افتراضي:
         throw new Error('Unexpected argtype ' + arg_type_id);
       }
     }
     // extra normal argument which is the pointer to the varargs.
     args.push(ENC_PTR(cur_stack_ptr));
     // Now allocate variable struct args on stack too.
-    for (var i = 0; i < struct_arg_info.length; i++) {
+    עבור (var i = 0; i < struct_arg_info.length; i++) {
       var struct_info = struct_arg_info[i];
       var arg_target = struct_info[0];
       var arg_ptr = struct_info[1];
@@ -459,13 +459,13 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
 
   // We need to return by argument. If return value was a nontrivial struct or
   // long double, the onwards call already put the return value in rvalue
-  if (ret_by_arg) {
-    return;
+  אם (ret_by_arg) {
+    החזר;
   }
 
   // A NULL rvalue means the caller discards the return value.
-  if (rvalue === 0) {
-    return;
+  אם (rvalue === 0) {
+    החזר;
   }
 
   // Otherwise the result was automatically converted from C into Javascript and
@@ -473,71 +473,71 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Integral returns narrower than a register are widened to ffi_arg, as
   // documented and as every native port does -- but only genuine scalar
   // returns: an unboxed small-struct return keeps its natural width.
-  switch (rtype_id) {
-  case FFI_TYPE_VOID:
-    break;
-  case FFI_TYPE_INT:
-  case FFI_TYPE_SINT32:
-    if (rtype_widen)
+  بدل (rtype_id) {
+  حالة FFI_TYPE_VOID:
+    اكسر;
+  حالة FFI_TYPE_INT:
+  حالة FFI_TYPE_SINT32:
+    אם (rtype_widen)
       STORE_ARG_WIDENED_SIGNED(rvalue, result | 0);
-    else
+    אחרת
       DEREF_U32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT32:
-    if (rtype_widen)
+    اكسر;
+  حالة FFI_TYPE_UINT32:
+    אם (rtype_widen)
       STORE_ARG_WIDENED_UNSIGNED(rvalue, result | 0);
-    else
+    אחרת
       DEREF_U32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_FLOAT:
+    اكسر;
+  حالة FFI_TYPE_FLOAT:
     DEREF_F32(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_DOUBLE:
+    اكسر;
+  حالة FFI_TYPE_DOUBLE:
     DEREF_F64(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT8:
-    if (rtype_widen)
+    اكسر;
+  حالة FFI_TYPE_UINT8:
+    אם (rtype_widen)
       STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xff);
-    else
+    אחרת
       DEREF_U8(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_SINT8:
-    if (rtype_widen)
+    اكسر;
+  حالة FFI_TYPE_SINT8:
+    אם (rtype_widen)
       STORE_ARG_WIDENED_SIGNED(rvalue, (result << 24) >> 24);
-    else
+    אחרת
       DEREF_U8(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT16:
-    if (rtype_widen)
+    اكسر;
+  حالة FFI_TYPE_UINT16:
+    אם (rtype_widen)
       STORE_ARG_WIDENED_UNSIGNED(rvalue, result & 0xffff);
-    else
+    אחרת
       DEREF_U16(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_SINT16:
-    if (rtype_widen)
+    اكسر;
+  حالة FFI_TYPE_SINT16:
+    אם (rtype_widen)
       STORE_ARG_WIDENED_SIGNED(rvalue, (result << 16) >> 16);
-    else
+    אחרת
       DEREF_U16(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_UINT64:
-  case FFI_TYPE_SINT64:
+    اكسر;
+  حالة FFI_TYPE_UINT64:
+  حالة FFI_TYPE_SINT64:
     DEREF_U64(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_POINTER:
+    اكسر;
+  حالة FFI_TYPE_POINTER:
     DEREF_PTR(rvalue, 0) = result;
-    break;
-  case FFI_TYPE_COMPLEX:
+    اكسر;
+  حالة FFI_TYPE_COMPLEX:
     throw new Error('complex ret marshalling nyi');
-  default:
+  افتراضي:
     throw new Error('Unexpected rtype ' + rtype_id);
   }
 });
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue) {
+فراغ ffi_call(ffi_cif *cif, فراغ (*fn)(فراغ), فراغ *rvalue, فراغ **avalue) {
   ffi_call_js(cif, fn, rvalue, avalue);
 }
 
-#if __SIZEOF_POINTER__ == 4
+#אם __SIZEOF_POINTER__ == 4
 
 CHECK_FIELD_OFFSET(ffi_closure, ftramp, 4*0);
 CHECK_FIELD_OFFSET(ffi_closure, cif, 4*1);
@@ -549,7 +549,7 @@ CHECK_FIELD_OFFSET(ffi_closure, user_data, 4*3);
 #define CLOSURE__fun(addr) DEREF_U32(addr, 2)
 #define CLOSURE__user_data(addr) DEREF_U32(addr, 3)
 
-#elif __SIZEOF_POINTER__ == 8
+#وإلاإذا __SIZEOF_POINTER__ == 8
 
 CHECK_FIELD_OFFSET(ffi_closure, ftramp, 0);
 CHECK_FIELD_OFFSET(ffi_closure, cif, 8);
@@ -561,35 +561,35 @@ CHECK_FIELD_OFFSET(ffi_closure, user_data, 24);
 #define CLOSURE__fun(addr) DEREF_U64(addr, 2)
 #define CLOSURE__user_data(addr) DEREF_U64(addr, 3)
 
-#else
+#אחרת
 #error "Unknown pointer size"
 #endif
 
-EM_JS_MACROS(void *, ffi_closure_alloc_js, (size_t size, void **code), {
+EM_JS_MACROS(فراغ *, ffi_closure_alloc_js, (size_t size, فراغ **code), {
   size = DEC_PTR(size);
   code = DEC_PTR(code);
   var closure = _malloc(size);
   var index = getEmptyTableSlot();
   DEREF_PTR(code, 0) = ENC_PTR(index);
   CLOSURE__wrapper(closure) = ENC_PTR(index);
-  return ENC_PTR(closure);
+  החזר ENC_PTR(closure);
 })
 
-void * __attribute__ ((visibility ("default")))
-ffi_closure_alloc(size_t size, void **code) {
-  return ffi_closure_alloc_js(size, code);
+فراغ * __attribute__ ((visibility ("default")))
+ffi_closure_alloc(size_t size, فراغ **code) {
+  החזר ffi_closure_alloc_js(size, code);
 }
 
-EM_JS_MACROS(void, ffi_closure_free_js, (void *closure), {
+EM_JS_MACROS(فراغ, ffi_closure_free_js, (فراغ *closure), {
   closure = DEC_PTR(closure);
   var index = DEC_PTR(CLOSURE__wrapper(closure));
   freeTableIndexes.push(index);
   _free(closure);
 })
 
-void __attribute__ ((visibility ("default")))
-ffi_closure_free(void *closure) {
-  return ffi_closure_free_js(closure);
+فراغ __attribute__ ((visibility ("default")))
+ffi_closure_free(فراغ *closure) {
+  החזר ffi_closure_free_js(closure);
 }
 
 
@@ -623,7 +623,7 @@ ffi_closure_free(void *closure) {
 EM_JS_MACROS(
 ffi_status,
 ffi_prep_closure_loc_js,
-(ffi_closure *closure, ffi_cif *cif, void *fun, void *user_data, void *codeloc),
+(ffi_closure *closure, ffi_cif *cif, فراغ *fun, فراغ *user_data, فراغ *codeloc),
 {
   closure = DEC_PTR(closure);
   cif = DEC_PTR(cif);
@@ -646,14 +646,14 @@ ffi_prep_closure_loc_js,
     );
   } catch (e) {
     LOG_DEBUG("CREATE_CLOSURE_FAILED", e);
-    return FFI_BAD_TYPEDEF_MACRO;
+    החזר FFI_BAD_TYPEDEF_MACRO;
   }
   var wasm_trampoline = instance.exports["f"];
   setWasmTableEntry(codeloc, wasm_trampoline);
   CLOSURE__cif(closure) = ENC_PTR(cif);
   CLOSURE__fun(closure) = ENC_PTR(fun);
   CLOSURE__user_data(closure) = ENC_PTR(user_data);
-  return FFI_OK_MACRO;
+  החזר FFI_OK_MACRO;
 }
 
 // Walk the CIF and compute the metadata we need for ffi_closure_prelude
@@ -671,91 +671,91 @@ function ffi_cif_to_call_info(cif) {
   // Important: this is the signature for calling us, the onward call always has sig viiii.
   var sig;
   var ret_by_arg = false;
-  switch (rtype_id) {
-  case FFI_TYPE_VOID:
+  بدل (rtype_id) {
+  حالة FFI_TYPE_VOID:
     sig = 'v';
-    break;
-  case FFI_TYPE_STRUCT:
-  case FFI_TYPE_LONGDOUBLE:
+    اكسر;
+  حالة FFI_TYPE_STRUCT:
+  حالة FFI_TYPE_LONGDOUBLE:
     // Return via a first pointer argument.
     sig = 'v' + PTR_SIG;
     ret_by_arg = true;
-    break;
-  case FFI_TYPE_INT:
-  case FFI_TYPE_UINT8:
-  case FFI_TYPE_SINT8:
-  case FFI_TYPE_UINT16:
-  case FFI_TYPE_SINT16:
-  case FFI_TYPE_UINT32:
-  case FFI_TYPE_SINT32:
+    اكسر;
+  حالة FFI_TYPE_INT:
+  حالة FFI_TYPE_UINT8:
+  حالة FFI_TYPE_SINT8:
+  حالة FFI_TYPE_UINT16:
+  حالة FFI_TYPE_SINT16:
+  حالة FFI_TYPE_UINT32:
+  حالة FFI_TYPE_SINT32:
     sig = 'i';
-    break;
-  case FFI_TYPE_FLOAT:
+    اكسر;
+  حالة FFI_TYPE_FLOAT:
     sig = 'f';
-    break;
-  case FFI_TYPE_DOUBLE:
+    اكسر;
+  حالة FFI_TYPE_DOUBLE:
     sig = 'd';
-    break;
-  case FFI_TYPE_UINT64:
-  case FFI_TYPE_SINT64:
+    اكسر;
+  حالة FFI_TYPE_UINT64:
+  حالة FFI_TYPE_SINT64:
     sig = 'j';
-    break;
-  case FFI_TYPE_POINTER:
+    اكسر;
+  حالة FFI_TYPE_POINTER:
     sig = PTR_SIG;
-    break;
-  case FFI_TYPE_COMPLEX:
+    اكسر;
+  حالة FFI_TYPE_COMPLEX:
     throw new Error('complex ret marshalling nyi');
-  default:
+  افتراضي:
     throw new Error('Unexpected rtype ' + rtype_id);
   }
   var unboxed_arg_type_id_list = [];
   var unboxed_arg_type_info_list = [];
-  for (var i = 0; i < nargs; i++) {
+  עבור (var i = 0; i < nargs; i++) {
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
     unboxed_arg_type_id_list.push(arg_type_id);
     unboxed_arg_type_info_list.push([DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
   }
-  for (var i = 0; i < nfixedargs; i++) {
-    switch (unboxed_arg_type_id_list[i]) {
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT8:
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT16:
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+  עבור (var i = 0; i < nfixedargs; i++) {
+    بدل (unboxed_arg_type_id_list[i]) {
+    حالة FFI_TYPE_INT:
+    حالة FFI_TYPE_UINT8:
+    حالة FFI_TYPE_SINT8:
+    حالة FFI_TYPE_UINT16:
+    حالة FFI_TYPE_SINT16:
+    حالة FFI_TYPE_UINT32:
+    حالة FFI_TYPE_SINT32:
       sig += 'i';
-      break;
-    case FFI_TYPE_FLOAT:
+      اكسر;
+    حالة FFI_TYPE_FLOAT:
       sig += 'f';
-      break;
-    case FFI_TYPE_DOUBLE:
+      اكسر;
+    حالة FFI_TYPE_DOUBLE:
       sig += 'd';
-      break;
-    case FFI_TYPE_LONGDOUBLE:
+      اكسر;
+    حالة FFI_TYPE_LONGDOUBLE:
       sig += 'jj';
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+      اكسر;
+    حالة FFI_TYPE_UINT64:
+    حالة FFI_TYPE_SINT64:
       sig += 'j';
-      break;
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_POINTER:
+      اكسر;
+    حالة FFI_TYPE_STRUCT:
+    حالة FFI_TYPE_POINTER:
       sig += PTR_SIG;
-      break;
-    case FFI_TYPE_COMPLEX:
+      اكسر;
+    حالة FFI_TYPE_COMPLEX:
       throw new Error('complex marshalling nyi');
-    default:
+    افتراضي:
       throw new Error('Unexpected argtype ' + arg_type_id);
     }
   }
-  if (nfixedargs < nargs) {
+  אם (nfixedargs < nargs) {
     // extra pointer to varargs stack
     sig += PTR_SIG;
   }
-  return {
+  החזר {
     sig,
     call_info: {
       nfixedargs,
@@ -780,7 +780,7 @@ function ffi_closure_prelude(
     unboxed_arg_type_id_list,
   },
 ) {
-  return function prelude() {
+  החזר function prelude() {
     var args = arguments;
     var orig_stack_ptr = stackSave();
     var cur_ptr = orig_stack_ptr;
@@ -788,9 +788,9 @@ function ffi_closure_prelude(
     var jsarg_idx = 0;
     // Should we return by argument or not? The onwards call returns by argument
     // no matter what. (Warning: ret_by_arg means the opposite in ffi_call)
-    if (ret_by_arg) {
+    אם (ret_by_arg) {
       ret_ptr = DEC_PTR(args[jsarg_idx++]);
-    } else {
+    } אחרת {
       // We might return 4 bytes or 8 bytes, allocate 8 just in case.
       STACK_ALLOC(cur_ptr, 8, 8);
       ret_ptr = cur_ptr;
@@ -803,7 +803,7 @@ function ffi_closure_prelude(
     // pointer to the ith argument. If the argument is a struct, just store the
     // pointer. Otherwise allocate stack space and copy the js argument onto the
     // stack.
-    for (; carg_idx < nfixedargs; carg_idx++) {
+    עבור (; carg_idx < nfixedargs; carg_idx++) {
       // jsarg_idx might start out as 0 or 1 depending on ret_by_arg
       // it advances an extra time for long double
       var cur_arg = args[jsarg_idx++];
@@ -811,63 +811,63 @@ function ffi_closure_prelude(
       var arg_size = arg_type_info[0];
       var arg_align = arg_type_info[1];
       var arg_type_id = unboxed_arg_type_id_list[carg_idx];
-      switch (arg_type_id) {
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT8:
+      بدل (arg_type_id) {
+      حالة FFI_TYPE_UINT8:
+      حالة FFI_TYPE_SINT8:
         // Bad things happen if we don't align to 4 here
         STACK_ALLOC(cur_ptr, 1, 4);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U8(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+        اكسر;
+      حالة FFI_TYPE_UINT16:
+      حالة FFI_TYPE_SINT16:
         // Bad things happen if we don't align to 4 here
         STACK_ALLOC(cur_ptr, 2, 4);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U16(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
+        اكسر;
+      حالة FFI_TYPE_INT:
+      حالة FFI_TYPE_UINT32:
+      حالة FFI_TYPE_SINT32:
         STACK_ALLOC(cur_ptr, 4, 4);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U32(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_STRUCT:
+        اكسر;
+      حالة FFI_TYPE_STRUCT:
         // cur_arg is already a pointer to struct
         // copy it onto stack to pass by value
         STACK_ALLOC(cur_ptr, arg_size, arg_align);
         HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(DEC_PTR(cur_arg), DEC_PTR(cur_arg) + arg_size));
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
-        break;
-      case FFI_TYPE_FLOAT:
+        اكسر;
+      حالة FFI_TYPE_FLOAT:
         STACK_ALLOC(cur_ptr, 4, 4);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F32(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_DOUBLE:
+        اكسر;
+      حالة FFI_TYPE_DOUBLE:
         STACK_ALLOC(cur_ptr, 8, 8);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F64(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
+        اكسر;
+      حالة FFI_TYPE_UINT64:
+      حالة FFI_TYPE_SINT64:
         STACK_ALLOC(cur_ptr, 8, 8);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
-        break;
-      case FFI_TYPE_LONGDOUBLE:
+        اكسر;
+      حالة FFI_TYPE_LONGDOUBLE:
         STACK_ALLOC(cur_ptr, 16, 8);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
         cur_arg = args[jsarg_idx++];
         DEREF_U64(cur_ptr, 1) = cur_arg;
-        break;
-      case FFI_TYPE_POINTER:
+        اكسر;
+      حالة FFI_TYPE_POINTER:
         STACK_ALLOC(cur_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_PTR(cur_ptr, 0) = cur_arg;
-        break;
+        اكسر;
       }
     }
     // If its a varargs call, last js argument is a pointer to the varargs.
@@ -879,19 +879,19 @@ function ffi_closure_prelude(
     // We either have a pointer to the argument if the argument is not a struct
     // or a pointer to pointer to struct. We need to store a pointer to the
     // argument into args_ptr[i]
-    for (; carg_idx < nargs; carg_idx++) {
+    עבור (; carg_idx < nargs; carg_idx++) {
       var arg_type_id = unboxed_arg_type_id_list[carg_idx];
       var arg_type_info = unboxed_arg_type_info_list[carg_idx];
       var arg_size = arg_type_info[0];
       var arg_align = arg_type_info[1];
-      if (arg_type_id === FFI_TYPE_STRUCT) {
+      אם (arg_type_id === FFI_TYPE_STRUCT) {
         // In this case varargs is a pointer to pointer to struct so we need to
         // deref once
         var struct_ptr = DEREF_PTR_NUMBER(varargs, 0);
         STACK_ALLOC(cur_ptr, arg_size, arg_align);
         HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(struct_ptr, struct_ptr + arg_size));
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
-      } else {
+      } אחרת {
         DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(varargs);
       }
       varargs += __SIZEOF_POINTER__;
@@ -904,7 +904,7 @@ function ffi_closure_prelude(
     //    return epilogue(ret_ptr, orig_stack_ptr);
     //
     // We return these arguments in reverse order because stack is LIFO.
-    return [
+    החזר [
       ENC_PTR(ret_ptr),          // epilogue args (in correct order)
       ENC_PTR(orig_stack_ptr),
 
@@ -922,16 +922,16 @@ function ffi_closure_prelude(
 // return value from ret_ptr.
 function ffi_closure_epilogue(sig) {
   var load;
-  switch (sig[0]) {
-  case 'i': load = (ptr) => DEREF_S32(ptr, 0); break;
-  case 'j': load = (ptr) => DEREF_U64(ptr, 0); break;
-  case 'f': load = (ptr) => DEREF_F32(ptr, 0); break;
-  case 'd': load = (ptr) => DEREF_F64(ptr, 0); break;
-  default:  load = (ptr) => undefined; break;
+  بدل (sig[0]) {
+  حالة 'i': load = (ptr) => DEREF_S32(ptr, 0); اكسر;
+  حالة 'j': load = (ptr) => DEREF_U64(ptr, 0); اكسر;
+  حالة 'f': load = (ptr) => DEREF_F32(ptr, 0); اكسر;
+  حالة 'd': load = (ptr) => DEREF_F64(ptr, 0); اكسر;
+  افتراضي:  load = (ptr) => undefined; اكسر;
   }
-  return function epilogue(ret_ptr, orig_stack_ptr) {
+  החזר function epilogue(ret_ptr, orig_stack_ptr) {
     stackRestore(DEC_PTR(orig_stack_ptr));
-    return load(DEC_PTR(ret_ptr));
+    החזר load(DEC_PTR(ret_ptr));
   };
 }
 
@@ -939,31 +939,31 @@ var ffi_closure_trampoline_module_cache = new Map();
 function ffi_closure_trampoline_module(sig) {
   var cache = ffi_closure_trampoline_module_cache;
   var module = cache.get(sig);
-  if (module) {
-    return module;
+  אם (module) {
+    החזר module;
   }
 
   function uleb128(n) {
     var result = [];
-    do {
+    עשה {
       var byte = n & 0x7f;
       n >>>= 7;
-      if (n) {
+      אם (n) {
         byte |= 0x80;
       }
       result.push(byte);
-    } while (n);
-    return result;
+    } כלעוד (n);
+    החזר result;
   }
   // A vector of single-byte items
   function vec(bytes) {
-    return [...uleb128(bytes.length), ...bytes];
+    החזר [...uleb128(bytes.length), ...bytes];
   }
   function section(id, bytes) {
-    return [id, ...vec(bytes)];
+    החזר [id, ...vec(bytes)];
   }
   function funcType(params, results) {
-    return [0x60, ...vec(params), ...vec(results)];
+    החזר [0x60, ...vec(params), ...vec(results)];
   }
 
   var typeCodes = { 'i': 0x7f, 'j': 0x7e, 'f': 0x7d, 'd': 0x7c };
@@ -1003,7 +1003,7 @@ function ffi_closure_trampoline_module(sig) {
 
   // Function body
   var body = [0x00]; // no locals
-  for (var i = 0; i < nparams; i++) {
+  עבור (var i = 0; i < nparams; i++) {
     body.push(0x20, ...uleb128(i)); // local.get i
   }
   body.push(0x10, 0x00); // call prelude
@@ -1028,17 +1028,17 @@ function ffi_closure_trampoline_module(sig) {
   // The module is tiny so compiling synchronously is fine.
   module = new WebAssembly.Module(bytes);
   cache.set(sig, module);
-  return module;
+  החזר module;
 }
 )
 
 // EM_JS does not correctly handle function pointer arguments, so we need a
 // helper
 ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif,
-                                void (*fun)(ffi_cif *, void *, void **, void *),
-                                void *user_data, void *codeloc) {
-  if (cif->abi != FFI_EMSCRIPTEN_ABI)
-    return FFI_BAD_ABI;
-  return ffi_prep_closure_loc_js(closure, cif, (void *)fun, user_data,
+                                فراغ (*fun)(ffi_cif *, فراغ *, فراغ **, فراغ *),
+                                فراغ *user_data, فراغ *codeloc) {
+  אם (cif->abi != FFI_EMSCRIPTEN_ABI)
+    החזר FFI_BAD_ABI;
+  החזר ffi_prep_closure_loc_js(closure, cif, (فراغ *)fun, user_data,
                                      codeloc);
 }

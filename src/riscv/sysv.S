@@ -17,13 +17,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS או IMPLIED, INCLUDING BUT לא LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE וגם
+   NONINFRINGEMENT.  في NO EVENT SHALL THE AUTHORS או COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES או OTHER LIABILITY,
+   WHETHER في AN ACTION OF CONTRACT, TORT או OTHERWISE, ARISING FROM,
+   OUT OF או في CONNECTION WITH THE SOFTWARE או THE USE או OTHER
+   DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -78,7 +78,7 @@ ffi_call_asm:
     .cfi_startproc
 
     /*
-      We are NOT going to set up an ordinary stack frame.  In order to pass
+      We are לא going to set up an ordinary stack frame.  In order to pass
       the stacked args to the called function, we adjust our stack pointer to
       a0, which is in the _caller's_ alloca area.  We establish our own stack
       frame at the end of the call_context.
@@ -197,7 +197,7 @@ ffi_closure_asm:
     addi    a3, sp, FRAME_LEN
     mv      a4, sp
 
-    call    ffi_closure_inner
+    نادي    ffi_closure_inner
 
     /* return values */
 #if FLTS
@@ -271,7 +271,7 @@ ffi_go_closure_asm:
     addi    a3, sp, FRAME_LEN
     mv      a4, sp
 
-    call    ffi_closure_inner
+    نادي    ffi_closure_inner
 
     /* return values */
 #if FLTS
