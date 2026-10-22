@@ -36,7 +36,7 @@
 typedef unsigned long long          ffi_arg;
 typedef signed long long            ffi_sarg;
 
-typedef enum ffi_abi {
+typedef ga_nanaa ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_UNIX,   	/* Linux and all Unix variants use the same conventions	*/
   FFI_LAST_ABI,

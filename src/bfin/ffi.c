@@ -45,14 +45,14 @@
 /*====================================================================*/
 /*                          PROTOTYPE          *
  /*====================================================================*/
-void ffi_prep_args(unsigned char *, extended_cif *);
+void ffi_prep_args(unsigned var_na *, extended_cif *);
 
 /*====================================================================*/
 /*                          Externals                                 */
 /*                          (Assembly)                                */
 /*====================================================================*/
 
-extern void ffi_call_SYSV(unsigned, extended_cif *, void(*)(unsigned char *, extended_cif *), unsigned, void *, void(*fn)(void));
+extern void ffi_call_SYSV(unsigned, extended_cif *, void(*)(unsigned var_na *, extended_cif *), unsigned, void *, void(*fn)(void));
 
 /*====================================================================*/
 /*                          Implementation                            */
@@ -70,44 +70,44 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
     *   Return handling                *
     * --------------------------------------*/
    switch (cif->rtype->type) {
-      case FFI_TYPE_VOID:
+      pak_sa FFI_TYPE_VOID:
          cif->flags = FFIBFIN_RET_VOID;
-         break;
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT16:
+         bha_nga;
+      pak_sa FFI_TYPE_UINT16:
+      pak_sa FFI_TYPE_SINT16:
          cif->flags = FFIBFIN_RET_HALFWORD;
-         break;
-      case FFI_TYPE_UINT8:
+         bha_nga;
+      pak_sa FFI_TYPE_UINT8:
          cif->flags = FFIBFIN_RET_BYTE;
-         break;
-      case FFI_TYPE_INT:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_POINTER:
-      case FFI_TYPE_SINT8:
+         bha_nga;
+      pak_sa FFI_TYPE_INT:
+      pak_sa FFI_TYPE_UINT32:
+      pak_sa FFI_TYPE_SINT32:
+      pak_sa FFI_TYPE_FLOAT:
+      pak_sa FFI_TYPE_POINTER:
+      pak_sa FFI_TYPE_SINT8:
          cif->flags = FFIBFIN_RET_INT32;
-         break;
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_DOUBLE:
+         bha_nga;
+      pak_sa FFI_TYPE_SINT64:
+      pak_sa FFI_TYPE_UINT64:
+      pak_sa FFI_TYPE_DOUBLE:
           cif->flags = FFIBFIN_RET_INT64;
-          break;
-      case FFI_TYPE_STRUCT:
-         if (cif->rtype->size <= 4){
+          bha_nga;
+      pak_sa FFI_TYPE_STRUCT:
+         නම් (cif->rtype->size <= 4){
         	 cif->flags = FFIBFIN_RET_INT32;
-         }else if (cif->rtype->size == 8){
+         }නැතහොත් නම් (cif->rtype->size == 8){
         	 cif->flags = FFIBFIN_RET_INT64;
-         }else{
+         }නැතහොත්{
         	 //it will return via a hidden pointer in P0
         	 cif->flags = FFIBFIN_RET_VOID;
          }
-         break;
+         bha_nga;
       default:
          FFI_ASSERT(0);
-         break;
+         bha_nga;
    }
-   return FFI_OK;
+   ආපසු FFI_OK;
 }
 
 /*
@@ -119,19 +119,19 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
  */
 void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 {
-   int ret_type = cif->flags;
+   පූර්ණ_සංඛ්‍යා ret_type = cif->flags;
    extended_cif ecif;
    ecif.cif = cif;
    ecif.avalue = avalue;
    ecif.rvalue = rvalue;
 
    switch (cif->abi) {
-      case FFI_SYSV:
+      pak_sa FFI_SYSV:
          ffi_call_SYSV(cif->bytes, &ecif, ffi_prep_args, ret_type, ecif.rvalue, fn);
-         break;
+         bha_nga;
       default:
          FFI_ASSERT(0);
-         break;
+         bha_nga;
    }
 }
 
@@ -141,50 +141,50 @@ void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 *  to call the function (ffi_prep_args is called by the assembly routine in file
 *  sysv.S, which also calls the actual function)
 */
-void ffi_prep_args(unsigned char *stack, extended_cif *ecif)
+void ffi_prep_args(unsigned var_na *stack, extended_cif *ecif)
 {
-   register unsigned int i = 0;
+   pa_njikaa unsigned පූර්ණ_සංඛ්‍යා i = 0;
    void **p_argv;
-   unsigned char *argp;
+   unsigned var_na *argp;
    ffi_type **p_arg;
    argp = stack;
    p_argv = ecif->avalue;
-   for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+   සඳහා (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
         (i != 0);
         i--, p_arg++) {
       size_t z;
       z = (*p_arg)->size;
-      if (z < sizeof(int)) {
-         z = sizeof(int);
+      නම් (z < parimaa_na(පූර්ණ_සංඛ්‍යා)) {
+         z = parimaa_na(පූර්ණ_සංඛ්‍යා);
          switch ((*p_arg)->type) {
-            case FFI_TYPE_SINT8: {
-                  signed char v = *(SINT8 *)(* p_argv);
-                  signed int t = v;
-                  *(signed int *) argp = t;
+            pak_sa FFI_TYPE_SINT8: {
+                  signed var_na v = *(SINT8 *)(* p_argv);
+                  signed පූර්ණ_සංඛ්‍යා t = v;
+                  *(signed පූර්ණ_සංඛ්‍යා *) argp = t;
                }
-               break;
-            case FFI_TYPE_UINT8: {
-                  unsigned char v = *(UINT8 *)(* p_argv);
-                  unsigned int t = v;
-                  *(unsigned int *) argp = t;
+               bha_nga;
+            pak_sa FFI_TYPE_UINT8: {
+                  unsigned var_na v = *(UINT8 *)(* p_argv);
+                  unsigned පූර්ණ_සංඛ්‍යා t = v;
+                  *(unsigned පූර්ණ_සංඛ්‍යා *) argp = t;
                }
-               break;
-            case FFI_TYPE_SINT16:
-               *(signed int *) argp = (signed int) * (SINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_UINT16:
-               *(unsigned int *) argp = (unsigned int) * (UINT16 *)(* p_argv);
-               break;
-            case FFI_TYPE_STRUCT:
+               bha_nga;
+            pak_sa FFI_TYPE_SINT16:
+               *(signed පූර්ණ_සංඛ්‍යා *) argp = (signed පූර්ණ_සංඛ්‍යා) * (SINT16 *)(* p_argv);
+               bha_nga;
+            pak_sa FFI_TYPE_UINT16:
+               *(unsigned පූර්ණ_සංඛ්‍යා *) argp = (unsigned පූර්ණ_සංඛ්‍යා) * (UINT16 *)(* p_argv);
+               bha_nga;
+            pak_sa FFI_TYPE_STRUCT:
                memcpy(argp, *p_argv, (*p_arg)->size);
-               break;
+               bha_nga;
             default:
                FFI_ASSERT(0);
-               break;
+               bha_nga;
          }
-      } else if (z == sizeof(int)) {
-         *(unsigned int *) argp = (unsigned int) * (UINT32 *)(* p_argv);
-      } else {
+      } නැතහොත් නම් (z == parimaa_na(පූර්ණ_සංඛ්‍යා)) {
+         *(unsigned පූර්ණ_සංඛ්‍යා *) argp = (unsigned පූර්ණ_සංඛ්‍යා) * (UINT32 *)(* p_argv);
+      } නැතහොත් {
          memcpy(argp, *p_argv, z);
       }
       p_argv++;
