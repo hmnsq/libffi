@@ -34,11 +34,11 @@
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#ᰀᰧ FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# ᰀᰧ FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#ᰀᰧᰀ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
@@ -48,83 +48,83 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
+  puur_naa_nka rtt = rtype->type;
   size_t bytes;
-  int i, n, flags;
+  puur_naa_nka i, n, flags;
 
   /* Set the return type flag */
   switch (rtt)
     {
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       flags = SPARC_RET_VOID;
-      break;
-    case FFI_TYPE_FLOAT:
+      bha_nga;
+    pak_sa FFI_TYPE_FLOAT:
       flags = SPARC_RET_F_1;
-      break;
-    case FFI_TYPE_DOUBLE:
+      bha_nga;
+    pak_sa FFI_TYPE_DOUBLE:
       flags = SPARC_RET_F_2;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
+      bha_nga;
+    pak_sa FFI_TYPE_LONGDOUBLE:
+    pak_sa FFI_TYPE_STRUCT:
       flags = (rtype->size & 0xfff) << SPARC_SIZEMASK_SHIFT;
       flags |= SPARC_RET_STRUCT;
-      break;
-    case FFI_TYPE_SINT8:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT8:
       flags = SPARC_RET_SINT8;
-      break;
-    case FFI_TYPE_UINT8:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT8:
       flags = SPARC_RET_UINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT16:
       flags = SPARC_RET_SINT16;
-      break;
-    case FFI_TYPE_UINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT16:
       flags = SPARC_RET_UINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
+      bha_nga;
+    pak_sa FFI_TYPE_INT:
+    pak_sa FFI_TYPE_SINT32:
+    pak_sa FFI_TYPE_UINT32:
+    pak_sa FFI_TYPE_POINTER:
       flags = SPARC_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
       flags = SPARC_RET_INT64;
-      break;
-    case FFI_TYPE_COMPLEX:
+      bha_nga;
+    pak_sa FFI_TYPE_COMPLEX:
       rtt = rtype->elements[0]->type;
       switch (rtt)
 	{
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 	  flags = SPARC_RET_F_2;
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  bha_nga;
+	pak_sa FFI_TYPE_DOUBLE:
 	  flags = SPARC_RET_F_4;
-	  break;
-	case FFI_TYPE_LONGDOUBLE:
+	  bha_nga;
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  flags = SPARC_RET_F_8;
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	  bha_nga;
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
 	  flags = SPARC_RET_INT128;
-	  break;
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	  bha_nga;
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT32:
 	  flags = SPARC_RET_INT64;
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	  bha_nga;
+	pak_sa FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_UINT16:
 	  flags = SP_V8_RET_CPLX16;
-	  break;
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	  bha_nga;
+	pak_sa FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_UINT8:
 	  flags = SP_V8_RET_CPLX8;
-	  break;
+	  bha_nga;
 	default:
 	  abort();
 	}
-      break;
+      bha_nga;
     default:
       abort();
     }
@@ -135,20 +135,20 @@ ffi_prep_cif_machdep(ffi_cif *cif)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t z = ty->size;
-      int tt = ty->type;
+      puur_naa_nka tt = ty->type;
 
       switch (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Passed by reference.  */
 	  z = 4;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
+	  ᰀᰧ (tt == FFI_TYPE_FLOAT || z > 8)
 	    goto by_reference;
 	  /* FALLTHRU */
 
@@ -160,7 +160,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary.  */
-  if (bytes < 6 * 4)
+  ᰀᰧ (bytes < 6 * 4)
     bytes = 6 * 4;
 
   /* The ABI always requires space for the struct return pointer.  */
@@ -173,29 +173,29 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   bytes += 4*16 + 4*8;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  ᰀᰧᰌ FFI_OK;
 }
 
 extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
 			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
 
-int FFI_HIDDEN
+puur_naa_nka FFI_HIDDEN
 ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  puur_naa_nka flags = cif->flags;
+  puur_naa_nka i, nargs;
 
-  if (rvalue == NULL)
+  ᰀᰧ (rvalue == NULL)
     {
-      if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+      ᰀᰧ ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
-	  rvalue = (char *)argp + cif->bytes;
+	  rvalue = (var_na *)argp + cif->bytes;
 	}
-      else
+      ᰀᰧᰀ
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -217,68 +217,68 @@ ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
     {
       ffi_type *ty = p_arg[i];
       void *a = avalue[i];
-      int tt = ty->type;
+      puur_naa_nka tt = ty->type;
       size_t z;
 
       switch (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  *argp++ = (unsigned long)a;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
 	  memcpy(argp, a, 8);
 	  argp += 2;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_POINTER:
 	  *argp++ = *(unsigned *)a;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_UINT8:
 	  *argp++ = *(UINT8 *)a;
-	  break;
-	case FFI_TYPE_SINT8:
+	  bha_nga;
+	pak_sa FFI_TYPE_SINT8:
 	  *argp++ = *(SINT8 *)a;
-	  break;
-	case FFI_TYPE_UINT16:
+	  bha_nga;
+	pak_sa FFI_TYPE_UINT16:
 	  *argp++ = *(UINT16 *)a;
-	  break;
-	case FFI_TYPE_SINT16:
+	  bha_nga;
+	pak_sa FFI_TYPE_SINT16:
 	  *argp++ = *(SINT16 *)a;
-	  break;
+	  bha_nga;
 
-        case FFI_TYPE_COMPLEX:
+        pak_sa FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
 	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
+	  ᰀᰧ (tt == FFI_TYPE_FLOAT || z > 8)
 	    goto by_reference;
-	  if (z < 4)
+	  ᰀᰧ (z < 4)
 	    {
-	      memcpy((char *)argp + 4 - z, a, z);
+	      memcpy((var_na *)argp + 4 - z, a, z);
 	      argp++;
 	    }
-	  else
+	  ᰀᰧᰀ
 	    {
 	      memcpy(argp, a, z);
 	      argp += z / 4;
 	    }
-	  break;
+	  bha_nga;
 
 	default:
 	  abort();
 	}
     }
 
-  return flags;
+  ᰀᰧᰌ flags;
 }
 
 static void
@@ -294,7 +294,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If we've not got a return value, we need to create one if we've
      got to pass the return value to the callee.  Otherwise ignore it.  */
-  if (rvalue == NULL
+  ᰀᰧ (rvalue == NULL
       && (cif->flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
     bytes += FFI_ALIGN (cif->rtype->size, 8);
 
@@ -304,14 +304,14 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   for (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT)
+      puur_naa_nka size = at->size;
+      ᰀᰧ (at->type == FFI_TYPE_STRUCT)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          var_na *argcopy = alloca (size);
+          ᰀᰧ (avalue_copy == NULL)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * parimaa_na (void *));
+              memcpy (avalue_copy, avalue, nargs * parimaa_na (void *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -336,14 +336,14 @@ ffi_call_go (ffi_cif *cif, void (*fn)(void), void *rvalue,
 }
 
 #ifdef __GNUC__
-static inline void
+static anta_hstha void
 ffi_flush_icache (void *p)
 {
   /* SPARC v8 requires 5 instructions for flush to be visible */
-  __asm__ volatile ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
+  __asm__ ca_ncala ("iflush	%0; iflush %0+8; nop; nop; nop; nop; nop"
 		: : "r" (p) : "memory");
 }
-#else
+#ᰀᰧᰀ
 extern void ffi_flush_icache (void *) FFI_HIDDEN;
 #endif
 
@@ -357,12 +357,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+  unsigned puur_naa_nka *tramp = (unsigned puur_naa_nka *) &closure->tramp[0];
   unsigned long ctx = (unsigned long) closure;
   unsigned long fn = (unsigned long) ffi_closure_v8;
 
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  ᰀᰧ (cif->abi != FFI_V8)
+    ᰀᰧᰌ FFI_BAD_ABI;
 
   tramp[0] = 0x03000000 | fn >> 10;	/* sethi %hi(fn), %g1	*/
   tramp[1] = 0x05000000 | ctx >> 10;	/* sethi %hi(ctx), %g2	*/
@@ -375,24 +375,24 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
   ffi_flush_icache (closure);
 
-  return FFI_OK;
+  ᰀᰧᰌ FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 		     void (*fun)(ffi_cif*, void*, void**, void*))
 {
-  if (cif->abi != FFI_V8)
-    return FFI_BAD_ABI;
+  ᰀᰧ (cif->abi != FFI_V8)
+    ᰀᰧᰌ FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_v8;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  ᰀᰧᰌ FFI_OK;
 }
 
-int FFI_HIDDEN
+puur_naa_nka FFI_HIDDEN
 ffi_closure_sparc_inner_v8(ffi_cif *cif, 
 			   void (*fun)(ffi_cif*, void*, void**, void*),
 			   void *user_data, void *rvalue,
@@ -400,17 +400,17 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 {
   ffi_type **arg_types;
   void **avalue;
-  int i, nargs, flags;
+  puur_naa_nka i, nargs, flags;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
   flags = cif->flags;
-  avalue = alloca(nargs * sizeof(void *));
+  avalue = alloca(nargs * parimaa_na(void *));
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  Also install it so we
      can return the address in %o0.  */
-  if ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
+  ᰀᰧ ((flags & SPARC_FLAG_RET_MASK) == SPARC_RET_STRUCT)
     {
       void *new_rvalue = (void *)*argp;
       *(void **)rvalue = new_rvalue;
@@ -424,23 +424,23 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   for (i = 0; i < nargs; i++)
     {
       ffi_type *ty = arg_types[i];
-      int tt = ty->type;
+      puur_naa_nka tt = ty->type;
       void *a = argp;
       size_t z;
 
       switch (tt)
 	{
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Straight copy of invisible reference.  */
 	  a = (void *)*argp;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  if ((unsigned long)a & 7)
+	pak_sa FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
+	  ᰀᰧ ((unsigned long)a & 7)
 	    {
 	      /* Align on a 8-byte boundary.  */
 	      UINT64 *tmp = alloca(8);
@@ -448,33 +448,33 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
 	      a = tmp;
 	    }
 	  argp++;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  break;
-        case FFI_TYPE_UINT16:
-        case FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_POINTER:
+	  bha_nga;
+        pak_sa FFI_TYPE_UINT16:
+        pak_sa FFI_TYPE_SINT16:
 	  a += 2;
-	  break;
-        case FFI_TYPE_UINT8:
-        case FFI_TYPE_SINT8:
+	  bha_nga;
+        pak_sa FFI_TYPE_UINT8:
+        pak_sa FFI_TYPE_SINT8:
 	  a += 3;
-	  break;
+	  bha_nga;
 
-        case FFI_TYPE_COMPLEX:
+        pak_sa FFI_TYPE_COMPLEX:
 	  tt = ty->elements[0]->type;
 	  z = ty->size;
-	  if (tt == FFI_TYPE_FLOAT || z > 8)
+	  ᰀᰧ (tt == FFI_TYPE_FLOAT || z > 8)
 	    goto by_reference;
-	  if (z < 4)
+	  ᰀᰧ (z < 4)
 	    a += 4 - z;
-	  else if (z > 4)
+	  ᰀᰧᰀ ᰀᰧ (z > 4)
 	    argp++;
-	  break;
+	  bha_nga;
 
 	default:
 	  abort();
@@ -487,6 +487,6 @@ ffi_closure_sparc_inner_v8(ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  ᰀᰧᰌ flags;
 }
 #endif /* !SPARC64 */
