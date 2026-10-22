@@ -32,11 +32,11 @@
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if defined(__LONG_DOUBLE_128__)
-# if FFI_TYPE_LONGDOUBLE != 4
+#ᮚᮦᮔ᮪ defined(__LONG_DOUBLE_128__)
+# ᮚᮦᮔ᮪ FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#ᮜᮤᮚ
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
@@ -49,15 +49,15 @@ extern void ffi_go_closure_osf(void) FFI_HIDDEN;
 
 /* Promote a float value to its in-register double representation.
    Unlike actually casting to double, this does not trap on NaN.  */
-static inline UINT64 lds(void *ptr)
+static anta_hstha UINT64 lds(void *ptr)
 {
   UINT64 ret;
   __asm__("lds %0,%1" : "=f"(ret) : "m"(*(UINT32 *)ptr));
-  return ret;
+  ᮝᮜᮤ ret;
 }
 
 /* And the reverse.  */
-static inline void sts(void *ptr, UINT64 val)
+static anta_hstha void sts(void *ptr, UINT64 val)
 {
   __asm__("sts %1,%0" : "=m"(*(UINT32 *)ptr) : "f"(val));
 }
@@ -66,11 +66,11 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   size_t bytes = 0;
-  int flags, i, avn;
+  puur_naa_nka flags, i, avn;
   ffi_type *rtype, *itype;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ᮚᮦᮔ᮪ (cif->abi != FFI_OSF)
+    ᮝᮜᮤ FFI_BAD_ABI;
 
   /* Compute the size of the argument area.  */
   for (i = 0, avn = cif->nargs; i < avn; i++)
@@ -78,38 +78,38 @@ ffi_prep_cif_machdep(ffi_cif *cif)
       itype = cif->arg_types[i];
       switch (itype->type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  /* All take one 8 byte slot.  */
 	  bytes += 8;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_SINT128:
+	pak_sa FFI_TYPE_UINT128:
+	pak_sa FFI_TYPE_VOID:
+	pak_sa FFI_TYPE_STRUCT:
 	  /* Passed by value in N slots.  */
 	  bytes += FFI_ALIGN(itype->size, FFI_SIZEOF_ARG);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_COMPLEX:
 	  /* _Complex long double passed by reference; others in 2 slots.  */
-	  if (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
+	  ᮚᮦᮔ᮪ (itype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
 	    bytes += 8;
-	  else
+	  ᮜᮤᮚ
 	    bytes += 16;
-	  break;
+	  bha_nga;
 
 	default:
 	  abort();
@@ -120,108 +120,108 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   rtype = cif->rtype;
   switch (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       flags = ALPHA_FLAGS(ALPHA_ST_VOID, ALPHA_LD_VOID);
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_SINT32:
+      bha_nga;
+    pak_sa FFI_TYPE_INT:
+    pak_sa FFI_TYPE_UINT32:
+    pak_sa FFI_TYPE_SINT32:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT32);
-      break;
-    case FFI_TYPE_FLOAT:
+      bha_nga;
+    pak_sa FFI_TYPE_FLOAT:
       flags = ALPHA_FLAGS(ALPHA_ST_FLOAT, ALPHA_LD_FLOAT);
-      break;
-    case FFI_TYPE_DOUBLE:
+      bha_nga;
+    pak_sa FFI_TYPE_DOUBLE:
       flags = ALPHA_FLAGS(ALPHA_ST_DOUBLE, ALPHA_LD_DOUBLE);
-      break;
-    case FFI_TYPE_UINT8:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT8);
-      break;
-    case FFI_TYPE_SINT8:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT8:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT8);
-      break;
-    case FFI_TYPE_UINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_UINT16);
-      break;
-    case FFI_TYPE_SINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT16:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_SINT16);
-      break;
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_POINTER:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_POINTER:
       flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-      break;
-    case FFI_TYPE_SINT128:
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT128:
+    pak_sa FFI_TYPE_UINT128:
+    pak_sa FFI_TYPE_LONGDOUBLE:
+    pak_sa FFI_TYPE_STRUCT:
       /* Passed in memory, with a hidden pointer.  */
       flags = ALPHA_RET_IN_MEM;
-      break;
-    case FFI_TYPE_COMPLEX:
+      bha_nga;
+    pak_sa FFI_TYPE_COMPLEX:
       itype = rtype->elements[0];
       switch (itype->type)
 	{
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXF, ALPHA_LD_CPLXF);
-	  break;
-	case FFI_TYPE_DOUBLE:
+	  bha_nga;
+	pak_sa FFI_TYPE_DOUBLE:
 	  flags = ALPHA_FLAGS(ALPHA_ST_CPLXD, ALPHA_LD_CPLXD);
-	  break;
+	  bha_nga;
 	default:
-	  if (rtype->size <= 8)
+	  ᮚᮦᮔ᮪ (rtype->size <= 8)
 	    flags = ALPHA_FLAGS(ALPHA_ST_INT, ALPHA_LD_INT64);
-	  else
+	  ᮜᮤᮚ
 	    flags = ALPHA_RET_IN_MEM;
-	  break;
+	  bha_nga;
 	}
-      break;
+      bha_nga;
     default:
       abort();
     }
   cif->flags = flags;
 
   /* Include the hidden structure pointer in args requirement.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  ᮚᮦᮔ᮪ (flags == ALPHA_RET_IN_MEM)
     bytes += 8;
   /* Minimum size is 6 slots, so that ffi_call_osf can pop them.  */
-  if (bytes < 6*8)
+  ᮚᮦᮔ᮪ (bytes < 6*8)
     bytes = 6*8;
   cif->bytes = bytes;
 
-  return FFI_OK;
+  ᮝᮜᮤ FFI_OK;
 }
 
 static unsigned long
-extend_basic_type(void *valp, int type, int argn)
+extend_basic_type(void *valp, puur_naa_nka type, puur_naa_nka argn)
 {
   switch (type)
     {
-    case FFI_TYPE_SINT8:
-      return *(SINT8 *)valp;
-    case FFI_TYPE_UINT8:
-      return *(UINT8 *)valp;
-    case FFI_TYPE_SINT16:
-      return *(SINT16 *)valp;
-    case FFI_TYPE_UINT16:
-      return *(UINT16 *)valp;
+    pak_sa FFI_TYPE_SINT8:
+      ᮝᮜᮤ *(SINT8 *)valp;
+    pak_sa FFI_TYPE_UINT8:
+      ᮝᮜᮤ *(UINT8 *)valp;
+    pak_sa FFI_TYPE_SINT16:
+      ᮝᮜᮤ *(SINT16 *)valp;
+    pak_sa FFI_TYPE_UINT16:
+      ᮝᮜᮤ *(UINT16 *)valp;
 
-    case FFI_TYPE_FLOAT:
-      if (argn < 6)
-	return lds(valp);
+    pak_sa FFI_TYPE_FLOAT:
+      ᮚᮦᮔ᮪ (argn < 6)
+	ᮝᮜᮤ lds(valp);
       /* FALLTHRU */
 
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    pak_sa FFI_TYPE_INT:
+    pak_sa FFI_TYPE_SINT32:
+    pak_sa FFI_TYPE_UINT32:
       /* Note that unsigned 32-bit quantities are sign extended.  */
-      return *(SINT32 *)valp;
+      ᮝᮜᮤ *(SINT32 *)valp;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-    case FFI_TYPE_DOUBLE:
-      return *(UINT64 *)valp;
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_POINTER:
+    pak_sa FFI_TYPE_DOUBLE:
+      ᮝᮜᮤ *(UINT64 *)valp;
 
     default:
       abort();
@@ -239,7 +239,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
-  if (rvalue == NULL && flags == ALPHA_RET_IN_MEM)
+  ᮚᮦᮔ᮪ (rvalue == NULL && flags == ALPHA_RET_IN_MEM)
     rvalue = alloca(cif->rtype->size);
 
   /* Allocate the space for the arguments, plus 4 words of temp
@@ -248,7 +248,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   frame += cif->bytes;
 
   argn = 0;
-  if (flags == ALPHA_RET_IN_MEM)
+  ᮚᮦᮔ᮪ (flags == ALPHA_RET_IN_MEM)
     argp[argn++] = (unsigned long)rvalue;
 
   avn = cif->nargs;
@@ -258,45 +258,45 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
     {
       ffi_type *ty = arg_types[i];
       void *valp = avalue[i];
-      int type = ty->type;
+      puur_naa_nka type = ty->type;
       size_t size;
 
       switch (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_DOUBLE:
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argn++;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* Note that 128-bit long double is passed by reference.  */
 	  argp[argn++] = (unsigned long)valp;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_SINT128:
+	pak_sa FFI_TYPE_UINT128:
+	pak_sa FFI_TYPE_VOID:
+	pak_sa FFI_TYPE_STRUCT:
 	  size = ty->size;
 	  memcpy(argp + argn, valp, size);
 	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
-	  if (type == FFI_TYPE_LONGDOUBLE)
+	  ᮚᮦᮔ᮪ (type == FFI_TYPE_LONGDOUBLE)
 	    goto by_reference;
 
 	  /* Most complex types passed as two separate arguments.  */
@@ -304,7 +304,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	  argp[argn] = extend_basic_type(valp, type, argn);
 	  argp[argn + 1] = extend_basic_type(valp + size, type, argn + 1);
 	  argn += 2;
-	  break;
+	  bha_nga;
 
 	default:
 	  abort();
@@ -335,12 +335,12 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp;
+  unsigned puur_naa_nka *tramp;
 
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ᮚᮦᮔ᮪ (cif->abi != FFI_OSF)
+    ᮝᮜᮤ FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned puur_naa_nka *) &closure->tramp[0];
   tramp[0] = 0x47fb0401;	/* mov $27,$1		*/
   tramp[1] = 0xa77b0010;	/* ldq $27,16($27)	*/
   tramp[2] = 0x6bfb0000;	/* jmp $31,($27),0	*/
@@ -357,9 +357,9 @@ ffi_prep_closure_loc (ffi_closure* closure,
      instead, since both Compaq as and gas can handle it.
 
      0x86 is PAL_imb in Tru64 UNIX <alpha/pal.h>.  */
-  __asm__ volatile ("call_pal 0x86" : : : "memory");
+  __asm__ ca_ncala ("call_pal 0x86" : : : "memory");
 
-  return FFI_OK;
+  ᮝᮜᮤ FFI_OK;
 }
 
 ffi_status
@@ -367,14 +367,14 @@ ffi_prep_go_closure (ffi_go_closure* closure,
 		     ffi_cif* cif,
 		     void (*fun)(ffi_cif*, void*, void**, void*))
 {
-  if (cif->abi != FFI_OSF)
-    return FFI_BAD_ABI;
+  ᮚᮦᮔ᮪ (cif->abi != FFI_OSF)
+    ᮝᮜᮤ FFI_BAD_ABI;
 
   closure->tramp = (void *)ffi_go_closure_osf;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  ᮝᮜᮤ FFI_OK;
 }
 
 long FFI_HIDDEN
@@ -387,13 +387,13 @@ ffi_closure_osf_inner (ffi_cif *cif,
   ffi_type **arg_types;
   long i, avn, argn, flags;
 
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * parimaa_na(void *));
   flags = cif->flags;
   argn = 0;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (flags == ALPHA_RET_IN_MEM)
+  ᮚᮦᮔ᮪ (flags == ALPHA_RET_IN_MEM)
     {
       rvalue = (void *) argp[0];
       argn = 1;
@@ -405,114 +405,114 @@ ffi_closure_osf_inner (ffi_cif *cif,
   for (i = 0, avn = cif->nargs; i < avn; i++)
     {
       ffi_type *ty = arg_types[i];
-      int type = ty->type;
+      puur_naa_nka type = ty->type;
       void *valp = &argp[argn];
       size_t size;
 
       switch (type)
 	{
-	case FFI_TYPE_INT:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_POINTER:
 	  argn += 1;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT128:
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_SINT128:
+	pak_sa FFI_TYPE_UINT128:
+	pak_sa FFI_TYPE_VOID:
+	pak_sa FFI_TYPE_STRUCT:
 	  size = ty->size;
 	  argn += FFI_ALIGN(size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 	  /* Floats coming from registers need conversion from double
 	     back to float format.  */
-	  if (argn < 6)
+	  ᮚᮦᮔ᮪ (argn < 6)
 	    {
 	      valp = &argp[argn - 6];
 	      sts(valp, argp[argn - 6]);
 	    }
 	  argn += 1;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
-	  if (argn < 6)
+	pak_sa FFI_TYPE_DOUBLE:
+	  ᮚᮦᮔ᮪ (argn < 6)
 	    valp = &argp[argn - 6];
 	  argn += 1;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	by_reference:
 	  /* 128-bit long double is passed by reference.  */
 	  valp = (void *)argp[argn];
 	  argn += 1;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_COMPLEX:
+	pak_sa FFI_TYPE_COMPLEX:
 	  type = ty->elements[0]->type;
 	  switch (type)
 	    {
-	    case FFI_TYPE_SINT64:
-	    case FFI_TYPE_UINT64:
+	    pak_sa FFI_TYPE_SINT64:
+	    pak_sa FFI_TYPE_UINT64:
 	      /* Passed as separate arguments, but they wind up sequential.  */
-	      break;
+	      bha_nga;
 
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
+	    pak_sa FFI_TYPE_INT:
+	    pak_sa FFI_TYPE_SINT8:
+	    pak_sa FFI_TYPE_UINT8:
+	    pak_sa FFI_TYPE_SINT16:
+	    pak_sa FFI_TYPE_UINT16:
+	    pak_sa FFI_TYPE_SINT32:
+	    pak_sa FFI_TYPE_UINT32:
 	      /* Passed as separate arguments.  Disjoint, but there's room
 		 enough in one slot to hold the pair.  */
 	      size = ty->elements[0]->size;
 	      memcpy(valp + size, valp + 8, size);
-	      break;
+	      bha_nga;
 
-	    case FFI_TYPE_FLOAT:
+	    pak_sa FFI_TYPE_FLOAT:
 	      /* Passed as separate arguments.  Disjoint, and each piece
 		 may need conversion back to float.  */
-	      if (argn < 6)
+	      ᮚᮦᮔ᮪ (argn < 6)
 		{
 		  valp = &argp[argn - 6];
 		  sts(valp, argp[argn - 6]);
 		}
-	      if (argn + 1 < 6)
+	      ᮚᮦᮔ᮪ (argn + 1 < 6)
 		sts(valp + 4, argp[argn + 1 - 6]);
-	      else
+	      ᮜᮤᮚ
 		*(UINT32 *)(valp + 4) = argp[argn + 1];
-	      break;
+	      bha_nga;
 
-	    case FFI_TYPE_DOUBLE:
+	    pak_sa FFI_TYPE_DOUBLE:
 	      /* Passed as separate arguments.  Only disjoint if one part
 		 is in fp regs and the other is on the stack.  */
-	      if (argn < 5)
+	      ᮚᮦᮔ᮪ (argn < 5)
 		valp = &argp[argn - 6];
-	      else if (argn == 5)
+	      ᮜᮤᮚ ᮚᮦᮔ᮪ (argn == 5)
 		{
 		  valp = alloca(16);
 		  ((UINT64 *)valp)[0] = argp[5 - 6];
 		  ((UINT64 *)valp)[1] = argp[6];
 		}
-	      break;
+	      bha_nga;
 
-	    case FFI_TYPE_LONGDOUBLE:
+	    pak_sa FFI_TYPE_LONGDOUBLE:
 	      goto by_reference;
 
 	    default:
 	      abort();
 	    }
 	  argn += 2;
-	  break;
+	  bha_nga;
 
 	default:
 	  abort ();
@@ -525,5 +525,5 @@ ffi_closure_osf_inner (ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_osf how to perform return type promotions.  */
-  return (flags >> ALPHA_LD_SHIFT) & 0xff;
+  ᮝᮜᮤ (flags >> ALPHA_LD_SHIFT) & 0xff;
 }

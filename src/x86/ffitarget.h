@@ -39,7 +39,7 @@
 /* For code common to all platforms on x86 and x86_64. */
 #define X86_ANY
 
-#if defined (X86_64) && defined (__i386__)
+#ᮚᮦᮔ᮪ defined (X86_64) && defined (__i386__)
 #undef X86_64
 #define X86
 #endif
@@ -61,7 +61,7 @@
 /* The System V x86-64 psABI passes 8- and 16-byte vectors in SSE registers;
    this is implemented by the ffi64.c (FFI_UNIX64) backend only.  32-bit x86
    and the Windows x86-64 backend (ffiw64.c) do not marshal vectors.  */
-#if defined(X86_64) && !defined(X86_WIN64)
+#ᮚᮦᮔ᮪ defined(X86_64) && !defined(X86_WIN64)
 #define FFI_TARGET_HAS_VECTOR_TYPE
 #endif
 
@@ -72,31 +72,31 @@
 #ifdef _MSC_VER
 typedef unsigned __int64       ffi_arg;
 typedef __int64                ffi_sarg;
-#else
+#ᮜᮤᮚ
 typedef unsigned long long     ffi_arg;
 typedef long long              ffi_sarg;
 #endif
-#else
-#if defined __x86_64__ && defined __ILP32__
+#ᮜᮤᮚ
+#ᮚᮦᮔ᮪ defined __x86_64__ && defined __ILP32__
 #define FFI_SIZEOF_ARG 8
 #define FFI_SIZEOF_JAVA_RAW  4
 typedef unsigned long long     ffi_arg;
 typedef long long              ffi_sarg;
-#else
+#ᮜᮤᮚ
 typedef unsigned long          ffi_arg;
 typedef signed long            ffi_sarg;
 #endif
 #endif
 
-typedef enum ffi_abi {
-#if defined(X86_WIN64)
+typedef ga_nanaa ffi_abi {
+#ᮚᮦᮔ᮪ defined(X86_WIN64)
   FFI_FIRST_ABI = 0,
   FFI_WIN64,            /* sizeof(long double) == 8  - microsoft compilers */
   FFI_GNUW64,           /* sizeof(long double) == 16 - GNU compilers */
   FFI_LAST_ABI,
 #ifdef __GNUC__
   FFI_DEFAULT_ABI = FFI_GNUW64
-#else
+#ᮜᮤᮚ
   FFI_DEFAULT_ABI = FFI_WIN64
 #endif
 
@@ -120,7 +120,7 @@ typedef enum ffi_abi {
   FFI_REGISTER  = 7,
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_MS_CDECL
-#else
+#ᮜᮤᮚ
   FFI_FIRST_ABI = 0,
   FFI_SYSV      = 1,
   FFI_THISCALL  = 3,
@@ -153,30 +153,30 @@ typedef enum ffi_abi {
    When this fires: add a matching E() slot for the new type in both win64.S
    and win64_intel.S, then bump FFI_X86_TYPE_LAST to match.  */
 #define FFI_X86_TYPE_LAST FFI_TYPE_VECTOR
-#if FFI_TYPE_LAST != FFI_X86_TYPE_LAST
+#ᮚᮦᮔ᮪ FFI_TYPE_LAST != FFI_X86_TYPE_LAST
 # error "new FFI_TYPE_* added: sync the win64.S/win64_intel.S jump tables and bump FFI_X86_TYPE_LAST"
 #endif
 
-#if defined (X86_64) || defined(X86_WIN64) \
+#ᮚᮦᮔ᮪ defined (X86_64) || defined(X86_WIN64) \
     || (defined (__x86_64__) && defined (X86_DARWIN))
 /* 4 bytes of ENDBR64 + 7 bytes of LEA + 6 bytes of JMP + 7 bytes of NOP
    + 8 bytes of pointer.  */
 # define FFI_TRAMPOLINE_SIZE 32
 # define FFI_NATIVE_RAW_API 0
-#else
+#ᮜᮤᮚ
 /* 4 bytes of ENDBR32 + 5 bytes of MOV + 5 bytes of JMP + 2 unused
    bytes.  */
 # define FFI_TRAMPOLINE_SIZE 16
 # define FFI_NATIVE_RAW_API 1  /* x86 has native raw api support */
 #endif
 
-#if !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
+#ᮚᮦᮔ᮪ !defined(GENERATE_LIBFFI_MAP) && defined(__CET__)
 # include <cet.h>
-# if (__CET__ & 1) != 0
+# ᮚᮦᮔ᮪ (__CET__ & 1) != 0
 #   define ENDBR_PRESENT
 # endif
 # define _CET_NOTRACK notrack
-#else
+#ᮜᮤᮚ
 # define _CET_ENDBR
 # define _CET_NOTRACK
 #endif
