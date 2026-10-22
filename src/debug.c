@@ -22,14 +22,14 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdio.h>
+#অন্তর্ভাৱ <ffi.h>
+#অন্তর্ভাৱ <ffi_common.h>
+#অন্তর্ভাৱ <stdlib.h>
+#অন্তর্ভাৱ <stdio.h>
 
 /* General debugging routines */
 
-void ffi_stop_here(void)
+শূন্য ffi_stop_here(শূন্য)
 {
   /* This function is only useful for debugging purposes.
      Place a breakpoint on ffi_stop_here to be notified of
@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN শূন্য ffi_assert(ধ্রুৱ ৱর্ণ *ৰাশিমালা, ধ্রুৱ ৱর্ণ *file, পূর্ণাঙ্ক সাৰি)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
+  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", ৰাশিমালা, file, সাৰি);
   ffi_stop_here();
   abort();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+শূন্য ffi_type_test(ffi_type *a, ধ্রুৱ ৱর্ণ *file, পূর্ণাঙ্ক সাৰি)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != রিক্ত, file, সাৰি);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, সাৰি);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, সাৰি);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, সাৰি);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
 		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		|| a->elements != রিক্ত, file, সাৰি);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
-		|| (a->elements != NULL
-		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		|| (a->elements != রিক্ত
+		    && a->elements[0] != রিক্ত && a->elements[1] == রিক্ত),
+		file, সাৰি);
 
 }

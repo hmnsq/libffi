@@ -16,13 +16,13 @@
 
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS বা IMPLIED, INCLUDING BUT নহয় LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE আৰু
+   NONINFRINGEMENT.  অন্তঃ NO EVENT SHALL THE AUTHORS বা COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES বা OTHER LIABILITY,
+   WHETHER অন্তঃ AN ACTION OF CONTRACT, TORT বা OTHERWISE, ARISING FROM,
+   OUT OF বা অন্তঃ CONNECTION WITH THE SOFTWARE বা THE USE বা OTHER
+   DEALINGS অন্তঃ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -35,7 +35,7 @@
 #define CONCAT1(a, b) CONCAT2(a, b)
 #define CONCAT2(a, b) a ## b
 
-/* Use the right prefix for global labels. */
+/* Use the right prefix for ৱৈশ্ৱিক labels. */
 #define CNAME(x) CONCAT1 (__USER_LABEL_PREFIX__, x)
 #else
 #define CNAME(x) x
@@ -76,7 +76,7 @@
 	.endif
 .endm
 
-! Declare a global function
+! Declare a ৱৈশ্ৱিক function
 .macro METAG_FUNC_START name
 	.text
 	.balign 4
@@ -180,10 +180,10 @@ METAG_FUNC_START ffi_call_SYSV
 	! D0Re0 contains the size of arguments stored in registers
 	sub	A0StP, A0StP, D0Re0
 
-	! Arg1 is the function pointer for the foreign call. This has been
+	! Arg1 is the function pointer for the foreign আহ্ৱান. This has been
 	! preserved in D1.5
 
-	! Time to call (fn). Arguments should be like this:
+	! Time to আহ্ৱান (fn). Arguments should be like this:
 	! Arg1-Arg6 are loaded to regs
 	! The rest of the arguments are stored in stack pointed by A0StP
 
@@ -209,7 +209,7 @@ METAG_FUNC_START ffi_call_SYSV
 	cmp	D1Ar1, #0
 	beq	LSYM(Lepilogue)
 
-	! return INT
+	! return পূর্ণাঙ্ক
 	cmp		D0Ar2, #FFI_TYPE_INT
 	! Sadly, there is no setd{cc} instruction so we need to workaround that
 	bne	.INT64

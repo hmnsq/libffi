@@ -16,12 +16,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   বা IMPLIED, INCLUDING BUT নহয় LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE আৰু NONINFRINGEMENT.
+   অন্তঃ NO EVENT SHALL RENESAS TECHNOLOGY BE LIABLE FOR ANY CLAIM, DAMAGES বা
+   OTHER LIABILITY, WHETHER অন্তঃ AN ACTION OF CONTRACT, TORT বা OTHERWISE,
+   ARISING FROM, OUT OF বা অন্তঃ CONNECTION WITH THE SOFTWARE বা THE USE বা
+   OTHER DEALINGS অন্তঃ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -63,7 +63,7 @@ ffi_call_pa32:
 
 	   [ 64-bytes register save area               ] <- %r4
 
-	   [ Stack space for actual call, passed as    ] <- %arg0
+	   [ Stack space for actual আহ্ৱান, passed as    ] <- %arg0
 	   [     arg0 to ffi_prep_args_pa32           ]
 
 	   [ Stack for calling prep_args               ] <- %sp
@@ -97,7 +97,7 @@ ffi_call_pa32:
 	/* in case the function is going to return a structure
 	   we need to give it a place to put the result.  */
 	ldw -52(%r3), %ret0                     /* %ret0 <- rvalue */
-	ldw -56(%r3), %r22                      /* %r22 <- function to call */
+	ldw -56(%r3), %r22                      /* %r22 <- function to আহ্ৱান */
 	bl $$dyncall, %r31                      /* Call the user function */
 	copy %r31, %rp
 
@@ -318,7 +318,7 @@ ffi_closure_pa32:
 .LCFI22:
 	stwm %r1, 64(%sp)
 
-	/* Put arguments onto the stack and call ffi_closure_inner.  */
+	/* Put arguments onto the stack and আহ্ৱান ffi_closure_inner.  */
 	stw %arg0, -36(%r3)
 	stw %arg1, -40(%r3)
 	stw %arg2, -44(%r3)

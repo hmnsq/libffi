@@ -27,52 +27,52 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
+#যদি (defined __linux__ || defined __CYGWIN__) && !defined _GNU_SOURCE
 #define _GNU_SOURCE 1
 #endif
 
 #ifndef __EMSCRIPTEN__
 
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include <tramp.h>
+#অন্তর্ভাৱ <fficonfig.h>
+#অন্তর্ভাৱ <ffi.h>
+#অন্তর্ভাৱ <ffi_common.h>
+#অন্তর্ভাৱ <tramp.h>
 
 #ifdef __NetBSD__
-#include <sys/param.h>
+#অন্তর্ভাৱ <sys/param.h>
 #endif
 
-#if __NetBSD_Version__ - 0 >= 799007200
+#যদি __NetBSD_Version__ - 0 >= 799007200
 /* NetBSD with PROT_MPROTECT */
-#include <sys/mman.h>
+#অন্তর্ভাৱ <sys/mman.h>
 
-#include <stddef.h>
-#include <unistd.h>
+#অন্তর্ভাৱ <stddef.h>
+#অন্তর্ভাৱ <unistd.h>
 #ifdef  HAVE_SYS_MEMFD_H
-#include <sys/memfd.h>
+#অন্তর্ভাৱ <sys/memfd.h>
 #endif
 
-static const size_t overhead =
-  (sizeof(max_align_t) > sizeof(void *) + sizeof(size_t)) ?
-    sizeof(max_align_t)
-    : sizeof(void *) + sizeof(size_t);
+স্থির ধ্রুৱ size_t overhead =
+  (পরিমাণ(max_align_t) > পরিমাণ(শূন্য *) + পরিমাণ(size_t)) ?
+    পরিমাণ(max_align_t)
+    : পরিমাণ(শূন্য *) + পরিমাণ(size_t);
 
-#define ADD_TO_POINTER(p, d) ((void *)((uintptr_t)(p) + (d)))
+#define ADD_TO_POINTER(p, d) ((শূন্য *)((uintptr_t)(p) + (d)))
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+শূন্য *
+ffi_closure_alloc (size_t size, শূন্য **code)
 {
-  static size_t page_size;
+  স্থির size_t page_size;
   size_t rounded_size;
-  void *codeseg, *dataseg;
-  int prot;
+  শূন্য *codeseg, *dataseg;
+  পূর্ণাঙ্ক prot;
 
   /* Expect that PAX mprotect is active and a separate code mapping is necessary. */
-  if (!code)
-    return NULL;
+  যদি (!code)
+    ঘূৰাই রিক্ত;
 
   /* Obtain system page size. */
-  if (!page_size)
+  যদি (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
 
   /* Round allocation size up to the next page, keeping in mind the size field and pointer to code map. */
@@ -80,51 +80,51 @@ ffi_closure_alloc (size_t size, void **code)
 
   /* Primary mapping is RW, but request permission to switch to PROT_EXEC later. */
   prot = PROT_READ | PROT_WRITE | PROT_MPROTECT(PROT_EXEC);
-  dataseg = mmap(NULL, rounded_size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
-  if (dataseg == MAP_FAILED)
-    return NULL;
+  dataseg = mmap(রিক্ত, rounded_size, prot, MAP_ANON | MAP_PRIVATE, -1, 0);
+  যদি (dataseg == MAP_FAILED)
+    ঘূৰাই রিক্ত;
 
   /* Create secondary mapping and switch it to RX. */
-  codeseg = mremap(dataseg, rounded_size, NULL, rounded_size, MAP_REMAPDUP);
-  if (codeseg == MAP_FAILED) {
+  codeseg = mremap(dataseg, rounded_size, রিক্ত, rounded_size, MAP_REMAPDUP);
+  যদি (codeseg == MAP_FAILED) {
     munmap(dataseg, rounded_size);
-    return NULL;
+    ঘূৰাই রিক্ত;
   }
-  if (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
+  যদি (mprotect(codeseg, rounded_size, PROT_READ | PROT_EXEC) == -1) {
     munmap(codeseg, rounded_size);
     munmap(dataseg, rounded_size);
-    return NULL;
+    ঘূৰাই রিক্ত;
   }
 
   /* Remember allocation size and location of the secondary mapping for ffi_closure_free. */
-  memcpy(dataseg, &rounded_size, sizeof(rounded_size));
-  memcpy(ADD_TO_POINTER(dataseg, sizeof(size_t)), &codeseg, sizeof(void *));
+  memcpy(dataseg, &rounded_size, পরিমাণ(rounded_size));
+  memcpy(ADD_TO_POINTER(dataseg, পরিমাণ(size_t)), &codeseg, পরিমাণ(শূন্য *));
   *code = ADD_TO_POINTER(codeseg, overhead);
-  return ADD_TO_POINTER(dataseg, overhead);
+  ঘূৰাই ADD_TO_POINTER(dataseg, overhead);
 }
 
-void
-ffi_closure_free (void *ptr)
+শূন্য
+ffi_closure_free (শূন্য *ptr)
 {
-  void *codeseg, *dataseg;
+  শূন্য *codeseg, *dataseg;
   size_t rounded_size;
 
   dataseg = ADD_TO_POINTER(ptr, -overhead);
-  memcpy(&rounded_size, dataseg, sizeof(rounded_size));
-  memcpy(&codeseg, ADD_TO_POINTER(dataseg, sizeof(size_t)), sizeof(void *));
+  memcpy(&rounded_size, dataseg, পরিমাণ(rounded_size));
+  memcpy(&codeseg, ADD_TO_POINTER(dataseg, পরিমাণ(size_t)), পরিমাণ(শূন্য *));
   munmap(dataseg, rounded_size);
   munmap(codeseg, rounded_size);
 }
 
-int
-ffi_tramp_is_present (__attribute__((unused)) void *ptr)
+পূর্ণাঙ্ক
+ffi_tramp_is_present (__attribute__((unused)) শূন্য *ptr)
 {
-  return 0;
+  ঘূৰাই 0;
 }
-#else /* !NetBSD with PROT_MPROTECT */
+#অন্যথা /* !NetBSD with PROT_MPROTECT */
 
-#if !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
-# if __linux__ && !defined(__ANDROID__)
+#যদি !FFI_MMAP_EXEC_WRIT && !FFI_EXEC_TRAMPOLINE_TABLE
+# যদি __linux__ && !defined(__ANDROID__)
 /* This macro indicates it may be forbidden to map anonymous memory
    with both write and execute permission.  Code compiled when this
    option is defined will attempt to map such pages once, but if it
@@ -135,7 +135,7 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 #  define FFI_MMAP_EXEC_WRIT 1
 #  define HAVE_MNTENT 1
 # endif
-# if defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
+# যদি defined(__CYGWIN__) || defined(_WIN32) || defined(__OS2__)
 /* Windows systems may have Data Execution Protection (DEP) enabled,
    which requires the use of VirtualMalloc/VirtualFree to alloc/free
    executable memory. */
@@ -143,45 +143,45 @@ ffi_tramp_is_present (__attribute__((unused)) void *ptr)
 # endif
 #endif
 
-#if FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
-# if !defined FFI_MMAP_EXEC_SELINUX
+#যদি FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__)
+# যদি !defined FFI_MMAP_EXEC_SELINUX
 /* When defined to 1 check for SELinux and if SELinux is active,
    don't attempt PROT_EXEC|PROT_WRITE mapping at all, as that
    might cause audit messages.  */
 #  define FFI_MMAP_EXEC_SELINUX 1
 # endif /* !defined FFI_MMAP_EXEC_SELINUX */
-# if !defined FFI_MMAP_PAX
+# যদি !defined FFI_MMAP_PAX
 /* Also check for PaX MPROTECT */
 #  define FFI_MMAP_PAX 1
 # endif /* !defined FFI_MMAP_PAX */
 #endif /* FFI_MMAP_EXEC_WRIT && defined(__linux__) && !defined(__ANDROID__) */
 
-#if FFI_CLOSURES
+#যদি FFI_CLOSURES
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#যদি FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 
-#include <mach/mach.h>
-#include <pthread.h>
+#অন্তর্ভাৱ <mach/mach.h>
+#অন্তর্ভাৱ <pthread.h>
 #ifdef HAVE_ARM64E_PTRAUTH
-#include <ptrauth.h>
+#অন্তর্ভাৱ <ptrauth.h>
 #endif
-#include <stdio.h>
-#include <stdlib.h>
+#অন্তর্ভাৱ <stdio.h>
+#অন্তর্ভাৱ <stdlib.h>
 
-extern void *ffi_closure_trampoline_table_page;
+বাহ্য শূন্য *ffi_closure_trampoline_table_page;
 
-typedef struct ffi_trampoline_table ffi_trampoline_table;
-typedef struct ffi_trampoline_table_entry ffi_trampoline_table_entry;
+প্রকারনির্দেশ সংরচনা ffi_trampoline_table ffi_trampoline_table;
+প্রকারনির্দেশ সংরচনা ffi_trampoline_table_entry ffi_trampoline_table_entry;
 
-struct ffi_trampoline_table
+সংরচনা ffi_trampoline_table
 {
   /* contiguous writable and executable pages */
   vm_address_t config_page;
 
   /* free list tracking */
-  uint16_t free_count;
+  uint16_t free_গুনতি;
   ffi_trampoline_table_entry *free_list;
   ffi_trampoline_table_entry *free_list_pool;
 
@@ -189,20 +189,20 @@ struct ffi_trampoline_table
   ffi_trampoline_table *next;
 };
 
-struct ffi_trampoline_table_entry
+সংরচনা ffi_trampoline_table_entry
 {
-  void *(*trampoline) (void);
+  শূন্য *(*trampoline) (শূন্য);
   ffi_trampoline_table_entry *next;
 };
 
 /* Total number of trampolines that fit in one trampoline table */
-#define FFI_TRAMPOLINE_COUNT (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
+#define FFI_TRAMPOLINE_গুনতি (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
 
-static pthread_mutex_t ffi_trampoline_lock = PTHREAD_MUTEX_INITIALIZER;
-static ffi_trampoline_table *ffi_trampoline_tables = NULL;
+স্থির pthread_mutex_t ffi_trampoline_lock = PTHREAD_MUTEX_INITIALIZER;
+স্থির ffi_trampoline_table *ffi_trampoline_tables = রিক্ত;
 
-static ffi_trampoline_table *
-ffi_trampoline_table_alloc (void)
+স্থির ffi_trampoline_table *
+ffi_trampoline_table_alloc (শূন্য)
 {
   ffi_trampoline_table *table;
   vm_address_t config_page;
@@ -217,15 +217,15 @@ ffi_trampoline_table_alloc (void)
   config_page = 0x0;
   kt = vm_allocate (mach_task_self (), &config_page, PAGE_MAX_SIZE * 2,
 		    VM_FLAGS_ANYWHERE);
-  if (kt != KERN_SUCCESS)
-    return NULL;
+  যদি (kt != KERN_SUCCESS)
+    ঘূৰাই রিক্ত;
 
   /* Remap the trampoline table on top of the placeholder page */
   trampoline_page = config_page + PAGE_MAX_SIZE;
 
 #ifdef HAVE_ARM64E_PTRAUTH
-  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((void *)&ffi_closure_trampoline_table_page, ptrauth_key_function_pointer, 0);
-#else
+  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((শূন্য *)&ffi_closure_trampoline_table_page, ptrauth_চাবি_function_pointer, 0);
+#অন্যথা
   trampoline_page_template = (vm_address_t)&ffi_closure_trampoline_table_page;
 #endif
 
@@ -236,105 +236,105 @@ ffi_trampoline_table_alloc (void)
   kt = vm_remap (mach_task_self (), &trampoline_page, PAGE_MAX_SIZE, 0x0,
 		 VM_FLAGS_OVERWRITE, mach_task_self (), trampoline_page_template,
 		 FALSE, &cur_prot, &max_prot, VM_INHERIT_SHARE);
-  if (kt != KERN_SUCCESS)
+  যদি (kt != KERN_SUCCESS)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      ঘূৰাই রিক্ত;
     }
 
-  if (!(cur_prot & VM_PROT_EXECUTE))
+  যদি (!(cur_prot & VM_PROT_EXECUTE))
     {
       /* If VM_PROT_EXECUTE isn't set on the remapped trampoline page, set it */
       kt = vm_protect (mach_task_self (), trampoline_page, PAGE_MAX_SIZE,
          FALSE, cur_prot | VM_PROT_EXECUTE);
-      if (kt != KERN_SUCCESS)
+      যদি (kt != KERN_SUCCESS)
         {
           vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-          return NULL;
+          ঘূৰাই রিক্ত;
         }
     }
 
   /* We have valid trampoline and config pages */
-  table = calloc (1, sizeof (ffi_trampoline_table));
-  if (table == NULL)
+  table = calloc (1, পরিমাণ (ffi_trampoline_table));
+  যদি (table == রিক্ত)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      return NULL;
+      ঘূৰাই রিক্ত;
     }
-  table->free_count = FFI_TRAMPOLINE_COUNT;
+  table->free_গুনতি = FFI_TRAMPOLINE_গুনতি;
   table->config_page = config_page;
 
   /* Create and initialize the free list */
   table->free_list_pool =
-    calloc (FFI_TRAMPOLINE_COUNT, sizeof (ffi_trampoline_table_entry));
-  if (table->free_list_pool == NULL)
+    calloc (FFI_TRAMPOLINE_গুনতি, পরিমাণ (ffi_trampoline_table_entry));
+  যদি (table->free_list_pool == রিক্ত)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
-      free (table);
-      return NULL;
+      মুক্ত (table);
+      ঘূৰাই রিক্ত;
     }
 
-  for (i = 0; i < table->free_count; i++)
+  বাবে (i = 0; i < table->free_গুনতি; i++)
     {
       ffi_trampoline_table_entry *entry = &table->free_list_pool[i];
       entry->trampoline =
-	(void *) (trampoline_page + (i * FFI_TRAMPOLINE_SIZE));
+	(শূন্য *) (trampoline_page + (i * FFI_TRAMPOLINE_SIZE));
 #ifdef HAVE_ARM64E_PTRAUTH
-      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_key_function_pointer, 0);
+      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_চাবি_function_pointer, 0);
 #endif
 
-      if (i < table->free_count - 1)
+      যদি (i < table->free_গুনতি - 1)
 	entry->next = &table->free_list_pool[i + 1];
     }
 
   table->free_list = table->free_list_pool;
 
-  return table;
+  ঘূৰাই table;
 }
 
-static void
+স্থির শূন্য
 ffi_trampoline_table_free (ffi_trampoline_table *table)
 {
   /* Remove from the list */
-  if (table->prev != NULL)
+  যদি (table->prev != রিক্ত)
     table->prev->next = table->next;
 
-  if (table->next != NULL)
+  যদি (table->next != রিক্ত)
     table->next->prev = table->prev;
 
   /* Deallocate pages */
   vm_deallocate (mach_task_self (), table->config_page, PAGE_MAX_SIZE * 2);
 
   /* Deallocate free list */
-  free (table->free_list_pool);
-  free (table);
+  মুক্ত (table->free_list_pool);
+  মুক্ত (table);
 }
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+শূন্য *
+ffi_closure_alloc (size_t size, শূন্য **code)
 {
   /* Create the closure */
   ffi_closure *closure = malloc (size);
-  if (closure == NULL)
-    return NULL;
+  যদি (closure == রিক্ত)
+    ঘূৰাই রিক্ত;
 
   pthread_mutex_lock (&ffi_trampoline_lock);
 
   /* Check for an active trampoline table with available entries. */
   ffi_trampoline_table *table = ffi_trampoline_tables;
-  if (table == NULL || table->free_list == NULL)
+  যদি (table == রিক্ত || table->free_list == রিক্ত)
     {
       table = ffi_trampoline_table_alloc ();
-      if (table == NULL)
+      যদি (table == রিক্ত)
 	{
 	  pthread_mutex_unlock (&ffi_trampoline_lock);
-	  free (closure);
-	  return NULL;
+	  মুক্ত (closure);
+	  ঘূৰাই রিক্ত;
 	}
 
       /* Insert the new table at the top of the list */
       table->next = ffi_trampoline_tables;
-      if (table->next != NULL)
+      যদি (table->next != রিক্ত)
 	table->next->prev = table;
 
       ffi_trampoline_tables = table;
@@ -343,8 +343,8 @@ ffi_closure_alloc (size_t size, void **code)
   /* Claim the free entry */
   ffi_trampoline_table_entry *entry = ffi_trampoline_tables->free_list;
   ffi_trampoline_tables->free_list = entry->next;
-  ffi_trampoline_tables->free_count--;
-  entry->next = NULL;
+  ffi_trampoline_tables->free_গুনতি--;
+  entry->next = রিক্ত;
 
   pthread_mutex_unlock (&ffi_trampoline_lock);
 
@@ -353,11 +353,11 @@ ffi_closure_alloc (size_t size, void **code)
   closure->trampoline_table = table;
   closure->trampoline_table_entry = entry;
 
-  return closure;
+  ঘূৰাই closure;
 }
 
-void
-ffi_closure_free (void *ptr)
+শূন্য
+ffi_closure_free (শূন্য *ptr)
 {
   ffi_closure *closure = ptr;
 
@@ -370,21 +370,21 @@ ffi_closure_free (void *ptr)
   /* Return the entry to the free list */
   entry->next = table->free_list;
   table->free_list = entry;
-  table->free_count++;
+  table->free_গুনতি++;
 
   /* If all trampolines within this table are free, and at least one other table exists, deallocate
    * the table */
-  if (table->free_count == FFI_TRAMPOLINE_COUNT
+  যদি (table->free_গুনতি == FFI_TRAMPOLINE_গুনতি
       && ffi_trampoline_tables != table)
     {
       ffi_trampoline_table_free (table);
     }
-  else if (ffi_trampoline_tables != table)
+  অন্যথা যদি (ffi_trampoline_tables != table)
     {
       /* Otherwise, bump this table to the top of the list */
-      table->prev = NULL;
+      table->prev = রিক্ত;
       table->next = ffi_trampoline_tables;
-      if (ffi_trampoline_tables != NULL)
+      যদি (ffi_trampoline_tables != রিক্ত)
 	ffi_trampoline_tables->prev = table;
 
       ffi_trampoline_tables = table;
@@ -393,14 +393,14 @@ ffi_closure_free (void *ptr)
   pthread_mutex_unlock (&ffi_trampoline_lock);
 
   /* Free the closure */
-  free (closure);
+  মুক্ত (closure);
 }
 
 #endif
 
 // Per-target implementation; It's unclear what can reasonable be shared between two OS/architecture implementations.
 
-#elif FFI_MMAP_EXEC_WRIT /* !FFI_EXEC_TRAMPOLINE_TABLE */
+#নোচেদ্যদি FFI_MMAP_EXEC_WRIT /* !FFI_EXEC_TRAMPOLINE_TABLE */
 
 #define USE_LOCKS 1
 #define USE_DL_PREFIX 1
@@ -424,110 +424,110 @@ ffi_closure_free (void *ptr)
 /* Don't allocate more than a page unless needed.  */
 #define DEFAULT_GRANULARITY ((size_t)malloc_getpagesize)
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
+#অন্তর্ভাৱ <sys/types.h>
+#অন্তর্ভাৱ <sys/stat.h>
+#অন্তর্ভাৱ <fcntl.h>
+#অন্তর্ভাৱ <errno.h>
 #ifndef _MSC_VER
-#include <unistd.h>
+#অন্তর্ভাৱ <unistd.h>
 #endif
-#include <string.h>
-#include <stdio.h>
-#if !defined(_WIN32)
+#অন্তর্ভাৱ <string.h>
+#অন্তর্ভাৱ <stdio.h>
+#যদি !defined(_WIN32)
 #ifdef HAVE_MNTENT
-#include <mntent.h>
+#অন্তর্ভাৱ <mntent.h>
 #endif /* HAVE_MNTENT */
-#include <sys/param.h>
-#include <pthread.h>
+#অন্তর্ভাৱ <sys/param.h>
+#অন্তর্ভাৱ <pthread.h>
 
 /* We don't want sys/mman.h to be included after we redefine mmap and
    dlmunmap.  */
-#include <sys/mman.h>
+#অন্তর্ভাৱ <sys/mman.h>
 #define LACKS_SYS_MMAN_H 1
 
-#if FFI_MMAP_EXEC_SELINUX
-#include <sys/statfs.h>
-#include <stdlib.h>
+#যদি FFI_MMAP_EXEC_SELINUX
+#অন্তর্ভাৱ <sys/statfs.h>
+#অন্তর্ভাৱ <stdlib.h>
 
-static int selinux_enabled = -1;
+স্থির পূর্ণাঙ্ক selinux_enabled = -1;
 
-static int
-selinux_enabled_check (void)
+স্থির পূর্ণাঙ্ক
+selinux_enabled_check (শূন্য)
 {
-  struct statfs sfs;
+  সংরচনা statfs sfs;
   FILE *f;
-  char *buf = NULL;
+  ৱর্ণ *buf = রিক্ত;
   size_t len = 0;
 
-  if (statfs ("/selinux", &sfs) >= 0
-      && (unsigned int) sfs.f_type == 0xf97cff8cU)
-    return 1;
+  যদি (statfs ("/selinux", &sfs) >= 0
+      && (unsigned পূর্ণাঙ্ক) sfs.f_type == 0xf97cff8cU)
+    ঘূৰাই 1;
   f = fopen ("/proc/mounts", "r");
-  if (f == NULL)
-    return 0;
-  while (getline (&buf, &len, f) >= 0)
+  যদি (f == রিক্ত)
+    ঘূৰাই 0;
+  যেতিয়ালৈ (getline (&buf, &len, f) >= 0)
     {
-      char *p = strchr (buf, ' ');
-      if (p == NULL)
-        break;
+      ৱর্ণ *p = strchr (buf, ' ');
+      যদি (p == রিক্ত)
+        ভঙ্গ;
       p = strchr (p + 1, ' ');
-      if (p == NULL)
-        break;
-      if (strncmp (p + 1, "selinuxfs ", 10) == 0)
+      যদি (p == রিক্ত)
+        ভঙ্গ;
+      যদি (strncmp (p + 1, "selinuxfs ", 10) == 0)
         {
-          free (buf);
+          মুক্ত (buf);
           fclose (f);
-          return 1;
+          ঘূৰাই 1;
         }
     }
-  free (buf);
+  মুক্ত (buf);
   fclose (f);
-  return 0;
+  ঘূৰাই 0;
 }
 
 #define is_selinux_enabled() (selinux_enabled >= 0 ? selinux_enabled \
 			      : (selinux_enabled = selinux_enabled_check ()))
 
-#else
+#অন্যথা
 
 #define is_selinux_enabled() 0
 
 #endif /* !FFI_MMAP_EXEC_SELINUX */
 
 /* On PaX enable kernels that have MPROTECT enabled we can't use PROT_EXEC. */
-#if defined FFI_MMAP_PAX
-#include <stdlib.h>
+#যদি defined FFI_MMAP_PAX
+#অন্তর্ভাৱ <stdlib.h>
 
-enum {
+গণনা {
   PAX_MPROTECT = (1 << 0),
   PAX_EMUTRAMP = (1 << 1),
 };
-static int cached_pax_flags = -1;
+স্থির পূর্ণাঙ্ক cached_pax_flags = -1;
 
-static int
-pax_flags_check (void)
+স্থির পূর্ণাঙ্ক
+pax_flags_check (শূন্য)
 {
-  char *buf = NULL;
+  ৱর্ণ *buf = রিক্ত;
   size_t len = 0;
   FILE *f;
-  int ret;
+  পূর্ণাঙ্ক ret;
   f = fopen ("/proc/self/status", "r");
-  if (f == NULL)
-    return 0;
+  যদি (f == রিক্ত)
+    ঘূৰাই 0;
   ret = 0;
 
-  while (getline (&buf, &len, f) != -1)
-    if (!strncmp (buf, "PaX:", 4))
+  যেতিয়ালৈ (getline (&buf, &len, f) != -1)
+    যদি (!strncmp (buf, "PaX:", 4))
       {
-        if (NULL != strchr (buf + 4, 'M'))
+        যদি (রিক্ত != strchr (buf + 4, 'M'))
           ret |= PAX_MPROTECT;
-        if (NULL != strchr (buf + 4, 'E'))
+        যদি (রিক্ত != strchr (buf + 4, 'E'))
           ret |= PAX_EMUTRAMP;
-        break;
+        ভঙ্গ;
       }
-  free (buf);
+  মুক্ত (buf);
   fclose (f);
-  return ret;
+  ঘূৰাই ret;
 }
 
 #define get_pax_flags() (cached_pax_flags >= 0 ? cached_pax_flags \
@@ -538,142 +538,142 @@ pax_flags_check (void)
 
 #endif /* defined FFI_MMAP_PAX */
 
-#elif defined (__CYGWIN__) || defined(__INTERIX)
+#নোচেদ্যদি defined (__CYGWIN__) || defined(__INTERIX)
 
-#include <sys/mman.h>
+#অন্তর্ভাৱ <sys/mman.h>
 
 /* Cygwin is Linux-like, but not quite that Linux-like.  */
 #define is_selinux_enabled() 0
 
 #endif /* !defined(X86_WIN32) && !defined(X86_WIN64) */
 
-#if !defined FFI_MMAP_PAX
+#যদি !defined FFI_MMAP_PAX
 # define is_mprotect_enabled() 0
 # define is_emutramp_enabled() 0
 #endif /* !defined FFI_MMAP_PAX */
 
 /* Declare all functions defined in dlmalloc.c as static.  */
-static void *dlmalloc(size_t);
-static void dlfree(void*);
-static void *dlcalloc(size_t, size_t) MAYBE_UNUSED;
-static void *dlrealloc(void *, size_t) MAYBE_UNUSED;
-static void *dlmemalign(size_t, size_t) MAYBE_UNUSED;
-static void *dlvalloc(size_t) MAYBE_UNUSED;
-static int dlmallopt(int, int) MAYBE_UNUSED;
-static size_t dlmalloc_footprint(void) MAYBE_UNUSED;
-static size_t dlmalloc_max_footprint(void) MAYBE_UNUSED;
-static void** dlindependent_calloc(size_t, size_t, void**) MAYBE_UNUSED;
-static void** dlindependent_comalloc(size_t, size_t*, void**) MAYBE_UNUSED;
-static void *dlpvalloc(size_t) MAYBE_UNUSED;
-static int dlmalloc_trim(size_t) MAYBE_UNUSED;
-static size_t dlmalloc_usable_size(void*) MAYBE_UNUSED;
-static void dlmalloc_stats(void) MAYBE_UNUSED;
+স্থির শূন্য *dlmalloc(size_t);
+স্থির শূন্য dlfree(শূন্য*);
+স্থির শূন্য *dlcalloc(size_t, size_t) MAYBE_UNUSED;
+স্থির শূন্য *dlrealloc(শূন্য *, size_t) MAYBE_UNUSED;
+স্থির শূন্য *dlmemalign(size_t, size_t) MAYBE_UNUSED;
+স্থির শূন্য *dlvalloc(size_t) MAYBE_UNUSED;
+স্থির পূর্ণাঙ্ক dlmallopt(পূর্ণাঙ্ক, পূর্ণাঙ্ক) MAYBE_UNUSED;
+স্থির size_t dlmalloc_footprint(শূন্য) MAYBE_UNUSED;
+স্থির size_t dlmalloc_max_footprint(শূন্য) MAYBE_UNUSED;
+স্থির শূন্য** dlindependent_calloc(size_t, size_t, শূন্য**) MAYBE_UNUSED;
+স্থির শূন্য** dlindependent_comalloc(size_t, size_t*, শূন্য**) MAYBE_UNUSED;
+স্থির শূন্য *dlpvalloc(size_t) MAYBE_UNUSED;
+স্থির পূর্ণাঙ্ক dlmalloc_trim(size_t) MAYBE_UNUSED;
+স্থির size_t dlmalloc_usable_size(শূন্য*) MAYBE_UNUSED;
+স্থির শূন্য dlmalloc_stats(শূন্য) MAYBE_UNUSED;
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#যদি !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 /* Use these for mmap and munmap within dlmalloc.c.  */
-static void *dlmmap(void *, size_t, int, int, int, off_t);
-static int dlmunmap(void *, size_t);
+স্থির শূন্য *dlmmap(শূন্য *, size_t, পূর্ণাঙ্ক, পূর্ণাঙ্ক, পূর্ণাঙ্ক, off_t);
+স্থির পূর্ণাঙ্ক dlmunmap(শূন্য *, size_t);
 #endif /* !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX) */
 
 #define mmap dlmmap
 #define munmap dlmunmap
 
-#include "dlmalloc.c"
+#অন্তর্ভাৱ "dlmalloc.c"
 
 #undef mmap
 #undef munmap
 
-#if !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
+#যদি !(defined(_WIN32) || defined(__OS2__)) || defined (__CYGWIN__) || defined(__INTERIX)
 
 /* A mutex used to synchronize access to *exec* variables in this file.  */
-static pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
+স্থির pthread_mutex_t open_temp_exec_file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 /* A file descriptor of a temporary file from which we'll map
    executable pages.  */
-static int execfd = -1;
+স্থির পূর্ণাঙ্ক execfd = -1;
 
 /* The amount of space already allocated from the temporary file.  */
-static size_t execsize = 0;
+স্থির size_t execsize = 0;
 
 #ifdef HAVE_MEMFD_CREATE
 /* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_memfd (const char *name)
+স্থির পূর্ণাঙ্ক
+open_temp_exec_file_memfd (ধ্রুৱ ৱর্ণ *name)
 {
-  int fd;
+  পূর্ণাঙ্ক fd;
   fd = memfd_create (name, MFD_CLOEXEC);
-  return fd;
+  ঘূৰাই fd;
 }
 #endif
 
 /* Open a temporary file name, and immediately unlink it.  */
-static int
-open_temp_exec_file_name (char *name, int flags MAYBE_UNUSED)
+স্থির পূর্ণাঙ্ক
+open_temp_exec_file_name (ৱর্ণ *name, পূর্ণাঙ্ক flags MAYBE_UNUSED)
 {
-  int fd;
+  পূর্ণাঙ্ক fd;
 
 #ifdef HAVE_MKOSTEMP
   fd = mkostemp (name, flags);
-#else
+#অন্যথা
   fd = mkstemp (name);
 #endif
 
-  if (fd != -1)
+  যদি (fd != -1)
     unlink (name);
 
-  return fd;
+  ঘূৰাই fd;
 }
 
 /* Open a temporary file in the named directory.  */
-static int
-open_temp_exec_file_dir (const char *dir)
+স্থির পূর্ণাঙ্ক
+open_temp_exec_file_dir (ধ্রুৱ ৱর্ণ *dir)
 {
-  static const char suffix[] = "/ffiXXXXXX";
-  int lendir, flags;
-  char *tempname;
+  স্থির ধ্রুৱ ৱর্ণ suffix[] = "/ffiXXXXXX";
+  পূর্ণাঙ্ক lendir, flags;
+  ৱর্ণ *tempname;
 #ifdef O_TMPFILE
-  int fd;
+  পূর্ণাঙ্ক fd;
 #endif
 
 #ifdef O_CLOEXEC
   flags = O_CLOEXEC;
-#else
+#অন্যথা
   flags = 0;
 #endif
 
 #ifdef O_TMPFILE
   fd = open (dir, flags | O_RDWR | O_EXCL | O_TMPFILE, 0700);
   /* If the running system does not support the O_TMPFILE flag then retry without it. */
-  if (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
-    return fd;
-  } else {
+  যদি (fd != -1 || (errno != EINVAL && errno != EISDIR && errno != EOPNOTSUPP)) {
+    ঘূৰাই fd;
+  } অন্যথা {
     errno = 0;
   }
 #endif
 
-  lendir = (int) strlen (dir);
-  tempname = __builtin_alloca (lendir + sizeof (suffix));
+  lendir = (পূর্ণাঙ্ক) strlen (dir);
+  tempname = __builtin_alloca (lendir + পরিমাণ (suffix));
 
-  if (!tempname)
-    return -1;
+  যদি (!tempname)
+    ঘূৰাই -1;
 
   memcpy (tempname, dir, lendir);
-  memcpy (tempname + lendir, suffix, sizeof (suffix));
+  memcpy (tempname + lendir, suffix, পরিমাণ (suffix));
 
-  return open_temp_exec_file_name (tempname, flags);
+  ঘূৰাই open_temp_exec_file_name (tempname, flags);
 }
 
 /* Open a temporary file in the directory in the named environment
    variable.  */
-static int
-open_temp_exec_file_env (const char *envvar)
+স্থির পূর্ণাঙ্ক
+open_temp_exec_file_env (ধ্রুৱ ৱর্ণ *envvar)
 {
-  const char *value = getenv (envvar);
+  ধ্রুৱ ৱর্ণ *মান = getenv (envvar);
 
-  if (!value)
-    return -1;
+  যদি (!মান)
+    ঘূৰাই -1;
 
-  return open_temp_exec_file_dir (value);
+  ঘূৰাই open_temp_exec_file_dir (মান);
 }
 
 #ifdef HAVE_MNTENT
@@ -681,57 +681,57 @@ open_temp_exec_file_env (const char *envvar)
    listed in the mounts file.  Subsequent calls with the same mounts
    keep searching for mount points in the same file.  Providing NULL
    as the mounts file closes the file.  */
-static int
-open_temp_exec_file_mnt (const char *mounts)
+স্থির পূর্ণাঙ্ক
+open_temp_exec_file_mnt (ধ্রুৱ ৱর্ণ *mounts)
 {
-  static const char *last_mounts;
-  static FILE *last_mntent;
+  স্থির ধ্রুৱ ৱর্ণ *last_mounts;
+  স্থির FILE *last_mntent;
 
-  if (mounts != last_mounts)
+  যদি (mounts != last_mounts)
     {
-      if (last_mntent)
+      যদি (last_mntent)
 	endmntent (last_mntent);
 
       last_mounts = mounts;
 
-      if (mounts)
+      যদি (mounts)
 	last_mntent = setmntent (mounts, "r");
-      else
-	last_mntent = NULL;
+      অন্যথা
+	last_mntent = রিক্ত;
     }
 
-  if (!last_mntent)
-    return -1;
+  যদি (!last_mntent)
+    ঘূৰাই -1;
 
-  for (;;)
+  বাবে (;;)
     {
-      int fd;
-      struct mntent mnt;
-      char buf[MAXPATHLEN * 3];
+      পূর্ণাঙ্ক fd;
+      সংরচনা mntent mnt;
+      ৱর্ণ buf[MAXPATHLEN * 3];
 
-      if (getmntent_r (last_mntent, &mnt, buf, sizeof (buf)) == NULL)
-	return -1;
+      যদি (getmntent_r (last_mntent, &mnt, buf, পরিমাণ (buf)) == রিক্ত)
+	ঘূৰাই -1;
 
-      if (hasmntopt (&mnt, "ro")
+      যদি (hasmntopt (&mnt, "ro")
 	  || hasmntopt (&mnt, "noexec")
 	  || access (mnt.mnt_dir, W_OK))
-	continue;
+	অনুৱর্ত;
 
       fd = open_temp_exec_file_dir (mnt.mnt_dir);
 
-      if (fd != -1)
-	return fd;
+      যদি (fd != -1)
+	ঘূৰাই fd;
     }
 }
 #endif /* HAVE_MNTENT */
 
 /* Instructions to look for a location to hold a temporary file that
    can be mapped in for execution.  */
-static struct
+স্থির সংরচনা
 {
-  int (*func)(const char *);
-  const char *arg;
-  int repeat;
+  পূর্ণাঙ্ক (*func)(ধ্রুৱ ৱর্ণ *);
+  ধ্রুৱ ৱর্ণ *arg;
+  পূর্ণাঙ্ক repeat;
 } open_temp_exec_file_opts[] = {
 #ifdef HAVE_MEMFD_CREATE
   { open_temp_exec_file_memfd, "libffi", 0 },
@@ -749,51 +749,51 @@ static struct
 };
 
 /* Current index into open_temp_exec_file_opts.  */
-static int open_temp_exec_file_opts_idx = 0;
+স্থির পূর্ণাঙ্ক open_temp_exec_file_opts_idx = 0;
 
 /* Reset a current multi-call func, then advances to the next entry.
    If we're at the last, go back to the first and return nonzero,
    otherwise return zero.  */
-static int
-open_temp_exec_file_opts_next (void)
+স্থির পূর্ণাঙ্ক
+open_temp_exec_file_opts_next (শূন্য)
 {
-  if (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
-    open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func (NULL);
+  যদি (open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
+    open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func (রিক্ত);
 
   open_temp_exec_file_opts_idx++;
-  if (open_temp_exec_file_opts_idx
-      == (sizeof (open_temp_exec_file_opts)
-	  / sizeof (*open_temp_exec_file_opts)))
+  যদি (open_temp_exec_file_opts_idx
+      == (পরিমাণ (open_temp_exec_file_opts)
+	  / পরিমাণ (*open_temp_exec_file_opts)))
     {
       open_temp_exec_file_opts_idx = 0;
-      return 1;
+      ঘূৰাই 1;
     }
 
-  return 0;
+  ঘূৰাই 0;
 }
 
 /* Return a file descriptor of a temporary zero-sized file in a
    writable and executable filesystem.  */
-int
-open_temp_exec_file (void)
+পূর্ণাঙ্ক
+open_temp_exec_file (শূন্য)
 {
-  int fd;
+  পূর্ণাঙ্ক fd;
 
-  do
+  কৰা
     {
       fd = open_temp_exec_file_opts[open_temp_exec_file_opts_idx].func
 	(open_temp_exec_file_opts[open_temp_exec_file_opts_idx].arg);
 
-      if (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
+      যদি (!open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat
 	  || fd == -1)
 	{
-	  if (open_temp_exec_file_opts_next ())
-	    break;
+	  যদি (open_temp_exec_file_opts_next ())
+	    ভঙ্গ;
 	}
     }
-  while (fd == -1);
+  যেতিয়ালৈ (fd == -1);
 
-  return fd;
+  ঘূৰাই fd;
 }
 
 /* We need to allocate space in a file that will be backing a writable
@@ -803,29 +803,29 @@ open_temp_exec_file (void)
    - ftruncate() does not allocate space on filesystems with sparse files
    Failure to allocate the space will cause SIGBUS to be thrown when
    the mapping is subsequently written to.  */
-static int
-allocate_space (int fd, off_t len)
+স্থির পূর্ণাঙ্ক
+allocate_space (পূর্ণাঙ্ক fd, off_t len)
 {
-  static long page_size;
+  স্থির long page_size;
 
   /* Obtain system page size. */
-  if (!page_size)
+  যদি (!page_size)
     page_size = sysconf(_SC_PAGESIZE);
-  if (page_size <= 0)
-    return -1;
+  যদি (page_size <= 0)
+    ঘূৰাই -1;
 
-  unsigned char buf[page_size];
+  unsigned ৱর্ণ buf[page_size];
   memset (buf, 0, page_size);
 
-  while (len > 0)
+  যেতিয়ালৈ (len > 0)
     {
       off_t to_write = (len < page_size) ? len : page_size;
-      if (write (fd, buf, to_write) < to_write)
-        return -1;
+      যদি (লিখ (fd, buf, to_write) < to_write)
+        ঘূৰাই -1;
       len -= to_write;
     }
 
-  return 0;
+  ঘূৰাই 0;
 }
 
 /* Map in a chunk of memory from the temporary exec file into separate
@@ -833,113 +833,113 @@ allocate_space (int fd, off_t len)
    executable.  Returns the address of the writable portion, after
    storing an offset to the corresponding executable portion at the
    last word of the requested chunk.  */
-static void *
-dlmmap_locked (void *start, size_t length, int prot, int flags, off_t offset)
+স্থির শূন্য *
+dlmmap_locked (শূন্য *start, size_t length, পূর্ণাঙ্ক prot, পূর্ণাঙ্ক flags, off_t offset)
 {
-  void *ptr;
+  শূন্য *ptr;
 
-  if (execfd == -1)
+  যদি (execfd == -1)
     {
       open_temp_exec_file_opts_idx = 0;
     retry_open:
       execfd = open_temp_exec_file ();
-      if (execfd == -1)
-	return MFAIL;
+      যদি (execfd == -1)
+	ঘূৰাই MFAIL;
     }
 
   offset = execsize;
 
-  if (allocate_space (execfd, length))
-    return MFAIL;
+  যদি (allocate_space (execfd, length))
+    ঘূৰাই MFAIL;
 
   flags &= ~(MAP_PRIVATE | MAP_ANONYMOUS);
   flags |= MAP_SHARED;
 
-  ptr = mmap (NULL, length, (prot & ~PROT_WRITE) | PROT_EXEC,
+  ptr = mmap (রিক্ত, length, (prot & ~PROT_WRITE) | PROT_EXEC,
 	      flags, execfd, offset);
-  if (ptr == MFAIL)
+  যদি (ptr == MFAIL)
     {
-      if (!offset)
+      যদি (!offset)
 	{
 	  close (execfd);
-	  goto retry_open;
+	  গচ্ছ retry_open;
 	}
-      if (ftruncate (execfd, offset) != 0)
+      যদি (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
 
-      return MFAIL;
+      ঘূৰাই MFAIL;
     }
-  else if (!offset
+  অন্যথা যদি (!offset
 	   && open_temp_exec_file_opts[open_temp_exec_file_opts_idx].repeat)
     open_temp_exec_file_opts_next ();
 
   start = mmap (start, length, prot, flags, execfd, offset);
 
-  if (start == MFAIL)
+  যদি (start == MFAIL)
     {
       munmap (ptr, length);
-      if (ftruncate (execfd, offset) != 0)
+      যদি (ftruncate (execfd, offset) != 0)
       {
         /* Fixme : Error logs can be added here. Returning an error for
          * ftruncte() will not add any advantage as it is being
          * validating in the error case. */
       }
-      return start;
+      ঘূৰাই start;
     }
 
-  mmap_exec_offset ((char *)start, length) = (char*)ptr - (char*)start;
+  mmap_exec_offset ((ৱর্ণ *)start, length) = (ৱর্ণ*)ptr - (ৱর্ণ*)start;
 
   execsize += length;
 
-  return start;
+  ঘূৰাই start;
 }
 
 /* Map in a writable and executable chunk of memory if possible.
    Failing that, fall back to dlmmap_locked.  */
-static void *
-dlmmap (void *start, size_t length, int prot,
-	int flags, int fd, off_t offset)
+স্থির শূন্য *
+dlmmap (শূন্য *start, size_t length, পূর্ণাঙ্ক prot,
+	পূর্ণাঙ্ক flags, পূর্ণাঙ্ক fd, off_t offset)
 {
-  void *ptr;
+  শূন্য *ptr;
 
-  assert (start == NULL && length % malloc_getpagesize == 0
+  প্রতিজ্ঞা (start == রিক্ত && length % malloc_getpagesize == 0
 	  && prot == (PROT_READ | PROT_WRITE)
 	  && flags == (MAP_PRIVATE | MAP_ANONYMOUS)
 	  && fd == -1 && offset == 0);
 
-  if (execfd == -1 && ffi_tramp_is_supported ())
+  যদি (execfd == -1 && ffi_tramp_is_supported ())
     {
       ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-      return ptr;
+      ঘূৰাই ptr;
     }
 
   /* -1 != execfd hints that we already decided to use dlmmap_locked
      last time.  */
-  if (execfd == -1 && is_mprotect_enabled ())
+  যদি (execfd == -1 && is_mprotect_enabled ())
     {
 #ifdef FFI_MMAP_EXEC_EMUTRAMP_PAX
-      if (is_emutramp_enabled ())
+      যদি (is_emutramp_enabled ())
         {
           /* emutramp requires the kernel recognizing the trampoline pattern
              generated by ffi_prep_closure_loc; there is no way to test
              in advance whether this will work, so this is experimental.  */
           ptr = mmap (start, length, prot & ~PROT_EXEC, flags, fd, offset);
-          return ptr;
+          ঘূৰাই ptr;
         }
 #endif
       /* fallback to dlmmap_locked.  */
     }
-  else if (execfd == -1 && !is_selinux_enabled ())
+  অন্যথা যদি (execfd == -1 && !is_selinux_enabled ())
     {
       ptr = mmap (start, length, prot | PROT_EXEC, flags, fd, offset);
 
-      if (ptr != MFAIL || (errno != EPERM && errno != EACCES))
+      যদি (ptr != MFAIL || (errno != EPERM && errno != EACCES))
 	/* Cool, no need to mess with separate segments.  */
-	return ptr;
+	ঘূৰাই ptr;
 
       /* If MREMAP_DUP is ever introduced and implemented, try mmap
 	 with ((prot & ~PROT_WRITE) | PROT_EXEC) and mremap with
@@ -950,13 +950,13 @@ dlmmap (void *start, size_t length, int prot,
   ptr = dlmmap_locked (start, length, prot, flags, offset);
   pthread_mutex_unlock (&open_temp_exec_file_mutex);
 
-  return ptr;
+  ঘূৰাই ptr;
 }
 
 /* Release memory at the given address, as well as the corresponding
    executable page if it's separate.  */
-static int
-dlmunmap (void *start, size_t length)
+স্থির পূর্ণাঙ্ক
+dlmunmap (শূন্য *start, size_t length)
 {
   /* We don't bother decreasing execsize or truncating the file, since
      we can't quite tell whether we're unmapping the end of the file.
@@ -965,30 +965,30 @@ dlmunmap (void *start, size_t length)
      deallocated and checking that the file contents change.
      Yuck.  */
   msegmentptr seg = segment_holding (gm, start);
-  void *code;
+  শূন্য *code;
 
-  if (seg && (code = add_segment_exec_offset (start, seg)) != start)
+  যদি (seg && (code = add_segment_exec_offset (start, seg)) != start)
     {
-      int ret = munmap (code, length);
-      if (ret)
-	return ret;
+      পূর্ণাঙ্ক ret = munmap (code, length);
+      যদি (ret)
+	ঘূৰাই ret;
     }
 
-  return munmap (start, length);
+  ঘূৰাই munmap (start, length);
 }
 
-#if FFI_CLOSURE_FREE_CODE
+#যদি FFI_CLOSURE_FREE_CODE
 /* Return segment holding given code address.  */
-static msegmentptr
-segment_holding_code (mstate m, char* addr)
+স্থির msegmentptr
+segment_holding_code (mstate m, ৱর্ণ* addr)
 {
   msegmentptr sp = &m->seg;
-  for (;;) {
-    if (addr >= add_segment_exec_offset (sp->base, sp)
+  বাবে (;;) {
+    যদি (addr >= add_segment_exec_offset (sp->base, sp)
 	&& addr < add_segment_exec_offset (sp->base, sp) + sp->size)
-      return sp;
-    if ((sp = sp->next) == 0)
-      return 0;
+      ঘূৰাই sp;
+    যদি ((sp = sp->next) == 0)
+      ঘূৰাই 0;
   }
 }
 #endif
@@ -998,117 +998,117 @@ segment_holding_code (mstate m, char* addr)
 /* Allocate a chunk of memory with the given size.  Returns a pointer
    to the writable address, and sets *CODE to the executable
    corresponding virtual address.  */
-void *
-ffi_closure_alloc (size_t size, void **code)
+শূন্য *
+ffi_closure_alloc (size_t size, শূন্য **code)
 {
-  void *ptr, *ftramp;
+  শূন্য *ptr, *ftramp;
 
-  if (!code)
-    return NULL;
+  যদি (!code)
+    ঘূৰাই রিক্ত;
 
   ptr = dlmalloc (size);
 
-  if (ptr)
+  যদি (ptr)
     {
       msegmentptr seg = segment_holding (gm, ptr);
 
       *code = FFI_FN (add_segment_exec_offset (ptr, seg));
-      if (!ffi_tramp_is_supported ())
-        return ptr;
+      যদি (!ffi_tramp_is_supported ())
+        ঘূৰাই ptr;
 
       ftramp = ffi_tramp_alloc (0);
-      if (ftramp == NULL)
+      যদি (ftramp == রিক্ত)
       {
         dlfree (ptr);
-        return NULL;
+        ঘূৰাই রিক্ত;
       }
       *code = FFI_FN (ffi_tramp_get_addr (ftramp));
       ((ffi_closure *) ptr)->ftramp = ftramp;
     }
 
-  return ptr;
+  ঘূৰাই ptr;
 }
 
-void *
-ffi_data_to_code_pointer (void *data)
+শূন্য *
+ffi_data_to_code_pointer (শূন্য *data)
 {
   msegmentptr seg = segment_holding (gm, data);
   /* We expect closures to be allocated with ffi_closure_alloc(), in
      which case seg will be non-NULL.  However, some users take on the
      burden of managing this memory themselves, in which case this
      we'll just return data. */
-  if (seg)
+  যদি (seg)
     {
-      if (!ffi_tramp_is_supported ())
-        return add_segment_exec_offset (data, seg);
-      return ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
+      যদি (!ffi_tramp_is_supported ())
+        ঘূৰাই add_segment_exec_offset (data, seg);
+      ঘূৰাই ffi_tramp_get_addr (((ffi_closure *) data)->ftramp);
     }
-  else
-    return data;
+  অন্যথা
+    ঘূৰাই data;
 }
 
 /* Release a chunk of memory allocated with ffi_closure_alloc.  If
    FFI_CLOSURE_FREE_CODE is nonzero, the given address can be the
    writable or the executable address given.  Otherwise, only the
    writable address can be provided here.  */
-void
-ffi_closure_free (void *ptr)
+শূন্য
+ffi_closure_free (শূন্য *ptr)
 {
-#if FFI_CLOSURE_FREE_CODE
+#যদি FFI_CLOSURE_FREE_CODE
   msegmentptr seg = segment_holding_code (gm, ptr);
 
-  if (seg)
+  যদি (seg)
     ptr = sub_segment_exec_offset (ptr, seg);
 #endif
-  if (ffi_tramp_is_supported ())
+  যদি (ffi_tramp_is_supported ())
     ffi_tramp_free (((ffi_closure *) ptr)->ftramp);
 
   dlfree (ptr);
 }
 
-int
-ffi_tramp_is_present (void *ptr)
+পূর্ণাঙ্ক
+ffi_tramp_is_present (শূন্য *ptr)
 {
   msegmentptr seg = segment_holding (gm, ptr);
-  return seg != NULL && ffi_tramp_is_supported();
+  ঘূৰাই seg != রিক্ত && ffi_tramp_is_supported();
 }
 
-# else /* ! FFI_MMAP_EXEC_WRIT */
+# অন্যথা /* ! FFI_MMAP_EXEC_WRIT */
 
 /* On many systems, memory returned by malloc is writable and
    executable, so just use it.  */
 
-#include <stdlib.h>
+#অন্তর্ভাৱ <stdlib.h>
 
-void *
-ffi_closure_alloc (size_t size, void **code)
+শূন্য *
+ffi_closure_alloc (size_t size, শূন্য **code)
 {
-  void *c;
+  শূন্য *c;
 
-  if (!code)
-    return NULL;
+  যদি (!code)
+    ঘূৰাই রিক্ত;
 
   c = malloc (size);
   *code = FFI_FN (c);
-  return c;
+  ঘূৰাই c;
 }
 
-void
-ffi_closure_free (void *ptr)
+শূন্য
+ffi_closure_free (শূন্য *ptr)
 {
-  free (ptr);
+  মুক্ত (ptr);
 }
 
-void *
-ffi_data_to_code_pointer (void *data)
+শূন্য *
+ffi_data_to_code_pointer (শূন্য *data)
 {
-  return data;
+  ঘূৰাই data;
 }
 
-int
-ffi_tramp_is_present (__attribute__((unused)) void *ptr)
+পূর্ণাঙ্ক
+ffi_tramp_is_present (__attribute__((unused)) শূন্য *ptr)
 {
-  return 0;
+  ঘূৰাই 0;
 }
 
 # endif /* ! FFI_MMAP_EXEC_WRIT */

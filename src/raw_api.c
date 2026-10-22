@@ -26,174 +26,174 @@
 
 /* This file defines generic functions for use with the raw api. */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাৱ <ffi.h>
+#অন্তর্ভাৱ <ffi_common.h>
 
-#if !FFI_NO_RAW_API
+#যদি !FFI_NO_RAW_API
 
 size_t
 ffi_raw_size (ffi_cif *cif)
 {
   size_t result = 0;
-  int i;
+  পূর্ণাঙ্ক i;
 
   ffi_type **at = cif->arg_types;
 
-  for (i = cif->nargs-1; i >= 0; i--, at++)
+  বাবে (i = cif->nargs-1; i >= 0; i--, at++)
     {
-#if !FFI_NO_STRUCTS
-      if ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
-	result += FFI_ALIGN (sizeof (void*), FFI_SIZEOF_ARG);
-      else
+#যদি !FFI_NO_STRUCTS
+      যদি ((*at)->type == FFI_TYPE_STRUCT || (*at)->type == FFI_TYPE_VECTOR)
+	result += FFI_ALIGN (পরিমাণ (শূন্য*), FFI_SIZEOF_ARG);
+      অন্যথা
 #endif
 	result += FFI_ALIGN ((*at)->size, FFI_SIZEOF_ARG);
     }
 
-  return result;
+  ঘূৰাই result;
 }
 
 
-void
-ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, void **args)
+শূন্য
+ffi_raw_to_ptrarray (ffi_cif *cif, ffi_raw *raw, শূন্য **args)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-#if WORDS_BIGENDIAN
+#যদি শব্দগুলি_BIGENDIAN
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  বাবে (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-      switch ((*tp)->type)
+      ৱিকল্প ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 1);
-	  break;
+	পক্ষ FFI_TYPE_UINT8:
+	পক্ষ FFI_TYPE_SINT8:
+	  *args = (শূন্য*) ((ৱর্ণ*)(raw++) + FFI_SIZEOF_ARG - 1);
+	  ভঙ্গ;
 	  
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 2);
-	  break;
+	পক্ষ FFI_TYPE_UINT16:
+	পক্ষ FFI_TYPE_SINT16:
+	  *args = (শূন্য*) ((ৱর্ণ*)(raw++) + FFI_SIZEOF_ARG - 2);
+	  ভঙ্গ;
 
-#if FFI_SIZEOF_ARG >= 4	  
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	  *args = (void*) ((char*)(raw++) + FFI_SIZEOF_ARG - 4);
-	  break;
+#যদি FFI_SIZEOF_ARG >= 4	  
+	পক্ষ FFI_TYPE_UINT32:
+	পক্ষ FFI_TYPE_SINT32:
+	  *args = (শূন্য*) ((ৱর্ণ*)(raw++) + FFI_SIZEOF_ARG - 4);
+	  ভঙ্গ;
 #endif
 	
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#যদি !FFI_NO_STRUCTS
+	পক্ষ FFI_TYPE_STRUCT:
+	পক্ষ FFI_TYPE_VECTOR:
 	  *args = (raw++)->ptr;
-	  break;
+	  ভঙ্গ;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	পক্ষ FFI_TYPE_COMPLEX:
 	  *args = (raw++)->ptr;
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_POINTER:
-	  *args = (void*) &(raw++)->ptr;
-	  break;
+	পক্ষ FFI_TYPE_POINTER:
+	  *args = (শূন্য*) &(raw++)->ptr;
+	  ভঙ্গ;
 	  
-	default:
+	স্ৱভাৱ:
 	  *args = raw;
 	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 
-#else /* WORDS_BIGENDIAN */
+#অন্যথা /* WORDS_BIGENDIAN */
 
-#if !PDP
+#যদি !PDP
 
   /* then assume little endian */
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  বাবে (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-#if !FFI_NO_STRUCTS
-      if ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
+#যদি !FFI_NO_STRUCTS
+      যদি ((*tp)->type == FFI_TYPE_STRUCT || (*tp)->type == FFI_TYPE_VECTOR)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      অন্যথা
 #endif
-      if ((*tp)->type == FFI_TYPE_COMPLEX)
+      যদি ((*tp)->type == FFI_TYPE_COMPLEX)
 	{
 	  *args = (raw++)->ptr;
 	}
-      else
+      অন্যথা
 	{
-	  *args = (void*) raw;
-	  raw += FFI_ALIGN ((*tp)->size, sizeof (void*)) / sizeof (void*);
+	  *args = (শূন্য*) raw;
+	  raw += FFI_ALIGN ((*tp)->size, পরিমাণ (শূন্য*)) / পরিমাণ (শূন্য*);
 	}
     }
 
-#else
+#অন্যথা
 #error "pdp endian not supported"
 #endif /* ! PDP */
 
 #endif /* WORDS_BIGENDIAN */
 }
 
-void
-ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
+শূন্য
+ffi_ptrarray_to_raw (ffi_cif *cif, শূন্য **args, ffi_raw *raw)
 {
   unsigned i;
   ffi_type **tp = cif->arg_types;
 
-  for (i = 0; i < cif->nargs; i++, tp++, args++)
+  বাবে (i = 0; i < cif->nargs; i++, tp++, args++)
     {	  
-      switch ((*tp)->type)
+      ৱিকল্প ((*tp)->type)
 	{
-	case FFI_TYPE_UINT8:
+	পক্ষ FFI_TYPE_UINT8:
 	  (raw++)->uint = *(UINT8*) (*args);
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_SINT8:
+	পক্ষ FFI_TYPE_SINT8:
 	  (raw++)->sint = *(SINT8*) (*args);
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_UINT16:
+	পক্ষ FFI_TYPE_UINT16:
 	  (raw++)->uint = *(UINT16*) (*args);
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_SINT16:
+	পক্ষ FFI_TYPE_SINT16:
 	  (raw++)->sint = *(SINT16*) (*args);
-	  break;
+	  ভঙ্গ;
 
-#if FFI_SIZEOF_ARG >= 4
-	case FFI_TYPE_UINT32:
+#যদি FFI_SIZEOF_ARG >= 4
+	পক্ষ FFI_TYPE_UINT32:
 	  (raw++)->uint = *(UINT32*) (*args);
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_SINT32:
+	পক্ষ FFI_TYPE_SINT32:
 	  (raw++)->sint = *(SINT32*) (*args);
-	  break;
+	  ভঙ্গ;
 #endif
 
-#if !FFI_NO_STRUCTS
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
+#যদি !FFI_NO_STRUCTS
+	পক্ষ FFI_TYPE_STRUCT:
+	পক্ষ FFI_TYPE_VECTOR:
 	  (raw++)->ptr = *args;
-	  break;
+	  ভঙ্গ;
 #endif
 
-	case FFI_TYPE_COMPLEX:
+	পক্ষ FFI_TYPE_COMPLEX:
 	  (raw++)->ptr = *args;
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_POINTER:
-	  (raw++)->ptr = **(void***) args;
-	  break;
+	পক্ষ FFI_TYPE_POINTER:
+	  (raw++)->ptr = **(শূন্য***) args;
+	  ভঙ্গ;
 
-	default:
-	  memcpy ((void*) raw->data, (void*)*args, (*tp)->size);
+	স্ৱভাৱ:
+	  memcpy ((শূন্য*) raw->data, (শূন্য*)*args, (*tp)->size);
 	  raw += FFI_ALIGN ((*tp)->size, FFI_SIZEOF_ARG) / FFI_SIZEOF_ARG;
 	}
     }
 }
 
-#if !FFI_NATIVE_RAW_API
+#যদি !FFI_NATIVE_RAW_API
 
 
 /* This is a generic definition of ffi_raw_call, to be used if the
@@ -203,18 +203,18 @@ ffi_ptrarray_to_raw (ffi_cif *cif, void **args, ffi_raw *raw)
  * these following couple of functions will handle the translation forth
  * and back automatically. */
 
-void ffi_raw_call (ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *raw)
+শূন্য ffi_raw_call (ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, ffi_raw *raw)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
+  শূন্য **avalue = (শূন্য**) alloca (cif->nargs * পরিমাণ (শূন্য*));
   ffi_raw_to_ptrarray (cif, raw, avalue);
   ffi_call (cif, fn, rvalue, avalue);
 }
 
-#if FFI_CLOSURES		/* base system provides closures */
+#যদি FFI_CLOSURES		/* base system provides closures */
 
-static void
-ffi_translate_args (ffi_cif *cif, void *rvalue,
-		    void **avalue, void *user_data)
+স্থির শূন্য
+ffi_translate_args (ffi_cif *cif, শূন্য *rvalue,
+		    শূন্য **avalue, শূন্য *user_data)
 {
   ffi_raw *raw = (ffi_raw*)alloca (ffi_raw_size (cif));
   ffi_raw_closure *cl = (ffi_raw_closure*)user_data;
@@ -226,9 +226,9 @@ ffi_translate_args (ffi_cif *cif, void *rvalue,
 ffi_status
 ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 			  ffi_cif *cif,
-			  void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-			  void *user_data,
-			  void *codeloc)
+			  শূন্য (*fun)(ffi_cif*,শূন্য*,ffi_raw*,শূন্য*),
+			  শূন্য *user_data,
+			  শূন্য *codeloc)
 {
   ffi_status status;
 
@@ -237,19 +237,19 @@ ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 				 &ffi_translate_args,
 				 codeloc,
 				 codeloc);
-  if (status == FFI_OK)
+  যদি (status == FFI_OK)
     {
       cl->fun       = fun;
       cl->user_data = user_data;
     }
 
-  return status;
+  ঘূৰাই status;
 }
 
 #endif /* FFI_CLOSURES */
 #endif /* !FFI_NATIVE_RAW_API */
 
-#if FFI_CLOSURES
+#যদি FFI_CLOSURES
 
 /* Again, here is the generic version of ffi_prep_raw_closure, which
  * will install an intermediate "hub" for translation of arguments from
@@ -258,10 +258,10 @@ ffi_prep_raw_closure_loc (ffi_raw_closure* cl,
 ffi_status
 ffi_prep_raw_closure (ffi_raw_closure* cl,
 		      ffi_cif *cif,
-		      void (*fun)(ffi_cif*,void*,ffi_raw*,void*),
-		      void *user_data)
+		      শূন্য (*fun)(ffi_cif*,শূন্য*,ffi_raw*,শূন্য*),
+		      শূন্য *user_data)
 {
-  return ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
+  ঘূৰাই ffi_prep_raw_closure_loc (cl, cif, fun, user_data, cl);
 }
 
 #endif /* FFI_CLOSURES */

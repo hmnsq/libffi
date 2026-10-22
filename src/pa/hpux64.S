@@ -15,12 +15,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   বা IMPLIED, INCLUDING BUT নহয় LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE আৰু NONINFRINGEMENT.
+   অন্তঃ NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES বা
+   OTHER LIABILITY, WHETHER অন্তঃ AN ACTION OF CONTRACT, TORT বা OTHERWISE,
+   ARISING FROM, OUT OF বা অন্তঃ CONNECTION WITH THE SOFTWARE বা THE USE বা
+   OTHER DEALINGS অন্তঃ THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -63,7 +63,7 @@ L$CFI12
 
 	   [ 48-byte register save area                ]
 
-	   [ Stack space for call arguments            ] <- %r4
+	   [ Stack space for আহ্ৱান arguments            ] <- %r4
 
 	   [ 16-byte rame marker                       ]
 
@@ -83,7 +83,7 @@ L$CFI13
 	ldo	112(%sp), %r29		; arg pointer for prep args
 
 	/* Call prep_args:
-	   %arg0(stack) -- set up above to point to call arguments
+	   %arg0(stack) -- set up above to point to আহ্ৱান arguments
 	   %arg1(ecif) -- same as incoming param
 	   %arg2(bytes) -- same as incoming param */
 	bl	ffi_prep_args_pa64,%r2
@@ -565,7 +565,7 @@ L$CFI22
 	std,ma	%r1, 128(%sp)
 L$CFI23
 
-	/* Put arguments onto the stack and call ffi_closure_inner.  */
+	/* Put arguments onto the stack and আহ্ৱান ffi_closure_inner.  */
 	std	%r26, -64(%r29)
 	std	%r25, -56(%r29)
 	std	%r24, -48(%r29)
