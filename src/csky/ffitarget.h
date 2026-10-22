@@ -35,10 +35,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+প্রকারলেখ unsigned long          ffi_arg;
+প্রকারলেখ signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+প্রকারলেখ গণনা ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -47,13 +47,13 @@ typedef enum ffi_abi {
 #endif
 
 #ifdef __CSKYABIV2__
-#define FFI_ASM_ARGREG_SIZE 16
-#define TRAMPOLINE_SIZE 16
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_ASM_ARGREG_SIZE 24
-#define TRAMPOLINE_SIZE 20
-#define FFI_TRAMPOLINE_SIZE 28
+#define FFI_ASM_ARGREG_আকার 16
+#define TRAMPOLINE_আকার 16
+#define FFI_TRAMPOLINE_আকার 24
+#অন্যথা
+#define FFI_ASM_ARGREG_আকার 24
+#define TRAMPOLINE_আকার 20
+#define FFI_TRAMPOLINE_আকার 28
 #endif
 
 /* ---- Definitions for closures ----------------------------------------- */

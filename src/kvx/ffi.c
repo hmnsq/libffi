@@ -19,201 +19,201 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__kvx__)
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fficonfig.h>
-#include <ffi.h>
-#include "ffi_common.h"
-#include "asm.h"
+#যদি defined(__kvx__)
+#অন্তর্ভাব <stdio.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <fficonfig.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব "ffi_common.h"
+#অন্তর্ভাব "asm.h"
 
 #define ALIGN(x, a) ALIGN_MASK(x, (typeof(x))(a) - 1)
 #define ALIGN_MASK(x, mask) (((x) + (mask)) & ~(mask))
-#define KVX_ABI_STACK_ALIGNMENT (32)
-#define KVX_ABI_STACK_ARG_ALIGNMENT (8)
+#define KVX_ABI_স্তূপ_ALIGNMENT (32)
+#define KVX_ABI_স্তূপ_ARG_ALIGNMENT (8)
 #define max(a,b) ((a) > (b) ? (a) : (b))
 
 #ifdef FFI_DEBUG
-#define DEBUG_PRINT(...) do{ fprintf( stderr, __VA_ARGS__ ); } while(0)
-#else
+#define DEBUG_PRINT(...) করো{ fprintf( stderr, __VA_ARGS__ ); } যখন(0)
+#অন্যথা
 #define DEBUG_PRINT(...)
 #endif
 
-struct ret_value {
-	unsigned long int r0;
-	unsigned long int r1;
-	unsigned long int r2;
-	unsigned long int r3;
+কাঠামো ret_মান {
+	unsigned long পূর্ণসংখ্যা r0;
+	unsigned long পূর্ণসংখ্যা r1;
+	unsigned long পূর্ণসংখ্যা r2;
+	unsigned long পূর্ণসংখ্যা r3;
 };
 
-extern struct ret_value ffi_call_SYSV(unsigned total_size,
-                                      unsigned size,
+বাহ্যিক কাঠামো ret_মান ffi_call_SYSV(unsigned যোগ_আকার,
+                                      unsigned আকার_2,
                                       extended_cif *ecif,
                                       unsigned *rvalue_addr,
-                                      void *fn,
+                                      শূন্য *fn,
                                       unsigned int_ext_method);
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  cif->flags = cif->rtype->size;
-  return FFI_OK;
+  cif->flags = cif->rtype->আকার_2;
+  ফেরত FFI_OK;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, unsigned int arg_slots_size, extended_cif *ecif)
+শূন্য *ffi_prep_args(অক্ষর *স্তূপ, unsigned পূর্ণসংখ্যা arg_slots_আকার, extended_cif *ecif)
 {
-  char *stacktemp = stack;
-  char *current_arg_passed_by_value = stack + arg_slots_size;
-  int i, s;
+  অক্ষর *stacktemp = স্তূপ;
+  অক্ষর *current_arg_passed_by_মান = স্তূপ + arg_slots_আকার;
+  পূর্ণসংখ্যা i, s;
   ffi_type **arg;
-  int count = 0;
+  পূর্ণসংখ্যা গুনতি = 0;
   ffi_cif *cif = ecif->cif;
-  void **argv = ecif->avalue;
+  শূন্য **argv = ecif->avalue;
 
   arg = cif->arg_types;
 
-  DEBUG_PRINT("stack: %p\n", stack);
-  DEBUG_PRINT("arg_slots_size: %u\n", arg_slots_size);
-  DEBUG_PRINT("current_arg_passed_by_value: %p\n", current_arg_passed_by_value);
+  DEBUG_PRINT("stack: %p\n", স্তূপ);
+  DEBUG_PRINT("arg_slots_size: %u\n", arg_slots_আকার);
+  DEBUG_PRINT("current_arg_passed_by_value: %p\n", current_arg_passed_by_মান);
   DEBUG_PRINT("ecif: %p\n", ecif);
   DEBUG_PRINT("ecif->avalue: %p\n", ecif->avalue);
 
-  for (i = 0; i < cif->nargs; i++) {
+  জন্য (i = 0; i < cif->nargs; i++) {
 
-    s = KVX_ABI_SLOT_SIZE;
-    switch((*arg)->type) {
-      case FFI_TYPE_SINT8:
-      case FFI_TYPE_UINT8:
-      case FFI_TYPE_SINT16:
-      case FFI_TYPE_UINT16:
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_DOUBLE:
-      case FFI_TYPE_UINT64:
-      case FFI_TYPE_SINT64:
-      case FFI_TYPE_POINTER:
-        DEBUG_PRINT("INT64/32/16/8/FLOAT/DOUBLE or POINTER @%p\n", stack);
-        *(uint64_t *) stack = *(uint64_t *)(* argv);
-        break;
+    s = KVX_ABI_SLOT_আকার;
+    নির্বাচন((*arg)->type) {
+      ক্ষেত্র FFI_TYPE_SINT8:
+      ক্ষেত্র FFI_TYPE_UINT8:
+      ক্ষেত্র FFI_TYPE_SINT16:
+      ক্ষেত্র FFI_TYPE_UINT16:
+      ক্ষেত্র FFI_TYPE_SINT32:
+      ক্ষেত্র FFI_TYPE_UINT32:
+      ক্ষেত্র FFI_TYPE_FLOAT:
+      ক্ষেত্র FFI_TYPE_DOUBLE:
+      ক্ষেত্র FFI_TYPE_UINT64:
+      ক্ষেত্র FFI_TYPE_SINT64:
+      ক্ষেত্র FFI_TYPE_POINTER:
+        DEBUG_PRINT("INT64/32/16/8/FLOAT/DOUBLE or POINTER @%p\n", স্তূপ);
+        *(uint64_t *) স্তূপ = *(uint64_t *)(* argv);
+        বিরতি;
 
-      case FFI_TYPE_COMPLEX:
-        if ((*arg)->size == 8)
-          *(_Complex float *) stack = *(_Complex float *)(* argv);
-        else if ((*arg)->size == 16) {
-          *(_Complex double *) stack = *(_Complex double *)(* argv);
+      ক্ষেত্র FFI_TYPE_COMPLEX:
+        যদি ((*arg)->আকার_2 == 8)
+          *(_Complex দশমিক *) স্তূপ = *(_Complex দশমিক *)(* argv);
+        অন্যথা যদি ((*arg)->আকার_2 == 16) {
+          *(_Complex দ্বিগুণ *) স্তূপ = *(_Complex দ্বিগুণ *)(* argv);
           s = 16;
-        } else
+        } অন্যথা
           abort();
-        break;
-      case FFI_TYPE_STRUCT: {
-        char *value;
-        unsigned int written_size = 0;
-        DEBUG_PRINT("struct by value @%p\n", stack);
-        if ((*arg)->size > KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
+        বিরতি;
+      ক্ষেত্র FFI_TYPE_STRUCT: {
+        অক্ষর *মান;
+        unsigned পূর্ণসংখ্যা written_আকার = 0;
+        DEBUG_PRINT("struct by value @%p\n", স্তূপ);
+        যদি ((*arg)->আকার_2 > KVX_ABI_MAX_AGGREGATE_IN_REG_আকার) {
           DEBUG_PRINT("big struct\n");
-          *(uint64_t *) stack = (uintptr_t)current_arg_passed_by_value;
-          value = current_arg_passed_by_value;
-          current_arg_passed_by_value += (*arg)->size;
-          written_size = KVX_ABI_SLOT_SIZE;
-        } else {
-          value = stack;
-          written_size = (*arg)->size;
+          *(uint64_t *) স্তূপ = (uintptr_t)current_arg_passed_by_মান;
+          মান = current_arg_passed_by_মান;
+          current_arg_passed_by_মান += (*arg)->আকার_2;
+          written_আকার = KVX_ABI_SLOT_আকার;
+        } অন্যথা {
+          মান = স্তূপ;
+          written_আকার = (*arg)->আকার_2;
         }
-        memcpy(value, *argv, (*arg)->size);
-        s = ALIGN(written_size, KVX_ABI_STACK_ARG_ALIGNMENT);
-        break;
+        memcpy(মান, *argv, (*arg)->আকার_2);
+        s = ALIGN(written_আকার, KVX_ABI_স্তূপ_ARG_ALIGNMENT);
+        বিরতি;
       }
-      default:
+      পূর্বনির্ধারিত:
         printf("Error: unsupported arg type %d\n", (*arg)->type);
         abort();
-        break;
+        বিরতি;
 
     }
-    stack += s;
-    count += s;
+    স্তূপ += s;
+    গুনতি += s;
     argv++;
     arg++;
   }
 #ifdef FFI_DEBUG
-  FFI_ASSERT(((intptr_t)(stacktemp + REG_ARGS_SIZE) & (KVX_ABI_STACK_ALIGNMENT-1)) == 0);
+  FFI_ASSERT(((intptr_t)(stacktemp + REG_ARGS_আকার) & (KVX_ABI_স্তূপ_ALIGNMENT-1)) == 0);
 #endif
-  return stacktemp + REG_ARGS_SIZE;
+  ফেরত stacktemp + REG_ARGS_আকার;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-                                    unsigned int ntotalargs)
+ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned পূর্ণসংখ্যা nfixedargs,
+                                    unsigned পূর্ণসংখ্যা ntotalargs)
 {
-  cif->flags = cif->rtype->size;
-  return FFI_OK;
+  cif->flags = cif->rtype->আকার_2;
+  ফেরত FFI_OK;
 }
 
-static unsigned long handle_small_int_ext(kvx_intext_method *int_ext_method,
-                                          const ffi_type *rtype)
+স্থির unsigned long handle_small_int_ext(kvx_intext_method *int_ext_method,
+                                          ধ্রুবক ffi_type *rtype)
 {
-  switch (rtype->type) {
-    case FFI_TYPE_SINT8:
+  নির্বাচন (rtype->type) {
+    ক্ষেত্র FFI_TYPE_SINT8:
       *int_ext_method = KVX_RET_SXBD;
-      return KVX_REGISTER_SIZE;
+      ফেরত KVX_REGISTER_আকার;
 
-    case FFI_TYPE_SINT16:
+    ক্ষেত্র FFI_TYPE_SINT16:
       *int_ext_method = KVX_RET_SXHD;
-      return KVX_REGISTER_SIZE;
+      ফেরত KVX_REGISTER_আকার;
 
-    case FFI_TYPE_SINT32:
+    ক্ষেত্র FFI_TYPE_SINT32:
       *int_ext_method = KVX_RET_SXWD;
-      return KVX_REGISTER_SIZE;
+      ফেরত KVX_REGISTER_আকার;
 
-    case FFI_TYPE_UINT8:
+    ক্ষেত্র FFI_TYPE_UINT8:
       *int_ext_method = KVX_RET_ZXBD;
-      return KVX_REGISTER_SIZE;
+      ফেরত KVX_REGISTER_আকার;
 
-    case FFI_TYPE_UINT16:
+    ক্ষেত্র FFI_TYPE_UINT16:
       *int_ext_method = KVX_RET_ZXHD;
-      return KVX_REGISTER_SIZE;
+      ফেরত KVX_REGISTER_আকার;
 
-    case FFI_TYPE_UINT32:
+    ক্ষেত্র FFI_TYPE_UINT32:
       *int_ext_method = KVX_RET_ZXWD;
-      return KVX_REGISTER_SIZE;
+      ফেরত KVX_REGISTER_আকার;
 
-    default:
+    পূর্বনির্ধারিত:
       *int_ext_method = KVX_RET_NONE;
-      return rtype->size;
+      ফেরত rtype->আকার_2;
   }
 }
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
-  int i;
-  unsigned long int slot_fitting_args_size = 0;
-  unsigned long int total_size = 0;
-  unsigned long int big_struct_size = 0;
+  পূর্ণসংখ্যা i;
+  unsigned long পূর্ণসংখ্যা slot_fitting_args_আকার = 0;
+  unsigned long পূর্ণসংখ্যা যোগ_আকার = 0;
+  unsigned long পূর্ণসংখ্যা big_struct_আকার = 0;
   kvx_intext_method int_extension_method;
   ffi_type **arg;
-  struct ret_value local_rvalue = {0};
-  size_t wb_size;
+  কাঠামো ret_মান local_rvalue = {0};
+  size_t wb_আকার;
 
 
   /* Calculate size to allocate on stack */
-  for (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
-    DEBUG_PRINT("argument %d, type %d, size %lu\n", i, (*arg)->type, (*arg)->size);
-    if (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
-      if ((*arg)->size <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE) {
-        slot_fitting_args_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
-      } else {
-        slot_fitting_args_size += KVX_ABI_SLOT_SIZE; /* aggregate passed by reference */
-        big_struct_size += ALIGN((*arg)->size, KVX_ABI_SLOT_SIZE);
+  জন্য (i = 0, arg = cif->arg_types; i < cif->nargs; i++, arg++) {
+    DEBUG_PRINT("argument %d, type %d, size %lu\n", i, (*arg)->type, (*arg)->আকার_2);
+    যদি (((*arg)->type == FFI_TYPE_STRUCT) || ((*arg)->type == FFI_TYPE_COMPLEX)) {
+      যদি ((*arg)->আকার_2 <= KVX_ABI_MAX_AGGREGATE_IN_REG_আকার) {
+        slot_fitting_args_আকার += ALIGN((*arg)->আকার_2, KVX_ABI_SLOT_আকার);
+      } অন্যথা {
+        slot_fitting_args_আকার += KVX_ABI_SLOT_আকার; /* aggregate passed by reference */
+        big_struct_আকার += ALIGN((*arg)->আকার_2, KVX_ABI_SLOT_আকার);
       }
-    } else if ((*arg)->size <= KVX_ABI_SLOT_SIZE) {
-      slot_fitting_args_size += KVX_ABI_SLOT_SIZE;
-    } else {
-      printf("Error: unsupported arg size %ld arg type %d\n", (*arg)->size, (*arg)->type);
+    } অন্যথা যদি ((*arg)->আকার_2 <= KVX_ABI_SLOT_আকার) {
+      slot_fitting_args_আকার += KVX_ABI_SLOT_আকার;
+    } অন্যথা {
+      printf("Error: unsupported arg size %ld arg type %d\n", (*arg)->আকার_2, (*arg)->type);
       abort(); /* should never happen? */
     }
   }
@@ -224,9 +224,9 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ecif.rvalue = rvalue;
 
   /* This implementation allocates anyway for all register based args */
-  slot_fitting_args_size = max(slot_fitting_args_size, REG_ARGS_SIZE);
-  total_size = slot_fitting_args_size + big_struct_size;
-  total_size = ALIGN(total_size, KVX_ABI_STACK_ALIGNMENT);
+  slot_fitting_args_আকার = max(slot_fitting_args_আকার, REG_ARGS_আকার);
+  যোগ_আকার = slot_fitting_args_আকার + big_struct_আকার;
+  যোগ_আকার = ALIGN(যোগ_আকার, KVX_ABI_স্তূপ_ALIGNMENT);
 
   /* wb_size: write back size, the size we will need to write back to user
    * provided buffer. In theory it should always be cif->flags which is
@@ -236,26 +236,26 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
    * in our case, if size <= 8 bytes we must write back 8 bytes.
    * floats, complex and structs are not affected, only integrals.
    */
-  wb_size = handle_small_int_ext(&int_extension_method, cif->rtype);
+  wb_আকার = handle_small_int_ext(&int_extension_method, cif->rtype);
 
-  switch (cif->abi) {
-    case FFI_SYSV:
-      DEBUG_PRINT("total_size: %lu\n", total_size);
-      DEBUG_PRINT("slot fitting args size: %lu\n", slot_fitting_args_size);
+  নির্বাচন (cif->abi) {
+    ক্ষেত্র FFI_SYSV:
+      DEBUG_PRINT("total_size: %lu\n", যোগ_আকার);
+      DEBUG_PRINT("slot fitting args size: %lu\n", slot_fitting_args_আকার);
       DEBUG_PRINT("rvalue: %p\n", rvalue);
       DEBUG_PRINT("fn: %p\n", fn);
       DEBUG_PRINT("rsize: %u\n", cif->flags);
-      DEBUG_PRINT("wb_size: %u\n", wb_size);
+      DEBUG_PRINT("wb_size: %u\n", wb_আকার);
       DEBUG_PRINT("int_extension_method: %u\n", int_extension_method);
-      local_rvalue = ffi_call_SYSV(total_size, slot_fitting_args_size,
+      local_rvalue = ffi_call_SYSV(যোগ_আকার, slot_fitting_args_আকার,
                                    &ecif, rvalue, fn, int_extension_method);
-      if ((cif->flags <= KVX_ABI_MAX_AGGREGATE_IN_REG_SIZE)
+      যদি ((cif->flags <= KVX_ABI_MAX_AGGREGATE_IN_REG_আকার)
           && (cif->rtype->type != FFI_TYPE_VOID))
-        memcpy(rvalue, &local_rvalue, wb_size);
-      break;
-    default:
+        memcpy(rvalue, &local_rvalue, wb_আকার);
+      বিরতি;
+    পূর্বনির্ধারিত:
       abort();
-      break;
+      বিরতি;
   }
 }
 
@@ -263,11 +263,11 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+                      শূন্য *user_তথ্য,
+                      শূন্য *codeloc)
 {
-  return FFI_BAD_ABI;
+  ফেরত FFI_BAD_ABI;
 }
 
 #endif /* (__kvx__) */

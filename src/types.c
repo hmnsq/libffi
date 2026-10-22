@@ -28,83 +28,83 @@
    can redefine them here as "const".  */
 #define LIBFFI_HIDE_BASIC_TYPES
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
 /* Return a version string. */
-const char *ffi_get_version (void)
+ধ্রুবক অক্ষর *ffi_get_version (শূন্য)
 {
-  return FFI_VERSION_STRING;
+  ফেরত FFI_VERSION_STRING;
 }
 
 /* Return the version as an unsigned long value: (x * 10000 + y * 100 + z) */
-unsigned long ffi_get_version_number (void)
+unsigned long ffi_get_version_সংখ্যা (শূন্য)
 {
-  return FFI_VERSION_NUMBER;
+  ফেরত FFI_VERSION_সংখ্যা;
 }
 
-unsigned int ffi_get_default_abi (void)
+unsigned পূর্ণসংখ্যা ffi_get_default_abi (শূন্য)
 {
-  return FFI_DEFAULT_ABI;
+  ফেরত FFI_DEFAULT_ABI;
 }
 
-size_t ffi_get_closure_size (void)
+size_t ffi_get_closure_আকার (শূন্য)
 {
-  return sizeof(ffi_closure);
+  ফেরত আকার(ffi_closure);
 }
 
 /* Type definitions */
 
 #define FFI_TYPEDEF(name, type, id, maybe_const)\
-struct struct_align_##name {			\
-  char c;					\
+কাঠামো struct_align_##name {			\
+  অক্ষর c;					\
   type x;					\
 };						\
 FFI_EXTERN					\
 maybe_const ffi_type ffi_type_##name = {	\
-  sizeof(type),					\
-  offsetof(struct struct_align_##name, x),	\
-  id, NULL					\
+  আকার(type),					\
+  offsetof(কাঠামো struct_align_##name, x),	\
+  id, ফাঁকা					\
 }
 
 #define FFI_COMPLEX_TYPEDEF(name, type, maybe_const)	\
-static ffi_type *ffi_elements_complex_##name [2] = {	\
-	(ffi_type *)(&ffi_type_##name), NULL		\
+স্থির ffi_type *ffi_elements_complex_##name [2] = {	\
+	(ffi_type *)(&ffi_type_##name), ফাঁকা		\
 };							\
-struct struct_align_complex_##name {			\
-  char c;						\
+কাঠামো struct_align_complex_##name {			\
+  অক্ষর c;						\
   _Complex type x;					\
 };							\
 FFI_EXTERN						\
 maybe_const ffi_type ffi_type_complex_##name = {	\
-  sizeof(_Complex type),				\
-  offsetof(struct struct_align_complex_##name, x),	\
+  আকার(_Complex type),				\
+  offsetof(কাঠামো struct_align_complex_##name, x),	\
   FFI_TYPE_COMPLEX,					\
   (ffi_type **)ffi_elements_complex_##name		\
 }
 
 /* Size and alignment are fake here. They must not be 0. */
-FFI_EXTERN const ffi_type ffi_type_void = {
-  1, 1, FFI_TYPE_VOID, NULL
+FFI_EXTERN ধ্রুবক ffi_type ffi_type_void = {
+  1, 1, FFI_TYPE_VOID, ফাঁকা
 };
 
-FFI_TYPEDEF(uint8, UINT8, FFI_TYPE_UINT8, const);
-FFI_TYPEDEF(sint8, SINT8, FFI_TYPE_SINT8, const);
-FFI_TYPEDEF(uint16, UINT16, FFI_TYPE_UINT16, const);
-FFI_TYPEDEF(sint16, SINT16, FFI_TYPE_SINT16, const);
-FFI_TYPEDEF(uint32, UINT32, FFI_TYPE_UINT32, const);
-FFI_TYPEDEF(sint32, SINT32, FFI_TYPE_SINT32, const);
-FFI_TYPEDEF(uint64, UINT64, FFI_TYPE_UINT64, const);
-FFI_TYPEDEF(sint64, SINT64, FFI_TYPE_SINT64, const);
+FFI_TYPEDEF(uint8, UINT8, FFI_TYPE_UINT8, ধ্রুবক);
+FFI_TYPEDEF(sint8, SINT8, FFI_TYPE_SINT8, ধ্রুবক);
+FFI_TYPEDEF(uint16, UINT16, FFI_TYPE_UINT16, ধ্রুবক);
+FFI_TYPEDEF(sint16, SINT16, FFI_TYPE_SINT16, ধ্রুবক);
+FFI_TYPEDEF(uint32, UINT32, FFI_TYPE_UINT32, ধ্রুবক);
+FFI_TYPEDEF(sint32, SINT32, FFI_TYPE_SINT32, ধ্রুবক);
+FFI_TYPEDEF(uint64, UINT64, FFI_TYPE_UINT64, ধ্রুবক);
+FFI_TYPEDEF(sint64, SINT64, FFI_TYPE_SINT64, ধ্রুবক);
 
-FFI_TYPEDEF(pointer, void*, FFI_TYPE_POINTER, const);
+FFI_TYPEDEF(pointer, শূন্য*, FFI_TYPE_POINTER, ধ্রুবক);
 
-FFI_TYPEDEF(float, float, FFI_TYPE_FLOAT, const);
-FFI_TYPEDEF(double, double, FFI_TYPE_DOUBLE, const);
+FFI_TYPEDEF(দশমিক, দশমিক, FFI_TYPE_FLOAT, ধ্রুবক);
+FFI_TYPEDEF(দ্বিগুণ, দ্বিগুণ, FFI_TYPE_DOUBLE, ধ্রুবক);
 
-#if !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
-#define FFI_LDBL_CONST const
-#else
+#যদি !defined HAVE_LONG_DOUBLE_VARIANT || defined __alpha__
+#define FFI_LDBL_CONST ধ্রুবক
+#অন্যথা
 #define FFI_LDBL_CONST
 #endif
 
@@ -113,29 +113,29 @@ FFI_TYPEDEF(double, double, FFI_TYPE_DOUBLE, const);
    maintain binary compatibility, as -mlong-double-128 can be used
    at any time.  */
 /* Validate the hard-coded number below.  */
-# if defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
+# যদি defined(__LONG_DOUBLE_128__) && FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-const ffi_type ffi_type_longdouble = { 16, 16, 4, NULL };
-#else
-FFI_TYPEDEF(longdouble, long double, FFI_TYPE_LONGDOUBLE, FFI_LDBL_CONST);
+ধ্রুবক ffi_type ffi_type_longdouble = { 16, 16, 4, ফাঁকা };
+#অন্যথা
+FFI_TYPEDEF(longdouble, long দ্বিগুণ, FFI_TYPE_LONGDOUBLE, FFI_LDBL_CONST);
 #endif
 
 #ifdef FFI_TARGET_HAS_COMPLEX_TYPE
-FFI_COMPLEX_TYPEDEF(float, float, const);
-FFI_COMPLEX_TYPEDEF(double, double, const);
-FFI_COMPLEX_TYPEDEF(longdouble, long double, FFI_LDBL_CONST);
+FFI_COMPLEX_TYPEDEF(দশমিক, দশমিক, ধ্রুবক);
+FFI_COMPLEX_TYPEDEF(দ্বিগুণ, দ্বিগুণ, ধ্রুবক);
+FFI_COMPLEX_TYPEDEF(longdouble, long দ্বিগুণ, FFI_LDBL_CONST);
 #endif
 
 #ifdef FFI_TARGET_HAS_INT128
 # ifdef HAVE_INT128
-FFI_TYPEDEF(uint128, __uint128_t, FFI_TYPE_UINT128, const);
-FFI_TYPEDEF(sint128, __int128_t, FFI_TYPE_SINT128, const);
-# else
+FFI_TYPEDEF(uint128, __uint128_t, FFI_TYPE_UINT128, ধ্রুবক);
+FFI_TYPEDEF(sint128, __int128_t, FFI_TYPE_SINT128, ধ্রুবক);
+# অন্যথা
 /* We don't actually need compiler support for __int128_t, as we don't
    use the type itself within libffi.  Obviously the size is 16; make
    the conservative assumption that the alignment must also be 16. */
-const ffi_type ffi_type_uint128 = { 16, 16, FFI_TYPE_UINT128, NULL };
-const ffi_type ffi_type_sint128 = { 16, 16, FFI_TYPE_SINT128, NULL };
+ধ্রুবক ffi_type ffi_type_uint128 = { 16, 16, FFI_TYPE_UINT128, ফাঁকা };
+ধ্রুবক ffi_type ffi_type_sint128 = { 16, 16, FFI_TYPE_SINT128, ফাঁকা };
 # endif
 #endif /* FFI_TARGET_HAS_INT128 */

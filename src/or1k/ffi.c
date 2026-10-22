@@ -24,116 +24,116 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include "ffi_common.h"
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব "ffi_common.h"
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void* ffi_prep_args(char *stack, extended_cif *ecif)
+শূন্য* ffi_prep_args(অক্ষর *স্তূপ, extended_cif *ecif)
 {
-  char *stacktemp = stack;
-  int i, s;
+  অক্ষর *stacktemp = স্তূপ;
+  পূর্ণসংখ্যা i, s;
   ffi_type **arg;
-  int count = 0;
-  int nfixedargs;
+  পূর্ণসংখ্যা গুনতি = 0;
+  পূর্ণসংখ্যা nfixedargs;
 
   nfixedargs = ecif->cif->nfixedargs;
   arg = ecif->cif->arg_types;
-  void **argv = ecif->avalue;
+  শূন্য **argv = ecif->avalue;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
+  যদি (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
     {
-      *(void **) stack = ecif->rvalue;
-      stack += 4;
-      count = 4;
+      *(শূন্য **) স্তূপ = ecif->rvalue;
+      স্তূপ += 4;
+      গুনতি = 4;
     }
-  for(i=0; i<ecif->cif->nargs; i++)
+  জন্য(i=0; i<ecif->cif->nargs; i++)
   {
 
     /* variadic args are saved on stack */
-    if ((nfixedargs == 0) && (count < 24))
+    যদি ((nfixedargs == 0) && (গুনতি < 24))
       {
-        count = 24;
-        stack = stacktemp + 24;
+        গুনতি = 24;
+        স্তূপ = stacktemp + 24;
       }
     nfixedargs--;
 
     s = 4;
-    switch((*arg)->type)
+    নির্বাচন((*arg)->type)
       {
-      case FFI_TYPE_STRUCT:
-        *(void **)stack = *argv;
-        break;
+      ক্ষেত্র FFI_TYPE_STRUCT:
+        *(শূন্য **)স্তূপ = *argv;
+        বিরতি;
 
-      case FFI_TYPE_SINT8:
-        *(signed int *) stack = (signed int)*(SINT8 *)(* argv);
-        break;
+      ক্ষেত্র FFI_TYPE_SINT8:
+        *(signed পূর্ণসংখ্যা *) স্তূপ = (signed পূর্ণসংখ্যা)*(SINT8 *)(* argv);
+        বিরতি;
 
-      case FFI_TYPE_UINT8:
-        *(unsigned int *) stack = (unsigned int)*(UINT8 *)(* argv);
-        break;
+      ক্ষেত্র FFI_TYPE_UINT8:
+        *(unsigned পূর্ণসংখ্যা *) স্তূপ = (unsigned পূর্ণসংখ্যা)*(UINT8 *)(* argv);
+        বিরতি;
 
-      case FFI_TYPE_SINT16:
-        *(signed int *) stack = (signed int)*(SINT16 *)(* argv);
-        break;
+      ক্ষেত্র FFI_TYPE_SINT16:
+        *(signed পূর্ণসংখ্যা *) স্তূপ = (signed পূর্ণসংখ্যা)*(SINT16 *)(* argv);
+        বিরতি;
 
-      case FFI_TYPE_UINT16:
-        *(unsigned int *) stack = (unsigned int)*(UINT16 *)(* argv);
-        break;
+      ক্ষেত্র FFI_TYPE_UINT16:
+        *(unsigned পূর্ণসংখ্যা *) স্তূপ = (unsigned পূর্ণসংখ্যা)*(UINT16 *)(* argv);
+        বিরতি;
 
-      case FFI_TYPE_SINT32:
-      case FFI_TYPE_UINT32:
-      case FFI_TYPE_FLOAT:
-      case FFI_TYPE_POINTER:
-        *(int *)stack = *(int*)(*argv);
-        break;
+      ক্ষেত্র FFI_TYPE_SINT32:
+      ক্ষেত্র FFI_TYPE_UINT32:
+      ক্ষেত্র FFI_TYPE_FLOAT:
+      ক্ষেত্র FFI_TYPE_POINTER:
+        *(পূর্ণসংখ্যা *)স্তূপ = *(পূর্ণসংখ্যা*)(*argv);
+        বিরতি;
 
-      default: /* 8 byte types */
-        if (count == 20) /* never split arguments */
+      পূর্বনির্ধারিত: /* 8 byte types */
+        যদি (গুনতি == 20) /* never split arguments */
           {
-            stack += 4;
-            count += 4;
+            স্তূপ += 4;
+            গুনতি += 4;
           }
-        s = (*arg)->size;
-        memcpy(stack, *argv, s);
-        break;
+        s = (*arg)->আকার_2;
+        memcpy(স্তূপ, *argv, s);
+        বিরতি;
       }
 
-    stack += s;
-    count += s;
+    স্তূপ += s;
+    গুনতি += s;
     argv++;
     arg++;
   }
-  return stacktemp + ((count>24)?24:0);
+  ফেরত stacktemp + ((গুনতি>24)?24:0);
 }
 
-extern void ffi_call_SYSV(unsigned,
+বাহ্যিক শূন্য ffi_call_SYSV(unsigned,
                           extended_cif *,
-                          void *(*)(char *, extended_cif *),
+                          শূন্য *(*)(অক্ষর *, extended_cif *),
                           unsigned *,
-                          void (*fn)(void),
+                          শূন্য (*fn)(শূন্য),
                           unsigned);
 
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
-  int i;
-  int size;
+  পূর্ণসংখ্যা i;
+  পূর্ণসংখ্যা আকার_2;
   ffi_type **arg;
-  void **avalue_copy = NULL;
+  শূন্য **avalue_copy = ফাঁকা;
 
   /* Calculate size to allocate on stack */
 
-  for(i = 0, arg = cif->arg_types, size=0; i < cif->nargs; i++, arg++)
+  জন্য(i = 0, arg = cif->arg_types, আকার_2=0; i < cif->nargs; i++, arg++)
     {
-      if ((*arg)->type == FFI_TYPE_STRUCT)
-        size += 4;
-      else
-      if ((*arg)->size <= 4)
-        size += 4;
-      else
-        size += 8;
+      যদি ((*arg)->type == FFI_TYPE_STRUCT)
+        আকার_2 += 4;
+      অন্যথা
+      যদি ((*arg)->আকার_2 <= 4)
+        আকার_2 += 4;
+      অন্যথা
+        আকার_2 += 8;
 
       /* If we have any large structure arguments, make a copy so we are passing
          by value.  The pointer array is cloned first: the caller owns
@@ -141,28 +141,28 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
          modified.  */
       {
         ffi_type *at = cif->arg_types[i];
-        int size = at->size;
-        if (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
+        পূর্ণসংখ্যা আকার_2 = at->আকার_2;
+        যদি (at->type == FFI_TYPE_STRUCT) /* && size > 4) All struct args? */
           {
-            char *argcopy = alloca (size);
-            if (avalue_copy == NULL)
+            অক্ষর *argcopy = alloca (আকার_2);
+            যদি (avalue_copy == ফাঁকা)
               {
-                avalue_copy = alloca (cif->nargs * sizeof (void *));
-                memcpy (avalue_copy, avalue, cif->nargs * sizeof (void *));
+                avalue_copy = alloca (cif->nargs * আকার (শূন্য *));
+                memcpy (avalue_copy, avalue, cif->nargs * আকার (শূন্য *));
                 avalue = avalue_copy;
               }
-            memcpy (argcopy, avalue[i], size);
+            memcpy (argcopy, avalue[i], আকার_2);
             avalue[i] = argcopy;
           }
       }
     }
 
   /* for variadic functions more space is needed on the stack */
-  if (cif->nargs != cif->nfixedargs)
-    size += 24;
+  যদি (cif->nargs != cif->nfixedargs)
+    আকার_2 += 24;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
-    size += 4;
+  যদি (cif->rtype->type == FFI_TYPE_STRUCT)
+    আকার_2 += 4;
 
 
   extended_cif ecif;
@@ -170,114 +170,114 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   ecif.avalue = avalue;
   ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  নির্বাচন (cif->abi)
   {
-    case FFI_SYSV:
-      ffi_call_SYSV(size, &ecif, ffi_prep_args, rvalue, fn, cif->flags);
-      break;
-    default:
+    ক্ষেত্র FFI_SYSV:
+      ffi_call_SYSV(আকার_2, &ecif, ffi_prep_args, rvalue, fn, cif->flags);
+      বিরতি;
+    পূর্বনির্ধারিত:
       FFI_ASSERT(0);
-      break;
+      বিরতি;
   }
 }
 
 
-void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
+শূন্য ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
                       unsigned long r6, unsigned long r7, unsigned long r8)
 {
-  register int *sp __asm__ ("r17");
-  register int *r13 __asm__ ("r13");
+  নিবন্ধ পূর্ণসংখ্যা *sp __asm__ ("r17");
+  নিবন্ধ পূর্ণসংখ্যা *r13 __asm__ ("r13");
 
   ffi_closure* closure = (ffi_closure*) r13;
-  char *stack_args = (char*) sp;
+  অক্ষর *স্তূপ_args = (অক্ষর*) sp;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
   unsigned register_args[6] =
     { r3, r4, r5, r6, r7, r8 };
 
   /* Pointer to a struct return value.  */
-  void *struct_rvalue = (void *) r3;
+  শূন্য *struct_rvalue = (শূন্য *) r3;
 
   ffi_cif *cif = closure->cif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
-  int count = 0;
-  int nfixedargs = cif->nfixedargs;
-  int i;
+  শূন্য **avalue = alloca (cif->nargs * আকার(শূন্য *));
+  অক্ষর *ptr = (অক্ষর *) register_args;
+  পূর্ণসংখ্যা গুনতি = 0;
+  পূর্ণসংখ্যা nfixedargs = cif->nfixedargs;
+  পূর্ণসংখ্যা i;
 
   /* preserve struct type return pointer passing */
 
-  if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
+  যদি ((cif->rtype != ফাঁকা) && (cif->rtype->type == FFI_TYPE_STRUCT))
   {
     ptr += 4;
-    count = 4;
+    গুনতি = 4;
   }
 
   /* Find the address of each argument.  */
-  for (i = 0; i < cif->nargs; i++)
+  জন্য (i = 0; i < cif->nargs; i++)
     {
 
       /* variadic args are saved on stack */
-      if ((nfixedargs == 0) && (count < 24))
+      যদি ((nfixedargs == 0) && (গুনতি < 24))
         {
-          ptr = stack_args;
-          count = 24;
+          ptr = স্তূপ_args;
+          গুনতি = 24;
         }
       nfixedargs--;
 
-      switch (arg_types[i]->type)
+      নির্বাচন (arg_types[i]->type)
         {
-        case FFI_TYPE_SINT8:
-        case FFI_TYPE_UINT8:
+        ক্ষেত্র FFI_TYPE_SINT8:
+        ক্ষেত্র FFI_TYPE_UINT8:
           avalue[i] = ptr + 3;
-          break;
+          বিরতি;
 
-        case FFI_TYPE_SINT16:
-        case FFI_TYPE_UINT16:
+        ক্ষেত্র FFI_TYPE_SINT16:
+        ক্ষেত্র FFI_TYPE_UINT16:
           avalue[i] = ptr + 2;
-          break;
+          বিরতি;
 
-        case FFI_TYPE_SINT32:
-        case FFI_TYPE_UINT32:
-        case FFI_TYPE_FLOAT:
-        case FFI_TYPE_POINTER:
+        ক্ষেত্র FFI_TYPE_SINT32:
+        ক্ষেত্র FFI_TYPE_UINT32:
+        ক্ষেত্র FFI_TYPE_FLOAT:
+        ক্ষেত্র FFI_TYPE_POINTER:
           avalue[i] = ptr;
-          break;
+          বিরতি;
 
-        case FFI_TYPE_STRUCT:
-          avalue[i] = *(void**)ptr;
-          break;
+        ক্ষেত্র FFI_TYPE_STRUCT:
+          avalue[i] = *(শূন্য**)ptr;
+          বিরতি;
 
-        default:
+        পূর্বনির্ধারিত:
           /* 8-byte values  */
 
           /* arguments are never splitted */
-          if (ptr == &register_args[5])
-            ptr = stack_args;
+          যদি (ptr == &register_args[5])
+            ptr = স্তূপ_args;
           avalue[i] = ptr;
           ptr += 4;
-          count += 4;
-          break;
+          গুনতি += 4;
+          বিরতি;
         }
       ptr += 4;
-      count += 4;
+      গুনতি += 4;
 
       /* If we've handled more arguments than fit in registers,
          start looking at the those passed on the stack.  */
 
-      if (count == 24)
-        ptr = stack_args;
+      যদি (গুনতি == 24)
+        ptr = স্তূপ_args;
     }
 
-  if (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
+  যদি (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      (closure->fun) (cif, struct_rvalue, avalue, closure->user_data);
-    } else
+      (closure->fun) (cif, struct_rvalue, avalue, closure->user_তথ্য);
+    } অন্যথা
     {
       long long rvalue;
-      (closure->fun) (cif, &rvalue, avalue, closure->user_data);
-      if (cif->rtype)
+      (closure->fun) (cif, &rvalue, avalue, closure->user_তথ্য);
+      যদি (cif->rtype)
         __asm__ ("l.ori r12, %0, 0x0\n l.lwz r11, 0(r12)\n l.lwz r12, 4(r12)" : : "r" (&rvalue));
     }
 }
@@ -286,19 +286,19 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+                      শূন্য *user_তথ্য,
+                      শূন্য *codeloc)
 {
   unsigned short *tramp = (unsigned short *) closure->tramp;
   unsigned long fn = (unsigned long) ffi_closure_SYSV;
   unsigned long cls = (unsigned long) codeloc;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_SYSV)
+    ফেরত FFI_BAD_ABI;
 
   closure->cif = cif;
-  closure->user_data = user_data;
+  closure->user_তথ্য = user_তথ্য;
   closure->fun = fun;
 
   /* write pointers to temporary registers */
@@ -318,7 +318,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
   tramp[10] = (0x2a << 10) | (17 << 5) | 1; /* l.ori r17, r1, ... */
   tramp[11] = 0x0;
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 
@@ -327,24 +327,24 @@ ffi_status ffi_prep_cif_machdep (ffi_cif *cif)
   cif->flags = 0;
 
   /* structures are returned as pointers */
-  if (cif->rtype->type == FFI_TYPE_STRUCT)
+  যদি (cif->rtype->type == FFI_TYPE_STRUCT)
     cif->flags = FFI_TYPE_STRUCT;
-  else
-  if (cif->rtype->size > 4)
+  অন্যথা
+  যদি (cif->rtype->আকার_2 > 4)
     cif->flags = FFI_TYPE_UINT64;
 
   cif->nfixedargs = cif->nargs;
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 
 ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif,
-         unsigned int nfixedargs, unsigned int ntotalargs)
+         unsigned পূর্ণসংখ্যা nfixedargs, unsigned পূর্ণসংখ্যা ntotalargs)
 {
   ffi_status status;
 
   status = ffi_prep_cif_machdep (cif);
   cif->nfixedargs = nfixedargs;
-  return status;
+  ফেরত status;
 }

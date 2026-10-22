@@ -26,28 +26,28 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdbool.h>
-#include <float.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <stdbool.h>
+#অন্তর্ভাব <float.h>
 
-#include "ia64_flags.h"
+#অন্তর্ভাব "ia64_flags.h"
 
 /* A 64-bit pointer value.  In LP64 mode, this is effectively a plain
    pointer.  In ILP32 mode, it's a pointer that's been extended to 
    64 bits by "addp4".  */
 #ifdef __hpux
-typedef void *PTR64;
-#else // some other unix
-typedef void *PTR64 __attribute__((mode(DI)));
+প্রকারলেখ শূন্য *PTR64;
+#অন্যথা // some other unix
+প্রকারলেখ শূন্য *PTR64 __attribute__((mode(DI)));
 #endif
 
 /* Memory image of fp register contents.  This is the implementation
    specific format used by ldf.fill/stf.spill.  All we care about is
    that it wants a 16 byte aligned slot.  */
-typedef struct
+প্রকারলেখ কাঠামো
 {
   UINT64 x[2] __attribute__((aligned(16)));
 } fpreg;
@@ -55,7 +55,7 @@ typedef struct
 
 /* The stack layout given to ffi_call_unix and ffi_closure_unix_inner.  */
 
-struct ia64_args
+কাঠামো ia64_args
 {
   fpreg fp_regs[8];	/* Contents of 8 fp arg registers.  */
   UINT64 gp_regs[8];	/* Contents of 8 gp arg registers.  */
@@ -65,13 +65,13 @@ struct ia64_args
 
 /* Adjust ADDR, a pointer to an 8 byte slot, to point to the low LEN bytes.  */
 
-static inline void *
-endian_adjust (void *addr, size_t len)
+স্থির অন্তঃরেখ শূন্য *
+endian_adjust (শূন্য *addr, size_t len)
 {
 #ifdef __BIG_ENDIAN__
-  return addr + (8 - len);
-#else
-  return addr;
+  ফেরত addr + (8 - len);
+#অন্যথা
+  ফেরত addr;
 #endif
 }
 
@@ -81,37 +81,37 @@ endian_adjust (void *addr, size_t len)
    the denorm support.  */
 
 #ifdef __hpux
-#define stf_spill(addr, value)
-#else
-#define stf_spill(addr, value)	\
-  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(value));
+#define stf_spill(addr, মান)
+#অন্যথা
+#define stf_spill(addr, মান)	\
+  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(মান));
 #endif
 
 /* Load a value from ADDR, which is in the current cpu implementation's
    fp spill format.  As above, this must also be a macro.  */
 
 #ifdef __hpux
-#define ldf_fill(result, addr)
-#else
-#define ldf_fill(result, addr)	\
-  __asm__ ("ldf.fill %0 = %1%P1" : "=f"(result) : "m"(*addr));
+#define ldf_fill(ফলাফল, addr)
+#অন্যথা
+#define ldf_fill(ফলাফল, addr)	\
+  __asm__ ("ldf.fill %0 = %1%P1" : "=f"(ফলাফল) : "m"(*addr));
 #endif
 
 /* Return the size of the C type associated with with TYPE.  Which will
    be one of the FFI_IA64_TYPE_HFA_* values.  */
 
-static size_t
-hfa_type_size (int type)
+স্থির size_t
+hfa_type_আকার (পূর্ণসংখ্যা type)
 {
-  switch (type)
+  নির্বাচন (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
-      return sizeof(float);
-    case FFI_IA64_TYPE_HFA_DOUBLE:
-      return sizeof(double);
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
-      return sizeof(__float80);
-    default:
+    ক্ষেত্র FFI_IA64_TYPE_HFA_FLOAT:
+      ফেরত আকার(দশমিক);
+    ক্ষেত্র FFI_IA64_TYPE_HFA_DOUBLE:
+      ফেরত আকার(দ্বিগুণ);
+    ক্ষেত্র FFI_IA64_TYPE_HFA_LDOUBLE:
+      ফেরত আকার(__float80);
+    পূর্বনির্ধারিত:
       abort ();
     }
 }
@@ -119,21 +119,21 @@ hfa_type_size (int type)
 /* Load from ADDR a value indicated by TYPE.  Which will be one of
    the FFI_IA64_TYPE_HFA_* values.  */
 
-static void
-hfa_type_load (fpreg *fpaddr, int type, void *addr)
+স্থির শূন্য
+hfa_type_load (fpreg *fpaddr, পূর্ণসংখ্যা type, শূন্য *addr)
 {
-  switch (type)
+  নির্বাচন (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
-      stf_spill (fpaddr, *(float *) addr);
-      return;
-    case FFI_IA64_TYPE_HFA_DOUBLE:
-      stf_spill (fpaddr, *(double *) addr);
-      return;
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
+    ক্ষেত্র FFI_IA64_TYPE_HFA_FLOAT:
+      stf_spill (fpaddr, *(দশমিক *) addr);
+      ফেরত;
+    ক্ষেত্র FFI_IA64_TYPE_HFA_DOUBLE:
+      stf_spill (fpaddr, *(দ্বিগুণ *) addr);
+      ফেরত;
+    ক্ষেত্র FFI_IA64_TYPE_HFA_LDOUBLE:
       stf_spill (fpaddr, *(__float80 *) addr);
-      return;
-    default:
+      ফেরত;
+    পূর্বনির্ধারিত:
       abort ();
     }
 }
@@ -141,33 +141,33 @@ hfa_type_load (fpreg *fpaddr, int type, void *addr)
 /* Load VALUE into ADDR as indicated by TYPE.  Which will be one of
    the FFI_IA64_TYPE_HFA_* values.  */
 
-static void
-hfa_type_store (int type, void *addr, fpreg *fpaddr)
+স্থির শূন্য
+hfa_type_store (পূর্ণসংখ্যা type, শূন্য *addr, fpreg *fpaddr)
 {
-  switch (type)
+  নির্বাচন (type)
     {
-    case FFI_IA64_TYPE_HFA_FLOAT:
+    ক্ষেত্র FFI_IA64_TYPE_HFA_FLOAT:
       {
-	float result;
-	ldf_fill (result, fpaddr);
-	*(float *) addr = result;
-	break;
+	দশমিক ফলাফল;
+	ldf_fill (ফলাফল, fpaddr);
+	*(দশমিক *) addr = ফলাফল;
+	বিরতি;
       }
-    case FFI_IA64_TYPE_HFA_DOUBLE:
+    ক্ষেত্র FFI_IA64_TYPE_HFA_DOUBLE:
       {
-	double result;
-	ldf_fill (result, fpaddr);
-	*(double *) addr = result;
-	break;
+	দ্বিগুণ ফলাফল;
+	ldf_fill (ফলাফল, fpaddr);
+	*(দ্বিগুণ *) addr = ফলাফল;
+	বিরতি;
       }
-    case FFI_IA64_TYPE_HFA_LDOUBLE:
+    ক্ষেত্র FFI_IA64_TYPE_HFA_LDOUBLE:
       {
-	__float80 result;
-	ldf_fill (result, fpaddr);
-	*(__float80 *) addr = result;
-	break;
+	__float80 ফলাফল;
+	ldf_fill (ফলাফল, fpaddr);
+	*(__float80 *) addr = ফলাফল;
+	বিরতি;
       }
-    default:
+    পূর্বনির্ধারিত:
       abort ();
     }
 }
@@ -176,244 +176,244 @@ hfa_type_store (int type, void *addr, fpreg *fpaddr)
    all of the same fp type?  If so, return the element type.  Return
    FFI_TYPE_VOID if not.  */
 
-static int
-hfa_element_type (ffi_type *type, int nested)
+স্থির পূর্ণসংখ্যা
+hfa_element_type (ffi_type *type, পূর্ণসংখ্যা nested)
 {
-  int element = FFI_TYPE_VOID;
+  পূর্ণসংখ্যা element = FFI_TYPE_VOID;
 
-  switch (type->type)
+  নির্বাচন (type->type)
     {
-    case FFI_TYPE_FLOAT:
+    ক্ষেত্র FFI_TYPE_FLOAT:
       /* We want to return VOID for raw floating-point types, but the
 	 synthetic HFA type if we're nested within an aggregate.  */
-      if (nested)
+      যদি (nested)
 	element = FFI_IA64_TYPE_HFA_FLOAT;
-      break;
+      বিরতি;
 
-    case FFI_TYPE_DOUBLE:
+    ক্ষেত্র FFI_TYPE_DOUBLE:
       /* Similarly.  */
-      if (nested)
+      যদি (nested)
 	element = FFI_IA64_TYPE_HFA_DOUBLE;
-      break;
+      বিরতি;
 
-    case FFI_TYPE_LONGDOUBLE:
+    ক্ষেত্র FFI_TYPE_LONGDOUBLE:
       /* Similarly, except that that HFA is true for double extended,
 	 but not quad precision.  Both have sizeof == 16, so tell the
 	 difference based on the precision.  */
-      if (LDBL_MANT_DIG == 64 && nested)
+      যদি (LDBL_MANT_DIG == 64 && nested)
 	element = FFI_IA64_TYPE_HFA_LDOUBLE;
-      break;
+      বিরতি;
 
-    case FFI_TYPE_STRUCT:
+    ক্ষেত্র FFI_TYPE_STRUCT:
       {
 	ffi_type **ptr = &type->elements[0];
 
-	for (ptr = &type->elements[0]; *ptr ; ptr++)
+	জন্য (ptr = &type->elements[0]; *ptr ; ptr++)
 	  {
-	    int sub_element = hfa_element_type (*ptr, 1);
-	    if (sub_element == FFI_TYPE_VOID)
-	      return FFI_TYPE_VOID;
+	    পূর্ণসংখ্যা sub_element = hfa_element_type (*ptr, 1);
+	    যদি (sub_element == FFI_TYPE_VOID)
+	      ফেরত FFI_TYPE_VOID;
 
-	    if (element == FFI_TYPE_VOID)
+	    যদি (element == FFI_TYPE_VOID)
 	      element = sub_element;
-	    else if (element != sub_element)
-	      return FFI_TYPE_VOID;
+	    অন্যথা যদি (element != sub_element)
+	      ফেরত FFI_TYPE_VOID;
 	  }
       }
-      break;
+      বিরতি;
 
-    default:
-      return FFI_TYPE_VOID;
+    পূর্বনির্ধারিত:
+      ফেরত FFI_TYPE_VOID;
     }
 
-  return element;
+  ফেরত element;
 }
 
 
 /* Perform machine dependent cif processing. */
 
-static ffi_status
+স্থির ffi_status
 ffi_prep_cif_machdep_core(ffi_cif *cif)
 {
-  int flags;
+  পূর্ণসংখ্যা flags;
 
   /* Adjust cif->bytes to include space for the bits of the ia64_args frame
      that precedes the integer register portion.  The estimate that the
      generic bits did for the argument space required is good enough for the
      integer component.  */
-  cif->bytes += offsetof(struct ia64_args, gp_regs[0]);
-  if (cif->bytes < sizeof(struct ia64_args))
-    cif->bytes = sizeof(struct ia64_args);
+  cif->bytes += offsetof(কাঠামো ia64_args, gp_regs[0]);
+  যদি (cif->bytes < আকার(কাঠামো ia64_args))
+    cif->bytes = আকার(কাঠামো ia64_args);
 
   /* Set the return type flag. */
   flags = cif->rtype->type;
-  switch (cif->rtype->type)
+  নির্বাচন (cif->rtype->type)
     {
-    case FFI_TYPE_LONGDOUBLE:
+    ক্ষেত্র FFI_TYPE_LONGDOUBLE:
       /* Leave FFI_TYPE_LONGDOUBLE as meaning double extended precision,
 	 and encode quad precision as a two-word integer structure.  */
-      if (LDBL_MANT_DIG != 64)
+      যদি (LDBL_MANT_DIG != 64)
 	flags = FFI_IA64_TYPE_SMALL_STRUCT | (16 << 8);
-      break;
+      বিরতি;
 
-    case FFI_TYPE_STRUCT:
+    ক্ষেত্র FFI_TYPE_STRUCT:
       {
-        size_t size = cif->rtype->size;
-  	int hfa_type = hfa_element_type (cif->rtype, 0);
+        size_t আকার_2 = cif->rtype->আকার_2;
+  	পূর্ণসংখ্যা hfa_type = hfa_element_type (cif->rtype, 0);
 
-	if (hfa_type != FFI_TYPE_VOID)
+	যদি (hfa_type != FFI_TYPE_VOID)
 	  {
-	    size_t nelts = size / hfa_type_size (hfa_type);
-	    if (nelts <= 8)
-	      flags = hfa_type | (size << 8);
+	    size_t nelts = আকার_2 / hfa_type_আকার (hfa_type);
+	    যদি (nelts <= 8)
+	      flags = hfa_type | (আকার_2 << 8);
 	  }
-	else
+	অন্যথা
 	  {
-	    if (size <= 32)
-	      flags = FFI_IA64_TYPE_SMALL_STRUCT | (size << 8);
+	    যদি (আকার_2 <= 32)
+	      flags = FFI_IA64_TYPE_SMALL_STRUCT | (আকার_2 << 8);
 	  }
       }
-      break;
+      বিরতি;
 
-    default:
-      break;
+    পূর্বনির্ধারিত:
+      বিরতি;
     }
   cif->flags = flags;
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   cif->nfixedargs = cif->nargs;
-  return ffi_prep_cif_machdep_core(cif);
+  ফেরত ffi_prep_cif_machdep_core(cif);
 }
 
 ffi_status
 ffi_prep_cif_machdep_var(ffi_cif *cif,
-			 unsigned int nfixedargs,
-			 unsigned int ntotalargs MAYBE_UNUSED)
+			 unsigned পূর্ণসংখ্যা nfixedargs,
+			 unsigned পূর্ণসংখ্যা ntotalargs MAYBE_UNUSED)
 {
   cif->nfixedargs = nfixedargs;
-  return ffi_prep_cif_machdep_core(cif);
+  ফেরত ffi_prep_cif_machdep_core(cif);
 }
 
-extern int ffi_call_unix (struct ia64_args *, PTR64, void (*)(void), UINT64);
+বাহ্যিক পূর্ণসংখ্যা ffi_call_unix (কাঠামো ia64_args *, PTR64, শূন্য (*)(শূন্য), UINT64);
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য
+ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
-  struct ia64_args *stack;
+  কাঠামো ia64_args *স্তূপ;
   long i, avn, gpcount, fpcount;
   ffi_type **p_arg;
 
   FFI_ASSERT (cif->abi == FFI_UNIX);
 
   /* If we have no spot for a return value, make one.  */
-  if (rvalue == NULL && cif->rtype->type != FFI_TYPE_VOID)
-    rvalue = alloca (cif->rtype->size);
+  যদি (rvalue == ফাঁকা && cif->rtype->type != FFI_TYPE_VOID)
+    rvalue = alloca (cif->rtype->আকার_2);
     
   /* Allocate the stack frame.  */
-  stack = alloca (cif->bytes);
+  স্তূপ = alloca (cif->bytes);
 
   gpcount = fpcount = 0;
   avn = cif->nargs;
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  জন্য (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      switch ((*p_arg)->type)
+      নির্বাচন ((*p_arg)->type)
 	{
-	case FFI_TYPE_SINT8:
-	  stack->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT8:
-	  stack->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT16:
-	  stack->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT16:
-	  stack->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT32:
-	  stack->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
-	  break;
-	case FFI_TYPE_UINT32:
-	  stack->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  stack->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT8:
+	  স্তূপ->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_UINT8:
+	  স্তূপ->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_SINT16:
+	  স্তূপ->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_UINT16:
+	  স্তূপ->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_SINT32:
+	  স্তূপ->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_UINT32:
+	  স্তূপ->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_SINT64:
+	ক্ষেত্র FFI_TYPE_UINT64:
+	  স্তূপ->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
+	  বিরতি;
 
-	case FFI_TYPE_POINTER:
-	  stack->gp_regs[gpcount++] = (UINT64)(PTR64) *(void **)avalue[i];
-	  break;
+	ক্ষেত্র FFI_TYPE_POINTER:
+	  স্তূপ->gp_regs[gpcount++] = (UINT64)(PTR64) *(শূন্য **)avalue[i];
+	  বিরতি;
 
-	case FFI_TYPE_FLOAT:
-	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(float *)avalue[i]);
+	ক্ষেত্র FFI_TYPE_FLOAT:
+	  যদি (gpcount < 8 && fpcount < 8)
+	    stf_spill (&স্তূপ->fp_regs[fpcount++], *(দশমিক *)avalue[i]);
 	  {
 	    UINT32 tmp;
-	    memcpy (&tmp, avalue[i], sizeof (UINT32));
-	    stack->gp_regs[gpcount++] = tmp;
+	    memcpy (&tmp, avalue[i], আকার (UINT32));
+	    স্তূপ->gp_regs[gpcount++] = tmp;
 	  }
-	  break;
+	  বিরতি;
 
-	case FFI_TYPE_DOUBLE:
-	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(double *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount++], avalue[i], sizeof (UINT64));
-	  break;
+	ক্ষেত্র FFI_TYPE_DOUBLE:
+	  যদি (gpcount < 8 && fpcount < 8)
+	    stf_spill (&স্তূপ->fp_regs[fpcount++], *(দ্বিগুণ *)avalue[i]);
+	  memcpy (&স্তূপ->gp_regs[gpcount++], avalue[i], আকার (UINT64));
+	  বিরতি;
 
-	case FFI_TYPE_LONGDOUBLE:
-	  if (gpcount & 1)
+	ক্ষেত্র FFI_TYPE_LONGDOUBLE:
+	  যদি (gpcount & 1)
 	    gpcount++;
-	  if (LDBL_MANT_DIG == 64 && gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(__float80 *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount], avalue[i], 16);
+	  যদি (LDBL_MANT_DIG == 64 && gpcount < 8 && fpcount < 8)
+	    stf_spill (&স্তূপ->fp_regs[fpcount++], *(__float80 *)avalue[i]);
+	  memcpy (&স্তূপ->gp_regs[gpcount], avalue[i], 16);
 	  gpcount += 2;
-	  break;
+	  বিরতি;
 
-	case FFI_TYPE_STRUCT:
+	ক্ষেত্র FFI_TYPE_STRUCT:
 	  {
-	    size_t size = (*p_arg)->size;
+	    size_t আকার_2 = (*p_arg)->আকার_2;
 	    size_t align = (*p_arg)->alignment;
-	    int hfa_type = hfa_element_type (*p_arg, 0);
+	    পূর্ণসংখ্যা hfa_type = hfa_element_type (*p_arg, 0);
 
 	    FFI_ASSERT (align <= 16);
-	    if (align == 16 && (gpcount & 1))
+	    যদি (align == 16 && (gpcount & 1))
 	      gpcount++;
 
-	    if (hfa_type != FFI_TYPE_VOID)
+	    যদি (hfa_type != FFI_TYPE_VOID)
 	      {
-		size_t hfa_size = hfa_type_size (hfa_type);
+		size_t hfa_আকার = hfa_type_আকার (hfa_type);
 		size_t offset = 0;
 		size_t gp_offset = gpcount * 8;
 
-		while (fpcount < 8
-		       && offset < size
+		যখন (fpcount < 8
+		       && offset < আকার_2
 		       && gp_offset < 8 * 8)
 		  {
-		    hfa_type_load (&stack->fp_regs[fpcount], hfa_type,
+		    hfa_type_load (&স্তূপ->fp_regs[fpcount], hfa_type,
 				   avalue[i] + offset);
-		    offset += hfa_size;
-		    gp_offset += hfa_size;
+		    offset += hfa_আকার;
+		    gp_offset += hfa_আকার;
 		    fpcount += 1;
 		  }
 	      }
 
-	    memcpy (&stack->gp_regs[gpcount], avalue[i], size);
-	    gpcount += (size + 7) / 8;
+	    memcpy (&স্তূপ->gp_regs[gpcount], avalue[i], আকার_2);
+	    gpcount += (আকার_2 + 7) / 8;
 	  }
-	  break;
+	  বিরতি;
 
-	default:
+	পূর্বনির্ধারিত:
 	  abort ();
 	}
     }
 
-  ffi_call_unix (stack, rvalue, fn, cif->flags);
+  ffi_call_unix (স্তূপ, rvalue, fn, cif->flags);
 }
 
 /* Closures represent a pair consisting of a function pointer, and
@@ -431,186 +431,186 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
    gp pointer to the closure.  This allows the function entry code to
    both retrieve the user data, and to restore the correct gp pointer.  */
 
-extern void ffi_closure_unix ();
+বাহ্যিক শূন্য ffi_closure_unix ();
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+		      শূন্য *user_তথ্য,
+		      শূন্য *codeloc)
 {
   /* The layout of a function descriptor.  A C function pointer really 
      points to one of these.  */
-  struct ia64_fd
+  কাঠামো ia64_fd
   {
     UINT64 code_pointer;
     UINT64 gp;
   };
 
-  struct ffi_ia64_trampoline_struct
+  কাঠামো ffi_ia64_trampoline_struct
   {
     UINT64 code_pointer;	/* Pointer to ffi_closure_unix.  */
     UINT64 fake_gp;		/* Pointer to closure, installed as gp.  */
     UINT64 real_gp;		/* Real gp value.  */
   };
 
-  struct ffi_ia64_trampoline_struct *tramp;
-  struct ia64_fd *fd;
+  কাঠামো ffi_ia64_trampoline_struct *tramp;
+  কাঠামো ia64_fd *fd;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_UNIX)
+    ফেরত FFI_BAD_ABI;
 
-  tramp = (struct ffi_ia64_trampoline_struct *)closure->tramp;
-  fd = (struct ia64_fd *)(void *)ffi_closure_unix;
+  tramp = (কাঠামো ffi_ia64_trampoline_struct *)closure->tramp;
+  fd = (কাঠামো ia64_fd *)(শূন্য *)ffi_closure_unix;
 
   tramp->code_pointer = fd->code_pointer;
   tramp->real_gp = fd->gp;
   tramp->fake_gp = (UINT64)(PTR64)codeloc;
   closure->cif = cif;
-  closure->user_data = user_data;
+  closure->user_তথ্য = user_তথ্য;
   closure->fun = fun;
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 
 UINT64
-ffi_closure_unix_inner (ffi_closure *closure, struct ia64_args *stack,
-			void *rvalue, void *r8)
+ffi_closure_unix_inner (ffi_closure *closure, কাঠামো ia64_args *স্তূপ,
+			শূন্য *rvalue, শূন্য *r8)
 {
   ffi_cif *cif;
-  void **avalue;
+  শূন্য **avalue;
   ffi_type **p_arg;
   long i, avn, gpcount, fpcount, nfixedargs;
 
   cif = closure->cif;
   avn = cif->nargs;
   nfixedargs = cif->nfixedargs;
-  avalue = alloca (avn * sizeof (void *));
+  avalue = alloca (avn * আকার (শূন্য *));
 
   /* If the structure return value is passed in memory get that location
      from r8 so as to pass the value directly back to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  যদি (cif->flags == FFI_TYPE_STRUCT)
     rvalue = r8;
 
   gpcount = fpcount = 0;
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  জন্য (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
-      int named = i < nfixedargs;
-      switch ((*p_arg)->type)
+      পূর্ণসংখ্যা named = i < nfixedargs;
+      নির্বাচন ((*p_arg)->type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 1);
-	  break;
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 2);
-	  break;
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 4);
-	  break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  avalue[i] = &stack->gp_regs[gpcount++];
-	  break;
-	case FFI_TYPE_POINTER:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], sizeof(void*));
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT8:
+	ক্ষেত্র FFI_TYPE_UINT8:
+	  avalue[i] = endian_adjust(&স্তূপ->gp_regs[gpcount++], 1);
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_SINT16:
+	ক্ষেত্র FFI_TYPE_UINT16:
+	  avalue[i] = endian_adjust(&স্তূপ->gp_regs[gpcount++], 2);
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_SINT32:
+	ক্ষেত্র FFI_TYPE_UINT32:
+	  avalue[i] = endian_adjust(&স্তূপ->gp_regs[gpcount++], 4);
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_SINT64:
+	ক্ষেত্র FFI_TYPE_UINT64:
+	  avalue[i] = &স্তূপ->gp_regs[gpcount++];
+	  বিরতি;
+	ক্ষেত্র FFI_TYPE_POINTER:
+	  avalue[i] = endian_adjust(&স্তূপ->gp_regs[gpcount++], আকার(শূন্য*));
+	  বিরতি;
 
-	case FFI_TYPE_FLOAT:
-	  if (named && gpcount < 8 && fpcount < 8)
+	ক্ষেত্র FFI_TYPE_FLOAT:
+	  যদি (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      float result;
+	      fpreg *addr = &স্তূপ->fp_regs[fpcount++];
+	      দশমিক ফলাফল;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(float *)addr = result;
+	      ldf_fill (ফলাফল, addr);
+	      *(দশমিক *)addr = ফলাফল;
 	    }
-	  else
-	    avalue[i] = endian_adjust(&stack->gp_regs[gpcount], 4);
+	  অন্যথা
+	    avalue[i] = endian_adjust(&স্তূপ->gp_regs[gpcount], 4);
 	  gpcount++;
-	  break;
+	  বিরতি;
 
-	case FFI_TYPE_DOUBLE:
-	  if (named && gpcount < 8 && fpcount < 8)
+	ক্ষেত্র FFI_TYPE_DOUBLE:
+	  যদি (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      double result;
+	      fpreg *addr = &স্তূপ->fp_regs[fpcount++];
+	      দ্বিগুণ ফলাফল;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(double *)addr = result;
+	      ldf_fill (ফলাফল, addr);
+	      *(দ্বিগুণ *)addr = ফলাফল;
 	    }
-	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	  অন্যথা
+	    avalue[i] = &স্তূপ->gp_regs[gpcount];
 	  gpcount++;
-	  break;
+	  বিরতি;
 
-	case FFI_TYPE_LONGDOUBLE:
-	  if (gpcount & 1)
+	ক্ষেত্র FFI_TYPE_LONGDOUBLE:
+	  যদি (gpcount & 1)
 	    gpcount++;
-	  if (LDBL_MANT_DIG == 64 && named && gpcount < 8 && fpcount < 8)
+	  যদি (LDBL_MANT_DIG == 64 && named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
-	      __float80 result;
+	      fpreg *addr = &স্তূপ->fp_regs[fpcount++];
+	      __float80 ফলাফল;
 	      avalue[i] = addr;
-	      ldf_fill (result, addr);
-	      *(__float80 *)addr = result;
+	      ldf_fill (ফলাফল, addr);
+	      *(__float80 *)addr = ফলাফল;
 	    }
-	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	  অন্যথা
+	    avalue[i] = &স্তূপ->gp_regs[gpcount];
 	  gpcount += 2;
-	  break;
+	  বিরতি;
 
-	case FFI_TYPE_STRUCT:
+	ক্ষেত্র FFI_TYPE_STRUCT:
 	  {
-	    size_t size = (*p_arg)->size;
+	    size_t আকার_2 = (*p_arg)->আকার_2;
 	    size_t align = (*p_arg)->alignment;
-	    int hfa_type = hfa_element_type (*p_arg, 0);
+	    পূর্ণসংখ্যা hfa_type = hfa_element_type (*p_arg, 0);
 
 	    FFI_ASSERT (align <= 16);
-	    if (align == 16 && (gpcount & 1))
+	    যদি (align == 16 && (gpcount & 1))
 	      gpcount++;
 
-	    if (hfa_type != FFI_TYPE_VOID)
+	    যদি (hfa_type != FFI_TYPE_VOID)
 	      {
-		size_t hfa_size = hfa_type_size (hfa_type);
+		size_t hfa_আকার = hfa_type_আকার (hfa_type);
 		size_t offset = 0;
 		size_t gp_offset = gpcount * 8;
-		void *addr = alloca (size);
+		শূন্য *addr = alloca (আকার_2);
 
 		avalue[i] = addr;
 
-		while (fpcount < 8
-		       && offset < size
+		যখন (fpcount < 8
+		       && offset < আকার_2
 		       && gp_offset < 8 * 8)
 		  {
 		    hfa_type_store (hfa_type, addr + offset,
-				    &stack->fp_regs[fpcount]);
-		    offset += hfa_size;
-		    gp_offset += hfa_size;
+				    &স্তূপ->fp_regs[fpcount]);
+		    offset += hfa_আকার;
+		    gp_offset += hfa_আকার;
 		    fpcount += 1;
 		  }
 
-		if (offset < size)
-		  memcpy (addr + offset, (char *)stack->gp_regs + gp_offset,
-			  size - offset);
+		যদি (offset < আকার_2)
+		  memcpy (addr + offset, (অক্ষর *)স্তূপ->gp_regs + gp_offset,
+			  আকার_2 - offset);
 	      }
-	    else
-	      avalue[i] = &stack->gp_regs[gpcount];
+	    অন্যথা
+	      avalue[i] = &স্তূপ->gp_regs[gpcount];
 
-	    gpcount += (size + 7) / 8;
+	    gpcount += (আকার_2 + 7) / 8;
 	  }
-	  break;
+	  বিরতি;
 
-	default:
+	পূর্বনির্ধারিত:
 	  abort ();
 	}
     }
 
-  closure->fun (cif, rvalue, avalue, closure->user_data);
+  closure->fun (cif, rvalue, avalue, closure->user_তথ্য);
 
-  return cif->flags;
+  ফেরত cif->flags;
 }

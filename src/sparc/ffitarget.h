@@ -34,22 +34,22 @@
 
 /* ---- System specific configurations ----------------------------------- */
 
-#if defined(__arch64__) || defined(__sparcv9)
+#যদি defined(__arch64__) || defined(__sparcv9)
 #ifndef SPARC64
 #define SPARC64
 #endif
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+প্রকারলেখ unsigned long          ffi_arg;
+প্রকারলেখ signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+প্রকারলেখ গণনা ffi_abi {
   FFI_FIRST_ABI = 0,
 #ifdef SPARC64
   FFI_V9,
   FFI_DEFAULT_ABI = FFI_V9,
-#else
+#অন্যথা
   FFI_V8,
   FFI_DEFAULT_ABI = FFI_V8,
 #endif
@@ -57,12 +57,12 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
+#define FFI_TARGET_SPECIFIC_স্তূপ_SPACE_ALLOCATION 1
 #define FFI_TARGET_HAS_COMPLEX_TYPE 1
 
 #ifdef SPARC64
 # define FFI_TARGET_SPECIFIC_VARIADIC 1
-# define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+# define FFI_EXTRA_CIF_FIELDS  unsigned পূর্ণসংখ্যা nfixedargs
 #endif
 
 /* ---- Definitions for closures ----------------------------------------- */
@@ -72,9 +72,9 @@ typedef enum ffi_abi {
 #define FFI_NATIVE_RAW_API 0
 
 #ifdef SPARC64
-#define FFI_TRAMPOLINE_SIZE 24
-#else
-#define FFI_TRAMPOLINE_SIZE 16
+#define FFI_TRAMPOLINE_আকার 24
+#অন্যথা
+#define FFI_TRAMPOLINE_আকার 16
 #endif
 
 #endif

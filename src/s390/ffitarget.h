@@ -32,7 +32,7 @@
 #error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
 #endif
 
-#if defined (__s390x__)
+#যদি defined (__s390x__)
 #ifndef S390X
 #define S390X
 #endif
@@ -41,10 +41,10 @@
 /* ---- System specific configurations ----------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+প্রকারলেখ unsigned long          ffi_arg;
+প্রকারলেখ signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+প্রকারলেখ গণনা ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -52,7 +52,7 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#define FFI_TARGET_SPECIFIC_স্তূপ_SPACE_ALLOCATION
 #define FFI_TARGET_HAS_COMPLEX_TYPE
 #define FFI_TARGET_HAS_INT128
 
@@ -61,9 +61,9 @@ typedef enum ffi_abi {
 #define FFI_CLOSURES 1
 #define FFI_GO_CLOSURES 1
 #ifdef S390X
-#define FFI_TRAMPOLINE_SIZE 32
-#else
-#define FFI_TRAMPOLINE_SIZE 16
+#define FFI_TRAMPOLINE_আকার 32
+#অন্যথা
+#define FFI_TRAMPOLINE_আকার 16
 #endif
 #define FFI_NATIVE_RAW_API 0
 

@@ -34,46 +34,46 @@
 
 /* ---- Generic type definitions ----------------------------------------- */
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+প্রকারলেখ unsigned long ffi_arg;
+প্রকারলেখ signed long ffi_sarg;
 
 // TODO: https://github.com/emscripten-core/emscripten/issues/9868
-typedef void (*ffi_fp)(void);
+প্রকারলেখ শূন্য (*ffi_fp)(শূন্য);
 
-typedef enum ffi_abi {
+প্রকারলেখ গণনা ffi_abi {
   FFI_FIRST_ABI = 0,
-#if __SIZEOF_POINTER__ == 4
+#যদি __SIZEOF_POINTER__ == 4
   FFI_WASM32, // "raw", no structures, varargs, or closures (not implemented!)
   FFI_WASM32_EMSCRIPTEN, // structures, varargs, and split 64-bit params
-#elif __SIZEOF_POINTER__ == 8
+#নতুবা_যদি __SIZEOF_POINTER__ == 8
   FFI_WASM64,
   FFI_WASM64_EMSCRIPTEN,
-#else
+#অন্যথা
 #error "Unknown pointer size"
 #endif
   FFI_LAST_ABI,
-#if __SIZEOF_POINTER__ == 4
+#যদি __SIZEOF_POINTER__ == 4
 #ifdef __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM32_EMSCRIPTEN
-#else
+#অন্যথা
   FFI_DEFAULT_ABI = FFI_WASM32
 #endif
-#elif __SIZEOF_POINTER__ == 8
+#নতুবা_যদি __SIZEOF_POINTER__ == 8
 #ifdef __EMSCRIPTEN__
   FFI_DEFAULT_ABI = FFI_WASM64_EMSCRIPTEN
-#else
+#অন্যথা
   FFI_DEFAULT_ABI = FFI_WASM64
 #endif
-#else
+#অন্যথা
 #error "Unknown pointer size"
 #endif
 } ffi_abi;
 
 #define FFI_CLOSURES 1
 // #define FFI_GO_CLOSURES 0
-#define FFI_TRAMPOLINE_SIZE 4
+#define FFI_TRAMPOLINE_আকার 4
 // #define FFI_NATIVE_RAW_API 0
 #define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS  unsigned int nfixedargs
+#define FFI_EXTRA_CIF_FIELDS  unsigned পূর্ণসংখ্যা nfixedargs
 
 #endif

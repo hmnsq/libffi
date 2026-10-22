@@ -31,10 +31,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long	ffi_arg;
-typedef signed long	ffi_sarg;
+প্রকারলেখ unsigned long	ffi_arg;
+প্রকারলেখ signed long	ffi_sarg;
 
-typedef enum ffi_abi {
+প্রকারলেখ গণনা ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -43,15 +43,15 @@ typedef enum ffi_abi {
 #endif
 
 #define FFI_REGISTER_NARGS	6
-#define XTENSA_STACK_ALIGNMENT	16
+#define XTENSA_স্তূপ_ALIGNMENT	16
 #define FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
-				  XTENSA_STACK_ALIGNMENT - 1) & \
-				  -XTENSA_STACK_ALIGNMENT)
+				  XTENSA_স্তূপ_ALIGNMENT - 1) & \
+				  -XTENSA_স্তূপ_ALIGNMENT)
 
 /* ---- Definitions for closures ----------------------------------------- */
 
 #define FFI_CLOSURES 1
 #define FFI_NATIVE_RAW_API 0
-#define FFI_TRAMPOLINE_SIZE 24
+#define FFI_TRAMPOLINE_আকার 24
 
 #endif

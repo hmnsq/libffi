@@ -16,7 +16,7 @@
 #define X86_RET_UNUSED15	15
 
 #define X86_RET_TYPE_MASK	15
-#define X86_RET_POP_SHIFT	4
+#define X86_RET_বের_করো_SHIFT	4
 
 #define R_EAX	0
 #define R_EDX	1
@@ -24,20 +24,20 @@
 
 #ifdef __PCC__
 # define HAVE_FASTCALL 0
-#else
+#অন্যথা
 # define HAVE_FASTCALL 1
 #endif
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#যদি defined(FFI_EXEC_STATIC_TRAMP)
 /*
  * For the trampoline code table mapping, a mapping size of 4K (base page size)
  * is chosen.
  */
 #define X86_TRAMP_MAP_SHIFT	12
-#define X86_TRAMP_MAP_SIZE	(1 << X86_TRAMP_MAP_SHIFT)
+#define X86_TRAMP_MAP_আকার	(1 << X86_TRAMP_MAP_SHIFT)
 #ifdef ENDBR_PRESENT
-#define X86_TRAMP_SIZE		44
-#else
-#define X86_TRAMP_SIZE		40
+#define X86_TRAMP_আকার		44
+#অন্যথা
+#define X86_TRAMP_আকার		40
 #endif
 #endif

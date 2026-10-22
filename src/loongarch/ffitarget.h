@@ -41,10 +41,10 @@
 
 #ifndef LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef signed long ffi_sarg;
+প্রকারলেখ unsigned long ffi_arg;
+প্রকারলেখ signed long ffi_sarg;
 
-typedef enum ffi_abi
+প্রকারলেখ গণনা ffi_abi
 {
   FFI_FIRST_ABI = 0,
   FFI_LP64S,
@@ -55,27 +55,27 @@ typedef enum ffi_abi
   FFI_ILP32D,
   FFI_LAST_ABI,
 
-#if __loongarch_grlen == 64
-  #if defined(__loongarch_soft_float)
+#যদি __loongarch_grlen == 64
+  #যদি defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_LP64S
-  #elif defined(__loongarch_single_float)
+  #নতুবা_যদি defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_LP64F
-  #elif defined(__loongarch_double_float)
+  #নতুবা_যদি defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_LP64D
-  #else
+  #অন্যথা
     #error unsupported LoongArch floating-point ABI
   #endif
-#elif __loongarch_grlen == 32
-  #if defined(__loongarch_soft_float)
+#নতুবা_যদি __loongarch_grlen == 32
+  #যদি defined(__loongarch_soft_float)
     FFI_DEFAULT_ABI = FFI_ILP32S
-  #elif defined(__loongarch_single_float)
+  #নতুবা_যদি defined(__loongarch_single_float)
     FFI_DEFAULT_ABI = FFI_ILP32F
-  #elif defined(__loongarch_double_float)
+  #নতুবা_যদি defined(__loongarch_double_float)
     FFI_DEFAULT_ABI = FFI_ILP32D
-  #else
+  #অন্যথা
     #error unsupported LoongArch floating-point ABI
   #endif
-#else
+#অন্যথা
   #error unsupported LoongArch base architecture
 #endif
 } ffi_abi;
@@ -88,7 +88,7 @@ typedef enum ffi_abi
 
 #define FFI_CLOSURES 1
 #define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
+#define FFI_TRAMPOLINE_আকার 24
 #define FFI_NATIVE_RAW_API 0
 #define FFI_EXTRA_CIF_FIELDS \
   unsigned loongarch_nfixedargs; \

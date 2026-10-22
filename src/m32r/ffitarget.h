@@ -34,10 +34,10 @@
 /* ---- Generic type definitions ----------------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+প্রকারলেখ unsigned long          ffi_arg;
+প্রকারলেখ signed long            ffi_sarg;
 
-typedef enum ffi_abi
+প্রকারলেখ গণনা ffi_abi
   {
     FFI_FIRST_ABI = 0,
     FFI_SYSV,
@@ -47,7 +47,7 @@ typedef enum ffi_abi
 #endif
 
 #define FFI_CLOSURES 		0
-#define FFI_TRAMPOLINE_SIZE	24
+#define FFI_TRAMPOLINE_আকার	24
 #define FFI_NATIVE_RAW_API 	0
 
 #endif

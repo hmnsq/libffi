@@ -33,10 +33,10 @@
 #endif
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+প্রকারলেখ unsigned long          ffi_arg;
+প্রকারলেখ signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+প্রকারলেখ গণনা ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -44,12 +44,12 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_EXTRA_CIF_FIELDS unsigned int rstruct_flag
+#define FFI_EXTRA_CIF_FIELDS unsigned পূর্ণসংখ্যা rstruct_flag
 
 /* Definitions for closures */
 
 #define FFI_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 36
+#define FFI_TRAMPOLINE_আকার 36
 #define FFI_NATIVE_RAW_API 0
 
 #endif

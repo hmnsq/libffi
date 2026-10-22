@@ -15,13 +15,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS অথবা IMPLIED, INCLUDING BUT নয় LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE এবং
+   NONINFRINGEMENT.  মধ্যে NO EVENT SHALL THE AUTHORS অথবা COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES অথবা OTHER LIABILITY,
+   WHETHER মধ্যে AN ACTION OF CONTRACT, TORT অথবা OTHERWISE, ARISING FROM,
+   OUT OF অথবা মধ্যে CONNECTION WITH THE SOFTWARE অথবা THE USE অথবা OTHER
+   DEALINGS মধ্যে THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -29,7 +29,7 @@
 #include <ffi.h>
 
 #define ENTRY(name) .text; .globl name; .type  name,@function; .align 4; name:
-#define END(name) .size name , . - name
+#define শেষ(name) .size name , . - name
 
 /* Assert that the table below is in sync with ffi.h.  */
 
@@ -159,7 +159,7 @@ store_calls:
 	s32i	a11, a2, 4
 	retw
 
-END(ffi_call_SYSV)
+শেষ(ffi_call_SYSV)
 
 
 /*
@@ -184,7 +184,7 @@ ENTRY(ffi_cacheflush)
 
 	retw
 
-END(ffi_cacheflush)
+শেষ(ffi_cacheflush)
 
 /* ffi_trampoline is copied to the stack */
 
@@ -205,7 +205,7 @@ ENTRY(ffi_trampoline)
 	_mov 	a14, a0                           # [15]
 	callx0	a15                               # [18]
                                                   # [21]
-END(ffi_trampoline)
+শেষ(ffi_trampoline)
 
 /*
  * ffi_closure()
@@ -265,4 +265,4 @@ ENTRY(ffi_closure_SYSV)
 
 1:	retw
 
-END(ffi_closure_SYSV)
+শেষ(ffi_closure_SYSV)

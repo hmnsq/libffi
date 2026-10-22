@@ -24,30 +24,30 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <arch/abi.h>
-#include <arch/icache.h>
-#include <arch/opcode.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <unistd.h>
+#অন্তর্ভাব <arch/abi.h>
+#অন্তর্ভাব <arch/icache.h>
+#অন্তর্ভাব <arch/opcode.h>
 
 
 /* The first 10 registers are used to pass arguments and return values. */
-#define NUM_ARG_REGS 10
+#define অঙ্ক_ARG_REGS 10
 
 /* Performs a raw function call with the given NUM_ARG_REGS register arguments
    and the specified additional stack arguments (if any). */
-extern void ffi_call_tile(ffi_sarg reg_args[NUM_ARG_REGS],
-                          const ffi_sarg *stack_args,
-                          size_t stack_args_bytes,
-                          void (*fnaddr)(void))
+বাহ্যিক শূন্য ffi_call_tile(ffi_sarg reg_args[অঙ্ক_ARG_REGS],
+                          ধ্রুবক ffi_sarg *স্তূপ_args,
+                          size_t স্তূপ_args_bytes,
+                          শূন্য (*fnaddr)(শূন্য))
   FFI_HIDDEN;
 
 /* This handles the raw call from the closure stub, cleaning up the
    parameters and delegating to ffi_closure_tile_inner. */
-extern void ffi_closure_tile(void) FFI_HIDDEN;
+বাহ্যিক শূন্য ffi_closure_tile(শূন্য) FFI_HIDDEN;
 
 
 ffi_status
@@ -56,117 +56,117 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   /* We always allocate room for all registers. Even if we don't
      use them as parameters, they get returned in the same array
      as struct return values so we need to make room. */
-  if (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
-    cif->bytes = NUM_ARG_REGS * FFI_SIZEOF_ARG;
+  যদি (cif->bytes < অঙ্ক_ARG_REGS * FFI_SIZEOF_ARG)
+    cif->bytes = অঙ্ক_ARG_REGS * FFI_SIZEOF_ARG;
 
-  if (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  যদি (cif->rtype->আকার_2 > অঙ্ক_ARG_REGS * FFI_SIZEOF_ARG)
     cif->flags = FFI_TYPE_STRUCT;
-  else
+  অন্যথা
     cif->flags = FFI_TYPE_INT;
 
   /* Nothing to do. */
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 
-static long
-assign_to_ffi_arg(ffi_sarg *out, void *in, const ffi_type *type,
-                  int write_to_reg)
+স্থির long
+assign_to_ffi_arg(ffi_sarg *out, শূন্য *in, ধ্রুবক ffi_type *type,
+                  পূর্ণসংখ্যা write_to_reg)
 {
-  switch (type->type)
+  নির্বাচন (type->type)
     {
-    case FFI_TYPE_SINT8:
+    ক্ষেত্র FFI_TYPE_SINT8:
       *out = *(SINT8 *)in;
-      return 1;
+      ফেরত 1;
 
-    case FFI_TYPE_UINT8:
+    ক্ষেত্র FFI_TYPE_UINT8:
       *out = *(UINT8 *)in;
-      return 1;
+      ফেরত 1;
 
-    case FFI_TYPE_SINT16:
+    ক্ষেত্র FFI_TYPE_SINT16:
       *out = *(SINT16 *)in;
-      return 1;
+      ফেরত 1;
 
-    case FFI_TYPE_UINT16:
+    ক্ষেত্র FFI_TYPE_UINT16:
       *out = *(UINT16 *)in;
-      return 1;
+      ফেরত 1;
 
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
+    ক্ষেত্র FFI_TYPE_SINT32:
+    ক্ষেত্র FFI_TYPE_UINT32:
 #ifndef __LP64__
-    case FFI_TYPE_POINTER:
+    ক্ষেত্র FFI_TYPE_POINTER:
 #endif
       /* Note that even unsigned 32-bit quantities are sign extended
          on tilegx when stored in a register.  */
       *out = *(SINT32 *)in;
-      return 1;
+      ফেরত 1;
 
-    case FFI_TYPE_FLOAT:
+    ক্ষেত্র FFI_TYPE_FLOAT:
 #ifdef __tilegx__
-      if (write_to_reg)
+      যদি (write_to_reg)
         {
           /* Properly sign extend the value.  */
-          union { float f; SINT32 s32; } val;
-          val.f = *(float *)in;
+          সংঘ { দশমিক f; SINT32 s32; } val;
+          val.f = *(দশমিক *)in;
           *out = val.s32;
         }
-      else
+      অন্যথা
 #endif
         {
-          *(float *)out = *(float *)in;
+          *(দশমিক *)out = *(দশমিক *)in;
         }
-      return 1;
+      ফেরত 1;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    ক্ষেত্র FFI_TYPE_SINT64:
+    ক্ষেত্র FFI_TYPE_UINT64:
+    ক্ষেত্র FFI_TYPE_DOUBLE:
 #ifdef __LP64__
-    case FFI_TYPE_POINTER:
+    ক্ষেত্র FFI_TYPE_POINTER:
 #endif
       *(UINT64 *)out = *(UINT64 *)in;
-      return sizeof(UINT64) / FFI_SIZEOF_ARG;
+      ফেরত আকার(UINT64) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_STRUCT:
-      memcpy(out, in, type->size);
-      return (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+    ক্ষেত্র FFI_TYPE_STRUCT:
+      memcpy(out, in, type->আকার_2);
+      ফেরত (type->আকার_2 + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-    case FFI_TYPE_VOID:
+    ক্ষেত্র FFI_TYPE_VOID:
       /* Must be a return type. Nothing to do. */
-      return 0;
+      ফেরত 0;
 
-    default:
+    পূর্বনির্ধারিত:
       FFI_ASSERT(0);
-      return -1;
+      ফেরত -1;
     }
 }
 
 
-void
-ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য
+ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
-  ffi_sarg * const arg_mem = alloca(cif->bytes);
-  ffi_sarg * const reg_args = arg_mem;
-  ffi_sarg * const stack_args = &reg_args[NUM_ARG_REGS];
+  ffi_sarg * ধ্রুবক arg_mem = alloca(cif->bytes);
+  ffi_sarg * ধ্রুবক reg_args = arg_mem;
+  ffi_sarg * ধ্রুবক স্তূপ_args = &reg_args[অঙ্ক_ARG_REGS];
   ffi_sarg *argp = arg_mem;
-  ffi_type ** const arg_types = cif->arg_types;
-  const long num_args = cif->nargs;
+  ffi_type ** ধ্রুবক arg_types = cif->arg_types;
+  ধ্রুবক long অঙ্ক_args = cif->nargs;
   long i;
 
-  if (cif->flags == FFI_TYPE_STRUCT)
+  যদি (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Pass a hidden pointer to the return value. We make sure there
          is scratch space for the callee to store the return value even if
          our caller doesn't care about it. */
-      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->size));
+      *argp++ = (intptr_t)(rvalue ? rvalue : alloca(cif->rtype->আকার_2));
 
       /* No more work needed to return anything. */
-      rvalue = NULL;
+      rvalue = ফাঁকা;
     }
 
-  for (i = 0; i < num_args; i++)
+  জন্য (i = 0; i < অঙ্ক_args; i++)
     {
       ffi_type *type = arg_types[i];
-      void * const arg_in = avalue[i];
+      শূন্য * ধ্রুবক arg_in = avalue[i];
       ptrdiff_t arg_word = argp - arg_mem;
 
 #ifndef __tilegx__
@@ -177,56 +177,56 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
       arg_word += align;
 #endif
 
-      if (type->type == FFI_TYPE_STRUCT)
+      যদি (type->type == FFI_TYPE_STRUCT)
         {
-          const size_t arg_size_in_words =
-            (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+          ধ্রুবক size_t arg_আকার_in_শব্দগুলি =
+            (type->আকার_2 + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-          if (arg_word < NUM_ARG_REGS &&
-              arg_word + arg_size_in_words > NUM_ARG_REGS)
+          যদি (arg_word < অঙ্ক_ARG_REGS &&
+              arg_word + arg_আকার_in_শব্দগুলি > অঙ্ক_ARG_REGS)
             {
               /* Args are not allowed to span registers and the stack. */
-              argp = stack_args;
+              argp = স্তূপ_args;
             }
 
-          memcpy(argp, arg_in, type->size);
-          argp += arg_size_in_words;
+          memcpy(argp, arg_in, type->আকার_2);
+          argp += arg_আকার_in_শব্দগুলি;
         }
-      else
+      অন্যথা
         {
           argp += assign_to_ffi_arg(argp, arg_in, arg_types[i], 1);
         }
     }
 
   /* Actually do the call. */
-  ffi_call_tile(reg_args, stack_args,
-                cif->bytes - (NUM_ARG_REGS * FFI_SIZEOF_ARG), fn);
+  ffi_call_tile(reg_args, স্তূপ_args,
+                cif->bytes - (অঙ্ক_ARG_REGS * FFI_SIZEOF_ARG), fn);
 
-  if (rvalue != NULL)
+  যদি (rvalue != ফাঁকা)
     assign_to_ffi_arg(rvalue, reg_args, cif->rtype, 0);
 }
 
 
 /* Template code for closure. */
-extern const UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
+বাহ্যিক ধ্রুবক UINT64 ffi_template_tramp_tile[] FFI_HIDDEN;
 
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
                       ffi_cif *cif,
-                      void (*fun)(ffi_cif*, void*, void**, void*),
-                      void *user_data,
-                      void *codeloc)
+                      শূন্য (*fun)(ffi_cif*, শূন্য*, শূন্য**, শূন্য*),
+                      শূন্য *user_তথ্য,
+                      শূন্য *codeloc)
 {
 #ifdef __tilegx__
   /* TILE-Gx */
   SINT64 c;
   SINT64 h;
-  int s;
+  পূর্ণসংখ্যা s;
   UINT64 *out;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_UNIX)
+    ফেরত FFI_BAD_ABI;
 
   out = (UINT64 *)closure->tramp;
 
@@ -237,7 +237,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
   /* Find the smallest shift count that doesn't lose information
      (i.e. no need to explicitly insert high bits of the address that
      are just the sign extension of the low bits). */
-  while ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
+  যখন ((c >> s) != (SINT16)(c >> s) || (h >> s) != (SINT16)(h >> s))
     s += 16;
 
 #define OPS(a, b, shift) \
@@ -245,20 +245,20 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
   /* Emit the moveli. */
   *out++ = ffi_template_tramp_tile[0] | OPS(c, h, s);
-  for (s -= 16; s >= 0; s -= 16)
+  জন্য (s -= 16; s >= 0; s -= 16)
     *out++ = ffi_template_tramp_tile[1] | OPS(c, h, s);
 
 #undef OPS
 
   *out++ = ffi_template_tramp_tile[2];
 
-#else
+#অন্যথা
   /* TILEPro */
   UINT64 *out;
   intptr_t delta;
 
-  if (cif->abi != FFI_UNIX)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_UNIX)
+    ফেরত FFI_BAD_ABI;
 
   out = (UINT64 *)closure->tramp;
   delta = (intptr_t)ffi_closure_tile - (intptr_t)codeloc;
@@ -268,12 +268,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
   closure->cif = cif;
   closure->fun = fun;
-  closure->user_data = user_data;
+  closure->user_তথ্য = user_তথ্য;
 
-  invalidate_icache(closure->tramp, (char *)out - closure->tramp,
+  invalidate_icache(closure->tramp, (অক্ষর *)out - closure->tramp,
                     getpagesize());
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 
@@ -281,34 +281,34 @@ ffi_prep_closure_loc (ffi_closure *closure,
    all of the work. On entry reg_args[0] holds the values the registers
    had when the closure was invoked. On return reg_args[1] holds the register
    values to be returned to the caller (many of which may be garbage). */
-void FFI_HIDDEN
+শূন্য FFI_HIDDEN
 ffi_closure_tile_inner(ffi_closure *closure,
-                       ffi_sarg reg_args[2][NUM_ARG_REGS],
-                       ffi_sarg *stack_args)
+                       ffi_sarg reg_args[2][অঙ্ক_ARG_REGS],
+                       ffi_sarg *স্তূপ_args)
 {
-  ffi_cif * const cif = closure->cif;
-  void ** const avalue = alloca(cif->nargs * sizeof(void *));
-  void *rvalue;
-  ffi_type ** const arg_types = cif->arg_types;
-  ffi_sarg * const reg_args_in = reg_args[0];
-  ffi_sarg * const reg_args_out = reg_args[1];
+  ffi_cif * ধ্রুবক cif = closure->cif;
+  শূন্য ** ধ্রুবক avalue = alloca(cif->nargs * আকার(শূন্য *));
+  শূন্য *rvalue;
+  ffi_type ** ধ্রুবক arg_types = cif->arg_types;
+  ffi_sarg * ধ্রুবক reg_args_in = reg_args[0];
+  ffi_sarg * ধ্রুবক reg_args_out = reg_args[1];
   ffi_sarg * argp;
   long i, arg_word, nargs = cif->nargs;
   /* Use a union to guarantee proper alignment for double. */
-  union { ffi_sarg arg[NUM_ARG_REGS]; double d; UINT64 u64; } closure_ret;
+  সংঘ { ffi_sarg arg[অঙ্ক_ARG_REGS]; দ্বিগুণ d; UINT64 u64; } closure_ret;
 
   /* Start out reading register arguments. */
   argp = reg_args_in;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  যদি (cif->flags == FFI_TYPE_STRUCT)
     {
       /* Return by reference via hidden pointer. */
-      rvalue = (void *)(intptr_t)*argp++;
+      rvalue = (শূন্য *)(intptr_t)*argp++;
       arg_word = 1;
     }
-  else
+  অন্যথা
     {
       /* Return the value in registers. */
       rvalue = &closure_ret;
@@ -316,11 +316,11 @@ ffi_closure_tile_inner(ffi_closure *closure,
     }
 
   /* Grab the addresses of the arguments. */
-  for (i = 0; i < nargs; i++)
+  জন্য (i = 0; i < nargs; i++)
     {
-      ffi_type * const type = arg_types[i];
-      const size_t arg_size_in_words =
-        (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
+      ffi_type * ধ্রুবক type = arg_types[i];
+      ধ্রুবক size_t arg_আকার_in_শব্দগুলি =
+        (type->আকার_2 + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
 #ifndef __tilegx__
       /* Doubleword-aligned values are always in an even-number register
@@ -330,24 +330,24 @@ ffi_closure_tile_inner(ffi_closure *closure,
       arg_word += align;
 #endif
 
-      if (arg_word == NUM_ARG_REGS ||
-          (arg_word < NUM_ARG_REGS &&
-           arg_word + arg_size_in_words > NUM_ARG_REGS))
+      যদি (arg_word == অঙ্ক_ARG_REGS ||
+          (arg_word < অঙ্ক_ARG_REGS &&
+           arg_word + arg_আকার_in_শব্দগুলি > অঙ্ক_ARG_REGS))
         {
           /* Switch to reading arguments from the stack. */
-          argp = stack_args;
-          arg_word = NUM_ARG_REGS;
+          argp = স্তূপ_args;
+          arg_word = অঙ্ক_ARG_REGS;
         }
 
       avalue[i] = argp;
-      argp += arg_size_in_words;
-      arg_word += arg_size_in_words;
+      argp += arg_আকার_in_শব্দগুলি;
+      arg_word += arg_আকার_in_শব্দগুলি;
     }
 
   /* Invoke the closure.  */
-  closure->fun(cif, rvalue, avalue, closure->user_data);
+  closure->fun(cif, rvalue, avalue, closure->user_তথ্য);
 
-  if (cif->flags != FFI_TYPE_STRUCT)
+  যদি (cif->flags != FFI_TYPE_STRUCT)
     {
       /* Canonicalize for register representation. */
       assign_to_ffi_arg(reg_args_out, &closure_ret, cif->rtype, 1);

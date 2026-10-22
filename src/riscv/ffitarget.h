@@ -38,12 +38,12 @@
 
 #ifndef LIBFFI_ASM
 
-typedef unsigned long ffi_arg;
-typedef   signed long ffi_sarg;
+প্রকারলেখ unsigned long ffi_arg;
+প্রকারলেখ   signed long ffi_sarg;
 
 /* FFI_UNUSED_NN and riscv_unused are to maintain ABI compatibility with a
    distributed Berkeley patch from 2014, and can be removed at SONAME bump */
-typedef enum ffi_abi {
+প্রকারলেখ গণনা ffi_abi {
     FFI_FIRST_ABI = 0,
     FFI_SYSV,
     FFI_UNUSED_1,
@@ -60,7 +60,7 @@ typedef enum ffi_abi {
 
 #define FFI_CLOSURES 1
 #define FFI_GO_CLOSURES 1
-#define FFI_TRAMPOLINE_SIZE 24
+#define FFI_TRAMPOLINE_আকার 24
 #define FFI_NATIVE_RAW_API 0
 #define FFI_EXTRA_CIF_FIELDS unsigned riscv_nfixedargs; unsigned riscv_unused
 #define FFI_TARGET_SPECIFIC_VARIADIC

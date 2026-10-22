@@ -28,11 +28,11 @@
  * be implemented in C.
  */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <unistd.h>
 
 #define CIF_FLAGS_CHAR		1	/* for struct only */
 #define CIF_FLAGS_SHORT		2	/* for struct only */
@@ -43,124 +43,124 @@
  * Foreign Function Interface API
  */
 
-void ffi_call_elfbsd (extended_cif *, unsigned, unsigned, void *,
-		       void (*) ());
-void *ffi_prep_args (extended_cif *ecif, void *stack);
+শূন্য ffi_call_elfbsd (extended_cif *, unsigned, unsigned, শূন্য *,
+		       শূন্য (*) ());
+শূন্য *ffi_prep_args (extended_cif *ecif, শূন্য *স্তূপ);
 
-void *
-ffi_prep_args (extended_cif *ecif, void *stack)
+শূন্য *
+ffi_prep_args (extended_cif *ecif, শূন্য *স্তূপ)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  unsigned পূর্ণসংখ্যা i;
+  শূন্য **p_argv;
+  অক্ষর *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  শূন্য *struct_মান_ptr;
 
-  argp = stack;
+  argp = স্তূপ;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  যদি (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_মান_ptr = ecif->rvalue;
+  অন্যথা
+    struct_মান_ptr = ফাঁকা;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  জন্য (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof (int))
+      z = (*p_arg)->আকার_2;
+      যদি (z < আকার (পূর্ণসংখ্যা))
 	{
-	  switch ((*p_arg)->type)
+	  নির্বাচন ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT8:
+	      *(signed পূর্ণসংখ্যা *) argp = (signed পূর্ণসংখ্যা) *(SINT8 *) *p_argv;
+	      বিরতি;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    ক্ষেত্র FFI_TYPE_UINT8:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা) *(UINT8 *) *p_argv;
+	      বিরতি;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT16:
+	      *(signed পূর্ণসংখ্যা *) argp = (signed পূর্ণসংখ্যা) *(SINT16 *) *p_argv;
+	      বিরতি;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    ক্ষেত্র FFI_TYPE_UINT16:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা) *(UINT16 *) *p_argv;
+	      বিরতি;
 
-	    case FFI_TYPE_STRUCT:
+	    ক্ষেত্র FFI_TYPE_STRUCT:
 	      memcpy (argp, *p_argv, z);
-	      break;
+	      বিরতি;
 
-	    default:
+	    পূর্বনির্ধারিত:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = আকার (পূর্ণসংখ্যা);
 	}
-      else
+      অন্যথা
 	{
 	  memcpy (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  যদি ((আকার(পূর্ণসংখ্যা) - 1) & z)
+	    z = FFI_ALIGN(z, আকার(পূর্ণসংখ্যা));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  ফেরত struct_মান_ptr;
 }
 
 ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  নির্বাচন (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    ক্ষেত্র FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      বিরতি;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    ক্ষেত্র FFI_TYPE_STRUCT:
+      যদি (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
 	  cif->rtype->elements[1])
 	{
 	  cif->flags = 0;
-	  break;
+	  বিরতি;
 	}
 
-      if (cif->rtype->size == sizeof (char))
+      যদি (cif->rtype->আকার_2 == আকার (অক্ষর))
 	cif->flags = CIF_FLAGS_CHAR;
-      else if (cif->rtype->size == sizeof (short))
+      অন্যথা যদি (cif->rtype->আকার_2 == আকার (short))
 	cif->flags = CIF_FLAGS_SHORT;
-      else if (cif->rtype->size == sizeof (int))
+      অন্যথা যদি (cif->rtype->আকার_2 == আকার (পূর্ণসংখ্যা))
 	cif->flags = CIF_FLAGS_INT;
-      else if (cif->rtype->size == 2 * sizeof (int))
+      অন্যথা যদি (cif->rtype->আকার_2 == 2 * আকার (পূর্ণসংখ্যা))
 	cif->flags = CIF_FLAGS_DINT;
-      else
+      অন্যথা
 	cif->flags = 0;
-      break;
+      বিরতি;
 
-    default:
-      if (cif->rtype->size <= sizeof (int))
+    পূর্বনির্ধারিত:
+      যদি (cif->rtype->আকার_2 <= আকার (পূর্ণসংখ্যা))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      অন্যথা
 	cif->flags = CIF_FLAGS_DINT;
-      break;
+      বিরতি;
     }
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+শূন্য
+ffi_call (ffi_cif *cif, শূন্য (*fn) (), শূন্য *rvalue, শূন্য **avalue)
 {
   extended_cif ecif;
 
@@ -170,22 +170,22 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  যদি (rvalue == ফাঁকা
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->flags == 0)
-    ecif.rvalue = alloca (cif->rtype->size);
-  else
+    ecif.rvalue = alloca (cif->rtype->আকার_2);
+  অন্যথা
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  নির্বাচন (cif->abi)
     {
-    case FFI_ELFBSD:
+    ক্ষেত্র FFI_ELFBSD:
       ffi_call_elfbsd (&ecif, cif->bytes, cif->flags, ecif.rvalue, fn);
-      break;
+      বিরতি;
 
-    default:
+    পূর্বনির্ধারিত:
       FFI_ASSERT (0);
-      break;
+      বিরতি;
     }
 }
 
@@ -193,58 +193,58 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  * Closure API
  */
 
-void ffi_closure_elfbsd (void);
-void ffi_closure_struct_elfbsd (void);
-unsigned int ffi_closure_elfbsd_inner (ffi_closure *, void *, char *);
+শূন্য ffi_closure_elfbsd (শূন্য);
+শূন্য ffi_closure_struct_elfbsd (শূন্য);
+unsigned পূর্ণসংখ্যা ffi_closure_elfbsd_inner (ffi_closure *, শূন্য *, অক্ষর *);
 
-static void
-ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
+স্থির শূন্য
+ffi_prep_closure_elfbsd (ffi_cif *cif, শূন্য **avalue, অক্ষর *stackp)
 {
-  unsigned int i;
-  void **p_argv;
+  unsigned পূর্ণসংখ্যা i;
+  শূন্য **p_argv;
   ffi_type **p_arg;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  জন্য (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
+      z = (*p_arg)->আকার_2;
       *p_argv = stackp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      যদি ((আকার (পূর্ণসংখ্যা) - 1) & z)
+	z = FFI_ALIGN(z, আকার (পূর্ণসংখ্যা));
 
       p_argv++;
       stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+unsigned পূর্ণসংখ্যা
+ffi_closure_elfbsd_inner (ffi_closure *closure, শূন্য *resp, অক্ষর *স্তূপ)
 {
   ffi_cif *cif;
-  void **arg_area;
+  শূন্য **arg_area;
 
   cif = closure->cif;
-  arg_area = (void **) alloca (cif->nargs * sizeof (void *));
+  arg_area = (শূন্য **) alloca (cif->nargs * আকার (শূন্য *));
 
-  ffi_prep_closure_elfbsd (cif, arg_area, stack);
+  ffi_prep_closure_elfbsd (cif, arg_area, স্তূপ);
 
-  (closure->fun) (cif, resp, arg_area, closure->user_data);
+  (closure->fun) (cif, resp, arg_area, closure->user_তথ্য);
 
-  return cif->flags;
+  ফেরত cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
-		      void (*fun)(ffi_cif *, void *, void **, void *),
-		      void *user_data, void *codeloc)
+		      শূন্য (*fun)(ffi_cif *, শূন্য *, শূন্য **, শূন্য *),
+		      শূন্য *user_তথ্য, শূন্য *codeloc)
 {
-  char *tramp = (char *) codeloc;
-  void *fn;
+  অক্ষর *tramp = (অক্ষর *) codeloc;
+  শূন্য *fn;
 
   FFI_ASSERT (cif->abi == FFI_ELFBSD);
 
@@ -253,24 +253,24 @@ ffi_prep_closure_loc (ffi_closure *closure, ffi_cif *cif,
   /* movl #closure, r0 */
   tramp[2] = 0xd0;
   tramp[3] = 0x8f;
-  *(unsigned int *)(tramp + 4) = (unsigned int) closure;
+  *(unsigned পূর্ণসংখ্যা *)(tramp + 4) = (unsigned পূর্ণসংখ্যা) closure;
   tramp[8] = 0x50;
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  যদি (cif->rtype->type == FFI_TYPE_STRUCT
       && !cif->flags)
     fn = &ffi_closure_struct_elfbsd;
-  else
+  অন্যথা
     fn = &ffi_closure_elfbsd;
 
   /* jmpl #fn */
   tramp[9] = 0x17;
   tramp[10] = 0xef;
-  *(unsigned int *)(tramp + 11) = (unsigned int)fn + 2 -
-				  (unsigned int)tramp - 9 - 6;
+  *(unsigned পূর্ণসংখ্যা *)(tramp + 11) = (unsigned পূর্ণসংখ্যা)fn + 2 -
+				  (unsigned পূর্ণসংখ্যা)tramp - 9 - 6;
 
   closure->cif = cif;
-  closure->user_data = user_data;
+  closure->user_তথ্য = user_তথ্য;
   closure->fun = fun;
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }

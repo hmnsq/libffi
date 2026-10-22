@@ -25,112 +25,112 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
-#include <stdlib.h>
+#অন্তর্ভাব <stdlib.h>
 
 #define NGREGARG 4
-#if defined(__SH4__)
+#যদি defined(__SH4__)
 #define NFREGARG 8
 #endif
 
-#if defined(__HITACHI__)
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 1
-#else
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 0
+#যদি defined(__HITACHI__)
+#define STRUCT_মান_ADDRESS_WITH_ARG 1
+#অন্যথা
+#define STRUCT_মান_ADDRESS_WITH_ARG 0
 #endif
 
 /* If the structure has essentially an unique element, return its type.  */
-static int
+স্থির পূর্ণসংখ্যা
 simple_type (ffi_type *arg)
 {
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
-  else if (arg->elements[1])
-    return FFI_TYPE_STRUCT;
+  যদি (arg->type != FFI_TYPE_STRUCT)
+    ফেরত arg->type;
+  অন্যথা যদি (arg->elements[1])
+    ফেরত FFI_TYPE_STRUCT;
 
-  return simple_type (arg->elements[0]);
+  ফেরত simple_type (arg->elements[0]);
 }
 
-static int
+স্থির পূর্ণসংখ্যা
 return_type (ffi_type *arg)
 {
   unsigned short type;
 
-  if (arg->type != FFI_TYPE_STRUCT)
-    return arg->type;
+  যদি (arg->type != FFI_TYPE_STRUCT)
+    ফেরত arg->type;
 
   type = simple_type (arg->elements[0]);
-  if (! arg->elements[1])
+  যদি (! arg->elements[1])
     {
-      switch (type)
+      নির্বাচন (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  return FFI_TYPE_INT;
+	ক্ষেত্র FFI_TYPE_SINT8:
+	ক্ষেত্র FFI_TYPE_UINT8:
+	ক্ষেত্র FFI_TYPE_SINT16:
+	ক্ষেত্র FFI_TYPE_UINT16:
+	ক্ষেত্র FFI_TYPE_SINT32:
+	ক্ষেত্র FFI_TYPE_UINT32:
+	  ফেরত FFI_TYPE_INT;
 
-	default:
-	  return type;
+	পূর্বনির্ধারিত:
+	  ফেরত type;
 	}
     }
 
   /* gcc uses r0/r1 pair for some kind of structures.  */
-  if (arg->size <= 2 * sizeof (int))
+  যদি (arg->আকার_2 <= 2 * আকার (পূর্ণসংখ্যা))
     {
-      int i = 0;
+      পূর্ণসংখ্যা i = 0;
       ffi_type *e;
 
-      while ((e = arg->elements[i++]))
+      যখন ((e = arg->elements[i++]))
 	{
 	  type = simple_type (e);
-	  switch (type)
+	  নির্বাচন (type)
 	    {
-	    case FFI_TYPE_SINT32:
-	    case FFI_TYPE_UINT32:
-	    case FFI_TYPE_INT:
-	    case FFI_TYPE_FLOAT:
-	      return FFI_TYPE_UINT64;
+	    ক্ষেত্র FFI_TYPE_SINT32:
+	    ক্ষেত্র FFI_TYPE_UINT32:
+	    ক্ষেত্র FFI_TYPE_INT:
+	    ক্ষেত্র FFI_TYPE_FLOAT:
+	      ফেরত FFI_TYPE_UINT64;
 
-	    default:
-	      break;
+	    পূর্বনির্ধারিত:
+	      বিরতি;
 	    }
 	}
     }
 
-  return FFI_TYPE_STRUCT;
+  ফেরত FFI_TYPE_STRUCT;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+শূন্য ffi_prep_args(অক্ষর *স্তূপ, extended_cif *ecif)
 {
-  register unsigned int i;
-  register int tmp;
-  register unsigned int avn;
-  register void **p_argv;
-  register char *argp;
-  register ffi_type **p_arg;
-  int greg, ireg;
-#if defined(__SH4__)
-  int freg = 0;
+  নিবন্ধ unsigned পূর্ণসংখ্যা i;
+  নিবন্ধ পূর্ণসংখ্যা tmp;
+  নিবন্ধ unsigned পূর্ণসংখ্যা avn;
+  নিবন্ধ শূন্য **p_argv;
+  নিবন্ধ অক্ষর *argp;
+  নিবন্ধ ffi_type **p_arg;
+  পূর্ণসংখ্যা greg, ireg;
+#যদি defined(__SH4__)
+  পূর্ণসংখ্যা freg = 0;
 #endif
 
   tmp = 0;
-  argp = stack;
+  argp = স্তূপ;
 
-  if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
+  যদি (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
-      *(void **) argp = ecif->rvalue;
+      *(শূন্য **) argp = ecif->rvalue;
       argp += 4;
-      ireg = STRUCT_VALUE_ADDRESS_WITH_ARG ? 1 : 0;
+      ireg = STRUCT_মান_ADDRESS_WITH_ARG ? 1 : 0;
     }
-  else
+  অন্যথা
     ireg = 0;
 
   /* Set arguments for registers.  */
@@ -138,278 +138,278 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  জন্য (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->আকার_2;
+      যদি (z < আকার(পূর্ণসংখ্যা))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  যদি (greg++ >= NGREGARG)
+	    চালু;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = আকার(পূর্ণসংখ্যা);
+	  নির্বাচন ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT8:
+	      *(signed পূর্ণসংখ্যা *) argp = (signed পূর্ণসংখ্যা)*(SINT8 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_UINT8:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT8 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT16:
+	      *(signed পূর্ণসংখ্যা *) argp = (signed পূর্ণসংখ্যা)*(SINT16 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_UINT16:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT16 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_STRUCT:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT32 *)(* p_argv);
+	      বিরতি;
 
-	    default:
+	    পূর্বনির্ধারিত:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      অন্যথা যদি (z == আকার(পূর্ণসংখ্যা))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#যদি defined(__SH4__)
+	  যদি ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      যদি (freg++ >= NFREGARG)
+		চালু;
 	    }
-	  else
+	  অন্যথা
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      যদি (greg++ >= NGREGARG)
+		চালু;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#যদি defined(__SH4__)
+      অন্যথা যদি ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
+	  যদি (freg + 1 >= NFREGARG)
+	    চালু;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  memcpy (argp, *p_argv, z);
 	  argp += z;
 	}
 #endif
-      else
+      অন্যথা
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
+	  পূর্ণসংখ্যা n = (z + আকার (পূর্ণসংখ্যা) - 1) / আকার (পূর্ণসংখ্যা);
+#যদি defined(__SH4__)
+	  যদি (greg + n - 1 >= NGREGARG)
+	    চালু;
+#অন্যথা
+	  যদি (greg >= NGREGARG)
+	    চালু;
 #endif
 	  greg += n;
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  argp += n * আকার (পূর্ণসংখ্যা);
 	}
     }
 
   /* Set arguments on stack.  */
   greg = ireg;
-#if defined(__SH4__)
+#যদি defined(__SH4__)
   freg = 0;
 #endif
   p_argv = ecif->avalue;
 
-  for (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
+  জন্য (i = 0, p_arg = ecif->cif->arg_types; i < avn; i++, p_arg++, p_argv++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->আকার_2;
+      যদি (z < আকার(পূর্ণসংখ্যা))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  যদি (greg++ < NGREGARG)
+	    চালু;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = আকার(পূর্ণসংখ্যা);
+	  নির্বাচন ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT8:
+	      *(signed পূর্ণসংখ্যা *) argp = (signed পূর্ণসংখ্যা)*(SINT8 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_UINT8:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT8 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT16:
+	      *(signed পূর্ণসংখ্যা *) argp = (signed পূর্ণসংখ্যা)*(SINT16 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_UINT16:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT16 *)(* p_argv);
+	      বিরতি;
   
-	    case FFI_TYPE_STRUCT:
-	      *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-	      break;
+	    ক্ষেত্র FFI_TYPE_STRUCT:
+	      *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT32 *)(* p_argv);
+	      বিরতি;
 
-	    default:
+	    পূর্বনির্ধারিত:
 	      FFI_ASSERT(0);
 	    }
 	  argp += z;
 	}
-      else if (z == sizeof(int))
+      অন্যথা যদি (z == আকার(পূর্ণসংখ্যা))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#যদি defined(__SH4__)
+	  যদি ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      যদি (freg++ < NFREGARG)
+		চালু;
 	    }
-	  else
+	  অন্যথা
 #endif
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      যদি (greg++ < NGREGARG)
+		চালু;
 	    }
-	  *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	  *(unsigned পূর্ণসংখ্যা *) argp = (unsigned পূর্ণসংখ্যা)*(UINT32 *)(* p_argv);
 	  argp += z;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#যদি defined(__SH4__)
+      অন্যথা যদি ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  যদি (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      চালু;
 	    }
 	  memcpy (argp, *p_argv, z);
 	  argp += z;
 	}
 #endif
-      else
+      অন্যথা
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  পূর্ণসংখ্যা n = (z + আকার (পূর্ণসংখ্যা) - 1) / আকার (পূর্ণসংখ্যা);
+	  যদি (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      চালু;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#যদি (! defined(__SH4__))
+	  অন্যথা যদি (greg < NGREGARG)
 	    {
 	      greg = NGREGARG;
-	      continue;
+	      চালু;
 	    }
 #endif
 	  memcpy (argp, *p_argv, z);
-	  argp += n * sizeof (int);
+	  argp += n * আকার (পূর্ণসংখ্যা);
 	}
     }
 
-  return;
+  ফেরত;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
-  int i, j;
-  int size, type;
-  int n, m;
-  int greg;
-#if defined(__SH4__)
-  int freg = 0;
+  পূর্ণসংখ্যা i, j;
+  পূর্ণসংখ্যা আকার_2, type;
+  পূর্ণসংখ্যা n, m;
+  পূর্ণসংখ্যা greg;
+#যদি defined(__SH4__)
+  পূর্ণসংখ্যা freg = 0;
 #endif
 
   cif->flags = 0;
 
   greg = ((return_type (cif->rtype) == FFI_TYPE_STRUCT) &&
-	  STRUCT_VALUE_ADDRESS_WITH_ARG) ? 1 : 0;
+	  STRUCT_মান_ADDRESS_WITH_ARG) ? 1 : 0;
 
-#if defined(__SH4__)
-  for (i = j = 0; i < cif->nargs && j < 12; i++)
+#যদি defined(__SH4__)
+  জন্য (i = j = 0; i < cif->nargs && j < 12; i++)
     {
       type = (cif->arg_types)[i]->type;
-      switch (type)
+      নির্বাচন (type)
 	{
-	case FFI_TYPE_FLOAT:
-	  if (freg >= NFREGARG)
-	    continue;
+	ক্ষেত্র FFI_TYPE_FLOAT:
+	  যদি (freg >= NFREGARG)
+	    চালু;
 	  freg++;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  বিরতি;
 
-	case FFI_TYPE_DOUBLE:
-	  if ((freg + 1) >= NFREGARG)
-	    continue;
+	ক্ষেত্র FFI_TYPE_DOUBLE:
+	  যদি ((freg + 1) >= NFREGARG)
+	    চালু;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
 	  cif->flags += ((cif->arg_types)[i]->type) << (2 * j);
 	  j++;
-	  break;
+	  বিরতি;
 	      
-	default:
-	  size = (cif->arg_types)[i]->size;
-	  n = (size + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 >= NGREGARG)
-		continue;
+	পূর্বনির্ধারিত:
+	  আকার_2 = (cif->arg_types)[i]->আকার_2;
+	  n = (আকার_2 + আকার (পূর্ণসংখ্যা) - 1) / আকার (পূর্ণসংখ্যা);
+	  যদি (greg + n - 1 >= NGREGARG)
+		চালু;
 	  greg += n;
-	  for (m = 0; m < n; m++)
+	  জন্য (m = 0; m < n; m++)
 	    cif->flags += FFI_TYPE_INT << (2 * j++);
-	  break;
+	  বিরতি;
 	}
     }
-#else
-  for (i = j = 0; i < cif->nargs && j < 4; i++)
+#অন্যথা
+  জন্য (i = j = 0; i < cif->nargs && j < 4; i++)
     {
-      size = (cif->arg_types)[i]->size;
-      n = (size + sizeof (int) - 1) / sizeof (int);
-      if (greg >= NGREGARG)
-	continue;
-      else if (greg + n - 1 >= NGREGARG)
+      আকার_2 = (cif->arg_types)[i]->আকার_2;
+      n = (আকার_2 + আকার (পূর্ণসংখ্যা) - 1) / আকার (পূর্ণসংখ্যা);
+      যদি (greg >= NGREGARG)
+	চালু;
+      অন্যথা যদি (greg + n - 1 >= NGREGARG)
 	n = NGREGARG - greg;
       greg += n;
-      for (m = 0; m < n; m++)
+      জন্য (m = 0; m < n; m++)
         cif->flags += FFI_TYPE_INT << (2 * j++);
     }
 #endif
 
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  নির্বাচন (cif->rtype->type)
     {
-    case FFI_TYPE_STRUCT:
+    ক্ষেত্র FFI_TYPE_STRUCT:
       cif->flags += (unsigned) (return_type (cif->rtype)) << 24;
-      break;
+      বিরতি;
 
-    case FFI_TYPE_VOID:
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    ক্ষেত্র FFI_TYPE_VOID:
+    ক্ষেত্র FFI_TYPE_FLOAT:
+    ক্ষেত্র FFI_TYPE_DOUBLE:
+    ক্ষেত্র FFI_TYPE_SINT64:
+    ক্ষেত্র FFI_TYPE_UINT64:
       cif->flags += (unsigned) cif->rtype->type << 24;
-      break;
+      বিরতি;
 
-    default:
+    পূর্বনির্ধারিত:
       cif->flags += FFI_TYPE_INT << 24;
-      break;
+      বিরতি;
     }
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+বাহ্যিক শূন্য ffi_call_SYSV(শূন্য (*)(অক্ষর *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, শূন্য (*fn)(শূন্য));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
   extended_cif ecif;
   UINT64 trvalue;
@@ -420,53 +420,53 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return	*/
   /* value address then we need to make one		        */
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT
+  যদি (cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
     ecif.rvalue = &trvalue;
-  else if ((rvalue == NULL) && 
+  অন্যথা যদি ((rvalue == ফাঁকা) && 
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
-      ecif.rvalue = alloca(cif->rtype->size);
+      ecif.rvalue = alloca(cif->rtype->আকার_2);
     }
-  else
+  অন্যথা
     ecif.rvalue = rvalue;
 
-  switch (cif->abi) 
+  নির্বাচন (cif->abi) 
     {
-    case FFI_SYSV:
+    ক্ষেত্র FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, ecif.rvalue,
 		    fn);
-      break;
-    default:
+      বিরতি;
+    পূর্বনির্ধারিত:
       FFI_ASSERT(0);
-      break;
+      বিরতি;
     }
 
-  if (rvalue
+  যদি (rvalue
       && cif->rtype->type == FFI_TYPE_STRUCT
       && return_type (cif->rtype) != FFI_TYPE_STRUCT)
-    memcpy (rvalue, &trvalue, cif->rtype->size);
+    memcpy (rvalue, &trvalue, cif->rtype->আকার_2);
 }
 
-extern void ffi_closure_SYSV (void);
-#if defined(__SH4__)
-extern void __ic_invalidate (void *line);
+বাহ্যিক শূন্য ffi_closure_SYSV (শূন্য);
+#যদি defined(__SH4__)
+বাহ্যিক শূন্য __ic_invalidate (শূন্য *সারি);
 #endif
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*, void*, void**, void*),
-		      void *user_data,
-		      void *codeloc)
+		      শূন্য (*fun)(ffi_cif*, শূন্য*, শূন্য**, শূন্য*),
+		      শূন্য *user_তথ্য,
+		      শূন্য *codeloc)
 {
-  unsigned int *tramp;
-  unsigned int insn;
+  unsigned পূর্ণসংখ্যা *tramp;
+  unsigned পূর্ণসংখ্যা insn;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_SYSV)
+    ফেরত FFI_BAD_ABI;
 
-  tramp = (unsigned int *) &closure->tramp[0];
+  tramp = (unsigned পূর্ণসংখ্যা *) &closure->tramp[0];
   /* Set T bit if the function returns a struct pointed with R2.  */
   insn = (return_type (cif->rtype) == FFI_TYPE_STRUCT
 	  ? 0x0018 /* sett */
@@ -475,23 +475,23 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
   tramp[0] = 0xd301d102;
   tramp[1] = 0x0000412b | (insn << 16);
-#else
+#অন্যথা
   tramp[0] = 0xd102d301;
   tramp[1] = 0x412b0000 | insn;
 #endif
-  *(void **) &tramp[2] = (void *)codeloc;          /* ctx */
-  *(void **) &tramp[3] = (void *)ffi_closure_SYSV; /* funaddr */
+  *(শূন্য **) &tramp[2] = (শূন্য *)codeloc;          /* ctx */
+  *(শূন্য **) &tramp[3] = (শূন্য *)ffi_closure_SYSV; /* funaddr */
 
   closure->cif = cif;
   closure->fun = fun;
-  closure->user_data = user_data;
+  closure->user_তথ্য = user_তথ্য;
 
-#if defined(__SH4__)
+#যদি defined(__SH4__)
   /* Flush the icache.  */
   __ic_invalidate(codeloc);
 #endif
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 /* Basically the trampoline invokes ffi_closure_SYSV, and on 
@@ -505,36 +505,36 @@ ffi_prep_closure_loc (ffi_closure* closure,
 #ifdef __LITTLE_ENDIAN__
 #define OFS_INT8	0
 #define OFS_INT16	0
-#else
+#অন্যথা
 #define OFS_INT8	3
 #define OFS_INT16	2
 #endif
 
-int
-ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue, 
+পূর্ণসংখ্যা
+ffi_closure_helper_SYSV (ffi_closure *closure, শূন্য *rvalue, 
 			 unsigned long *pgr, unsigned long *pfr, 
 			 unsigned long *pst)
 {
-  void **avalue;
+  শূন্য **avalue;
   ffi_type **p_arg;
-  int i, avn;
-  int ireg, greg = 0;
-#if defined(__SH4__)
-  int freg = 0;
+  পূর্ণসংখ্যা i, avn;
+  পূর্ণসংখ্যা ireg, greg = 0;
+#যদি defined(__SH4__)
+  পূর্ণসংখ্যা freg = 0;
 #endif
   ffi_cif *cif; 
 
   cif = closure->cif;
-  avalue = alloca(cif->nargs * sizeof(void *));
+  avalue = alloca(cif->nargs * আকার(শূন্য *));
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_VALUE_ADDRESS_WITH_ARG)
+  যদি (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_মান_ADDRESS_WITH_ARG)
     {
-      rvalue = (void *) *pgr++;
+      rvalue = (শূন্য *) *pgr++;
       ireg = 1;
     }
-  else
+  অন্যথা
     ireg = 0;
 
   cif = closure->cif;
@@ -542,63 +542,63 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
   avn = cif->nargs;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  জন্য (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->আকার_2;
+      যদি (z < আকার(পূর্ণসংখ্যা))
 	{
-	  if (greg++ >= NGREGARG)
-	    continue;
+	  যদি (greg++ >= NGREGARG)
+	    চালু;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = আকার(পূর্ণসংখ্যা);
+	  নির্বাচন ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pgr) + OFS_INT8);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT8:
+	    ক্ষেত্র FFI_TYPE_UINT8:
+	      avalue[i] = (((অক্ষর *)pgr) + OFS_INT8);
+	      বিরতি;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pgr) + OFS_INT16);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT16:
+	    ক্ষেত্র FFI_TYPE_UINT16:
+	      avalue[i] = (((অক্ষর *)pgr) + OFS_INT16);
+	      বিরতি;
   
-	    case FFI_TYPE_STRUCT:
+	    ক্ষেত্র FFI_TYPE_STRUCT:
 	      avalue[i] = pgr;
-	      break;
+	      বিরতি;
 
-	    default:
+	    পূর্বনির্ধারিত:
 	      FFI_ASSERT(0);
 	    }
 	  pgr++;
 	}
-      else if (z == sizeof(int))
+      অন্যথা যদি (z == আকার(পূর্ণসংখ্যা))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#যদি defined(__SH4__)
+	  যদি ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ >= NFREGARG)
-		continue;
+	      যদি (freg++ >= NFREGARG)
+		চালু;
 	      avalue[i] = pfr;
 	      pfr++;
 	    }
-	  else
+	  অন্যথা
 #endif
 	    {
-	      if (greg++ >= NGREGARG)
-		continue;
+	      যদি (greg++ >= NGREGARG)
+		চালু;
 	      avalue[i] = pgr;
 	      pgr++;
 	    }
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#যদি defined(__SH4__)
+      অন্যথা যদি ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 >= NFREGARG)
-	    continue;
-	  if (freg & 1)
+	  যদি (freg + 1 >= NFREGARG)
+	    চালু;
+	  যদি (freg & 1)
 	    pfr++;
 	  freg = (freg + 1) & ~1;
 	  freg += 2;
@@ -606,15 +606,15 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
 	  pfr += 2;
 	}
 #endif
-      else
+      অন্যথা
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-#if defined(__SH4__)
-	  if (greg + n - 1 >= NGREGARG)
-	    continue;
-#else
-	  if (greg >= NGREGARG)
-	    continue;
+	  পূর্ণসংখ্যা n = (z + আকার (পূর্ণসংখ্যা) - 1) / আকার (পূর্ণসংখ্যা);
+#যদি defined(__SH4__)
+	  যদি (greg + n - 1 >= NGREGARG)
+	    চালু;
+#অন্যথা
+	  যদি (greg >= NGREGARG)
+	    চালু;
 #endif
 	  greg += n;
 	  avalue[i] = pgr;
@@ -623,86 +623,86 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
     }
 
   greg = ireg;
-#if defined(__SH4__)
+#যদি defined(__SH4__)
   freg = 0;
 #endif
 
-  for (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
+  জন্য (i = 0, p_arg = cif->arg_types; i < avn; i++, p_arg++)
     {
       size_t z;
 
-      z = (*p_arg)->size;
-      if (z < sizeof(int))
+      z = (*p_arg)->আকার_2;
+      যদি (z < আকার(পূর্ণসংখ্যা))
 	{
-	  if (greg++ < NGREGARG)
-	    continue;
+	  যদি (greg++ < NGREGARG)
+	    চালু;
 
-	  z = sizeof(int);
-	  switch ((*p_arg)->type)
+	  z = আকার(পূর্ণসংখ্যা);
+	  নির্বাচন ((*p_arg)->type)
 	    {
-	    case FFI_TYPE_SINT8:
-	    case FFI_TYPE_UINT8:
-	      avalue[i] = (((char *)pst) + OFS_INT8);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT8:
+	    ক্ষেত্র FFI_TYPE_UINT8:
+	      avalue[i] = (((অক্ষর *)pst) + OFS_INT8);
+	      বিরতি;
   
-	    case FFI_TYPE_SINT16:
-	    case FFI_TYPE_UINT16:
-	      avalue[i] = (((char *)pst) + OFS_INT16);
-	      break;
+	    ক্ষেত্র FFI_TYPE_SINT16:
+	    ক্ষেত্র FFI_TYPE_UINT16:
+	      avalue[i] = (((অক্ষর *)pst) + OFS_INT16);
+	      বিরতি;
   
-	    case FFI_TYPE_STRUCT:
+	    ক্ষেত্র FFI_TYPE_STRUCT:
 	      avalue[i] = pst;
-	      break;
+	      বিরতি;
 
-	    default:
+	    পূর্বনির্ধারিত:
 	      FFI_ASSERT(0);
 	    }
 	  pst++;
 	}
-      else if (z == sizeof(int))
+      অন্যথা যদি (z == আকার(পূর্ণসংখ্যা))
 	{
-#if defined(__SH4__)
-	  if ((*p_arg)->type == FFI_TYPE_FLOAT)
+#যদি defined(__SH4__)
+	  যদি ((*p_arg)->type == FFI_TYPE_FLOAT)
 	    {
-	      if (freg++ < NFREGARG)
-		continue;
+	      যদি (freg++ < NFREGARG)
+		চালু;
 	    }
-	  else
+	  অন্যথা
 #endif
 	    {
-	      if (greg++ < NGREGARG)
-		continue;
+	      যদি (greg++ < NGREGARG)
+		চালু;
 	    }
 	  avalue[i] = pst;
 	  pst++;
 	}
-#if defined(__SH4__)
-      else if ((*p_arg)->type == FFI_TYPE_DOUBLE)
+#যদি defined(__SH4__)
+      অন্যথা যদি ((*p_arg)->type == FFI_TYPE_DOUBLE)
 	{
-	  if (freg + 1 < NFREGARG)
+	  যদি (freg + 1 < NFREGARG)
 	    {
 	      freg = (freg + 1) & ~1;
 	      freg += 2;
-	      continue;
+	      চালু;
 	    }
 	  avalue[i] = pst;
 	  pst += 2;
 	}
 #endif
-      else
+      অন্যথা
 	{
-	  int n = (z + sizeof (int) - 1) / sizeof (int);
-	  if (greg + n - 1 < NGREGARG)
+	  পূর্ণসংখ্যা n = (z + আকার (পূর্ণসংখ্যা) - 1) / আকার (পূর্ণসংখ্যা);
+	  যদি (greg + n - 1 < NGREGARG)
 	    {
 	      greg += n;
-	      continue;
+	      চালু;
 	    }
-#if (! defined(__SH4__))
-	  else if (greg < NGREGARG)
+#যদি (! defined(__SH4__))
+	  অন্যথা যদি (greg < NGREGARG)
 	    {
 	      greg += n;
 	      pst += greg - NGREGARG;
-	      continue;
+	      চালু;
 	    }
 #endif
 	  avalue[i] = pst;
@@ -710,8 +710,8 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
 	}
     }
 
-  (closure->fun) (cif, rvalue, avalue, closure->user_data);
+  (closure->fun) (cif, rvalue, avalue, closure->user_তথ্য);
 
   /* Tell ffi_closure_SYSV how to perform return type promotions.  */
-  return return_type (cif->rtype);
+  ফেরত return_type (cif->rtype);
 }

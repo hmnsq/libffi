@@ -25,11 +25,11 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <stdio.h>
 
 #define ROUND_UP(v, a)  (((size_t)(v) + (a) - 1) & ~((a) - 1))
 
@@ -37,19 +37,19 @@
 #define DEBUG_LEVEL   0
 
 #define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
+  __asm__ অস্থির ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
 #define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
+  __asm__ অস্থির ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
 #define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+  __asm__ অস্থির ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
 #define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ অস্থির ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) করো { যদি (lvl <= DEBUG_LEVEL) { printf(x); } } যখন (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+স্থির অন্তঃরেখ পূর্ণসংখ্যা ffi_struct_type(ffi_type *t)
 {
-  int sz = t->size;
+  পূর্ণসংখ্যা sz = t->আকার_2;
 
   /* Small structure results are returned in registers 28 and 29,
      larger ones are in a buffer allocated by the callee.  The
@@ -57,10 +57,10 @@ static inline int ffi_struct_type(ffi_type *t)
      to be aligned on a 16-byte boundary.   Register return values are
      padded on the right.  The pad bits on the right are undefined.  */
 
-  if (sz <= 16)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT;
+  যদি (sz <= 16)
+    ফেরত -sz;
+  অন্যথা
+    ফেরত FFI_TYPE_STRUCT;
 }
 
 /* PA has a downward growing stack, which looks like this.  Stack
@@ -123,112 +123,112 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
+শূন্য ffi_prep_args_pa64(UINT64 *স্তূপ, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
+  নিবন্ধ unsigned পূর্ণসংখ্যা i;
+  নিবন্ধ ffi_type **p_arg;
+  নিবন্ধ শূন্য **p_argv;
+  unsigned পূর্ণসংখ্যা slot = FIRST_ARG_SLOT;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, স্তূপ,
 	ecif, bytes);
 
   p_arg = ecif->cif->arg_types;
   p_argv = ecif->avalue;
 
-  for (i = 0; i < ecif->cif->nargs; i++)
+  জন্য (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      পূর্ণসংখ্যা type = (*p_arg)->type;
 
-      len = (*p_arg)->size;
+      len = (*p_arg)->আকার_2;
 
-      switch (type)
+      নির্বাচন (type)
 	{
-	case FFI_TYPE_SINT8:
-	  *(SINT64 *)(stack + slot) = *(SINT8 *)(*p_argv);
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT8:
+	  *(SINT64 *)(স্তূপ + slot) = *(SINT8 *)(*p_argv);
+	  বিরতি;
 
-	case FFI_TYPE_UINT8:
-	  *(UINT64 *)(stack + slot) = *(UINT8 *)(*p_argv);
-	  break;
+	ক্ষেত্র FFI_TYPE_UINT8:
+	  *(UINT64 *)(স্তূপ + slot) = *(UINT8 *)(*p_argv);
+	  বিরতি;
 
-	case FFI_TYPE_SINT16:
-	  *(SINT64 *)(stack + slot) = *(SINT16 *)(*p_argv);
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT16:
+	  *(SINT64 *)(স্তূপ + slot) = *(SINT16 *)(*p_argv);
+	  বিরতি;
 
-	case FFI_TYPE_UINT16:
-	  *(UINT64 *)(stack + slot) = *(UINT16 *)(*p_argv);
-	  break;
+	ক্ষেত্র FFI_TYPE_UINT16:
+	  *(UINT64 *)(স্তূপ + slot) = *(UINT16 *)(*p_argv);
+	  বিরতি;
 
-	case FFI_TYPE_SINT32:
-	  *(SINT64 *)(stack + slot) = *(SINT32 *)(*p_argv);
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT32:
+	  *(SINT64 *)(স্তূপ + slot) = *(SINT32 *)(*p_argv);
+	  বিরতি;
 
-	case FFI_TYPE_UINT32:
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  break;
+	ক্ষেত্র FFI_TYPE_UINT32:
+	  *(UINT64 *)(স্তূপ + slot) = *(UINT32 *)(*p_argv);
+	  বিরতি;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	ক্ষেত্র FFI_TYPE_UINT64:
+	ক্ষেত্র FFI_TYPE_SINT64:
+	ক্ষেত্র FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT64 %lu in slot %u\n", *(UINT64 *)(*p_argv),
 		slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  *(UINT64 *)(স্তূপ + slot) = *(UINT64 *)(*p_argv);
+	  বিরতি;
 
-	case FFI_TYPE_FLOAT:
+	ক্ষেত্র FFI_TYPE_FLOAT:
 	  /* First 8 args go in fr4L - fr11L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(স্তূপ + slot) = *(UINT32 *)(*p_argv);
+	  নির্বাচন (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack + slot, fr4); break;
-	    case 1: fldw(stack + slot, fr5); break;
-	    case 2: fldw(stack + slot, fr6); break;
-	    case 3: fldw(stack + slot, fr7); break;
-	    case 4: fldw(stack + slot, fr8); break;
-	    case 5: fldw(stack + slot, fr9); break;
-	    case 6: fldw(stack + slot, fr10); break;
-	    case 7: fldw(stack + slot, fr11); break;
+	    ক্ষেত্র 0: fldw(স্তূপ + slot, fr4); বিরতি;
+	    ক্ষেত্র 1: fldw(স্তূপ + slot, fr5); বিরতি;
+	    ক্ষেত্র 2: fldw(স্তূপ + slot, fr6); বিরতি;
+	    ক্ষেত্র 3: fldw(স্তূপ + slot, fr7); বিরতি;
+	    ক্ষেত্র 4: fldw(স্তূপ + slot, fr8); বিরতি;
+	    ক্ষেত্র 5: fldw(স্তূপ + slot, fr9); বিরতি;
+	    ক্ষেত্র 6: fldw(স্তূপ + slot, fr10); বিরতি;
+	    ক্ষেত্র 7: fldw(স্তূপ + slot, fr11); বিরতি;
 	    }
-	  break;
+	  বিরতি;
 
-	case FFI_TYPE_DOUBLE:
+	ক্ষেত্র FFI_TYPE_DOUBLE:
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  switch (slot - FIRST_ARG_SLOT)
+	  *(UINT64 *)(স্তূপ + slot) = *(UINT64 *)(*p_argv);
+	  নির্বাচন (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 8 args go in fr4 to fr11.  */
-	    case 0: fldd(stack + slot, fr4); break;
-	    case 1: fldd(stack + slot, fr5); break;
-	    case 2: fldd(stack + slot, fr6); break;
-	    case 3: fldd(stack + slot, fr7); break;
-	    case 4: fldd(stack + slot, fr8); break;
-	    case 5: fldd(stack + slot, fr9); break;
-	    case 6: fldd(stack + slot, fr10); break;
-	    case 7: fldd(stack + slot, fr11); break;
+	    ক্ষেত্র 0: fldd(স্তূপ + slot, fr4); বিরতি;
+	    ক্ষেত্র 1: fldd(স্তূপ + slot, fr5); বিরতি;
+	    ক্ষেত্র 2: fldd(স্তূপ + slot, fr6); বিরতি;
+	    ক্ষেত্র 3: fldd(স্তূপ + slot, fr7); বিরতি;
+	    ক্ষেত্র 4: fldd(স্তূপ + slot, fr8); বিরতি;
+	    ক্ষেত্র 5: fldd(স্তূপ + slot, fr9); বিরতি;
+	    ক্ষেত্র 6: fldd(স্তূপ + slot, fr10); বিরতি;
+	    ক্ষেত্র 7: fldd(স্তূপ + slot, fr11); বিরতি;
 	    }
-	  break;
+	  বিরতি;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	ক্ষেত্র FFI_TYPE_LONGDOUBLE:
 	  /* Align slot to a 16-byte boundary.  */
 	  slot += (slot & 1);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  *(UINT64 *)(stack + slot + 1) = *(UINT64 *)(*p_argv + 8);
-	  break;
+	  *(UINT64 *)(স্তূপ + slot) = *(UINT64 *)(*p_argv);
+	  *(UINT64 *)(স্তূপ + slot + 1) = *(UINT64 *)(*p_argv + 8);
+	  বিরতি;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	ক্ষেত্র FFI_TYPE_STRUCT:
 	  /* Structs larger than 8 bytes are aligned on a 16-byte boundary. */
-	  if (len > 8)
+	  যদি (len > 8)
 	    slot += (slot & 1);
-	  memcpy((char *)(stack + slot), (char *)*p_argv, len);
-	  break;
+	  memcpy((অক্ষর *)(স্তূপ + slot), (অক্ষর *)*p_argv, len);
+	  বিরতি;
 
-	default:
+	পূর্বনির্ধারিত:
 	  FFI_ASSERT(0);
 	}
 
@@ -239,44 +239,44 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 
   FFI_ASSERT(slot * 8 <= bytes);
 
-  return;
+  ফেরত;
 }
 
-static void ffi_size_stack_pa64(ffi_cif *cif)
+স্থির শূন্য ffi_আকার_স্তূপ_pa64(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  পূর্ণসংখ্যা i;
+  পূর্ণসংখ্যা z = 0; /* # stack slots */
 
-  for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
+  জন্য (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
-      int size = (*ptr)->size;
+      পূর্ণসংখ্যা type = (*ptr)->type;
+      পূর্ণসংখ্যা আকার_2 = (*ptr)->আকার_2;
 
-      switch (type)
+      নির্বাচন (type)
 	{
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	ক্ষেত্র FFI_TYPE_LONGDOUBLE:
 	  z += 2 + (z & 1);
-	  break;
+	  বিরতি;
 #endif
 
-	case FFI_TYPE_STRUCT:
-	  if (size > 8)
+	ক্ষেত্র FFI_TYPE_STRUCT:
+	  যদি (আকার_2 > 8)
 	    z += (z & 1);
-	  z += ROUND_UP (size, 8) >> 3;
-	  break;
+	  z += ROUND_UP (আকার_2, 8) >> 3;
+	  বিরতি;
 
-	default: /* 64-bit values */
+	পূর্বনির্ধারিত: /* 64-bit values */
 	  z++;
 	}
     }
 
   /* We need a minimum of 8 argument slots.  Stack must be 16-byte
      aligned.  */
-  if (z <= 8)
+  যদি (z <= 8)
     z = 8;
-  else
+  অন্যথা
     z += (z & 1);
 
   /* Add 16 bytes for frame marker.  */
@@ -288,44 +288,44 @@ static void ffi_size_stack_pa64(ffi_cif *cif)
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag for jump table.  */
-  switch (cif->rtype->type)
+  নির্বাচন (cif->rtype->type)
     {
-    case FFI_TYPE_COMPLEX:
-    case FFI_TYPE_STRUCT:
+    ক্ষেত্র FFI_TYPE_COMPLEX:
+    ক্ষেত্র FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 8 bytes, the result is given back
 	 in one register. If the size is smaller or equal 16 bytes than we
 	 return the result in two registers. If the size is bigger than
 	 16 bytes, the return is in a buffer allocated by the caller.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      বিরতি;
 
-    default:
+    পূর্বনির্ধারিত:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      বিরতি;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
-  switch (cif->abi)
+  নির্বাচন (cif->abi)
     {
-    case FFI_PA64:
-      ffi_size_stack_pa64(cif);
-      break;
+    ক্ষেত্র FFI_PA64:
+      ffi_আকার_স্তূপ_pa64(cif);
+      বিরতি;
 
-    default:
+    পূর্বনির্ধারিত:
       FFI_ASSERT(0);
-      break;
+      বিরতি;
     }
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
-extern void ffi_call_pa64(void (*)(UINT64 *, extended_cif *, unsigned),
+বাহ্যিক শূন্য ffi_call_pa64(শূন্য (*)(UINT64 *, extended_cif *, unsigned),
 			  extended_cif *, unsigned, unsigned, unsigned *,
-			  void (*fn)(void));
+			  শূন্য (*fn)(শূন্য));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
   extended_cif ecif;
 
@@ -335,246 +335,246 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  যদি (rvalue == ফাঁকা
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_COMPLEX)
-      && cif->rtype->size > 16)
-    ecif.rvalue = alloca(ROUND_UP (cif->rtype->size, 16));
-  else
+      && cif->rtype->আকার_2 > 16)
+    ecif.rvalue = alloca(ROUND_UP (cif->rtype->আকার_2, 16));
+  অন্যথা
     ecif.rvalue = rvalue;
 
 
-  switch (cif->abi)
+  নির্বাচন (cif->abi)
     {
-    case FFI_PA64:
-      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
+    ক্ষেত্র FFI_PA64:
+      debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (শূন্য *)fn);
       ffi_call_pa64(ffi_prep_args_pa64, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      বিরতি;
 
-    default:
+    পূর্বনির্ধারিত:
       FFI_ASSERT(0);
-      break;
+      বিরতি;
     }
 }
 
-#if FFI_CLOSURES
+#যদি FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
+ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *স্তূপ)
 {
   ffi_cif *cif;
-  void **avalue;
-  void *rvalue;
+  শূন্য **avalue;
+  শূন্য *rvalue;
   /* Functions can return up to 128-bits in registers.  Return address
      must be double word aligned.  */
-  union { long double rld; UINT64 ret[2]; } u;
+  সংঘ { long দ্বিগুণ rld; UINT64 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT64 r28 __asm__("r28");
+  অক্ষর *tmp;
+  পূর্ণসংখ্যা i, avn;
+  unsigned পূর্ণসংখ্যা slot = FIRST_ARG_SLOT;
+  নিবন্ধ UINT64 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
-    rvalue = (void *)r28;
-  else
+  যদি (cif->flags == FFI_TYPE_STRUCT)
+    rvalue = (শূন্য *)r28;
+  অন্যথা
     rvalue = &u;
 
-  avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
+  avalue = (শূন্য **)alloca(cif->nargs * FFI_SIZEOF_ARG);
   avn = cif->nargs;
   p_arg = cif->arg_types;
 
-  for (i = 0; i < avn; i++)
+  জন্য (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      পূর্ণসংখ্যা type = (*p_arg)->type;
 
-      switch (type)
+      নির্বাচন (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
-	  avalue[i] = (void *)(stack + slot) + 7;
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT8:
+	ক্ষেত্র FFI_TYPE_UINT8:
+	  avalue[i] = (শূন্য *)(স্তূপ + slot) + 7;
+	  বিরতি;
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
-	  avalue[i] = (void *)(stack + slot) + 6;
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT16:
+	ক্ষেত্র FFI_TYPE_UINT16:
+	  avalue[i] = (শূন্য *)(স্তূপ + slot) + 6;
+	  বিরতি;
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	ক্ষেত্র FFI_TYPE_SINT32:
+	ক্ষেত্র FFI_TYPE_UINT32:
+	  avalue[i] = (শূন্য *)(স্তূপ + slot) + 4;
+	  বিরতি;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	ক্ষেত্র FFI_TYPE_POINTER:
+	ক্ষেত্র FFI_TYPE_SINT64:
+	ক্ষেত্র FFI_TYPE_UINT64:
+	  avalue[i] = (শূন্য *)(স্তূপ + slot);
+	  বিরতি;
 
-	case FFI_TYPE_FLOAT:
+	ক্ষেত্র FFI_TYPE_FLOAT:
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
 	     in the floating point registers instead of the general
 	     registers.  So, we need to replace what was previously
 	     stored in the current slot with the value in the
 	     corresponding floating point register.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  নির্বাচন (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack + slot)); break;
-	    case 1: fstw(fr5, (void *)(stack + slot)); break;
-	    case 2: fstw(fr6, (void *)(stack + slot)); break;
-	    case 3: fstw(fr7, (void *)(stack + slot)); break;
-	    case 4: fstw(fr8, (void *)(stack + slot)); break;
-	    case 5: fstw(fr9, (void *)(stack + slot)); break;
-	    case 6: fstw(fr10, (void *)(stack + slot)); break;
-	    case 7: fstw(fr11, (void *)(stack + slot)); break;
+	    ক্ষেত্র 0: fstw(fr4, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 1: fstw(fr5, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 2: fstw(fr6, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 3: fstw(fr7, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 4: fstw(fr8, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 5: fstw(fr9, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 6: fstw(fr10, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 7: fstw(fr11, (শূন্য *)(স্তূপ + slot)); বিরতি;
 	    }
-	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	  avalue[i] = (শূন্য *)(স্তূপ + slot) + 4;
+	  বিরতি;
 
-	case FFI_TYPE_DOUBLE:
+	ক্ষেত্র FFI_TYPE_DOUBLE:
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
-	  switch (slot + FIRST_ARG_SLOT)
+	  নির্বাচন (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstd(fr4, (void *)(stack + slot)); break;
-	    case 1: fstd(fr5, (void *)(stack + slot)); break;
-	    case 2: fstd(fr6, (void *)(stack + slot)); break;
-	    case 3: fstd(fr7, (void *)(stack + slot)); break;
-	    case 4: fstd(fr8, (void *)(stack + slot)); break;
-	    case 5: fstd(fr9, (void *)(stack + slot)); break;
-	    case 6: fstd(fr10, (void *)(stack + slot)); break;
-	    case 7: fstd(fr11, (void *)(stack + slot)); break;
+	    ক্ষেত্র 0: fstd(fr4, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 1: fstd(fr5, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 2: fstd(fr6, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 3: fstd(fr7, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 4: fstd(fr8, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 5: fstd(fr9, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 6: fstd(fr10, (শূন্য *)(স্তূপ + slot)); বিরতি;
+	    ক্ষেত্র 7: fstd(fr11, (শূন্য *)(স্তূপ + slot)); বিরতি;
 	    }
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  avalue[i] = (শূন্য *)(স্তূপ + slot);
+	  বিরতি;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	ক্ষেত্র FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
 	  slot += (slot & 1);
-	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  avalue[i] = (শূন্য *)(স্তূপ + slot);
+	  বিরতি;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	ক্ষেত্র FFI_TYPE_STRUCT:
 	  /* All structs are passed in registers.  Structs larger
 	     than 8 bytes are aligned on a 16-byte boundary.  */
-	  if((*p_arg)->size > 8)
+	  যদি((*p_arg)->আকার_2 > 8)
 	    slot += (slot & 1);
-	  avalue[i] = (void *) (stack + slot);
-	  break;
+	  avalue[i] = (শূন্য *) (স্তূপ + slot);
+	  বিরতি;
 
-	default:
+	পূর্বনির্ধারিত:
 	  FFI_ASSERT(0);
 	}
 
-      slot += (ROUND_UP ((*p_arg)->size, 8) >> 3);
+      slot += (ROUND_UP ((*p_arg)->আকার_2, 8) >> 3);
       p_arg++;
     }
 
   /* Invoke the closure.  */
-  (closure->fun) (cif, rvalue, avalue, closure->user_data);
+  (closure->fun) (cif, rvalue, avalue, closure->user_তথ্য);
 
   debug(3, "after calling function, ret[0] = %16lx, ret[1] = %16lx\n", u.ret[0],
 	u.ret[1]);
 
   /* Store the result using the lower 2 bytes of the flags.  */
-  switch (cif->flags)
+  নির্বাচন (cif->flags)
     {
-    case FFI_TYPE_UINT8:
-      *(stack + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
-      *(stack + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
-      *(stack + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
-      *(stack + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
-      *(stack + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
-      break;
-    case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
+    ক্ষেত্র FFI_TYPE_UINT8:
+      *(স্তূপ + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
+      বিরতি;
+    ক্ষেত্র FFI_TYPE_SINT8:
+      *(স্তূপ + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
+      বিরতি;
+    ক্ষেত্র FFI_TYPE_UINT16:
+      *(স্তূপ + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
+      বিরতি;
+    ক্ষেত্র FFI_TYPE_SINT16:
+      *(স্তূপ + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
+      বিরতি;
+    ক্ষেত্র FFI_TYPE_INT:
+    ক্ষেত্র FFI_TYPE_SINT32:
+      *(স্তূপ + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
+      বিরতি;
+    ক্ষেত্র FFI_TYPE_UINT32:
+      *(স্তূপ - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
+      বিরতি;
+    ক্ষেত্র FFI_TYPE_SINT64:
+    ক্ষেত্র FFI_TYPE_UINT64:
+    ক্ষেত্র FFI_TYPE_POINTER:
+      *(স্তূপ - FIRST_ARG_SLOT) = u.ret[0];
+      বিরতি;
 
-    case FFI_TYPE_LONGDOUBLE:
-      *(stack + FIRST_ARG_SLOT) = u.ret[0];
-      *(stack + FIRST_ARG_SLOT + 1) = u.ret[1];
-      break;
+    ক্ষেত্র FFI_TYPE_LONGDOUBLE:
+      *(স্তূপ + FIRST_ARG_SLOT) = u.ret[0];
+      *(স্তূপ + FIRST_ARG_SLOT + 1) = u.ret[1];
+      বিরতি;
 
-    case FFI_TYPE_DOUBLE:
+    ক্ষেত্র FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      বিরতি;
 
-    case FFI_TYPE_FLOAT:
+    ক্ষেত্র FFI_TYPE_FLOAT:
       /* Adjust for address adjustment in fldw macro.  */
       fldw(rvalue - 4, fr4);
-      break;
+      বিরতি;
 
-    case FFI_TYPE_STRUCT:
+    ক্ষেত্র FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      বিরতি;
 
-    case -1:
-    case -2:
-    case -3:
-    case -4:
-    case -5:
-    case -6:
-    case -7:
-    case -8:
-    case -9:
-    case -10:
-    case -11:
-    case -12:
-    case -13:
-    case -14:
-    case -15:
-    case -16:
-      tmp = (void*)(stack + FIRST_ARG_SLOT);
-      memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+    ক্ষেত্র -1:
+    ক্ষেত্র -2:
+    ক্ষেত্র -3:
+    ক্ষেত্র -4:
+    ক্ষেত্র -5:
+    ক্ষেত্র -6:
+    ক্ষেত্র -7:
+    ক্ষেত্র -8:
+    ক্ষেত্র -9:
+    ক্ষেত্র -10:
+    ক্ষেত্র -11:
+    ক্ষেত্র -12:
+    ক্ষেত্র -13:
+    ক্ষেত্র -14:
+    ক্ষেত্র -15:
+    ক্ষেত্র -16:
+      tmp = (শূন্য*)(স্তূপ + FIRST_ARG_SLOT);
+      memcpy((শূন্য*)tmp, &u, cif->rtype->আকার_2);
+      বিরতি;
 
-    case FFI_TYPE_VOID:
-      break;
+    ক্ষেত্র FFI_TYPE_VOID:
+      বিরতি;
 
-    default:
+    পূর্বনির্ধারিত:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      বিরতি;
     }
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
    cif specifies the argument and result types for fun.
    The cif must already be prep'ed.  */
 
-extern void ffi_closure_pa64(void);
+বাহ্যিক শূন্য ffi_closure_pa64(শূন্য);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+		      শূন্য *user_তথ্য,
+		      শূন্য *codeloc)
 {
   /* The layout of a function descriptor.  */
-  struct pa64_fd
+  কাঠামো pa64_fd
   {
     UINT64 tmp1;
     UINT64 tmp2;
@@ -582,7 +582,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 gp;
   };
 
-  struct ffi_pa64_trampoline_struct
+  কাঠামো ffi_pa64_trampoline_struct
   {
     UINT64 real_gp;             /* Real gp value.  */
     UINT64 tmp2;
@@ -590,25 +590,25 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 fake_gp;             /* Pointer to closure, installed as gp.  */
   };
 
-  struct ffi_pa64_trampoline_struct *tramp;
-  struct pa64_fd *fd;
+  কাঠামো ffi_pa64_trampoline_struct *tramp;
+  কাঠামো pa64_fd *fd;
 
-  if (cif->abi != FFI_PA64)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_PA64)
+    ফেরত FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa64.  */
-  fd = (struct pa64_fd *)((UINT64)ffi_closure_pa64);
+  fd = (কাঠামো pa64_fd *)((UINT64)ffi_closure_pa64);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa64_trampoline_struct *)closure->tramp;
+  tramp = (কাঠামো ffi_pa64_trampoline_struct *)closure->tramp;
   tramp->code_pointer = fd->code_pointer;
   tramp->fake_gp = (UINT64)codeloc;
   tramp->real_gp = fd->gp;
 
   closure->cif  = cif;
-  closure->user_data = user_data;
+  closure->user_তথ্য = user_তথ্য;
   closure->fun  = fun;
 
-  return FFI_OK;
+  ফেরত FFI_OK;
 }
 #endif

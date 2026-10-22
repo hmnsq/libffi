@@ -16,13 +16,13 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND,
-   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-   DEALINGS IN THE SOFTWARE.
+   EXPRESS অথবা IMPLIED, INCLUDING BUT নয় LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE এবং
+   NONINFRINGEMENT.  মধ্যে NO EVENT SHALL THE AUTHORS অথবা COPYRIGHT
+   HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES অথবা OTHER LIABILITY,
+   WHETHER মধ্যে AN ACTION OF CONTRACT, TORT অথবা OTHERWISE, ARISING FROM,
+   OUT OF অথবা মধ্যে CONNECTION WITH THE SOFTWARE অথবা THE USE অথবা OTHER
+   DEALINGS মধ্যে THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -82,7 +82,7 @@
 ffi_call_asm:
 	.cfi_startproc
 
-	/* We are NOT going to set up an ordinary stack frame.  In order to pass
+	/* We are নয় going to set up an ordinary stack frame.  In order to pass
 	   the stacked args to the called function, we adjust our stack pointer
 	   to a0, which is in the _caller's_ alloca area.  We establish our own
 	   stack frame at the end of the call_context.
