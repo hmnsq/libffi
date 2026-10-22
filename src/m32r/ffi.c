@@ -25,104 +25,104 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
-#include <stdlib.h>
+#अन्तर्भाव <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+शून्य ffi_prep_args(वर्ण *राशिः, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  unsigned पूर्णाङ्क i;
+  पूर्णाङ्क tmp;
+  unsigned पूर्णाङ्क avn;
+  शून्य **p_argv;
+  वर्ण *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = राशिः;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  जइ (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(शून्य **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  प्रति (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      जइ (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (वर्ण *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      जइ (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  जइ (z < परिमाण (पूर्णाङ्क))
 	    {
-	      z = sizeof (int);
+	      z = परिमाण (पूर्णाङ्क);
 
-	      switch ((*p_arg)->type)
+	      विकल्प ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_SINT8:
+		  *(signed पूर्णाङ्क *) argp = (signed पूर्णाङ्क)*(SINT8 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_UINT8:
+		  *(unsigned पूर्णाङ्क *) argp = (unsigned पूर्णाङ्क)*(UINT8 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_SINT16:
+		  *(signed पूर्णाङ्क *) argp = (signed पूर्णाङ्क)*(SINT16 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		पक्ष FFI_TYPE_UINT16:
+		  *(unsigned पूर्णाङ्क *) argp = (unsigned पूर्णाङ्क)*(UINT16 *)(* p_argv);
+		  भङ्ग;
 
-		case FFI_TYPE_STRUCT:
+		पक्ष FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  जइ ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  अण्णहा
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = परिमाण (पूर्णाङ्क);
+		  भङ्ग;
 
-		default:
+		स्वभाव:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  अण्णहा जइ (z == परिमाण (पूर्णाङ्क))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned पूर्णाङ्क *) argp = (unsigned पूर्णाङ्क)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  अण्णहा
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      जइ ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  जइ (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned पूर्णाङ्क *) argp = (unsigned पूर्णाङ्क)(शून्य *)(* p_argv);
+		      z = परिमाण(शून्य *);
 		    }
-		  else
+		  अण्णहा
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      अण्णहा
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  प्रत्यागम;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -141,74 +141,74 @@ ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  विकल्प (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    पक्ष FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    पक्ष FFI_TYPE_STRUCT:
+      जइ (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      अण्णहा जइ (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      अण्णहा
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    पक्ष FFI_TYPE_SINT64:
+    पक्ष FFI_TYPE_UINT64:
+    पक्ष FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      भङ्ग;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    पक्ष FFI_TYPE_FLOAT:
+    स्वभाव:
       cif->flags = FFI_TYPE_INT;
-      break;
+      भङ्ग;
     }
 
-  return FFI_OK;
+  प्रत्यागम FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+बाह्य शून्य ffi_call_SYSV(शून्य (*)(वर्ण *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, शून्य (*fn)(शून्य));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+शून्य ffi_call(ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue, शून्य **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  शून्य **avalue_copy = रिक्त;
+  पूर्णाङ्क i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  जइ ((rvalue == रिक्त) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  अण्णहा
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  प्रति (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      पूर्णाङ्क size = at->size;
+      जइ (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          वर्ण *argcopy = alloca (size);
+          जइ (avalue_copy == रिक्त)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * परिमाण (शून्य *));
+              memcpy (avalue_copy, avalue, nargs * परिमाण (शून्य *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -217,41 +217,41 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  विकल्प (cif->abi)
     {
-    case FFI_SYSV:
+    पक्ष FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      जइ (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  पूर्णाङ्क size = cif->rtype->size;
+	  पूर्णाङ्क align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  जइ (size < 4)
 	    {
-	      if (align == 1)
+	      जइ (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  अण्णहा जइ (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      जइ (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      अण्णहा जइ (align == 2)
 		{
-		  if (size & 1)
+		  जइ (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  जइ (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      भङ्ग;
 
-    default:
+    स्वभाव:
       FFI_ASSERT(0);
-      break;
+      भङ्ग;
     }
 }
