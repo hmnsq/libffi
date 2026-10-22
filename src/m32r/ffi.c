@@ -33,19 +33,19 @@
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_args(var_na *stack, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
+  unsigned จำนวนเต็ม i;
+  จำนวนเต็ม tmp;
+  unsigned จำนวนเต็ม avn;
   void **p_argv;
-  char *argp;
+  var_na *argp;
   ffi_type **p_arg;
 
   tmp = 0;
   argp = stack;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  ถ้า (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
       *(void **) argp = ecif->rvalue;
       argp += 4;
@@ -54,75 +54,75 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  สำหรับ (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      ถ้า (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (var_na *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      ถ้า (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  ถ้า (z < parimaa_na (จำนวนเต็ม))
 	    {
-	      z = sizeof (int);
+	      z = parimaa_na (จำนวนเต็ม);
 
 	      switch ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_SINT8:
+		  *(signed จำนวนเต็ม *) argp = (signed จำนวนเต็ม)*(SINT8 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_UINT8:
+		  *(unsigned จำนวนเต็ม *) argp = (unsigned จำนวนเต็ม)*(UINT8 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_SINT16:
+		  *(signed จำนวนเต็ม *) argp = (signed จำนวนเต็ม)*(SINT16 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		pak_sa FFI_TYPE_UINT16:
+		  *(unsigned จำนวนเต็ม *) argp = (unsigned จำนวนเต็ม)*(UINT16 *)(* p_argv);
+		  bha_nga;
 
-		case FFI_TYPE_STRUCT:
+		pak_sa FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  ถ้า ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  มิฉะนั้น
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = parimaa_na (จำนวนเต็ม);
+		  bha_nga;
 
 		default:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  มิฉะนั้น ถ้า (z == parimaa_na (จำนวนเต็ม))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned จำนวนเต็ม *) argp = (unsigned จำนวนเต็ม)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  มิฉะนั้น
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      ถ้า ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  ถ้า (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned จำนวนเต็ม *) argp = (unsigned จำนวนเต็ม)(void *)(* p_argv);
+		      z = parimaa_na(void *);
 		    }
-		  else
+		  มิฉะนั้น
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      มิฉะนั้น
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  คืน;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -143,37 +143,37 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   /* Set the return type flag.  */
   switch (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    pak_sa FFI_TYPE_STRUCT:
+      ถ้า (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      มิฉะนั้น ถ้า (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      มิฉะนั้น
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_FLOAT:
     default:
       cif->flags = FFI_TYPE_INT;
-      break;
+      bha_nga;
     }
 
-  return FFI_OK;
+  คืน FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
+extern void ffi_call_SYSV(void (*)(var_na *, extended_cif *), extended_cif *,
 			  unsigned, unsigned, unsigned *, void (*fn)(void));
 
 void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
@@ -181,34 +181,34 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  จำนวนเต็ม i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  ถ้า ((rvalue == NULL) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  มิฉะนั้น
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  สำหรับ (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      จำนวนเต็ม size = at->size;
+      ถ้า (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          var_na *argcopy = alloca (size);
+          ถ้า (avalue_copy == NULL)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * parimaa_na (void *));
+              memcpy (avalue_copy, avalue, nargs * parimaa_na (void *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -219,39 +219,39 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 
   switch (cif->abi)
     {
-    case FFI_SYSV:
+    pak_sa FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      ถ้า (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  จำนวนเต็ม size = cif->rtype->size;
+	  จำนวนเต็ม align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  ถ้า (size < 4)
 	    {
-	      if (align == 1)
+	      ถ้า (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  มิฉะนั้น ถ้า (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      ถ้า (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      มิฉะนั้น ถ้า (align == 2)
 		{
-		  if (size & 1)
+		  ถ้า (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  ถ้า (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
 }

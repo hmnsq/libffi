@@ -43,7 +43,7 @@ typedef   signed long ffi_sarg;
 
 /* FFI_UNUSED_NN and riscv_unused are to maintain ABI compatibility with a
    distributed Berkeley patch from 2014, and can be removed at SONAME bump */
-typedef enum ffi_abi {
+typedef ga_nanaa ffi_abi {
     FFI_FIRST_ABI = 0,
     FFI_SYSV,
     FFI_UNUSED_1,
