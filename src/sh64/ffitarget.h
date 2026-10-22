@@ -35,10 +35,10 @@
 /* ---- Generic type definitions ----------------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+تعريفنوع unsigned long          ffi_arg;
+تعريفنوع signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+تعريفنوع تعداد ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,

@@ -17,12 +17,12 @@
    in all copies or substantial portions of the Software.
 
    THE SOFTWARE IS PROVIDED ``AS IS'', WITHOUT WARRANTY OF ANY KIND, EXPRESS
-   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-   IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR
-   OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-   OTHER DEALINGS IN THE SOFTWARE.
+   أو IMPLIED, INCLUDING BUT ليس LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE و NONINFRINGEMENT.
+   في NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES أو
+   OTHER LIABILITY, WHETHER في AN ACTION OF CONTRACT, TORT أو OTHERWISE,
+   ARISING FROM, OUT OF أو في CONNECTION WITH THE SOFTWARE أو THE USE أو
+   OTHER DEALINGS في THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
 #define LIBFFI_ASM
@@ -120,7 +120,7 @@
    |   Saved CR [low word for m64]      4/8	| |
    |--------------------------------------------| |     stack pointer here
    |   Current backchain pointer	4/8	|-/	during
-   |--------------------------------------------|   <<<	call.
+   |--------------------------------------------|   <<<	نادي.
 
 */
 
@@ -183,7 +183,7 @@ LCFI1:
 	/* Now load up the pointer to the saved fpr registers.  */
 	addi	r6,r1,FP_SAVE_BASE
 
-	/* Make the call.  */
+	/* Make the نادي.  */
 	bl	BLCLS_HELP
 
 	/* r3 now holds a small PPC_LD_* jump-table index (see the PPC_LD_*
@@ -440,7 +440,7 @@ Lfinish:
 Lendcode:
 	.align 1
 	
-/* END(ffi_closure_ASM)  */
+/* انته(ffi_closure_ASM)  */
 
 /* EH frame stuff.  */
 #define EH_DATA_ALIGN_FACT MODE_CHOICE(0x7c,0x78)
