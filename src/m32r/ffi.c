@@ -35,9 +35,9 @@
 
 void ffi_prep_args(char *stack, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
+  unsigned цео i;
+  цео tmp;
+  unsigned цео avn;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
@@ -45,7 +45,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   tmp = 0;
   argp = stack;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  ако (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
       *(void **) argp = ecif->rvalue;
       argp += 4;
@@ -54,75 +54,75 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  за (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
+      ако (((*p_arg)->alignment - 1) & (unsigned) argp)
 	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      ако (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  ако (z < sizeof (цео))
 	    {
-	      z = sizeof (int);
+	      z = sizeof (цео);
 
 	      switch ((*p_arg)->type)
 		{
 		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
+		  *(signed цео *) argp = (signed цео)*(SINT8 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
+		  *(unsigned цео *) argp = (unsigned цео)*(UINT8 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
+		  *(signed цео *) argp = (signed цео)*(SINT16 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
+		  *(unsigned цео *) argp = (unsigned цео)*(UINT16 *)(* p_argv);
 		  break;
 
 		case FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  ако ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  инако
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
+	  	  z = sizeof (цео);
 		  break;
 
 		default:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  инако ако (z == sizeof (цео))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned цео *) argp = (unsigned цео)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  инако
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      ако ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  ако (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
+		      *(unsigned цео *) argp = (unsigned цео)(void *)(* p_argv);
 		      z = sizeof(void *);
 		    }
-		  else
+		  инако
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      инако
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  врати;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -148,13 +148,13 @@ ffi_prep_cif_machdep(ffi_cif *cif)
       break;
 
     case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+      ако (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      инако ако (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      инако
 	cif->flags = (unsigned) cif->rtype->type;
       break;
 
@@ -170,7 +170,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
       break;
     }
 
-  return FFI_OK;
+  врати FFI_OK;
 }
 
 extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
@@ -181,31 +181,31 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  цео i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  ако ((rvalue == NULL) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  инако
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  за (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      цео size = at->size;
+      ако (at->type == FFI_TYPE_STRUCT && size > 4)
         {
           char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ако (avalue_copy == NULL)
             {
               avalue_copy = alloca (nargs * sizeof (void *));
               memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -222,28 +222,28 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     case FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      ако (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  цео size = cif->rtype->size;
+	  цео align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  ако (size < 4)
 	    {
-	      if (align == 1)
+	      ако (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  инако ако (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      ако (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      инако ако (align == 2)
 		{
-		  if (size & 1)
+		  ако (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  ако (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }

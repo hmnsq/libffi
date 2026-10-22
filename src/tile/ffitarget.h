@@ -53,10 +53,10 @@ typedef enum ffi_abi {
 # define FFI_SIZEOF_ARG 8
 # ifdef __LP64__
 #  define FFI_TRAMPOLINE_SIZE (8 * 5)  /* 5 bundles */
-# else
+# инако
 #  define FFI_TRAMPOLINE_SIZE (8 * 3)  /* 3 bundles */
 # endif
-#else
+#инако
 # define FFI_SIZEOF_ARG 4
 # define FFI_TRAMPOLINE_SIZE 8 /* 1 bundle */
 #endif

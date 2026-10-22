@@ -25,7 +25,7 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#if defined(__x86_64__) || defined(_M_AMD64)
+#ако defined(__x86_64__) || defined(_M_AMD64)
 #include <ffi.h>
 #include <ffi_common.h>
 #include <stdlib.h>
@@ -35,7 +35,7 @@
 
 #ifdef X86_WIN64
 #define EFI64(name) name
-#else
+#инако
 #define EFI64(name) FFI_HIDDEN name##_efi64
 #endif
 
@@ -54,7 +54,7 @@ extern void ffi_call_win64 (void *stack, struct win64_call_frame *,
 ffi_status FFI_HIDDEN
 EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
 {
-  int flags, n;
+  цео flags, n;
 
   switch (cif->abi)
     {
@@ -62,7 +62,7 @@ EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
     case FFI_GNUW64:
       break;
     default:
-      return FFI_BAD_ABI;
+      врати FFI_BAD_ABI;
     }
 
   flags = cif->rtype->type;
@@ -72,7 +72,7 @@ EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
       break;
     case FFI_TYPE_LONGDOUBLE:
       /* GCC returns long double values by reference, like a struct */
-      if (cif->abi == FFI_GNUW64)
+      ако (cif->abi == FFI_GNUW64)
 	flags = FFI_TYPE_STRUCT;
       break;
     case FFI_TYPE_COMPLEX:
@@ -102,18 +102,18 @@ EFI64(ffi_prep_cif_machdep)(ffi_cif *cif)
      passed by reference with the pointer in the 8 byte slot.  */
   n = cif->nargs;
   n += (flags == FFI_TYPE_STRUCT);
-  if (n < 4)
+  ако (n < 4)
     n = 4;
   cif->bytes = n * 8;
 
-  return FFI_OK;
+  врати FFI_OK;
 }
 
 /* We perform some black magic here to use some of the parent's stack frame in
  * ffi_call_win64() that breaks with the MSVC compiler with the /RTCs or /GZ
  * flags.  Disable the 'Stack frame run time error checking' for this function
  * so we don't hit weird exceptions in debug builds. */
-#if defined(_MSC_VER)
+#ако defined(_MSC_VER)
 #pragma runtime_checks("s", off)
 #endif
 FFI_ASAN_NO_SANITIZE
@@ -121,13 +121,13 @@ static void
 ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	      void **avalue, void *closure)
 {
-  int i, j, n, flags;
+  цео i, j, n, flags;
   UINT64 *stack;
   size_t rsize;
   struct win64_call_frame *frame;
   ffi_type **arg_types = cif->arg_types;
   void **avalue_copy = NULL;
-  int nargs = cif->nargs;
+  цео nargs = cif->nargs;
 
   FFI_ASSERT(cif->abi == FFI_GNUW64 || cif->abi == FFI_WIN64);
 
@@ -135,10 +135,10 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
      make a copy so we are passing by value.  The pointer array is cloned
      first: the caller owns avalue[] and may reuse it for another call,
      so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  за (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
+      цео size = at->size;
       bool needcopy = false;
 
       switch (at->type)
@@ -159,10 +159,10 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	      needcopy = true;
 	    }
 	}
-      if (needcopy)
+      ако (needcopy)
         {
           char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          ако (avalue_copy == NULL)
             {
               avalue_copy = alloca (nargs * sizeof (void *));
               memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -178,17 +178,17 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   /* If we have no return value for a structure, we need to create one.
      Otherwise we can ignore the return type entirely.  */
-  if (rvalue == NULL)
+  ако (rvalue == NULL)
     {
-      if (flags == FFI_TYPE_STRUCT)
+      ако (flags == FFI_TYPE_STRUCT)
 	rsize = cif->rtype->size;
-      else
+      инако
 	flags = FFI_TYPE_VOID;
     }
 
   stack = alloca(cif->bytes + sizeof(struct win64_call_frame) + rsize);
   frame = (struct win64_call_frame *)((char *)stack + cif->bytes);
-  if (rsize)
+  ако (rsize)
     rvalue = frame + 1;
 
   frame->fn = (uintptr_t)fn;
@@ -196,13 +196,13 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   frame->rvalue = (uintptr_t)rvalue;
 
   j = 0;
-  if (flags == FFI_TYPE_STRUCT)
+  ако (flags == FFI_TYPE_STRUCT)
     {
       stack[0] = (uintptr_t)rvalue;
       j = 1;
     }
 
-  for (i = 0, n = cif->nargs; i < n; ++i, ++j)
+  за (i = 0, n = cif->nargs; i < n; ++i, ++j)
     {
       switch (cif->arg_types[i]->size)
 	{
@@ -226,7 +226,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   ffi_call_win64 (stack, frame, closure);
 }
-#if defined(_MSC_VER)
+#ако defined(_MSC_VER)
 #pragma runtime_checks("s", restore)
 #endif
 
@@ -245,7 +245,7 @@ EFI64(ffi_call_go)(ffi_cif *cif, void (*fn)(void), void *rvalue,
 
 
 extern void ffi_closure_win64(void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ако defined(FFI_EXEC_STATIC_TRAMP)
 extern void ffi_closure_win64_alt(void) FFI_HIDDEN;
 #endif
 
@@ -278,11 +278,11 @@ EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
     case FFI_GNUW64:
       break;
     default:
-      return FFI_BAD_ABI;
+      врати FFI_BAD_ABI;
     }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#ако defined(FFI_EXEC_STATIC_TRAMP)
+  ако (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
       ffi_tramp_set_parms (closure->ftramp, ffi_closure_win64_alt, closure);
@@ -294,14 +294,14 @@ EFI64(ffi_prep_closure_loc)(ffi_closure* closure,
   memcpy (tramp, trampoline, sizeof(trampoline));
   *(UINT64 *)(tramp + sizeof (trampoline)) = (uintptr_t)ffi_closure_win64;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#ако defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  врати FFI_OK;
 }
 
 #ifdef FFI_GO_CLOSURES
@@ -315,14 +315,14 @@ EFI64(ffi_prep_go_closure)(ffi_go_closure* closure, ffi_cif* cif,
     case FFI_GNUW64:
       break;
     default:
-      return FFI_BAD_ABI;
+      врати FFI_BAD_ABI;
     }
 
   closure->tramp = ffi_go_closure_win64;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  врати FFI_OK;
 }
 #endif
 
@@ -338,7 +338,7 @@ struct win64_closure_frame
    this is a nop.  When compiling on unix, this simplifies the assembly,
    and places the burden of saving the extra call-saved registers on
    the compiler.  */
-int FFI_HIDDEN __attribute__((ms_abi))
+цео FFI_HIDDEN __attribute__((ms_abi))
 ffi_closure_win64_inner(ffi_cif *cif,
 			void (*fun)(ffi_cif*, void*, void**, void*),
 			void *user_data,
@@ -346,7 +346,7 @@ ffi_closure_win64_inner(ffi_cif *cif,
 {
   void **avalue;
   void *rvalue;
-  int i, n, nreg, flags;
+  цео i, n, nreg, flags;
 
   avalue = alloca(cif->nargs * sizeof(void *));
   rvalue = frame->rvalue;
@@ -356,29 +356,29 @@ ffi_closure_win64_inner(ffi_cif *cif,
      We must also be prepared to return the same address in eax, so
      install that address in the frame and pretend we return a pointer.  */
   flags = cif->flags;
-  if (flags == FFI_TYPE_STRUCT)
+  ако (flags == FFI_TYPE_STRUCT)
     {
       rvalue = (void *)(uintptr_t)frame->args[0];
       frame->rvalue[0] = frame->args[0];
       nreg = 1;
     }
 
-  for (i = 0, n = cif->nargs; i < n; ++i, ++nreg)
+  за (i = 0, n = cif->nargs; i < n; ++i, ++nreg)
     {
       size_t size = cif->arg_types[i]->size;
       size_t type = cif->arg_types[i]->type;
       void *a;
 
-      if (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
+      ако (type == FFI_TYPE_DOUBLE || type == FFI_TYPE_FLOAT)
 	{
-	  if (nreg < 4)
+	  ако (nreg < 4)
 	    a = &frame->fargs[nreg];
-	  else
+	  инако
 	    a = &frame->args[nreg];
 	}
-      else if (size == 1 || size == 2 || size == 4 || size == 8)
+      инако ако (size == 1 || size == 2 || size == 4 || size == 8)
 	a = &frame->args[nreg];
-      else
+      инако
 	a = (void *)(uintptr_t)frame->args[nreg];
 
       avalue[i] = a;
@@ -386,7 +386,7 @@ ffi_closure_win64_inner(ffi_cif *cif,
 
   /* Invoke the closure.  */
   fun (cif, rvalue, avalue, user_data);
-  return flags;
+  врати flags;
 }
 
 #endif /* __x86_64__ */

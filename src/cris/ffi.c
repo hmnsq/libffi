@@ -44,11 +44,11 @@ initialize_aggregate_packed_struct (ffi_type * arg)
 
   ptr = &(arg->elements[0]);
 
-  while ((*ptr) != NULL)
+  док ((*ptr) != NULL)
     {
-      if (((*ptr)->size == 0)
+      ако (((*ptr)->size == 0)
 	  && (initialize_aggregate_packed_struct ((*ptr)) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+	врати FFI_BAD_TYPEDEF;
 
       FFI_ASSERT (ffi_type_test ((*ptr)));
 
@@ -60,17 +60,17 @@ initialize_aggregate_packed_struct (ffi_type * arg)
       ptr++;
     }
 
-  if (arg->size == 0)
-    return FFI_BAD_TYPEDEF;
-  else
-    return FFI_OK;
+  ако (arg->size == 0)
+    врати FFI_BAD_TYPEDEF;
+  инако
+    врати FFI_OK;
 }
 
-int
+цео
 ffi_prep_args (char *stack, extended_cif * ecif)
 {
-  unsigned int i;
-  unsigned int struct_count = 0;
+  unsigned цео i;
+  unsigned цео struct_count = 0;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
@@ -79,7 +79,7 @@ ffi_prep_args (char *stack, extended_cif * ecif)
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  за (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0); i--, p_arg++)
     {
       size_t z;
@@ -89,60 +89,60 @@ ffi_prep_args (char *stack, extended_cif * ecif)
 	case FFI_TYPE_STRUCT:
 	  {
 	    z = (*p_arg)->size;
-	    if (z <= 4)
+	    ако (z <= 4)
 	      {
 		memcpy (argp, *p_argv, z);
 		z = 4;
 	      }
-	    else if (z <= 8)
+	    инако ако (z <= 8)
 	      {
 		memcpy (argp, *p_argv, z);
 		z = 8;
 	      }
-	    else
+	    инако
 	      {
-		unsigned int uiLocOnStack;
+		unsigned цео uiLocOnStack;
 		z = sizeof (void *);
 		uiLocOnStack = 4 * ecif->cif->nargs + struct_count;
 		struct_count = struct_count + (*p_arg)->size;
-		*(unsigned int *) argp =
-		  (unsigned int) (UINT32 *) (stack + uiLocOnStack);
+		*(unsigned цео *) argp =
+		  (unsigned цео) (UINT32 *) (stack + uiLocOnStack);
 		memcpy ((stack + uiLocOnStack), *p_argv, (*p_arg)->size);
 	      }
 	    break;
 	  }
 	default:
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  ако (z < sizeof (цео))
 	    {
 	      switch ((*p_arg)->type)
 		{
 		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int) *(SINT8 *) (*p_argv);
+		  *(signed цео *) argp = (signed цео) *(SINT8 *) (*p_argv);
 		  break;
 
 		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp =
-		    (unsigned int) *(UINT8 *) (*p_argv);
+		  *(unsigned цео *) argp =
+		    (unsigned цео) *(UINT8 *) (*p_argv);
 		  break;
 
 		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int) *(SINT16 *) (*p_argv);
+		  *(signed цео *) argp = (signed цео) *(SINT16 *) (*p_argv);
 		  break;
 
 		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp =
-		    (unsigned int) *(UINT16 *) (*p_argv);
+		  *(unsigned цео *) argp =
+		    (unsigned цео) *(UINT16 *) (*p_argv);
 		  break;
 
 		default:
 		  FFI_ASSERT (0);
 		}
-	      z = sizeof (int);
+	      z = sizeof (цео);
 	    }
-	  else if (z == sizeof (int))
-	    *(unsigned int *) argp = (unsigned int) *(UINT32 *) (*p_argv);
-	  else
+	  инако ако (z == sizeof (цео))
+	    *(unsigned цео *) argp = (unsigned цео) *(UINT32 *) (*p_argv);
+	  инако
 	    memcpy (argp, *p_argv, z);
 	  break;
 	}
@@ -150,17 +150,17 @@ ffi_prep_args (char *stack, extended_cif * ecif)
       argp += z;
     }
 
-  return (struct_count);
+  врати (struct_count);
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_core (ffi_cif * cif,
-	           ffi_abi abi, unsigned int isvariadic,
-		   unsigned int nfixedargs, unsigned int ntotalargs,
+	           ffi_abi abi, unsigned цео isvariadic,
+		   unsigned цео nfixedargs, unsigned цео ntotalargs,
 	           ffi_type * rtype, ffi_type ** atypes)
 {
   unsigned bytes = 0;
-  unsigned int i;
+  unsigned цео i;
   ffi_type **ptr;
 
   FFI_ASSERT (cif != NULL);
@@ -175,44 +175,44 @@ ffi_prep_cif_core (ffi_cif * cif,
 
   cif->flags = 0;
 
-  if ((cif->rtype->size == 0)
+  ако ((cif->rtype->size == 0)
       && (initialize_aggregate_packed_struct (cif->rtype) != FFI_OK))
-    return FFI_BAD_TYPEDEF;
+    врати FFI_BAD_TYPEDEF;
 
   FFI_ASSERT_VALID_TYPE (cif->rtype);
 
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
+  за (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
     {
-      if (((*ptr)->size == 0)
+      ако (((*ptr)->size == 0)
 	  && (initialize_aggregate_packed_struct ((*ptr)) != FFI_OK))
-	return FFI_BAD_TYPEDEF;
+	врати FFI_BAD_TYPEDEF;
 
       FFI_ASSERT_VALID_TYPE (*ptr);
 
-      if (((*ptr)->alignment - 1) & bytes)
+      ако (((*ptr)->alignment - 1) & bytes)
 	bytes = FFI_ALIGN (bytes, (*ptr)->alignment);
-      if ((*ptr)->type == FFI_TYPE_STRUCT)
+      ако ((*ptr)->type == FFI_TYPE_STRUCT)
 	{
-	  if ((*ptr)->size > 8)
+	  ако ((*ptr)->size > 8)
 	    {
 	      bytes += (*ptr)->size;
 	      bytes += sizeof (void *);
 	    }
-	  else
+	  инако
 	    {
-	      if ((*ptr)->size > 4)
+	      ако ((*ptr)->size > 4)
 		bytes += 8;
-	      else
+	      инако
 		bytes += 4;
 	    }
 	}
-      else
+      инако
 	bytes += STACK_ARG_SIZE ((*ptr)->size);
     }
 
   cif->bytes = bytes;
 
-  return ffi_prep_cif_machdep (cif);
+  врати ffi_prep_cif_machdep (cif);
 }
 
 ffi_status
@@ -234,10 +234,10 @@ ffi_prep_cif_machdep (ffi_cif * cif)
       break;
     }
 
-  return FFI_OK;
+  врати FFI_OK;
 }
 
-extern void ffi_call_SYSV (int (*)(char *, extended_cif *),
+extern void ffi_call_SYSV (цео (*)(char *, extended_cif *),
 			   extended_cif *,
 			   unsigned, unsigned, unsigned *, void (*fn) ())
      __attribute__ ((__visibility__ ("hidden")));
@@ -250,11 +250,11 @@ ffi_call (ffi_cif * cif, void (*fn) (), void *rvalue, void **avalue)
   ecif.cif = cif;
   ecif.avalue = avalue;
 
-  if ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
+  ако ((rvalue == NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  инако
     ecif.rvalue = rvalue;
 
   switch (cif->abi)
@@ -278,12 +278,12 @@ extern const char ffi_cris_trampoline_template[]
 
 /* Offset into ffi_cris_trampoline_template of where to put the
    ffi_prep_closure_inner function.  */
-extern const int ffi_cris_trampoline_fn_offset
+extern const цео ffi_cris_trampoline_fn_offset
  __attribute__ ((__visibility__ ("hidden")));
 
 /* Offset into ffi_cris_trampoline_template of where to put the
    closure data.  */
-extern const int ffi_cris_trampoline_closure_offset
+extern const цео ffi_cris_trampoline_closure_offset
  __attribute__ ((__visibility__ ("hidden")));
 
 /* This function is sibling-called (jumped to) by the closure
@@ -305,25 +305,25 @@ ffi_prep_closure_inner (void **params, ffi_closure* closure)
 
   /* Max room needed is number of arguments as 64-bit values.  */
   void **avalue = alloca (closure->cif->nargs * sizeof(void *));
-  int i;
-  int doing_regs;
+  цео i;
+  цео doing_regs;
   long long llret = 0;
 
   /* Find the address of each argument.  */
-  for (i = 0, doing_regs = 1; i < cif->nargs; i++)
+  за (i = 0, doing_regs = 1; i < cif->nargs; i++)
     {
       /* Types up to and including 8 bytes go by-value.  */
-      if (arg_types[i]->size <= 4)
+      ако (arg_types[i]->size <= 4)
 	{
 	  avalue[i] = ptr;
 	  ptr += 4;
 	}
-      else if (arg_types[i]->size <= 8)
+      инако ако (arg_types[i]->size <= 8)
 	{
 	  avalue[i] = ptr;
 	  ptr += 8;
 	}
-      else
+      инако
 	{
 	  FFI_ASSERT (arg_types[i]->type == FFI_TYPE_STRUCT);
 
@@ -335,7 +335,7 @@ ffi_prep_closure_inner (void **params, ffi_closure* closure)
       /* If we've handled more arguments than fit in registers, start
 	 looking at the those passed on the stack.  Step over the
 	 first one if we had a straddling parameter.  */
-      if (doing_regs && ptr >= register_args + 4*4)
+      ако (doing_regs && ptr >= register_args + 4*4)
 	{
 	  ptr = stack_args + ((ptr > register_args + 4*4) ? 4 : 0);
 	  doing_regs = 0;
@@ -358,7 +358,7 @@ ffi_prep_closure_inner (void **params, ffi_closure* closure)
 
 		  avalue, closure->user_data);
 
-  return llret;
+  врати llret;
 }
 
 /* API function: Prepare the trampoline.  */
@@ -382,5 +382,5 @@ ffi_prep_closure_loc (ffi_closure* closure,
   memcpy (closure->tramp + ffi_cris_trampoline_closure_offset,
 	  &codeloc, sizeof (void *));
 
-  return FFI_OK;
+  врати FFI_OK;
 }

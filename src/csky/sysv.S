@@ -119,7 +119,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return цео */
  stw a0, (a2, 0x0)
 
 .Lepilogue:
@@ -285,7 +285,7 @@ CSKY_FUNC_START ffi_call_SYSV
  stw a1, (a2, 0x4)
 
 .Lretint:
- /* return INT */
+ /* return цео */
  stw a0, (a2, 0x0)
 
 .Lepilogue:
