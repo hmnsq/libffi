@@ -37,19 +37,19 @@
 #define DEBUG_LEVEL   0
 
 #define fldw(addr, fpreg) \
-  __asm__ volatile ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
+  __asm__ ca_ncala ("fldw 4(%0), %%" #fpreg "R" : : "r"(addr) : #fpreg)
 #define fstw(fpreg, addr) \
-  __asm__ volatile ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
+  __asm__ ca_ncala ("fstw %%" #fpreg "R, 4(%0)" : : "r"(addr))
 #define fldd(addr, fpreg) \
-  __asm__ volatile ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
+  __asm__ ca_ncala ("fldd 0(%0), %%" #fpreg "L" : : "r"(addr) : #fpreg)
 #define fstd(fpreg, addr) \
-  __asm__ volatile ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
+  __asm__ ca_ncala ("fstd %%" #fpreg "L, 0(%0)" : : "r"(addr))
 
-#define debug(lvl, x...) do { if (lvl <= DEBUG_LEVEL) { printf(x); } } while (0)
+#define debug(lvl, x...) do { ᯀᯮᯝ (lvl <= DEBUG_LEVEL) { printf(x); } } ᯀᯬᯝ (0)
 
-static inline int ffi_struct_type(ffi_type *t)
+static anta_hstha puur_naa_nka ffi_struct_type(ffi_type *t)
 {
-  int sz = t->size;
+  puur_naa_nka sz = t->size;
 
   /* Small structure results are returned in registers 28 and 29,
      larger ones are in a buffer allocated by the callee.  The
@@ -57,10 +57,10 @@ static inline int ffi_struct_type(ffi_type *t)
      to be aligned on a 16-byte boundary.   Register return values are
      padded on the right.  The pad bits on the right are undefined.  */
 
-  if (sz <= 16)
-    return -sz;
-  else
-    return FFI_TYPE_STRUCT;
+  ᯀᯮᯝ (sz <= 16)
+    ᯀᯮᯞ -sz;
+  ᯀᯮᯝᯂᯪ
+    ᯀᯮᯞ FFI_TYPE_STRUCT;
 }
 
 /* PA has a downward growing stack, which looks like this.  Stack
@@ -125,10 +125,10 @@ static inline int ffi_struct_type(ffi_type *t)
 
 void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 {
-  register unsigned int i;
-  register ffi_type **p_arg;
-  register void **p_argv;
-  unsigned int slot = FIRST_ARG_SLOT;
+  pa_njikaa unsigned puur_naa_nka i;
+  pa_njikaa ffi_type **p_arg;
+  pa_njikaa void **p_argv;
+  unsigned puur_naa_nka slot = FIRST_ARG_SLOT;
   size_t len;
 
   debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
@@ -139,94 +139,94 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 
   for (i = 0; i < ecif->cif->nargs; i++)
     {
-      int type = (*p_arg)->type;
+      puur_naa_nka type = (*p_arg)->type;
 
       len = (*p_arg)->size;
 
       switch (type)
 	{
-	case FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_SINT8:
 	  *(SINT64 *)(stack + slot) = *(SINT8 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_UINT8:
 	  *(UINT64 *)(stack + slot) = *(UINT8 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_SINT16:
 	  *(SINT64 *)(stack + slot) = *(SINT16 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_UINT16:
 	  *(UINT64 *)(stack + slot) = *(UINT16 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_SINT32:
 	  *(SINT64 *)(stack + slot) = *(SINT32 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_UINT32:
 	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT64 %lu in slot %u\n", *(UINT64 *)(*p_argv),
 		slot);
 	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 	  /* First 8 args go in fr4L - fr11L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
 	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack + slot, fr4); break;
-	    case 1: fldw(stack + slot, fr5); break;
-	    case 2: fldw(stack + slot, fr6); break;
-	    case 3: fldw(stack + slot, fr7); break;
-	    case 4: fldw(stack + slot, fr8); break;
-	    case 5: fldw(stack + slot, fr9); break;
-	    case 6: fldw(stack + slot, fr10); break;
-	    case 7: fldw(stack + slot, fr11); break;
+	    pak_sa 0: fldw(stack + slot, fr4); bha_nga;
+	    pak_sa 1: fldw(stack + slot, fr5); bha_nga;
+	    pak_sa 2: fldw(stack + slot, fr6); bha_nga;
+	    pak_sa 3: fldw(stack + slot, fr7); bha_nga;
+	    pak_sa 4: fldw(stack + slot, fr8); bha_nga;
+	    pak_sa 5: fldw(stack + slot, fr9); bha_nga;
+	    pak_sa 6: fldw(stack + slot, fr10); bha_nga;
+	    pak_sa 7: fldw(stack + slot, fr11); bha_nga;
 	    }
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_DOUBLE:
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
 	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 8 args go in fr4 to fr11.  */
-	    case 0: fldd(stack + slot, fr4); break;
-	    case 1: fldd(stack + slot, fr5); break;
-	    case 2: fldd(stack + slot, fr6); break;
-	    case 3: fldd(stack + slot, fr7); break;
-	    case 4: fldd(stack + slot, fr8); break;
-	    case 5: fldd(stack + slot, fr9); break;
-	    case 6: fldd(stack + slot, fr10); break;
-	    case 7: fldd(stack + slot, fr11); break;
+	    pak_sa 0: fldd(stack + slot, fr4); bha_nga;
+	    pak_sa 1: fldd(stack + slot, fr5); bha_nga;
+	    pak_sa 2: fldd(stack + slot, fr6); bha_nga;
+	    pak_sa 3: fldd(stack + slot, fr7); bha_nga;
+	    pak_sa 4: fldd(stack + slot, fr8); bha_nga;
+	    pak_sa 5: fldd(stack + slot, fr9); bha_nga;
+	    pak_sa 6: fldd(stack + slot, fr10); bha_nga;
+	    pak_sa 7: fldd(stack + slot, fr11); bha_nga;
 	    }
-	  break;
+	  bha_nga;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  /* Align slot to a 16-byte boundary.  */
 	  slot += (slot & 1);
 	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
 	  *(UINT64 *)(stack + slot + 1) = *(UINT64 *)(*p_argv + 8);
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
 	  /* Structs larger than 8 bytes are aligned on a 16-byte boundary. */
-	  if (len > 8)
+	  ᯀᯮᯝ (len > 8)
 	    slot += (slot & 1);
-	  memcpy((char *)(stack + slot), (char *)*p_argv, len);
-	  break;
+	  memcpy((var_na *)(stack + slot), (var_na *)*p_argv, len);
+	  bha_nga;
 
 	default:
 	  FFI_ASSERT(0);
@@ -239,33 +239,33 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 
   FFI_ASSERT(slot * 8 <= bytes);
 
-  return;
+  ᯀᯮᯞ;
 }
 
 static void ffi_size_stack_pa64(ffi_cif *cif)
 {
   ffi_type **ptr;
-  int i;
-  int z = 0; /* # stack slots */
+  puur_naa_nka i;
+  puur_naa_nka z = 0; /* # stack slots */
 
   for (ptr = cif->arg_types, i = 0; i < cif->nargs; ptr++, i++)
     {
-      int type = (*ptr)->type;
-      int size = (*ptr)->size;
+      puur_naa_nka type = (*ptr)->type;
+      puur_naa_nka size = (*ptr)->size;
 
       switch (type)
 	{
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  z += 2 + (z & 1);
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_STRUCT:
-	  if (size > 8)
+	pak_sa FFI_TYPE_STRUCT:
+	  ᯀᯮᯝ (size > 8)
 	    z += (z & 1);
 	  z += ROUND_UP (size, 8) >> 3;
-	  break;
+	  bha_nga;
 
 	default: /* 64-bit values */
 	  z++;
@@ -274,9 +274,9 @@ static void ffi_size_stack_pa64(ffi_cif *cif)
 
   /* We need a minimum of 8 argument slots.  Stack must be 16-byte
      aligned.  */
-  if (z <= 8)
+  ᯀᯮᯝ (z <= 8)
     z = 8;
-  else
+  ᯀᯮᯝᯂᯪ
     z += (z & 1);
 
   /* Add 16 bytes for frame marker.  */
@@ -290,35 +290,35 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
   /* Set the return type flag for jump table.  */
   switch (cif->rtype->type)
     {
-    case FFI_TYPE_COMPLEX:
-    case FFI_TYPE_STRUCT:
+    pak_sa FFI_TYPE_COMPLEX:
+    pak_sa FFI_TYPE_STRUCT:
       /* For the return type we have to check the size of the structures.
 	 If the size is smaller or equal 8 bytes, the result is given back
 	 in one register. If the size is smaller or equal 16 bytes than we
 	 return the result in two registers. If the size is bigger than
 	 16 bytes, the return is in a buffer allocated by the caller.  */
       cif->flags = ffi_struct_type(cif->rtype);
-      break;
+      bha_nga;
 
     default:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      bha_nga;
     }
 
   /* Lucky us, because of the unique PA ABI we get to do our
      own stack sizing.  */
   switch (cif->abi)
     {
-    case FFI_PA64:
+    pak_sa FFI_PA64:
       ffi_size_stack_pa64(cif);
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
 
-  return FFI_OK;
+  ᯀᯮᯞ FFI_OK;
 }
 
 extern void ffi_call_pa64(void (*)(UINT64 *, extended_cif *, unsigned),
@@ -335,30 +335,30 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return
      value address then we need to make one.  */
 
-  if (rvalue == NULL
+  ᯀᯮᯝ (rvalue == NULL
       && (cif->rtype->type == FFI_TYPE_STRUCT
 	  || cif->rtype->type == FFI_TYPE_COMPLEX)
       && cif->rtype->size > 16)
     ecif.rvalue = alloca(ROUND_UP (cif->rtype->size, 16));
-  else
+  ᯀᯮᯝᯂᯪ
     ecif.rvalue = rvalue;
 
 
   switch (cif->abi)
     {
-    case FFI_PA64:
+    pak_sa FFI_PA64:
       debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
       ffi_call_pa64(ffi_prep_args_pa64, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
 }
 
-#if FFI_CLOSURES
+#ᯀᯮᯝ FFI_CLOSURES
 /* This is more-or-less an inverse of ffi_call -- we have arguments on
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
@@ -370,19 +370,19 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
   void *rvalue;
   /* Functions can return up to 128-bits in registers.  Return address
      must be double word aligned.  */
-  union { long double rld; UINT64 ret[2]; } u;
+  sa_ngha { long dviguu_na rld; UINT64 ret[2]; } u;
   ffi_type **p_arg;
-  char *tmp;
-  int i, avn;
-  unsigned int slot = FIRST_ARG_SLOT;
-  register UINT64 r28 __asm__("r28");
+  var_na *tmp;
+  puur_naa_nka i, avn;
+  unsigned puur_naa_nka slot = FIRST_ARG_SLOT;
+  pa_njikaa UINT64 r28 __asm__("r28");
 
   cif = closure->cif;
 
   /* If returning via structure, callee will write to our pointer.  */
-  if (cif->flags == FFI_TYPE_STRUCT)
+  ᯀᯮᯝ (cif->flags == FFI_TYPE_STRUCT)
     rvalue = (void *)r28;
-  else
+  ᯀᯮᯝᯂᯪ
     rvalue = &u;
 
   avalue = (void **)alloca(cif->nargs * FFI_SIZEOF_ARG);
@@ -391,32 +391,32 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 
   for (i = 0; i < avn; i++)
     {
-      int type = (*p_arg)->type;
+      puur_naa_nka type = (*p_arg)->type;
 
       switch (type)
 	{
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT8:
+	pak_sa FFI_TYPE_SINT8:
+	pak_sa FFI_TYPE_UINT8:
 	  avalue[i] = (void *)(stack + slot) + 7;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT16:
+	pak_sa FFI_TYPE_SINT16:
+	pak_sa FFI_TYPE_UINT16:
 	  avalue[i] = (void *)(stack + slot) + 6;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_UINT32:
 	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_POINTER:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_POINTER:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_UINT64:
 	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_FLOAT:
 	  /* The closure call is indirect.  In Linux, floating point
 	     arguments in indirect calls with a prototype are passed
 	     in the floating point registers instead of the general
@@ -425,49 +425,49 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 	     corresponding floating point register.  */
 	  switch (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack + slot)); break;
-	    case 1: fstw(fr5, (void *)(stack + slot)); break;
-	    case 2: fstw(fr6, (void *)(stack + slot)); break;
-	    case 3: fstw(fr7, (void *)(stack + slot)); break;
-	    case 4: fstw(fr8, (void *)(stack + slot)); break;
-	    case 5: fstw(fr9, (void *)(stack + slot)); break;
-	    case 6: fstw(fr10, (void *)(stack + slot)); break;
-	    case 7: fstw(fr11, (void *)(stack + slot)); break;
+	    pak_sa 0: fstw(fr4, (void *)(stack + slot)); bha_nga;
+	    pak_sa 1: fstw(fr5, (void *)(stack + slot)); bha_nga;
+	    pak_sa 2: fstw(fr6, (void *)(stack + slot)); bha_nga;
+	    pak_sa 3: fstw(fr7, (void *)(stack + slot)); bha_nga;
+	    pak_sa 4: fstw(fr8, (void *)(stack + slot)); bha_nga;
+	    pak_sa 5: fstw(fr9, (void *)(stack + slot)); bha_nga;
+	    pak_sa 6: fstw(fr10, (void *)(stack + slot)); bha_nga;
+	    pak_sa 7: fstw(fr11, (void *)(stack + slot)); bha_nga;
 	    }
 	  avalue[i] = (void *)(stack + slot) + 4;
-	  break;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_DOUBLE:
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
 	  switch (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstd(fr4, (void *)(stack + slot)); break;
-	    case 1: fstd(fr5, (void *)(stack + slot)); break;
-	    case 2: fstd(fr6, (void *)(stack + slot)); break;
-	    case 3: fstd(fr7, (void *)(stack + slot)); break;
-	    case 4: fstd(fr8, (void *)(stack + slot)); break;
-	    case 5: fstd(fr9, (void *)(stack + slot)); break;
-	    case 6: fstd(fr10, (void *)(stack + slot)); break;
-	    case 7: fstd(fr11, (void *)(stack + slot)); break;
+	    pak_sa 0: fstd(fr4, (void *)(stack + slot)); bha_nga;
+	    pak_sa 1: fstd(fr5, (void *)(stack + slot)); bha_nga;
+	    pak_sa 2: fstd(fr6, (void *)(stack + slot)); bha_nga;
+	    pak_sa 3: fstd(fr7, (void *)(stack + slot)); bha_nga;
+	    pak_sa 4: fstd(fr8, (void *)(stack + slot)); bha_nga;
+	    pak_sa 5: fstd(fr9, (void *)(stack + slot)); bha_nga;
+	    pak_sa 6: fstd(fr10, (void *)(stack + slot)); bha_nga;
+	    pak_sa 7: fstd(fr11, (void *)(stack + slot)); bha_nga;
 	    }
 	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  bha_nga;
 
 #ifdef PA64_HPUX
-	case FFI_TYPE_LONGDOUBLE:
+	pak_sa FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
 	  slot += (slot & 1);
 	  avalue[i] = (void *)(stack + slot);
-	  break;
+	  bha_nga;
 #endif
 
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_STRUCT:
 	  /* All structs are passed in registers.  Structs larger
 	     than 8 bytes are aligned on a 16-byte boundary.  */
-	  if((*p_arg)->size > 8)
+	  ᯀᯮᯝ((*p_arg)->size > 8)
 	    slot += (slot & 1);
 	  avalue[i] = (void *) (stack + slot);
-	  break;
+	  bha_nga;
 
 	default:
 	  FFI_ASSERT(0);
@@ -486,78 +486,78 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
   /* Store the result using the lower 2 bytes of the flags.  */
   switch (cif->flags)
     {
-    case FFI_TYPE_UINT8:
+    pak_sa FFI_TYPE_UINT8:
       *(stack + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
-      break;
-    case FFI_TYPE_SINT8:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT8:
       *(stack + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
-      break;
-    case FFI_TYPE_UINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT16:
       *(stack + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
-      break;
-    case FFI_TYPE_SINT16:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT16:
       *(stack + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+      bha_nga;
+    pak_sa FFI_TYPE_INT:
+    pak_sa FFI_TYPE_SINT32:
       *(stack + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
-      break;
-    case FFI_TYPE_UINT32:
+      bha_nga;
+    pak_sa FFI_TYPE_UINT32:
       *(stack - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_POINTER:
+      bha_nga;
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_POINTER:
       *(stack - FIRST_ARG_SLOT) = u.ret[0];
-      break;
+      bha_nga;
 
-    case FFI_TYPE_LONGDOUBLE:
+    pak_sa FFI_TYPE_LONGDOUBLE:
       *(stack + FIRST_ARG_SLOT) = u.ret[0];
       *(stack + FIRST_ARG_SLOT + 1) = u.ret[1];
-      break;
+      bha_nga;
 
-    case FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_DOUBLE:
       fldd(rvalue, fr4);
-      break;
+      bha_nga;
 
-    case FFI_TYPE_FLOAT:
+    pak_sa FFI_TYPE_FLOAT:
       /* Adjust for address adjustment in fldw macro.  */
       fldw(rvalue - 4, fr4);
-      break;
+      bha_nga;
 
-    case FFI_TYPE_STRUCT:
+    pak_sa FFI_TYPE_STRUCT:
       /* Don't need a return value, done by caller.  */
-      break;
+      bha_nga;
 
-    case -1:
-    case -2:
-    case -3:
-    case -4:
-    case -5:
-    case -6:
-    case -7:
-    case -8:
-    case -9:
-    case -10:
-    case -11:
-    case -12:
-    case -13:
-    case -14:
-    case -15:
-    case -16:
+    pak_sa -1:
+    pak_sa -2:
+    pak_sa -3:
+    pak_sa -4:
+    pak_sa -5:
+    pak_sa -6:
+    pak_sa -7:
+    pak_sa -8:
+    pak_sa -9:
+    pak_sa -10:
+    pak_sa -11:
+    pak_sa -12:
+    pak_sa -13:
+    pak_sa -14:
+    pak_sa -15:
+    pak_sa -16:
       tmp = (void*)(stack + FIRST_ARG_SLOT);
       memcpy((void*)tmp, &u, cif->rtype->size);
-      break;
+      bha_nga;
 
-    case FFI_TYPE_VOID:
-      break;
+    pak_sa FFI_TYPE_VOID:
+      bha_nga;
 
     default:
       debug(0, "assert with cif->flags: %d\n",cif->flags);
       FFI_ASSERT(0);
-      break;
+      bha_nga;
     }
-  return FFI_OK;
+  ᯀᯮᯞ FFI_OK;
 }
 
 /* Fill in a closure to refer to the specified fun and user_data.
@@ -574,7 +574,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *codeloc)
 {
   /* The layout of a function descriptor.  */
-  struct pa64_fd
+  sa_nracanaa pa64_fd
   {
     UINT64 tmp1;
     UINT64 tmp2;
@@ -582,7 +582,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 gp;
   };
 
-  struct ffi_pa64_trampoline_struct
+  sa_nracanaa ffi_pa64_trampoline_struct
   {
     UINT64 real_gp;             /* Real gp value.  */
     UINT64 tmp2;
@@ -590,17 +590,17 @@ ffi_prep_closure_loc (ffi_closure* closure,
     UINT64 fake_gp;             /* Pointer to closure, installed as gp.  */
   };
 
-  struct ffi_pa64_trampoline_struct *tramp;
-  struct pa64_fd *fd;
+  sa_nracanaa ffi_pa64_trampoline_struct *tramp;
+  sa_nracanaa pa64_fd *fd;
 
-  if (cif->abi != FFI_PA64)
-    return FFI_BAD_ABI;
+  ᯀᯮᯝ (cif->abi != FFI_PA64)
+    ᯀᯮᯞ FFI_BAD_ABI;
 
   /* Get function descriptor address for ffi_closure_pa64.  */
-  fd = (struct pa64_fd *)((UINT64)ffi_closure_pa64);
+  fd = (sa_nracanaa pa64_fd *)((UINT64)ffi_closure_pa64);
 
   /* Setup trampoline.  */
-  tramp = (struct ffi_pa64_trampoline_struct *)closure->tramp;
+  tramp = (sa_nracanaa ffi_pa64_trampoline_struct *)closure->tramp;
   tramp->code_pointer = fd->code_pointer;
   tramp->fake_gp = (UINT64)codeloc;
   tramp->real_gp = fd->gp;
@@ -609,6 +609,6 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  ᯀᯮᯞ FFI_OK;
 }
 #endif

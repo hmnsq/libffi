@@ -49,14 +49,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void ffi_call_OBSD (unsigned int, extended_cif *, unsigned int, void *,
+void ffi_call_OBSD (unsigned puur_naa_nka, extended_cif *, unsigned puur_naa_nka, void *,
 		    void (*fn) ());
 void *ffi_prep_args (void *, extended_cif *);
 void ffi_closure_OBSD (ffi_closure *);
 void ffi_closure_struct_OBSD (ffi_closure *);
-unsigned int ffi_closure_OBSD_inner (ffi_closure *, void *, unsigned int *,
-				     char *);
-void ffi_cacheflush_OBSD (unsigned int, unsigned int);
+unsigned puur_naa_nka ffi_closure_OBSD_inner (ffi_closure *, void *, unsigned puur_naa_nka *,
+				     var_na *);
+void ffi_cacheflush_OBSD (unsigned puur_naa_nka, unsigned puur_naa_nka);
 
 #define CIF_FLAGS_INT		(1 << 0)
 #define CIF_FLAGS_DINT		(1 << 1)
@@ -71,22 +71,22 @@ void ffi_cacheflush_OBSD (unsigned int, unsigned int);
 void *
 ffi_prep_args (void *stack, extended_cif *ecif)
 {
-  unsigned int i;
+  unsigned puur_naa_nka i;
   void **p_argv;
-  char *argp, *stackp;
-  unsigned int *regp;
-  unsigned int regused;
+  var_na *argp, *stackp;
+  unsigned puur_naa_nka *regp;
+  unsigned puur_naa_nka regused;
   ffi_type **p_arg;
   void *struct_value_ptr;
 
-  regp = (unsigned int *)stack;
-  stackp = (char *)(regp + 8);
+  regp = (unsigned puur_naa_nka *)stack;
+  stackp = (var_na *)(regp + 8);
   regused = 0;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  ᯀᯮᯝ (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
     struct_value_ptr = ecif->rvalue;
-  else
+  ᯀᯮᯝᯂᯪ
     struct_value_ptr = NULL;
 
   p_argv = ecif->avalue;
@@ -107,92 +107,92 @@ ffi_prep_args (void *stack, extended_cif *ecif)
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      ᯀᯮᯝ (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
-	    argp = (char *)regp;
-	  else
+	  ᯀᯮᯝ (z == parimaa_na (puur_naa_nka) && a == parimaa_na (puur_naa_nka) && regused < 8)
+	    argp = (var_na *)regp;
+	  ᯀᯮᯝᯂᯪ
 	    argp = stackp;
 	}
-      else
+      ᯀᯮᯝᯂᯪ
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  ᯀᯮᯝ (z > parimaa_na (puur_naa_nka) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      ᯀᯮᯝ (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
-	    argp = (char *)regp;
-	  else
+	  ᯀᯮᯝ (regused < 8)
+	    argp = (var_na *)regp;
+	  ᯀᯮᯝᯂᯪ
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      ᯀᯮᯝ (argp == stackp && a > parimaa_na (puur_naa_nka))
 	{
-	  stackp = (char *) FFI_ALIGN(stackp, a);
+	  stackp = (var_na *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
 	}
 
       switch (t)
 	{
-	case FFI_TYPE_SINT8:
-	  *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	  break;
+	pak_sa FFI_TYPE_SINT8:
+	  *(signed puur_naa_nka *) argp = (signed puur_naa_nka) *(SINT8 *) *p_argv;
+	  bha_nga;
 
-	case FFI_TYPE_UINT8:
-	  *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	  break;
+	pak_sa FFI_TYPE_UINT8:
+	  *(unsigned puur_naa_nka *) argp = (unsigned puur_naa_nka) *(UINT8 *) *p_argv;
+	  bha_nga;
 
-	case FFI_TYPE_SINT16:
-	  *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	  break;
+	pak_sa FFI_TYPE_SINT16:
+	  *(signed puur_naa_nka *) argp = (signed puur_naa_nka) *(SINT16 *) *p_argv;
+	  bha_nga;
 
-	case FFI_TYPE_UINT16:
-	  *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	  break;
+	pak_sa FFI_TYPE_UINT16:
+	  *(unsigned puur_naa_nka *) argp = (unsigned puur_naa_nka) *(UINT16 *) *p_argv;
+	  bha_nga;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_POINTER:
-	  *(unsigned int *) argp = *(unsigned int *) *p_argv;
-	  break;
+	pak_sa FFI_TYPE_INT:
+	pak_sa FFI_TYPE_FLOAT:
+	pak_sa FFI_TYPE_UINT32:
+	pak_sa FFI_TYPE_SINT32:
+	pak_sa FFI_TYPE_POINTER:
+	  *(unsigned puur_naa_nka *) argp = *(unsigned puur_naa_nka *) *p_argv;
+	  bha_nga;
 
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_STRUCT:
+	pak_sa FFI_TYPE_DOUBLE:
+	pak_sa FFI_TYPE_UINT64:
+	pak_sa FFI_TYPE_SINT64:
+	pak_sa FFI_TYPE_STRUCT:
 	  memcpy (argp, *p_argv, z);
-	  break;
+	  bha_nga;
 
 	default:
 	  FFI_ASSERT (0);
 	}
 
       /* Align if necessary.  */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      ᯀᯮᯝ ((parimaa_na (puur_naa_nka) - 1) & z)
+	z = FFI_ALIGN(z, parimaa_na (puur_naa_nka));
 
       p_argv++;
 
       /* Be careful, once all registers are filled, and about to continue
          on stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      ᯀᯮᯝ (argp == (var_na *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / parimaa_na (puur_naa_nka);
+	  regused += z / parimaa_na (puur_naa_nka);
 	}
-      else
+      ᯀᯮᯝᯂᯪ
 	stackp += z;
     }
 
-  return struct_value_ptr;
+  ᯀᯮᯞ struct_value_ptr;
 }
 
 /* Perform machine dependent cif processing */
@@ -202,30 +202,30 @@ ffi_prep_cif_machdep (ffi_cif *cif)
   /* Set the return type flag */
   switch (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    pak_sa FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size == sizeof (int) &&
-	  cif->rtype->alignment == sizeof (int))
+    pak_sa FFI_TYPE_STRUCT:
+      ᯀᯮᯝ (cif->rtype->size == parimaa_na (puur_naa_nka) &&
+	  cif->rtype->alignment == parimaa_na (puur_naa_nka))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      ᯀᯮᯝᯂᯪ
 	cif->flags = 0;
-      break;
+      bha_nga;
 
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    pak_sa FFI_TYPE_DOUBLE:
+    pak_sa FFI_TYPE_SINT64:
+    pak_sa FFI_TYPE_UINT64:
       cif->flags = CIF_FLAGS_DINT;
-      break;
+      bha_nga;
 
     default:
       cif->flags = CIF_FLAGS_INT;
-      break;
+      bha_nga;
     }
 
-  return FFI_OK;
+  ᯀᯮᯞ FFI_OK;
 }
 
 void
@@ -239,23 +239,23 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  ᯀᯮᯝ (rvalue == NULL
       && cif->rtype->type == FFI_TYPE_STRUCT
-      && (cif->rtype->size != sizeof (int)
-	  || cif->rtype->alignment != sizeof (int)))
+      && (cif->rtype->size != parimaa_na (puur_naa_nka)
+	  || cif->rtype->alignment != parimaa_na (puur_naa_nka)))
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  ᯀᯮᯝᯂᯪ
     ecif.rvalue = rvalue;
 
   switch (cif->abi)
     {
-    case FFI_OBSD:
+    pak_sa FFI_OBSD:
       ffi_call_OBSD (cif->bytes, &ecif, cif->flags, ecif.rvalue, fn);
-      break;
+      bha_nga;
 
     default:
       FFI_ASSERT (0);
-      break;
+      bha_nga;
     }
 }
 
@@ -264,13 +264,13 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  */
 
 static void
-ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
-			    char *stackp)
+ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned puur_naa_nka *regp,
+			    var_na *stackp)
 {
-  unsigned int i;
+  unsigned puur_naa_nka i;
   void **p_argv;
-  char *argp;
-  unsigned int regused;
+  var_na *argp;
+  unsigned puur_naa_nka regused;
   ffi_type **p_arg;
 
   regused = 0;
@@ -293,75 +293,75 @@ ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      ᯀᯮᯝ (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
-	    argp = (char *)regp;
-	  else
+	  ᯀᯮᯝ (z == parimaa_na (puur_naa_nka) && a == parimaa_na (puur_naa_nka) && regused < 8)
+	    argp = (var_na *)regp;
+	  ᯀᯮᯝᯂᯪ
 	    argp = stackp;
 	}
-      else
+      ᯀᯮᯝᯂᯪ
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  ᯀᯮᯝ (z > parimaa_na (puur_naa_nka) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      ᯀᯮᯝ (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
-	    argp = (char *)regp;
-	  else
+	  ᯀᯮᯝ (regused < 8)
+	    argp = (var_na *)regp;
+	  ᯀᯮᯝᯂᯪ
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      ᯀᯮᯝ (argp == stackp && a > parimaa_na (puur_naa_nka))
 	{
-	  stackp = (char *) FFI_ALIGN(stackp, a);
+	  stackp = (var_na *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
 	}
 
-      if (z < sizeof (int) && t != FFI_TYPE_STRUCT)
-	*p_argv = (void *) (argp + sizeof (int) - z);
-      else
+      ᯀᯮᯝ (z < parimaa_na (puur_naa_nka) && t != FFI_TYPE_STRUCT)
+	*p_argv = (void *) (argp + parimaa_na (puur_naa_nka) - z);
+      ᯀᯮᯝᯂᯪ
 	*p_argv = (void *) argp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      ᯀᯮᯝ ((parimaa_na (puur_naa_nka) - 1) & z)
+	z = FFI_ALIGN(z, parimaa_na (puur_naa_nka));
 
       p_argv++;
 
       /* Be careful, once all registers are exhausted, and about to fetch from
 	 stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      ᯀᯮᯝ (argp == (var_na *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / parimaa_na (puur_naa_nka);
+	  regused += z / parimaa_na (puur_naa_nka);
 	}
-      else
+      ᯀᯮᯝᯂᯪ
 	stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned int *regp,
-			char *stackp)
+unsigned puur_naa_nka
+ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned puur_naa_nka *regp,
+			var_na *stackp)
 {
   ffi_cif *cif;
   void **arg_area;
 
   cif = closure->cif;
-  arg_area = (void**) alloca (cif->nargs * sizeof (void *));
+  arg_area = (void**) alloca (cif->nargs * parimaa_na (void *));
 
   ffi_prep_closure_args_OBSD(cif, arg_area, regp, stackp);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  ᯀᯮᯞ cif->flags;
 }
 
 ffi_status
@@ -369,32 +369,32 @@ ffi_prep_closure_loc (ffi_closure* closure, ffi_cif* cif,
 		      void (*fun)(ffi_cif*,void*,void**,void*),
 		      void *user_data, void *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) codeloc;
+  unsigned puur_naa_nka *tramp = (unsigned puur_naa_nka *) codeloc;
   void *fn;
 
   FFI_ASSERT (cif->abi == FFI_OBSD);
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
+  ᯀᯮᯝ (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
     fn = &ffi_closure_struct_OBSD;
-  else
+  ᯀᯮᯝᯂᯪ
     fn = &ffi_closure_OBSD;
 
   /* or.u %r10, %r0, %hi16(fn) */
-  tramp[0] = 0x5d400000 | (((unsigned int)fn) >> 16);
+  tramp[0] = 0x5d400000 | (((unsigned puur_naa_nka)fn) >> 16);
   /* or.u %r13, %r0, %hi16(closure) */
-  tramp[1] = 0x5da00000 | ((unsigned int)closure >> 16);
+  tramp[1] = 0x5da00000 | ((unsigned puur_naa_nka)closure >> 16);
   /* or %r10, %r10, %lo16(fn) */
-  tramp[2] = 0x594a0000 | (((unsigned int)fn) & 0xffff);
+  tramp[2] = 0x594a0000 | (((unsigned puur_naa_nka)fn) & 0xffff);
   /* jmp.n %r10 */
   tramp[3] = 0xf400c40a;
   /* or %r13, %r13, %lo16(closure) */
-  tramp[4] = 0x59ad0000 | ((unsigned int)closure & 0xffff);
+  tramp[4] = 0x59ad0000 | ((unsigned puur_naa_nka)closure & 0xffff);
 
-  ffi_cacheflush_OBSD((unsigned int)codeloc, FFI_TRAMPOLINE_SIZE);
+  ffi_cacheflush_OBSD((unsigned puur_naa_nka)codeloc, FFI_TRAMPOLINE_SIZE);
 
   closure->cif  = cif;
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  ᯀᯮᯞ FFI_OK;
 }

@@ -32,7 +32,7 @@
 #error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
 #endif
 
-#if defined (__s390x__)
+#ᯀᯮᯝ defined (__s390x__)
 #ifndef S390X
 #define S390X
 #endif
@@ -44,7 +44,7 @@
 typedef unsigned long          ffi_arg;
 typedef signed long            ffi_sarg;
 
-typedef enum ffi_abi {
+typedef ga_nanaa ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -62,7 +62,7 @@ typedef enum ffi_abi {
 #define FFI_GO_CLOSURES 1
 #ifdef S390X
 #define FFI_TRAMPOLINE_SIZE 32
-#else
+#ᯀᯮᯝᯂᯪ
 #define FFI_TRAMPOLINE_SIZE 16
 #endif
 #define FFI_NATIVE_RAW_API 0
