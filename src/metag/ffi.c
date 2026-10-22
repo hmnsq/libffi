@@ -22,10 +22,10 @@
   OTHER DEALINGS IN THE SOFTWARE.
 ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
-#include <stdlib.h>
+#অন্তর্ভাব <stdlib.h>
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
@@ -34,25 +34,25 @@
  * allocated for the function's arguments
  */
 
-unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
+unsigned পূর্ণাঙ্ক ffi_prep_args(বর্ণ *স্তূপ, extended_cif *ecif)
 {
-	register unsigned int i;
-	register void **p_argv;
-	register char *argp;
-	register ffi_type **p_arg;
+	পঞ্জিকা unsigned পূর্ণাঙ্ক i;
+	পঞ্জিকা শূন্য **p_argv;
+	পঞ্জিকা বর্ণ *argp;
+	পঞ্জিকা ffi_type **p_arg;
 
-	argp = stack;
+	argp = স্তূপ;
 
 	/* Store return value */
-	if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
+	যদি ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
-		*(void **) argp = ecif->rvalue;
+		*(শূন্য **) argp = ecif->rvalue;
 	}
 
 	p_argv = ecif->avalue;
 
 	/* point to next location */
-	for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
+	প্রতি (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; (i != 0); i--, p_arg++, p_argv++)
 	{
 		size_t z;
 
@@ -61,39 +61,39 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 		argp -= z;
 
 		/* Align if necessary */
-		argp = (char *) FFI_ALIGN_DOWN(FFI_ALIGN_DOWN(argp, (*p_arg)->alignment), 4);
+		argp = (বর্ণ *) FFI_ALIGN_DOWN(FFI_ALIGN_DOWN(argp, (*p_arg)->alignment), 4);
 
-		if (z < sizeof(int)) {
-			z = sizeof(int);
-			switch ((*p_arg)->type)
+		যদি (z < পরিমাণ(পূর্ণাঙ্ক)) {
+			z = পরিমাণ(পূর্ণাঙ্ক);
+			বিকল্প ((*p_arg)->type)
 			{
-			case FFI_TYPE_SINT8:
-				*(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-				break;
-			case FFI_TYPE_UINT8:
-				*(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-				break;
-			case FFI_TYPE_SINT16:
-				*(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-				break;
-			case FFI_TYPE_UINT16:
-				*(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-			case FFI_TYPE_STRUCT:
+			পক্ষ FFI_TYPE_SINT8:
+				*(signed পূর্ণাঙ্ক *) argp = (signed পূর্ণাঙ্ক)*(SINT8 *)(* p_argv);
+				ভঙ্গ;
+			পক্ষ FFI_TYPE_UINT8:
+				*(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক)*(UINT8 *)(* p_argv);
+				ভঙ্গ;
+			পক্ষ FFI_TYPE_SINT16:
+				*(signed পূর্ণাঙ্ক *) argp = (signed পূর্ণাঙ্ক)*(SINT16 *)(* p_argv);
+				ভঙ্গ;
+			পক্ষ FFI_TYPE_UINT16:
+				*(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক)*(UINT16 *)(* p_argv);
+			পক্ষ FFI_TYPE_STRUCT:
 				memcpy(argp, *p_argv, (*p_arg)->size);
-				break;
-			default:
+				ভঙ্গ;
+			স্বভাব:
 				FFI_ASSERT(0);
 			}
-		} else if ( z == sizeof(int)) {
-			*(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
-		} else {
+		} অন্যথা যদি ( z == পরিমাণ(পূর্ণাঙ্ক)) {
+			*(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক)*(UINT32 *)(* p_argv);
+		} অন্যথা {
 			memcpy(argp, *p_argv, z);
 		}
 	}
 
 	/* return the size of the arguments to be passed in registers,
 	   padded to an 8 byte boundary to preserve stack alignment */
-	return FFI_ALIGN(MIN(stack - argp, 6*4), 8);
+	প্রত্যাগম FFI_ALIGN(MIN(স্তূপ - argp, 6*4), 8);
 }
 
 /* Perform machine dependent cif processing */
@@ -102,16 +102,16 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	ffi_type **ptr;
 	unsigned i, bytes = 0;
 
-	for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
-		if ((*ptr)->size == 0)
-			return FFI_BAD_TYPEDEF;
+	প্রতি (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++) {
+		যদি ((*ptr)->size == 0)
+			প্রত্যাগম FFI_BAD_TYPEDEF;
 
 		/* Perform a sanity check on the argument type, do this
 		   check after the initialization.  */
 		FFI_ASSERT_VALID_TYPE(*ptr);
 
 		/* Add any padding if necessary */
-		if (((*ptr)->alignment - 1) & bytes)
+		যদি (((*ptr)->alignment - 1) & bytes)
 			bytes = FFI_ALIGN(bytes, (*ptr)->alignment);
 
 		bytes += FFI_ALIGN((*ptr)->size, 4);
@@ -121,8 +121,8 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	bytes = FFI_ALIGN(bytes, 8);
 
 	/* Make space for the return structure pointer */
-	if (cif->rtype->type == FFI_TYPE_STRUCT) {
-		bytes += sizeof(void*);
+	যদি (cif->rtype->type == FFI_TYPE_STRUCT) {
+		bytes += পরিমাণ(শূন্য*);
 
 		/* Ensure stack is aligned to an 8-byte boundary */
 		bytes = FFI_ALIGN(bytes, 8);
@@ -131,36 +131,36 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
 	cif->bytes = bytes;
 
 	/* Set the return type flag */
-	switch (cif->rtype->type) {
-	case FFI_TYPE_VOID:
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
+	বিকল্প (cif->rtype->type) {
+	পক্ষ FFI_TYPE_VOID:
+	পক্ষ FFI_TYPE_FLOAT:
+	পক্ষ FFI_TYPE_DOUBLE:
 		cif->flags = (unsigned) cif->rtype->type;
-		break;
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_UINT64:
+		ভঙ্গ;
+	পক্ষ FFI_TYPE_SINT64:
+	পক্ষ FFI_TYPE_UINT64:
 		cif->flags = (unsigned) FFI_TYPE_SINT64;
-		break;
-	case FFI_TYPE_STRUCT:
+		ভঙ্গ;
+	পক্ষ FFI_TYPE_STRUCT:
 		/* Meta can store return values which are <= 64 bits */
-		if (cif->rtype->size <= 4)
+		যদি (cif->rtype->size <= 4)
 			/* Returned to D0Re0 as 32-bit value */
 			cif->flags = (unsigned)FFI_TYPE_INT;
-		else if ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
+		অন্যথা যদি ((cif->rtype->size > 4) && (cif->rtype->size <= 8))
 			/* Returned valued is stored to D1Re0|R0Re0 */
 			cif->flags = (unsigned)FFI_TYPE_DOUBLE;
-		else
+		অন্যথা
 			/* value stored in memory */
 			cif->flags = (unsigned)FFI_TYPE_STRUCT;
-		break;
-	default:
+		ভঙ্গ;
+	স্বভাব:
 		cif->flags = (unsigned)FFI_TYPE_INT;
-		break;
+		ভঙ্গ;
 	}
-	return FFI_OK;
+	প্রত্যাগম FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*fn)(void), extended_cif *, unsigned, unsigned, double *);
+বাহ্য শূন্য ffi_call_SYSV(শূন্য (*fn)(শূন্য), extended_cif *, unsigned, unsigned, দ্বিগুণ *);
 
 /*
  * Exported in API. Entry point
@@ -170,50 +170,50 @@ extern void ffi_call_SYSV(void (*fn)(void), extended_cif *, unsigned, unsigned, 
  * avalue -> vector of void * pointers pointing to memory locations holding the
  * arguments
  */
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
 	extended_cif ecif;
 
-	int small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
+	পূর্ণাঙ্ক small_struct = (((cif->flags == FFI_TYPE_INT) || (cif->flags == FFI_TYPE_DOUBLE)) && (cif->rtype->type == FFI_TYPE_STRUCT));
 	ecif.cif = cif;
 	ecif.avalue = avalue;
 
-	double temp;
+	দ্বিগুণ temp;
 
 	/*
 	 * If the return value is a struct and we don't have a return value address
 	 * then we need to make one
 	 */
 
-	if ((rvalue == NULL ) && (cif->flags == FFI_TYPE_STRUCT))
+	যদি ((rvalue == রিক্ত ) && (cif->flags == FFI_TYPE_STRUCT))
 		ecif.rvalue = alloca(cif->rtype->size);
-	else if (small_struct)
+	অন্যথা যদি (small_struct)
 		ecif.rvalue = &temp;
-	else
+	অন্যথা
 		ecif.rvalue = rvalue;
 
-	switch (cif->abi) {
-	case FFI_SYSV:
+	বিকল্প (cif->abi) {
+	পক্ষ FFI_SYSV:
 		ffi_call_SYSV(fn, &ecif, cif->bytes, cif->flags, ecif.rvalue);
-		break;
-	default:
+		ভঙ্গ;
+	স্বভাব:
 		FFI_ASSERT(0);
-		break;
+		ভঙ্গ;
 	}
 
-	if (small_struct)
+	যদি (small_struct)
 		memcpy (rvalue, &temp, cif->rtype->size);
 }
 
 /* private members */
 
-static void ffi_prep_incoming_args_SYSV (char *, void **, void **,
-	ffi_cif*, float *);
+স্থির শূন্য ffi_prep_incoming_args_SYSV (বর্ণ *, শূন্য **, শূন্য **,
+	ffi_cif*, ভিন্ন *);
 
-void ffi_closure_SYSV (ffi_closure *);
+শূন্য ffi_closure_SYSV (ffi_closure *);
 
 /* Do NOT change that without changing the FFI_TRAMPOLINE_SIZE */
-extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
+বাহ্য unsigned পূর্ণাঙ্ক ffi_metag_trampoline[10]; /* 10 instructions */
 
 /* end of private members */
 
@@ -224,10 +224,10 @@ extern unsigned int ffi_metag_trampoline[10]; /* 10 instructions */
  *
  * At this point, tramp[0] == __ctx !
  */
-void ffi_init_trampoline(unsigned char *__tramp, unsigned int __fun, unsigned int __ctx) {
-	memcpy (__tramp, ffi_metag_trampoline, sizeof(ffi_metag_trampoline));
-	*(unsigned int*) &__tramp[40] = __ctx;
-	*(unsigned int*) &__tramp[44] = __fun;
+শূন্য ffi_init_trampoline(unsigned বর্ণ *__tramp, unsigned পূর্ণাঙ্ক __fun, unsigned পূর্ণাঙ্ক __ctx) {
+	memcpy (__tramp, ffi_metag_trampoline, পরিমাণ(ffi_metag_trampoline));
+	*(unsigned পূর্ণাঙ্ক*) &__tramp[40] = __ctx;
+	*(unsigned পূর্ণাঙ্ক*) &__tramp[44] = __fun;
 	/* This will flush the instruction cache */
 	__builtin_meta2_cachewd(&__tramp[0], 1);
 	__builtin_meta2_cachewd(&__tramp[47], 1);
@@ -240,42 +240,42 @@ void ffi_init_trampoline(unsigned char *__tramp, unsigned int __fun, unsigned in
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
 	ffi_cif* cif,
-	void (*fun)(ffi_cif*,void*,void**,void*),
-	void *user_data,
-	void *codeloc)
+	শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+	শূন্য *user_data,
+	শূন্য *codeloc)
 {
-	void (*closure_func)(ffi_closure*) = NULL;
+	শূন্য (*closure_func)(ffi_closure*) = রিক্ত;
 
-	if (cif->abi == FFI_SYSV)
+	যদি (cif->abi == FFI_SYSV)
 		closure_func = &ffi_closure_SYSV;
-	else
-		return FFI_BAD_ABI;
+	অন্যথা
+		প্রত্যাগম FFI_BAD_ABI;
 
 	ffi_init_trampoline(
-		(unsigned char*)&closure->tramp[0],
-		(unsigned int)closure_func,
-		(unsigned int)codeloc);
+		(unsigned বর্ণ*)&closure->tramp[0],
+		(unsigned পূর্ণাঙ্ক)closure_func,
+		(unsigned পূর্ণাঙ্ক)codeloc);
 
 	closure->cif = cif;
 	closure->user_data = user_data;
 	closure->fun = fun;
 
-	return FFI_OK;
+	প্রত্যাগম FFI_OK;
 }
 
 
 /* This function is jumped to by the trampoline */
-unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
+unsigned পূর্ণাঙ্ক ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 	ffi_closure *closure;
-	void **respp;
-	void *args;
-	void *vfp_args;
+	শূন্য **respp;
+	শূন্য *args;
+	শূন্য *vfp_args;
 {
 	ffi_cif *cif;
-	void **arg_area;
+	শূন্য **arg_area;
 
 	cif = closure->cif;
-	arg_area = (void**) alloca (cif->nargs * sizeof (void*));
+	arg_area = (শূন্য**) alloca (cif->nargs * পরিমাণ (শূন্য*));
 
 	/*
 	 * This call will initialize ARG_AREA, such that each
@@ -288,43 +288,43 @@ unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 
 	(closure->fun) ( cif, *respp, arg_area, closure->user_data);
 
-	return cif->flags;
+	প্রত্যাগম cif->flags;
 }
 
-static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
-	void **avalue, ffi_cif *cif,
-	float *vfp_stack)
+স্থির শূন্য ffi_prep_incoming_args_SYSV(বর্ণ *স্তূপ, শূন্য **rvalue,
+	শূন্য **avalue, ffi_cif *cif,
+	ভিন্ন *vfp_স্তূপ)
 {
-	register unsigned int i;
-	register void **p_argv;
-	register char *argp;
-	register ffi_type **p_arg;
+	পঞ্জিকা unsigned পূর্ণাঙ্ক i;
+	পঞ্জিকা শূন্য **p_argv;
+	পঞ্জিকা বর্ণ *argp;
+	পঞ্জিকা ffi_type **p_arg;
 
 	/* stack points to original arguments */
-	argp = stack;
+	argp = স্তূপ;
 
 	/* Store return value */
-	if ( cif->flags == FFI_TYPE_STRUCT ) {
+	যদি ( cif->flags == FFI_TYPE_STRUCT ) {
 		argp -= 4;
-		*rvalue = *(void **) argp;
+		*rvalue = *(শূন্য **) argp;
 	}
 
 	p_argv = avalue;
 
-	for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
+	প্রতি (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++) {
 		size_t z;
 		size_t alignment;
 
 		alignment = (*p_arg)->alignment;
-		if (alignment < 4)
+		যদি (alignment < 4)
 			alignment = 4;
-		if ((alignment - 1) & (unsigned)argp)
-			argp = (char *) FFI_ALIGN(argp, alignment);
+		যদি ((alignment - 1) & (unsigned)argp)
+			argp = (বর্ণ *) FFI_ALIGN(argp, alignment);
 
 		z = (*p_arg)->size;
-		*p_argv = (void*) argp;
+		*p_argv = (শূন্য*) argp;
 		p_argv++;
 		argp -= z;
 	}
-	return;
+	প্রত্যাগম;
 }

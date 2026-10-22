@@ -19,73 +19,73 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <fficonfig.h>
-#include <ffi.h>
-#include <ffi_common.h>
-#include "internal.h"
+#যদি defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
+#অন্তর্ভাব <stdio.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <stdint.h>
+#অন্তর্ভাব <fficonfig.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
+#অন্তর্ভাব "internal.h"
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h> /* FlushInstructionCache */
+#অন্তর্ভাব <windows.h> /* FlushInstructionCache */
 #endif
-#include <tramp.h>
+#অন্তর্ভাব <tramp.h>
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#যদি FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+# যদি FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#অন্যথা
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
 
-union _d
+সঙ্ঘ _d
 {
   UINT64 d;
   UINT32 s[2];
 };
 
-struct _v
+সংরচনা _v
 {
-  union _d d[2] __attribute__((aligned(16)));
+  সঙ্ঘ _d d[2] __attribute__((aligned(16)));
 };
 
-struct call_context
+সংরচনা call_context
 {
-  struct _v v[N_V_ARG_REG];
+  সংরচনা _v v[N_V_ARG_REG];
   UINT64 x[N_X_ARG_REG];
 };
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#যদি FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 #ifdef HAVE_ARM64E_PTRAUTH
-#include <ptrauth.h>
+#অন্তর্ভাব <ptrauth.h>
 #endif
-#include <mach/vm_param.h>
-#endif
-
-#else
-
-#if defined (__clang__) && defined (__APPLE__)
-extern void sys_icache_invalidate (void *start, size_t len);
+#অন্তর্ভাব <mach/vm_param.h>
 #endif
 
-static inline void
-ffi_clear_cache (void *start, void *end)
+#অন্যথা
+
+#যদি defined (__clang__) && defined (__APPLE__)
+বাহ্য শূন্য sys_icache_invalidate (শূন্য *start, size_t len);
+#endif
+
+স্থির অন্তঃস্থ শূন্য
+ffi_clear_cache (শূন্য *start, শূন্য *end)
 {
-#if defined (__clang__) && defined (__APPLE__)
-  sys_icache_invalidate (start, (char *)end - (char *)start);
-#elif defined (__GNUC__)
+#যদি defined (__clang__) && defined (__APPLE__)
+  sys_icache_invalidate (start, (বর্ণ *)end - (বর্ণ *)start);
+#নোচেদ্যদি defined (__GNUC__)
   __builtin___clear_cache (start, end);
-#elif defined (_WIN32)
-  FlushInstructionCache(GetCurrentProcess(), start, (char*)end - (char*)start);
-#else
+#নোচেদ্যদি defined (_WIN32)
+  FlushInstructionCache(GetCurrentProcess(), start, (বর্ণ*)end - (বর্ণ*)start);
+#অন্যথা
 #error "Missing builtin to flush instruction cache"
 #endif
 }
@@ -96,40 +96,40 @@ ffi_clear_cache (void *start, void *end)
    to map a vector register width (8 or 16 bytes) onto the D-/Q-register
    AARCH64_RET_* encoding.  */
 
-static int
-intlog2 (int n)
+স্থির পূর্ণাঙ্ক
+intlog2 (পূর্ণাঙ্ক n)
 {
-  int level = 0;
-  while (n >>= 1)
+  পূর্ণাঙ্ক level = 0;
+  যাবত্ (n >>= 1)
     ++level;
-  return level;
+  প্রত্যাগম level;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return the type code
    of the first non-structure element.  Recurse for structure elements.
    Return -1 if the structure is in fact empty, i.e. no nested elements.  */
 
-static int
-is_hfa0 (const ffi_type *ty)
+স্থির পূর্ণাঙ্ক
+is_hfa0 (ধ্রুব ffi_type *ty)
 {
   ffi_type **elements = ty->elements;
-  int i, ret = -1;
+  পূর্ণাঙ্ক i, ret = -1;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  যদি (elements != রিক্ত)
+    প্রতি (i = 0; elements[i]; ++i)
       {
         ret = elements[i]->type;
-        if (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
+        যদি (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
 	    || ret == FFI_TYPE_COMPLEX)
           {
             ret = is_hfa0 (elements[i]);
-            if (ret < 0)
-              continue;
+            যদি (ret < 0)
+              অনুবর্ত;
           }
-        break;
+        ভঙ্গ;
       }
 
-  return ret;
+  প্রত্যাগম ret;
 }
 
 /* A subroutine of is_vfp_type.  Return the size in bytes of the vector (SIMD)
@@ -137,52 +137,52 @@ is_hfa0 (const ffi_type *ty)
    neither is nor contains a vector.  For a bare vector this is its whole size;
    for a homogeneous vector aggregate it is the size of one lane vector.  */
 
-static size_t
-is_simd (const ffi_type *ty)
+স্থির size_t
+is_simd (ধ্রুব ffi_type *ty)
 {
   ffi_type **elements;
-  int i;
+  পূর্ণাঙ্ক i;
 
-  if (ty->type == FFI_TYPE_VECTOR)
-    return ty->size;
+  যদি (ty->type == FFI_TYPE_VECTOR)
+    প্রত্যাগম ty->size;
 
   elements = ty->elements;
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  যদি (elements != রিক্ত)
+    প্রতি (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
+        পূর্ণাঙ্ক t = elements[i]->type;
+        যদি (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
 	    || t == FFI_TYPE_VECTOR)
-          return is_simd (elements[i]);
+          প্রত্যাগম is_simd (elements[i]);
       }
 
-  return 0;
+  প্রত্যাগম 0;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return true if all
    of the non-structure elements are the same as CANDIDATE.  */
 
-static int
-is_hfa1 (const ffi_type *ty, int candidate)
+স্থির পূর্ণাঙ্ক
+is_hfa1 (ধ্রুব ffi_type *ty, পূর্ণাঙ্ক candidate)
 {
   ffi_type **elements = ty->elements;
-  int i;
+  পূর্ণাঙ্ক i;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  যদি (elements != রিক্ত)
+    প্রতি (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+        পূর্ণাঙ্ক t = elements[i]->type;
+        যদি (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	    || t == FFI_TYPE_COMPLEX)
           {
-            if (!is_hfa1 (elements[i], candidate))
-              return 0;
+            যদি (!is_hfa1 (elements[i], candidate))
+              প্রত্যাগম 0;
           }
-        else if (t != candidate)
-          return 0;
+        অন্যথা যদি (t != candidate)
+          প্রত্যাগম 0;
       }
 
-  return 1;
+  প্রত্যাগম 1;
 }
 
 /* Determine if TY may be allocated to the FP registers.  This is both an
@@ -193,44 +193,44 @@ is_hfa1 (const ffi_type *ty, int candidate)
    Returns non-zero iff TY is an HFA.  The result is the AARCH64_RET_*
    constant for the type.  */
 
-static int
-is_vfp_type (const ffi_type *ty)
+স্থির পূর্ণাঙ্ক
+is_vfp_type (ধ্রুব ffi_type *ty)
 {
   ffi_type **elements;
-  int candidate, i;
-  size_t size, ele_count, simd_size;
+  পূর্ণাঙ্ক candidate, i;
+  size_t size, ele_গুনতি, simd_size;
 
   /* Quickest tests first.  */
   candidate = ty->type;
-  switch (candidate)
+  বিকল্প (candidate)
     {
-    default:
-      return 0;
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
-      ele_count = 1;
-      goto done;
-    case FFI_TYPE_COMPLEX:
+    স্বভাব:
+      প্রত্যাগম 0;
+    পক্ষ FFI_TYPE_FLOAT:
+    পক্ষ FFI_TYPE_DOUBLE:
+    পক্ষ FFI_TYPE_LONGDOUBLE:
+      ele_গুনতি = 1;
+      গচ্ছ done;
+    পক্ষ FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
-      switch (candidate)
+      বিকল্প (candidate)
 	{
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	  ele_count = 2;
-	  goto done;
+	পক্ষ FFI_TYPE_FLOAT:
+	পক্ষ FFI_TYPE_DOUBLE:
+	পক্ষ FFI_TYPE_LONGDOUBLE:
+	  ele_গুনতি = 2;
+	  গচ্ছ done;
 	}
-      return 0;
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_VECTOR:
-      break;
+      প্রত্যাগম 0;
+    পক্ষ FFI_TYPE_STRUCT:
+    পক্ষ FFI_TYPE_VECTOR:
+      ভঙ্গ;
     }
 
   /* No HFA/HVA types are smaller than 4 bytes, or larger than 64 bytes.  */
   size = ty->size;
-  if (size < 4 || size > 64)
-    return 0;
+  যদি (size < 4 || size > 64)
+    প্রত্যাগম 0;
 
   /* Determine the width of the vector (SIMD) member, if any: 0 for a plain
      floating-point HFA, else the size in bytes of one Neon register slot.  */
@@ -239,18 +239,18 @@ is_vfp_type (const ffi_type *ty)
   /* Find the type of the first non-aggregate member.  */
   elements = ty->elements;
   candidate = elements[0]->type;
-  if (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
+  যদি (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
       || candidate == FFI_TYPE_COMPLEX)
     {
-      for (i = 0; ; ++i)
+      প্রতি (i = 0; ; ++i)
         {
           candidate = is_hfa0 (elements[i]);
-          if (candidate >= 0)
-            break;
+          যদি (candidate >= 0)
+            ভঙ্গ;
         }
     }
 
-  if (simd_size)
+  যদি (simd_size)
     {
       /* Vector or homogeneous vector aggregate (HVA).  A single Neon slot is
 	 at most 16 bytes (a Q register).  A bare vector wider than 16 bytes
@@ -262,92 +262,92 @@ is_vfp_type (const ffi_type *ty)
 	 unlike the floating-point HFA path below, CANDIDATE is used only to
 	 confirm the lanes are homogeneous.  */
       size_t reg_size = simd_size;
-      int num_registers;
-      int first_level_element_type;
+      পূর্ণাঙ্ক অঙ্ক_registers;
+      পূর্ণাঙ্ক first_level_element_type;
 
       /* A Neon register slot is an S (4B), D (8B) or Q (16B).  A lane narrower
 	 than 4 bytes has no short-vector register class under AAPCS64 and would
 	 map below AARCH64_RET_S4, making extend_hfa_type() branch before its
 	 jump table; reject it and let the generic aggregate path handle it.  */
-      if (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
-	return 0;
-      num_registers = (int) (size / reg_size);
-      if (num_registers > 4)
-	return 0;
+      যদি (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
+	প্রত্যাগম 0;
+      অঙ্ক_registers = (পূর্ণাঙ্ক) (size / reg_size);
+      যদি (অঙ্ক_registers > 4)
+	প্রত্যাগম 0;
 
       /* For an aggregate, every member must itself be a vector (or nested
 	 vector aggregate) of the same register width: this rejects a struct
 	 that mixes a bare scalar with a vector even when the scalar's type
 	 matches the vector's lane type.  A bare vector needs no such check --
 	 its lanes were validated when its layout was computed.  */
-      if (ty->type != FFI_TYPE_VECTOR)
-	for (i = 0; elements[i]; ++i)
-	  if (is_simd (elements[i]) != reg_size)
-	    return 0;
+      যদি (ty->type != FFI_TYPE_VECTOR)
+	প্রতি (i = 0; elements[i]; ++i)
+	  যদি (is_simd (elements[i]) != reg_size)
+	    প্রত্যাগম 0;
 
       /* Every lane must be the identical scalar type across the whole HVA
 	 (this rejects, e.g., an aggregate mixing float and integer vectors).  */
-      for (i = 0; elements[i]; ++i)
+      প্রতি (i = 0; elements[i]; ++i)
 	{
-	  int t = elements[i]->type;
-	  if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+	  পূর্ণাঙ্ক t = elements[i]->type;
+	  যদি (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	      || t == FFI_TYPE_COMPLEX)
 	    {
-	      if (!is_hfa1 (elements[i], candidate))
-		return 0;
+	      যদি (!is_hfa1 (elements[i], candidate))
+		প্রত্যাগম 0;
 	    }
-	  else if (t != candidate)
-	    return 0;
+	  অন্যথা যদি (t != candidate)
+	    প্রত্যাগম 0;
 	}
 
       /* Reuse the AARCH64_RET_{S,D,Q}* codes, which are laid out as
 	 (type * 4) + (4 - count) with FLOAT->S(4B), DOUBLE->D(8B),
 	 LONGDOUBLE->Q(16B).  Map the register width onto that type axis.  */
-      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((int) reg_size) - 2;
-      return first_level_element_type * 4 + (4 - num_registers);
+      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((পূর্ণাঙ্ক) reg_size) - 2;
+      প্রত্যাগম first_level_element_type * 4 + (4 - অঙ্ক_registers);
     }
 
   /* If the first member is not a floating point type, it's not an HFA.
      Also quickly re-check the size of the structure.  */
-  switch (candidate)
+  বিকল্প (candidate)
     {
-    case FFI_TYPE_FLOAT:
-      ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
-        return 0;
-      break;
-    case FFI_TYPE_DOUBLE:
-      ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
-        return 0;
-      break;
-    case FFI_TYPE_LONGDOUBLE:
-      ele_count = size / sizeof(long double);
-      if (size != ele_count * sizeof(long double))
-        return 0;
-      break;
-    default:
-      return 0;
+    পক্ষ FFI_TYPE_FLOAT:
+      ele_গুনতি = size / পরিমাণ(ভিন্ন);
+      যদি (size != ele_গুনতি * পরিমাণ(ভিন্ন))
+        প্রত্যাগম 0;
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_DOUBLE:
+      ele_গুনতি = size / পরিমাণ(দ্বিগুণ);
+      যদি (size != ele_গুনতি * পরিমাণ(দ্বিগুণ))
+        প্রত্যাগম 0;
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_LONGDOUBLE:
+      ele_গুনতি = size / পরিমাণ(long দ্বিগুণ);
+      যদি (size != ele_গুনতি * পরিমাণ(long দ্বিগুণ))
+        প্রত্যাগম 0;
+      ভঙ্গ;
+    স্বভাব:
+      প্রত্যাগম 0;
     }
-  if (ele_count > 4)
-    return 0;
+  যদি (ele_গুনতি > 4)
+    প্রত্যাগম 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
-  for (i = 0; elements[i]; ++i)
+  প্রতি (i = 0; elements[i]; ++i)
     {
-      int t = elements[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+      পূর্ণাঙ্ক t = elements[i]->type;
+      যদি (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
         {
-          if (!is_hfa1 (elements[i], candidate))
-            return 0;
+          যদি (!is_hfa1 (elements[i], candidate))
+            প্রত্যাগম 0;
         }
-      else if (t != candidate)
-        return 0;
+      অন্যথা যদি (t != candidate)
+        প্রত্যাগম 0;
     }
 
   /* All tests succeeded.  Encode the result.  */
  done:
-  return candidate * 4 + (4 - (int)ele_count);
+  প্রত্যাগম candidate * 4 + (4 - (পূর্ণাঙ্ক)ele_গুনতি);
 }
 
 /* Representation of the procedure call argument marshalling
@@ -360,59 +360,59 @@ is_vfp_type (const ffi_type *ty)
    area.  It is used to hold copies of structures passed by value that are
    bigger than 16 bytes.  */
 
-struct arg_state
+সংরচনা arg_state
 {
   unsigned ngrn;                /* Next general-purpose register number. */
   unsigned nsrn;                /* Next vector register number. */
   size_t nsaa;                  /* Next stack offset. */
   size_t next_struct_area;	/* Place to allocate big structs. */
 
-#if defined (__APPLE__)
+#যদি defined (__APPLE__)
   unsigned allocating_variadic;
 #endif
 };
 
 /* Initialize a procedure call argument marshalling state.  */
-static void
-arg_init (struct arg_state *state, size_t size)
+স্থির শূন্য
+arg_init (সংরচনা arg_state *state, size_t size)
 {
   state->ngrn = 0;
   state->nsrn = 0;
   state->nsaa = 0;
   state->next_struct_area = size;
-#if defined (__APPLE__)
+#যদি defined (__APPLE__)
   state->allocating_variadic = 0;
 #endif
 }
 
 /* Allocate an aligned slot on the stack and return a pointer to it.  */
-static void *
-allocate_to_stack (struct arg_state *state, void *stack,
+স্থির শূন্য *
+allocate_to_স্তূপ (সংরচনা arg_state *state, শূন্য *স্তূপ,
 		   size_t alignment, size_t size)
 {
   size_t nsaa = state->nsaa;
 
   /* Round up the NSAA to the larger of 8 or the natural
      alignment of the argument's type.  */
-#if defined (__APPLE__)
-  if (state->allocating_variadic && alignment < 8)
+#যদি defined (__APPLE__)
+  যদি (state->allocating_variadic && alignment < 8)
     alignment = 8;
-#else
-  if (alignment < 8)
+#অন্যথা
+  যদি (alignment < 8)
     alignment = 8;
 #endif
 
   nsaa = FFI_ALIGN (nsaa, alignment);
   state->nsaa = nsaa + size;
 
-  return (char *)stack + nsaa;
+  প্রত্যাগম (বর্ণ *)স্তূপ + nsaa;
 }
 
 /* Allocate and copy a structure that is passed by value on the stack and
    return a pointer to it.  */
-static void *
-allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
-				   size_t alignment, size_t size, void *value)
+স্থির শূন্য *
+allocate_and_copy_struct_to_স্তূপ (সংরচনা arg_state *state, শূন্য *স্তূপ,
+				   size_t alignment, size_t size, শূন্য *মান)
 {
   size_t dest = state->next_struct_area - size;
 
@@ -420,80 +420,80 @@ allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
   dest = FFI_ALIGN_DOWN (dest, alignment);
   state->next_struct_area = dest;
 
-  return memcpy ((char *) stack + dest, value, size);
+  প্রত্যাগম memcpy ((বর্ণ *) স্তূপ + dest, মান, size);
 }
 
-static ffi_arg
-extend_integer_type (void *source, int type)
+স্থির ffi_arg
+extend_integer_type (শূন্য *source, পূর্ণাঙ্ক type)
 {
-  switch (type)
+  বিকল্প (type)
     {
-    case FFI_TYPE_UINT8:
+    পক্ষ FFI_TYPE_UINT8:
       {
         UINT8 u8;
-        memcpy (&u8, source, sizeof (u8));
-        return u8;
+        memcpy (&u8, source, পরিমাণ (u8));
+        প্রত্যাগম u8;
       }
-    case FFI_TYPE_SINT8:
+    পক্ষ FFI_TYPE_SINT8:
       {
         SINT8 s8;
-        memcpy (&s8, source, sizeof (s8));
-        return s8;
+        memcpy (&s8, source, পরিমাণ (s8));
+        প্রত্যাগম s8;
       }
-    case FFI_TYPE_UINT16:
+    পক্ষ FFI_TYPE_UINT16:
       {
         UINT16 u16;
-        memcpy (&u16, source, sizeof (u16));
-        return u16;
+        memcpy (&u16, source, পরিমাণ (u16));
+        প্রত্যাগম u16;
       }
-    case FFI_TYPE_SINT16:
+    পক্ষ FFI_TYPE_SINT16:
       {
         SINT16 s16;
-        memcpy (&s16, source, sizeof (s16));
-        return s16;
+        memcpy (&s16, source, পরিমাণ (s16));
+        প্রত্যাগম s16;
       }
-    case FFI_TYPE_UINT32:
+    পক্ষ FFI_TYPE_UINT32:
       {
         UINT32 u32;
-        memcpy (&u32, source, sizeof (u32));
-        return u32;
+        memcpy (&u32, source, পরিমাণ (u32));
+        প্রত্যাগম u32;
       }
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+    পক্ষ FFI_TYPE_INT:
+    পক্ষ FFI_TYPE_SINT32:
       {
         SINT32 s32;
-        memcpy (&s32, source, sizeof (s32));
-        return s32;
+        memcpy (&s32, source, পরিমাণ (s32));
+        প্রত্যাগম s32;
       }
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_SINT64:
+    পক্ষ FFI_TYPE_UINT64:
+    পক্ষ FFI_TYPE_SINT64:
       {
         UINT64 u64;
-        memcpy (&u64, source, sizeof (u64));
-        return u64;
+        memcpy (&u64, source, পরিমাণ (u64));
+        প্রত্যাগম u64;
       }
-    case FFI_TYPE_POINTER:
+    পক্ষ FFI_TYPE_POINTER:
       {
         uintptr_t uptr;
-        memcpy (&uptr, source, sizeof (uptr));
-        return uptr;
+        memcpy (&uptr, source, পরিমাণ (uptr));
+        প্রত্যাগম uptr;
       }
-    default:
+    স্বভাব:
       abort();
     }
 }
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void extend_hfa_type (void *dest, void *src, int h);
-#else
-static void
-extend_hfa_type (void *dest, void *src, int h)
+#যদি defined(_MSC_VER) && !defined(__clang__)
+শূন্য extend_hfa_type (শূন্য *dest, শূন্য *src, পূর্ণাঙ্ক h);
+#অন্যথা
+স্থির শূন্য
+extend_hfa_type (শূন্য *dest, শূন্য *src, পূর্ণাঙ্ক h)
 {
   ptrdiff_t f = h - AARCH64_RET_S4;
-  void *x0;
+  শূন্য *x0;
 
 #define BTI_J "hint #36"
-  __asm__ volatile (
+  __asm__ চঞ্চল (
 	"adr	%0, 0f\n"
 "	add	%0, %0, %1\n"
 "	br	%0\n"
@@ -554,68 +554,68 @@ extend_hfa_type (void *dest, void *src, int h)
 }
 #endif
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void* compress_hfa_type (void *dest, void *src, int h);
-#else
-static void *
-compress_hfa_type (void *dest, void *reg, int h)
+#যদি defined(_MSC_VER) && !defined(__clang__)
+শূন্য* compress_hfa_type (শূন্য *dest, শূন্য *src, পূর্ণাঙ্ক h);
+#অন্যথা
+স্থির শূন্য *
+compress_hfa_type (শূন্য *dest, শূন্য *reg, পূর্ণাঙ্ক h)
 {
-  switch (h)
+  বিকল্প (h)
     {
-    case AARCH64_RET_S1:
-      if (dest == reg)
-	return (char *)dest + BE (12);
-      else
-	*(float *)dest = *(float *)((char *)reg + BE (12));
-      break;
-    case AARCH64_RET_S2:
+    পক্ষ AARCH64_RET_S1:
+      যদি (dest == reg)
+	প্রত্যাগম (বর্ণ *)dest + BE (12);
+      অন্যথা
+	*(ভিন্ন *)dest = *(ভিন্ন *)((বর্ণ *)reg + BE (12));
+      ভঙ্গ;
+    পক্ষ AARCH64_RET_S2:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "st2 { v16.s, v17.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17");
-      break;
-    case AARCH64_RET_S3:
+      ভঙ্গ;
+    পক্ষ AARCH64_RET_S3:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldr q18, [%1, #32]\n\t"
 	   "st3 { v16.s, v17.s, v18.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18");
-      break;
-    case AARCH64_RET_S4:
+      ভঙ্গ;
+    পক্ষ AARCH64_RET_S4:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldp q18, q19, [%1, #32]\n\t"
 	   "st4 { v16.s, v17.s, v18.s, v19.s }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18", "v19");
-      break;
+      ভঙ্গ;
 
-    case AARCH64_RET_D1:
-      if (dest == reg)
-	return (char *)dest + BE (8);
-      else
-	*(double *)dest = *(double *)((char *)reg + BE (8));
-      break;
-    case AARCH64_RET_D2:
+    পক্ষ AARCH64_RET_D1:
+      যদি (dest == reg)
+	প্রত্যাগম (বর্ণ *)dest + BE (8);
+      অন্যথা
+	*(দ্বিগুণ *)dest = *(দ্বিগুণ *)((বর্ণ *)reg + BE (8));
+      ভঙ্গ;
+    পক্ষ AARCH64_RET_D2:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "st2 { v16.d, v17.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17");
-      break;
-    case AARCH64_RET_D3:
+      ভঙ্গ;
+    পক্ষ AARCH64_RET_D3:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldr q18, [%1, #32]\n\t"
 	   "st3 { v16.d, v17.d, v18.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18");
-      break;
-    case AARCH64_RET_D4:
+      ভঙ্গ;
+    পক্ষ AARCH64_RET_D4:
       __asm__ ("ldp q16, q17, [%1]\n\t"
 	   "ldp q18, q19, [%1, #32]\n\t"
 	   "st4 { v16.d, v17.d, v18.d, v19.d }[0], [%0]"
 	   : : "r"(dest), "r"(reg) : "memory", "v16", "v17", "v18", "v19");
-      break;
+      ভঙ্গ;
 
-    default:
-      if (dest != reg)
-	return memcpy (dest, reg, 16 * (4 - (h & 3)));
-      break;
+    স্বভাব:
+      যদি (dest != reg)
+	প্রত্যাগম memcpy (dest, reg, 16 * (4 - (h & 3)));
+      ভঙ্গ;
     }
-  return dest;
+  প্রত্যাগম dest;
 }
 #endif
 
@@ -623,25 +623,25 @@ compress_hfa_type (void *dest, void *reg, int h)
    none are available, allocate a stack slot and return a pointer
    to the allocated space.  */
 
-static void *
-allocate_int_to_reg_or_stack (struct call_context *context,
-			      struct arg_state *state,
-			      void *stack, size_t size)
+স্থির শূন্য *
+allocate_int_to_reg_or_স্তূপ (সংরচনা call_context *context,
+			      সংরচনা arg_state *state,
+			      শূন্য *স্তূপ, size_t size)
 {
-  if (state->ngrn < N_X_ARG_REG)
-    return (char *)&context->x[state->ngrn++] + BE (sizeof (UINT64) - size);
+  যদি (state->ngrn < N_X_ARG_REG)
+    প্রত্যাগম (বর্ণ *)&context->x[state->ngrn++] + BE (পরিমাণ (UINT64) - size);
 
   state->ngrn = N_X_ARG_REG;
-  return (char *)allocate_to_stack (state, stack, size, size)
-	 + BE (sizeof (UINT64) - size);
+  প্রত্যাগম (বর্ণ *)allocate_to_স্তূপ (state, স্তূপ, size, size)
+	 + BE (পরিমাণ (UINT64) - size);
 }
 
-static void *
-allocate_int128_to_reg_or_stack (struct call_context *context,
-			         struct arg_state *state, void *stack)
+স্থির শূন্য *
+allocate_int128_to_reg_or_স্তূপ (সংরচনা call_context *context,
+			         সংরচনা arg_state *state, শূন্য *স্তূপ)
 {
   unsigned ngrn = state->ngrn;
-  void *ret;
+  শূন্য *ret;
 
   /* The normal AArch64 ABI requires even Xreg; Darwin does not. */
 #ifndef __APPLE__
@@ -650,18 +650,18 @@ allocate_int128_to_reg_or_stack (struct call_context *context,
 
   /* The value must fit entirely in registers, i.e. the low half may
      not be allocated to x7 with the high half spilled to the stack.  */
-  if (ngrn + 2 <= N_X_ARG_REG)
+  যদি (ngrn + 2 <= N_X_ARG_REG)
     {
       ret = &context->x[ngrn];
       ngrn += 2;
     }
-  else
+  অন্যথা
     {
-      ret = allocate_to_stack (state, stack, 16, 16);
+      ret = allocate_to_স্তূপ (state, স্তূপ, 16, 16);
       ngrn = N_X_ARG_REG;
     }
   state->ngrn = ngrn;
-  return ret;
+  প্রত্যাগম ret;
 }
 
 ffi_status FFI_HIDDEN
@@ -669,78 +669,78 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
   size_t bytes = cif->bytes;
-  int flags, i, n;
+  পূর্ণাঙ্ক flags, i, n;
 
-  switch (rtype->type)
+  বিকল্প (rtype->type)
     {
-    case FFI_TYPE_VOID:
+    পক্ষ FFI_TYPE_VOID:
       flags = AARCH64_RET_VOID;
-      break;
-    case FFI_TYPE_UINT8:
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_UINT8:
       flags = AARCH64_RET_UINT8;
-      break;
-    case FFI_TYPE_UINT16:
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_UINT16:
       flags = AARCH64_RET_UINT16;
-      break;
-    case FFI_TYPE_UINT32:
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_UINT32:
       flags = AARCH64_RET_UINT32;
-      break;
-    case FFI_TYPE_SINT8:
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_SINT8:
       flags = AARCH64_RET_SINT8;
-      break;
-    case FFI_TYPE_SINT16:
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_SINT16:
       flags = AARCH64_RET_SINT16;
-      break;
-    case FFI_TYPE_INT:
-    case FFI_TYPE_SINT32:
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_INT:
+    পক্ষ FFI_TYPE_SINT32:
       flags = AARCH64_RET_SINT32;
-      break;
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_SINT64:
+    পক্ষ FFI_TYPE_UINT64:
       flags = AARCH64_RET_INT64;
-      break;
-    case FFI_TYPE_POINTER:
-      flags = (sizeof(void *) == 4 ? AARCH64_RET_UINT32 : AARCH64_RET_INT64);
-      break;
+      ভঙ্গ;
+    পক্ষ FFI_TYPE_POINTER:
+      flags = (পরিমাণ(শূন্য *) == 4 ? AARCH64_RET_UINT32 : AARCH64_RET_INT64);
+      ভঙ্গ;
 
-    case FFI_TYPE_UINT128:
-    case FFI_TYPE_SINT128:
+    পক্ষ FFI_TYPE_UINT128:
+    পক্ষ FFI_TYPE_SINT128:
       flags = AARCH64_RET_INT128;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_LONGDOUBLE:
-    case FFI_TYPE_STRUCT:
-    case FFI_TYPE_VECTOR:
-    case FFI_TYPE_COMPLEX:
+    পক্ষ FFI_TYPE_FLOAT:
+    পক্ষ FFI_TYPE_DOUBLE:
+    পক্ষ FFI_TYPE_LONGDOUBLE:
+    পক্ষ FFI_TYPE_STRUCT:
+    পক্ষ FFI_TYPE_VECTOR:
+    পক্ষ FFI_TYPE_COMPLEX:
       flags = is_vfp_type (rtype);
-      if (flags == 0)
+      যদি (flags == 0)
 	{
 	  size_t s = rtype->size;
-	  if (s > 16)
+	  যদি (s > 16)
 	    {
 	      flags = AARCH64_RET_VOID | AARCH64_RET_IN_MEM;
 	      bytes += 8;
 	    }
-	  else if (s == 16)
+	  অন্যথা যদি (s == 16)
 	    flags = AARCH64_RET_INT128;
-	  else if (s == 8)
+	  অন্যথা যদি (s == 8)
 	    flags = AARCH64_RET_INT64;
-	  else
+	  অন্যথা
 	    flags = AARCH64_RET_INT128 | AARCH64_RET_NEED_COPY;
 	}
-      break;
+      ভঙ্গ;
 
-    default:
+    স্বভাব:
       abort();
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
-    if (is_vfp_type (cif->arg_types[i]))
+  প্রতি (i = 0, n = cif->nargs; i < n; i++)
+    যদি (is_vfp_type (cif->arg_types[i]))
       {
 	flags |= AARCH64_FLAG_ARG_V;
-	break;
+	ভঙ্গ;
       }
 
   /* Composites larger than 16 bytes (that are not HFAs) are passed by
@@ -753,69 +753,69 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      already-spilled pointer with the copied payload bytes.  Reserve an
      extra 8 bytes per such argument so the slab is always large enough
      for both.  */
-  for (i = 0, n = cif->nargs; i < n; i++)
+  প্রতি (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      if (ty->size > 16 && !is_vfp_type (ty))
+      যদি (ty->size > 16 && !is_vfp_type (ty))
 	bytes += 8;
     }
 
   /* Round the stack up to a multiple of the stack alignment requirement. */
   cif->bytes = (unsigned) FFI_ALIGN(bytes, 16);
   cif->flags = flags;
-#if defined (__APPLE__)
+#যদি defined (__APPLE__)
   cif->aarch64_nfixedargs = 0;
 #endif
 
-  return FFI_OK;
+  প্রত্যাগম FFI_OK;
 }
 
-#if defined (__APPLE__)
+#যদি defined (__APPLE__)
 /* Perform Apple-specific cif processing for variadic calls */
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-			 unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned পূর্ণাঙ্ক nfixedargs,
+			 unsigned পূর্ণাঙ্ক ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->aarch64_nfixedargs = nfixedargs;
-  return status;
+  প্রত্যাগম status;
 }
-#else
+#অন্যথা
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned পূর্ণাঙ্ক nfixedargs, unsigned পূর্ণাঙ্ক ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->flags |= AARCH64_FLAG_VARARG;
-  return status;
+  প্রত্যাগম status;
 }
 #endif /* __APPLE__ */
 
-extern void ffi_call_SYSV (struct call_context *context, void *frame,
-			   void (*fn)(void), void *rvalue, int flags,
-			   void *closure) FFI_HIDDEN;
+বাহ্য শূন্য ffi_call_SYSV (সংরচনা call_context *context, শূন্য *frame,
+			   শূন্য (*fn)(শূন্য), শূন্য *rvalue, পূর্ণাঙ্ক flags,
+			   শূন্য *closure) FFI_HIDDEN;
 
 /* Call a function with the provided arguments and capture the return
    value.
    n.b. ffi_call_SYSV will steal the alloca'd `stack` variable here for use
    _as its own stack_ - so we need to compile this function without ASAN */
 FFI_ASAN_NO_SANITIZE
-static void
-ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
-	      void **avalue, void *closure)
+স্থির শূন্য
+ffi_call_int (ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *orig_rvalue,
+	      শূন্য **avalue, শূন্য *closure)
 {
-  struct call_context *context;
-  void *stack, *frame, *rvalue;
-  struct arg_state state;
-  size_t stack_bytes, rtype_size, rsize;
-  int i, nargs, flags, isvariadic = 0;
+  সংরচনা call_context *context;
+  শূন্য *স্তূপ, *frame, *rvalue;
+  সংরচনা arg_state state;
+  size_t স্তূপ_bytes, rtype_size, rsize;
+  পূর্ণাঙ্ক i, nargs, flags, isvariadic = 0;
   ffi_type *rtype;
 
   flags = cif->flags;
   rtype = cif->rtype;
   rtype_size = rtype->size;
-  stack_bytes = cif->bytes;
+  স্তূপ_bytes = cif->bytes;
 
-  if (flags & AARCH64_FLAG_VARARG)
+  যদি (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
@@ -825,160 +825,160 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
      then we cannot allow a null rvalue.  Otherwise, mash a null
      rvalue to void return type.  */
   rsize = 0;
-  if (flags & AARCH64_RET_IN_MEM)
+  যদি (flags & AARCH64_RET_IN_MEM)
     {
-      if (orig_rvalue == NULL)
+      যদি (orig_rvalue == রিক্ত)
 	rsize = rtype_size;
     }
-  else if (orig_rvalue == NULL)
+  অন্যথা যদি (orig_rvalue == রিক্ত)
     flags &= AARCH64_FLAG_ARG_V;
-  else if (flags & AARCH64_RET_NEED_COPY)
+  অন্যথা যদি (flags & AARCH64_RET_NEED_COPY)
     rsize = 16;
 
   /* Allocate consecutive stack for everything we'll need.
      The frame uses 40 bytes for: lr, fp, rvalue, flags, sp */
-  context = alloca (sizeof(struct call_context) + stack_bytes + 40 + rsize);
-  stack = context + 1;
-  frame = (void*)((uintptr_t)stack + (uintptr_t)stack_bytes);
-  rvalue = (rsize ? (void*)((uintptr_t)frame + 40) : orig_rvalue);
+  context = alloca (পরিমাণ(সংরচনা call_context) + স্তূপ_bytes + 40 + rsize);
+  স্তূপ = context + 1;
+  frame = (শূন্য*)((uintptr_t)স্তূপ + (uintptr_t)স্তূপ_bytes);
+  rvalue = (rsize ? (শূন্য*)((uintptr_t)frame + 40) : orig_rvalue);
 
-  arg_init (&state, stack_bytes);
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  arg_init (&state, স্তূপ_bytes);
+  প্রতি (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t s = ty->size;
-      void *a = avalue[i];
-      int h, t;
-      void *dest;
+      শূন্য *a = avalue[i];
+      পূর্ণাঙ্ক h, t;
+      শূন্য *dest;
 
       t = ty->type;
-      switch (t)
+      বিকল্প (t)
 	{
-	case FFI_TYPE_VOID:
+	পক্ষ FFI_TYPE_VOID:
 	  FFI_ASSERT (0);
-	  break;
+	  ভঙ্গ;
 
 	/* If the argument is a basic type the argument is allocated to an
 	   appropriate register, or if none are available, to the stack.  */
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
+	পক্ষ FFI_TYPE_INT:
+	পক্ষ FFI_TYPE_UINT8:
+	পক্ষ FFI_TYPE_SINT8:
+	পক্ষ FFI_TYPE_UINT16:
+	পক্ষ FFI_TYPE_SINT16:
+	পক্ষ FFI_TYPE_UINT32:
+	পক্ষ FFI_TYPE_SINT32:
+	পক্ষ FFI_TYPE_UINT64:
+	পক্ষ FFI_TYPE_SINT64:
+	পক্ষ FFI_TYPE_POINTER:
 	do_pointer:
 	  {
 	    ffi_arg ext = extend_integer_type (a, t);
-	    if (state.ngrn < N_X_ARG_REG)
+	    যদি (state.ngrn < N_X_ARG_REG)
 	      context->x[state.ngrn++] = ext;
-	    else
+	    অন্যথা
 	      {
-		void *d = allocate_to_stack (&state, stack, ty->alignment, s);
+		শূন্য *d = allocate_to_স্তূপ (&state, স্তূপ, ty->alignment, s);
 		state.ngrn = N_X_ARG_REG;
 		/* Note that the default abi extends each argument
 		   to a full 64-bit slot, while the iOS abi allocates
 		   only enough space. */
 #ifdef __APPLE__
 		memcpy(d, a, s);
-#else
+#অন্যথা
 		*(ffi_arg *)d = ext;
 #endif
 	      }
 	  }
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
-	  dest = allocate_int128_to_reg_or_stack (context, &state, stack);
+	পক্ষ FFI_TYPE_UINT128:
+	পক্ষ FFI_TYPE_SINT128:
+	  dest = allocate_int128_to_reg_or_স্তূপ (context, &state, স্তূপ);
 	  memcpy (dest, a, 16);
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	case FFI_TYPE_COMPLEX:
+	পক্ষ FFI_TYPE_FLOAT:
+	পক্ষ FFI_TYPE_DOUBLE:
+	পক্ষ FFI_TYPE_LONGDOUBLE:
+	পক্ষ FFI_TYPE_STRUCT:
+	পক্ষ FFI_TYPE_VECTOR:
+	পক্ষ FFI_TYPE_COMPLEX:
 	  {
 	    h = is_vfp_type (ty);
-	    if (h)
+	    যদি (h)
 	      {
-              int elems = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              পূর্ণাঙ্ক elems = 4 - (h & 3);
+              যদি (cif->abi == FFI_WIN64 && isvariadic)
               {
-                if (state.ngrn + elems <= N_X_ARG_REG)
+                যদি (state.ngrn + elems <= N_X_ARG_REG)
                 {
                   dest = &context->x[state.ngrn];
                   state.ngrn += elems;
                   extend_hfa_type(dest, a, h);
-                  break;
+                  ভঙ্গ;
                 }
                 state.nsrn = N_X_ARG_REG;
-                dest = allocate_to_stack(&state, stack, ty->alignment, s);
+                dest = allocate_to_স্তূপ(&state, স্তূপ, ty->alignment, s);
               }
-              else
+              অন্যথা
               {
-                if (state.nsrn + elems <= N_V_ARG_REG)
+                যদি (state.nsrn + elems <= N_V_ARG_REG)
                 {
                   dest = &context->v[state.nsrn];
                   state.nsrn += elems;
                   extend_hfa_type (dest, a, h);
-                  break;
+                  ভঙ্গ;
                 }
                 state.nsrn = N_V_ARG_REG;
-                dest = (char *)allocate_to_stack (&state, stack, ty->alignment, s)
-                       + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                dest = (বর্ণ *)allocate_to_স্তূপ (&state, স্তূপ, ty->alignment, s)
+                       + (t == FFI_TYPE_FLOAT ? BE (পরিমাণ (UINT64) - s) : 0);
               }
 	      }
-	    else if (s > 16)
+	    অন্যথা যদি (s > 16)
 	      {
 		/* If the argument is a composite type that is larger than 16
 		   bytes, then the argument is copied to memory, and
 		   the argument is replaced by a pointer to the copy.  */
-		dest = allocate_and_copy_struct_to_stack (&state, stack,
+		dest = allocate_and_copy_struct_to_স্তূপ (&state, স্তূপ,
 							  ty->alignment, s,
 							  avalue[i]);
 		a = &dest;
 		t = FFI_TYPE_POINTER;
-		s = sizeof (void *);
-		goto do_pointer;
+		s = পরিমাণ (শূন্য *);
+		গচ্ছ do_pointer;
 	      }
-	    else
+	    অন্যথা
 	      {
 		size_t n = (s + 7) / 8;
-		if (state.ngrn + n <= N_X_ARG_REG)
+		যদি (state.ngrn + n <= N_X_ARG_REG)
 		  {
 		    /* If the argument is a composite type and the size in
 		       double-words is not more than the number of available
 		       X registers, then the argument is copied into
 		       consecutive X registers.  */
 		    dest = &context->x[state.ngrn];
-                    state.ngrn += (unsigned int)n;
+                    state.ngrn += (unsigned পূর্ণাঙ্ক)n;
 		  }
-		else
+		অন্যথা
 		  {
 		    /* Otherwise, there are insufficient X registers. Further
 		       X register allocations are prevented, the NSAA is
 		       adjusted and the argument is copied to memory at the
 		       adjusted NSAA.  */
 		    state.ngrn = N_X_ARG_REG;
-		    dest = allocate_to_stack (&state, stack, ty->alignment, s);
+		    dest = allocate_to_স্তূপ (&state, স্তূপ, ty->alignment, s);
 		  }
 		}
 	      memcpy (dest, a, s);
 	    }
-	  break;
+	  ভঙ্গ;
 
-	default:
+	স্বভাব:
 	  abort();
 	}
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#যদি defined (__APPLE__)
+      যদি (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
@@ -989,22 +989,22 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 
   ffi_call_SYSV (context, frame, fn, rvalue, flags, closure);
 
-  if (flags & AARCH64_RET_NEED_COPY)
+  যদি (flags & AARCH64_RET_NEED_COPY)
     memcpy (orig_rvalue, rvalue, rtype_size);
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+শূন্য
+ffi_call (ffi_cif *cif, শূন্য (*fn) (শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
-  ffi_call_int (cif, fn, rvalue, avalue, NULL);
+  ffi_call_int (cif, fn, rvalue, avalue, রিক্ত);
 }
 
-#if FFI_CLOSURES
+#যদি FFI_CLOSURES
 
 #ifdef FFI_GO_CLOSURES
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+শূন্য
+ffi_call_go (ffi_cif *cif, শূন্য (*fn) (শূন্য), শূন্য *rvalue,
+	     শূন্য **avalue, শূন্য *closure)
 {
   ffi_call_int (cif, fn, rvalue, avalue, closure);
 }
@@ -1012,62 +1012,62 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
 
 /* Build a trampoline.  */
 
-extern void ffi_closure_SYSV (void) FFI_HIDDEN;
-extern void ffi_closure_SYSV_V (void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
-extern void ffi_closure_SYSV_alt (void) FFI_HIDDEN;
-extern void ffi_closure_SYSV_V_alt (void) FFI_HIDDEN;
+বাহ্য শূন্য ffi_closure_SYSV (শূন্য) FFI_HIDDEN;
+বাহ্য শূন্য ffi_closure_SYSV_V (শূন্য) FFI_HIDDEN;
+#যদি defined(FFI_EXEC_STATIC_TRAMP)
+বাহ্য শূন্য ffi_closure_SYSV_alt (শূন্য) FFI_HIDDEN;
+বাহ্য শূন্য ffi_closure_SYSV_V_alt (শূন্য) FFI_HIDDEN;
 #endif
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,
                       ffi_cif* cif,
-                      void (*fun)(ffi_cif*,void*,void**,void*),
-                      void *user_data,
-                      void *codeloc)
+                      শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+                      শূন্য *user_data,
+                      শূন্য *codeloc)
 {
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    প্রত্যাগম FFI_BAD_ABI;
 
-  void (*start)(void);
+  শূন্য (*start)(শূন্য);
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  যদি (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_closure_SYSV_V;
-  else
+  অন্যথা
     start = ffi_closure_SYSV;
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#যদি FFI_EXEC_TRAMPOLINE_TABLE
 # ifdef __MACH__
 #  ifdef HAVE_ARM64E_PTRAUTH
-  codeloc = ptrauth_auth_data(codeloc, ptrauth_key_function_pointer, 0);
+  codeloc = ptrauth_auth_data(codeloc, ptrauth_চাবি_function_pointer, 0);
 #  endif
-  void **config = (void **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
+  শূন্য **config = (শূন্য **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
   config[0] = closure;
   config[1] = start;
 # endif
-#else
-  static const unsigned char trampoline[16] = {
+#অন্যথা
+  স্থির ধ্রুব unsigned বর্ণ trampoline[16] = {
     0x90, 0x00, 0x00, 0x58,	/* ldr	x16, tramp+16	*/
     0xf1, 0xff, 0xff, 0x10,	/* adr	x17, tramp+0	*/
     0x00, 0x02, 0x1f, 0xd6	/* br	x16		*/
   };
-  char *tramp = closure->tramp;
+  বর্ণ *tramp = closure->tramp;
 
-# if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+# যদি defined(FFI_EXEC_STATIC_TRAMP)
+  যদি (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      if (start == ffi_closure_SYSV_V)
+      যদি (start == ffi_closure_SYSV_V)
           start = ffi_closure_SYSV_V_alt;
-      else
+      অন্যথা
           start = ffi_closure_SYSV_alt;
       ffi_tramp_set_parms (closure->ftramp, start, closure);
-      goto out;
+      গচ্ছ out;
     }
 # endif
 
   /* Initialize the dynamic trampoline. */
-  memcpy (tramp, trampoline, sizeof(trampoline));
+  memcpy (tramp, trampoline, পরিমাণ(trampoline));
 
   *(UINT64 *)(tramp + 16) = (uintptr_t)start;
 
@@ -1077,12 +1077,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
 # ifdef _WIN32
   // Not using dlmalloc.c for Windows ARM64 builds
   // so calling ffi_data_to_code_pointer() isn't necessary
-  unsigned char *tramp_code = tramp;
-# else
-  unsigned char *tramp_code = ffi_data_to_code_pointer (tramp);
+  unsigned বর্ণ *tramp_code = tramp;
+# অন্যথা
+  unsigned বর্ণ *tramp_code = ffi_data_to_code_pointer (tramp);
 # endif
   ffi_clear_cache (tramp_code, tramp_code + FFI_TRAMPOLINE_SIZE);
-# if defined(FFI_EXEC_STATIC_TRAMP)
+# যদি defined(FFI_EXEC_STATIC_TRAMP)
 out:
 # endif
 #endif
@@ -1091,32 +1091,32 @@ out:
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  প্রত্যাগম FFI_OK;
 }
 
 #ifdef FFI_GO_CLOSURES
-extern void ffi_go_closure_SYSV (void) FFI_HIDDEN;
-extern void ffi_go_closure_SYSV_V (void) FFI_HIDDEN;
+বাহ্য শূন্য ffi_go_closure_SYSV (শূন্য) FFI_HIDDEN;
+বাহ্য শূন্য ffi_go_closure_SYSV_V (শূন্য) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
-                     void (*fun)(ffi_cif*,void*,void**,void*))
+                     শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*))
 {
-  void (*start)(void);
+  শূন্য (*start)(শূন্য);
 
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    প্রত্যাগম FFI_BAD_ABI;
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  যদি (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_go_closure_SYSV_V;
-  else
+  অন্যথা
     start = ffi_go_closure_SYSV;
 
   closure->tramp = start;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  প্রত্যাগম FFI_OK;
 }
 #endif /* FFI_GO_CLOSURES */
 
@@ -1136,72 +1136,72 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
    descriptors, invokes the wrapped function, then marshalls the return
    value back into the call context.  */
 
-int FFI_HIDDEN
+পূর্ণাঙ্ক FFI_HIDDEN
 ffi_closure_SYSV_inner (ffi_cif *cif,
-			void (*fun)(ffi_cif*,void*,void**,void*),
-			void *user_data,
-			struct call_context *context,
-			void *stack, void *rvalue, void *struct_rvalue)
+			শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+			শূন্য *user_data,
+			সংরচনা call_context *context,
+			শূন্য *স্তূপ, শূন্য *rvalue, শূন্য *struct_rvalue)
 {
-  void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  int i, h, nargs, flags, isvariadic = 0;
-  struct arg_state state;
+  শূন্য **avalue = (শূন্য**) alloca (cif->nargs * পরিমাণ (শূন্য*));
+  পূর্ণাঙ্ক i, h, nargs, flags, isvariadic = 0;
+  সংরচনা arg_state state;
 
   arg_init (&state, cif->bytes);
 
   flags = cif->flags;
-  if (flags & AARCH64_FLAG_VARARG)
+  যদি (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
   }
 
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  প্রতি (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      int t = ty->type;
+      পূর্ণাঙ্ক t = ty->type;
       size_t n, s = ty->size;
 
-      switch (t)
+      বিকল্প (t)
 	{
-	case FFI_TYPE_VOID:
+	পক্ষ FFI_TYPE_VOID:
 	  FFI_ASSERT (0);
-	  break;
+	  ভঙ্গ;
 
-	case FFI_TYPE_INT:
-	case FFI_TYPE_UINT8:
-	case FFI_TYPE_SINT8:
-	case FFI_TYPE_UINT16:
-	case FFI_TYPE_SINT16:
-	case FFI_TYPE_UINT32:
-	case FFI_TYPE_SINT32:
-	case FFI_TYPE_UINT64:
-	case FFI_TYPE_SINT64:
-	case FFI_TYPE_POINTER:
-	  avalue[i] = allocate_int_to_reg_or_stack (context, &state, stack, s);
-	  break;
+	পক্ষ FFI_TYPE_INT:
+	পক্ষ FFI_TYPE_UINT8:
+	পক্ষ FFI_TYPE_SINT8:
+	পক্ষ FFI_TYPE_UINT16:
+	পক্ষ FFI_TYPE_SINT16:
+	পক্ষ FFI_TYPE_UINT32:
+	পক্ষ FFI_TYPE_SINT32:
+	পক্ষ FFI_TYPE_UINT64:
+	পক্ষ FFI_TYPE_SINT64:
+	পক্ষ FFI_TYPE_POINTER:
+	  avalue[i] = allocate_int_to_reg_or_স্তূপ (context, &state, স্তূপ, s);
+	  ভঙ্গ;
 
-	case FFI_TYPE_UINT128:
-	case FFI_TYPE_SINT128:
-	  avalue[i] = allocate_int128_to_reg_or_stack (context, &state, stack);
-	  break;
+	পক্ষ FFI_TYPE_UINT128:
+	পক্ষ FFI_TYPE_SINT128:
+	  avalue[i] = allocate_int128_to_reg_or_স্তূপ (context, &state, স্তূপ);
+	  ভঙ্গ;
 
-	case FFI_TYPE_FLOAT:
-	case FFI_TYPE_DOUBLE:
-	case FFI_TYPE_LONGDOUBLE:
-	case FFI_TYPE_STRUCT:
-	case FFI_TYPE_VECTOR:
-	case FFI_TYPE_COMPLEX:
+	পক্ষ FFI_TYPE_FLOAT:
+	পক্ষ FFI_TYPE_DOUBLE:
+	পক্ষ FFI_TYPE_LONGDOUBLE:
+	পক্ষ FFI_TYPE_STRUCT:
+	পক্ষ FFI_TYPE_VECTOR:
+	পক্ষ FFI_TYPE_COMPLEX:
 	  h = is_vfp_type (ty);
-	  if (h)
+	  যদি (h)
 	    {
 	      n = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              যদি (cif->abi == FFI_WIN64 && isvariadic)
                 {
-                  if (state.ngrn + n <= N_X_ARG_REG)
+                  যদি (state.ngrn + n <= N_X_ARG_REG)
                     {
-                      void *reg = &context->x[state.ngrn];
-                      state.ngrn += (unsigned int)n;
+                      শূন্য *reg = &context->x[state.ngrn];
+                      state.ngrn += (unsigned পূর্ণাঙ্ক)n;
 
                       /* Eeek! We need a pointer to the structure, however the
                        homogeneous float elements are being passed in individual
@@ -1212,72 +1212,72 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                        structure into the same memory.  */
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  অন্যথা
                     {
                       state.ngrn = N_X_ARG_REG;
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (বর্ণ *)allocate_to_স্তূপ (&state, স্তূপ,
                                                              ty->alignment, s)
-                                  + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                                  + (t == FFI_TYPE_FLOAT ? BE (পরিমাণ (UINT64) - s) : 0);
                     }
                 }
-              else
+              অন্যথা
                 {
-                  if (state.nsrn + n <= N_V_ARG_REG)
+                  যদি (state.nsrn + n <= N_V_ARG_REG)
                     {
-                      void *reg = &context->v[state.nsrn];
-                      state.nsrn += (unsigned int)n;
+                      শূন্য *reg = &context->v[state.nsrn];
+                      state.nsrn += (unsigned পূর্ণাঙ্ক)n;
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  অন্যথা
                     {
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (বর্ণ *)allocate_to_স্তূপ (&state, স্তূপ,
                                                              ty->alignment, s)
-                                  + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
+                                  + (t == FFI_TYPE_FLOAT ? BE (পরিমাণ (UINT64) - s) : 0);
                     }
                 }
             }
-          else if (s > 16)
+          অন্যথা যদি (s > 16)
             {
               /* Replace Composite type of size greater than 16 with a
                   pointer.  */
 #ifdef __ILP32__
              UINT64 avalue_tmp;
              memcpy (&avalue_tmp,
-                  allocate_int_to_reg_or_stack (context, &state,
-                                               stack, sizeof (void *)),
-                  sizeof (UINT64));
-             avalue[i] = (void *)(UINT32)avalue_tmp;
-#else
-              avalue[i] = *(void **)
-              allocate_int_to_reg_or_stack (context, &state, stack,
-                                         sizeof (void *));
+                  allocate_int_to_reg_or_স্তূপ (context, &state,
+                                               স্তূপ, পরিমাণ (শূন্য *)),
+                  পরিমাণ (UINT64));
+             avalue[i] = (শূন্য *)(UINT32)avalue_tmp;
+#অন্যথা
+              avalue[i] = *(শূন্য **)
+              allocate_int_to_reg_or_স্তূপ (context, &state, স্তূপ,
+                                         পরিমাণ (শূন্য *));
 #endif
             }
-          else
+          অন্যথা
             {
               n = (s + 7) / 8;
-              if (state.ngrn + n <= N_X_ARG_REG)
+              যদি (state.ngrn + n <= N_X_ARG_REG)
                 {
                   avalue[i] = &context->x[state.ngrn];
-                  state.ngrn += (unsigned int)n;
+                  state.ngrn += (unsigned পূর্ণাঙ্ক)n;
                 }
-              else
+              অন্যথা
                 {
                   state.ngrn = N_X_ARG_REG;
-                  avalue[i] = allocate_to_stack(&state, stack,
+                  avalue[i] = allocate_to_স্তূপ(&state, স্তূপ,
                                            ty->alignment, s);
                 }
             }
-          break;
+          ভঙ্গ;
 
-        default:
+        স্বভাব:
           abort();
       }
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#যদি defined (__APPLE__)
+      যদি (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
@@ -1286,23 +1286,23 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 #endif
     }
 
-  if (flags & AARCH64_RET_IN_MEM)
+  যদি (flags & AARCH64_RET_IN_MEM)
     rvalue = struct_rvalue;
 
   fun (cif, rvalue, avalue, user_data);
 
-  return flags;
+  প্রত্যাগম flags;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-void *
+#যদি defined(FFI_EXEC_STATIC_TRAMP)
+শূন্য *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  বাহ্য শূন্য *trampoline_code_table;
 
   *tramp_size = AARCH64_TRAMP_SIZE;
   *map_size = AARCH64_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  প্রত্যাগম &trampoline_code_table;
 }
 #endif
 

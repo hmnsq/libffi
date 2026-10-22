@@ -27,104 +27,104 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
-#include "internal.h"
-#include <tramp.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
+#অন্তর্ভাব "internal.h"
+#অন্তর্ভাব <tramp.h>
 
-#include <stdlib.h>
-#include <stdint.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <stdint.h>
 
-#if __riscv_float_abi_double
+#যদি __riscv_float_abi_double
 #define ABI_FLEN 64
-typedef union {
+প্রকারনির্দেশ সঙ্ঘ {
     uint64_t i;
-    double d;
+    দ্বিগুণ d;
 } float_reg;
-#elif __riscv_float_abi_single
+#নোচেদ্যদি __riscv_float_abi_single
 #define ABI_FLEN 32
-typedef union {
-    float f;
+প্রকারনির্দেশ সঙ্ঘ {
+    ভিন্ন f;
 } float_reg;
 #endif
 
 #define NARGREG 8
 #define STKALIGN 16
-#define MAXCOPYARG (2 * sizeof(double))
+#define MAXCOPYARG (2 * পরিমাণ(দ্বিগুণ))
 
-typedef struct call_context
+প্রকারনির্দেশ সংরচনা call_context
 {
-#if ABI_FLEN
+#যদি ABI_FLEN
     float_reg fa[8];
 #endif
     size_t a[8];
     /* used by the assembly code to in-place construct its own stack frame */
-    char frame[16];
+    বর্ণ frame[16];
 } call_context;
 
-typedef struct call_builder
+প্রকারনির্দেশ সংরচনা call_builder
 {
     call_context *aregs;
-    int used_integer;
-    int used_float;
-    size_t *used_stack;
-    void *struct_stack;
+    পূর্ণাঙ্ক used_integer;
+    পূর্ণাঙ্ক used_float;
+    size_t *used_স্তূপ;
+    শূন্য *struct_স্তূপ;
 } call_builder;
 
 /* integer (not pointer) less than ABI XLEN */
 /* FFI_TYPE_INT does not appear to be used */
-#if __SIZEOF_POINTER__ == 8
+#যদি __SIZEOF_POINTER__ == 8
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT64)
-#else
+#অন্যথা
 #define IS_INT(type) ((type) >= FFI_TYPE_UINT8 && (type) <= FFI_TYPE_SINT32)
 #endif
 
-#if ABI_FLEN
-typedef struct {
-    char as_elements, type1, offset2, type2;
+#যদি ABI_FLEN
+প্রকারনির্দেশ সংরচনা {
+    বর্ণ as_elements, type1, offset2, type2;
 } float_struct_info;
 
-#if ABI_FLEN >= 64
+#যদি ABI_FLEN >= 64
 #define IS_FLOAT(type) ((type) >= FFI_TYPE_FLOAT && (type) <= FFI_TYPE_DOUBLE)
-#else
+#অন্যথা
 #define IS_FLOAT(type) ((type) == FFI_TYPE_FLOAT)
 #endif
 
-static ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
-    int i;
-    if (out == out_end) return out;
-    if (in->type != FFI_TYPE_STRUCT) {
+স্থির ffi_type **flatten_struct(ffi_type *in, ffi_type **out, ffi_type **out_end) {
+    পূর্ণাঙ্ক i;
+    যদি (out == out_end) প্রত্যাগম out;
+    যদি (in->type != FFI_TYPE_STRUCT) {
         *(out++) = in;
-    } else {
-        for (i = 0; in->elements[i]; i++)
+    } অন্যথা {
+        প্রতি (i = 0; in->elements[i]; i++)
             out = flatten_struct(in->elements[i], out, out_end);
     }
-    return out;
+    প্রত্যাগম out;
 }
 
 /* Structs with at most two fields after flattening, one of which is of
    floating point type, are passed in multiple registers if sufficient
    registers are available. */
-static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *top) {
+স্থির float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *শীর্ষ) {
     float_struct_info ret = {0, 0, 0, 0};
     ffi_type *fields[3];
-    int num_floats, num_ints;
-    int num_fields = flatten_struct(top, fields, fields + 3) - fields;
+    পূর্ণাঙ্ক অঙ্ক_floats, অঙ্ক_ints;
+    পূর্ণাঙ্ক অঙ্ক_fields = flatten_struct(শীর্ষ, fields, fields + 3) - fields;
 
-    if (num_fields == 1) {
-        if (IS_FLOAT(fields[0]->type)) {
+    যদি (অঙ্ক_fields == 1) {
+        যদি (IS_FLOAT(fields[0]->type)) {
             ret.as_elements = 1;
             ret.type1 = fields[0]->type;
         }
-    } else if (num_fields == 2) {
-        num_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
-        num_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
-        if (num_floats == 0 || num_floats + num_ints != 2)
-            return ret;
-        if (cb->used_float + num_floats > NARGREG || cb->used_integer + (2 - num_floats) > NARGREG)
-            return ret;
-        if (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
-            return ret;
+    } অন্যথা যদি (অঙ্ক_fields == 2) {
+        অঙ্ক_floats = IS_FLOAT(fields[0]->type) + IS_FLOAT(fields[1]->type);
+        অঙ্ক_ints = IS_INT(fields[0]->type) + IS_INT(fields[1]->type);
+        যদি (অঙ্ক_floats == 0 || অঙ্ক_floats + অঙ্ক_ints != 2)
+            প্রত্যাগম ret;
+        যদি (cb->used_float + অঙ্ক_floats > NARGREG || cb->used_integer + (2 - অঙ্ক_floats) > NARGREG)
+            প্রত্যাগম ret;
+        যদি (!IS_FLOAT(fields[0]->type) && !IS_FLOAT(fields[1]->type))
+            প্রত্যাগম ret;
 
         ret.type1 = fields[0]->type;
         ret.type2 = fields[1]->type;
@@ -132,345 +132,345 @@ static float_struct_info struct_passed_as_elements(call_builder *cb, ffi_type *t
         ret.as_elements = 1;
     }
 
-    return ret;
+    প্রত্যাগম ret;
 }
 
-#if ABI_FLEN >= 64
+#যদি ABI_FLEN >= 64
 /* Float values in wider RISC-V FP registers are NaN-boxed */
-static void marshal_float(call_builder *cb, void *data) {
-    union {
+স্থির শূন্য marshal_float(call_builder *cb, শূন্য *data) {
+    সঙ্ঘ {
         uint32_t i;
-        float f;
-    } value;
+        ভিন্ন f;
+    } মান;
 
-    value.f = *(float *)data;
+    মান.f = *(ভিন্ন *)data;
     cb->aregs->fa[cb->used_float++].i =
-        UINT64_C(0xffffffff00000000) | value.i;
+        UINT64_C(0xffffffff00000000) | মান.i;
 }
 
-static void unmarshal_float(call_builder *cb, void *data) {
-    union {
+স্থির শূন্য unmarshal_float(call_builder *cb, শূন্য *data) {
+    সঙ্ঘ {
         uint32_t i;
-        float f;
-    } value;
+        ভিন্ন f;
+    } মান;
 
-    value.i = (uint32_t)cb->aregs->fa[cb->used_float++].i;
-    *(float *)data = value.f;
+    মান.i = (uint32_t)cb->aregs->fa[cb->used_float++].i;
+    *(ভিন্ন *)data = মান.f;
 }
 #endif
 #endif
 
 /* allocates a single register, float register, or XLEN-sized stack slot to a datum */
-static void marshal_atom(call_builder *cb, int type, void *data) {
-    size_t value = 0;
-    switch (type) {
-        case FFI_TYPE_UINT8: value = *(uint8_t *)data; break;
-        case FFI_TYPE_SINT8: value = *(int8_t *)data; break;
-        case FFI_TYPE_UINT16: value = *(uint16_t *)data; break;
-        case FFI_TYPE_SINT16: value = *(int16_t *)data; break;
+স্থির শূন্য marshal_atom(call_builder *cb, পূর্ণাঙ্ক type, শূন্য *data) {
+    size_t মান = 0;
+    বিকল্প (type) {
+        পক্ষ FFI_TYPE_UINT8: মান = *(uint8_t *)data; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT8: মান = *(int8_t *)data; ভঙ্গ;
+        পক্ষ FFI_TYPE_UINT16: মান = *(uint16_t *)data; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT16: মান = *(int16_t *)data; ভঙ্গ;
         /* 32-bit quantities are always sign-extended in the ABI */
-        case FFI_TYPE_UINT32: value = *(int32_t *)data; break;
-        case FFI_TYPE_SINT32: value = *(int32_t *)data; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: value = *(uint64_t *)data; break;
-        case FFI_TYPE_SINT64: value = *(int64_t *)data; break;
+        পক্ষ FFI_TYPE_UINT32: মান = *(int32_t *)data; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT32: মান = *(int32_t *)data; ভঙ্গ;
+#যদি __SIZEOF_POINTER__ == 8
+        পক্ষ FFI_TYPE_UINT64: মান = *(uint64_t *)data; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT64: মান = *(int64_t *)data; ভঙ্গ;
 #endif
-        case FFI_TYPE_POINTER: value = *(size_t *)data; break;
+        পক্ষ FFI_TYPE_POINTER: মান = *(size_t *)data; ভঙ্গ;
 
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+#যদি ABI_FLEN >= 64
+        পক্ষ FFI_TYPE_FLOAT:
             marshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(float *)data));
-            return;
+            প্রত্যাগম;
+#নোচেদ্যদি ABI_FLEN >= 32
+        পক্ষ FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].f) : "0"(*(ভিন্ন *)data));
+            প্রত্যাগম;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(double *)data));
-            return;
+#যদি ABI_FLEN >= 64
+        পক্ষ FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(cb->aregs->fa[cb->used_float++].d) : "0"(*(দ্বিগুণ *)data));
+            প্রত্যাগম;
 #endif
-        default: FFI_ASSERT(0); break;
+        স্বভাব: FFI_ASSERT(0); ভঙ্গ;
     }
 
-    if (cb->used_integer == NARGREG) {
-        *cb->used_stack++ = value;
-    } else {
-        cb->aregs->a[cb->used_integer++] = value;
+    যদি (cb->used_integer == NARGREG) {
+        *cb->used_স্তূপ++ = মান;
+    } অন্যথা {
+        cb->aregs->a[cb->used_integer++] = মান;
     }
 }
 
-static void unmarshal_atom(call_builder *cb, int type, void *data) {
-    size_t value;
-    switch (type) {
-#if ABI_FLEN >= 64
-        case FFI_TYPE_FLOAT:
+স্থির শূন্য unmarshal_atom(call_builder *cb, পূর্ণাঙ্ক type, শূন্য *data) {
+    size_t মান;
+    বিকল্প (type) {
+#যদি ABI_FLEN >= 64
+        পক্ষ FFI_TYPE_FLOAT:
             unmarshal_float(cb, data);
-            return;
-#elif ABI_FLEN >= 32
-        case FFI_TYPE_FLOAT:
-            __asm__("" : "=f"(*(float *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
-            return;
+            প্রত্যাগম;
+#নোচেদ্যদি ABI_FLEN >= 32
+        পক্ষ FFI_TYPE_FLOAT:
+            __asm__("" : "=f"(*(ভিন্ন *)data) : "0"(cb->aregs->fa[cb->used_float++].f));
+            প্রত্যাগম;
 #endif
-#if ABI_FLEN >= 64
-        case FFI_TYPE_DOUBLE:
-            __asm__("" : "=f"(*(double *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
-            return;
+#যদি ABI_FLEN >= 64
+        পক্ষ FFI_TYPE_DOUBLE:
+            __asm__("" : "=f"(*(দ্বিগুণ *)data) : "0"(cb->aregs->fa[cb->used_float++].d));
+            প্রত্যাগম;
 #endif
     }
 
-    if (cb->used_integer == NARGREG) {
-        value = *cb->used_stack++;
-    } else {
-        value = cb->aregs->a[cb->used_integer++];
+    যদি (cb->used_integer == NARGREG) {
+        মান = *cb->used_স্তূপ++;
+    } অন্যথা {
+        মান = cb->aregs->a[cb->used_integer++];
     }
 
-    switch (type) {
-        case FFI_TYPE_UINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_SINT8: *(uint8_t *)data = value; break;
-        case FFI_TYPE_UINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_SINT16: *(uint16_t *)data = value; break;
-        case FFI_TYPE_UINT32: *(uint32_t *)data = value; break;
-        case FFI_TYPE_SINT32: *(uint32_t *)data = value; break;
-#if __SIZEOF_POINTER__ == 8
-        case FFI_TYPE_UINT64: *(uint64_t *)data = value; break;
-        case FFI_TYPE_SINT64: *(uint64_t *)data = value; break;
+    বিকল্প (type) {
+        পক্ষ FFI_TYPE_UINT8: *(uint8_t *)data = মান; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT8: *(uint8_t *)data = মান; ভঙ্গ;
+        পক্ষ FFI_TYPE_UINT16: *(uint16_t *)data = মান; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT16: *(uint16_t *)data = মান; ভঙ্গ;
+        পক্ষ FFI_TYPE_UINT32: *(uint32_t *)data = মান; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT32: *(uint32_t *)data = মান; ভঙ্গ;
+#যদি __SIZEOF_POINTER__ == 8
+        পক্ষ FFI_TYPE_UINT64: *(uint64_t *)data = মান; ভঙ্গ;
+        পক্ষ FFI_TYPE_SINT64: *(uint64_t *)data = মান; ভঙ্গ;
 #endif
-        case FFI_TYPE_POINTER: *(size_t *)data = value; break;
-        default: FFI_ASSERT(0); break;
+        পক্ষ FFI_TYPE_POINTER: *(size_t *)data = মান; ভঙ্গ;
+        স্বভাব: FFI_ASSERT(0); ভঙ্গ;
     }
 }
 
 /* adds an argument to a call, or a not by reference return value */
-static void marshal(call_builder *cb, ffi_type *type, int var, void *data) {
+স্থির শূন্য marshal(call_builder *cb, ffi_type *type, পূর্ণাঙ্ক var, শূন্য *data) {
     size_t realign[2];
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#যদি ABI_FLEN
+    যদি (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        যদি (fsi.as_elements) {
             marshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                marshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return;
+            যদি (fsi.offset2)
+                marshal_atom(cb, fsi.type2, ((বর্ণ*)data) + fsi.offset2);
+            প্রত্যাগম;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    যদি (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         marshal_atom(cb, type->type, data);
-        return;
+        প্রত্যাগম;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    যদি (type->size > 2 * __SIZEOF_POINTER__) {
         /* copy to stack and pass by reference */
-        data = memcpy (cb->struct_stack, data, type->size);
-        cb->struct_stack = (size_t *) FFI_ALIGN ((char *) cb->struct_stack + type->size, __SIZEOF_POINTER__);
+        data = memcpy (cb->struct_স্তূপ, data, type->size);
+        cb->struct_স্তূপ = (size_t *) FFI_ALIGN ((বর্ণ *) cb->struct_স্তূপ + type->size, __SIZEOF_POINTER__);
         marshal_atom(cb, FFI_TYPE_POINTER, &data);
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+    } অন্যথা যদি (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         marshal_atom(cb, type->type, data);
-    } else {
+    } অন্যথা {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        যদি (type->alignment > __SIZEOF_POINTER__) {
+            যদি (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+            cb->used_স্তূপ = (size_t *)FFI_ALIGN(cb->used_স্তূপ, 2*__SIZEOF_POINTER__);
         }
 
         memcpy(realign, data, type->size);
-        if (type->size > 0)
+        যদি (type->size > 0)
             marshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        যদি (type->size > __SIZEOF_POINTER__)
             marshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
     }
 }
 
 /* for arguments passed by reference returns the pointer, otherwise the arg is copied (up to MAXCOPYARG bytes) */
-static void *unmarshal(call_builder *cb, ffi_type *type, int var, void *data) {
+স্থির শূন্য *unmarshal(call_builder *cb, ffi_type *type, পূর্ণাঙ্ক var, শূন্য *data) {
     size_t realign[2];
-    void *pointer;
+    শূন্য *pointer;
 
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+#যদি ABI_FLEN
+    যদি (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) {
+        যদি (fsi.as_elements) {
             unmarshal_atom(cb, fsi.type1, data);
-            if (fsi.offset2)
-                unmarshal_atom(cb, fsi.type2, ((char*)data) + fsi.offset2);
-            return data;
+            যদি (fsi.offset2)
+                unmarshal_atom(cb, fsi.type2, ((বর্ণ*)data) + fsi.offset2);
+            প্রত্যাগম data;
         }
     }
 
-    if (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
+    যদি (!var && cb->used_float < NARGREG && IS_FLOAT(type->type)) {
         unmarshal_atom(cb, type->type, data);
-        return data;
+        প্রত্যাগম data;
     }
 #endif
 
-    if (type->size > 2 * __SIZEOF_POINTER__) {
+    যদি (type->size > 2 * __SIZEOF_POINTER__) {
         /* pass by reference */
-        unmarshal_atom(cb, FFI_TYPE_POINTER, (char*)&pointer);
-        return pointer;
-    } else if (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
+        unmarshal_atom(cb, FFI_TYPE_POINTER, (বর্ণ*)&pointer);
+        প্রত্যাগম pointer;
+    } অন্যথা যদি (IS_INT(type->type) || type->type == FFI_TYPE_POINTER) {
         unmarshal_atom(cb, type->type, data);
-        return data;
-    } else {
+        প্রত্যাগম data;
+    } অন্যথা {
         /* overlong integers, soft-float floats, and structs without special
            float handling are treated identically from this point on */
 
         /* variadics are aligned even in registers */
-        if (type->alignment > __SIZEOF_POINTER__) {
-            if (var)
+        যদি (type->alignment > __SIZEOF_POINTER__) {
+            যদি (var)
                 cb->used_integer = FFI_ALIGN(cb->used_integer, 2);
-            cb->used_stack = (size_t *)FFI_ALIGN(cb->used_stack, 2*__SIZEOF_POINTER__);
+            cb->used_স্তূপ = (size_t *)FFI_ALIGN(cb->used_স্তূপ, 2*__SIZEOF_POINTER__);
         }
 
-        if (type->size > 0)
+        যদি (type->size > 0)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign);
-        if (type->size > __SIZEOF_POINTER__)
+        যদি (type->size > __SIZEOF_POINTER__)
             unmarshal_atom(cb, FFI_TYPE_POINTER, realign + 1);
         memcpy(data, realign, type->size);
-        return data;
+        প্রত্যাগম data;
     }
 }
 
-static int passed_by_ref(call_builder *cb, ffi_type *type, int var) {
-#if ABI_FLEN
-    if (!var && type->type == FFI_TYPE_STRUCT) {
+স্থির পূর্ণাঙ্ক passed_by_ref(call_builder *cb, ffi_type *type, পূর্ণাঙ্ক var) {
+#যদি ABI_FLEN
+    যদি (!var && type->type == FFI_TYPE_STRUCT) {
         float_struct_info fsi = struct_passed_as_elements(cb, type);
-        if (fsi.as_elements) return 0;
+        যদি (fsi.as_elements) প্রত্যাগম 0;
     }
 #endif
 
-    return type->size > 2 * __SIZEOF_POINTER__;
+    প্রত্যাগম type->size > 2 * __SIZEOF_POINTER__;
 }
 
 /* Perform machine dependent cif processing */
 ffi_status ffi_prep_cif_machdep(ffi_cif *cif) {
     cif->riscv_nfixedargs = cif->nargs;
-    return FFI_OK;
+    প্রত্যাগম FFI_OK;
 }
 
 /* Perform machine dependent cif processing when we have a variadic function */
 
-ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs) {
+ffi_status ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned পূর্ণাঙ্ক nfixedargs, unsigned পূর্ণাঙ্ক ntotalargs) {
     cif->riscv_nfixedargs = nfixedargs;
-    return FFI_OK;
+    প্রত্যাগম FFI_OK;
 }
 
 /* Low level routine for calling functions */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
-			  void (*fn) (void), void *closure) FFI_HIDDEN;
+বাহ্য শূন্য ffi_call_asm (শূন্য *স্তূপ, সংরচনা call_context *regs,
+			  শূন্য (*fn) (শূন্য), শূন্য *closure) FFI_HIDDEN;
 
-static void
-ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
-	      void *closure)
+স্থির শূন্য
+ffi_call_int (ffi_cif *cif, শূন্য (*fn) (শূন্য), শূন্য *rvalue, শূন্য **avalue,
+	      শূন্য *closure)
 {
     /* this is a conservative estimate, assuming a complex return value and
        that all remaining arguments are long long / __int128 */
     size_t arg_bytes = cif->nargs <= 3 ? 0 :
-        FFI_ALIGN(2 * sizeof(size_t) * (cif->nargs - 3), STKALIGN);
+        FFI_ALIGN(2 * পরিমাণ(size_t) * (cif->nargs - 3), STKALIGN);
     /* Allocate space for copies of big structures.  */
     size_t struct_bytes = FFI_ALIGN (cif->bytes, STKALIGN);
     size_t rval_bytes = 0;
-    if (rvalue == NULL && cif->rtype->size > 2*__SIZEOF_POINTER__)
+    যদি (rvalue == রিক্ত && cif->rtype->size > 2*__SIZEOF_POINTER__)
         rval_bytes = FFI_ALIGN(cif->rtype->size, STKALIGN);
-    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + sizeof(call_context);
+    size_t alloc_size = arg_bytes + rval_bytes + struct_bytes + পরিমাণ(call_context);
 
     /* the assembly code will deallocate all stack data at lower addresses
        than the argument region, so we need to allocate the frame and the
        return value after the arguments in a single allocation */
     size_t alloc_base;
     /* Argument region must be 16-byte aligned */
-    if (_Alignof(max_align_t) >= STKALIGN) {
+    যদি (_Alignof(max_align_t) >= STKALIGN) {
         /* since sizeof long double is normally 16, the compiler will
            guarantee alloca alignment to at least that much */
         alloc_base = (size_t)alloca(alloc_size);
-    } else {
+    } অন্যথা {
         alloc_base = FFI_ALIGN(alloca(alloc_size + STKALIGN - 1), STKALIGN);
     }
 
-    if (rval_bytes)
-        rvalue = (void*)(alloc_base + arg_bytes);
+    যদি (rval_bytes)
+        rvalue = (শূন্য*)(alloc_base + arg_bytes);
 
     call_builder cb;
     cb.used_float = cb.used_integer = 0;
     cb.aregs = (call_context*)(alloc_base + arg_bytes + rval_bytes + struct_bytes);
-    cb.used_stack = (void*)alloc_base;
-    cb.struct_stack = (void *) (alloc_base + arg_bytes + rval_bytes);
+    cb.used_স্তূপ = (শূন্য*)alloc_base;
+    cb.struct_স্তূপ = (শূন্য *) (alloc_base + arg_bytes + rval_bytes);
 
-    int return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    পূর্ণাঙ্ক return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
+    যদি (return_by_ref)
         marshal(&cb, &ffi_type_pointer, 0, &rvalue);
 
-    int i;
-    for (i = 0; i < cif->nargs; i++)
+    পূর্ণাঙ্ক i;
+    প্রতি (i = 0; i < cif->nargs; i++)
         marshal(&cb, cif->arg_types[i], i >= cif->riscv_nfixedargs, avalue[i]);
 
-    ffi_call_asm ((void *) alloc_base, cb.aregs, fn, closure);
+    ffi_call_asm ((শূন্য *) alloc_base, cb.aregs, fn, closure);
 
     cb.used_float = cb.used_integer = 0;
-    if (!return_by_ref && rvalue)
+    যদি (!return_by_ref && rvalue)
       {
-	if (IS_INT(cif->rtype->type)
-	    && cif->rtype->size < sizeof (ffi_arg))
+	যদি (IS_INT(cif->rtype->type)
+	    && cif->rtype->size < পরিমাণ (ffi_arg))
 	  {
 	    /* Integer types smaller than ffi_arg need to be extended.  */
-	    switch (cif->rtype->type)
+	    বিকল্প (cif->rtype->type)
 	      {
-	      case FFI_TYPE_SINT8:
-	      case FFI_TYPE_SINT16:
-	      case FFI_TYPE_SINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+	      পক্ষ FFI_TYPE_SINT8:
+	      পক্ষ FFI_TYPE_SINT16:
+	      পক্ষ FFI_TYPE_SINT32:
+		unmarshal_atom (&cb, (পরিমাণ (ffi_arg) > 4
 				      ? FFI_TYPE_SINT64 : FFI_TYPE_SINT32),
 				rvalue);
-		break;
-	      case FFI_TYPE_UINT8:
-	      case FFI_TYPE_UINT16:
-	      case FFI_TYPE_UINT32:
-		unmarshal_atom (&cb, (sizeof (ffi_arg) > 4
+		ভঙ্গ;
+	      পক্ষ FFI_TYPE_UINT8:
+	      পক্ষ FFI_TYPE_UINT16:
+	      পক্ষ FFI_TYPE_UINT32:
+		unmarshal_atom (&cb, (পরিমাণ (ffi_arg) > 4
 				      ? FFI_TYPE_UINT64 : FFI_TYPE_UINT32),
 				rvalue);
-		break;
+		ভঙ্গ;
 	      }
 	  }
-	else
+	অন্যথা
 	  unmarshal(&cb, cif->rtype, 0, rvalue);
       }
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
+শূন্য
+ffi_call (ffi_cif *cif, শূন্য (*fn) (শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
-  ffi_call_int(cif, fn, rvalue, avalue, NULL);
+  ffi_call_int(cif, fn, rvalue, avalue, রিক্ত);
 }
 
-void
-ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
-	     void **avalue, void *closure)
+শূন্য
+ffi_call_go (ffi_cif *cif, শূন্য (*fn) (শূন্য), শূন্য *rvalue,
+	     শূন্য **avalue, শূন্য *closure)
 {
   ffi_call_int(cif, fn, rvalue, avalue, closure);
 }
 
-extern void ffi_closure_asm(void) FFI_HIDDEN;
+বাহ্য শূন্য ffi_closure_asm(শূন্য) FFI_HIDDEN;
 
-ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(ffi_cif*,void*,void**,void*), void *user_data, void *codeloc)
+ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*), শূন্য *user_data, শূন্য *codeloc)
 {
-    if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-        return FFI_BAD_ABI;
+    যদি (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+        প্রত্যাগম FFI_BAD_ABI;
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-  if (ffi_tramp_is_present (closure))
+  যদি (ffi_tramp_is_present (closure))
     {
       /* Initialize the static trampoline's parameters. */
-      void (*dest)(void) = ffi_closure_asm;
+      শূন্য (*dest)(শূন্য) = ffi_closure_asm;
       ffi_tramp_set_parms (closure->ftramp, dest, closure);
     }
-  else
+  অন্যথা
 #endif
     {
       uint32_t *tramp = (uint32_t *) &closure->tramp[0];
@@ -480,16 +480,16 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
 	 as the memory is readable it should work */
 
       tramp[0] = 0x00000317; /* auipc t1, 0 (i.e. t0 <- codeloc) */
-#if __SIZEOF_POINTER__ == 8
+#যদি __SIZEOF_POINTER__ == 8
       tramp[1] = 0x01033383; /* ld t2, 16(t1) */
-#else
+#অন্যথা
       tramp[1] = 0x01032383; /* lw t2, 16(t1) */
 #endif
       tramp[2] = 0x00038067; /* jr t2 */
       tramp[3] = 0x00000013; /* nop */
       tramp[4] = fn;
       tramp[5] = fn >> 32;
-#if !defined(__FreeBSD__)
+#যদি !defined(__FreeBSD__)
     __builtin___clear_cache(codeloc, codeloc + FFI_TRAMPOLINE_SIZE);
 #endif
     }
@@ -498,74 +498,74 @@ ffi_status ffi_prep_closure_loc(ffi_closure *closure, ffi_cif *cif, void (*fun)(
     closure->fun = fun;
     closure->user_data = user_data;
 
-    return FFI_OK;
+    প্রত্যাগম FFI_OK;
 }
 
-extern void ffi_go_closure_asm (void) FFI_HIDDEN;
+বাহ্য শূন্য ffi_go_closure_asm (শূন্য) FFI_HIDDEN;
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
-		     void (*fun) (ffi_cif *, void *, void **, void *))
+		     শূন্য (*fun) (ffi_cif *, শূন্য *, শূন্য **, শূন্য *))
 {
-  if (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
-    return FFI_BAD_ABI;
+  যদি (cif->abi <= FFI_FIRST_ABI || cif->abi >= FFI_LAST_ABI)
+    প্রত্যাগম FFI_BAD_ABI;
 
-  closure->tramp = (void *) ffi_go_closure_asm;
+  closure->tramp = (শূন্য *) ffi_go_closure_asm;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  প্রত্যাগম FFI_OK;
 }
 
 /* Called by the assembly code with aregs pointing to saved argument registers
    and stack pointing to the stacked arguments.  Return values passed in
    registers will be reloaded from aregs. */
-void FFI_HIDDEN
+শূন্য FFI_HIDDEN
 ffi_closure_inner (ffi_cif *cif,
-		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data,
-		   size_t *stack, call_context *aregs)
+		   শূন্য (*fun) (ffi_cif *, শূন্য *, শূন্য **, শূন্য *),
+		   শূন্য *user_data,
+		   size_t *স্তূপ, call_context *aregs)
 {
-    void **avalue = alloca(cif->nargs * sizeof(void*));
+    শূন্য **avalue = alloca(cif->nargs * পরিমাণ(শূন্য*));
     /* storage for arguments which will be copied by unmarshal().  We could
        theoretically avoid the copies in many cases and use at most 128 bytes
        of memory, but allocating disjoint storage for each argument is
        simpler. */
-    char *astorage = alloca(cif->nargs * MAXCOPYARG);
-    void *rvalue;
+    বর্ণ *astorage = alloca(cif->nargs * MAXCOPYARG);
+    শূন্য *rvalue;
     call_builder cb;
-    int return_by_ref;
-    int i;
+    পূর্ণাঙ্ক return_by_ref;
+    পূর্ণাঙ্ক i;
 
     cb.aregs = aregs;
     cb.used_integer = cb.used_float = 0;
-    cb.used_stack = stack;
+    cb.used_স্তূপ = স্তূপ;
 
     return_by_ref = passed_by_ref(&cb, cif->rtype, 0);
-    if (return_by_ref)
+    যদি (return_by_ref)
         unmarshal(&cb, &ffi_type_pointer, 0, &rvalue);
-    else
+    অন্যথা
         rvalue = alloca(cif->rtype->size);
 
-    for (i = 0; i < cif->nargs; i++)
+    প্রতি (i = 0; i < cif->nargs; i++)
         avalue[i] = unmarshal(&cb, cif->arg_types[i],
             i >= cif->riscv_nfixedargs, astorage + i*MAXCOPYARG);
 
     fun (cif, rvalue, avalue, user_data);
 
-    if (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
+    যদি (!return_by_ref && cif->rtype->type != FFI_TYPE_VOID) {
         cb.used_integer = cb.used_float = 0;
         marshal(&cb, cif->rtype, 0, rvalue);
     }
 }
 
 #ifdef FFI_EXEC_STATIC_TRAMP
-void *
+শূন্য *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
-  extern void *trampoline_code_table;
+  বাহ্য শূন্য *trampoline_code_table;
   *tramp_size = RISCV_TRAMP_SIZE;
   *map_size = RISCV_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  প্রত্যাগম &trampoline_code_table;
 }
 #endif

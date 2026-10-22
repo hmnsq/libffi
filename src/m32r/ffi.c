@@ -25,104 +25,104 @@
    OTHER DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
-#include <stdlib.h>
+#অন্তর্ভাব <stdlib.h>
 
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+শূন্য ffi_prep_args(বর্ণ *স্তূপ, extended_cif *ecif)
 {
-  unsigned int i;
-  int tmp;
-  unsigned int avn;
-  void **p_argv;
-  char *argp;
+  unsigned পূর্ণাঙ্ক i;
+  পূর্ণাঙ্ক tmp;
+  unsigned পূর্ণাঙ্ক avn;
+  শূন্য **p_argv;
+  বর্ণ *argp;
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = স্তূপ;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
+  যদি (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
-      *(void **) argp = ecif->rvalue;
+      *(শূন্য **) argp = ecif->rvalue;
       argp += 4;
     }
 
   avn = ecif->cif->nargs;
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  প্রতি (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0) && (avn != 0);
        i--, p_arg++)
     {
       size_t z;
 
       /* Align if necessary.  */
-      if (((*p_arg)->alignment - 1) & (unsigned) argp)
-	argp = (char *) FFI_ALIGN (argp, (*p_arg)->alignment);
+      যদি (((*p_arg)->alignment - 1) & (unsigned) argp)
+	argp = (বর্ণ *) FFI_ALIGN (argp, (*p_arg)->alignment);
 
-      if (avn != 0)
+      যদি (avn != 0)
 	{
 	  avn--;
 	  z = (*p_arg)->size;
-	  if (z < sizeof (int))
+	  যদি (z < পরিমাণ (পূর্ণাঙ্ক))
 	    {
-	      z = sizeof (int);
+	      z = পরিমাণ (পূর্ণাঙ্ক);
 
-	      switch ((*p_arg)->type)
+	      বিকল্প ((*p_arg)->type)
 		{
-		case FFI_TYPE_SINT8:
-		  *(signed int *) argp = (signed int)*(SINT8 *)(* p_argv);
-		  break;
+		পক্ষ FFI_TYPE_SINT8:
+		  *(signed পূর্ণাঙ্ক *) argp = (signed পূর্ণাঙ্ক)*(SINT8 *)(* p_argv);
+		  ভঙ্গ;
 
-		case FFI_TYPE_UINT8:
-		  *(unsigned int *) argp = (unsigned int)*(UINT8 *)(* p_argv);
-		  break;
+		পক্ষ FFI_TYPE_UINT8:
+		  *(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক)*(UINT8 *)(* p_argv);
+		  ভঙ্গ;
 
-		case FFI_TYPE_SINT16:
-		  *(signed int *) argp = (signed int)*(SINT16 *)(* p_argv);
-		  break;
+		পক্ষ FFI_TYPE_SINT16:
+		  *(signed পূর্ণাঙ্ক *) argp = (signed পূর্ণাঙ্ক)*(SINT16 *)(* p_argv);
+		  ভঙ্গ;
 
-		case FFI_TYPE_UINT16:
-		  *(unsigned int *) argp = (unsigned int)*(UINT16 *)(* p_argv);
-		  break;
+		পক্ষ FFI_TYPE_UINT16:
+		  *(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক)*(UINT16 *)(* p_argv);
+		  ভঙ্গ;
 
-		case FFI_TYPE_STRUCT:
+		পক্ষ FFI_TYPE_STRUCT:
 	  	  z = (*p_arg)->size;
-	  	  if ((*p_arg)->alignment != 1)
+	  	  যদি ((*p_arg)->alignment != 1)
 		    memcpy (argp, *p_argv, z);
-		  else
+		  অন্যথা
 		    memcpy (argp + 4 - z, *p_argv, z);
-	  	  z = sizeof (int);
-		  break;
+	  	  z = পরিমাণ (পূর্ণাঙ্ক);
+		  ভঙ্গ;
 
-		default:
+		স্বভাব:
 		  FFI_ASSERT(0);
 		}
 	    }
-	  else if (z == sizeof (int))
+	  অন্যথা যদি (z == পরিমাণ (পূর্ণাঙ্ক))
 	    {
-	       *(unsigned int *) argp = (unsigned int)*(UINT32 *)(* p_argv);
+	       *(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক)*(UINT32 *)(* p_argv);
 	    }
-	  else
+	  অন্যথা
 	    {
-	      if ((*p_arg)->type == FFI_TYPE_STRUCT)
+	      যদি ((*p_arg)->type == FFI_TYPE_STRUCT)
 	        {
-		  if (z > 8)
+		  যদি (z > 8)
 		    {
-		      *(unsigned int *) argp = (unsigned int)(void *)(* p_argv);
-		      z = sizeof(void *);
+		      *(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক)(শূন্য *)(* p_argv);
+		      z = পরিমাণ(শূন্য *);
 		    }
-		  else
+		  অন্যথা
 		    {
 	              memcpy(argp, *p_argv, z);
 		      z = 8;
 		    }
 	        }
-	      else
+	      অন্যথা
 	        {
 		  /* Double or long long 64bit.  */
 	          memcpy (argp, *p_argv, z);
@@ -133,7 +133,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 	}
     }
 
-  return;
+  প্রত্যাগম;
 }
 
 /* Perform machine dependent cif processing.  */
@@ -141,74 +141,74 @@ ffi_status
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   /* Set the return type flag.  */
-  switch (cif->rtype->type)
+  বিকল্প (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    পক্ষ FFI_TYPE_VOID:
       cif->flags = (unsigned) cif->rtype->type;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->size <= 4)
+    পক্ষ FFI_TYPE_STRUCT:
+      যদি (cif->rtype->size <= 4)
 	cif->flags = FFI_TYPE_INT;
 
-      else if (cif->rtype->size <= 8)
+      অন্যথা যদি (cif->rtype->size <= 8)
 	cif->flags = FFI_TYPE_DOUBLE;
 
-      else
+      অন্যথা
 	cif->flags = (unsigned) cif->rtype->type;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-    case FFI_TYPE_DOUBLE:
+    পক্ষ FFI_TYPE_SINT64:
+    পক্ষ FFI_TYPE_UINT64:
+    পক্ষ FFI_TYPE_DOUBLE:
       cif->flags = FFI_TYPE_DOUBLE;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_FLOAT:
-    default:
+    পক্ষ FFI_TYPE_FLOAT:
+    স্বভাব:
       cif->flags = FFI_TYPE_INT;
-      break;
+      ভঙ্গ;
     }
 
-  return FFI_OK;
+  প্রত্যাগম FFI_OK;
 }
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-			  unsigned, unsigned, unsigned *, void (*fn)(void));
+বাহ্য শূন্য ffi_call_SYSV(শূন্য (*)(বর্ণ *, extended_cif *), extended_cif *,
+			  unsigned, unsigned, unsigned *, শূন্য (*fn)(শূন্য));
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+শূন্য ffi_call(ffi_cif *cif, শূন্য (*fn)(শূন্য), শূন্য *rvalue, শূন্য **avalue)
 {
   extended_cif ecif;
   ffi_type **arg_types = cif->arg_types;
-  void **avalue_copy = NULL;
-  int i, nargs = cif->nargs;
+  শূন্য **avalue_copy = রিক্ত;
+  পূর্ণাঙ্ক i, nargs = cif->nargs;
 
   ecif.cif = cif;
 
   /* If the return value is a struct and we don't have
      a return value address then we need to make one.  */
-  if ((rvalue == NULL) &&
+  যদি ((rvalue == রিক্ত) &&
       (cif->rtype->type == FFI_TYPE_STRUCT))
     {
       ecif.rvalue = alloca (cif->rtype->size);
     }
-  else
+  অন্যথা
     ecif.rvalue = rvalue;
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  প্রতি (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      পূর্ণাঙ্ক size = at->size;
+      যদি (at->type == FFI_TYPE_STRUCT && size > 4)
         {
-          char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          বর্ণ *argcopy = alloca (size);
+          যদি (avalue_copy == রিক্ত)
             {
-              avalue_copy = alloca (nargs * sizeof (void *));
-              memcpy (avalue_copy, avalue, nargs * sizeof (void *));
+              avalue_copy = alloca (nargs * পরিমাণ (শূন্য *));
+              memcpy (avalue_copy, avalue, nargs * পরিমাণ (শূন্য *));
               avalue = avalue_copy;
             }
           memcpy (argcopy, avalue[i], size);
@@ -217,41 +217,41 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
   ecif.avalue = avalue;
 
-  switch (cif->abi)
+  বিকল্প (cif->abi)
     {
-    case FFI_SYSV:
+    পক্ষ FFI_SYSV:
       ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
-      if (cif->rtype->type == FFI_TYPE_STRUCT)
+      যদি (cif->rtype->type == FFI_TYPE_STRUCT)
 	{
-	  int size = cif->rtype->size;
-	  int align = cif->rtype->alignment;
+	  পূর্ণাঙ্ক size = cif->rtype->size;
+	  পূর্ণাঙ্ক align = cif->rtype->alignment;
 
-	  if (size < 4)
+	  যদি (size < 4)
 	    {
-	      if (align == 1)
+	      যদি (align == 1)
 	        *(unsigned long *)(ecif.rvalue) <<= (4 - size) * 8;
 	    }
-	  else if (4 < size && size < 8)
+	  অন্যথা যদি (4 < size && size < 8)
 	    {
-	      if (align == 1)
+	      যদি (align == 1)
 		{
 		  memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
-	      else if (align == 2)
+	      অন্যথা যদি (align == 2)
 		{
-		  if (size & 1)
+		  যদি (size & 1)
 		    size += 1;
 
-		  if (size != 8)
+		  যদি (size != 8)
 		    memcpy (ecif.rvalue, ecif.rvalue + 8-size, size);
 		}
 	    }
 	}
-      break;
+      ভঙ্গ;
 
-    default:
+    স্বভাব:
       FFI_ASSERT(0);
-      break;
+      ভঙ্গ;
     }
 }

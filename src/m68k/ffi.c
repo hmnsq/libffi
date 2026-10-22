@@ -4,115 +4,115 @@
    m68k Foreign Function Interface
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#অন্তর্ভাব <ffi.h>
+#অন্তর্ভাব <ffi_common.h>
 
-#include <stdlib.h>
-#include <unistd.h>
+#অন্তর্ভাব <stdlib.h>
+#অন্তর্ভাব <unistd.h>
 #ifdef __rtems__
-void rtems_cache_flush_multiple_data_lines( const void *, size_t );
-#else
-#include <sys/syscall.h>
+শূন্য rtems_cache_flush_multiple_data_সারিগুলি( ধ্রুব শূন্য *, size_t );
+#অন্যথা
+#অন্তর্ভাব <sys/syscall.h>
 #ifdef __MINT__
-#include <mint/mintbind.h>
-#include <mint/ssystem.h>
-#else
-#include <asm/cachectl.h>
+#অন্তর্ভাব <mint/mintbind.h>
+#অন্তর্ভাব <mint/ssystem.h>
+#অন্যথা
+#অন্তর্ভাব <asm/cachectl.h>
 #endif
 #endif
 
-void ffi_call_SYSV (extended_cif *,
+শূন্য ffi_call_SYSV (extended_cif *,
 		    unsigned, unsigned,
-		    void *, void (*fn) ());
-void *ffi_prep_args (void *stack, extended_cif *ecif);
-void ffi_closure_SYSV (ffi_closure *);
-void ffi_closure_struct_SYSV (ffi_closure *);
-unsigned int ffi_closure_SYSV_inner (ffi_closure *closure,
-				     void *resp, void *args);
+		    শূন্য *, শূন্য (*fn) ());
+শূন্য *ffi_prep_args (শূন্য *স্তূপ, extended_cif *ecif);
+শূন্য ffi_closure_SYSV (ffi_closure *);
+শূন্য ffi_closure_struct_SYSV (ffi_closure *);
+unsigned পূর্ণাঙ্ক ffi_closure_SYSV_inner (ffi_closure *closure,
+				     শূন্য *resp, শূন্য *args);
 
 /* ffi_prep_args is called by the assembly routine once stack space has
    been allocated for the function's arguments.  */
 
-void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+শূন্য *
+ffi_prep_args (শূন্য *স্তূপ, extended_cif *ecif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  unsigned পূর্ণাঙ্ক i;
+  শূন্য **p_argv;
+  বর্ণ *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  শূন্য *struct_মান_ptr;
 
-  argp = stack;
+  argp = স্তূপ;
 
-  if (
+  যদি (
 #ifdef __MINT__
       (ecif->cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
 #endif
       (((ecif->cif->rtype->type == FFI_TYPE_STRUCT)
         && !ecif->cif->flags)))
-    struct_value_ptr = ecif->rvalue;
-  else
-    struct_value_ptr = NULL;
+    struct_মান_ptr = ecif->rvalue;
+  অন্যথা
+    struct_মান_ptr = রিক্ত;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  প্রতি (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z = (*p_arg)->size;
-      int type = (*p_arg)->type;
+      পূর্ণাঙ্ক type = (*p_arg)->type;
 
-      if (z < sizeof (int))
+      যদি (z < পরিমাণ (পূর্ণাঙ্ক))
 	{
-	  switch (type)
+	  বিকল্প (type)
 	    {
-	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
-	      break;
+	    পক্ষ FFI_TYPE_SINT8:
+	      *(signed পূর্ণাঙ্ক *) argp = (signed পূর্ণাঙ্ক) *(SINT8 *) *p_argv;
+	      ভঙ্গ;
 
-	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
-	      break;
+	    পক্ষ FFI_TYPE_UINT8:
+	      *(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক) *(UINT8 *) *p_argv;
+	      ভঙ্গ;
 
-	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
-	      break;
+	    পক্ষ FFI_TYPE_SINT16:
+	      *(signed পূর্ণাঙ্ক *) argp = (signed পূর্ণাঙ্ক) *(SINT16 *) *p_argv;
+	      ভঙ্গ;
 
-	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
-	      break;
+	    পক্ষ FFI_TYPE_UINT16:
+	      *(unsigned পূর্ণাঙ্ক *) argp = (unsigned পূর্ণাঙ্ক) *(UINT16 *) *p_argv;
+	      ভঙ্গ;
 
-	    case FFI_TYPE_STRUCT:
+	    পক্ষ FFI_TYPE_STRUCT:
 #ifdef __MINT__
-	      if (z == 1 || z == 2)
+	      যদি (z == 1 || z == 2)
 		memcpy (argp + 2, *p_argv, z);
-              else
+              অন্যথা
 		memcpy (argp, *p_argv, z);
-#else
-	      memcpy (argp + sizeof (int) - z, *p_argv, z);
+#অন্যথা
+	      memcpy (argp + পরিমাণ (পূর্ণাঙ্ক) - z, *p_argv, z);
 #endif
-	      break;
+	      ভঙ্গ;
 
-	    default:
+	    স্বভাব:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = পরিমাণ (পূর্ণাঙ্ক);
 	}
-      else
+      অন্যথা
 	{
 	  memcpy (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  যদি ((পরিমাণ(পূর্ণাঙ্ক) - 1) & z)
+	    z = FFI_ALIGN(z, পরিমাণ(পূর্ণাঙ্ক));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  প্রত্যাগম struct_মান_ptr;
 }
 
 #define CIF_FLAGS_INT		1
@@ -131,95 +131,95 @@ ffi_status
 ffi_prep_cif_machdep (ffi_cif *cif)
 {
   /* Set the return type flag */
-  switch (cif->rtype->type)
+  বিকল্প (cif->rtype->type)
     {
-    case FFI_TYPE_VOID:
+    পক্ষ FFI_TYPE_VOID:
       cif->flags = 0;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+    পক্ষ FFI_TYPE_STRUCT:
+      যদি (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
           cif->rtype->elements[1])
         {
           cif->flags = 0;
-          break;
+          ভঙ্গ;
         }
 
-      switch (cif->rtype->size)
+      বিকল্প (cif->rtype->size)
 	{
-	case 1:
+	পক্ষ 1:
 #ifdef __MINT__
 	  cif->flags = CIF_FLAGS_STRUCT2;
-#else
+#অন্যথা
 	  cif->flags = CIF_FLAGS_STRUCT1;
 #endif
-	  break;
-	case 2:
+	  ভঙ্গ;
+	পক্ষ 2:
 	  cif->flags = CIF_FLAGS_STRUCT2;
-	  break;
+	  ভঙ্গ;
 #ifdef __MINT__
-	case 3:
+	পক্ষ 3:
 #endif
-	case 4:
+	পক্ষ 4:
 	  cif->flags = CIF_FLAGS_INT;
-	  break;
+	  ভঙ্গ;
 #ifdef __MINT__
-	case 7:
+	পক্ষ 7:
 #endif
-	case 8:
+	পক্ষ 8:
 	  cif->flags = CIF_FLAGS_DINT;
-	  break;
-	default:
+	  ভঙ্গ;
+	স্বভাব:
 	  cif->flags = 0;
-	  break;
+	  ভঙ্গ;
 	}
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_FLOAT:
+    পক্ষ FFI_TYPE_FLOAT:
       cif->flags = CIF_FLAGS_FLOAT;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_DOUBLE:
+    পক্ষ FFI_TYPE_DOUBLE:
       cif->flags = CIF_FLAGS_DOUBLE;
-      break;
+      ভঙ্গ;
 
-#if (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
-    case FFI_TYPE_LONGDOUBLE:
+#যদি (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
+    পক্ষ FFI_TYPE_LONGDOUBLE:
 #ifdef __MINT__
       cif->flags = 0;
-#else
+#অন্যথা
       cif->flags = CIF_FLAGS_LDOUBLE;
 #endif
-      break;
+      ভঙ্গ;
 #endif
 
-    case FFI_TYPE_POINTER:
+    পক্ষ FFI_TYPE_POINTER:
       cif->flags = CIF_FLAGS_POINTER;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
+    পক্ষ FFI_TYPE_SINT64:
+    পক্ষ FFI_TYPE_UINT64:
       cif->flags = CIF_FLAGS_DINT;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_SINT16:
+    পক্ষ FFI_TYPE_SINT16:
       cif->flags = CIF_FLAGS_SINT16;
-      break;
+      ভঙ্গ;
 
-    case FFI_TYPE_SINT8:
+    পক্ষ FFI_TYPE_SINT8:
       cif->flags = CIF_FLAGS_SINT8;
-      break;
+      ভঙ্গ;
 
-    default:
+    স্বভাব:
       cif->flags = CIF_FLAGS_INT;
-      break;
+      ভঙ্গ;
     }
 
-  return FFI_OK;
+  প্রত্যাগম FFI_OK;
 }
 
-void
-ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
+শূন্য
+ffi_call (ffi_cif *cif, শূন্য (*fn) (), শূন্য *rvalue, শূন্য **avalue)
 {
   extended_cif ecif;
 
@@ -229,75 +229,75 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  যদি (rvalue == রিক্ত
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->rtype->size > 8)
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  অন্যথা
     ecif.rvalue = rvalue;
 
-  switch (cif->abi)
+  বিকল্প (cif->abi)
     {
-    case FFI_SYSV:
+    পক্ষ FFI_SYSV:
       ffi_call_SYSV (&ecif, cif->bytes, cif->flags,
 		     ecif.rvalue, fn);
-      break;
+      ভঙ্গ;
 
-    default:
+    স্বভাব:
       FFI_ASSERT (0);
-      break;
+      ভঙ্গ;
     }
 }
 
-static void
-ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
+স্থির শূন্য
+ffi_prep_incoming_args_SYSV (বর্ণ *স্তূপ, শূন্য **avalue, ffi_cif *cif)
 {
-  unsigned int i;
-  void **p_argv;
-  char *argp;
+  unsigned পূর্ণাঙ্ক i;
+  শূন্য **p_argv;
+  বর্ণ *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = স্তূপ;
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
+  প্রতি (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
 #ifdef __MINT__
-      if (cif->flags &&
+      যদি (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 1 || z == 2))
  	{
-	  *p_argv = (void *) (argp + 2);
+	  *p_argv = (শূন্য *) (argp + 2);
 
 	  z = 4;
 	}
-      else
-      if (cif->flags &&
+      অন্যথা
+      যদি (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 3 || z == 4))
  	{
-	  *p_argv = (void *) (argp);
+	  *p_argv = (শূন্য *) (argp);
 
 	  z = 4;
 	}
-      else
+      অন্যথা
 #endif
-      if (z <= 4)
+      যদি (z <= 4)
 	{
-	  *p_argv = (void *) (argp + 4 - z);
+	  *p_argv = (শূন্য *) (argp + 4 - z);
 
 	  z = 4;
 	}
-      else
+      অন্যথা
 	{
-	  *p_argv = (void *) argp;
+	  *p_argv = (শূন্য *) argp;
 
 	  /* Align if necessary */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  যদি ((পরিমাণ(পূর্ণাঙ্ক) - 1) & z)
+	    z = FFI_ALIGN(z, পরিমাণ(পূর্ণাঙ্ক));
 	}
 
       p_argv++;
@@ -305,52 +305,52 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
     }
 }
 
-unsigned int
-ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
+unsigned পূর্ণাঙ্ক
+ffi_closure_SYSV_inner (ffi_closure *closure, শূন্য *resp, শূন্য *args)
 {
   ffi_cif *cif;
-  void **arg_area;
+  শূন্য **arg_area;
 
   cif = closure->cif;
-  arg_area = (void**) alloca (cif->nargs * sizeof (void *));
+  arg_area = (শূন্য**) alloca (cif->nargs * পরিমাণ (শূন্য *));
 
   ffi_prep_incoming_args_SYSV(args, arg_area, cif);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  প্রত্যাগম cif->flags;
 }
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure* closure,
 		      ffi_cif* cif,
-		      void (*fun)(ffi_cif*,void*,void**,void*),
-		      void *user_data,
-		      void *codeloc)
+		      শূন্য (*fun)(ffi_cif*,শূন্য*,শূন্য**,শূন্য*),
+		      শূন্য *user_data,
+		      শূন্য *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  যদি (cif->abi != FFI_SYSV)
+    প্রত্যাগম FFI_BAD_ABI;
 
   *(unsigned short *)closure->tramp = 0x207c;
-  *(void **)(closure->tramp + 2) = codeloc;
+  *(শূন্য **)(closure->tramp + 2) = codeloc;
   *(unsigned short *)(closure->tramp + 6) = 0x4ef9;
 
-  if (
+  যদি (
 #ifdef __MINT__
       (cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
 #endif
       (((cif->rtype->type == FFI_TYPE_STRUCT)
          && !cif->flags)))
-    *(void **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
-  else
-    *(void **)(closure->tramp + 8) = ffi_closure_SYSV;
+    *(শূন্য **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
+  অন্যথা
+    *(শূন্য **)(closure->tramp + 8) = ffi_closure_SYSV;
 
 #ifdef __rtems__
-  rtems_cache_flush_multiple_data_lines( codeloc, FFI_TRAMPOLINE_SIZE );
-#elif defined(__MINT__)
+  rtems_cache_flush_multiple_data_সারিগুলি( codeloc, FFI_TRAMPOLINE_SIZE );
+#নোচেদ্যদি defined(__MINT__)
   Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_SIZE);
-#else
-  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_LINE,
+#অন্যথা
+  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_সারি,
 	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_SIZE);
 #endif
 
@@ -358,5 +358,5 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  প্রত্যাগম FFI_OK;
 }
