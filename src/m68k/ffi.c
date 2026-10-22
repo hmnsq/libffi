@@ -11,12 +11,12 @@
 #include <unistd.h>
 #ifdef __rtems__
 void rtems_cache_flush_multiple_data_lines( const void *, size_t );
-#else
+#否则
 #include <sys/syscall.h>
 #ifdef __MINT__
 #include <mint/mintbind.h>
 #include <mint/ssystem.h>
-#else
+#否则
 #include <asm/cachectl.h>
 #endif
 #endif
@@ -27,7 +27,7 @@ void ffi_call_SYSV (extended_cif *,
 void *ffi_prep_args (void *stack, extended_cif *ecif);
 void ffi_closure_SYSV (ffi_closure *);
 void ffi_closure_struct_SYSV (ffi_closure *);
-unsigned int ffi_closure_SYSV_inner (ffi_closure *closure,
+unsigned 整数 ffi_closure_SYSV_inner (ffi_closure *closure,
 				     void *resp, void *args);
 
 /* ffi_prep_args is called by the assembly routine once stack space has
@@ -36,7 +36,7 @@ unsigned int ffi_closure_SYSV_inner (ffi_closure *closure,
 void *
 ffi_prep_args (void *stack, extended_cif *ecif)
 {
-  unsigned int i;
+  unsigned 整数 i;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
@@ -44,75 +44,75 @@ ffi_prep_args (void *stack, extended_cif *ecif)
 
   argp = stack;
 
-  if (
+  もし (
 #ifdef __MINT__
       (ecif->cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
 #endif
       (((ecif->cif->rtype->type == FFI_TYPE_STRUCT)
         && !ecif->cif->flags)))
     struct_value_ptr = ecif->rvalue;
-  else
+  否则
     struct_value_ptr = NULL;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
+  ために (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        i != 0;
        i--, p_arg++)
     {
       size_t z = (*p_arg)->size;
-      int type = (*p_arg)->type;
+      整数 type = (*p_arg)->type;
 
-      if (z < sizeof (int))
+      もし (z < sizeof (整数))
 	{
 	  switch (type)
 	    {
 	    case FFI_TYPE_SINT8:
-	      *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
+	      *(signed 整数 *) argp = (signed 整数) *(SINT8 *) *p_argv;
 	      break;
 
 	    case FFI_TYPE_UINT8:
-	      *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
+	      *(unsigned 整数 *) argp = (unsigned 整数) *(UINT8 *) *p_argv;
 	      break;
 
 	    case FFI_TYPE_SINT16:
-	      *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
+	      *(signed 整数 *) argp = (signed 整数) *(SINT16 *) *p_argv;
 	      break;
 
 	    case FFI_TYPE_UINT16:
-	      *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
+	      *(unsigned 整数 *) argp = (unsigned 整数) *(UINT16 *) *p_argv;
 	      break;
 
 	    case FFI_TYPE_STRUCT:
 #ifdef __MINT__
-	      if (z == 1 || z == 2)
+	      もし (z == 1 || z == 2)
 		memcpy (argp + 2, *p_argv, z);
-              else
+              否则
 		memcpy (argp, *p_argv, z);
-#else
-	      memcpy (argp + sizeof (int) - z, *p_argv, z);
+#否则
+	      memcpy (argp + sizeof (整数) - z, *p_argv, z);
 #endif
 	      break;
 
 	    default:
 	      FFI_ASSERT (0);
 	    }
-	  z = sizeof (int);
+	  z = sizeof (整数);
 	}
-      else
+      否则
 	{
 	  memcpy (argp, *p_argv, z);
 
 	  /* Align if necessary.  */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  もし ((sizeof(整数) - 1) & z)
+	    z = FFI_ALIGN(z, sizeof(整数));
 	}
 
       p_argv++;
       argp += z;
     }
 
-  return struct_value_ptr;
+  戻る struct_value_ptr;
 }
 
 #define CIF_FLAGS_INT		1
@@ -138,7 +138,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
       break;
 
     case FFI_TYPE_STRUCT:
-      if (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
+      もし (cif->rtype->elements[0]->type == FFI_TYPE_STRUCT &&
           cif->rtype->elements[1])
         {
           cif->flags = 0;
@@ -150,7 +150,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	case 1:
 #ifdef __MINT__
 	  cif->flags = CIF_FLAGS_STRUCT2;
-#else
+#否则
 	  cif->flags = CIF_FLAGS_STRUCT1;
 #endif
 	  break;
@@ -183,11 +183,11 @@ ffi_prep_cif_machdep (ffi_cif *cif)
       cif->flags = CIF_FLAGS_DOUBLE;
       break;
 
-#if (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
+#もし (FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE)
     case FFI_TYPE_LONGDOUBLE:
 #ifdef __MINT__
       cif->flags = 0;
-#else
+#否则
       cif->flags = CIF_FLAGS_LDOUBLE;
 #endif
       break;
@@ -215,7 +215,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
       break;
     }
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 void
@@ -229,11 +229,11 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  もし (rvalue == NULL
       && cif->rtype->type == FFI_TYPE_STRUCT
       && cif->rtype->size > 8)
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  否则
     ecif.rvalue = rvalue;
 
   switch (cif->abi)
@@ -252,7 +252,7 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
 static void
 ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
 {
-  unsigned int i;
+  unsigned 整数 i;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
@@ -260,13 +260,13 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
   argp = stack;
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
+  ために (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
     {
       size_t z;
 
       z = (*p_arg)->size;
 #ifdef __MINT__
-      if (cif->flags &&
+      もし (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 1 || z == 2))
  	{
@@ -274,8 +274,8 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
 
 	  z = 4;
 	}
-      else
-      if (cif->flags &&
+      否则
+      もし (cif->flags &&
           cif->rtype->type == FFI_TYPE_STRUCT &&
           (z == 3 || z == 4))
  	{
@@ -283,21 +283,21 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
 
 	  z = 4;
 	}
-      else
+      否则
 #endif
-      if (z <= 4)
+      もし (z <= 4)
 	{
 	  *p_argv = (void *) (argp + 4 - z);
 
 	  z = 4;
 	}
-      else
+      否则
 	{
 	  *p_argv = (void *) argp;
 
 	  /* Align if necessary */
-	  if ((sizeof(int) - 1) & z)
-	    z = FFI_ALIGN(z, sizeof(int));
+	  もし ((sizeof(整数) - 1) & z)
+	    z = FFI_ALIGN(z, sizeof(整数));
 	}
 
       p_argv++;
@@ -305,7 +305,7 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
     }
 }
 
-unsigned int
+unsigned 整数
 ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
 {
   ffi_cif *cif;
@@ -318,7 +318,7 @@ ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  戻る cif->flags;
 }
 
 ffi_status
@@ -328,28 +328,28 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_SYSV)
+    戻る FFI_BAD_ABI;
 
   *(unsigned short *)closure->tramp = 0x207c;
   *(void **)(closure->tramp + 2) = codeloc;
   *(unsigned short *)(closure->tramp + 6) = 0x4ef9;
 
-  if (
+  もし (
 #ifdef __MINT__
       (cif->rtype->type == FFI_TYPE_LONGDOUBLE) ||
 #endif
       (((cif->rtype->type == FFI_TYPE_STRUCT)
          && !cif->flags)))
     *(void **)(closure->tramp + 8) = ffi_closure_struct_SYSV;
-  else
+  否则
     *(void **)(closure->tramp + 8) = ffi_closure_SYSV;
 
 #ifdef __rtems__
   rtems_cache_flush_multiple_data_lines( codeloc, FFI_TRAMPOLINE_SIZE );
 #elif defined(__MINT__)
   Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_SIZE);
-#else
+#否则
   syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_LINE,
 	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_SIZE);
 #endif
@@ -358,5 +358,5 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }

@@ -49,14 +49,14 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void ffi_call_OBSD (unsigned int, extended_cif *, unsigned int, void *,
+void ffi_call_OBSD (unsigned 整数, extended_cif *, unsigned 整数, void *,
 		    void (*fn) ());
 void *ffi_prep_args (void *, extended_cif *);
 void ffi_closure_OBSD (ffi_closure *);
 void ffi_closure_struct_OBSD (ffi_closure *);
-unsigned int ffi_closure_OBSD_inner (ffi_closure *, void *, unsigned int *,
+unsigned 整数 ffi_closure_OBSD_inner (ffi_closure *, void *, unsigned 整数 *,
 				     char *);
-void ffi_cacheflush_OBSD (unsigned int, unsigned int);
+void ffi_cacheflush_OBSD (unsigned 整数, unsigned 整数);
 
 #define CIF_FLAGS_INT		(1 << 0)
 #define CIF_FLAGS_DINT		(1 << 1)
@@ -71,27 +71,27 @@ void ffi_cacheflush_OBSD (unsigned int, unsigned int);
 void *
 ffi_prep_args (void *stack, extended_cif *ecif)
 {
-  unsigned int i;
+  unsigned 整数 i;
   void **p_argv;
   char *argp, *stackp;
-  unsigned int *regp;
-  unsigned int regused;
+  unsigned 整数 *regp;
+  unsigned 整数 regused;
   ffi_type **p_arg;
   void *struct_value_ptr;
 
-  regp = (unsigned int *)stack;
+  regp = (unsigned 整数 *)stack;
   stackp = (char *)(regp + 8);
   regused = 0;
 
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
+  もし (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
     struct_value_ptr = ecif->rvalue;
-  else
+  否则
     struct_value_ptr = NULL;
 
   p_argv = ecif->avalue;
 
-  for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; i != 0; i--, p_arg++)
+  ために (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
       unsigned short t, a;
@@ -107,32 +107,32 @@ ffi_prep_args (void *stack, extended_cif *ecif)
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      もし (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
+	  もし (z == sizeof (整数) && a == sizeof (整数) && regused < 8)
 	    argp = (char *)regp;
-	  else
+	  否则
 	    argp = stackp;
 	}
-      else
+      否则
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  もし (z > sizeof (整数) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      もし (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
+	  もし (regused < 8)
 	    argp = (char *)regp;
-	  else
+	  否则
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      もし (argp == stackp && a > sizeof (整数))
 	{
 	  stackp = (char *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
@@ -141,19 +141,19 @@ ffi_prep_args (void *stack, extended_cif *ecif)
       switch (t)
 	{
 	case FFI_TYPE_SINT8:
-	  *(signed int *) argp = (signed int) *(SINT8 *) *p_argv;
+	  *(signed 整数 *) argp = (signed 整数) *(SINT8 *) *p_argv;
 	  break;
 
 	case FFI_TYPE_UINT8:
-	  *(unsigned int *) argp = (unsigned int) *(UINT8 *) *p_argv;
+	  *(unsigned 整数 *) argp = (unsigned 整数) *(UINT8 *) *p_argv;
 	  break;
 
 	case FFI_TYPE_SINT16:
-	  *(signed int *) argp = (signed int) *(SINT16 *) *p_argv;
+	  *(signed 整数 *) argp = (signed 整数) *(SINT16 *) *p_argv;
 	  break;
 
 	case FFI_TYPE_UINT16:
-	  *(unsigned int *) argp = (unsigned int) *(UINT16 *) *p_argv;
+	  *(unsigned 整数 *) argp = (unsigned 整数) *(UINT16 *) *p_argv;
 	  break;
 
 	case FFI_TYPE_INT:
@@ -161,7 +161,7 @@ ffi_prep_args (void *stack, extended_cif *ecif)
 	case FFI_TYPE_UINT32:
 	case FFI_TYPE_SINT32:
 	case FFI_TYPE_POINTER:
-	  *(unsigned int *) argp = *(unsigned int *) *p_argv;
+	  *(unsigned 整数 *) argp = *(unsigned 整数 *) *p_argv;
 	  break;
 
 	case FFI_TYPE_DOUBLE:
@@ -176,23 +176,23 @@ ffi_prep_args (void *stack, extended_cif *ecif)
 	}
 
       /* Align if necessary.  */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      もし ((sizeof (整数) - 1) & z)
+	z = FFI_ALIGN(z, sizeof (整数));
 
       p_argv++;
 
       /* Be careful, once all registers are filled, and about to continue
          on stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      もし (argp == (char *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / sizeof (整数);
+	  regused += z / sizeof (整数);
 	}
-      else
+      否则
 	stackp += z;
     }
 
-  return struct_value_ptr;
+  戻る struct_value_ptr;
 }
 
 /* Perform machine dependent cif processing */
@@ -207,10 +207,10 @@ ffi_prep_cif_machdep (ffi_cif *cif)
       break;
 
     case FFI_TYPE_STRUCT:
-      if (cif->rtype->size == sizeof (int) &&
-	  cif->rtype->alignment == sizeof (int))
+      もし (cif->rtype->size == sizeof (整数) &&
+	  cif->rtype->alignment == sizeof (整数))
 	cif->flags = CIF_FLAGS_INT;
-      else
+      否则
 	cif->flags = 0;
       break;
 
@@ -225,7 +225,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
       break;
     }
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 void
@@ -239,12 +239,12 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
   /* If the return value is a struct and we don't have a return value
      address then we need to make one.  */
 
-  if (rvalue == NULL
+  もし (rvalue == NULL
       && cif->rtype->type == FFI_TYPE_STRUCT
-      && (cif->rtype->size != sizeof (int)
-	  || cif->rtype->alignment != sizeof (int)))
+      && (cif->rtype->size != sizeof (整数)
+	  || cif->rtype->alignment != sizeof (整数)))
     ecif.rvalue = alloca (cif->rtype->size);
-  else
+  否则
     ecif.rvalue = rvalue;
 
   switch (cif->abi)
@@ -264,20 +264,20 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  */
 
 static void
-ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
+ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned 整数 *regp,
 			    char *stackp)
 {
-  unsigned int i;
+  unsigned 整数 i;
   void **p_argv;
   char *argp;
-  unsigned int regused;
+  unsigned 整数 regused;
   ffi_type **p_arg;
 
   regused = 0;
 
   p_argv = avalue;
 
-  for (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
+  ために (i = cif->nargs, p_arg = cif->arg_types; i != 0; i--, p_arg++)
     {
       size_t z;
       unsigned short t, a;
@@ -293,62 +293,62 @@ ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
        * than 64 bits, or structs the exact size of a register and aligned to
        * the size of a register.
        */
-      if (t == FFI_TYPE_STRUCT)
+      もし (t == FFI_TYPE_STRUCT)
 	{
-	  if (z == sizeof (int) && a == sizeof (int) && regused < 8)
+	  もし (z == sizeof (整数) && a == sizeof (整数) && regused < 8)
 	    argp = (char *)regp;
-	  else
+	  否则
 	    argp = stackp;
 	}
-      else
+      否则
 	{
-	  if (z > sizeof (int) && regused < 8 - 1)
+	  もし (z > sizeof (整数) && regused < 8 - 1)
 	    {
 	      /* align to an even register pair */
-	      if (regused & 1)
+	      もし (regused & 1)
 		{
 		  regp++;
 		  regused++;
 		}
 	    }
-	  if (regused < 8)
+	  もし (regused < 8)
 	    argp = (char *)regp;
-	  else
+	  否则
 	    argp = stackp;
 	}
 
       /* Enforce proper stack alignment of 64-bit types */
-      if (argp == stackp && a > sizeof (int))
+      もし (argp == stackp && a > sizeof (整数))
 	{
 	  stackp = (char *) FFI_ALIGN(stackp, a);
 	  argp = stackp;
 	}
 
-      if (z < sizeof (int) && t != FFI_TYPE_STRUCT)
-	*p_argv = (void *) (argp + sizeof (int) - z);
-      else
+      もし (z < sizeof (整数) && t != FFI_TYPE_STRUCT)
+	*p_argv = (void *) (argp + sizeof (整数) - z);
+      否则
 	*p_argv = (void *) argp;
 
       /* Align if necessary */
-      if ((sizeof (int) - 1) & z)
-	z = FFI_ALIGN(z, sizeof (int));
+      もし ((sizeof (整数) - 1) & z)
+	z = FFI_ALIGN(z, sizeof (整数));
 
       p_argv++;
 
       /* Be careful, once all registers are exhausted, and about to fetch from
 	 stack, regp == stackp.  Therefore the check for regused as well. */
-      if (argp == (char *)regp && regused < 8)
+      もし (argp == (char *)regp && regused < 8)
 	{
-	  regp += z / sizeof (int);
-	  regused += z / sizeof (int);
+	  regp += z / sizeof (整数);
+	  regused += z / sizeof (整数);
 	}
-      else
+      否则
 	stackp += z;
     }
 }
 
-unsigned int
-ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned int *regp,
+unsigned 整数
+ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned 整数 *regp,
 			char *stackp)
 {
   ffi_cif *cif;
@@ -361,7 +361,7 @@ ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned int *regp,
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
-  return cif->flags;
+  戻る cif->flags;
 }
 
 ffi_status
@@ -369,32 +369,32 @@ ffi_prep_closure_loc (ffi_closure* closure, ffi_cif* cif,
 		      void (*fun)(ffi_cif*,void*,void**,void*),
 		      void *user_data, void *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) codeloc;
+  unsigned 整数 *tramp = (unsigned 整数 *) codeloc;
   void *fn;
 
   FFI_ASSERT (cif->abi == FFI_OBSD);
 
-  if (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
+  もし (cif->rtype->type == FFI_TYPE_STRUCT && !cif->flags)
     fn = &ffi_closure_struct_OBSD;
-  else
+  否则
     fn = &ffi_closure_OBSD;
 
   /* or.u %r10, %r0, %hi16(fn) */
-  tramp[0] = 0x5d400000 | (((unsigned int)fn) >> 16);
+  tramp[0] = 0x5d400000 | (((unsigned 整数)fn) >> 16);
   /* or.u %r13, %r0, %hi16(closure) */
-  tramp[1] = 0x5da00000 | ((unsigned int)closure >> 16);
+  tramp[1] = 0x5da00000 | ((unsigned 整数)closure >> 16);
   /* or %r10, %r10, %lo16(fn) */
-  tramp[2] = 0x594a0000 | (((unsigned int)fn) & 0xffff);
+  tramp[2] = 0x594a0000 | (((unsigned 整数)fn) & 0xffff);
   /* jmp.n %r10 */
   tramp[3] = 0xf400c40a;
   /* or %r13, %r13, %lo16(closure) */
-  tramp[4] = 0x59ad0000 | ((unsigned int)closure & 0xffff);
+  tramp[4] = 0x59ad0000 | ((unsigned 整数)closure & 0xffff);
 
-  ffi_cacheflush_OBSD((unsigned int)codeloc, FFI_TRAMPOLINE_SIZE);
+  ffi_cacheflush_OBSD((unsigned 整数)codeloc, FFI_TRAMPOLINE_SIZE);
 
   closure->cif  = cif;
   closure->user_data = user_data;
   closure->fun  = fun;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }

@@ -19,7 +19,7 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
-#if defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
+#もし defined(__aarch64__) || defined(__arm64__)|| defined (_M_ARM64)
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -35,11 +35,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#もし FFI_TYPE_DOUBLE != FFI_TYPE_LONGDOUBLE
+# もし FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#否则
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
@@ -61,7 +61,7 @@ struct call_context
   UINT64 x[N_X_ARG_REG];
 };
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#もし FFI_EXEC_TRAMPOLINE_TABLE
 
 #ifdef __MACH__
 #ifdef HAVE_ARM64E_PTRAUTH
@@ -70,22 +70,22 @@ struct call_context
 #include <mach/vm_param.h>
 #endif
 
-#else
+#否则
 
-#if defined (__clang__) && defined (__APPLE__)
+#もし defined (__clang__) && defined (__APPLE__)
 extern void sys_icache_invalidate (void *start, size_t len);
 #endif
 
 static inline void
 ffi_clear_cache (void *start, void *end)
 {
-#if defined (__clang__) && defined (__APPLE__)
+#もし defined (__clang__) && defined (__APPLE__)
   sys_icache_invalidate (start, (char *)end - (char *)start);
 #elif defined (__GNUC__)
   __builtin___clear_cache (start, end);
 #elif defined (_WIN32)
   FlushInstructionCache(GetCurrentProcess(), start, (char*)end - (char*)start);
-#else
+#否则
 #error "Missing builtin to flush instruction cache"
 #endif
 }
@@ -96,40 +96,40 @@ ffi_clear_cache (void *start, void *end)
    to map a vector register width (8 or 16 bytes) onto the D-/Q-register
    AARCH64_RET_* encoding.  */
 
-static int
-intlog2 (int n)
+static 整数
+intlog2 (整数 n)
 {
-  int level = 0;
-  while (n >>= 1)
+  整数 level = 0;
+  ながら (n >>= 1)
     ++level;
-  return level;
+  戻る level;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return the type code
    of the first non-structure element.  Recurse for structure elements.
    Return -1 if the structure is in fact empty, i.e. no nested elements.  */
 
-static int
+static 整数
 is_hfa0 (const ffi_type *ty)
 {
   ffi_type **elements = ty->elements;
-  int i, ret = -1;
+  整数 i, ret = -1;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  もし (elements != NULL)
+    ために (i = 0; elements[i]; ++i)
       {
         ret = elements[i]->type;
-        if (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
+        もし (ret == FFI_TYPE_STRUCT || ret == FFI_TYPE_VECTOR
 	    || ret == FFI_TYPE_COMPLEX)
           {
             ret = is_hfa0 (elements[i]);
-            if (ret < 0)
+            もし (ret < 0)
               continue;
           }
         break;
       }
 
-  return ret;
+  戻る ret;
 }
 
 /* A subroutine of is_vfp_type.  Return the size in bytes of the vector (SIMD)
@@ -141,48 +141,48 @@ static size_t
 is_simd (const ffi_type *ty)
 {
   ffi_type **elements;
-  int i;
+  整数 i;
 
-  if (ty->type == FFI_TYPE_VECTOR)
-    return ty->size;
+  もし (ty->type == FFI_TYPE_VECTOR)
+    戻る ty->size;
 
   elements = ty->elements;
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  もし (elements != NULL)
+    ために (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
+        整数 t = elements[i]->type;
+        もし (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX
 	    || t == FFI_TYPE_VECTOR)
-          return is_simd (elements[i]);
+          戻る is_simd (elements[i]);
       }
 
-  return 0;
+  戻る 0;
 }
 
 /* A subroutine of is_vfp_type.  Given a structure type, return true if all
    of the non-structure elements are the same as CANDIDATE.  */
 
-static int
-is_hfa1 (const ffi_type *ty, int candidate)
+static 整数
+is_hfa1 (const ffi_type *ty, 整数 candidate)
 {
   ffi_type **elements = ty->elements;
-  int i;
+  整数 i;
 
-  if (elements != NULL)
-    for (i = 0; elements[i]; ++i)
+  もし (elements != NULL)
+    ために (i = 0; elements[i]; ++i)
       {
-        int t = elements[i]->type;
-        if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+        整数 t = elements[i]->type;
+        もし (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	    || t == FFI_TYPE_COMPLEX)
           {
-            if (!is_hfa1 (elements[i], candidate))
-              return 0;
+            もし (!is_hfa1 (elements[i], candidate))
+              戻る 0;
           }
-        else if (t != candidate)
-          return 0;
+        否则 もし (t != candidate)
+          戻る 0;
       }
 
-  return 1;
+  戻る 1;
 }
 
 /* Determine if TY may be allocated to the FP registers.  This is both an
@@ -193,11 +193,11 @@ is_hfa1 (const ffi_type *ty, int candidate)
    Returns non-zero iff TY is an HFA.  The result is the AARCH64_RET_*
    constant for the type.  */
 
-static int
+static 整数
 is_vfp_type (const ffi_type *ty)
 {
   ffi_type **elements;
-  int candidate, i;
+  整数 candidate, i;
   size_t size, ele_count, simd_size;
 
   /* Quickest tests first.  */
@@ -205,7 +205,7 @@ is_vfp_type (const ffi_type *ty)
   switch (candidate)
     {
     default:
-      return 0;
+      戻る 0;
     case FFI_TYPE_FLOAT:
     case FFI_TYPE_DOUBLE:
     case FFI_TYPE_LONGDOUBLE:
@@ -221,7 +221,7 @@ is_vfp_type (const ffi_type *ty)
 	  ele_count = 2;
 	  goto done;
 	}
-      return 0;
+      戻る 0;
     case FFI_TYPE_STRUCT:
     case FFI_TYPE_VECTOR:
       break;
@@ -229,8 +229,8 @@ is_vfp_type (const ffi_type *ty)
 
   /* No HFA/HVA types are smaller than 4 bytes, or larger than 64 bytes.  */
   size = ty->size;
-  if (size < 4 || size > 64)
-    return 0;
+  もし (size < 4 || size > 64)
+    戻る 0;
 
   /* Determine the width of the vector (SIMD) member, if any: 0 for a plain
      floating-point HFA, else the size in bytes of one Neon register slot.  */
@@ -239,18 +239,18 @@ is_vfp_type (const ffi_type *ty)
   /* Find the type of the first non-aggregate member.  */
   elements = ty->elements;
   candidate = elements[0]->type;
-  if (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
+  もし (candidate == FFI_TYPE_STRUCT || candidate == FFI_TYPE_VECTOR
       || candidate == FFI_TYPE_COMPLEX)
     {
-      for (i = 0; ; ++i)
+      ために (i = 0; ; ++i)
         {
           candidate = is_hfa0 (elements[i]);
-          if (candidate >= 0)
+          もし (candidate >= 0)
             break;
         }
     }
 
-  if (simd_size)
+  もし (simd_size)
     {
       /* Vector or homogeneous vector aggregate (HVA).  A single Neon slot is
 	 at most 16 bytes (a Q register).  A bare vector wider than 16 bytes
@@ -262,49 +262,49 @@ is_vfp_type (const ffi_type *ty)
 	 unlike the floating-point HFA path below, CANDIDATE is used only to
 	 confirm the lanes are homogeneous.  */
       size_t reg_size = simd_size;
-      int num_registers;
-      int first_level_element_type;
+      整数 num_registers;
+      整数 first_level_element_type;
 
       /* A Neon register slot is an S (4B), D (8B) or Q (16B).  A lane narrower
 	 than 4 bytes has no short-vector register class under AAPCS64 and would
 	 map below AARCH64_RET_S4, making extend_hfa_type() branch before its
 	 jump table; reject it and let the generic aggregate path handle it.  */
-      if (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
-	return 0;
-      num_registers = (int) (size / reg_size);
-      if (num_registers > 4)
-	return 0;
+      もし (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
+	戻る 0;
+      num_registers = (整数) (size / reg_size);
+      もし (num_registers > 4)
+	戻る 0;
 
       /* For an aggregate, every member must itself be a vector (or nested
 	 vector aggregate) of the same register width: this rejects a struct
 	 that mixes a bare scalar with a vector even when the scalar's type
 	 matches the vector's lane type.  A bare vector needs no such check --
 	 its lanes were validated when its layout was computed.  */
-      if (ty->type != FFI_TYPE_VECTOR)
-	for (i = 0; elements[i]; ++i)
-	  if (is_simd (elements[i]) != reg_size)
-	    return 0;
+      もし (ty->type != FFI_TYPE_VECTOR)
+	ために (i = 0; elements[i]; ++i)
+	  もし (is_simd (elements[i]) != reg_size)
+	    戻る 0;
 
       /* Every lane must be the identical scalar type across the whole HVA
 	 (this rejects, e.g., an aggregate mixing float and integer vectors).  */
-      for (i = 0; elements[i]; ++i)
+      ために (i = 0; elements[i]; ++i)
 	{
-	  int t = elements[i]->type;
-	  if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
+	  整数 t = elements[i]->type;
+	  もし (t == FFI_TYPE_STRUCT || t == FFI_TYPE_VECTOR
 	      || t == FFI_TYPE_COMPLEX)
 	    {
-	      if (!is_hfa1 (elements[i], candidate))
-		return 0;
+	      もし (!is_hfa1 (elements[i], candidate))
+		戻る 0;
 	    }
-	  else if (t != candidate)
-	    return 0;
+	  否则 もし (t != candidate)
+	    戻る 0;
 	}
 
       /* Reuse the AARCH64_RET_{S,D,Q}* codes, which are laid out as
 	 (type * 4) + (4 - count) with FLOAT->S(4B), DOUBLE->D(8B),
 	 LONGDOUBLE->Q(16B).  Map the register width onto that type axis.  */
-      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((int) reg_size) - 2;
-      return first_level_element_type * 4 + (4 - num_registers);
+      first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((整数) reg_size) - 2;
+      戻る first_level_element_type * 4 + (4 - num_registers);
     }
 
   /* If the first member is not a floating point type, it's not an HFA.
@@ -313,41 +313,41 @@ is_vfp_type (const ffi_type *ty)
     {
     case FFI_TYPE_FLOAT:
       ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
-        return 0;
+      もし (size != ele_count * sizeof(float))
+        戻る 0;
       break;
     case FFI_TYPE_DOUBLE:
       ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
-        return 0;
+      もし (size != ele_count * sizeof(double))
+        戻る 0;
       break;
     case FFI_TYPE_LONGDOUBLE:
       ele_count = size / sizeof(long double);
-      if (size != ele_count * sizeof(long double))
-        return 0;
+      もし (size != ele_count * sizeof(long double))
+        戻る 0;
       break;
     default:
-      return 0;
+      戻る 0;
     }
-  if (ele_count > 4)
-    return 0;
+  もし (ele_count > 4)
+    戻る 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
-  for (i = 0; elements[i]; ++i)
+  ために (i = 0; elements[i]; ++i)
     {
-      int t = elements[i]->type;
-      if (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
+      整数 t = elements[i]->type;
+      もし (t == FFI_TYPE_STRUCT || t == FFI_TYPE_COMPLEX)
         {
-          if (!is_hfa1 (elements[i], candidate))
-            return 0;
+          もし (!is_hfa1 (elements[i], candidate))
+            戻る 0;
         }
-      else if (t != candidate)
-        return 0;
+      否则 もし (t != candidate)
+        戻る 0;
     }
 
   /* All tests succeeded.  Encode the result.  */
  done:
-  return candidate * 4 + (4 - (int)ele_count);
+  戻る candidate * 4 + (4 - (整数)ele_count);
 }
 
 /* Representation of the procedure call argument marshalling
@@ -367,7 +367,7 @@ struct arg_state
   size_t nsaa;                  /* Next stack offset. */
   size_t next_struct_area;	/* Place to allocate big structs. */
 
-#if defined (__APPLE__)
+#もし defined (__APPLE__)
   unsigned allocating_variadic;
 #endif
 };
@@ -380,7 +380,7 @@ arg_init (struct arg_state *state, size_t size)
   state->nsrn = 0;
   state->nsaa = 0;
   state->next_struct_area = size;
-#if defined (__APPLE__)
+#もし defined (__APPLE__)
   state->allocating_variadic = 0;
 #endif
 }
@@ -394,18 +394,18 @@ allocate_to_stack (struct arg_state *state, void *stack,
 
   /* Round up the NSAA to the larger of 8 or the natural
      alignment of the argument's type.  */
-#if defined (__APPLE__)
-  if (state->allocating_variadic && alignment < 8)
+#もし defined (__APPLE__)
+  もし (state->allocating_variadic && alignment < 8)
     alignment = 8;
-#else
-  if (alignment < 8)
+#否则
+  もし (alignment < 8)
     alignment = 8;
 #endif
 
   nsaa = FFI_ALIGN (nsaa, alignment);
   state->nsaa = nsaa + size;
 
-  return (char *)stack + nsaa;
+  戻る (char *)stack + nsaa;
 }
 
 /* Allocate and copy a structure that is passed by value on the stack and
@@ -420,11 +420,11 @@ allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
   dest = FFI_ALIGN_DOWN (dest, alignment);
   state->next_struct_area = dest;
 
-  return memcpy ((char *) stack + dest, value, size);
+  戻る memcpy ((char *) stack + dest, value, size);
 }
 
 static ffi_arg
-extend_integer_type (void *source, int type)
+extend_integer_type (void *source, 整数 type)
 {
   switch (type)
     {
@@ -432,62 +432,62 @@ extend_integer_type (void *source, int type)
       {
         UINT8 u8;
         memcpy (&u8, source, sizeof (u8));
-        return u8;
+        戻る u8;
       }
     case FFI_TYPE_SINT8:
       {
         SINT8 s8;
         memcpy (&s8, source, sizeof (s8));
-        return s8;
+        戻る s8;
       }
     case FFI_TYPE_UINT16:
       {
         UINT16 u16;
         memcpy (&u16, source, sizeof (u16));
-        return u16;
+        戻る u16;
       }
     case FFI_TYPE_SINT16:
       {
         SINT16 s16;
         memcpy (&s16, source, sizeof (s16));
-        return s16;
+        戻る s16;
       }
     case FFI_TYPE_UINT32:
       {
         UINT32 u32;
         memcpy (&u32, source, sizeof (u32));
-        return u32;
+        戻る u32;
       }
     case FFI_TYPE_INT:
     case FFI_TYPE_SINT32:
       {
         SINT32 s32;
         memcpy (&s32, source, sizeof (s32));
-        return s32;
+        戻る s32;
       }
     case FFI_TYPE_UINT64:
     case FFI_TYPE_SINT64:
       {
         UINT64 u64;
         memcpy (&u64, source, sizeof (u64));
-        return u64;
+        戻る u64;
       }
     case FFI_TYPE_POINTER:
       {
         uintptr_t uptr;
         memcpy (&uptr, source, sizeof (uptr));
-        return uptr;
+        戻る uptr;
       }
     default:
       abort();
     }
 }
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void extend_hfa_type (void *dest, void *src, int h);
-#else
+#もし defined(_MSC_VER) && !defined(__clang__)
+void extend_hfa_type (void *dest, void *src, 整数 h);
+#否则
 static void
-extend_hfa_type (void *dest, void *src, int h)
+extend_hfa_type (void *dest, void *src, 整数 h)
 {
   ptrdiff_t f = h - AARCH64_RET_S4;
   void *x0;
@@ -554,18 +554,18 @@ extend_hfa_type (void *dest, void *src, int h)
 }
 #endif
 
-#if defined(_MSC_VER) && !defined(__clang__)
-void* compress_hfa_type (void *dest, void *src, int h);
-#else
+#もし defined(_MSC_VER) && !defined(__clang__)
+void* compress_hfa_type (void *dest, void *src, 整数 h);
+#否则
 static void *
-compress_hfa_type (void *dest, void *reg, int h)
+compress_hfa_type (void *dest, void *reg, 整数 h)
 {
   switch (h)
     {
     case AARCH64_RET_S1:
-      if (dest == reg)
-	return (char *)dest + BE (12);
-      else
+      もし (dest == reg)
+	戻る (char *)dest + BE (12);
+      否则
 	*(float *)dest = *(float *)((char *)reg + BE (12));
       break;
     case AARCH64_RET_S2:
@@ -587,9 +587,9 @@ compress_hfa_type (void *dest, void *reg, int h)
       break;
 
     case AARCH64_RET_D1:
-      if (dest == reg)
-	return (char *)dest + BE (8);
-      else
+      もし (dest == reg)
+	戻る (char *)dest + BE (8);
+      否则
 	*(double *)dest = *(double *)((char *)reg + BE (8));
       break;
     case AARCH64_RET_D2:
@@ -611,11 +611,11 @@ compress_hfa_type (void *dest, void *reg, int h)
       break;
 
     default:
-      if (dest != reg)
-	return memcpy (dest, reg, 16 * (4 - (h & 3)));
+      もし (dest != reg)
+	戻る memcpy (dest, reg, 16 * (4 - (h & 3)));
       break;
     }
-  return dest;
+  戻る dest;
 }
 #endif
 
@@ -628,11 +628,11 @@ allocate_int_to_reg_or_stack (struct call_context *context,
 			      struct arg_state *state,
 			      void *stack, size_t size)
 {
-  if (state->ngrn < N_X_ARG_REG)
-    return (char *)&context->x[state->ngrn++] + BE (sizeof (UINT64) - size);
+  もし (state->ngrn < N_X_ARG_REG)
+    戻る (char *)&context->x[state->ngrn++] + BE (sizeof (UINT64) - size);
 
   state->ngrn = N_X_ARG_REG;
-  return (char *)allocate_to_stack (state, stack, size, size)
+  戻る (char *)allocate_to_stack (state, stack, size, size)
 	 + BE (sizeof (UINT64) - size);
 }
 
@@ -650,18 +650,18 @@ allocate_int128_to_reg_or_stack (struct call_context *context,
 
   /* The value must fit entirely in registers, i.e. the low half may
      not be allocated to x7 with the high half spilled to the stack.  */
-  if (ngrn + 2 <= N_X_ARG_REG)
+  もし (ngrn + 2 <= N_X_ARG_REG)
     {
       ret = &context->x[ngrn];
       ngrn += 2;
     }
-  else
+  否则
     {
       ret = allocate_to_stack (state, stack, 16, 16);
       ngrn = N_X_ARG_REG;
     }
   state->ngrn = ngrn;
-  return ret;
+  戻る ret;
 }
 
 ffi_status FFI_HIDDEN
@@ -669,7 +669,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
   size_t bytes = cif->bytes;
-  int flags, i, n;
+  整数 flags, i, n;
 
   switch (rtype->type)
     {
@@ -715,19 +715,19 @@ ffi_prep_cif_machdep (ffi_cif *cif)
     case FFI_TYPE_VECTOR:
     case FFI_TYPE_COMPLEX:
       flags = is_vfp_type (rtype);
-      if (flags == 0)
+      もし (flags == 0)
 	{
 	  size_t s = rtype->size;
-	  if (s > 16)
+	  もし (s > 16)
 	    {
 	      flags = AARCH64_RET_VOID | AARCH64_RET_IN_MEM;
 	      bytes += 8;
 	    }
-	  else if (s == 16)
+	  否则 もし (s == 16)
 	    flags = AARCH64_RET_INT128;
-	  else if (s == 8)
+	  否则 もし (s == 8)
 	    flags = AARCH64_RET_INT64;
-	  else
+	  否则
 	    flags = AARCH64_RET_INT128 | AARCH64_RET_NEED_COPY;
 	}
       break;
@@ -736,8 +736,8 @@ ffi_prep_cif_machdep (ffi_cif *cif)
       abort();
     }
 
-  for (i = 0, n = cif->nargs; i < n; i++)
-    if (is_vfp_type (cif->arg_types[i]))
+  ために (i = 0, n = cif->nargs; i < n; i++)
+    もし (is_vfp_type (cif->arg_types[i]))
       {
 	flags |= AARCH64_FLAG_ARG_V;
 	break;
@@ -753,45 +753,45 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      already-spilled pointer with the copied payload bytes.  Reserve an
      extra 8 bytes per such argument so the slab is always large enough
      for both.  */
-  for (i = 0, n = cif->nargs; i < n; i++)
+  ために (i = 0, n = cif->nargs; i < n; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      if (ty->size > 16 && !is_vfp_type (ty))
+      もし (ty->size > 16 && !is_vfp_type (ty))
 	bytes += 8;
     }
 
   /* Round the stack up to a multiple of the stack alignment requirement. */
   cif->bytes = (unsigned) FFI_ALIGN(bytes, 16);
   cif->flags = flags;
-#if defined (__APPLE__)
+#もし defined (__APPLE__)
   cif->aarch64_nfixedargs = 0;
 #endif
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
-#if defined (__APPLE__)
+#もし defined (__APPLE__)
 /* Perform Apple-specific cif processing for variadic calls */
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs,
-			 unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned 整数 nfixedargs,
+			 unsigned 整数 ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->aarch64_nfixedargs = nfixedargs;
-  return status;
+  戻る status;
 }
-#else
+#否则
 ffi_status FFI_HIDDEN
-ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned int nfixedargs, unsigned int ntotalargs)
+ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned 整数 nfixedargs, unsigned 整数 ntotalargs)
 {
   ffi_status status = ffi_prep_cif_machdep (cif);
   cif->flags |= AARCH64_FLAG_VARARG;
-  return status;
+  戻る status;
 }
 #endif /* __APPLE__ */
 
 extern void ffi_call_SYSV (struct call_context *context, void *frame,
-			   void (*fn)(void), void *rvalue, int flags,
+			   void (*fn)(void), void *rvalue, 整数 flags,
 			   void *closure) FFI_HIDDEN;
 
 /* Call a function with the provided arguments and capture the return
@@ -807,7 +807,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
   void *stack, *frame, *rvalue;
   struct arg_state state;
   size_t stack_bytes, rtype_size, rsize;
-  int i, nargs, flags, isvariadic = 0;
+  整数 i, nargs, flags, isvariadic = 0;
   ffi_type *rtype;
 
   flags = cif->flags;
@@ -815,7 +815,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
   rtype_size = rtype->size;
   stack_bytes = cif->bytes;
 
-  if (flags & AARCH64_FLAG_VARARG)
+  もし (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
@@ -825,14 +825,14 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
      then we cannot allow a null rvalue.  Otherwise, mash a null
      rvalue to void return type.  */
   rsize = 0;
-  if (flags & AARCH64_RET_IN_MEM)
+  もし (flags & AARCH64_RET_IN_MEM)
     {
-      if (orig_rvalue == NULL)
+      もし (orig_rvalue == NULL)
 	rsize = rtype_size;
     }
-  else if (orig_rvalue == NULL)
+  否则 もし (orig_rvalue == NULL)
     flags &= AARCH64_FLAG_ARG_V;
-  else if (flags & AARCH64_RET_NEED_COPY)
+  否则 もし (flags & AARCH64_RET_NEED_COPY)
     rsize = 16;
 
   /* Allocate consecutive stack for everything we'll need.
@@ -843,12 +843,12 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
   rvalue = (rsize ? (void*)((uintptr_t)frame + 40) : orig_rvalue);
 
   arg_init (&state, stack_bytes);
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  ために (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t s = ty->size;
       void *a = avalue[i];
-      int h, t;
+      整数 h, t;
       void *dest;
 
       t = ty->type;
@@ -873,9 +873,9 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 	do_pointer:
 	  {
 	    ffi_arg ext = extend_integer_type (a, t);
-	    if (state.ngrn < N_X_ARG_REG)
+	    もし (state.ngrn < N_X_ARG_REG)
 	      context->x[state.ngrn++] = ext;
-	    else
+	    否则
 	      {
 		void *d = allocate_to_stack (&state, stack, ty->alignment, s);
 		state.ngrn = N_X_ARG_REG;
@@ -884,7 +884,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 		   only enough space. */
 #ifdef __APPLE__
 		memcpy(d, a, s);
-#else
+#否则
 		*(ffi_arg *)d = ext;
 #endif
 	      }
@@ -905,12 +905,12 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 	case FFI_TYPE_COMPLEX:
 	  {
 	    h = is_vfp_type (ty);
-	    if (h)
+	    もし (h)
 	      {
-              int elems = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              整数 elems = 4 - (h & 3);
+              もし (cif->abi == FFI_WIN64 && isvariadic)
               {
-                if (state.ngrn + elems <= N_X_ARG_REG)
+                もし (state.ngrn + elems <= N_X_ARG_REG)
                 {
                   dest = &context->x[state.ngrn];
                   state.ngrn += elems;
@@ -920,9 +920,9 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
                 state.nsrn = N_X_ARG_REG;
                 dest = allocate_to_stack(&state, stack, ty->alignment, s);
               }
-              else
+              否则
               {
-                if (state.nsrn + elems <= N_V_ARG_REG)
+                もし (state.nsrn + elems <= N_V_ARG_REG)
                 {
                   dest = &context->v[state.nsrn];
                   state.nsrn += elems;
@@ -934,7 +934,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
                        + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
               }
 	      }
-	    else if (s > 16)
+	    否则 もし (s > 16)
 	      {
 		/* If the argument is a composite type that is larger than 16
 		   bytes, then the argument is copied to memory, and
@@ -947,19 +947,19 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 		s = sizeof (void *);
 		goto do_pointer;
 	      }
-	    else
+	    否则
 	      {
 		size_t n = (s + 7) / 8;
-		if (state.ngrn + n <= N_X_ARG_REG)
+		もし (state.ngrn + n <= N_X_ARG_REG)
 		  {
 		    /* If the argument is a composite type and the size in
 		       double-words is not more than the number of available
 		       X registers, then the argument is copied into
 		       consecutive X registers.  */
 		    dest = &context->x[state.ngrn];
-                    state.ngrn += (unsigned int)n;
+                    state.ngrn += (unsigned 整数)n;
 		  }
-		else
+		否则
 		  {
 		    /* Otherwise, there are insufficient X registers. Further
 		       X register allocations are prevented, the NSAA is
@@ -977,8 +977,8 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 	  abort();
 	}
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#もし defined (__APPLE__)
+      もし (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
@@ -989,7 +989,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 
   ffi_call_SYSV (context, frame, fn, rvalue, flags, closure);
 
-  if (flags & AARCH64_RET_NEED_COPY)
+  もし (flags & AARCH64_RET_NEED_COPY)
     memcpy (orig_rvalue, rvalue, rtype_size);
 }
 
@@ -999,7 +999,7 @@ ffi_call (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue)
   ffi_call_int (cif, fn, rvalue, avalue, NULL);
 }
 
-#if FFI_CLOSURES
+#もし FFI_CLOSURES
 
 #ifdef FFI_GO_CLOSURES
 void
@@ -1014,7 +1014,7 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
 
 extern void ffi_closure_SYSV (void) FFI_HIDDEN;
 extern void ffi_closure_SYSV_V (void) FFI_HIDDEN;
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#もし defined(FFI_EXEC_STATIC_TRAMP)
 extern void ffi_closure_SYSV_alt (void) FFI_HIDDEN;
 extern void ffi_closure_SYSV_V_alt (void) FFI_HIDDEN;
 #endif
@@ -1026,17 +1026,17 @@ ffi_prep_closure_loc (ffi_closure *closure,
                       void *user_data,
                       void *codeloc)
 {
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    戻る FFI_BAD_ABI;
 
   void (*start)(void);
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  もし (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_closure_SYSV_V;
-  else
+  否则
     start = ffi_closure_SYSV;
 
-#if FFI_EXEC_TRAMPOLINE_TABLE
+#もし FFI_EXEC_TRAMPOLINE_TABLE
 # ifdef __MACH__
 #  ifdef HAVE_ARM64E_PTRAUTH
   codeloc = ptrauth_auth_data(codeloc, ptrauth_key_function_pointer, 0);
@@ -1045,7 +1045,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
   config[0] = closure;
   config[1] = start;
 # endif
-#else
+#否则
   static const unsigned char trampoline[16] = {
     0x90, 0x00, 0x00, 0x58,	/* ldr	x16, tramp+16	*/
     0xf1, 0xff, 0xff, 0x10,	/* adr	x17, tramp+0	*/
@@ -1053,13 +1053,13 @@ ffi_prep_closure_loc (ffi_closure *closure,
   };
   char *tramp = closure->tramp;
 
-# if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+# もし defined(FFI_EXEC_STATIC_TRAMP)
+  もし (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
-      if (start == ffi_closure_SYSV_V)
+      もし (start == ffi_closure_SYSV_V)
           start = ffi_closure_SYSV_V_alt;
-      else
+      否则
           start = ffi_closure_SYSV_alt;
       ffi_tramp_set_parms (closure->ftramp, start, closure);
       goto out;
@@ -1078,11 +1078,11 @@ ffi_prep_closure_loc (ffi_closure *closure,
   // Not using dlmalloc.c for Windows ARM64 builds
   // so calling ffi_data_to_code_pointer() isn't necessary
   unsigned char *tramp_code = tramp;
-# else
+# 否则
   unsigned char *tramp_code = ffi_data_to_code_pointer (tramp);
 # endif
   ffi_clear_cache (tramp_code, tramp_code + FFI_TRAMPOLINE_SIZE);
-# if defined(FFI_EXEC_STATIC_TRAMP)
+# もし defined(FFI_EXEC_STATIC_TRAMP)
 out:
 # endif
 #endif
@@ -1091,7 +1091,7 @@ out:
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 #ifdef FFI_GO_CLOSURES
@@ -1104,19 +1104,19 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
 {
   void (*start)(void);
 
-  if (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_SYSV && cif->abi != FFI_WIN64)
+    戻る FFI_BAD_ABI;
 
-  if (cif->flags & AARCH64_FLAG_ARG_V)
+  もし (cif->flags & AARCH64_FLAG_ARG_V)
     start = ffi_go_closure_SYSV_V;
-  else
+  否则
     start = ffi_go_closure_SYSV;
 
   closure->tramp = start;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 #endif /* FFI_GO_CLOSURES */
 
@@ -1136,7 +1136,7 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif* cif,
    descriptors, invokes the wrapped function, then marshalls the return
    value back into the call context.  */
 
-int FFI_HIDDEN
+整数 FFI_HIDDEN
 ffi_closure_SYSV_inner (ffi_cif *cif,
 			void (*fun)(ffi_cif*,void*,void**,void*),
 			void *user_data,
@@ -1144,22 +1144,22 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 			void *stack, void *rvalue, void *struct_rvalue)
 {
   void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
-  int i, h, nargs, flags, isvariadic = 0;
+  整数 i, h, nargs, flags, isvariadic = 0;
   struct arg_state state;
 
   arg_init (&state, cif->bytes);
 
   flags = cif->flags;
-  if (flags & AARCH64_FLAG_VARARG)
+  もし (flags & AARCH64_FLAG_VARARG)
   {
     isvariadic = 1;
     flags &= ~AARCH64_FLAG_VARARG;
   }
 
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  ために (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
-      int t = ty->type;
+      整数 t = ty->type;
       size_t n, s = ty->size;
 
       switch (t)
@@ -1193,15 +1193,15 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 	case FFI_TYPE_VECTOR:
 	case FFI_TYPE_COMPLEX:
 	  h = is_vfp_type (ty);
-	  if (h)
+	  もし (h)
 	    {
 	      n = 4 - (h & 3);
-              if (cif->abi == FFI_WIN64 && isvariadic)
+              もし (cif->abi == FFI_WIN64 && isvariadic)
                 {
-                  if (state.ngrn + n <= N_X_ARG_REG)
+                  もし (state.ngrn + n <= N_X_ARG_REG)
                     {
                       void *reg = &context->x[state.ngrn];
-                      state.ngrn += (unsigned int)n;
+                      state.ngrn += (unsigned 整数)n;
 
                       /* Eeek! We need a pointer to the structure, however the
                        homogeneous float elements are being passed in individual
@@ -1212,7 +1212,7 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                        structure into the same memory.  */
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  否则
                     {
                       state.ngrn = N_X_ARG_REG;
                       state.nsrn = N_V_ARG_REG;
@@ -1221,15 +1221,15 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                                   + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
                     }
                 }
-              else
+              否则
                 {
-                  if (state.nsrn + n <= N_V_ARG_REG)
+                  もし (state.nsrn + n <= N_V_ARG_REG)
                     {
                       void *reg = &context->v[state.nsrn];
-                      state.nsrn += (unsigned int)n;
+                      state.nsrn += (unsigned 整数)n;
                       avalue[i] = compress_hfa_type(reg, reg, h);
                     }
-                  else
+                  否则
                     {
                       state.nsrn = N_V_ARG_REG;
                       avalue[i] = (char *)allocate_to_stack (&state, stack,
@@ -1238,7 +1238,7 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                     }
                 }
             }
-          else if (s > 16)
+          否则 もし (s > 16)
             {
               /* Replace Composite type of size greater than 16 with a
                   pointer.  */
@@ -1249,21 +1249,21 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                                                stack, sizeof (void *)),
                   sizeof (UINT64));
              avalue[i] = (void *)(UINT32)avalue_tmp;
-#else
+#否则
               avalue[i] = *(void **)
               allocate_int_to_reg_or_stack (context, &state, stack,
                                          sizeof (void *));
 #endif
             }
-          else
+          否则
             {
               n = (s + 7) / 8;
-              if (state.ngrn + n <= N_X_ARG_REG)
+              もし (state.ngrn + n <= N_X_ARG_REG)
                 {
                   avalue[i] = &context->x[state.ngrn];
-                  state.ngrn += (unsigned int)n;
+                  state.ngrn += (unsigned 整数)n;
                 }
-              else
+              否则
                 {
                   state.ngrn = N_X_ARG_REG;
                   avalue[i] = allocate_to_stack(&state, stack,
@@ -1276,8 +1276,8 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
           abort();
       }
 
-#if defined (__APPLE__)
-      if (i + 1 == cif->aarch64_nfixedargs)
+#もし defined (__APPLE__)
+      もし (i + 1 == cif->aarch64_nfixedargs)
 	{
 	  state.ngrn = N_X_ARG_REG;
 	  state.nsrn = N_V_ARG_REG;
@@ -1286,15 +1286,15 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 #endif
     }
 
-  if (flags & AARCH64_RET_IN_MEM)
+  もし (flags & AARCH64_RET_IN_MEM)
     rvalue = struct_rvalue;
 
   fun (cif, rvalue, avalue, user_data);
 
-  return flags;
+  戻る flags;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#もし defined(FFI_EXEC_STATIC_TRAMP)
 void *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
@@ -1302,7 +1302,7 @@ ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 
   *tramp_size = AARCH64_TRAMP_SIZE;
   *map_size = AARCH64_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  戻る &trampoline_code_table;
 }
 #endif
 

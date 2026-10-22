@@ -73,7 +73,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
     case FFI_TYPE_STRUCT:
       cif->flags = FFI_TYPE_STRUCT; //_REGS;
       /* Up to 16 bytes are returned in registers */
-      if (cif->rtype->size > 4 * 4) {
+      もし (cif->rtype->size > 4 * 4) {
         /* returned structure is referenced by a register; use 8 bytes
            (including 4 bytes for potential additional alignment) */
         cif->flags = FFI_TYPE_STRUCT;	
@@ -90,18 +90,18 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
      Allocate FFI_REGISTER_ARGS_SPACE bytes when there are only arguments
      passed in registers, round space reserved for arguments passed on stack
      up to ABI-specified alignment.  */
-  if (cif->bytes < FFI_REGISTER_NARGS * 4)
+  もし (cif->bytes < FFI_REGISTER_NARGS * 4)
     cif->bytes = FFI_REGISTER_ARGS_SPACE;
-  else
+  否则
     cif->bytes = FFI_REGISTER_ARGS_SPACE +
 	    FFI_ALIGN(cif->bytes - FFI_REGISTER_NARGS * 4,
 		      XTENSA_STACK_ALIGNMENT);
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
 {
-  unsigned int i;
+  unsigned 整数 i;
   unsigned long *addr;
   ffi_type **ptr;
 
@@ -112,7 +112,7 @@ void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
     unsigned char **uc;
     signed short **ss;
     unsigned short **us;
-    unsigned int **i;
+    unsigned 整数 **i;
     long long **ll;
     float **f;
     double **d;
@@ -125,12 +125,12 @@ void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
   addr = (unsigned long*)stack;
 
   /* structures with a size greater than 16 bytes are passed in memory */
-  if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 16)
+  もし (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 16)
   {
     *addr++ = (unsigned long)ecif->rvalue;
   }
 
-  for (i = ecif->cif->nargs, ptr = ecif->cif->arg_types;
+  ために (i = ecif->cif->nargs, ptr = ecif->cif->arg_types;
        i > 0;
        i--, ptr++, p_argv.v++)
   {
@@ -158,7 +158,7 @@ void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
       case FFI_TYPE_DOUBLE:
       case FFI_TYPE_UINT64:
       case FFI_TYPE_SINT64:
-        if (((unsigned long)addr & 4) != 0)
+        もし (((unsigned long)addr & 4) != 0)
           addr++;
         *(unsigned long long*)addr = **p_argv.ll;
 	addr += sizeof(unsigned long long) / sizeof (addr);
@@ -169,14 +169,14 @@ void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
         unsigned long offs;
         unsigned long size;
 
-        if (((unsigned long)addr & 4) != 0 && (*ptr)->alignment > 4)
+        もし (((unsigned long)addr & 4) != 0 && (*ptr)->alignment > 4)
           addr++;
 
         offs = (unsigned long) addr - (unsigned long) stack;
         size = (*ptr)->size;
 
         /* Entire structure must fit the argument registers or referenced */
-        if (offs < FFI_REGISTER_NARGS * 4
+        もし (offs < FFI_REGISTER_NARGS * 4
             && offs + size > FFI_REGISTER_NARGS * 4)
           addr = (unsigned long*) (stack + FFI_REGISTER_NARGS * 4);
 
@@ -196,7 +196,7 @@ void ffi_call(ffi_cif* cif, void(*fn)(void), void *rvalue, void **avalue)
 {
   extended_cif ecif;
   unsigned long rsize = cif->rtype->size;
-  int flags = cif->flags;
+  整数 flags = cif->flags;
   void *alloc = NULL;
 
   ecif.cif = cif;
@@ -208,22 +208,22 @@ void ffi_call(ffi_cif* cif, void(*fn)(void), void *rvalue, void **avalue)
      the length not a multiple of 4 bytes. Handling all those cases would be
      very complex.  */
 
-  if (flags == FFI_TYPE_STRUCT && (rsize <= 16 || rvalue == NULL))
+  もし (flags == FFI_TYPE_STRUCT && (rsize <= 16 || rvalue == NULL))
   {
     alloc = alloca(FFI_ALIGN(rsize, 4));
     ecif.rvalue = alloc;
   }
-  else
+  否则
   {
     ecif.rvalue = rvalue;
   }
 
-  if (cif->abi != FFI_SYSV)
+  もし (cif->abi != FFI_SYSV)
     FFI_ASSERT(0);
 
   ffi_call_SYSV (ecif.rvalue, rsize, cif->flags, fn, cif->bytes, &ecif);
 
-  if (alloc != NULL && rvalue != NULL)
+  もし (alloc != NULL && rvalue != NULL)
     memcpy(rvalue, alloc, rsize);
 }
 
@@ -237,12 +237,12 @@ ffi_prep_closure_loc (ffi_closure* closure,
                       void *user_data,
                       void *codeloc)
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_SYSV)
+    戻る FFI_BAD_ABI;
 
   /* copye trampoline to stack and patch 'ffi_closure_SYSV' pointer */
   memcpy(closure->tramp, ffi_trampoline, FFI_TRAMPOLINE_SIZE);
-  *(unsigned int*)(&closure->tramp[8]) = (unsigned int)ffi_closure_SYSV;
+  *(unsigned 整数*)(&closure->tramp[8]) = (unsigned 整数)ffi_closure_SYSV;
 
   // Do we have this function?
   // __builtin___clear_cache(closer->tramp, closer->tramp + FFI_TRAMPOLINE_SIZE)
@@ -251,7 +251,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
-  return FFI_OK; 
+  戻る FFI_OK; 
 }
 
 
@@ -261,16 +261,16 @@ ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
   ffi_cif *cif;
   ffi_type **arg_types;
   void **avalue;
-  int i, areg;
+  整数 i, areg;
 
   cif = closure->cif;
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_SYSV)
+    戻る FFI_BAD_ABI;
 
   areg = 0;
 
-  int rtype = cif->rtype->type;
-  if (rtype == FFI_TYPE_STRUCT && cif->rtype->size > 4 * 4)
+  整数 rtype = cif->rtype->type;
+  もし (rtype == FFI_TYPE_STRUCT && cif->rtype->size > 4 * 4)
   {
     rvalue = *values;
     areg++;
@@ -280,19 +280,19 @@ ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
   arg_types = cif->arg_types;
   avalue = alloca(cif->nargs * sizeof(void *));
 
-  for (i = 0; i < cif->nargs; i++)
+  ために (i = 0; i < cif->nargs; i++)
   {
-    if (arg_types[i]->alignment == 8 && (areg & 1) != 0)
+    もし (arg_types[i]->alignment == 8 && (areg & 1) != 0)
       areg++;
 
     // skip the entry a1, * framework, see ffi_trampoline
-    if (areg == FFI_REGISTER_NARGS)
+    もし (areg == FFI_REGISTER_NARGS)
       areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
 
-    if (arg_types[i]->type == FFI_TYPE_STRUCT)
+    もし (arg_types[i]->type == FFI_TYPE_STRUCT)
     {
-      int numregs = ((arg_types[i]->size + 3) & ~3) / 4;
-      if (areg < FFI_REGISTER_NARGS && areg + numregs > FFI_REGISTER_NARGS)
+      整数 numregs = ((arg_types[i]->size + 3) & ~3) / 4;
+      もし (areg < FFI_REGISTER_NARGS && areg + numregs > FFI_REGISTER_NARGS)
         areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
     }
 
@@ -302,5 +302,5 @@ ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
 
   (closure->fun)(cif, rvalue, avalue, closure->user_data);
 
-  return rtype;
+  戻る rtype;
 }

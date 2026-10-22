@@ -67,9 +67,9 @@ typedef enum ffi_abi {
 
 #define FFI_CLOSURES 1
 #define FFI_NATIVE_RAW_API 0
-#if defined(PA64_HPUX)
+#もし defined(PA64_HPUX)
 #define FFI_TRAMPOLINE_SIZE 32
-#else
+#否则
 #define FFI_TRAMPOLINE_SIZE 12
 #endif
 
@@ -100,7 +100,7 @@ typedef enum ffi_abi {
 /* Tripwire: when a new generic type is added FFI_TYPE_LAST changes and this
    fires, forcing a review of ffi_prep_cif_machdep and the linux.S / hpux32.S
    jump tables before FFI_PA_TYPE_LAST above is bumped.  */
-#if FFI_TYPE_LAST != FFI_PA_TYPE_LAST
+#もし FFI_TYPE_LAST != FFI_PA_TYPE_LAST
 # error "You likely have broken jump tables"
 #endif
 

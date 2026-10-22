@@ -32,11 +32,11 @@
 
 /* Force FFI_TYPE_LONGDOUBLE to be different than FFI_TYPE_DOUBLE;
    all further uses in this file will refer to the 128-bit type.  */
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
-# if FFI_TYPE_LONGDOUBLE != 4
+#もし FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+# もし FFI_TYPE_LONGDOUBLE != 4
 #  error FFI_TYPE_LONGDOUBLE out of date
 # endif
-#else
+#否则
 # undef FFI_TYPE_LONGDOUBLE
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
@@ -51,29 +51,29 @@
    into one integer.  The size is placed in the low byte, so that align
    and addition work correctly.  The mask is placed in the second byte.  */
 
-static int
-ffi_struct_float_mask (ffi_type *outer_type, int size_mask)
+static 整数
+ffi_struct_float_mask (ffi_type *outer_type, 整数 size_mask)
 {
   ffi_type **elts;
   ffi_type *t;
 
-  if (outer_type->type == FFI_TYPE_COMPLEX)
+  もし (outer_type->type == FFI_TYPE_COMPLEX)
     {
-      int m = 0, tt = outer_type->elements[0]->type;
+      整数 m = 0, tt = outer_type->elements[0]->type;
       size_t z = outer_type->size;
 
-      if (tt == FFI_TYPE_FLOAT
+      もし (tt == FFI_TYPE_FLOAT
 	  || tt == FFI_TYPE_DOUBLE
 	  || tt == FFI_TYPE_LONGDOUBLE)
         m = (1 << (z / 4)) - 1;
-      return (m << 8) | z;
+      戻る (m << 8) | z;
     }
   FFI_ASSERT (outer_type->type == FFI_TYPE_STRUCT);
 
-  for (elts = outer_type->elements; (t = *elts) != NULL; elts++)
+  ために (elts = outer_type->elements; (t = *elts) != NULL; elts++)
     {
       size_t z = t->size;
-      int o, m, tt;
+      整数 o, m, tt;
 
       size_mask = FFI_ALIGN(size_mask, t->alignment);
       switch (t->type)
@@ -83,7 +83,7 @@ ffi_struct_float_mask (ffi_type *outer_type, int size_mask)
 	  continue;
 	case FFI_TYPE_COMPLEX:
 	  tt = t->elements[0]->type;
-	  if (tt != FFI_TYPE_FLOAT
+	  もし (tt != FFI_TYPE_FLOAT
 	      && tt != FFI_TYPE_DOUBLE
 	      && tt != FFI_TYPE_LONGDOUBLE)
 	    break;
@@ -102,57 +102,57 @@ ffi_struct_float_mask (ffi_type *outer_type, int size_mask)
   size_mask = FFI_ALIGN(size_mask, outer_type->alignment);
   FFI_ASSERT ((size_mask & 0xff) == outer_type->size);
 
-  return size_mask;
+  戻る size_mask;
 }
 
 /* Merge floating point data into integer data.  If the structure is
    entirely floating point, simply return a pointer to the fp data.  */
 
 static void *
-ffi_struct_float_merge (int size_mask, void *vi, void *vf)
+ffi_struct_float_merge (整数 size_mask, void *vi, void *vf)
 {
-  int size = size_mask & 0xff;
-  int mask = size_mask >> 8;
-  int n = size >> 2;
+  整数 size = size_mask & 0xff;
+  整数 mask = size_mask >> 8;
+  整数 n = size >> 2;
 
-  if (mask == 0)
-    return vi;
-  else if (mask == (1 << n) - 1)
-    return vf;
-  else
+  もし (mask == 0)
+    戻る vi;
+  否则 もし (mask == (1 << n) - 1)
+    戻る vf;
+  否则
     {
-      unsigned int *wi = vi, *wf = vf;
-      int i;
+      unsigned 整数 *wi = vi, *wf = vf;
+      整数 i;
 
-      for (i = 0; i < n; ++i)
-	if ((mask >> i) & 1)
+      ために (i = 0; i < n; ++i)
+	もし ((mask >> i) & 1)
 	  wi[i] = wf[i];
 
-      return vi;
+      戻る vi;
     }
 }
 
 /* Similar, but place the data into VD in the end.  */
 
 void FFI_HIDDEN
-ffi_struct_float_copy (int size_mask, void *vd, void *vi, void *vf)
+ffi_struct_float_copy (整数 size_mask, void *vd, void *vi, void *vf)
 {
-  int size = size_mask & 0xff;
-  int mask = size_mask >> 8;
-  int n = size >> 2;
+  整数 size = size_mask & 0xff;
+  整数 mask = size_mask >> 8;
+  整数 n = size >> 2;
 
-  if (mask == 0)
+  もし (mask == 0)
     ;
-  else if (mask == (1 << n) - 1)
+  否则 もし (mask == (1 << n) - 1)
     vi = vf;
-  else
+  否则
     {
-      unsigned int *wd = vd, *wi = vi, *wf = vf;
-      int i;
+      unsigned 整数 *wd = vd, *wi = vi, *wf = vf;
+      整数 i;
 
-      for (i = 0; i < n; ++i)
+      ために (i = 0; i < n; ++i)
 	wd[i] = ((mask >> i) & 1 ? wf : wi)[i];
-      return;
+      戻る;
     }
   memcpy (vd, vi, size);
 }
@@ -163,9 +163,9 @@ static ffi_status
 ffi_prep_cif_machdep_core(ffi_cif *cif)
 {
   ffi_type *rtype = cif->rtype;
-  int rtt = rtype->type;
+  整数 rtt = rtype->type;
   size_t bytes = 0;
-  int i, n, flags;
+  整数 i, n, flags;
 
   /* Set the return type flag */
   switch (rtt)
@@ -185,33 +185,33 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 
     case FFI_TYPE_COMPLEX:
     case FFI_TYPE_STRUCT:
-      if (rtype->size > 32)
+      もし (rtype->size > 32)
 	{
 	  flags = SPARC_RET_VOID | SPARC_FLAG_RET_IN_MEM;
 	  bytes = 8;
 	}
-      else
+      否则
 	{
-	  int size_mask = ffi_struct_float_mask (rtype, 0);
-	  int word_size = (size_mask >> 2) & 0x3f;
-	  int all_mask = (1 << word_size) - 1;
-	  int fp_mask = size_mask >> 8;
+	  整数 size_mask = ffi_struct_float_mask (rtype, 0);
+	  整数 word_size = (size_mask >> 2) & 0x3f;
+	  整数 all_mask = (1 << word_size) - 1;
+	  整数 fp_mask = size_mask >> 8;
 
 	  flags = (size_mask << SPARC_SIZEMASK_SHIFT) | SPARC_RET_STRUCT;
 
 	  /* For special cases of all-int or all-fp, we can return
 	     the value directly without popping through a struct copy.  */
-	  if (fp_mask == 0)
+	  もし (fp_mask == 0)
 	    {
-	      if (rtype->alignment >= 8)
+	      もし (rtype->alignment >= 8)
 		{
-		  if (rtype->size == 8)
+		  もし (rtype->size == 8)
 		    flags = SPARC_RET_INT64;
-		  else if (rtype->size == 16)
+		  否则 もし (rtype->size == 16)
 		    flags = SPARC_RET_INT128;
 		}
 	    }
-	  else if (fp_mask == all_mask)
+	  否则 もし (fp_mask == all_mask)
 	    switch (word_size)
 	      {
 	      case 1: flags = SPARC_RET_F_1; break;
@@ -256,7 +256,7 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
     }
 
   bytes = 0;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  ために (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = cif->arg_types[i];
       size_t z = ty->size;
@@ -267,15 +267,15 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 	case FFI_TYPE_COMPLEX:
 	case FFI_TYPE_STRUCT:
 	  /* Large structs passed by reference.  */
-	  if (z > 16)
+	  もし (z > 16)
 	    {
 	      a = z = 8;
 	      break;
 	    }
 	  /* Small structs may be passed in integer or fp regs or both.  */
-	  if (bytes >= 16*8)
+	  もし (bytes >= 16*8)
 	    break;
-	  if ((ffi_struct_float_mask (ty, 0) & 0xff00) == 0)
+	  もし ((ffi_struct_float_mask (ty, 0) & 0xff00) == 0)
 	    break;
 	  /* FALLTHRU */
 	case FFI_TYPE_FLOAT:
@@ -290,7 +290,7 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 
   /* Sparc call frames require that space is allocated for 6 args,
      even if they aren't used. Make that space if necessary. */
-  if (bytes < 6 * 8)
+  もし (bytes < 6 * 8)
     bytes = 6 * 8;
 
   /* The stack must be 2 word aligned, so round bytes up appropriately. */
@@ -301,21 +301,21 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 
   cif->bytes = bytes;
   cif->flags = flags;
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   cif->nfixedargs = cif->nargs;
-  return ffi_prep_cif_machdep_core(cif);
+  戻る ffi_prep_cif_machdep_core(cif);
 }
 
 ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
 {
   cif->nfixedargs = nfixedargs;
-  return ffi_prep_cif_machdep_core(cif);
+  戻る ffi_prep_cif_machdep_core(cif);
 }
 
 extern void ffi_call_v9(ffi_cif *cif, void (*fn)(void), void *rvalue,
@@ -324,23 +324,23 @@ extern void ffi_call_v9(ffi_cif *cif, void (*fn)(void), void *rvalue,
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-int FFI_HIDDEN
+整数 FFI_HIDDEN
 ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 {
   ffi_type **p_arg;
-  int flags = cif->flags;
-  int i, nargs;
+  整数 flags = cif->flags;
+  整数 i, nargs;
 
-  if (rvalue == NULL)
+  もし (rvalue == NULL)
     {
-      if (flags & SPARC_FLAG_RET_IN_MEM)
+      もし (flags & SPARC_FLAG_RET_IN_MEM)
 	{
 	  /* Since we pass the pointer to the callee, we need a value.
 	     We allowed for this space in ffi_call, before ffi_call_v8
 	     alloca'd the space.  */
 	  rvalue = (char *)argp + cif->bytes;
 	}
-      else
+      否则
 	{
 	  /* Otherwise, we can ignore the return value.  */
 	  flags = SPARC_RET_VOID;
@@ -353,11 +353,11 @@ ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
   memset(argp, 0, 6*8);
 #endif
 
-  if (flags & SPARC_FLAG_RET_IN_MEM)
+  もし (flags & SPARC_FLAG_RET_IN_MEM)
     *argp++ = (unsigned long)rvalue;
 
   p_arg = cif->arg_types;
-  for (i = 0, nargs = cif->nargs; i < nargs; i++)
+  ために (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = p_arg[i];
       void *a = avalue[i];
@@ -402,13 +402,13 @@ ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 	case FFI_TYPE_COMPLEX:
 	case FFI_TYPE_STRUCT:
 	  z = ty->size;
-	  if (z > 16)
+	  もし (z > 16)
 	    {
 	      /* For structures larger than 16 bytes we pass reference.  */
 	      *argp++ = (unsigned long)a;
 	      break;
 	    }
-	  if (((unsigned long)argp & 15) && ty->alignment > 8)
+	  もし (((unsigned long)argp & 15) && ty->alignment > 8)
 	    argp++;
 	  memcpy(argp, a, z);
 	  argp += FFI_ALIGN(z, 8) / 8;
@@ -419,7 +419,7 @@ ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 	}
     }
 
-  return flags;
+  戻る flags;
 }
 
 static void
@@ -433,20 +433,20 @@ ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
 
   FFI_ASSERT (cif->abi == FFI_V9);
 
-  if (rvalue == NULL && (cif->flags & SPARC_FLAG_RET_IN_MEM))
+  もし (rvalue == NULL && (cif->flags & SPARC_FLAG_RET_IN_MEM))
     bytes += FFI_ALIGN (cif->rtype->size, 16);
 
   /* If we have any large structure arguments, make a copy so we are passing
      by value.  The pointer array is cloned first: the caller owns avalue[]
      and may reuse it for another call, so it must not be modified.  */
-  for (i = 0; i < nargs; i++)
+  ために (i = 0; i < nargs; i++)
     {
       ffi_type *at = arg_types[i];
-      int size = at->size;
-      if (at->type == FFI_TYPE_STRUCT && size > 4)
+      整数 size = at->size;
+      もし (at->type == FFI_TYPE_STRUCT && size > 4)
         {
           char *argcopy = alloca (size);
-          if (avalue_copy == NULL)
+          もし (avalue_copy == NULL)
             {
               avalue_copy = alloca (nargs * sizeof (void *));
               memcpy (avalue_copy, avalue, nargs * sizeof (void *));
@@ -479,7 +479,7 @@ ffi_flush_icache (void *p)
 {
   __asm__ volatile ("flush	%0; flush %0+8" : : "r" (p) : "memory");
 }
-#else
+#否则
 extern void ffi_flush_icache (void *) FFI_HIDDEN;
 #endif
 
@@ -493,11 +493,11 @@ ffi_prep_closure_loc (ffi_closure* closure,
 		      void *user_data,
 		      void *codeloc)
 {
-  unsigned int *tramp = (unsigned int *) &closure->tramp[0];
+  unsigned 整数 *tramp = (unsigned 整数 *) &closure->tramp[0];
   unsigned long fn;
 
-  if (cif->abi != FFI_V9)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_V9)
+    戻る FFI_BAD_ABI;
 
   /* Trampoline address is equal to the closure address.  We take advantage
      of that to reduce the trampoline size by 8 bytes. */
@@ -514,24 +514,24 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
   ffi_flush_icache (closure);
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 ffi_status
 ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
 		     void (*fun)(ffi_cif*, void*, void**, void*))
 {
-  if (cif->abi != FFI_V9)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_V9)
+    戻る FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_v9;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
-int FFI_HIDDEN
+整数 FFI_HIDDEN
 ffi_closure_sparc_inner_v9(ffi_cif *cif,
 			   void (*fun)(ffi_cif*, void*, void**, void*),
 			   void *user_data, void *rvalue,
@@ -539,7 +539,7 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
 {
   ffi_type **arg_types;
   void **avalue;
-  int i, argn, argx, nargs, flags, nfixedargs;
+  整数 i, argn, argx, nargs, flags, nfixedargs;
 
   arg_types = cif->arg_types;
   nargs = cif->nargs;
@@ -550,19 +550,19 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
 
   /* Copy the caller's structure return address so that the closure
      returns the data directly to the caller.  */
-  if (flags & SPARC_FLAG_RET_IN_MEM)
+  もし (flags & SPARC_FLAG_RET_IN_MEM)
     {
       rvalue = (void *) gpr[0];
       /* Skip the structure return address.  */
       argn = 1;
     }
-  else
+  否则
     argn = 0;
 
   /* Grab the addresses of the arguments from the stack frame.  */
-  for (i = 0; i < nargs; i++, argn = argx)
+  ために (i = 0; i < nargs; i++, argn = argx)
     {
-      int named = i < nfixedargs;
+      整数 named = i < nfixedargs;
       ffi_type *ty = arg_types[i];
       void *a = &gpr[argn];
       size_t z;
@@ -573,15 +573,15 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
 	case FFI_TYPE_COMPLEX:
 	case FFI_TYPE_STRUCT:
 	  z = ty->size;
-	  if (z > 16)
+	  もし (z > 16)
 	    a = *(void **)a;
-	  else
+	  否则
 	    {
 	      argx = argn + FFI_ALIGN (z, 8) / 8;
-	      if (named && argn < 16)
+	      もし (named && argn < 16)
 		{
-		  int size_mask = ffi_struct_float_mask (ty, 0);
-		  int argn_mask = (0xffff00 >> argn) & 0xff00;
+		  整数 size_mask = ffi_struct_float_mask (ty, 0);
+		  整数 argn_mask = (0xffff00 >> argn) & 0xff00;
 
 		  /* Eliminate fp registers off the end.  */
 		  size_mask = (size_mask & 0xff) | (size_mask & argn_mask);
@@ -596,11 +596,11 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
 	  argx = argn + 2;
 	  break;
 	case FFI_TYPE_DOUBLE:
-	  if (named && argn < 16)
+	  もし (named && argn < 16)
 	    a = fpr + argn;
 	  break;
 	case FFI_TYPE_FLOAT:
-	  if (named && argn < 16)
+	  もし (named && argn < 16)
 	    a = fpr + argn;
 	  a += 4;
 	  break;
@@ -633,6 +633,6 @@ ffi_closure_sparc_inner_v9(ffi_cif *cif,
   fun (cif, rvalue, avalue, user_data);
 
   /* Tell ffi_closure_sparc how to perform return type promotions.  */
-  return flags;
+  戻る flags;
 }
 #endif /* SPARC64 */

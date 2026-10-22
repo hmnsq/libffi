@@ -47,7 +47,7 @@
 /* Maximum number of FPRs available for argument passing.  */
 #ifdef __s390x__
 #define MAX_FPRARGS 4
-#else
+#否则
 #define MAX_FPRARGS 2
 #endif
 
@@ -87,14 +87,14 @@ extern void ffi_go_closure_SYSV(void);
 /*                                                                    */
 /*====================================================================*/
 
-static int
+static 整数
 ffi_check_struct_type (ffi_type *arg)
 {
   size_t size = arg->size;
 
   /* If the struct has just one element, look at that element
      to find out whether to consider the struct as floating point.  */
-  while (arg->type == FFI_TYPE_STRUCT
+  ながら (arg->type == FFI_TYPE_STRUCT
          && arg->elements[0] && !arg->elements[1])
     arg = arg->elements[0];
 
@@ -103,29 +103,29 @@ ffi_check_struct_type (ffi_type *arg)
   switch (size)
     {
       case 1:
-        return FFI_TYPE_UINT8;
+        戻る FFI_TYPE_UINT8;
 
       case 2:
-        return FFI_TYPE_UINT16;
+        戻る FFI_TYPE_UINT16;
 
       case 4:
-	if (arg->type == FFI_TYPE_FLOAT)
-          return FFI_TYPE_FLOAT;
-	else
-	  return FFI_TYPE_UINT32;
+	もし (arg->type == FFI_TYPE_FLOAT)
+          戻る FFI_TYPE_FLOAT;
+	否则
+	  戻る FFI_TYPE_UINT32;
 
       case 8:
-	if (arg->type == FFI_TYPE_DOUBLE)
-          return FFI_TYPE_DOUBLE;
-	else
-	  return FFI_TYPE_UINT64;
+	もし (arg->type == FFI_TYPE_DOUBLE)
+          戻る FFI_TYPE_DOUBLE;
+	否则
+	  戻る FFI_TYPE_UINT64;
 
       default:
 	break;
     }
 
   /* Other structs are passed via a pointer to the data.  */
-  return FFI_TYPE_POINTER;
+  戻る FFI_TYPE_POINTER;
 }
 
 /*======================== End of Routine ============================*/
@@ -142,12 +142,12 @@ ffi_status FFI_HIDDEN
 ffi_prep_cif_machdep(ffi_cif *cif)
 {
   size_t struct_size = 0;
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  整数 n_gpr = 0;
+  整数 n_fpr = 0;
+  整数 n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  整数 i;
 
   /* Determine return value handling.  */
 
@@ -164,7 +164,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
       case FFI_TYPE_COMPLEX:
       case FFI_TYPE_SINT128:
       case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#もし FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       case FFI_TYPE_LONGDOUBLE:
 #endif
 	cif->flags = FFI390_RET_STRUCT;
@@ -198,7 +198,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 	/* These are to be extended to word size.  */
 #ifdef __s390x__
 	cif->flags = FFI390_RET_INT64;
-#else
+#否则
 	cif->flags = FFI390_RET_INT32;
 #endif
 	break;
@@ -210,24 +210,24 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 
   /* Now for the arguments.  */
 
-  for (ptr = cif->arg_types, i = cif->nargs;
+  ために (ptr = cif->arg_types, i = cif->nargs;
        i > 0;
        i--, ptr++)
     {
-      int type = (*ptr)->type;
+      整数 type = (*ptr)->type;
 
       switch (type)
 	{
 	case FFI_TYPE_STRUCT:
 	  type = ffi_check_struct_type (*ptr);
-	  if (type != FFI_TYPE_POINTER)
+	  もし (type != FFI_TYPE_POINTER)
 	    break;
 	  /* fall through */
 
 	case FFI_TYPE_COMPLEX:
 	case FFI_TYPE_SINT128:
 	case FFI_TYPE_UINT128:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#もし FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	case FFI_TYPE_LONGDOUBLE:
 #endif
 	  type = FFI_TYPE_POINTER;
@@ -244,16 +244,16 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 	     go in FPRs, the rest overflow to the stack.  */
 
 	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	    もし (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
+	    否则
 	      n_ov += sizeof (double) / sizeof (long);
 	    break;
 
 	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	    もし (n_fpr < MAX_FPRARGS)
 	      n_fpr++;
-	    else
+	    否则
 	      n_ov++;
 	    break;
 
@@ -265,11 +265,11 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 #ifndef __s390x__
 	  case FFI_TYPE_UINT64:
 	  case FFI_TYPE_SINT64:
-	    if (n_gpr == MAX_GPRARGS-1)
+	    もし (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    もし (n_gpr < MAX_GPRARGS)
 	      n_gpr += 2;
-	    else
+	    否则
 	      n_ov += 2;
 	    break;
 #endif
@@ -278,9 +278,9 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 	     have been used) or overflows to the stack.  */
 
 	  default:
-	    if (n_gpr < MAX_GPRARGS)
+	    もし (n_gpr < MAX_GPRARGS)
 	      n_gpr++;
-	    else
+	    否则
 	      n_ov++;
 	    break;
         }
@@ -291,7 +291,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
 
   cif->bytes = ROUND_SIZE (n_ov * sizeof (long)) + struct_size;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
@@ -311,23 +311,23 @@ ffi_call_int(ffi_cif *cif,
 	     void **avalue,
 	     void *closure)
 {
-  int ret_type = cif->flags;
+  整数 ret_type = cif->flags;
   size_t rsize = 0, bytes = cif->bytes;
   unsigned char *stack, *p_struct;
   struct call_frame *frame;
   unsigned long *p_ov, *p_gpr;
   unsigned long long *p_fpr;
-  int n_fpr, n_gpr, n_ov, i, n;
+  整数 n_fpr, n_gpr, n_ov, i, n;
   ffi_type **arg_types;
 
   FFI_ASSERT (cif->abi == FFI_SYSV);
 
   /* If we don't have a return value, we need to fake one.  */
-  if (rvalue == NULL)
+  もし (rvalue == NULL)
     {
-      if (ret_type & FFI390_RET_IN_MEM)
+      もし (ret_type & FFI390_RET_IN_MEM)
 	rsize = cif->rtype->size;
-      else
+      否则
 	ret_type = FFI390_RET_VOID;
     }
 
@@ -357,7 +357,7 @@ ffi_call_int(ffi_cif *cif,
 
   stack = alloca (bytes + sizeof(struct call_frame) + rsize);
   frame = (struct call_frame *)(stack + bytes);
-  if (rsize)
+  もし (rsize)
     rvalue = frame + 1;
 
   /* Link the new frame back to the one from this function.  */
@@ -372,16 +372,16 @@ ffi_call_int(ffi_cif *cif,
 
   /* If we returning a structure then we set the first parameter register
      to the address of where we are returning this structure.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
+  もし (cif->flags & FFI390_RET_IN_MEM)
     p_gpr[n_gpr++] = (uintptr_t) rvalue;
 
   /* Now for the arguments.  */
   arg_types = cif->arg_types;
-  for (i = 0, n = cif->nargs; i < n; ++i)
+  ために (i = 0, n = cif->nargs; i < n; ++i)
     {
       ffi_type *ty = arg_types[i];
       void *arg = avalue[i];
-      int type = ty->type;
+      整数 type = ty->type;
       ffi_arg val;
 
     restart:
@@ -417,26 +417,26 @@ ffi_call_int(ffi_cif *cif,
 #ifdef __s390x__
 	  val = *(UINT64 *)arg;
 	  goto do_int;
-#else
-	  if (n_gpr == MAX_GPRARGS-1)
+#否则
+	  もし (n_gpr == MAX_GPRARGS-1)
 	    n_gpr = MAX_GPRARGS;
-	  if (n_gpr < MAX_GPRARGS)
+	  もし (n_gpr < MAX_GPRARGS)
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[0],
 	    p_gpr[n_gpr++] = ((UINT32 *) arg)[1];
-	  else
+	  否则
 	    p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	    p_ov[n_ov++] = ((UINT32 *) arg)[1];
 #endif
 	  break;
 
 	case FFI_TYPE_DOUBLE:
-	  if (n_fpr < MAX_FPRARGS)
+	  もし (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = *(UINT64 *) arg;
-	  else
+	  否则
 	    {
 #ifdef __s390x__
 	      p_ov[n_ov++] = *(UINT64 *) arg;
-#else
+#否则
 	      p_ov[n_ov++] = ((UINT32 *) arg)[0],
 	      p_ov[n_ov++] = ((UINT32 *) arg)[1];
 #endif
@@ -445,9 +445,9 @@ ffi_call_int(ffi_cif *cif,
 
 	case FFI_TYPE_FLOAT:
 	  val = *(UINT32 *)arg;
-	  if (n_fpr < MAX_FPRARGS)
+	  もし (n_fpr < MAX_FPRARGS)
 	    p_fpr[n_fpr++] = (UINT64)val << 32;
-	  else
+	  否则
 	    p_ov[n_ov++] = val;
 	  break;
 
@@ -455,11 +455,11 @@ ffi_call_int(ffi_cif *cif,
           /* Check how a structure type is passed.  */
 	  type = ffi_check_struct_type (ty);
 	  /* Some structures are passed via a type they contain.  */
-	  if (type != FFI_TYPE_POINTER)
+	  もし (type != FFI_TYPE_POINTER)
 	    goto restart;
 	  /* ... otherwise, passed by reference.  fallthru.  */
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#もし FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	case FFI_TYPE_LONGDOUBLE:
 #endif
 	case FFI_TYPE_COMPLEX:
@@ -517,12 +517,12 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   void **avalue;
   void **p_arg;
 
-  int n_gpr = 0;
-  int n_fpr = 0;
-  int n_ov = 0;
+  整数 n_gpr = 0;
+  整数 n_fpr = 0;
+  整数 n_ov = 0;
 
   ffi_type **ptr;
-  int i;
+  整数 i;
 
   /* Allocate buffer for argument list pointers.  */
   p_arg = avalue = alloca (cif->nargs * sizeof (void *));
@@ -530,41 +530,41 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
   /* If we returning a structure, pass the structure address
      directly to the target function.  Otherwise, have the target
      function store the return value to the GPR save area.  */
-  if (cif->flags & FFI390_RET_IN_MEM)
+  もし (cif->flags & FFI390_RET_IN_MEM)
     rvalue = (void *) p_gpr[n_gpr++];
 
   /* Now for the arguments.  */
-  for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
+  ために (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, p_arg++, ptr++)
     {
-      int deref_struct_pointer = 0;
-      int type = (*ptr)->type;
+      整数 deref_struct_pointer = 0;
+      整数 type = (*ptr)->type;
 
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#もし FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       /* 16-byte long double is passed like a struct.  */
-      if (type == FFI_TYPE_LONGDOUBLE)
+      もし (type == FFI_TYPE_LONGDOUBLE)
 	type = FFI_TYPE_STRUCT;
 #endif
 
       /* Check how a structure type is passed.  */
-      if (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
+      もし (type == FFI_TYPE_STRUCT || type == FFI_TYPE_COMPLEX)
 	{
-	  if (type == FFI_TYPE_COMPLEX)
+	  もし (type == FFI_TYPE_COMPLEX)
 	    type = FFI_TYPE_POINTER;
-	  else
+	  否则
 	    type = ffi_check_struct_type (*ptr);
 
 	  /* If we pass the struct via pointer, remember to
 	     retrieve the pointer later.  */
-	  if (type == FFI_TYPE_POINTER)
+	  もし (type == FFI_TYPE_POINTER)
 	    deref_struct_pointer = 1;
 	}
 
       /* Pointers are passed like UINTs of the same size.  */
-      if (type == FFI_TYPE_POINTER)
+      もし (type == FFI_TYPE_POINTER)
 	{
 #ifdef __s390x__
 	  type = FFI_TYPE_UINT64;
-#else
+#否则
 	  type = FFI_TYPE_UINT32;
 #endif
 	}
@@ -573,33 +573,33 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       switch (type)
 	{
 	  case FFI_TYPE_DOUBLE:
-	    if (n_fpr < MAX_FPRARGS)
+	    もし (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
+	    否则
 	      *p_arg = &p_ov[n_ov],
 	      n_ov += sizeof (double) / sizeof (long);
 	    break;
 
 	  case FFI_TYPE_FLOAT:
-	    if (n_fpr < MAX_FPRARGS)
+	    もし (n_fpr < MAX_FPRARGS)
 	      *p_arg = &p_fpr[n_fpr++];
-	    else
+	    否则
 	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
 	    break;
 
 	  case FFI_TYPE_UINT64:
 	  case FFI_TYPE_SINT64:
 #ifdef __s390x__
-	    if (n_gpr < MAX_GPRARGS)
+	    もし (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr++];
-	    else
+	    否则
 	      *p_arg = &p_ov[n_ov++];
-#else
-	    if (n_gpr == MAX_GPRARGS-1)
+#否则
+	    もし (n_gpr == MAX_GPRARGS-1)
 	      n_gpr = MAX_GPRARGS;
-	    if (n_gpr < MAX_GPRARGS)
+	    もし (n_gpr < MAX_GPRARGS)
 	      *p_arg = &p_gpr[n_gpr], n_gpr += 2;
-	    else
+	    否则
 	      *p_arg = &p_ov[n_ov], n_ov += 2;
 #endif
 	    break;
@@ -607,25 +607,25 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	  case FFI_TYPE_INT:
 	  case FFI_TYPE_UINT32:
 	  case FFI_TYPE_SINT32:
-	    if (n_gpr < MAX_GPRARGS)
+	    もし (n_gpr < MAX_GPRARGS)
 	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 4;
-	    else
+	    否则
 	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 4;
 	    break;
 
 	  case FFI_TYPE_UINT16:
 	  case FFI_TYPE_SINT16:
-	    if (n_gpr < MAX_GPRARGS)
+	    もし (n_gpr < MAX_GPRARGS)
 	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 2;
-	    else
+	    否则
 	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 2;
 	    break;
 
 	  case FFI_TYPE_UINT8:
 	  case FFI_TYPE_SINT8:
-	    if (n_gpr < MAX_GPRARGS)
+	    もし (n_gpr < MAX_GPRARGS)
 	      *p_arg = (char *)&p_gpr[n_gpr++] + sizeof (long) - 1;
-	    else
+	    否则
 	      *p_arg = (char *)&p_ov[n_ov++] + sizeof (long) - 1;
 	    break;
 
@@ -636,7 +636,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 
       /* If this is a struct passed via pointer, we need to
 	 actually retrieve that pointer.  */
-      if (deref_struct_pointer)
+      もし (deref_struct_pointer)
 	*p_arg = *(void **)*p_arg;
     }
 
@@ -651,14 +651,14 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_VOID:
       case FFI_TYPE_STRUCT:
       case FFI_TYPE_COMPLEX:
-#if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
+#もし FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       case FFI_TYPE_LONGDOUBLE:
 #endif
 	break;
 
       /* Floating point values are returned in fpr 0.  */
       case FFI_TYPE_FLOAT:
-	p_fpr[0] = (long long) *(unsigned int *) rvalue << 32;
+	p_fpr[0] = (long long) *(unsigned 整数 *) rvalue << 32;
 	break;
 
       case FFI_TYPE_DOUBLE:
@@ -671,7 +671,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_SINT64:
 #ifdef __s390x__
 	p_gpr[0] = *(unsigned long *) rvalue;
-#else
+#否则
 	p_gpr[0] = ((unsigned long *) rvalue)[0],
 	p_gpr[1] = ((unsigned long *) rvalue)[1];
 #endif
@@ -718,7 +718,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
     0x0d10,			/* basr %r1,0 */
 #ifndef __s390x__
     0x9801, 0x1006,		/* lm %r0,%r1,6(%r1) */
-#else
+#否则
     0xeb01, 0x100e, 0x0004,	/* lmg %r0,%r1,14(%r1) */
 #endif
     0x07f1			/* br %r1 */
@@ -726,12 +726,12 @@ ffi_prep_closure_loc (ffi_closure *closure,
   void (*dest)(void);
   unsigned long *tramp = (unsigned long *)&closure->tramp;
 
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_SYSV)
+    戻る FFI_BAD_ABI;
 
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
-  if (ffi_tramp_is_present(closure))
+#もし defined(FFI_EXEC_STATIC_TRAMP)
+  もし (ffi_tramp_is_present(closure))
     {
       /* Initialize the static trampoline's parameters. */
       dest = ffi_closure_SYSV;
@@ -744,14 +744,14 @@ ffi_prep_closure_loc (ffi_closure *closure,
   tramp[2] = (unsigned long)codeloc;
   tramp[3] = (unsigned long)&ffi_closure_SYSV;
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#もし defined(FFI_EXEC_STATIC_TRAMP)
 out:
 #endif
   closure->cif = cif;
   closure->fun = fun;
   closure->user_data = user_data;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
 /*======================== End of Routine ============================*/
@@ -762,17 +762,17 @@ ffi_status
 ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 		     void (*fun)(ffi_cif*,void*,void**,void*))
 {
-  if (cif->abi != FFI_SYSV)
-    return FFI_BAD_ABI;
+  もし (cif->abi != FFI_SYSV)
+    戻る FFI_BAD_ABI;
 
   closure->tramp = ffi_go_closure_SYSV;
   closure->cif = cif;
   closure->fun = fun;
 
-  return FFI_OK;
+  戻る FFI_OK;
 }
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#もし defined(FFI_EXEC_STATIC_TRAMP)
 void *
 ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 {
@@ -780,6 +780,6 @@ ffi_tramp_arch (size_t *tramp_size, size_t *map_size)
 
   *tramp_size = FFI390_TRAMP_SIZE;
   *map_size = FFI390_TRAMP_MAP_SIZE;
-  return &trampoline_code_table;
+  戻る &trampoline_code_table;
 }
 #endif

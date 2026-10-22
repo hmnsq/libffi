@@ -35,7 +35,7 @@
  * Add support for other OSes later. For now, it is just Linux and Cygwin.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#もし defined (__linux__) || defined (__CYGWIN__)
 #ifdef __linux__
 #define _GNU_SOURCE 1
 #endif
@@ -96,7 +96,7 @@ struct tramp_table
   void *parm_table;
   struct tramp *array;
   struct tramp *free;
-  int nfree;
+  整数 nfree;
 };
 
 /*
@@ -161,14 +161,14 @@ enum tramp_globals_status {
  */
 struct tramp_globals
 {
-  int fd;
+  整数 fd;
   off_t offset;
   void *text;
   size_t map_size;
   size_t size;
-  int ntramp;
+  整数 ntramp;
   struct tramp_table *free_tables;
-  int nfree_tables;
+  整数 nfree_tables;
   enum tramp_globals_status status;
 };
 
@@ -197,15 +197,15 @@ static struct tramp_globals tramp_globals;
  * directly remapped (e.g., MACH vm_remap ()), then we don't need the
  * trampoline file.
  */
-static int tramp_table_alloc (void);
+static 整数 tramp_table_alloc (void);
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#もし defined (__linux__) || defined (__CYGWIN__)
 
 /* Stringify a macro value for use in a scanf field-width specifier.  */
 #define FFI_TRAMP_STR_(x) #x
 #define FFI_TRAMP_STR(x)  FFI_TRAMP_STR_(x)
 
-static int
+static 整数
 ffi_tramp_get_libffi (void)
 {
   FILE *fp;
@@ -215,8 +215,8 @@ ffi_tramp_get_libffi (void)
   char file[PATH_MAX+1], line[PATH_MAX+100], perm[10], dev[10];
   unsigned long start, end, offset, inode;
   uintptr_t addr = (uintptr_t) tramp_globals.text;
-  int nfields, found;
-  int open_flags = O_RDONLY;
+  整数 nfields, found;
+  整数 open_flags = O_RDONLY;
 
 #ifdef O_CLOEXEC
   open_flags |= O_CLOEXEC;
@@ -224,12 +224,12 @@ ffi_tramp_get_libffi (void)
 
   snprintf (file, sizeof (file), "/proc/%d/maps", getpid());
   fp = fopen (file, "r");
-  if (fp == NULL)
-    return 0;
+  もし (fp == NULL)
+    戻る 0;
 
   found = 0;
-  while (feof (fp) == 0) {
-    if (fgets (line, sizeof (line), fp) == 0)
+  ながら (feof (fp) == 0) {
+    もし (fgets (line, sizeof (line), fp) == 0)
       break;
 
     /* Bound the path field width so a long mapping name cannot overflow
@@ -237,10 +237,10 @@ ffi_tramp_get_libffi (void)
     nfields = sscanf (line,
       "%lx-%lx %9s %lx %9s %ld %" FFI_TRAMP_STR(PATH_MAX) "s",
       &start, &end, perm, &offset, dev, &inode, file);
-    if (nfields != 7)
+    もし (nfields != 7)
       continue;
 
-    if (addr >= start && addr < end) {
+    もし (addr >= start && addr < end) {
       tramp_globals.offset = offset + (addr - start);
       found = 1;
       break;
@@ -248,31 +248,31 @@ ffi_tramp_get_libffi (void)
   }
   fclose (fp);
 
-  if (!found)
-    return 0;
+  もし (!found)
+    戻る 0;
 
   tramp_globals.fd = open (file, open_flags);
-  if (tramp_globals.fd == -1)
-    return 0;
+  もし (tramp_globals.fd == -1)
+    戻る 0;
 
   /*
    * Allocate a trampoline table just to make sure that the trampoline code
    * table can be mapped.
    */
-  if (!tramp_table_alloc ())
+  もし (!tramp_table_alloc ())
     {
       close (tramp_globals.fd);
       tramp_globals.fd = -1;
-      return 0;
+      戻る 0;
     }
-  return 1;
+  戻る 1;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#もし defined (__linux__) || defined (__CYGWIN__)
 
-static int
+static 整数
 ffi_tramp_get_temp_file (void)
 {
   ssize_t count;
@@ -285,33 +285,33 @@ ffi_tramp_get_temp_file (void)
    * trampoline table to make sure that the temporary file can be mapped.
    */
   count = write(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
-  if (count >=0 && (size_t)count == tramp_globals.map_size && tramp_table_alloc ())
-    return 1;
+  もし (count >=0 && (size_t)count == tramp_globals.map_size && tramp_table_alloc ())
+    戻る 1;
 
   close (tramp_globals.fd);
   tramp_globals.fd = -1;
-  return 0;
+  戻る 0;
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* ------------------------ OS-specific Initialization ----------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#もし defined (__linux__) || defined (__CYGWIN__)
 
-static int
+static 整数
 ffi_tramp_init_os (void)
 {
-  if (ffi_tramp_get_libffi ())
-    return 1;
-  return ffi_tramp_get_temp_file ();
+  もし (ffi_tramp_get_libffi ())
+    戻る 1;
+  戻る ffi_tramp_get_temp_file ();
 }
 
 #endif /* defined (__linux__) || defined (__CYGWIN__) */
 
 /* --------------------------- OS-specific Locking -------------------------*/
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#もし defined (__linux__) || defined (__CYGWIN__)
 
 static pthread_mutex_t tramp_globals_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -346,9 +346,9 @@ ffi_tramp_unlock(void)
  * sizeof (struct tramp_parm) cannot exceed the size of a parameter block.
  */
 
-#if defined (__linux__) || defined (__CYGWIN__)
+#もし defined (__linux__) || defined (__CYGWIN__)
 
-static int
+static 整数
 tramp_table_map (struct tramp_table *table)
 {
   char *addr;
@@ -359,21 +359,21 @@ tramp_table_map (struct tramp_table *table)
    */
   addr = mmap (NULL, tramp_globals.map_size * 2, PROT_READ | PROT_WRITE,
     MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-  if (addr == MAP_FAILED)
-    return 0;
+  もし (addr == MAP_FAILED)
+    戻る 0;
 
   /*
    * Replace the top half of the anonymous mapping with the code table mapping.
    */
   table->code_table = mmap (addr, tramp_globals.map_size, PROT_READ | PROT_EXEC,
     MAP_PRIVATE | MAP_FIXED, tramp_globals.fd, tramp_globals.offset);
-  if (table->code_table == MAP_FAILED)
+  もし (table->code_table == MAP_FAILED)
     {
       (void) munmap (addr, tramp_globals.map_size * 2);
-      return 0;
+      戻る 0;
     }
   table->parm_table = table->code_table + tramp_globals.map_size;
-  return 1;
+  戻る 1;
 }
 
 static void
@@ -390,21 +390,21 @@ tramp_table_unmap (struct tramp_table *table)
 /*
  * Initialize the static trampoline feature.
  */
-static int
+static 整数
 ffi_tramp_init (void)
 {
   long page_size;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_PASSED)
-    return 1;
+  もし (tramp_globals.status == TRAMP_GLOBALS_PASSED)
+    戻る 1;
 
-  if (tramp_globals.status == TRAMP_GLOBALS_FAILED)
-    return 0;
+  もし (tramp_globals.status == TRAMP_GLOBALS_FAILED)
+    戻る 0;
 
-  if (ffi_tramp_arch == NULL)
+  もし (ffi_tramp_arch == NULL)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      戻る 0;
     }
 
   tramp_globals.free_tables = NULL;
@@ -425,20 +425,20 @@ ffi_tramp_init (void)
    * whole initialization on every allocation.
    */
   page_size = sysconf (_SC_PAGESIZE);
-  if (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
+  もし (page_size >= 0 && (size_t)page_size > tramp_globals.map_size)
     {
       tramp_globals.status = TRAMP_GLOBALS_FAILED;
-      return 0;
+      戻る 0;
     }
 
-  if (ffi_tramp_init_os ())
+  もし (ffi_tramp_init_os ())
     {
       tramp_globals.status = TRAMP_GLOBALS_PASSED;
-      return 1;
+      戻る 1;
     }
 
   tramp_globals.status = TRAMP_GLOBALS_FAILED;
-  return 0;
+  戻る 0;
 }
 
 /* ---------------------- Trampoline Table functions ---------------------- */
@@ -450,40 +450,40 @@ static void tramp_add (struct tramp *tramp);
 /*
  * Allocate and initialize a trampoline table.
  */
-static int
+static 整数
 tramp_table_alloc (void)
 {
   struct tramp_table *table;
   struct tramp *tramp_array, *tramp;
   size_t size;
   char *code, *parm;
-  int i;
+  整数 i;
 
   /*
    * If we already have tables with free trampolines, there is no need to
    * allocate a new table.
    */
-  if (tramp_globals.nfree_tables > 0)
-    return 1;
+  もし (tramp_globals.nfree_tables > 0)
+    戻る 1;
 
   /*
    * Allocate a new trampoline table structure.
    */
   table = malloc (sizeof (*table));
-  if (table == NULL)
-    return 0;
+  もし (table == NULL)
+    戻る 0;
 
   /*
    * Allocate new trampoline structures.
    */
   tramp_array = malloc (sizeof (*tramp) * tramp_globals.ntramp);
-  if (tramp_array == NULL)
+  もし (tramp_array == NULL)
     goto free_table;
 
   /*
    * Map a code table and a parameter table into the caller's address space.
    */
-  if (!tramp_table_map (table))
+  もし (!tramp_table_map (table))
     {
       /*
        * Failed to map the code and parameter tables.
@@ -505,7 +505,7 @@ tramp_table_alloc (void)
   size = tramp_globals.size;
   code = table->code_table;
   parm = table->parm_table;
-  for (i = 0; i < tramp_globals.ntramp; i++)
+  ために (i = 0; i < tramp_globals.ntramp; i++)
     {
       tramp = &tramp_array[i];
       tramp->table = table;
@@ -517,14 +517,14 @@ tramp_table_alloc (void)
       parm += size;
     }
   /* Success */
-  return 1;
+  戻る 1;
 
 /* Failure */
 free_tramp_array:
   free (tramp_array);
 free_table:
   free (table);
-  return 0;
+  戻る 0;
 }
 
 /*
@@ -546,7 +546,7 @@ tramp_table_add (struct tramp_table *table)
 {
   table->next = tramp_globals.free_tables;
   table->prev = NULL;
-  if (tramp_globals.free_tables != NULL)
+  もし (tramp_globals.free_tables != NULL)
     tramp_globals.free_tables->prev = table;
   tramp_globals.free_tables = table;
   tramp_globals.nfree_tables++;
@@ -559,11 +559,11 @@ static void
 tramp_table_del (struct tramp_table *table)
 {
   tramp_globals.nfree_tables--;
-  if (table->prev != NULL)
+  もし (table->prev != NULL)
     table->prev->next = table->next;
-  if (table->next != NULL)
+  もし (table->next != NULL)
     table->next->prev = table->prev;
-  if (tramp_globals.free_tables == table)
+  もし (tramp_globals.free_tables == table)
     tramp_globals.free_tables = table->next;
 }
 
@@ -579,18 +579,18 @@ tramp_add (struct tramp *tramp)
 
   tramp->next = table->free;
   tramp->prev = NULL;
-  if (table->free != NULL)
+  もし (table->free != NULL)
     table->free->prev = tramp;
   table->free = tramp;
   table->nfree++;
 
-  if (table->nfree == 1)
+  もし (table->nfree == 1)
     tramp_table_add (table);
 
   /*
    * We don't want to keep too many free trampoline tables lying around.
    */
-  if (table->nfree == tramp_globals.ntramp &&
+  もし (table->nfree == tramp_globals.ntramp &&
     tramp_globals.nfree_tables > 1)
     {
       tramp_table_del (table);
@@ -607,50 +607,50 @@ tramp_del (struct tramp *tramp)
   struct tramp_table *table = tramp->table;
 
   table->nfree--;
-  if (tramp->prev != NULL)
+  もし (tramp->prev != NULL)
     tramp->prev->next = tramp->next;
-  if (tramp->next != NULL)
+  もし (tramp->next != NULL)
     tramp->next->prev = tramp->prev;
-  if (table->free == tramp)
+  もし (table->free == tramp)
     table->free = tramp->next;
 
-  if (table->nfree == 0)
+  もし (table->nfree == 0)
     tramp_table_del (table);
 }
 
 /* ------------------------ Trampoline API functions ------------------------ */
 
-int
+整数
 ffi_tramp_is_supported(void)
 {
-  int ret;
+  整数 ret;
 
   ffi_tramp_lock();
   ret = ffi_tramp_init ();
   ffi_tramp_unlock();
-  return ret;
+  戻る ret;
 }
 
 /*
  * Allocate a trampoline and return its opaque address.
  */
 void *
-ffi_tramp_alloc (int flags)
+ffi_tramp_alloc (整数 flags)
 {
   struct tramp *tramp;
 
   ffi_tramp_lock();
 
-  if (!ffi_tramp_init () || flags != 0)
+  もし (!ffi_tramp_init () || flags != 0)
     {
       ffi_tramp_unlock();
-      return NULL;
+      戻る NULL;
     }
 
-  if (!tramp_table_alloc ())
+  もし (!tramp_table_alloc ())
     {
       ffi_tramp_unlock();
-      return NULL;
+      戻る NULL;
     }
 
   tramp = tramp_globals.free_tables->free;
@@ -658,7 +658,7 @@ ffi_tramp_alloc (int flags)
 
   ffi_tramp_unlock();
 
-  return tramp;
+  戻る tramp;
 }
 
 /*
@@ -688,7 +688,7 @@ ffi_tramp_get_addr (void *arg)
   addr = tramp->code;
   ffi_tramp_unlock();
 
-  return addr;
+  戻る addr;
 }
 
 /*
@@ -706,20 +706,20 @@ ffi_tramp_free (void *arg)
 
 /* ------------------------------------------------------------------------- */
 
-#else /* !FFI_EXEC_STATIC_TRAMP */
+#否则 /* !FFI_EXEC_STATIC_TRAMP */
 
 #include <stddef.h>
 
-int
+整数
 ffi_tramp_is_supported(void)
 {
-  return 0;
+  戻る 0;
 }
 
 void *
-ffi_tramp_alloc (int flags)
+ffi_tramp_alloc (整数 flags)
 {
-  return NULL;
+  戻る NULL;
 }
 
 void
@@ -730,7 +730,7 @@ ffi_tramp_set_parms (void *arg, void *target, void *data)
 void *
 ffi_tramp_get_addr (void *arg)
 {
-  return NULL;
+  戻る NULL;
 }
 
 void
