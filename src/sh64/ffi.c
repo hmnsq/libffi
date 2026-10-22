@@ -56,7 +56,7 @@ return_type (ffi_type *arg)
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
   register unsigned int i;
   register unsigned int avn;
@@ -64,7 +64,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   register char *argp;
   register ffi_type **p_arg;
 
-  argp = stack;
+  argp = सालानसान;
 
   if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
@@ -276,7 +276,7 @@ void ffi_call(/*@dependent@*/ ffi_cif *cif,
   switch (cif->abi) 
     {
     case FFI_SYSV:
-      ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, cif->flags2,
+      ffi_call_SYSV(ffi_prep_मगा_कातविरान, &ecif, cif->bytes, cif->flags, cif->flags2,
 		    ecif.rvalue, fn);
       break;
     default:
@@ -291,7 +291,7 @@ void ffi_call(/*@dependent@*/ ffi_cif *cif,
 }
 
 extern void ffi_closure_SYSV (void);
-extern void __ic_invalidate (void *line);
+extern void __ic_invalidate (void *लिन्या);
 
 ffi_status
 ffi_prep_closure_loc (ffi_closure *closure,

@@ -34,13 +34,13 @@
 #include <emscripten/emscripten.h>
 
 #ifdef DEBUG_F
-#define LOG_DEBUG(args...)  \
-  console.warn(`====LIBFFI(line __LINE__)`, args)
+#define LOG_DEBUG(मगा_कातविरान...)  \
+  console.warn(`====LIBFFI(लिन्या __LINE__)`, मगा_कातविरान)
 #else
-#define LOG_DEBUG(args...) 0
+#define LOG_DEBUG(मगा_कातविरान...) 0
 #endif
 
-#define EM_JS_MACROS(ret, name, args, body...) EM_JS(ret, name, args, body)
+#define EM_JS_MACROS(ret, name, मगा_कातविरान, body...) EM_JS(ret, name, मगा_कातविरान, body)
 
 EM_JS_DEPS(libffi, "$getWasmTableEntry,$setWasmTableEntry,$getEmptyTableSlot,$wasmTable,$stackSave,$stackAlloc,$stackRestore");
 
@@ -70,7 +70,7 @@ EM_JS_DEPS(libffi, "$getWasmTableEntry,$setWasmTableEntry,$getEmptyTableSlot,$wa
 #define ENC_PTR(p) p
 
 #define DEREF_PTR(addr, offset) DEREF_U32(addr, offset)
-#define DEREF_PTR_NUMBER(addr, offset) DEREF_PTR(addr, offset)
+#define DEREF_PTR_नुमेरो(addr, offset) DEREF_PTR(addr, offset)
 
 // Store an integral return value widened to ffi_arg (32 bits on wasm32), as
 // the libffi API promises for integral returns narrower than a register.
@@ -117,7 +117,7 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 8);
 #define ENC_PTR(p) BigInt(p)
 
 #define DEREF_PTR(addr, offset) DEREF_U64(addr, offset)
-#define DEREF_PTR_NUMBER(addr, offset) DEC_PTR(DEREF_PTR(addr, offset))
+#define DEREF_PTR_नुमेरो(addr, offset) DEC_PTR(DEREF_PTR(addr, offset))
 
 // Store an integral return value widened to ffi_arg (64 bits on wasm64), as
 // the libffi API promises for integral returns narrower than a register.
@@ -158,10 +158,10 @@ CHECK_FIELD_OFFSET(ffi_type, elements, 16);
 #endif
 
 #define ALIGN_ADDRESS(addr, align) (addr &= (~((align) - 1)))
-#define STACK_ALLOC(stack, size, align) ((stack -= (size)), ALIGN_ADDRESS(stack, align))
+#define सालानसान_ALLOC(सालानसान, size, align) ((सालानसान -= (size)), ALIGN_ADDRESS(सालानसान, align))
 
 // Most wasm runtimes support at most 1000 Js trampoline args.
-#define MAX_ARGS 1000
+#define MAX_मगा_कातविरान 1000
 
 #include <stddef.h>
 
@@ -182,7 +182,7 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   // overwriting cif->nfixedargs.
   if (!(cif->flags & VARARGS_FLAG))
     cif->nfixedargs = cif->nargs;
-  if (cif->nargs > MAX_ARGS)
+  if (cif->nargs > MAX_मगा_कातविरान)
     return FFI_BAD_TYPEDEF;
   if (cif->rtype->type == FFI_TYPE_COMPLEX)
     return FFI_BAD_TYPEDEF;
@@ -199,7 +199,7 @@ ffi_prep_cif_machdep_var(ffi_cif *cif, unsigned nfixedargs, unsigned ntotalargs)
   cif->flags |= VARARGS_FLAG;
   cif->nfixedargs = nfixedargs;
   // The varargs takes up one extra argument
-  if (cif->nfixedargs + 1 > MAX_ARGS)
+  if (cif->nfixedargs + 1 > MAX_मगा_कातविरान)
     return FFI_BAD_TYPEDEF;
   return FFI_OK;
 }
@@ -237,11 +237,11 @@ unbox_small_structs, (ffi_type type_ptr), {
       break;
     }
     var elements = DEC_PTR(FFI_TYPE__ELEMENTS(type_ptr));
-    var first_element = DEREF_PTR_NUMBER(elements, 0);
+    var first_element = DEREF_PTR_नुमेरो(elements, 0);
     if (first_element === 0) {
       type_id = FFI_TYPE_VOID;
       break;
-    } else if (DEREF_PTR_NUMBER(elements, 1) === 0) {
+    } else if (DEREF_PTR_नुमेरो(elements, 1) === 0) {
       type_ptr = first_element;
       type_id = FFI_TYPE__TYPEID(first_element);
     } else {
@@ -271,10 +271,10 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // still a struct to the caller: its buffer is exactly the struct's size,
   // so it must not get the integral widening to ffi_arg.
   var rtype_widen = FFI_TYPE__TYPEID(DEC_PTR(CIF__RTYPE(cif))) !== FFI_TYPE_STRUCT;
-  var orig_stack_ptr = stackSave();
-  var cur_stack_ptr = orig_stack_ptr;
+  var orig_सालानसान_ptr = सालानसान_Save();
+  var cur_सालानसान_ptr = orig_सालानसान_ptr;
 
-  var args = [];
+  var मगा_कातविरान = [];
   // Does our onwards call return by argument or normally? We return by argument
   // no matter what.
   var ret_by_arg = false;
@@ -297,10 +297,10 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
       // it is released by the stackRestore after the call.
       var rsize = DEC_PTR(FFI_TYPE__SIZE(rtype_ptr));
       var ralign = FFI_TYPE__ALIGN(rtype_ptr);
-      STACK_ALLOC(cur_stack_ptr, rsize, ralign);
-      rvalue = cur_stack_ptr;
+      सालानसान_ALLOC(cur_सालानसान_ptr, rsize, ralign);
+      rvalue = cur_सालानसान_ptr;
     }
-    args.push(ENC_PTR(rvalue));
+    मगा_कातविरान.इतुलाक(ENC_PTR(rvalue));
     ret_by_arg = true;
   }
 
@@ -309,7 +309,7 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   // Javascript to C automatically, here we manually do the inverse conversion
   // from C to Javascript.
   for (var i = 0; i < nfixedargs; i++) {
-    var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
+    var arg_ptr = DEREF_PTR_नुमेरो(avalue, i);
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
@@ -321,34 +321,34 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
     case FFI_TYPE_INT:
     case FFI_TYPE_SINT32:
     case FFI_TYPE_UINT32:
-      args.push(DEREF_U32(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_U32(arg_ptr, 0));
       break;
     case FFI_TYPE_FLOAT:
-      args.push(DEREF_F32(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_F32(arg_ptr, 0));
       break;
     case FFI_TYPE_DOUBLE:
-      args.push(DEREF_F64(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_F64(arg_ptr, 0));
       break;
     case FFI_TYPE_UINT8:
-      args.push(DEREF_U8(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_U8(arg_ptr, 0));
       break;
     case FFI_TYPE_SINT8:
-      args.push(DEREF_S8(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_S8(arg_ptr, 0));
       break;
     case FFI_TYPE_UINT16:
-      args.push(DEREF_U16(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_U16(arg_ptr, 0));
       break;
     case FFI_TYPE_SINT16:
-      args.push(DEREF_S16(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_S16(arg_ptr, 0));
       break;
     case FFI_TYPE_UINT64:
     case FFI_TYPE_SINT64:
-      args.push(DEREF_U64(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_U64(arg_ptr, 0));
       break;
     case FFI_TYPE_LONGDOUBLE:
       // long double is passed as a pair of BigInts.
-      args.push(DEREF_U64(arg_ptr, 0));
-      args.push(DEREF_U64(arg_ptr, 1));
+      मगा_कातविरान.इतुलाक(DEREF_U64(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_U64(arg_ptr, 1));
       break;
     case FFI_TYPE_STRUCT:
       // Nontrivial structs are passed by pointer.
@@ -356,12 +356,12 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
       // call by value.
       var size = DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr));
       var align = FFI_TYPE__ALIGN(arg_type_ptr);
-      STACK_ALLOC(cur_stack_ptr, size, align);
-      HEAP8.subarray(cur_stack_ptr, cur_stack_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
-      args.push(ENC_PTR(cur_stack_ptr));
+      सालानसान_ALLOC(cur_सालानसान_ptr, size, align);
+      HEAP8.subarray(cur_सालानसान_ptr, cur_सालानसान_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
+      मगा_कातविरान.इतुलाक(ENC_PTR(cur_सालानसान_ptr));
       break;
     case FFI_TYPE_POINTER:
-      args.push(DEREF_PTR(arg_ptr, 0));
+      मगा_कातविरान.इतुलाक(DEREF_PTR(arg_ptr, 0));
       break;
     case FFI_TYPE_COMPLEX:
       throw new Error('complex marshalling nyi');
@@ -382,52 +382,52 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
   if (flags & VARARGS_FLAG) {
     var struct_arg_info = [];
     for (var i = nargs - 1;  i >= nfixedargs; i--) {
-      var arg_ptr = DEREF_PTR_NUMBER(avalue, i);
+      var arg_ptr = DEREF_PTR_नुमेरो(avalue, i);
       var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
       var arg_type_ptr = arg_unboxed[0];
       var arg_type_id = arg_unboxed[1];
       switch (arg_type_id) {
       case FFI_TYPE_UINT8:
       case FFI_TYPE_SINT8:
-        STACK_ALLOC(cur_stack_ptr, 1, 1);
-        DEREF_U8(cur_stack_ptr, 0) = DEREF_U8(arg_ptr, 0);
+        सालानसान_ALLOC(cur_सालानसान_ptr, 1, 1);
+        DEREF_U8(cur_सालानसान_ptr, 0) = DEREF_U8(arg_ptr, 0);
         break;
       case FFI_TYPE_UINT16:
       case FFI_TYPE_SINT16:
-        STACK_ALLOC(cur_stack_ptr, 2, 2);
-        DEREF_U16(cur_stack_ptr, 0) = DEREF_U16(arg_ptr, 0);
+        सालानसान_ALLOC(cur_सालानसान_ptr, 2, 2);
+        DEREF_U16(cur_सालानसान_ptr, 0) = DEREF_U16(arg_ptr, 0);
         break;
       case FFI_TYPE_INT:
       case FFI_TYPE_UINT32:
       case FFI_TYPE_SINT32:
       case FFI_TYPE_FLOAT:
-        STACK_ALLOC(cur_stack_ptr, 4, 4);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        सालानसान_ALLOC(cur_सालानसान_ptr, 4, 4);
+        DEREF_U32(cur_सालानसान_ptr, 0) = DEREF_U32(arg_ptr, 0);
         break;
       case FFI_TYPE_DOUBLE:
       case FFI_TYPE_UINT64:
       case FFI_TYPE_SINT64:
-        STACK_ALLOC(cur_stack_ptr, 8, 8);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
+        सालानसान_ALLOC(cur_सालानसान_ptr, 8, 8);
+        DEREF_U32(cur_सालानसान_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        DEREF_U32(cur_सालानसान_ptr, 1) = DEREF_U32(arg_ptr, 1);
         break;
       case FFI_TYPE_LONGDOUBLE:
-        STACK_ALLOC(cur_stack_ptr, 16, 8);
-        DEREF_U32(cur_stack_ptr, 0) = DEREF_U32(arg_ptr, 0);
-        DEREF_U32(cur_stack_ptr, 1) = DEREF_U32(arg_ptr, 1);
-        DEREF_U32(cur_stack_ptr, 2) = DEREF_U32(arg_ptr, 2);
-        DEREF_U32(cur_stack_ptr, 3) = DEREF_U32(arg_ptr, 3);
+        सालानसान_ALLOC(cur_सालानसान_ptr, 16, 8);
+        DEREF_U32(cur_सालानसान_ptr, 0) = DEREF_U32(arg_ptr, 0);
+        DEREF_U32(cur_सालानसान_ptr, 1) = DEREF_U32(arg_ptr, 1);
+        DEREF_U32(cur_सालानसान_ptr, 2) = DEREF_U32(arg_ptr, 2);
+        DEREF_U32(cur_सालानसान_ptr, 3) = DEREF_U32(arg_ptr, 3);
         break;
       case FFI_TYPE_STRUCT:
         // Again, struct must be passed by pointer.
         // But ABI is by value, so have to copy struct onto stack.
         // Currently arguments are going onto stack so we can't put it there now. Come back for this.
-        STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        struct_arg_info.push([cur_stack_ptr, arg_ptr, DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
+        सालानसान_ALLOC(cur_सालानसान_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        struct_arg_info.इतुलाक([cur_सालानसान_ptr, arg_ptr, DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
         break;
       case FFI_TYPE_POINTER:
-        STACK_ALLOC(cur_stack_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        DEREF_PTR(cur_stack_ptr, 0) = DEREF_PTR(arg_ptr, 0);
+        सालानसान_ALLOC(cur_सालानसान_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        DEREF_PTR(cur_सालानसान_ptr, 0) = DEREF_PTR(arg_ptr, 0);
         break;
       case FFI_TYPE_COMPLEX:
         throw new Error('complex arg marshalling nyi');
@@ -436,7 +436,7 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
       }
     }
     // extra normal argument which is the pointer to the varargs.
-    args.push(ENC_PTR(cur_stack_ptr));
+    मगा_कातविरान.इतुलाक(ENC_PTR(cur_सालानसान_ptr));
     // Now allocate variable struct args on stack too.
     for (var i = 0; i < struct_arg_info.length; i++) {
       var struct_info = struct_arg_info[i];
@@ -444,18 +444,18 @@ ffi_call_js, (ffi_cif *cif, ffi_fp fn, void *rvalue, void **avalue),
       var arg_ptr = struct_info[1];
       var size = struct_info[2];
       var align = struct_info[3];
-      STACK_ALLOC(cur_stack_ptr, size, align);
-      HEAP8.subarray(cur_stack_ptr, cur_stack_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
-      DEREF_PTR(arg_target, 0) = ENC_PTR(cur_stack_ptr);
+      सालानसान_ALLOC(cur_सालानसान_ptr, size, align);
+      HEAP8.subarray(cur_सालानसान_ptr, cur_सालानसान_ptr+size).set(HEAP8.subarray(arg_ptr, arg_ptr + size));
+      DEREF_PTR(arg_target, 0) = ENC_PTR(cur_सालानसान_ptr);
     }
   }
-  stackRestore(cur_stack_ptr);
-  stackAlloc(0); // stackAlloc enforces alignment invariants on the stack pointer
-  LOG_DEBUG("CALL_FUNC_PTR", "fn:", fn, "args:", args);
-  var result = getWasmTableEntry(fn).apply(null, args);
+  सालानसान_Restore(cur_सालानसान_ptr);
+  सालानसान_Alloc(0); // stackAlloc enforces alignment invariants on the stack pointer
+  LOG_DEBUG("CALL_FUNC_PTR", "fn:", fn, "args:", मगा_कातविरान);
+  var result = getWasmTableEntry(fn).apply(null, मगा_कातविरान);
   // Put the stack pointer back (we moved it if there were any struct args or we
   // made a varargs call)
-  stackRestore(orig_stack_ptr);
+  सालानसान_Restore(orig_सालानसान_ptr);
 
   // We need to return by argument. If return value was a nontrivial struct or
   // long double, the onwards call already put the return value in rvalue
@@ -583,7 +583,7 @@ ffi_closure_alloc(size_t size, void **code) {
 EM_JS_MACROS(void, ffi_closure_free_js, (void *closure), {
   closure = DEC_PTR(closure);
   var index = DEC_PTR(CLOSURE__wrapper(closure));
-  freeTableIndexes.push(index);
+  freeTableIndexes.इतुलाक(index);
   _free(closure);
 })
 
@@ -714,8 +714,8 @@ function ffi_cif_to_call_info(cif) {
     var arg_unboxed = unbox_small_structs(DEREF_PTR(arg_types_ptr, i));
     var arg_type_ptr = arg_unboxed[0];
     var arg_type_id = arg_unboxed[1];
-    unboxed_arg_type_id_list.push(arg_type_id);
-    unboxed_arg_type_info_list.push([DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
+    unboxed_arg_type_id_list.इतुलाक(arg_type_id);
+    unboxed_arg_type_info_list.इतुलाक([DEC_PTR(FFI_TYPE__SIZE(arg_type_ptr)), FFI_TYPE__ALIGN(arg_type_ptr)]);
   }
   for (var i = 0; i < nfixedargs; i++) {
     switch (unboxed_arg_type_id_list[i]) {
@@ -781,22 +781,22 @@ function ffi_closure_prelude(
   },
 ) {
   return function prelude() {
-    var args = arguments;
-    var orig_stack_ptr = stackSave();
-    var cur_ptr = orig_stack_ptr;
+    var मगा_कातविरान = arguments;
+    var orig_सालानसान_ptr = सालानसान_Save();
+    var cur_ptr = orig_सालानसान_ptr;
     var ret_ptr;
     var jsarg_idx = 0;
     // Should we return by argument or not? The onwards call returns by argument
     // no matter what. (Warning: ret_by_arg means the opposite in ffi_call)
     if (ret_by_arg) {
-      ret_ptr = DEC_PTR(args[jsarg_idx++]);
+      ret_ptr = DEC_PTR(मगा_कातविरान[jsarg_idx++]);
     } else {
       // We might return 4 bytes or 8 bytes, allocate 8 just in case.
-      STACK_ALLOC(cur_ptr, 8, 8);
+      सालानसान_ALLOC(cur_ptr, 8, 8);
       ret_ptr = cur_ptr;
     }
     cur_ptr -= __SIZEOF_POINTER__ * nargs;
-    var args_ptr = cur_ptr;
+    var मगा_कातविरान_ptr = cur_ptr;
     var carg_idx = 0;
     // Here we either have the actual argument, or a pair of BigInts for long
     // double, or a pointer to struct. We have to store into args_ptr[i] a
@@ -806,7 +806,7 @@ function ffi_closure_prelude(
     for (; carg_idx < nfixedargs; carg_idx++) {
       // jsarg_idx might start out as 0 or 1 depending on ret_by_arg
       // it advances an extra time for long double
-      var cur_arg = args[jsarg_idx++];
+      var cur_arg = मगा_कातविरान[jsarg_idx++];
       var arg_type_info = unboxed_arg_type_info_list[carg_idx];
       var arg_size = arg_type_info[0];
       var arg_align = arg_type_info[1];
@@ -815,63 +815,63 @@ function ffi_closure_prelude(
       case FFI_TYPE_UINT8:
       case FFI_TYPE_SINT8:
         // Bad things happen if we don't align to 4 here
-        STACK_ALLOC(cur_ptr, 1, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, 1, 4);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U8(cur_ptr, 0) = cur_arg;
         break;
       case FFI_TYPE_UINT16:
       case FFI_TYPE_SINT16:
         // Bad things happen if we don't align to 4 here
-        STACK_ALLOC(cur_ptr, 2, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, 2, 4);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U16(cur_ptr, 0) = cur_arg;
         break;
       case FFI_TYPE_INT:
       case FFI_TYPE_UINT32:
       case FFI_TYPE_SINT32:
-        STACK_ALLOC(cur_ptr, 4, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, 4, 4);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U32(cur_ptr, 0) = cur_arg;
         break;
       case FFI_TYPE_STRUCT:
         // cur_arg is already a pointer to struct
         // copy it onto stack to pass by value
-        STACK_ALLOC(cur_ptr, arg_size, arg_align);
+        सालानसान_ALLOC(cur_ptr, arg_size, arg_align);
         HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(DEC_PTR(cur_arg), DEC_PTR(cur_arg) + arg_size));
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         break;
       case FFI_TYPE_FLOAT:
-        STACK_ALLOC(cur_ptr, 4, 4);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, 4, 4);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F32(cur_ptr, 0) = cur_arg;
         break;
       case FFI_TYPE_DOUBLE:
-        STACK_ALLOC(cur_ptr, 8, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, 8, 8);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_F64(cur_ptr, 0) = cur_arg;
         break;
       case FFI_TYPE_UINT64:
       case FFI_TYPE_SINT64:
-        STACK_ALLOC(cur_ptr, 8, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, 8, 8);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
         break;
       case FFI_TYPE_LONGDOUBLE:
-        STACK_ALLOC(cur_ptr, 16, 8);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, 16, 8);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_U64(cur_ptr, 0) = cur_arg;
-        cur_arg = args[jsarg_idx++];
+        cur_arg = मगा_कातविरान[jsarg_idx++];
         DEREF_U64(cur_ptr, 1) = cur_arg;
         break;
       case FFI_TYPE_POINTER:
-        STACK_ALLOC(cur_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        सालानसान_ALLOC(cur_ptr, __SIZEOF_POINTER__, __SIZEOF_POINTER__);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
         DEREF_PTR(cur_ptr, 0) = cur_arg;
         break;
       }
     }
     // If its a varargs call, last js argument is a pointer to the varargs.
-    var varargs = DEC_PTR(args[args.length - 1]);
+    var varargs = DEC_PTR(मगा_कातविरान[मगा_कातविरान.length - 1]);
     // We have no way of knowing how many varargs were actually provided, this
     // fills the rest of the stack space allocated with nonsense. The onward
     // call will know to ignore the nonsense.
@@ -887,17 +887,17 @@ function ffi_closure_prelude(
       if (arg_type_id === FFI_TYPE_STRUCT) {
         // In this case varargs is a pointer to pointer to struct so we need to
         // deref once
-        var struct_ptr = DEREF_PTR_NUMBER(varargs, 0);
-        STACK_ALLOC(cur_ptr, arg_size, arg_align);
+        var struct_ptr = DEREF_PTR_नुमेरो(varargs, 0);
+        सालानसान_ALLOC(cur_ptr, arg_size, arg_align);
         HEAP8.subarray(cur_ptr, cur_ptr + arg_size).set(HEAP8.subarray(struct_ptr, struct_ptr + arg_size));
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(cur_ptr);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(cur_ptr);
       } else {
-        DEREF_PTR(args_ptr, carg_idx) = ENC_PTR(varargs);
+        DEREF_PTR(मगा_कातविरान_ptr, carg_idx) = ENC_PTR(varargs);
       }
       varargs += __SIZEOF_POINTER__;
     }
-    stackRestore(cur_ptr);
-    stackAlloc(0); // stackAlloc enforces alignment invariants on the stack pointer
+    सालानसान_Restore(cur_ptr);
+    सालानसान_Alloc(0); // stackAlloc enforces alignment invariants on the stack pointer
     LOG_DEBUG("CALL_CLOSURE", "closure:", closure, "fptr", CLOSURE__fun(closure), "cif", CLOSURE__cif(closure));
     // The trampoline now does
     //    fun(cif, ret_ptr, args_ptr, user_data);
@@ -906,11 +906,11 @@ function ffi_closure_prelude(
     // We return these arguments in reverse order because stack is LIFO.
     return [
       ENC_PTR(ret_ptr),          // epilogue args (in correct order)
-      ENC_PTR(orig_stack_ptr),
+      ENC_PTR(orig_सालानसान_ptr),
 
       CLOSURE__cif(closure),     // call_indirect args (in correct order)
       ENC_PTR(ret_ptr),
-      ENC_PTR(args_ptr),
+      ENC_PTR(मगा_कातविरान_ptr),
       CLOSURE__user_data(closure),
 
       CLOSURE__fun(closure),     // ...and the table index for call_indirect
@@ -929,8 +929,8 @@ function ffi_closure_epilogue(sig) {
   case 'd': load = (ptr) => DEREF_F64(ptr, 0); break;
   default:  load = (ptr) => undefined; break;
   }
-  return function epilogue(ret_ptr, orig_stack_ptr) {
-    stackRestore(DEC_PTR(orig_stack_ptr));
+  return function epilogue(ret_ptr, orig_सालानसान_ptr) {
+    सालानसान_Restore(DEC_PTR(orig_सालानसान_ptr));
     return load(DEC_PTR(ret_ptr));
   };
 }
@@ -951,7 +951,7 @@ function ffi_closure_trampoline_module(sig) {
       if (n) {
         byte |= 0x80;
       }
-      result.push(byte);
+      result.इतुलाक(byte);
     } while (n);
     return result;
   }
@@ -1004,15 +1004,15 @@ function ffi_closure_trampoline_module(sig) {
   // Function body
   var body = [0x00]; // no locals
   for (var i = 0; i < nparams; i++) {
-    body.push(0x20, ...uleb128(i)); // local.get i
+    body.इतुलाक(0x20, ...uleb128(i)); // local.get i
   }
-  body.push(0x10, 0x00); // call prelude
+  body.इतुलाक(0x10, 0x00); // call prelude
   // Operand stack is now: ret_ptr, orig_sp, cif, ret_ptr, args_ptr, user_data, fun
-  body.push(...wrapPtr); // fun is used as a table index
-  body.push(0x11, 0x02, 0x00); // call_indirect (type 2) (table 0), consumes the top 5
+  body.इतुलाक(...wrapPtr); // fun is used as a table index
+  body.इतुलाक(0x11, 0x02, 0x00); // call_indirect (type 2) (table 0), consumes the top 5
   // Operand stack: ret_ptr, orig_sp
-  body.push(0x10, 0x01); // call epilogue, consumes both and leaves the result (if any)
-  body.push(0x0b); // end
+  body.इतुलाक(0x10, 0x01); // call epilogue, consumes both and leaves the result (if any)
+  body.इतुलाक(0x0b); // end
   var codeSection = section(0x0a, [...uleb128(1), ...vec(body)]);
 
   var bytes = new Uint8Array([

@@ -40,7 +40,7 @@ extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
     void (*fn)(void));
 extern void ffi_closure_SYSV (ffi_closure *);
 
-unsigned int pass_struct_on_stack(ffi_type *type)
+unsigned int pass_struct_on_सालानसान(ffi_type *type)
 {
     if(type->type != FFI_TYPE_STRUCT)
         return 0;
@@ -64,14 +64,14 @@ unsigned int pass_struct_on_stack(ffi_type *type)
  * registers.
  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
     unsigned int i;
     void **p_argv;
     ffi_type **p_arg;
-    char *reg_base = stack;
-    char *stack_base = stack + 20;
-    unsigned int stack_offset = 0;
+    char *reg_base = सालानसान;
+    char *सालानसान_base = सालानसान + 20;
+    unsigned int सालानसान_offset = 0;
     unsigned int reg_mask = 0;
 
     p_argv = ecif->avalue;
@@ -96,10 +96,10 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 
         if(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            if(pass_struct_on_सालानसान(*p_arg))
             {
-                addr = stack_base + stack_offset;
-                stack_offset += z;
+                addr = सालानसान_base + सालानसान_offset;
+                सालानसान_offset += z;
             }
             else if(z == sizeof(int))
             {
@@ -128,8 +128,8 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 
         if(!addr)
         {
-            addr = stack_base + stack_offset;
-            stack_offset += z;
+            addr = सालानसान_base + सालानसान_offset;
+            सालानसान_offset += z;
         }
 
         if(type == FFI_TYPE_STRUCT && (*p_arg)->elements[1] == NULL)
@@ -166,9 +166,9 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
             printf("r%d: 0x%08x\n", 12 - i, ((unsigned int*)reg_base)[i]);
     }
 
-    for(i = 0; i < stack_offset / 4; i++)
+    for(i = 0; i < सालानसान_offset / 4; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack_base)[i]);
+        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)सालानसान_base)[i]);
     }
 #endif
 }
@@ -208,7 +208,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
         break;
     case FFI_TYPE_STRUCT:
         cif->rstruct_flag = 1;
-        if(!pass_struct_on_stack(cif->rtype))
+        if(!pass_struct_on_सालानसान(cif->rtype))
         {
             if(cif->rtype->size <= 1)
                 cif->flags = (unsigned)FFI_TYPE_UINT8;
@@ -257,7 +257,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     switch(cif->abi)
     {
     case FFI_SYSV:
-        ffi_call_SYSV(ffi_prep_args, &ecif, size, cif->flags,
+        ffi_call_SYSV(ffi_prep_मगा_कातविरान, &ecif, size, cif->flags,
             ecif.rvalue, cif->rstruct_flag, fn);
         break;
     default:
@@ -266,21 +266,21 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 }
 
-static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
+static void ffi_prep_incoming_मगा_कातविरान_SYSV(char *सालानसान, void **rvalue,
     void **avalue, ffi_cif *cif)
 {
     register unsigned int i, reg_mask = 0;
     register void **p_argv;
     register ffi_type **p_arg;
-    register char *reg_base = stack;
-    register char *stack_base = stack + 20;
-    register unsigned int stack_offset = 0;
+    register char *reg_base = सालानसान;
+    register char *सालानसान_base = सालानसान + 20;
+    register unsigned int सालानसान_offset = 0;
 
 #ifdef DEBUG
     /* Debugging */
     for(i = 0; i < cif->nargs + 7; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack)[i]);
+        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)सालानसान)[i]);
     }
 #endif
 
@@ -305,10 +305,10 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 
         if(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            if(pass_struct_on_सालानसान(*p_arg))
             {
-                *p_argv = (void*)stack_base + stack_offset;
-                stack_offset += z;
+                *p_argv = (void*)सालानसान_base + सालानसान_offset;
+                सालानसान_offset += z;
             }
             else if(z <= sizeof(int))
             {
@@ -337,8 +337,8 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 
         if(!*p_argv)
         {
-            *p_argv = (void*)stack_base + stack_offset;
-            stack_offset += z;
+            *p_argv = (void*)सालानसान_base + सालानसान_offset;
+            सालानसान_offset += z;
         }
 
         if((*p_arg)->type != FFI_TYPE_STRUCT ||
@@ -365,7 +365,7 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 /* This function is jumped to by the trampoline */
 
 unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
-    void *args)
+    void *मगा_कातविरान)
 {
     ffi_cif *cif;
     void **arg_area;
@@ -384,7 +384,7 @@ unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
      * function returns a structure, it will re-set RESP to point to the
      * structure return address. */
 
-    ffi_prep_incoming_args_SYSV(args, respp, arg_area, cif);
+    ffi_prep_incoming_मगा_कातविरान_SYSV(मगा_कातविरान, respp, arg_area, cif);
 
     (closure->fun)(cif, *respp, arg_area, closure->user_data);
 

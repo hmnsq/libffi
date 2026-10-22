@@ -57,7 +57,7 @@ typedef enum ffi_abi {
 } ffi_abi;
 #endif
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION 1
+#define FFI_TARGET_SPECIFIC_सालानसान_SPACE_ALLOCATION 1
 #define FFI_TARGET_HAS_COMPLEX_TYPE 1
 
 #ifdef SPARC64

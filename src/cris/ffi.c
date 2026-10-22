@@ -29,7 +29,7 @@
 #include <ffi.h>
 #include <ffi_common.h>
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#define सालानसान_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
 static ffi_status
 initialize_aggregate_packed_struct (ffi_type * arg)
@@ -67,15 +67,15 @@ initialize_aggregate_packed_struct (ffi_type * arg)
 }
 
 int
-ffi_prep_args (char *stack, extended_cif * ecif)
+ffi_prep_मगा_कातविरान (char *सालानसान, extended_cif * ecif)
 {
   unsigned int i;
-  unsigned int struct_count = 0;
+  unsigned int struct_बिलांग = 0;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = सालानसान;
 
   p_argv = ecif->avalue;
 
@@ -101,13 +101,13 @@ ffi_prep_args (char *stack, extended_cif * ecif)
 	      }
 	    else
 	      {
-		unsigned int uiLocOnStack;
+		unsigned int ui_Loc_On_सालानसान;
 		z = sizeof (void *);
-		uiLocOnStack = 4 * ecif->cif->nargs + struct_count;
-		struct_count = struct_count + (*p_arg)->size;
+		ui_Loc_On_सालानसान = 4 * ecif->cif->nargs + struct_बिलांग;
+		struct_बिलांग = struct_बिलांग + (*p_arg)->size;
 		*(unsigned int *) argp =
-		  (unsigned int) (UINT32 *) (stack + uiLocOnStack);
-		memcpy ((stack + uiLocOnStack), *p_argv, (*p_arg)->size);
+		  (unsigned int) (UINT32 *) (सालानसान + ui_Loc_On_सालानसान);
+		memcpy ((सालानसान + ui_Loc_On_सालानसान), *p_argv, (*p_arg)->size);
 	      }
 	    break;
 	  }
@@ -150,7 +150,7 @@ ffi_prep_args (char *stack, extended_cif * ecif)
       argp += z;
     }
 
-  return (struct_count);
+  return (struct_बिलांग);
 }
 
 ffi_status FFI_HIDDEN
@@ -207,7 +207,7 @@ ffi_prep_cif_core (ffi_cif * cif,
 	    }
 	}
       else
-	bytes += STACK_ARG_SIZE ((*ptr)->size);
+	bytes += सालानसान_ARG_SIZE ((*ptr)->size);
     }
 
   cif->bytes = bytes;
@@ -260,7 +260,7 @@ ffi_call (ffi_cif * cif, void (*fn) (), void *rvalue, void **avalue)
   switch (cif->abi)
     {
     case FFI_SYSV:
-      ffi_call_SYSV (ffi_prep_args, &ecif, cif->bytes,
+      ffi_call_SYSV (ffi_prep_मगा_कातविरान, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
       break;
     default:
@@ -296,10 +296,10 @@ extern const int ffi_cris_trampoline_closure_offset
 static unsigned long long
 ffi_prep_closure_inner (void **params, ffi_closure* closure)
 {
-  char *register_args = (char *) params;
+  char *register_मगा_कातविरान = (char *) params;
   void *struct_ret = params[5];
-  char *stack_args = params[6];
-  char *ptr = register_args;
+  char *सालानसान_मगा_कातविरान = params[6];
+  char *ptr = register_मगा_कातविरान;
   ffi_cif *cif = closure->cif;
   ffi_type **arg_types = cif->arg_types;
 
@@ -335,9 +335,9 @@ ffi_prep_closure_inner (void **params, ffi_closure* closure)
       /* If we've handled more arguments than fit in registers, start
 	 looking at the those passed on the stack.  Step over the
 	 first one if we had a straddling parameter.  */
-      if (doing_regs && ptr >= register_args + 4*4)
+      if (doing_regs && ptr >= register_मगा_कातविरान + 4*4)
 	{
-	  ptr = stack_args + ((ptr > register_args + 4*4) ? 4 : 0);
+	  ptr = सालानसान_मगा_कातविरान + ((ptr > register_मगा_कातविरान + 4*4) ? 4 : 0);
 	  doing_regs = 0;
 	}
     }

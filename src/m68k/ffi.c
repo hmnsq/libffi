@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #ifdef __rtems__
-void rtems_cache_flush_multiple_data_lines( const void *, size_t );
+void rtems_cache_flush_multiple_data_मगा_लिन्या( const void *, size_t );
 #else
 #include <sys/syscall.h>
 #ifdef __MINT__
@@ -24,25 +24,25 @@ void rtems_cache_flush_multiple_data_lines( const void *, size_t );
 void ffi_call_SYSV (extended_cif *,
 		    unsigned, unsigned,
 		    void *, void (*fn) ());
-void *ffi_prep_args (void *stack, extended_cif *ecif);
+void *ffi_prep_मगा_कातविरान (void *सालानसान, extended_cif *ecif);
 void ffi_closure_SYSV (ffi_closure *);
 void ffi_closure_struct_SYSV (ffi_closure *);
 unsigned int ffi_closure_SYSV_inner (ffi_closure *closure,
-				     void *resp, void *args);
+				     void *resp, void *मगा_कातविरान);
 
 /* ffi_prep_args is called by the assembly routine once stack space has
    been allocated for the function's arguments.  */
 
 void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+ffi_prep_मगा_कातविरान (void *सालानसान, extended_cif *ecif)
 {
   unsigned int i;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  void *struct_हालागा_ptr;
 
-  argp = stack;
+  argp = सालानसान;
 
   if (
 #ifdef __MINT__
@@ -50,9 +50,9 @@ ffi_prep_args (void *stack, extended_cif *ecif)
 #endif
       (((ecif->cif->rtype->type == FFI_TYPE_STRUCT)
         && !ecif->cif->flags)))
-    struct_value_ptr = ecif->rvalue;
+    struct_हालागा_ptr = ecif->rvalue;
   else
-    struct_value_ptr = NULL;
+    struct_हालागा_ptr = NULL;
 
   p_argv = ecif->avalue;
 
@@ -112,7 +112,7 @@ ffi_prep_args (void *stack, extended_cif *ecif)
       argp += z;
     }
 
-  return struct_value_ptr;
+  return struct_हालागा_ptr;
 }
 
 #define CIF_FLAGS_INT		1
@@ -250,14 +250,14 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
 }
 
 static void
-ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
+ffi_prep_incoming_मगा_कातविरान_SYSV (char *सालानसान, void **avalue, ffi_cif *cif)
 {
   unsigned int i;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
 
-  argp = stack;
+  argp = सालानसान;
   p_argv = avalue;
 
   for (i = cif->nargs, p_arg = cif->arg_types; (i != 0); i--, p_arg++)
@@ -306,7 +306,7 @@ ffi_prep_incoming_args_SYSV (char *stack, void **avalue, ffi_cif *cif)
 }
 
 unsigned int
-ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
+ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *मगा_कातविरान)
 {
   ffi_cif *cif;
   void **arg_area;
@@ -314,7 +314,7 @@ ffi_closure_SYSV_inner (ffi_closure *closure, void *resp, void *args)
   cif = closure->cif;
   arg_area = (void**) alloca (cif->nargs * sizeof (void *));
 
-  ffi_prep_incoming_args_SYSV(args, arg_area, cif);
+  ffi_prep_incoming_मगा_कातविरान_SYSV(मगा_कातविरान, arg_area, cif);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 
@@ -346,11 +346,11 @@ ffi_prep_closure_loc (ffi_closure* closure,
     *(void **)(closure->tramp + 8) = ffi_closure_SYSV;
 
 #ifdef __rtems__
-  rtems_cache_flush_multiple_data_lines( codeloc, FFI_TRAMPOLINE_SIZE );
+  rtems_cache_flush_multiple_data_मगा_लिन्या( codeloc, FFI_TRAMPOLINE_SIZE );
 #elif defined(__MINT__)
   Ssystem(S_FLUSHCACHE, codeloc, FFI_TRAMPOLINE_SIZE);
 #else
-  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_LINE,
+  syscall(SYS_cacheflush, codeloc, FLUSH_SCOPE_लिन्या,
 	  FLUSH_CACHE_BOTH, FFI_TRAMPOLINE_SIZE);
 #endif
 

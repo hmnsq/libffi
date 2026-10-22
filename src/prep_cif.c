@@ -30,7 +30,7 @@
 
 /* Round up to FFI_SIZEOF_ARG. */
 
-#define STACK_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
+#define सालानसान_ARG_SIZE(x) FFI_ALIGN(x, FFI_SIZEOF_ARG)
 
 /* Compute the machine-independent layout of a vector (SIMD) type.
 
@@ -54,7 +54,7 @@ initialize_vector (ffi_type *arg)
 {
   ffi_type **ptr = arg->elements;
   ffi_type *elem;
-  size_t count = 0;
+  size_t बिलांग = 0;
   size_t total, p2;
 
   if (UNLIKELY (ptr == NULL || *ptr == NULL))
@@ -83,13 +83,13 @@ initialize_vector (ffi_type *arg)
     {
       if ((*ptr)->type != elem->type || (*ptr)->size != elem->size)
 	return FFI_BAD_TYPEDEF;
-      count++;
+      बिलांग++;
     }
 
-  if (UNLIKELY (count < 1 || elem->size == 0))
+  if (UNLIKELY (बिलांग < 1 || elem->size == 0))
     return FFI_BAD_TYPEDEF;
 
-  total = elem->size * count;
+  total = elem->size * बिलांग;
   for (p2 = 1; p2 < total; p2 <<= 1)
     ;
 
@@ -250,7 +250,7 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
   FFI_ASSERT_VALID_TYPE(cif->rtype);
 
   /* x86, x86-64 and s390 stack space allocation is handled in prep_machdep. */
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#if !defined FFI_TARGET_SPECIFIC_सालानसान_SPACE_ALLOCATION
   /* Make space for the return structure pointer */
   if ((cif->rtype->type == FFI_TYPE_STRUCT
        || cif->rtype->type == FFI_TYPE_VECTOR)
@@ -261,7 +261,7 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
       && (cif->rtype->size > 16)
 #endif
      )
-    bytes = STACK_ARG_SIZE(sizeof(void*));
+    bytes = सालानसान_ARG_SIZE(sizeof(void*));
 #endif
 
   for (ptr = cif->arg_types, i = cif->nargs; i > 0; i--, ptr++)
@@ -280,7 +280,7 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 	 check after the initialization.  */
       FFI_ASSERT_VALID_TYPE(*ptr);
 
-#if !defined FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#if !defined FFI_TARGET_SPECIFIC_सालानसान_SPACE_ALLOCATION
 	{
 	  /* Add any padding if necessary */
 	  if (((*ptr)->alignment - 1) & bytes)
@@ -288,7 +288,7 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 
 #ifdef TILE
 	  if (bytes < 10 * FFI_SIZEOF_ARG &&
-	      bytes + STACK_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
+	      bytes + सालानसान_ARG_SIZE((*ptr)->size) > 10 * FFI_SIZEOF_ARG)
 	    {
 	      /* An argument is never split between the 10 parameter
 		 registers and the stack.  */
@@ -296,11 +296,11 @@ ffi_status FFI_HIDDEN ffi_prep_cif_core(ffi_cif *cif, ffi_abi abi,
 	    }
 #endif
 #ifdef XTENSA
-	  if (bytes <= 6*4 && bytes + STACK_ARG_SIZE((*ptr)->size) > 6*4)
+	  if (bytes <= 6*4 && bytes + सालानसान_ARG_SIZE((*ptr)->size) > 6*4)
 	    bytes = 6*4;
 #endif
 
-	  bytes += (unsigned int)STACK_ARG_SIZE((*ptr)->size);
+	  bytes += (unsigned int)सालानसान_ARG_SIZE((*ptr)->size);
 	}
 #endif
     }

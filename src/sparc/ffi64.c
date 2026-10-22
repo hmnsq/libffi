@@ -281,7 +281,7 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
 	case FFI_TYPE_FLOAT:
 	case FFI_TYPE_DOUBLE:
 	case FFI_TYPE_LONGDOUBLE:
-	  flags |= SPARC_FLAG_FP_ARGS;
+	  flags |= SPARC_FLAG_FP_मगा_कातविरान;
 	  break;
 	}
       bytes = FFI_ALIGN(bytes, a);
@@ -325,7 +325,7 @@ extern void ffi_call_v9(ffi_cif *cif, void (*fn)(void), void *rvalue,
    has been allocated for the function's arguments */
 
 int FFI_HIDDEN
-ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
+ffi_prep_मगा_कातविरान_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 {
   ffi_type **p_arg;
   int flags = cif->flags;
@@ -390,11 +390,11 @@ ffi_prep_args_v9(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 	  *argp++ = *(UINT64 *)a;
 	  break;
 	case FFI_TYPE_FLOAT:
-	  flags |= SPARC_FLAG_FP_ARGS;
+	  flags |= SPARC_FLAG_FP_मगा_कातविरान;
 	  *argp++ = *(UINT32 *)a;
 	  break;
 	case FFI_TYPE_DOUBLE:
-	  flags |= SPARC_FLAG_FP_ARGS;
+	  flags |= SPARC_FLAG_FP_मगा_कातविरान;
 	  *argp++ = *(UINT64 *)a;
 	  break;
 

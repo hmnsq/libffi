@@ -70,7 +70,7 @@ extern unsigned char ffi_arm_trampoline[12] FFI_HIDDEN;
 
 /* Forward declares. */
 static int vfp_type_p (const ffi_type *);
-static void layout_vfp_args (ffi_cif *);
+static void layout_vfp_मगा_कातविरान (ffi_cif *);
 
 static void *
 ffi_align (ffi_type *ty, void *p)
@@ -151,7 +151,7 @@ ffi_put_arg (ffi_type *ty, void *src, void *dst)
    arguments). These are only used for the VFP hard-float ABI.
 */
 static void
-ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
+ffi_prep_मगा_कातविरान_SYSV (ffi_cif *cif, int flags, void *rvalue,
 		    void **avalue, char *argp)
 {
   ffi_type **arg_types = cif->arg_types;
@@ -172,18 +172,18 @@ ffi_prep_args_SYSV (ffi_cif *cif, int flags, void *rvalue,
 }
 
 static void
-ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
-                   void **avalue, char *stack, char *vfp_space)
+ffi_prep_मगा_कातविरान_VFP (ffi_cif *cif, int flags, void *rvalue,
+                   void **avalue, char *सालानसान, char *vfp_space)
 {
   ffi_type **arg_types = cif->arg_types;
   int i, n, vi = 0;
   char *argp, *regp, *eo_regp;
-  char stack_used = 0;
+  char सालानसान_used = 0;
   char done_with_regs = 0;
 
   /* The first 4 words on the stack are used for values
      passed in core registers.  */
-  regp = stack;
+  regp = सालानसान;
   eo_regp = argp = regp + 16;
 
   /* If the function returns an FFI_TYPE_STRUCT in memory,
@@ -203,7 +203,7 @@ ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
       /* Allocated in VFP registers. */
       if (vi < cif->vfp_nargs && is_vfp_type)
 	{
-	  char *vfp_slot = vfp_space + cif->vfp_args[vi++] * 4;
+	  char *vfp_slot = vfp_space + cif->vfp_मगा_कातविरान[vi++] * 4;
 	  ffi_put_arg (ty, a, vfp_slot);
 	  continue;
 	}
@@ -226,9 +226,9 @@ ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
 	  /* In case there are no arguments in the stack area yet,
 	     the argument is passed in the remaining core registers
 	     and on the stack.  */
-	  else if (!stack_used)
+	  else if (!सालानसान_used)
 	    {
-	      stack_used = 1;
+	      सालानसान_used = 1;
 	      done_with_regs = 1;
 	      argp = tregp + ffi_put_arg (ty, a, tregp);
 	      FFI_ASSERT (eo_regp < argp);
@@ -236,7 +236,7 @@ ffi_prep_args_VFP (ffi_cif *cif, int flags, void *rvalue,
 	    }
 	}
       /* Base case, arguments are passed on the stack */
-      stack_used = 1;
+      सालानसान_used = 1;
       argp = ffi_align (ty, argp);
       argp += ffi_put_arg (ty, a, argp);
     }
@@ -254,7 +254,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
      than the base calling conventions, so we do it here instead of
      in ffi_prep_args(). */
   if (cabi == FFI_VFP)
-    layout_vfp_args (cif);
+    layout_vfp_मगा_कातविरान (cif);
 
   /* Set the return type flag */
   switch (cif->rtype->type)
@@ -356,7 +356,7 @@ struct call_frame
   void *closure;
 };
 
-extern void ffi_call_SYSV (void *stack, struct call_frame *,
+extern void ffi_call_SYSV (void *सालानसान, struct call_frame *,
 			   void (*fn) (void)) FFI_HIDDEN;
 extern void ffi_call_VFP (void *vfp_space, struct call_frame *,
 			   void (*fn) (void), unsigned vfp_used) FFI_HIDDEN;
@@ -368,7 +368,7 @@ ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
   int flags = cif->flags;
   ffi_type *rtype = cif->rtype;
   size_t bytes, rsize, vfp_size;
-  char *stack, *vfp_space, *new_rvalue;
+  char *सालानसान, *vfp_space, *new_rvalue;
   struct call_frame *frame;
 
   rsize = 0;
@@ -394,16 +394,16 @@ ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
   vfp_size = (cif->abi == FFI_VFP && cif->vfp_used ? 8*8: 0);
 
   bytes = cif->bytes;
-  stack = alloca (vfp_size + bytes + sizeof(struct call_frame) + rsize);
+  सालानसान = alloca (vfp_size + bytes + sizeof(struct call_frame) + rsize);
 
   vfp_space = NULL;
   if (vfp_size)
     {
-      vfp_space = stack;
-      stack += vfp_size;
+      vfp_space = सालानसान;
+      सालानसान += vfp_size;
     }
 
-  frame = (struct call_frame *)(stack + bytes);
+  frame = (struct call_frame *)(सालानसान + bytes);
 
   new_rvalue = rvalue;
   if (rsize)
@@ -415,13 +415,13 @@ ffi_call_int (ffi_cif * cif, void (*fn) (void), void *rvalue,
 
   if (vfp_space)
     {
-      ffi_prep_args_VFP (cif, flags, new_rvalue, avalue, stack, vfp_space);
+      ffi_prep_मगा_कातविरान_VFP (cif, flags, new_rvalue, avalue, सालानसान, vfp_space);
       ffi_call_VFP (vfp_space, frame, fn, cif->vfp_used);
     }
   else
     {
-      ffi_prep_args_SYSV (cif, flags, new_rvalue, avalue, stack);
-      ffi_call_SYSV (stack, frame, fn);
+      ffi_prep_मगा_कातविरान_SYSV (cif, flags, new_rvalue, avalue, सालानसान);
+      ffi_call_SYSV (सालानसान, frame, fn);
     }
 
   if (rvalue && rvalue != new_rvalue)
@@ -444,7 +444,7 @@ ffi_call_go (ffi_cif *cif, void (*fn) (void), void *rvalue,
 #endif
 
 static void *
-ffi_prep_incoming_args_SYSV (ffi_cif *cif, void *rvalue,
+ffi_prep_incoming_मगा_कातविरान_SYSV (ffi_cif *cif, void *rvalue,
 			     char *argp, void **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
@@ -480,16 +480,16 @@ ffi_prep_incoming_args_SYSV (ffi_cif *cif, void *rvalue,
 }
 
 static void *
-ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
+ffi_prep_incoming_मगा_कातविरान_VFP (ffi_cif *cif, void *rvalue, char *सालानसान,
 			    char *vfp_space, void **avalue)
 {
   ffi_type **arg_types = cif->arg_types;
   int i, n, vi = 0;
   char *argp, *regp, *eo_regp;
   char done_with_regs = 0;
-  char stack_used = 0;
+  char सालानसान_used = 0;
 
-  regp = stack;
+  regp = सालानसान;
   eo_regp = argp = regp + 16;
 
   if (cif->flags == ARM_TYPE_STRUCT)
@@ -506,7 +506,7 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
 
       if (vi < cif->vfp_nargs && is_vfp_type)
 	{
-	  avalue[i] = vfp_space + cif->vfp_args[vi++] * 4;
+	  avalue[i] = vfp_space + cif->vfp_मगा_कातविरान[vi++] * 4;
 	  continue;
 	}
       else if (!done_with_regs && !is_vfp_type)
@@ -517,7 +517,7 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
 
 	  /* If the arguments either fits into the registers or uses registers
 	     and stack, while we haven't read other things from the stack */
-	  if (tregp + z <= eo_regp || !stack_used)
+	  if (tregp + z <= eo_regp || !सालानसान_used)
 	    {
 	      /* Because we're little endian, this is what it turns into.  */
 #ifdef __ARMEB__
@@ -533,19 +533,19 @@ ffi_prep_incoming_args_VFP (ffi_cif *cif, void *rvalue, char *stack,
 		 reading after regp.  */
 	      if (regp > eo_regp)
 		{
-		  FFI_ASSERT (!stack_used);
+		  FFI_ASSERT (!सालानसान_used);
 		  argp = regp;
 		}
 	      if (regp >= eo_regp)
 		{
 		  done_with_regs = 1;
-		  stack_used = 1;
+		  सालानसान_used = 1;
 		}
 	      continue;
 	    }
 	}
 
-      stack_used = 1;
+      सालानसान_used = 1;
       argp = ffi_align (ty, argp);
 #ifdef __ARMEB__
       if (z < 4 && ty->type != FFI_TYPE_STRUCT)
@@ -575,7 +575,7 @@ ffi_closure_inner_SYSV (ffi_cif *cif,
 		        struct closure_frame *frame)
 {
   void **avalue = (void **) alloca (cif->nargs * sizeof (void *));
-  void *rvalue = ffi_prep_incoming_args_SYSV (cif, frame->result,
+  void *rvalue = ffi_prep_incoming_मगा_कातविरान_SYSV (cif, frame->result,
 					      frame->argp, avalue);
   fun (cif, rvalue, avalue, user_data);
   return cif->flags;
@@ -588,7 +588,7 @@ ffi_closure_inner_VFP (ffi_cif *cif,
 		       struct closure_frame *frame)
 {
   void **avalue = (void **) alloca (cif->nargs * sizeof (void *));
-  void *rvalue = ffi_prep_incoming_args_VFP (cif, frame->result, frame->argp,
+  void *rvalue = ffi_prep_incoming_मगा_कातविरान_VFP (cif, frame->result, frame->argp,
 					     frame->vfp_space, avalue);
   fun (cif, rvalue, avalue, user_data);
   return cif->flags;
@@ -610,7 +610,7 @@ void ffi_go_closure_VFP (void) FFI_HIDDEN;
 
 #if defined(__FreeBSD__) && defined(__arm__)
 #define __clear_cache(start, end) do { \
-		struct arm_sync_icache_args ua; 		\
+		struct arm_sync_icache_मगा_कातविरान ua; 		\
 								\
 		ua.addr = (uintptr_t)(start);			\
 		ua.len = (char *)(end) - (char *)start;		\
@@ -779,7 +779,7 @@ vfp_type_p (const ffi_type *ty)
 {
   ffi_type **elements;
   int candidate, i;
-  size_t size, ele_count;
+  size_t size, ele_बिलांग;
 
   /* Quickest tests first.  */
   candidate = ty->type;
@@ -789,13 +789,13 @@ vfp_type_p (const ffi_type *ty)
       return 0;
     case FFI_TYPE_FLOAT:
     case FFI_TYPE_DOUBLE:
-      ele_count = 1;
+      ele_बिलांग = 1;
       goto done;
     case FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
       if (candidate != FFI_TYPE_FLOAT && candidate != FFI_TYPE_DOUBLE)
 	return 0;
-      ele_count = 2;
+      ele_बिलांग = 2;
       goto done;
     case FFI_TYPE_STRUCT:
       break;
@@ -824,19 +824,19 @@ vfp_type_p (const ffi_type *ty)
   switch (candidate)
     {
     case FFI_TYPE_FLOAT:
-      ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
+      ele_बिलांग = size / sizeof(float);
+      if (size != ele_बिलांग * sizeof(float))
         return 0;
       break;
     case FFI_TYPE_DOUBLE:
-      ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
+      ele_बिलांग = size / sizeof(double);
+      if (size != ele_बिलांग * sizeof(double))
         return 0;
       break;
     default:
       return 0;
     }
-  if (ele_count > 4)
+  if (ele_बिलांग > 4)
     return 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
@@ -854,7 +854,7 @@ vfp_type_p (const ffi_type *ty)
 
   /* All tests succeeded.  Encode the result.  */
  done:
-  return (ele_count << 8) | candidate;
+  return (ele_बिलांग << 8) | candidate;
 }
 
 static int
@@ -884,7 +884,7 @@ place_vfp_arg (ffi_cif *cif, int h)
 	}
       /* Found regs to allocate. */
       cif->vfp_used |= new_used;
-      cif->vfp_args[cif->vfp_nargs++] = (signed char)reg;
+      cif->vfp_मगा_कातविरान[cif->vfp_nargs++] = (signed char)reg;
 
       /* Update vfp_reg_free. */
       if (cif->vfp_used & (1 << cif->vfp_reg_free))
@@ -904,14 +904,14 @@ place_vfp_arg (ffi_cif *cif, int h)
 }
 
 static void
-layout_vfp_args (ffi_cif * cif)
+layout_vfp_मगा_कातविरान (ffi_cif * cif)
 {
   unsigned int i;
   /* Init VFP fields */
   cif->vfp_used = 0;
   cif->vfp_nargs = 0;
   cif->vfp_reg_free = 0;
-  memset (cif->vfp_args, -1, 16);	/* Init to -1. */
+  memset (cif->vfp_मगा_कातविरान, -1, 16);	/* Init to -1. */
 
   for (i = 0; i < cif->nargs; i++)
     {

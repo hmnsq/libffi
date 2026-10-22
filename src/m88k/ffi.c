@@ -51,7 +51,7 @@
 
 void ffi_call_OBSD (unsigned int, extended_cif *, unsigned int, void *,
 		    void (*fn) ());
-void *ffi_prep_args (void *, extended_cif *);
+void *ffi_prep_मगा_कातविरान (void *, extended_cif *);
 void ffi_closure_OBSD (ffi_closure *);
 void ffi_closure_struct_OBSD (ffi_closure *);
 unsigned int ffi_closure_OBSD_inner (ffi_closure *, void *, unsigned int *,
@@ -69,7 +69,7 @@ void ffi_cacheflush_OBSD (unsigned int, unsigned int);
    been allocated for the function's arguments.  */
 
 void *
-ffi_prep_args (void *stack, extended_cif *ecif)
+ffi_prep_मगा_कातविरान (void *सालानसान, extended_cif *ecif)
 {
   unsigned int i;
   void **p_argv;
@@ -77,17 +77,17 @@ ffi_prep_args (void *stack, extended_cif *ecif)
   unsigned int *regp;
   unsigned int regused;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  void *struct_हालागा_ptr;
 
-  regp = (unsigned int *)stack;
+  regp = (unsigned int *)सालानसान;
   stackp = (char *)(regp + 8);
   regused = 0;
 
   if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
+    struct_हालागा_ptr = ecif->rvalue;
   else
-    struct_value_ptr = NULL;
+    struct_हालागा_ptr = NULL;
 
   p_argv = ecif->avalue;
 
@@ -192,7 +192,7 @@ ffi_prep_args (void *stack, extended_cif *ecif)
 	stackp += z;
     }
 
-  return struct_value_ptr;
+  return struct_हालागा_ptr;
 }
 
 /* Perform machine dependent cif processing */
@@ -264,7 +264,7 @@ ffi_call (ffi_cif *cif, void (*fn) (), void *rvalue, void **avalue)
  */
 
 static void
-ffi_prep_closure_args_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
+ffi_prep_closure_मगा_कातविरान_OBSD (ffi_cif *cif, void **avalue, unsigned int *regp,
 			    char *stackp)
 {
   unsigned int i;
@@ -357,7 +357,7 @@ ffi_closure_OBSD_inner (ffi_closure *closure, void *resp, unsigned int *regp,
   cif = closure->cif;
   arg_area = (void**) alloca (cif->nargs * sizeof (void *));
 
-  ffi_prep_closure_args_OBSD(cif, arg_area, regp, stackp);
+  ffi_prep_closure_मगा_कातविरान_OBSD(cif, arg_area, regp, stackp);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 

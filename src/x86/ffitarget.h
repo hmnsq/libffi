@@ -49,7 +49,7 @@
 #define USE_BUILTIN_FFS 0 /* not yet implemented in mingw-64 */
 #endif
 
-#define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
+#define FFI_TARGET_SPECIFIC_सालानसान_SPACE_ALLOCATION
 #ifndef _MSC_VER
 #define FFI_TARGET_HAS_COMPLEX_TYPE
 #endif

@@ -198,7 +198,7 @@ is_vfp_type (const ffi_type *ty)
 {
   ffi_type **elements;
   int candidate, i;
-  size_t size, ele_count, simd_size;
+  size_t size, ele_बिलांग, simd_size;
 
   /* Quickest tests first.  */
   candidate = ty->type;
@@ -209,7 +209,7 @@ is_vfp_type (const ffi_type *ty)
     case FFI_TYPE_FLOAT:
     case FFI_TYPE_DOUBLE:
     case FFI_TYPE_LONGDOUBLE:
-      ele_count = 1;
+      ele_बिलांग = 1;
       goto done;
     case FFI_TYPE_COMPLEX:
       candidate = ty->elements[0]->type;
@@ -218,7 +218,7 @@ is_vfp_type (const ffi_type *ty)
 	case FFI_TYPE_FLOAT:
 	case FFI_TYPE_DOUBLE:
 	case FFI_TYPE_LONGDOUBLE:
-	  ele_count = 2;
+	  ele_बिलांग = 2;
 	  goto done;
 	}
       return 0;
@@ -262,7 +262,7 @@ is_vfp_type (const ffi_type *ty)
 	 unlike the floating-point HFA path below, CANDIDATE is used only to
 	 confirm the lanes are homogeneous.  */
       size_t reg_size = simd_size;
-      int num_registers;
+      int नुमेरो_registers;
       int first_level_element_type;
 
       /* A Neon register slot is an S (4B), D (8B) or Q (16B).  A lane narrower
@@ -271,8 +271,8 @@ is_vfp_type (const ffi_type *ty)
 	 jump table; reject it and let the generic aggregate path handle it.  */
       if (reg_size < 4 || reg_size > 16 || size % reg_size != 0)
 	return 0;
-      num_registers = (int) (size / reg_size);
-      if (num_registers > 4)
+      नुमेरो_registers = (int) (size / reg_size);
+      if (नुमेरो_registers > 4)
 	return 0;
 
       /* For an aggregate, every member must itself be a vector (or nested
@@ -304,7 +304,7 @@ is_vfp_type (const ffi_type *ty)
 	 (type * 4) + (4 - count) with FLOAT->S(4B), DOUBLE->D(8B),
 	 LONGDOUBLE->Q(16B).  Map the register width onto that type axis.  */
       first_level_element_type = FFI_TYPE_FLOAT + intlog2 ((int) reg_size) - 2;
-      return first_level_element_type * 4 + (4 - num_registers);
+      return first_level_element_type * 4 + (4 - नुमेरो_registers);
     }
 
   /* If the first member is not a floating point type, it's not an HFA.
@@ -312,24 +312,24 @@ is_vfp_type (const ffi_type *ty)
   switch (candidate)
     {
     case FFI_TYPE_FLOAT:
-      ele_count = size / sizeof(float);
-      if (size != ele_count * sizeof(float))
+      ele_बिलांग = size / sizeof(float);
+      if (size != ele_बिलांग * sizeof(float))
         return 0;
       break;
     case FFI_TYPE_DOUBLE:
-      ele_count = size / sizeof(double);
-      if (size != ele_count * sizeof(double))
+      ele_बिलांग = size / sizeof(double);
+      if (size != ele_बिलांग * sizeof(double))
         return 0;
       break;
     case FFI_TYPE_LONGDOUBLE:
-      ele_count = size / sizeof(long double);
-      if (size != ele_count * sizeof(long double))
+      ele_बिलांग = size / sizeof(long double);
+      if (size != ele_बिलांग * sizeof(long double))
         return 0;
       break;
     default:
       return 0;
     }
-  if (ele_count > 4)
+  if (ele_बिलांग > 4)
     return 0;
 
   /* Finally, make sure that all scalar elements are the same type.  */
@@ -347,7 +347,7 @@ is_vfp_type (const ffi_type *ty)
 
   /* All tests succeeded.  Encode the result.  */
  done:
-  return candidate * 4 + (4 - (int)ele_count);
+  return candidate * 4 + (4 - (int)ele_बिलांग);
 }
 
 /* Representation of the procedure call argument marshalling
@@ -387,7 +387,7 @@ arg_init (struct arg_state *state, size_t size)
 
 /* Allocate an aligned slot on the stack and return a pointer to it.  */
 static void *
-allocate_to_stack (struct arg_state *state, void *stack,
+allocate_to_सालानसान (struct arg_state *state, void *सालानसान,
 		   size_t alignment, size_t size)
 {
   size_t nsaa = state->nsaa;
@@ -405,14 +405,14 @@ allocate_to_stack (struct arg_state *state, void *stack,
   nsaa = FFI_ALIGN (nsaa, alignment);
   state->nsaa = nsaa + size;
 
-  return (char *)stack + nsaa;
+  return (char *)सालानसान + nsaa;
 }
 
 /* Allocate and copy a structure that is passed by value on the stack and
    return a pointer to it.  */
 static void *
-allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
-				   size_t alignment, size_t size, void *value)
+allocate_and_copy_struct_to_सालानसान (struct arg_state *state, void *सालानसान,
+				   size_t alignment, size_t size, void *हालागा)
 {
   size_t dest = state->next_struct_area - size;
 
@@ -420,7 +420,7 @@ allocate_and_copy_struct_to_stack (struct arg_state *state, void *stack,
   dest = FFI_ALIGN_DOWN (dest, alignment);
   state->next_struct_area = dest;
 
-  return memcpy ((char *) stack + dest, value, size);
+  return memcpy ((char *) सालानसान + dest, हालागा, size);
 }
 
 static ffi_arg
@@ -624,21 +624,21 @@ compress_hfa_type (void *dest, void *reg, int h)
    to the allocated space.  */
 
 static void *
-allocate_int_to_reg_or_stack (struct call_context *context,
+allocate_int_to_reg_or_सालानसान (struct call_context *context,
 			      struct arg_state *state,
-			      void *stack, size_t size)
+			      void *सालानसान, size_t size)
 {
   if (state->ngrn < N_X_ARG_REG)
     return (char *)&context->x[state->ngrn++] + BE (sizeof (UINT64) - size);
 
   state->ngrn = N_X_ARG_REG;
-  return (char *)allocate_to_stack (state, stack, size, size)
+  return (char *)allocate_to_सालानसान (state, सालानसान, size, size)
 	 + BE (sizeof (UINT64) - size);
 }
 
 static void *
-allocate_int128_to_reg_or_stack (struct call_context *context,
-			         struct arg_state *state, void *stack)
+allocate_int128_to_reg_or_सालानसान (struct call_context *context,
+			         struct arg_state *state, void *सालानसान)
 {
   unsigned ngrn = state->ngrn;
   void *ret;
@@ -657,7 +657,7 @@ allocate_int128_to_reg_or_stack (struct call_context *context,
     }
   else
     {
-      ret = allocate_to_stack (state, stack, 16, 16);
+      ret = allocate_to_सालानसान (state, सालानसान, 16, 16);
       ngrn = N_X_ARG_REG;
     }
   state->ngrn = ngrn;
@@ -804,16 +804,16 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 	      void **avalue, void *closure)
 {
   struct call_context *context;
-  void *stack, *frame, *rvalue;
+  void *सालानसान, *frame, *rvalue;
   struct arg_state state;
-  size_t stack_bytes, rtype_size, rsize;
+  size_t सालानसान_bytes, rtype_size, rsize;
   int i, nargs, flags, isvariadic = 0;
   ffi_type *rtype;
 
   flags = cif->flags;
   rtype = cif->rtype;
   rtype_size = rtype->size;
-  stack_bytes = cif->bytes;
+  सालानसान_bytes = cif->bytes;
 
   if (flags & AARCH64_FLAG_VARARG)
   {
@@ -837,12 +837,12 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 
   /* Allocate consecutive stack for everything we'll need.
      The frame uses 40 bytes for: lr, fp, rvalue, flags, sp */
-  context = alloca (sizeof(struct call_context) + stack_bytes + 40 + rsize);
-  stack = context + 1;
-  frame = (void*)((uintptr_t)stack + (uintptr_t)stack_bytes);
+  context = alloca (sizeof(struct call_context) + सालानसान_bytes + 40 + rsize);
+  सालानसान = context + 1;
+  frame = (void*)((uintptr_t)सालानसान + (uintptr_t)सालानसान_bytes);
   rvalue = (rsize ? (void*)((uintptr_t)frame + 40) : orig_rvalue);
 
-  arg_init (&state, stack_bytes);
+  arg_init (&state, सालानसान_bytes);
   for (i = 0, nargs = cif->nargs; i < nargs; i++)
     {
       ffi_type *ty = cif->arg_types[i];
@@ -877,7 +877,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 	      context->x[state.ngrn++] = ext;
 	    else
 	      {
-		void *d = allocate_to_stack (&state, stack, ty->alignment, s);
+		void *d = allocate_to_सालानसान (&state, सालानसान, ty->alignment, s);
 		state.ngrn = N_X_ARG_REG;
 		/* Note that the default abi extends each argument
 		   to a full 64-bit slot, while the iOS abi allocates
@@ -893,7 +893,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 
 	case FFI_TYPE_UINT128:
 	case FFI_TYPE_SINT128:
-	  dest = allocate_int128_to_reg_or_stack (context, &state, stack);
+	  dest = allocate_int128_to_reg_or_सालानसान (context, &state, सालानसान);
 	  memcpy (dest, a, 16);
 	  break;
 
@@ -918,7 +918,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
                   break;
                 }
                 state.nsrn = N_X_ARG_REG;
-                dest = allocate_to_stack(&state, stack, ty->alignment, s);
+                dest = allocate_to_सालानसान(&state, सालानसान, ty->alignment, s);
               }
               else
               {
@@ -930,7 +930,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
                   break;
                 }
                 state.nsrn = N_V_ARG_REG;
-                dest = (char *)allocate_to_stack (&state, stack, ty->alignment, s)
+                dest = (char *)allocate_to_सालानसान (&state, सालानसान, ty->alignment, s)
                        + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
               }
 	      }
@@ -939,7 +939,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 		/* If the argument is a composite type that is larger than 16
 		   bytes, then the argument is copied to memory, and
 		   the argument is replaced by a pointer to the copy.  */
-		dest = allocate_and_copy_struct_to_stack (&state, stack,
+		dest = allocate_and_copy_struct_to_सालानसान (&state, सालानसान,
 							  ty->alignment, s,
 							  avalue[i]);
 		a = &dest;
@@ -966,7 +966,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *orig_rvalue,
 		       adjusted and the argument is copied to memory at the
 		       adjusted NSAA.  */
 		    state.ngrn = N_X_ARG_REG;
-		    dest = allocate_to_stack (&state, stack, ty->alignment, s);
+		    dest = allocate_to_सालानसान (&state, सालानसान, ty->alignment, s);
 		  }
 		}
 	      memcpy (dest, a, s);
@@ -1039,7 +1039,7 @@ ffi_prep_closure_loc (ffi_closure *closure,
 #if FFI_EXEC_TRAMPOLINE_TABLE
 # ifdef __MACH__
 #  ifdef HAVE_ARM64E_PTRAUTH
-  codeloc = ptrauth_auth_data(codeloc, ptrauth_key_function_pointer, 0);
+  codeloc = ptrauth_auth_data(codeloc, ptrauth_सुसि_function_pointer, 0);
 #  endif
   void **config = (void **)((uint8_t *)codeloc - PAGE_MAX_SIZE);
   config[0] = closure;
@@ -1141,7 +1141,7 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 			void (*fun)(ffi_cif*,void*,void**,void*),
 			void *user_data,
 			struct call_context *context,
-			void *stack, void *rvalue, void *struct_rvalue)
+			void *सालानसान, void *rvalue, void *struct_rvalue)
 {
   void **avalue = (void**) alloca (cif->nargs * sizeof (void*));
   int i, h, nargs, flags, isvariadic = 0;
@@ -1178,12 +1178,12 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 	case FFI_TYPE_UINT64:
 	case FFI_TYPE_SINT64:
 	case FFI_TYPE_POINTER:
-	  avalue[i] = allocate_int_to_reg_or_stack (context, &state, stack, s);
+	  avalue[i] = allocate_int_to_reg_or_सालानसान (context, &state, सालानसान, s);
 	  break;
 
 	case FFI_TYPE_UINT128:
 	case FFI_TYPE_SINT128:
-	  avalue[i] = allocate_int128_to_reg_or_stack (context, &state, stack);
+	  avalue[i] = allocate_int128_to_reg_or_सालानसान (context, &state, सालानसान);
 	  break;
 
 	case FFI_TYPE_FLOAT:
@@ -1216,7 +1216,7 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                     {
                       state.ngrn = N_X_ARG_REG;
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (char *)allocate_to_सालानसान (&state, सालानसान,
                                                              ty->alignment, s)
                                   + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
                     }
@@ -1232,7 +1232,7 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
                   else
                     {
                       state.nsrn = N_V_ARG_REG;
-                      avalue[i] = (char *)allocate_to_stack (&state, stack,
+                      avalue[i] = (char *)allocate_to_सालानसान (&state, सालानसान,
                                                              ty->alignment, s)
                                   + (t == FFI_TYPE_FLOAT ? BE (sizeof (UINT64) - s) : 0);
                     }
@@ -1245,13 +1245,13 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
 #ifdef __ILP32__
              UINT64 avalue_tmp;
              memcpy (&avalue_tmp,
-                  allocate_int_to_reg_or_stack (context, &state,
-                                               stack, sizeof (void *)),
+                  allocate_int_to_reg_or_सालानसान (context, &state,
+                                               सालानसान, sizeof (void *)),
                   sizeof (UINT64));
              avalue[i] = (void *)(UINT32)avalue_tmp;
 #else
               avalue[i] = *(void **)
-              allocate_int_to_reg_or_stack (context, &state, stack,
+              allocate_int_to_reg_or_सालानसान (context, &state, सालानसान,
                                          sizeof (void *));
 #endif
             }
@@ -1266,7 +1266,7 @@ ffi_closure_SYSV_inner (ffi_cif *cif,
               else
                 {
                   state.ngrn = N_X_ARG_REG;
-                  avalue[i] = allocate_to_stack(&state, stack,
+                  avalue[i] = allocate_to_सालानसान(&state, सालानसान,
                                            ty->alignment, s);
                 }
             }

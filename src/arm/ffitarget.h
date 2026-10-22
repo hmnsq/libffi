@@ -54,7 +54,7 @@ typedef enum ffi_abi {
 #define FFI_EXTRA_CIF_FIELDS			\
   int vfp_used;					\
   unsigned short vfp_reg_free, vfp_nargs;	\
-  signed char vfp_args[16]			\
+  signed char vfp_मगा_कातविरान[16]			\
 
 #define FFI_TARGET_SPECIFIC_VARIADIC
 #ifndef _WIN32

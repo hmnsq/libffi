@@ -39,9 +39,9 @@
 
 /* About the LINUX64 ABI.  */
 enum {
-  NUM_GPR_ARG_REGISTERS64 = 8,
-  NUM_FPR_ARG_REGISTERS64 = 13,
-  NUM_VEC_ARG_REGISTERS64 = 12,
+  नुमेरो_GPR_ARG_REGISTERS64 = 8,
+  नुमेरो_FPR_ARG_REGISTERS64 = 13,
+  नुमेरो_VEC_ARG_REGISTERS64 = 12,
 };
 enum { ASM_NEEDS_REGISTERS64 = 4 };
 
@@ -170,7 +170,7 @@ ffi_prep_cif_linux64_core (ffi_cif *cif)
 {
   ffi_type **ptr;
   unsigned bytes;
-  unsigned i, fparg_count = 0, intarg_count = 0, vecarg_count = 0;
+  unsigned i, fparg_बिलांग = 0, intarg_बिलांग = 0, vecarg_बिलांग = 0;
   unsigned flags = cif->flags;
   unsigned elt, elnum, rtype;
 
@@ -197,14 +197,14 @@ ffi_prep_cif_linux64_core (ffi_cif *cif)
   bytes = (4 + ASM_NEEDS_REGISTERS64) * sizeof (long);
 
   /* Space for the general registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS64 * sizeof (long);
+  bytes += नुमेरो_GPR_ARG_REGISTERS64 * sizeof (long);
 #else
   /* Space for backchain, CR, LR, cc/ld doubleword, TOC and the asm's temp
      regs.  */
   bytes = (6 + ASM_NEEDS_REGISTERS64) * sizeof (long);
 
   /* Space for the mandatory parm save area and general registers.  */
-  bytes += 2 * NUM_GPR_ARG_REGISTERS64 * sizeof (long);
+  bytes += 2 * नुमेरो_GPR_ARG_REGISTERS64 * sizeof (long);
 #endif
 
   /* Return value handling.  */
@@ -253,7 +253,7 @@ homogeneous:
           break;
         }
 #endif
-      intarg_count++;
+      intarg_बिलांग++;
       flags |= FLAG_RETVAL_REFERENCE;
       /* Fall through.  */
     case FFI_TYPE_VOID:
@@ -321,25 +321,25 @@ homogeneous:
 	case FFI_TYPE_LONGDOUBLE:
           if ((cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count++;
+              vecarg_बिलांग++;
               /* Align to 16 bytes, plus the 16-byte argument. */
-              intarg_count = (intarg_count + 3) & ~0x1;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              intarg_बिलांग = (intarg_बिलांग + 3) & ~0x1;
+              if (vecarg_बिलांग > नुमेरो_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
               break;
             }
 	  if ((cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
-	      fparg_count++;
-	      intarg_count++;
+	      fparg_बिलांग++;
+	      intarg_बिलांग++;
 	    }
 	  /* Fall through.  */
 #endif
 	case FFI_TYPE_DOUBLE:
 	case FFI_TYPE_FLOAT:
-	  fparg_count++;
-	  intarg_count++;
-	  if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	  fparg_बिलांग++;
+	  intarg_बिलांग++;
+	  if (fparg_बिलांग > नुमेरो_FPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
 	  break;
 
@@ -351,16 +351,16 @@ homogeneous:
 		align = 16;
 	      align = align / 8;
 	      if (align > 1)
-		intarg_count = FFI_ALIGN (intarg_count, align);
+		intarg_बिलांग = FFI_ALIGN (intarg_बिलांग, align);
 	    }
-	  intarg_count += ((*ptr)->size + 7) / 8;
+	  intarg_बिलांग += ((*ptr)->size + 7) / 8;
 	  elt = discover_homogeneous_aggregate (cif->abi, *ptr, &elnum);
 #if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
           if (elt == FFI_TYPE_LONGDOUBLE &&
               (cif->abi & FFI_LINUX_LONG_DOUBLE_IEEE128) != 0)
             {
-              vecarg_count += elnum;
-              if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+              vecarg_बिलांग += elnum;
+              if (vecarg_बिलांग > नुमेरो_VEC_ARG_REGISTERS64)
                 flags |= FLAG_ARG_NEEDS_PSAVE;
               break;
             }
@@ -368,13 +368,13 @@ homogeneous:
 #endif
 	  if (elt)
 	    {
-	      fparg_count += elnum;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_बिलांग += elnum;
+	      if (fparg_बिलांग > नुमेरो_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
 	  else
 	    {
-	      if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	      if (intarg_बिलांग > नुमेरो_GPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	    }
 	  break;
@@ -391,8 +391,8 @@ homogeneous:
 	case FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 8-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  intarg_count++;
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  intarg_बिलांग++;
+	  if (intarg_बिलांग > नुमेरो_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
 	  break;
 
@@ -414,9 +414,9 @@ homogeneous:
 	    {
 	    case FFI_TYPE_FLOAT:
 	    case FFI_TYPE_DOUBLE:
-	      fparg_count += 2;
-	      intarg_count += 2;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_बिलांग += 2;
+	      intarg_बिलांग += 2;
+	      if (fparg_बिलांग > नुमेरो_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	      break;
 #if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
@@ -425,18 +425,18 @@ homogeneous:
 		{
 		  /* Two IEEE-128 halves: each occupies a vector register plus
 		     two GPR shadow doublewords, the pair 16-byte aligned.  */
-		  vecarg_count += 2;
-		  intarg_count = (intarg_count + 1) & ~0x1;
-		  intarg_count += 4;
-		  if (vecarg_count > NUM_VEC_ARG_REGISTERS64)
+		  vecarg_बिलांग += 2;
+		  intarg_बिलांग = (intarg_बिलांग + 1) & ~0x1;
+		  intarg_बिलांग += 4;
+		  if (vecarg_बिलांग > नुमेरो_VEC_ARG_REGISTERS64)
 		    flags |= FLAG_ARG_NEEDS_PSAVE;
 		  break;
 		}
 	      /* IBM-128: each half is a pair of FPRs, and each FPR half
 		 consumes a GPR shadow doubleword -- four of each in total.  */
-	      fparg_count += 4;
-	      intarg_count += 4;
-	      if (fparg_count > NUM_FPR_ARG_REGISTERS64)
+	      fparg_बिलांग += 4;
+	      intarg_बिलांग += 4;
+	      if (fparg_बिलांग > नुमेरो_FPR_ARG_REGISTERS64)
 		flags |= FLAG_ARG_NEEDS_PSAVE;
 	      break;
 #endif
@@ -446,12 +446,12 @@ homogeneous:
 	    case FFI_TYPE_SINT32: case FFI_TYPE_UINT32:
 	    case FFI_TYPE_SINT64: case FFI_TYPE_UINT64:
 	    case FFI_TYPE_POINTER:
-	      intarg_count += 2;
+	      intarg_बिलांग += 2;
 	      break;
 	    default:
 	      return FFI_BAD_TYPEDEF;
 	    }
-	  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
+	  if (intarg_बिलांग > नुमेरो_GPR_ARG_REGISTERS64)
 	    flags |= FLAG_ARG_NEEDS_PSAVE;
 	  break;
 #endif
@@ -461,29 +461,29 @@ homogeneous:
 	}
     }
 
-  if (fparg_count != 0)
+  if (fparg_बिलांग != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (intarg_count > 4)
+  if (intarg_बिलांग > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
-  if (vecarg_count != 0)
+  if (vecarg_बिलांग != 0)
     flags |= FLAG_VEC_ARGUMENTS;
 
   /* Space for the FPR registers, if needed.  */
-  if (fparg_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS64 * sizeof (double);
+  if (fparg_बिलांग != 0)
+    bytes += नुमेरो_FPR_ARG_REGISTERS64 * sizeof (double);
   /* Space for the vector registers, if needed, aligned to 16 bytes. */
-  if (vecarg_count != 0) {
+  if (vecarg_बिलांग != 0) {
     bytes = (bytes + 15) & ~0xF;
-    bytes += NUM_VEC_ARG_REGISTERS64 * sizeof (float128);
+    bytes += नुमेरो_VEC_ARG_REGISTERS64 * sizeof (float128);
   }
 
   /* Stack space.  */
 #if _CALL_ELF == 2
   if ((flags & FLAG_ARG_NEEDS_PSAVE) != 0)
-    bytes += intarg_count * sizeof (long);
+    bytes += intarg_बिलांग * sizeof (long);
 #else
-  if (intarg_count > NUM_GPR_ARG_REGISTERS64)
-    bytes += (intarg_count - NUM_GPR_ARG_REGISTERS64) * sizeof (long);
+  if (intarg_बिलांग > नुमेरो_GPR_ARG_REGISTERS64)
+    bytes += (intarg_बिलांग - नुमेरो_GPR_ARG_REGISTERS64) * sizeof (long);
 #endif
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
@@ -578,7 +578,7 @@ ffi_prep_cif_linux64_var (ffi_cif *cif,
 */
 
 void FFI_HIDDEN
-ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
+ffi_prep_args64 (extended_cif *ecif, unsigned long *const सालानसान)
 {
   const unsigned long bytes = ecif->cif->bytes;
   const unsigned long flags = ecif->cif->flags;
@@ -606,14 +606,14 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
   /* 'fpr_base' points at the space for f1, and grows upwards as
      we use FPR registers.  */
   valp fpr_base;
-  unsigned int fparg_count;
+  unsigned int fparg_बिलांग;
 
   /* 'vec_base' points at the space for v2, and grows upwards as
      we use vector registers.  */
   valp vec_base;
-  unsigned int vecarg_count;
+  unsigned int vecarg_बिलांग;
 
-  unsigned int i, words, nargs, nfixedargs;
+  unsigned int i, मगा_सालिता, nargs, nfixedargs;
   ffi_type **ptr;
   double double_tmp;
   union
@@ -634,27 +634,27 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
   unsigned long gprvalue;
   unsigned long align;
 
-  stacktop.c = (char *) stack + bytes;
-  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - NUM_GPR_ARG_REGISTERS64;
-  gpr_end.ul = gpr_base.ul + NUM_GPR_ARG_REGISTERS64;
+  stacktop.c = (char *) सालानसान + bytes;
+  gpr_base.ul = stacktop.ul - ASM_NEEDS_REGISTERS64 - नुमेरो_GPR_ARG_REGISTERS64;
+  gpr_end.ul = gpr_base.ul + नुमेरो_GPR_ARG_REGISTERS64;
 #if _CALL_ELF == 2
-  rest.ul = stack + 4 + NUM_GPR_ARG_REGISTERS64;
+  rest.ul = सालानसान + 4 + नुमेरो_GPR_ARG_REGISTERS64;
 #else
-  rest.ul = stack + 6 + NUM_GPR_ARG_REGISTERS64;
+  rest.ul = सालानसान + 6 + नुमेरो_GPR_ARG_REGISTERS64;
 #endif
-  fpr_base.d = gpr_base.d - NUM_FPR_ARG_REGISTERS64;
-  fparg_count = 0;
+  fpr_base.d = gpr_base.d - नुमेरो_FPR_ARG_REGISTERS64;
+  fparg_बिलांग = 0;
   /* Place the vector args below the FPRs, if used, else the GPRs. */
   if (ecif->cif->flags & FLAG_FP_ARGUMENTS)
     vec_base.p = fpr_base.p & ~0xF;
   else
     vec_base.p = gpr_base.p;
-  vec_base.f128 -= NUM_VEC_ARG_REGISTERS64;
-  vecarg_count = 0;
+  vec_base.f128 -= नुमेरो_VEC_ARG_REGISTERS64;
+  vecarg_बिलांग = 0;
   next_arg.ul = gpr_base.ul;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT (((unsigned long) (char *) stack & 0xF) == 0);
+  FFI_ASSERT (((unsigned long) (char *) सालानसान & 0xF) == 0);
   FFI_ASSERT (((unsigned long) stacktop.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) gpr_base.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) gpr_end.c  & 0xF) == 0);
@@ -688,13 +688,13 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
               next_arg.p = FFI_ALIGN (next_arg.p, 16);
               if (next_arg.ul == gpr_end.ul)
                 next_arg.ul = rest.ul;
-              if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
+              if (vecarg_बिलांग < नुमेरो_VEC_ARG_REGISTERS64 && i < nfixedargs)
 		memcpy (vec_base.f128++, *p_argv.f128, sizeof (float128));
               else
 		memcpy (next_arg.f128, *p_argv.f128, sizeof (float128));
               if (++next_arg.f128 == gpr_end.f128)
                 next_arg.f128 = rest.f128;
-              vecarg_count++;
+              vecarg_बिलांग++;
               FFI_ASSERT (__LDBL_MANT_DIG__ == 113);
               FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
               break;
@@ -702,7 +702,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	  if ((ecif->cif->abi & FFI_LINUX_LONG_DOUBLE_128) != 0)
 	    {
 	      double_tmp = (*p_argv.d)[0];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
 		  *fpr_base.d++ = double_tmp;
 # if _CALL_ELF != 2
@@ -714,9 +714,9 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 		*next_arg.d = double_tmp;
 	      if (++next_arg.ul == gpr_end.ul)
 		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      fparg_बिलांग++;
 	      double_tmp = (*p_argv.d)[1];
-	      if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	      if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		{
 		  *fpr_base.d++ = double_tmp;
 # if _CALL_ELF != 2
@@ -728,7 +728,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 		*next_arg.d = double_tmp;
 	      if (++next_arg.ul == gpr_end.ul)
 		next_arg.ul = rest.ul;
-	      fparg_count++;
+	      fparg_बिलांग++;
 	      FFI_ASSERT (__LDBL_MANT_DIG__ == 106);
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	      break;
@@ -740,7 +740,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	do_double:
 #endif
 	  double_tmp = **p_argv.d;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
 	      *fpr_base.d++ = double_tmp;
 #if _CALL_ELF != 2
@@ -752,7 +752,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	    *next_arg.d = double_tmp;
 	  if (++next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  fparg_बिलांग++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	  break;
 
@@ -761,7 +761,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	do_float:
 #endif
 	  double_tmp = **p_argv.f;
-	  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+	  if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 	    {
 	      *fpr_base.d++ = double_tmp;
 #if _CALL_ELF != 2
@@ -785,7 +785,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	    }
 	  if (++next_arg.ul == gpr_end.ul)
 	    next_arg.ul = rest.ul;
-	  fparg_count++;
+	  fparg_बिलांग++;
 	  FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	  break;
 
@@ -810,13 +810,13 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 		  next_arg.p = FFI_ALIGN (next_arg.p, 16);
 		  if (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  if (vecarg_count < NUM_VEC_ARG_REGISTERS64 && i < nfixedargs)
+		  if (vecarg_बिलांग < नुमेरो_VEC_ARG_REGISTERS64 && i < nfixedargs)
 		    memcpy (vec_base.f128++, cval + j, sizeof (float128));
 		  else
 		    memcpy (next_arg.f128, cval + j, sizeof (float128));
 		  if (++next_arg.f128 == gpr_end.f128)
 		    next_arg.f128 = rest.f128;
-		  vecarg_count++;
+		  vecarg_बिलांग++;
 		}
 	      FFI_ASSERT (flags & FLAG_VEC_ARGUMENTS);
 	      break;
@@ -831,13 +831,13 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	      for (j = 0; j < 4; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
 		  else
 		    *next_arg.d = double_tmp;
 		  if (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_बिलांग++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	      break;
@@ -850,7 +850,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	      for (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
 		  else
 		    {
@@ -862,7 +862,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 		    }
 		  if (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_बिलांग++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
@@ -873,13 +873,13 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	      for (j = 0; j < 2; j++)
 		{
 		  double_tmp = cval[j];
-		  if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		  if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		    *fpr_base.d++ = double_tmp;
 		  else
 		    *next_arg.d = double_tmp;
 		  if (++next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
-		  fparg_count++;
+		  fparg_बिलांग++;
 		}
 	      FFI_ASSERT (flags & FLAG_FP_ARGUMENTS);
 	    }
@@ -957,14 +957,14 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
                 {
                   do
                     {
-                      if (vecarg_count < NUM_VEC_ARG_REGISTERS64
+                      if (vecarg_बिलांग < नुमेरो_VEC_ARG_REGISTERS64
                           && i < nfixedargs)
 		        memcpy (vec_base.f128++, arg.f128++, sizeof (float128));
                       else
 		        memcpy (next_arg.f128, arg.f128++, sizeof (float128));
                       if (++next_arg.f128 == gpr_end.f128)
                         next_arg.f128 = rest.f128;
-                      vecarg_count++;
+                      vecarg_बिलांग++;
                     }
                   while (--elnum != 0);
                 }
@@ -975,14 +975,14 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 		  do
 		    {
 		      double_tmp = *arg.f++;
-		      if (fparg_count < NUM_FPR_ARG_REGISTERS64
+		      if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64
 			  && i < nfixedargs)
 			*fpr_base.d++ = double_tmp;
 		      else
 			*next_arg.f = (float) double_tmp;
 		      if (++next_arg.f == gpr_end.f)
 			next_arg.f = rest.f;
-		      fparg_count++;
+		      fparg_बिलांग++;
 		    }
 		  while (--elnum != 0);
 		  if ((next_arg.p & 7) != 0)
@@ -993,13 +993,13 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 		do
 		  {
 		    double_tmp = *arg.d++;
-		    if (fparg_count < NUM_FPR_ARG_REGISTERS64 && i < nfixedargs)
+		    if (fparg_बिलांग < नुमेरो_FPR_ARG_REGISTERS64 && i < nfixedargs)
 		      *fpr_base.d++ = double_tmp;
 		    else
 		      *next_arg.d = double_tmp;
 		    if (++next_arg.d == gpr_end.d)
 		      next_arg.d = rest.d;
-		    fparg_count++;
+		    fparg_बिलांग++;
 		  }
 		while (--elnum != 0);
 #else
@@ -1011,13 +1011,13 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 	    }
 	  else
 	    {
-	      words = ((*ptr)->size + 7) / 8;
-	      if (next_arg.ul >= gpr_base.ul && next_arg.ul + words > gpr_end.ul)
+	      मगा_सालिता = ((*ptr)->size + 7) / 8;
+	      if (next_arg.ul >= gpr_base.ul && next_arg.ul + मगा_सालिता > gpr_end.ul)
 		{
 		  size_t first = gpr_end.c - next_arg.c;
 		  memcpy (next_arg.c, *p_argv.c, first);
 		  memcpy (rest.c, *p_argv.c + first, (*ptr)->size - first);
-		  next_arg.c = rest.c + words * 8 - first;
+		  next_arg.c = rest.c + मगा_सालिता * 8 - first;
 		}
 	      else
 		{
@@ -1030,7 +1030,7 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 		    where += 8 - (*ptr)->size;
 #endif
 		  memcpy (where, *p_argv.c, (*ptr)->size);
-		  next_arg.ul += words;
+		  next_arg.ul += मगा_सालिता;
 		  if (next_arg.ul == gpr_end.ul)
 		    next_arg.ul = rest.ul;
 		}
@@ -1076,13 +1076,13 @@ ffi_prep_args64 (extended_cif *ecif, unsigned long *const stack)
 
 
 #if _CALL_ELF == 2
-#define MIN_CACHE_LINE_SIZE 8
+#define MIN_CACHE_लिन्या_SIZE 8
 
 static void
 flush_icache (char *wraddr, char *xaddr, int size)
 {
   int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
+  for (i = 0; i < size; i += MIN_CACHE_लिन्या_SIZE)
     __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
   __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
@@ -1158,8 +1158,8 @@ ffi_closure_helper_LINUX64 (ffi_cif *cif,
   void **avalue;
   ffi_type **arg_types;
   unsigned long i, avn, nfixedargs;
-  ffi_dblfl *end_pfr = pfr + NUM_FPR_ARG_REGISTERS64;
-  float128 *end_pvec = pvec + NUM_VEC_ARG_REGISTERS64;
+  ffi_dblfl *end_pfr = pfr + नुमेरो_FPR_ARG_REGISTERS64;
+  float128 *end_pvec = pvec + नुमेरो_VEC_ARG_REGISTERS64;
   unsigned long align;
 
   avalue = alloca (cif->nargs * sizeof (void *));

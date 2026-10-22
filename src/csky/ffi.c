@@ -32,14 +32,14 @@
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments
 */
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
  register unsigned int i;
  register void **p_argv;
  register char *argp;
  register ffi_type **p_arg;
 
- argp = stack;
+ argp = सालानसान;
 
  if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
   *(void **) argp = ecif->rvalue;
@@ -219,18 +219,18 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 
 /** private members **/
 
-static void ffi_prep_incoming_args_SYSV (char *stack, void **ret,
-      void** args, ffi_cif* cif);
+static void ffi_prep_incoming_मगा_कातविरान_SYSV (char *सालानसान, void **ret,
+      void** मगा_कातविरान, ffi_cif* cif);
 
 void ffi_closure_SYSV (ffi_closure *);
 
 /* This function is jumped to by the trampoline */
 
 unsigned int
-ffi_closure_SYSV_inner (closure, respp, args)
+ffi_closure_SYSV_inner (closure, respp, मगा_कातविरान)
      ffi_closure *closure;
      void **respp;
-     void *args;
+     void *मगा_कातविरान;
 {
   // our various things...
   ffi_cif       *cif;
@@ -245,7 +245,7 @@ ffi_closure_SYSV_inner (closure, respp, args)
    * a structure, it will re-set RESP to point to the
    * structure return address.  */
 
-  ffi_prep_incoming_args_SYSV(args, respp, arg_area, cif);
+  ffi_prep_incoming_मगा_कातविरान_SYSV(मगा_कातविरान, respp, arg_area, cif);
 
   (closure->fun) (cif, *respp, arg_area, closure->user_data);
 
@@ -262,7 +262,7 @@ ffi_closure_SYSV_inner (closure, respp, args)
 
 
 static void
-ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
+ffi_prep_incoming_मगा_कातविरान_SYSV(char *सालानसान, void **rvalue,
        void **avalue, ffi_cif *cif)
 {
   register unsigned int i;
@@ -270,7 +270,7 @@ ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
   register char *argp;
   register ffi_type **p_arg;
 
-  argp = stack;
+  argp = सालानसान;
 
   if ( cif->flags == FFI_TYPE_STRUCT ) {
     *rvalue = *(void **) argp;

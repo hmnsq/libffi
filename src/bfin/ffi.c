@@ -45,7 +45,7 @@
 /*====================================================================*/
 /*                          PROTOTYPE          *
  /*====================================================================*/
-void ffi_prep_args(unsigned char *, extended_cif *);
+void ffi_prep_मगा_कातविरान(unsigned char *, extended_cif *);
 
 /*====================================================================*/
 /*                          Externals                                 */
@@ -127,7 +127,7 @@ void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 
    switch (cif->abi) {
       case FFI_SYSV:
-         ffi_call_SYSV(cif->bytes, &ecif, ffi_prep_args, ret_type, ecif.rvalue, fn);
+         ffi_call_SYSV(cif->bytes, &ecif, ffi_prep_मगा_कातविरान, ret_type, ecif.rvalue, fn);
          break;
       default:
          FFI_ASSERT(0);
@@ -141,13 +141,13 @@ void ffi_call(ffi_cif *cif, void(*fn)(void), void *rvalue, void **avalue)
 *  to call the function (ffi_prep_args is called by the assembly routine in file
 *  sysv.S, which also calls the actual function)
 */
-void ffi_prep_args(unsigned char *stack, extended_cif *ecif)
+void ffi_prep_मगा_कातविरान(unsigned char *सालानसान, extended_cif *ecif)
 {
    register unsigned int i = 0;
    void **p_argv;
    unsigned char *argp;
    ffi_type **p_arg;
-   argp = stack;
+   argp = सालानसान;
    p_argv = ecif->avalue;
    for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
         (i != 0);

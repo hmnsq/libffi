@@ -62,7 +62,7 @@ union big_int_union
   UINT128 i128;
 };
 
-struct register_args
+struct register_मगा_कातविरान
 {
   /* Registers for argument passing.  */
   UINT64 gpr[MAX_GPR_REGS];
@@ -71,7 +71,7 @@ struct register_args
   UINT64 r10;	/* static chain */
 };
 
-extern void ffi_call_unix64 (void *args, unsigned long bytes, unsigned flags,
+extern void ffi_call_unix64 (void *मगा_कातविरान, unsigned long bytes, unsigned flags,
 			     void *raddr, void (*fnaddr)(void)) FFI_HIDDEN;
 
 /* All reference to register classes here is identical to the code in
@@ -242,7 +242,7 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
     case FFI_TYPE_STRUCT:
       {
 	const size_t UNITS_PER_WORD = 8;
-        size_t words = (type->size + byte_offset + UNITS_PER_WORD - 1)
+        size_t मगा_सालिता = (type->size + byte_offset + UNITS_PER_WORD - 1)
                        / UNITS_PER_WORD;
 	ffi_type **ptr;
 	unsigned int i;
@@ -252,12 +252,12 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 	if (type->size > 32)
 	  return 0;
 
-	for (i = 0; i < words; i++)
+	for (i = 0; i < मगा_सालिता; i++)
 	  classes[i] = X86_64_NO_CLASS;
 
 	/* Zero sized arrays or structures are NO_CLASS.  We return 0 to
 	   signalize memory class, so handle it as special case.  */
-	if (!words)
+	if (!मगा_सालिता)
 	  {
     case FFI_TYPE_VOID:
 	    classes[0] = X86_64_NO_CLASS;
@@ -267,15 +267,15 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 	/* Merge the fields of structure.  */
 	for (ptr = type->elements; *ptr != NULL; ptr++)
 	  {
-	    size_t num, pos;
+	    size_t नुमेरो, pos;
 
 	    byte_offset = FFI_ALIGN (byte_offset, (*ptr)->alignment);
 
-	    num = classify_argument (*ptr, subclasses, byte_offset % 8);
-	    if (num == 0)
+	    नुमेरो = classify_argument (*ptr, subclasses, byte_offset % 8);
+	    if (नुमेरो == 0)
 	      return 0;
             pos = byte_offset / 8;
-            for (i = 0; i < num && (i + pos) < words; i++)
+            for (i = 0; i < नुमेरो && (i + pos) < मगा_सालिता; i++)
 	      {
 		size_t pos = byte_offset / 8;
 		classes[i + pos] =
@@ -285,7 +285,7 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 	    byte_offset += (*ptr)->size;
 	  }
 
-	if (words > 2)
+	if (मगा_सालिता > 2)
 	  {
 	    /* When size > 16 bytes, if the first one isn't
 	       X86_64_SSE_CLASS or any other ones aren't
@@ -294,13 +294,13 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 	    if (classes[0] != X86_64_SSE_CLASS)
 	      return 0;
 
-	    for (i = 1; i < words; i++)
+	    for (i = 1; i < मगा_सालिता; i++)
 	      if (classes[i] != X86_64_SSEUP_CLASS)
 		return 0;
 	  }
 
 	/* Final merger cleanup.  */
-	for (i = 0; i < words; i++)
+	for (i = 0; i < मगा_सालिता; i++)
 	  {
 	    /* If one class is MEMORY, everything should be passed in
 	       memory.  */
@@ -328,7 +328,7 @@ classify_argument (ffi_type *type, enum x86_64_reg_class classes[],
 		return 0;
 	      }
 	  }
-	return words;
+	return मगा_सालिता;
       }
     case FFI_TYPE_VECTOR:
       /* A Short Vector occupies SSE registers: an 8-byte vector is a single
@@ -639,7 +639,7 @@ ffi_prep_cif_machdep (ffi_cif *cif)
 	}
     }
   if (ssecount)
-    flags |= UNIX64_FLAG_XMM_ARGS;
+    flags |= UNIX64_FLAG_XMM_मगा_कातविरान;
 
   cif->flags = flags;
   cif->bytes = (unsigned) FFI_ALIGN (bytes, 8);
@@ -655,10 +655,10 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	      void **avalue, void *closure)
 {
   enum x86_64_reg_class classes[MAX_CLASSES];
-  char *stack, *argp;
+  char *सालानसान, *argp;
   ffi_type **arg_types;
   int gprcount, ssecount, ngpr, nsse, i, avn, flags;
-  struct register_args *reg_args;
+  struct register_मगा_कातविरान *reg_मगा_कातविरान;
 
   /* Can't call 32-bit mode from 64-bit mode.  */
   FFI_ASSERT (cif->abi == FFI_UNIX64);
@@ -678,18 +678,18 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   avn = cif->nargs;
 
   /* Allocate the space for the arguments, plus 4 words of temp space.  */
-  stack = alloca (sizeof (struct register_args) + cif->bytes + 4*8);
-  reg_args = (struct register_args *) stack;
-  argp = stack + sizeof (struct register_args);
+  सालानसान = alloca (sizeof (struct register_मगा_कातविरान) + cif->bytes + 4*8);
+  reg_मगा_कातविरान = (struct register_मगा_कातविरान *) सालानसान;
+  argp = सालानसान + sizeof (struct register_मगा_कातविरान);
 
-  reg_args->r10 = (uintptr_t) closure;
+  reg_मगा_कातविरान->r10 = (uintptr_t) closure;
 
   gprcount = ssecount = 0;
 
   /* If the return value is passed in memory, add the pointer as the
      first integer argument.  */
   if (flags & UNIX64_FLAG_RET_IN_MEM)
-    reg_args->gpr[gprcount++] = (unsigned long) rvalue;
+    reg_मगा_कातविरान->gpr[gprcount++] = (unsigned long) rvalue;
 
   for (i = 0; i < avn; ++i)
     {
@@ -728,7 +728,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 		  /* The upper 8 bytes of the same %xmm register written by
 		     the preceding SSE class (e.g. the high half of a
 		     binary128 long double).  */
-		  memcpy ((char *) &reg_args->sse[ssecount - 1] + 8, a,
+		  memcpy ((char *) &reg_मगा_कातविरान->sse[ssecount - 1] + 8, a,
 			  size < 8 ? size : 8);
 		  break;
 		case X86_64_INTEGER_CLASS:
@@ -740,26 +740,26 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 		  switch (arg_types[i]->type)
 		    {
 		    case FFI_TYPE_SINT8:
-		      reg_args->gpr[gprcount] = (SINT64) *((SINT8 *) a);
+		      reg_मगा_कातविरान->gpr[gprcount] = (SINT64) *((SINT8 *) a);
 		      break;
 		    case FFI_TYPE_SINT16:
-		      reg_args->gpr[gprcount] = (SINT64) *((SINT16 *) a);
+		      reg_मगा_कातविरान->gpr[gprcount] = (SINT64) *((SINT16 *) a);
 		      break;
 		    case FFI_TYPE_SINT32:
-		      reg_args->gpr[gprcount] = (SINT64) *((SINT32 *) a);
+		      reg_मगा_कातविरान->gpr[gprcount] = (SINT64) *((SINT32 *) a);
 		      break;
 		    default:
-		      reg_args->gpr[gprcount] = 0;
-		      memcpy (&reg_args->gpr[gprcount], a, size <= 8 ? size : 8);
+		      reg_मगा_कातविरान->gpr[gprcount] = 0;
+		      memcpy (&reg_मगा_कातविरान->gpr[gprcount], a, size <= 8 ? size : 8);
 		    }
 		  gprcount++;
 		  break;
 		case X86_64_SSE_CLASS:
 		case X86_64_SSEDF_CLASS:
-		  memcpy (&reg_args->sse[ssecount++].i64, a, sizeof(UINT64));
+		  memcpy (&reg_मगा_कातविरान->sse[ssecount++].i64, a, sizeof(UINT64));
 		  break;
 		case X86_64_SSESF_CLASS:
-		  memcpy (&reg_args->sse[ssecount++].i32, a, sizeof(UINT32));
+		  memcpy (&reg_मगा_कातविरान->sse[ssecount++].i32, a, sizeof(UINT32));
 		  break;
 		default:
 		  abort();
@@ -767,9 +767,9 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	    }
 	}
     }
-  reg_args->rax = ssecount;
+  reg_मगा_कातविरान->rax = ssecount;
 
-  ffi_call_unix64 (stack, cif->bytes + sizeof (struct register_args),
+  ffi_call_unix64 (सालानसान, cif->bytes + sizeof (struct register_मगा_कातविरान),
 		   flags, rvalue, fn);
 }
 
@@ -798,7 +798,7 @@ enum ffi_move_op
   FFI_MOVE_GP64,                               /* copy a full 8-byte word -> gpr */
   FFI_MOVE_GP,                                 /* zero gpr, copy len(<8) bytes  */
   FFI_MOVE_SSE64, FFI_MOVE_SSE32,              /* copy 8/4 bytes -> sse slot    */
-  FFI_MOVE_STACK                               /* copy len bytes -> stack       */
+  FFI_MOVE_सालानसान                               /* copy len bytes -> stack       */
 };
 
 typedef struct
@@ -826,7 +826,7 @@ typedef struct
 
 /* Return of the lean trampoline / direct thunks: callee's rax in .i, xmm0 in .d. */
 struct ffi_ret2 { UINT64 i; double d; };
-extern struct ffi_ret2 ffi_plan_fast_call (struct register_args *img,
+extern struct ffi_ret2 ffi_plan_fast_call (struct register_मगा_कातविरान *img,
 					   void (*fn) (void)) FFI_HIDDEN;
 
 /* Count-based direct thunks: load avalue[0..N-1] into arg registers, call. */
@@ -917,10 +917,10 @@ build_plan (ffi_cif *cif)
 	  if (align < 8)
 	    align = 8;
 	  argp_off = FFI_ALIGN (argp_off, align);
-	  m->op = FFI_MOVE_STACK;
+	  m->op = FFI_MOVE_सालानसान;
 	  m->src_idx = i;
 	  m->src_off = 0;
-	  m->dst_off = (unsigned) (sizeof (struct register_args) + argp_off);
+	  m->dst_off = (unsigned) (sizeof (struct register_मगा_कातविरान) + argp_off);
 	  m->len = (unsigned) size;
 	  argp_off += size;
 	  continue;
@@ -955,14 +955,14 @@ build_plan (ffi_cif *cif)
 	      break;
 	    case X86_64_SSE_CLASS:
 	    case X86_64_SSEDF_CLASS:
-	      m.dst_off = (unsigned) (offsetof (struct register_args, sse)
+	      m.dst_off = (unsigned) (offsetof (struct register_मगा_कातविरान, sse)
 				      + ssecount * sizeof (union big_int_union));
 	      m.op = FFI_MOVE_SSE64;
 	      ssecount++;
 	      all_gp64 = 0;
 	      break;
 	    case X86_64_SSESF_CLASS:
-	      m.dst_off = (unsigned) (offsetof (struct register_args, sse)
+	      m.dst_off = (unsigned) (offsetof (struct register_मगा_कातविरान, sse)
 				      + ssecount * sizeof (union big_int_union));
 	      m.op = FFI_MOVE_SSE32;
 	      ssecount++;
@@ -1002,9 +1002,9 @@ plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
 	   void *rvalue, void **avalue)
 {
   unsigned flags = plan->flags;
-  struct register_args local __attribute__ ((aligned (16)));
-  char *stack = NULL;
-  struct register_args *reg_args;
+  struct register_मगा_कातविरान local __attribute__ ((aligned (16)));
+  char *सालानसान = NULL;
+  struct register_मगा_कातविरान *reg_मगा_कातविरान;
   unsigned k;
 
   if (rvalue == NULL)
@@ -1025,21 +1025,21 @@ plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
     }
 
   if (plan->fast)
-    reg_args = &local;			/* no stack args: fixed local image */
+    reg_मगा_कातविरान = &local;			/* no stack args: fixed local image */
   else
     {
-      stack = alloca (sizeof (struct register_args) + plan->bytes + 4 * 8);
-      reg_args = (struct register_args *) stack;
+      सालानसान = alloca (sizeof (struct register_मगा_कातविरान) + plan->bytes + 4 * 8);
+      reg_मगा_कातविरान = (struct register_मगा_कातविरान *) सालानसान;
     }
-  reg_args->r10 = 0;			/* closure (none for ffi_call) */
+  reg_मगा_कातविरान->r10 = 0;			/* closure (none for ffi_call) */
   if (plan->ret_in_mem)
-    reg_args->gpr[0] = (UINT64) (uintptr_t) rvalue;
+    reg_मगा_कातविरान->gpr[0] = (UINT64) (uintptr_t) rvalue;
 
   for (k = 0; k < plan->nmoves; k++)
     {
       ffi_move *m = &plan->moves[k];
       char *src = (char *) avalue[m->src_idx] + m->src_off;
-      char *dst = (char *) reg_args + m->dst_off;
+      char *dst = (char *) reg_मगा_कातविरान + m->dst_off;
       switch (m->op)
 	{
 	/* x86-64: unaligned scalar loads from avalue[] are fine. */
@@ -1050,22 +1050,22 @@ plan_exec (ffi_cif *cif, ffi_plan *plan, void (*fn) (void),
 	case FFI_MOVE_GP:    *(UINT64 *) dst = 0; memcpy (dst, src, m->len);     break;
 	case FFI_MOVE_SSE64: *(UINT64 *) dst = *(UINT64 *) src;                   break;
 	case FFI_MOVE_SSE32: *(UINT32 *) dst = *(UINT32 *) src;                   break;
-	case FFI_MOVE_STACK: memcpy (dst, src, m->len);                          break;
+	case FFI_MOVE_सालानसान: memcpy (dst, src, m->len);                          break;
 	}
     }
-  reg_args->rax = plan->ssecount;
+  reg_मगा_कातविरान->rax = plan->ssecount;
 
   if (plan->fast)
     {
       /* No stack args; lean trampoline + return store replicating the
 	 unix64.S store_table widths.  ret_in_mem already wrote gpr[0]. */
-      struct ffi_ret2 r = ffi_plan_fast_call (reg_args, fn);
+      struct ffi_ret2 r = ffi_plan_fast_call (reg_मगा_कातविरान, fn);
       if (rvalue != NULL)
 	store_ret (rvalue, plan->retcode, r);
       return;
     }
 
-  ffi_call_unix64 (stack, plan->bytes + sizeof (struct register_args),
+  ffi_call_unix64 (सालानसान, plan->bytes + sizeof (struct register_मगा_कातविरान),
 		   flags, rvalue, fn);
 }
 
@@ -1232,7 +1232,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
   if (cif->abi != FFI_UNIX64)
     return FFI_BAD_ABI;
 
-  if (cif->flags & UNIX64_FLAG_XMM_ARGS)
+  if (cif->flags & UNIX64_FLAG_XMM_मगा_कातविरान)
     dest = ffi_closure_unix64_sse;
   else
     dest = ffi_closure_unix64;
@@ -1269,7 +1269,7 @@ ffi_closure_unix64_inner(ffi_cif *cif,
 			 void (*fun)(ffi_cif*, void*, void**, void*),
 			 void *user_data,
 			 void *rvalue,
-			 struct register_args *reg_args,
+			 struct register_मगा_कातविरान *reg_मगा_कातविरान,
 			 char *argp)
 {
   void **avalue;
@@ -1288,7 +1288,7 @@ ffi_closure_unix64_inner(ffi_cif *cif,
     {
       /* On return, %rax will contain the address that was passed
 	 by the caller in %rdi.  */
-      void *r = (void *)(uintptr_t)reg_args->gpr[gprcount++];
+      void *r = (void *)(uintptr_t)reg_मगा_कातविरान->gpr[gprcount++];
       *(void **)rvalue = r;
       rvalue = r;
       flags = (sizeof(void *) == 4 ? UNIX64_RET_UINT32 : UNIX64_RET_INT64);
@@ -1325,12 +1325,12 @@ ffi_closure_unix64_inner(ffi_cif *cif,
 	  /* The argument is in a single register.  */
 	  if (SSE_CLASS_P (classes[0]))
 	    {
-	      avalue[i] = &reg_args->sse[ssecount];
+	      avalue[i] = &reg_मगा_कातविरान->sse[ssecount];
 	      ssecount += n;
 	    }
 	  else
 	    {
-	      avalue[i] = &reg_args->gpr[gprcount];
+	      avalue[i] = &reg_मगा_कातविरान->gpr[gprcount];
 	      gprcount += n;
 	    }
 	}
@@ -1347,11 +1347,11 @@ ffi_closure_unix64_inner(ffi_cif *cif,
 		/* The high half of the same %xmm register as the preceding
 		   SSE class (e.g. the upper bits of a binary128 long double);
 		   it does not consume another register.  */
-		memcpy (a, (char *) &reg_args->sse[ssecount - 1] + 8, 8);
+		memcpy (a, (char *) &reg_मगा_कातविरान->sse[ssecount - 1] + 8, 8);
 	      else if (SSE_CLASS_P (classes[j]))
-		memcpy (a, &reg_args->sse[ssecount++], 8);
+		memcpy (a, &reg_मगा_कातविरान->sse[ssecount++], 8);
 	      else
-		memcpy (a, &reg_args->gpr[gprcount++], 8);
+		memcpy (a, &reg_मगा_कातविरान->gpr[gprcount++], 8);
 	    }
 	}
     }
@@ -1385,7 +1385,7 @@ ffi_prep_go_closure (ffi_go_closure* closure, ffi_cif* cif,
   if (cif->abi != FFI_UNIX64)
     return FFI_BAD_ABI;
 
-  closure->tramp = (cif->flags & UNIX64_FLAG_XMM_ARGS
+  closure->tramp = (cif->flags & UNIX64_FLAG_XMM_मगा_कातविरान
 		    ? ffi_go_closure_unix64_sse
 		    : ffi_go_closure_unix64);
   closure->cif = cif;

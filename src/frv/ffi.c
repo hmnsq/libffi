@@ -34,16 +34,16 @@
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, extended_cif *ecif)
+void *ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
   register unsigned int i;
   register void **p_argv;
   register char *argp;
   register ffi_type **p_arg;
-  register int count = 0;
+  register int बिलांग = 0;
 
   p_argv = ecif->avalue;
-  argp = stack;
+  argp = सालानसान;
 
   for (i = ecif->cif->nargs, p_arg = ecif->cif->arg_types;
        (i != 0);
@@ -104,10 +104,10 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
 	}
       p_argv++;
       argp += z;
-      count += z;
+      बिलांग += z;
     }
 
-  return (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
+  return (सालानसान + ((बिलांग > 24) ? 24 : FFI_ALIGN_DOWN(बिलांग, 8)));
 }
 
 /* Perform machine dependent cif processing */
@@ -154,7 +154,7 @@ void ffi_call(ffi_cif *cif,
   switch (cif->abi) 
     {
     case FFI_EABI:
-      ffi_call_EABI(ffi_prep_args, &ecif, cif->bytes, 
+      ffi_call_EABI(ffi_prep_मगा_कातविरान, &ecif, cif->bytes, 
 		    cif->flags, ecif.rvalue, fn);
       break;
     default:
@@ -175,16 +175,16 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
   /* Arguments that don't fit in registers are found on the stack
      at a fixed offset above the current frame pointer.  */
   register char *frame_pointer __asm__ ("fp");
-  char *stack_args = frame_pointer + 16;
+  char *सालानसान_मगा_कातविरान = frame_pointer + 16;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
-  unsigned register_args[6] =
+  unsigned register_मगा_कातविरान[6] =
     { arg1, arg2, arg3, arg4, arg5, arg6 };
 
   ffi_cif *cif = closure->cif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
+  char *ptr = (char *) register_मगा_कातविरान;
   int i;
 
   /* Find the address of each argument.  */
@@ -218,8 +218,8 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 
       /* If we've handled more arguments than fit in registers,
 	 start looking at the those passed on the stack.  */
-      if (ptr == ((char *)register_args + (6*4)))
-	ptr = stack_args;
+      if (ptr == ((char *)register_मगा_कातविरान + (6*4)))
+	ptr = सालानसान_मगा_कातविरान;
     }
 
   /* Invoke the closure.  */

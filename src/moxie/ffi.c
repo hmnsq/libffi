@@ -32,16 +32,16 @@
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void *ffi_prep_args(char *stack, extended_cif *ecif)
+void *ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
   register unsigned int i;
   register void **p_argv;
   register char *argp;
   register ffi_type **p_arg;
-  register int count = 0;
+  register int बिलांग = 0;
 
   p_argv = ecif->avalue;
-  argp = stack;
+  argp = सालानसान;
 
   if (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
     {
@@ -97,10 +97,10 @@ void *ffi_prep_args(char *stack, extended_cif *ecif)
 	}
       p_argv++;
       argp += z;
-      count += z;
+      बिलांग += z;
     }
 
-  return (stack + ((count > 24) ? 24 : FFI_ALIGN_DOWN(count, 8)));
+  return (सालानसान + ((बिलांग > 24) ? 24 : FFI_ALIGN_DOWN(बिलांग, 8)));
 }
 
 /* Perform machine dependent cif processing */
@@ -170,7 +170,7 @@ void ffi_call(ffi_cif *cif,
   switch (cif->abi)
     {
     case FFI_EABI:
-      ffi_call_EABI(ffi_prep_args, &ecif, cif->bytes,
+      ffi_call_EABI(ffi_prep_मगा_कातविरान, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
       break;
     default:
@@ -196,23 +196,23 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
   void *struct_rvalue = (void *) arg1;
 
   /* 6 words reserved for register args + 3 words from jsr */
-  char *stack_args = frame_pointer + 9*4;
+  char *सालानसान_मगा_कातविरान = frame_pointer + 9*4;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
-  unsigned register_args[6] =
+  unsigned register_मगा_कातविरान[6] =
     { arg1, arg2, arg3, arg4, arg5, arg6 };
-  char *register_args_ptr = (char *) register_args;
+  char *register_मगा_कातविरान_ptr = (char *) register_मगा_कातविरान;
 
   ffi_cif *cif = closure->cif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
+  char *ptr = (char *) register_मगा_कातविरान;
   int i;
 
   /* preserve struct type return pointer passing */
   if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT)) {
     ptr += 4;
-    register_args_ptr = (char *)&register_args[1];
+    register_मगा_कातविरान_ptr = (char *)&register_मगा_कातविरान[1];
   }
 
   /* Find the address of each argument.  */
@@ -248,13 +248,13 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 	  break;
 	default:
 	  /* This is an 8-byte value.  */
-	  if (ptr == (char *) &register_args[5])
+	  if (ptr == (char *) &register_मगा_कातविरान[5])
 	    {
 	      /* The value is split across two locations */
 	      unsigned *ip = alloca(8);
 	      avalue[i] = ip;
 	      ip[0] = *(unsigned *) ptr;
-	      ip[1] = *(unsigned *) stack_args;
+	      ip[1] = *(unsigned *) सालानसान_मगा_कातविरान;
 	    }
 	  else
 	    {
@@ -267,10 +267,10 @@ void ffi_closure_eabi (unsigned arg1, unsigned arg2, unsigned arg3,
 
       /* If we've handled more arguments than fit in registers,
 	 start looking at the those passed on the stack.  */
-      if (ptr == (char *) &register_args[6])
-	ptr = stack_args;
-      else if (ptr == (char *) &register_args[7])
-	ptr = stack_args + 4;
+      if (ptr == (char *) &register_मगा_कातविरान[6])
+	ptr = सालानसान_मगा_कातविरान;
+      else if (ptr == (char *) &register_मगा_कातविरान[7])
+	ptr = सालानसान_मगा_कातविरान + 4;
     }
 
   /* Invoke the closure.  */

@@ -36,9 +36,9 @@
 #endif
 
 #if defined(__HITACHI__)
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 1
+#define STRUCT_हालागा_ADDRESS_WITH_ARG 1
 #else
-#define STRUCT_VALUE_ADDRESS_WITH_ARG 0
+#define STRUCT_हालागा_ADDRESS_WITH_ARG 0
 #endif
 
 /* If the structure has essentially an unique element, return its type.  */
@@ -108,7 +108,7 @@ return_type (ffi_type *arg)
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
   register unsigned int i;
   register int tmp;
@@ -122,13 +122,13 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 #endif
 
   tmp = 0;
-  argp = stack;
+  argp = सालानसान;
 
   if (return_type (ecif->cif->rtype) == FFI_TYPE_STRUCT)
     {
       *(void **) argp = ecif->rvalue;
       argp += 4;
-      ireg = STRUCT_VALUE_ADDRESS_WITH_ARG ? 1 : 0;
+      ireg = STRUCT_हालागा_ADDRESS_WITH_ARG ? 1 : 0;
     }
   else
     ireg = 0;
@@ -332,7 +332,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
   cif->flags = 0;
 
   greg = ((return_type (cif->rtype) == FFI_TYPE_STRUCT) &&
-	  STRUCT_VALUE_ADDRESS_WITH_ARG) ? 1 : 0;
+	  STRUCT_हालागा_ADDRESS_WITH_ARG) ? 1 : 0;
 
 #if defined(__SH4__)
   for (i = j = 0; i < cif->nargs && j < 12; i++)
@@ -434,7 +434,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   switch (cif->abi) 
     {
     case FFI_SYSV:
-      ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags, ecif.rvalue,
+      ffi_call_SYSV(ffi_prep_मगा_कातविरान, &ecif, cif->bytes, cif->flags, ecif.rvalue,
 		    fn);
       break;
     default:
@@ -450,7 +450,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 
 extern void ffi_closure_SYSV (void);
 #if defined(__SH4__)
-extern void __ic_invalidate (void *line);
+extern void __ic_invalidate (void *लिन्या);
 #endif
 
 ffi_status
@@ -529,7 +529,7 @@ ffi_closure_helper_SYSV (ffi_closure *closure, void *rvalue,
 
   /* Copy the caller's structure return value address so that the closure
      returns the data directly to the caller.  */
-  if (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_VALUE_ADDRESS_WITH_ARG)
+  if (cif->rtype->type == FFI_TYPE_STRUCT && STRUCT_हालागा_ADDRESS_WITH_ARG)
     {
       rvalue = (void *) *pgr++;
       ireg = 1;

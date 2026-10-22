@@ -41,7 +41,7 @@
 # define FFI_TYPE_LONGDOUBLE 4
 #endif
 
-extern void ffi_call_osf(void *stack, void *frame, unsigned flags,
+extern void ffi_call_osf(void *सालानसान, void *frame, unsigned flags,
 			 void *raddr, void (*fn)(void), void *closure)
 	FFI_HIDDEN;
 extern void ffi_closure_osf(void) FFI_HIDDEN;

@@ -26,7 +26,7 @@
 #define ASM_GLOBAL_DIRECTIVE .globl
 
 
-#define C_SYMBOL_NAME(name) name
+#define C_सिम्बोलो_NAME(name) name
 /* Macro for a label.  */
 #ifdef	__STDC__
 #define C_LABEL(name)		name##:
@@ -75,8 +75,8 @@
 #endif /* PROF */
 
 #define	ENTRY(name)							      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+  ASM_GLOBAL_DIRECTIVE C_सिम्बोलो_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_सिम्बोलो_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT
@@ -93,9 +93,9 @@
 /* EALIGN is like ENTRY, but does alignment to 'words'*4 bytes
    past a 2^align boundary.  */
 #ifdef PROF
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#define EFFI_ALIGN(name, alignt, मगा_सालिता)					      \
+  ASM_GLOBAL_DIRECTIVE C_सिम्बोलो_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_सिम्बोलो_NAME(name),@function)			      \
   .align ALIGNARG(2);							      \
   C_LABEL(name)								      \
   CALL_MCOUNT								      \
@@ -104,9 +104,9 @@
   EALIGN_W_##words;							      \
   0:
 #else /* PROF */
-#define EFFI_ALIGN(name, alignt, words)					      \
-  ASM_GLOBAL_DIRECTIVE C_SYMBOL_NAME(name);				      \
-  ASM_TYPE_DIRECTIVE (C_SYMBOL_NAME(name),@function)			      \
+#define EFFI_ALIGN(name, alignt, मगा_सालिता)					      \
+  ASM_GLOBAL_DIRECTIVE C_सिम्बोलो_NAME(name);				      \
+  ASM_TYPE_DIRECTIVE (C_सिम्बोलो_NAME(name),@function)			      \
   .align ALIGNARG(alignt);						      \
   EALIGN_W_##words;							      \
   C_LABEL(name)

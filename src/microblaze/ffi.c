@@ -34,17 +34,17 @@ extern void ffi_call_SYSV(void (*)(void*, extended_cif*), extended_cif*,
 extern void ffi_closure_SYSV(void);
 
 #define WORD_SIZE			sizeof(unsigned int)
-#define ARGS_REGISTER_SIZE	(WORD_SIZE * 6)
+#define मगा_कातविरान_REGISTER_SIZE	(WORD_SIZE * 6)
 #define WORD_FFI_ALIGN(x)		FFI_ALIGN(x, WORD_SIZE)
 
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
-void ffi_prep_args(void* stack, extended_cif* ecif)
+void ffi_prep_मगा_कातविरान(void* सालानसान, extended_cif* ecif)
 {
 	unsigned int i;
 	ffi_type** p_arg;
 	void** p_argv;
-	void* stack_args_p = stack;
+	void* सालानसान_मगा_कातविरान_p = सालानसान;
 
 	if (ecif == NULL || ecif->cif == NULL) {
 		return; /* no description to prepare */
@@ -58,9 +58,9 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 		/* if return type is a struct which is referenced on the stack/reg5,
 		 * by a pointer. Stored the return value pointer in r5.
 		 */
-		char* addr = stack_args_p;
+		char* addr = सालानसान_मगा_कातविरान_p;
 		memcpy(addr, &(ecif->rvalue), WORD_SIZE);
-		stack_args_p += WORD_SIZE;
+		सालानसान_मगा_कातविरान_p += WORD_SIZE;
 	}
 
 	if (ecif->avalue == NULL) {
@@ -72,26 +72,26 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 	{
 		size_t size = (*p_arg)->size;
 		int type = (*p_arg)->type;
-		void* value = p_argv[i];
-		char* addr = stack_args_p;
+		void* हालागा = p_argv[i];
+		char* addr = सालानसान_मगा_कातविरान_p;
 		int aligned_size = WORD_FFI_ALIGN(size);
 
 		/* force word alignment on the stack */
-		stack_args_p += aligned_size;
+		सालानसान_मगा_कातविरान_p += aligned_size;
 		
 		switch (type)
 		{
 			case FFI_TYPE_UINT8:
-				*(unsigned int *)addr = (unsigned int)*(UINT8*)(value);
+				*(unsigned int *)addr = (unsigned int)*(UINT8*)(हालागा);
 				break;
 			case FFI_TYPE_SINT8:
-				*(signed int *)addr = (signed int)*(SINT8*)(value);
+				*(signed int *)addr = (signed int)*(SINT8*)(हालागा);
 				break;
 			case FFI_TYPE_UINT16:
-				*(unsigned int *)addr = (unsigned int)*(UINT16*)(value);
+				*(unsigned int *)addr = (unsigned int)*(UINT16*)(हालागा);
 				break;
 			case FFI_TYPE_SINT16:
-				*(signed int *)addr = (signed int)*(SINT16*)(value);
+				*(signed int *)addr = (signed int)*(SINT16*)(हालागा);
 				break;
 			case FFI_TYPE_STRUCT:
 #if __BIG_ENDIAN__
@@ -119,7 +119,7 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 				 */
 				if (size < WORD_SIZE)
 				{
-				  memcpy (addr + (WORD_SIZE - size), value, size);
+				  memcpy (addr + (WORD_SIZE - size), हालागा, size);
 				  break;
 				}
 #endif
@@ -130,7 +130,7 @@ void ffi_prep_args(void* stack, extended_cif* ecif)
 			case FFI_TYPE_UINT64:
 			case FFI_TYPE_DOUBLE:
 			default:
-				memcpy(addr, value, aligned_size);
+				memcpy(addr, हालागा, aligned_size);
 		}
 	}
 }
@@ -165,7 +165,7 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 	switch (cif->abi)
 	{
 	case FFI_SYSV:
-		ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes, cif->flags,
+		ffi_call_SYSV(ffi_prep_मगा_कातविरान, &ecif, cif->bytes, cif->flags,
 				ecif.rvalue, fn, cif->rtype->type, cif->rtype->size);
 		break;
 	default:
@@ -174,7 +174,7 @@ void ffi_call(ffi_cif* cif, void (*fn)(void), void* rvalue, void** avalue)
 	}
 }
 
-void ffi_closure_call_SYSV(void* register_args, void* stack_args,
+void ffi_closure_call_SYSV(void* register_मगा_कातविरान, void* सालानसान_मगा_कातविरान,
 			ffi_closure* closure, void* rvalue,
 			unsigned int* rtype, unsigned int* rsize)
 {
@@ -195,15 +195,15 @@ void ffi_closure_call_SYSV(void* register_args, void* stack_args,
 
 	/* copy registers into stack clone */
 	int registers_used = cif->bytes;
-	if (registers_used > ARGS_REGISTER_SIZE) {
-		registers_used = ARGS_REGISTER_SIZE;
+	if (registers_used > मगा_कातविरान_REGISTER_SIZE) {
+		registers_used = मगा_कातविरान_REGISTER_SIZE;
 	}
-	memcpy(stackclone, register_args, registers_used);
+	memcpy(stackclone, register_मगा_कातविरान, registers_used);
 
 	/* copy stack allocated args into stack clone */
-	if (cif->bytes > ARGS_REGISTER_SIZE) {
-		int stack_used = cif->bytes - ARGS_REGISTER_SIZE;
-		memcpy(stackclone + ARGS_REGISTER_SIZE, stack_args, stack_used);
+	if (cif->bytes > मगा_कातविरान_REGISTER_SIZE) {
+		int सालानसान_used = cif->bytes - मगा_कातविरान_REGISTER_SIZE;
+		memcpy(stackclone + मगा_कातविरान_REGISTER_SIZE, सालानसान_मगा_कातविरान, सालानसान_used);
 	}
 
 	/* preserve struct type return pointer passing */

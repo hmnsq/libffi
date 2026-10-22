@@ -84,12 +84,12 @@
 /* SGI's strange assembler requires that we multiply by 4 rather 
    than shift left by FFI_FLAG_BITS */
 
-#define FFI_ARGS_D   FFI_TYPE_DOUBLE
-#define FFI_ARGS_F   FFI_TYPE_FLOAT
-#define FFI_ARGS_DD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_DOUBLE
-#define FFI_ARGS_FF  FFI_TYPE_FLOAT * 4 +  FFI_TYPE_FLOAT
-#define FFI_ARGS_FD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_FLOAT
-#define FFI_ARGS_DF  FFI_TYPE_FLOAT * 4 + FFI_TYPE_DOUBLE
+#define FFI_मगा_कातविरान_D   FFI_TYPE_DOUBLE
+#define FFI_मगा_कातविरान_F   FFI_TYPE_FLOAT
+#define FFI_मगा_कातविरान_DD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_DOUBLE
+#define FFI_मगा_कातविरान_FF  FFI_TYPE_FLOAT * 4 +  FFI_TYPE_FLOAT
+#define FFI_मगा_कातविरान_FD  FFI_TYPE_DOUBLE * 4 + FFI_TYPE_FLOAT
+#define FFI_मगा_कातविरान_DF  FFI_TYPE_FLOAT * 4 + FFI_TYPE_DOUBLE
 
 /* Needed for N32 structure returns */
 #define FFI_TYPE_SMALLSTRUCT  FFI_TYPE_UINT8
@@ -97,7 +97,7 @@
 
 #if 0
 /* The SGI assembler can't handle this.. */
-#define FFI_TYPE_STRUCT_DD (( FFI_ARGS_DD ) << 4) + FFI_TYPE_STRUCT
+#define FFI_TYPE_STRUCT_DD (( FFI_मगा_कातविरान_DD ) << 4) + FFI_TYPE_STRUCT
 /* (and so on) */
 #else
 /* ...so we calculate these by hand! */

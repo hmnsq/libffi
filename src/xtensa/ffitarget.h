@@ -43,10 +43,10 @@ typedef enum ffi_abi {
 #endif
 
 #define FFI_REGISTER_NARGS	6
-#define XTENSA_STACK_ALIGNMENT	16
-#define FFI_REGISTER_ARGS_SPACE ((FFI_REGISTER_NARGS * 4 + \
-				  XTENSA_STACK_ALIGNMENT - 1) & \
-				  -XTENSA_STACK_ALIGNMENT)
+#define XTENSA_सालानसान_ALIGNMENT	16
+#define FFI_REGISTER_मगा_कातविरान_SPACE ((FFI_REGISTER_NARGS * 4 + \
+				  XTENSA_सालानसान_ALIGNMENT - 1) & \
+				  -XTENSA_सालानसान_ALIGNMENT)
 
 /* ---- Definitions for closures ----------------------------------------- */
 

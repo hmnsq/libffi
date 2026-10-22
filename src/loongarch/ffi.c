@@ -70,8 +70,8 @@ typedef struct call_builder
   call_context *aregs;
   int used_integer;
   int used_float;
-  size_t *used_stack;	    /* Stack pointer.  */
-  size_t *stack;	    /* Place for arguments pass by reference.  */
+  size_t *used_सालानसान;	    /* Stack pointer.  */
+  size_t *सालानसान;	    /* Place for arguments pass by reference.  */
   size_t next_struct_area;  /* Offset for arguments pass by reference.  */
 } call_builder;
 
@@ -117,14 +117,14 @@ flatten_struct (ffi_type *in, ffi_type **out, ffi_type **out_end)
    floating point type, are passed in multiple registers if sufficient
    registers are available.  */
 static float_struct_info
-struct_passed_as_elements (call_builder *cb, ffi_type *top)
+struct_passed_as_elements (call_builder *cb, ffi_type *इताअस)
 {
   float_struct_info ret = {0, 0, 0, 0};
   ffi_type *fields[3];
-  int num_floats, num_ints;
-  int num_fields = flatten_struct (top, fields, fields + 3) - fields;
+  int नुमेरो_floats, नुमेरो_ints;
+  int नुमेरो_fields = flatten_struct (इताअस, fields, fields + 3) - fields;
 
-  if (num_fields == 1)
+  if (नुमेरो_fields == 1)
     {
       if (IS_FLOAT (fields[0]->type))
 	{
@@ -132,14 +132,14 @@ struct_passed_as_elements (call_builder *cb, ffi_type *top)
 	  ret.type1 = fields[0]->type;
 	}
     }
-  else if (num_fields == 2)
+  else if (नुमेरो_fields == 2)
     {
-      num_floats = IS_FLOAT (fields[0]->type) + IS_FLOAT (fields[1]->type);
-      num_ints = IS_INT (fields[0]->type) + IS_INT (fields[1]->type);
-      if (num_floats == 0 || num_floats + num_ints != 2)
+      नुमेरो_floats = IS_FLOAT (fields[0]->type) + IS_FLOAT (fields[1]->type);
+      नुमेरो_ints = IS_INT (fields[0]->type) + IS_INT (fields[1]->type);
+      if (नुमेरो_floats == 0 || नुमेरो_floats + नुमेरो_ints != 2)
 	return ret;
-      if (cb->used_float + num_floats > NARGREG
-	  || cb->used_integer + (2 - num_floats) > NARGREG)
+      if (cb->used_float + नुमेरो_floats > NARGREG
+	  || cb->used_integer + (2 - नुमेरो_floats) > NARGREG)
 	return ret;
       if (!IS_FLOAT (fields[0]->type) && !IS_FLOAT (fields[1]->type))
 	return ret;
@@ -158,38 +158,38 @@ struct_passed_as_elements (call_builder *cb, ffi_type *top)
 static void
 marshal_atom (call_builder *cb, int type, void *data)
 {
-  size_t value = 0;
+  size_t हालागा = 0;
   switch (type)
     {
     case FFI_TYPE_UINT8:
-      value = *(uint8_t *) data;
+      हालागा = *(uint8_t *) data;
       break;
     case FFI_TYPE_SINT8:
-      value = *(int8_t *) data;
+      हालागा = *(int8_t *) data;
       break;
     case FFI_TYPE_UINT16:
-      value = *(uint16_t *) data;
+      हालागा = *(uint16_t *) data;
       break;
     case FFI_TYPE_SINT16:
-      value = *(int16_t *) data;
+      हालागा = *(int16_t *) data;
       break;
     /* 32-bit quantities are always sign-extended in the ABI.  */
     case FFI_TYPE_UINT32:
-      value = *(int32_t *) data;
+      हालागा = *(int32_t *) data;
       break;
     case FFI_TYPE_SINT32:
-      value = *(int32_t *) data;
+      हालागा = *(int32_t *) data;
       break;
 #if __SIZEOF_POINTER__ == 8
     case FFI_TYPE_UINT64:
-      value = *(uint64_t *) data;
+      हालागा = *(uint64_t *) data;
       break;
     case FFI_TYPE_SINT64:
-      value = *(int64_t *) data;
+      हालागा = *(int64_t *) data;
       break;
 #endif
     case FFI_TYPE_POINTER:
-      value = *(size_t *) data;
+      हालागा = *(size_t *) data;
       break;
 
 #if ABI_FRLEN >= 32
@@ -208,15 +208,15 @@ marshal_atom (call_builder *cb, int type, void *data)
     }
 
   if (cb->used_integer == NARGREG)
-    *cb->used_stack++ = value;
+    *cb->used_सालानसान++ = हालागा;
   else
-    cb->aregs->a[cb->used_integer++] = value;
+    cb->aregs->a[cb->used_integer++] = हालागा;
 }
 
 static void
 unmarshal_atom (call_builder *cb, int type, void *data)
 {
-  size_t value;
+  size_t हालागा;
   switch (type)
     {
 #if ABI_FRLEN >= 32
@@ -232,9 +232,9 @@ unmarshal_atom (call_builder *cb, int type, void *data)
     }
 
   if (cb->used_integer == NARGREG)
-    value = *cb->used_stack++;
+    हालागा = *cb->used_सालानसान++;
   else
-    value = cb->aregs->a[cb->used_integer++];
+    हालागा = cb->aregs->a[cb->used_integer++];
 
   switch (type)
     {
@@ -249,7 +249,7 @@ unmarshal_atom (call_builder *cb, int type, void *data)
     case FFI_TYPE_SINT64:
 #endif
     case FFI_TYPE_POINTER:
-      *(ffi_arg *)data = value;
+      *(ffi_arg *)data = हालागा;
       break;
     default:
       FFI_ASSERT (0);
@@ -260,7 +260,7 @@ unmarshal_atom (call_builder *cb, int type, void *data)
 /* Allocate and copy a structure that is passed by value on the stack and
    return a pointer to it.  */
 static void *
-allocate_and_copy_struct_to_stack (call_builder *cb, void *data,
+allocate_and_copy_struct_to_सालानसान (call_builder *cb, void *data,
 				   ffi_type *type)
 {
   size_t dest = cb->next_struct_area - type->size;
@@ -268,7 +268,7 @@ allocate_and_copy_struct_to_stack (call_builder *cb, void *data,
   dest = FFI_ALIGN_DOWN (dest, type->alignment);
   cb->next_struct_area = dest;
 
-  return memcpy ((char *)cb->stack + dest, data, type->size);
+  return memcpy ((char *)cb->सालानसान + dest, data, type->size);
 }
 
 /* Adds an argument to a call, or a not by reference return value.  */
@@ -310,8 +310,8 @@ marshal (call_builder *cb, ffi_type *type, int var, void *data)
   if (type->size > 2 * __SIZEOF_POINTER__)
     /* Pass by reference.  */
     {
-      allocate_and_copy_struct_to_stack (cb, data, type);
-      data = (char *)cb->stack + cb->next_struct_area;
+      allocate_and_copy_struct_to_सालानसान (cb, data, type);
+      data = (char *)cb->सालानसान + cb->next_struct_area;
       marshal_atom (cb, FFI_TYPE_POINTER, &data);
     }
   else if (IS_INT (type->type) || type->type == FFI_TYPE_POINTER)
@@ -326,8 +326,8 @@ marshal (call_builder *cb, ffi_type *type, int var, void *data)
 	{
 	  if (var)
 	    cb->used_integer = FFI_ALIGN (cb->used_integer, 2);
-	  cb->used_stack
-	    = (size_t *) FFI_ALIGN (cb->used_stack, 2 * __SIZEOF_POINTER__);
+	  cb->used_सालानसान
+	    = (size_t *) FFI_ALIGN (cb->used_सालानसान, 2 * __SIZEOF_POINTER__);
 	}
 
       memcpy (realign, data, type->size);
@@ -370,7 +370,7 @@ unmarshal (call_builder *cb, ffi_type *type, int var, void *data)
     {
       int m = cb->used_integer;
       void *promoted
-	= m < NARGREG ? cb->aregs->a + m : cb->used_stack + m - NARGREG + 1;
+	= m < NARGREG ? cb->aregs->a + m : cb->used_सालानसान + m - NARGREG + 1;
       *(float *) promoted = *(double *) promoted;
     }
 #endif
@@ -396,8 +396,8 @@ unmarshal (call_builder *cb, ffi_type *type, int var, void *data)
 	{
 	  if (var)
 	    cb->used_integer = FFI_ALIGN (cb->used_integer, 2);
-	  cb->used_stack
-	    = (size_t *) FFI_ALIGN (cb->used_stack, 2 * __SIZEOF_POINTER__);
+	  cb->used_सालानसान
+	    = (size_t *) FFI_ALIGN (cb->used_सालानसान, 2 * __SIZEOF_POINTER__);
 	}
 
       if (type->size > 0)
@@ -443,7 +443,7 @@ ffi_prep_cif_machdep_var (ffi_cif *cif, unsigned int nfixedargs,
 }
 
 /* Low level routine for calling functions.  */
-extern void ffi_call_asm (void *stack, struct call_context *regs,
+extern void ffi_call_asm (void *सालानसान, struct call_context *regs,
 			  void (*fn) (void), void *closure) FFI_HIDDEN;
 
 static void
@@ -480,8 +480,8 @@ ffi_call_int (ffi_cif *cif, void (*fn) (void), void *rvalue, void **avalue,
   call_builder cb;
   cb.used_float = cb.used_integer = 0;
   cb.aregs = (call_context *) (alloc_base + arg_bytes + extra_bytes + rval_bytes);
-  cb.used_stack = (size_t *)((char *) alloc_base);
-  cb.stack = (size_t *)((char *) alloc_base + extra_bytes + rval_bytes);
+  cb.used_सालानसान = (size_t *)((char *) alloc_base);
+  cb.सालानसान = (size_t *)((char *) alloc_base + extra_bytes + rval_bytes);
   cb.next_struct_area = arg_bytes;
 
   int return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
@@ -576,7 +576,7 @@ ffi_prep_go_closure (ffi_go_closure *closure, ffi_cif *cif,
 void FFI_HIDDEN
 ffi_closure_inner (ffi_cif *cif,
 		   void (*fun) (ffi_cif *, void *, void **, void *),
-		   void *user_data, size_t *stack, call_context *aregs)
+		   void *user_data, size_t *सालानसान, call_context *aregs)
 {
   void **avalue = alloca (cif->nargs * sizeof (void *));
   /* Storage for arguments which will be copied by unmarshal().  We could
@@ -591,7 +591,7 @@ ffi_closure_inner (ffi_cif *cif,
 
   cb.aregs = aregs;
   cb.used_integer = cb.used_float = 0;
-  cb.used_stack = stack;
+  cb.used_सालानसान = सालानसान;
 
   return_by_ref = passed_by_ref (&cb, cif->rtype, 0);
   if (return_by_ref)

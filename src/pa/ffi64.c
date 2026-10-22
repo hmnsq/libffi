@@ -123,7 +123,7 @@ static inline int ffi_struct_type(ffi_type *t)
    NOTE: We load floating point args in this function... that means we
    assume gcc will not mess with fp regs in here.  */
 
-void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
+void ffi_prep_मगा_कातविरान_pa64(UINT64 *सालानसान, extended_cif *ecif, unsigned bytes)
 {
   register unsigned int i;
   register ffi_type **p_arg;
@@ -131,7 +131,7 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
   unsigned int slot = FIRST_ARG_SLOT;
   size_t len;
 
-  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, stack,
+  debug(1, "%s: stack = %p, ecif = %p, bytes = %u\n", __FUNCTION__, सालानसान,
 	ecif, bytes);
 
   p_arg = ecif->cif->arg_types;
@@ -146,27 +146,27 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
       switch (type)
 	{
 	case FFI_TYPE_SINT8:
-	  *(SINT64 *)(stack + slot) = *(SINT8 *)(*p_argv);
+	  *(SINT64 *)(सालानसान + slot) = *(SINT8 *)(*p_argv);
 	  break;
 
 	case FFI_TYPE_UINT8:
-	  *(UINT64 *)(stack + slot) = *(UINT8 *)(*p_argv);
+	  *(UINT64 *)(सालानसान + slot) = *(UINT8 *)(*p_argv);
 	  break;
 
 	case FFI_TYPE_SINT16:
-	  *(SINT64 *)(stack + slot) = *(SINT16 *)(*p_argv);
+	  *(SINT64 *)(सालानसान + slot) = *(SINT16 *)(*p_argv);
 	  break;
 
 	case FFI_TYPE_UINT16:
-	  *(UINT64 *)(stack + slot) = *(UINT16 *)(*p_argv);
+	  *(UINT64 *)(सालानसान + slot) = *(UINT16 *)(*p_argv);
 	  break;
 
 	case FFI_TYPE_SINT32:
-	  *(SINT64 *)(stack + slot) = *(SINT32 *)(*p_argv);
+	  *(SINT64 *)(सालानसान + slot) = *(SINT32 *)(*p_argv);
 	  break;
 
 	case FFI_TYPE_UINT32:
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
+	  *(UINT64 *)(सालानसान + slot) = *(UINT32 *)(*p_argv);
 	  break;
 
 	case FFI_TYPE_UINT64:
@@ -174,41 +174,41 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 	case FFI_TYPE_POINTER:
 	  debug(3, "Storing UINT64 %lu in slot %u\n", *(UINT64 *)(*p_argv),
 		slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
+	  *(UINT64 *)(सालानसान + slot) = *(UINT64 *)(*p_argv);
 	  break;
 
 	case FFI_TYPE_FLOAT:
 	  /* First 8 args go in fr4L - fr11L.  */
 	  debug(3, "Storing UINT32(float) in slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT32 *)(*p_argv);
+	  *(UINT64 *)(सालानसान + slot) = *(UINT32 *)(*p_argv);
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 4 args go in fr4L - fr7L.  */
-	    case 0: fldw(stack + slot, fr4); break;
-	    case 1: fldw(stack + slot, fr5); break;
-	    case 2: fldw(stack + slot, fr6); break;
-	    case 3: fldw(stack + slot, fr7); break;
-	    case 4: fldw(stack + slot, fr8); break;
-	    case 5: fldw(stack + slot, fr9); break;
-	    case 6: fldw(stack + slot, fr10); break;
-	    case 7: fldw(stack + slot, fr11); break;
+	    case 0: fldw(सालानसान + slot, fr4); break;
+	    case 1: fldw(सालानसान + slot, fr5); break;
+	    case 2: fldw(सालानसान + slot, fr6); break;
+	    case 3: fldw(सालानसान + slot, fr7); break;
+	    case 4: fldw(सालानसान + slot, fr8); break;
+	    case 5: fldw(सालानसान + slot, fr9); break;
+	    case 6: fldw(सालानसान + slot, fr10); break;
+	    case 7: fldw(सालानसान + slot, fr11); break;
 	    }
 	  break;
 
 	case FFI_TYPE_DOUBLE:
 	  debug(3, "Storing UINT64(double) at slot %u\n", slot);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
+	  *(UINT64 *)(सालानसान + slot) = *(UINT64 *)(*p_argv);
 	  switch (slot - FIRST_ARG_SLOT)
 	    {
 	    /* First 8 args go in fr4 to fr11.  */
-	    case 0: fldd(stack + slot, fr4); break;
-	    case 1: fldd(stack + slot, fr5); break;
-	    case 2: fldd(stack + slot, fr6); break;
-	    case 3: fldd(stack + slot, fr7); break;
-	    case 4: fldd(stack + slot, fr8); break;
-	    case 5: fldd(stack + slot, fr9); break;
-	    case 6: fldd(stack + slot, fr10); break;
-	    case 7: fldd(stack + slot, fr11); break;
+	    case 0: fldd(सालानसान + slot, fr4); break;
+	    case 1: fldd(सालानसान + slot, fr5); break;
+	    case 2: fldd(सालानसान + slot, fr6); break;
+	    case 3: fldd(सालानसान + slot, fr7); break;
+	    case 4: fldd(सालानसान + slot, fr8); break;
+	    case 5: fldd(सालानसान + slot, fr9); break;
+	    case 6: fldd(सालानसान + slot, fr10); break;
+	    case 7: fldd(सालानसान + slot, fr11); break;
 	    }
 	  break;
 
@@ -216,8 +216,8 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 	case FFI_TYPE_LONGDOUBLE:
 	  /* Align slot to a 16-byte boundary.  */
 	  slot += (slot & 1);
-	  *(UINT64 *)(stack + slot) = *(UINT64 *)(*p_argv);
-	  *(UINT64 *)(stack + slot + 1) = *(UINT64 *)(*p_argv + 8);
+	  *(UINT64 *)(सालानसान + slot) = *(UINT64 *)(*p_argv);
+	  *(UINT64 *)(सालानसान + slot + 1) = *(UINT64 *)(*p_argv + 8);
 	  break;
 #endif
 
@@ -225,7 +225,7 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
 	  /* Structs larger than 8 bytes are aligned on a 16-byte boundary. */
 	  if (len > 8)
 	    slot += (slot & 1);
-	  memcpy((char *)(stack + slot), (char *)*p_argv, len);
+	  memcpy((char *)(सालानसान + slot), (char *)*p_argv, len);
 	  break;
 
 	default:
@@ -242,7 +242,7 @@ void ffi_prep_args_pa64(UINT64 *stack, extended_cif *ecif, unsigned bytes)
   return;
 }
 
-static void ffi_size_stack_pa64(ffi_cif *cif)
+static void ffi_size_सालानसान_pa64(ffi_cif *cif)
 {
   ffi_type **ptr;
   int i;
@@ -310,7 +310,7 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
   switch (cif->abi)
     {
     case FFI_PA64:
-      ffi_size_stack_pa64(cif);
+      ffi_size_सालानसान_pa64(cif);
       break;
 
     default:
@@ -348,7 +348,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     {
     case FFI_PA64:
       debug(3, "Calling ffi_call_pa64: ecif=%p, bytes=%u, flags=%u, rvalue=%p, fn=%p\n", &ecif, cif->bytes, cif->flags, ecif.rvalue, (void *)fn);
-      ffi_call_pa64(ffi_prep_args_pa64, &ecif, cif->bytes,
+      ffi_call_pa64(ffi_prep_मगा_कातविरान_pa64, &ecif, cif->bytes,
 		     cif->flags, ecif.rvalue, fn);
       break;
 
@@ -363,7 +363,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
    the stack, and we need to fill them into a cif structure and invoke
    the user function. This really ought to be in asm to make sure
    the compiler doesn't do things we don't expect.  */
-ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
+ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *सालानसान)
 {
   ffi_cif *cif;
   void **avalue;
@@ -397,23 +397,23 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 	{
 	case FFI_TYPE_SINT8:
 	case FFI_TYPE_UINT8:
-	  avalue[i] = (void *)(stack + slot) + 7;
+	  avalue[i] = (void *)(सालानसान + slot) + 7;
 	  break;
 
 	case FFI_TYPE_SINT16:
 	case FFI_TYPE_UINT16:
-	  avalue[i] = (void *)(stack + slot) + 6;
+	  avalue[i] = (void *)(सालानसान + slot) + 6;
 	  break;
 
 	case FFI_TYPE_SINT32:
 	case FFI_TYPE_UINT32:
-	  avalue[i] = (void *)(stack + slot) + 4;
+	  avalue[i] = (void *)(सालानसान + slot) + 4;
 	  break;
 
 	case FFI_TYPE_POINTER:
 	case FFI_TYPE_SINT64:
 	case FFI_TYPE_UINT64:
-	  avalue[i] = (void *)(stack + slot);
+	  avalue[i] = (void *)(सालानसान + slot);
 	  break;
 
 	case FFI_TYPE_FLOAT:
@@ -425,39 +425,39 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 	     corresponding floating point register.  */
 	  switch (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstw(fr4, (void *)(stack + slot)); break;
-	    case 1: fstw(fr5, (void *)(stack + slot)); break;
-	    case 2: fstw(fr6, (void *)(stack + slot)); break;
-	    case 3: fstw(fr7, (void *)(stack + slot)); break;
-	    case 4: fstw(fr8, (void *)(stack + slot)); break;
-	    case 5: fstw(fr9, (void *)(stack + slot)); break;
-	    case 6: fstw(fr10, (void *)(stack + slot)); break;
-	    case 7: fstw(fr11, (void *)(stack + slot)); break;
+	    case 0: fstw(fr4, (void *)(सालानसान + slot)); break;
+	    case 1: fstw(fr5, (void *)(सालानसान + slot)); break;
+	    case 2: fstw(fr6, (void *)(सालानसान + slot)); break;
+	    case 3: fstw(fr7, (void *)(सालानसान + slot)); break;
+	    case 4: fstw(fr8, (void *)(सालानसान + slot)); break;
+	    case 5: fstw(fr9, (void *)(सालानसान + slot)); break;
+	    case 6: fstw(fr10, (void *)(सालानसान + slot)); break;
+	    case 7: fstw(fr11, (void *)(सालानसान + slot)); break;
 	    }
-	  avalue[i] = (void *)(stack + slot) + 4;
+	  avalue[i] = (void *)(सालानसान + slot) + 4;
 	  break;
 
 	case FFI_TYPE_DOUBLE:
 	  /* See previous comment for FFI_TYPE_FLOAT.  */
 	  switch (slot + FIRST_ARG_SLOT)
 	    {
-	    case 0: fstd(fr4, (void *)(stack + slot)); break;
-	    case 1: fstd(fr5, (void *)(stack + slot)); break;
-	    case 2: fstd(fr6, (void *)(stack + slot)); break;
-	    case 3: fstd(fr7, (void *)(stack + slot)); break;
-	    case 4: fstd(fr8, (void *)(stack + slot)); break;
-	    case 5: fstd(fr9, (void *)(stack + slot)); break;
-	    case 6: fstd(fr10, (void *)(stack + slot)); break;
-	    case 7: fstd(fr11, (void *)(stack + slot)); break;
+	    case 0: fstd(fr4, (void *)(सालानसान + slot)); break;
+	    case 1: fstd(fr5, (void *)(सालानसान + slot)); break;
+	    case 2: fstd(fr6, (void *)(सालानसान + slot)); break;
+	    case 3: fstd(fr7, (void *)(सालानसान + slot)); break;
+	    case 4: fstd(fr8, (void *)(सालानसान + slot)); break;
+	    case 5: fstd(fr9, (void *)(सालानसान + slot)); break;
+	    case 6: fstd(fr10, (void *)(सालानसान + slot)); break;
+	    case 7: fstd(fr11, (void *)(सालानसान + slot)); break;
 	    }
-	  avalue[i] = (void *)(stack + slot);
+	  avalue[i] = (void *)(सालानसान + slot);
 	  break;
 
 #ifdef PA64_HPUX
 	case FFI_TYPE_LONGDOUBLE:
 	  /* Long doubles are treated like a big structure.  */
 	  slot += (slot & 1);
-	  avalue[i] = (void *)(stack + slot);
+	  avalue[i] = (void *)(सालानसान + slot);
 	  break;
 #endif
 
@@ -466,7 +466,7 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
 	     than 8 bytes are aligned on a 16-byte boundary.  */
 	  if((*p_arg)->size > 8)
 	    slot += (slot & 1);
-	  avalue[i] = (void *) (stack + slot);
+	  avalue[i] = (void *) (सालानसान + slot);
 	  break;
 
 	default:
@@ -487,33 +487,33 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
   switch (cif->flags)
     {
     case FFI_TYPE_UINT8:
-      *(stack + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
+      *(सालानसान + FIRST_ARG_SLOT) = (UINT8)u.ret[0];
       break;
     case FFI_TYPE_SINT8:
-      *(stack + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
+      *(सालानसान + FIRST_ARG_SLOT) = (SINT8)u.ret[0];
       break;
     case FFI_TYPE_UINT16:
-      *(stack + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
+      *(सालानसान + FIRST_ARG_SLOT) = (UINT16)u.ret[0];
       break;
     case FFI_TYPE_SINT16:
-      *(stack + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
+      *(सालानसान + FIRST_ARG_SLOT) = (SINT16)u.ret[0];
       break;
     case FFI_TYPE_INT:
     case FFI_TYPE_SINT32:
-      *(stack + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
+      *(सालानसान + FIRST_ARG_SLOT) = (SINT32)u.ret[0];
       break;
     case FFI_TYPE_UINT32:
-      *(stack - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
+      *(सालानसान - FIRST_ARG_SLOT) = (UINT32)u.ret[0];
       break;
     case FFI_TYPE_SINT64:
     case FFI_TYPE_UINT64:
     case FFI_TYPE_POINTER:
-      *(stack - FIRST_ARG_SLOT) = u.ret[0];
+      *(सालानसान - FIRST_ARG_SLOT) = u.ret[0];
       break;
 
     case FFI_TYPE_LONGDOUBLE:
-      *(stack + FIRST_ARG_SLOT) = u.ret[0];
-      *(stack + FIRST_ARG_SLOT + 1) = u.ret[1];
+      *(सालानसान + FIRST_ARG_SLOT) = u.ret[0];
+      *(सालानसान + FIRST_ARG_SLOT + 1) = u.ret[1];
       break;
 
     case FFI_TYPE_DOUBLE:
@@ -545,7 +545,7 @@ ffi_status ffi_closure_inner_pa64(ffi_closure *closure, UINT64 *stack)
     case -14:
     case -15:
     case -16:
-      tmp = (void*)(stack + FIRST_ARG_SLOT);
+      tmp = (void*)(सालानसान + FIRST_ARG_SLOT);
       memcpy((void*)tmp, &u, cif->rtype->size);
       break;
 

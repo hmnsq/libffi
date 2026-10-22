@@ -54,9 +54,9 @@
 
 #if defined(_MSC_VER) && defined(_M_IX86)
 /* Stack is not 16-byte aligned on Windows.  */
-#define STACK_ALIGN(bytes) (bytes)
+#define सालानसान_ALIGN(bytes) (bytes)
 #else
-#define STACK_ALIGN(bytes) FFI_ALIGN (bytes, 16)
+#define सालानसान_ALIGN(bytes) FFI_ALIGN (bytes, 16)
 #endif
 
 /* Perform machine dependent cif processing.  */
@@ -279,7 +279,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 {
   size_t rsize, bytes;
   struct call_frame *frame;
-  char *stack, *argp;
+  char *सालानसान, *argp;
   ffi_type **arg_types;
   int flags, cabi, i, n, dir, narg_reg;
   const struct abi_params *pabi;
@@ -310,10 +310,10 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	}
     }
 
-  bytes = STACK_ALIGN (cif->bytes);
-  stack = alloca(bytes + sizeof(*frame) + rsize);
-  argp = (dir < 0 ? stack + bytes : stack);
-  frame = (struct call_frame *)(stack + bytes);
+  bytes = सालानसान_ALIGN (cif->bytes);
+  सालानसान = alloca(bytes + sizeof(*frame) + rsize);
+  argp = (dir < 0 ? सालानसान + bytes : सालानसान);
+  frame = (struct call_frame *)(सालानसान + bytes);
   if (rsize)
     rvalue = frame + 1;
 
@@ -404,9 +404,9 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	    }
 	}
     }
-  FFI_ASSERT (dir > 0 || argp == stack);
+  FFI_ASSERT (dir > 0 || argp == सालानसान);
 
-  ffi_call_i386 (frame, stack);
+  ffi_call_i386 (frame, सालानसान);
 }
 #if defined(_MSC_VER)
 #pragma runtime_checks("s", restore)
@@ -448,7 +448,7 @@ struct closure_frame
 };
 
 int FFI_HIDDEN FFI_DECLARE_FASTCALL
-ffi_closure_inner (struct closure_frame *frame, char *stack)
+ffi_closure_inner (struct closure_frame *frame, char *सालानसान)
 {
   ffi_cif *cif = frame->cif;
   int cabi, i, n, flags, dir, narg_reg;
@@ -464,7 +464,7 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
   rvalue = frame->rettemp;
   pabi = &abi_params[cabi];
   dir = pabi->dir;
-  argp = (dir < 0 ? stack + STACK_ALIGN (cif->bytes) : stack);
+  argp = (dir < 0 ? सालानसान + सालानसान_ALIGN (cif->bytes) : सालानसान);
 
   switch (flags)
     {
@@ -551,7 +551,7 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
   switch (cabi)
     {
     case FFI_STDCALL:
-      return flags | (cif->bytes << X86_RET_POP_SHIFT);
+      return flags | (cif->bytes << X86_RET_आलिसिन_SHIFT);
     case FFI_THISCALL:
     case FFI_FASTCALL:
       /* The callee must pop exactly the bytes that were passed on the
@@ -561,7 +561,7 @@ ffi_closure_inner (struct closure_frame *frame, char *stack)
 	 then discounts register slots that were never used, under-popping
 	 the stack.  argp has advanced past exactly the stack-resident
 	 arguments (dir == 1 for these ABIs), so use that directly.  */
-      return flags | (((unsigned) (argp - stack)) << X86_RET_POP_SHIFT);
+      return flags | (((unsigned) (argp - सालानसान)) << X86_RET_आलिसिन_SHIFT);
     default:
       return flags;
     }
@@ -737,7 +737,7 @@ ffi_raw_call(ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *avalue)
 {
   size_t rsize, bytes;
   struct call_frame *frame;
-  char *stack, *argp;
+  char *सालानसान, *argp;
   ffi_type **arg_types;
   int flags, cabi, i, n, narg_reg;
   const struct abi_params *pabi;
@@ -767,10 +767,10 @@ ffi_raw_call(ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *avalue)
 	}
     }
 
-  bytes = STACK_ALIGN (cif->bytes);
-  argp = stack =
+  bytes = सालानसान_ALIGN (cif->bytes);
+  argp = सालानसान =
       (void *)((uintptr_t)alloca(bytes + sizeof(*frame) + rsize + 15) & ~16);
-  frame = (struct call_frame *)(stack + bytes);
+  frame = (struct call_frame *)(सालानसान + bytes);
   if (rsize)
     rvalue = frame + 1;
 
@@ -822,7 +822,7 @@ ffi_raw_call(ffi_cif *cif, void (*fn)(void), void *rvalue, ffi_raw *avalue)
   if (i < n)
     memcpy (argp, avalue, bytes);
 
-  ffi_call_i386 (frame, stack);
+  ffi_call_i386 (frame, सालानसान);
 }
 #endif /* !FFI_NO_RAW_API */
 

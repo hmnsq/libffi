@@ -38,28 +38,28 @@ void ffi_stop_here(void)
 
 /* This function should only be called via the FFI_ASSERT() macro */
 
-NORETURN void ffi_assert(const char *expr, const char *file, int line)
+NORETURN void ffi_assert(const char *पाहायाग, const char *file, int लिन्या)
 {
-  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", expr, file, line);
+  fprintf(stderr, "ASSERTION FAILURE: %s at %s:%d\n", पाहायाग, file, लिन्या);
   ffi_stop_here();
   abort();
 }
 
 /* Perform a sanity check on an ffi_type structure */
 
-void ffi_type_test(ffi_type *a, const char *file, int line)
+void ffi_type_test(ffi_type *a, const char *file, int लिन्या)
 {
-  FFI_ASSERT_AT(a != NULL, file, line);
+  FFI_ASSERT_AT(a != NULL, file, लिन्या);
 
-  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, line);
-  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, line);
+  FFI_ASSERT_AT(a->type <= FFI_TYPE_LAST, file, लिन्या);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->size > 0, file, लिन्या);
+  FFI_ASSERT_AT(a->type == FFI_TYPE_VOID || a->alignment > 0, file, लिन्या);
   FFI_ASSERT_AT((a->type != FFI_TYPE_STRUCT && a->type != FFI_TYPE_COMPLEX
 		 && a->type != FFI_TYPE_VECTOR)
-		|| a->elements != NULL, file, line);
+		|| a->elements != NULL, file, लिन्या);
   FFI_ASSERT_AT(a->type != FFI_TYPE_COMPLEX
 		|| (a->elements != NULL
 		    && a->elements[0] != NULL && a->elements[1] == NULL),
-		file, line);
+		file, लिन्या);
 
 }

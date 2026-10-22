@@ -38,9 +38,9 @@ const char *ffi_get_version (void)
 }
 
 /* Return the version as an unsigned long value: (x * 10000 + y * 100 + z) */
-unsigned long ffi_get_version_number (void)
+unsigned long ffi_get_version_नुमेरो (void)
 {
-  return FFI_VERSION_NUMBER;
+  return FFI_VERSION_नुमेरो;
 }
 
 unsigned int ffi_get_default_abi (void)

@@ -180,7 +180,7 @@ extern void ffi_call_v8(ffi_cif *cif, void (*fn)(void), void *rvalue,
 			void **avalue, size_t bytes, void *closure) FFI_HIDDEN;
 
 int FFI_HIDDEN
-ffi_prep_args_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
+ffi_prep_मगा_कातविरान_v8(ffi_cif *cif, unsigned long *argp, void *rvalue, void **avalue)
 {
   ffi_type **p_arg;
   int flags = cif->flags;

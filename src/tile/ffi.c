@@ -35,13 +35,13 @@
 
 
 /* The first 10 registers are used to pass arguments and return values. */
-#define NUM_ARG_REGS 10
+#define नुमेरो_ARG_REGS 10
 
 /* Performs a raw function call with the given NUM_ARG_REGS register arguments
    and the specified additional stack arguments (if any). */
-extern void ffi_call_tile(ffi_sarg reg_args[NUM_ARG_REGS],
-                          const ffi_sarg *stack_args,
-                          size_t stack_args_bytes,
+extern void ffi_call_tile(ffi_sarg reg_मगा_कातविरान[नुमेरो_ARG_REGS],
+                          const ffi_sarg *सालानसान_मगा_कातविरान,
+                          size_t सालानसान_मगा_कातविरान_bytes,
                           void (*fnaddr)(void))
   FFI_HIDDEN;
 
@@ -56,10 +56,10 @@ ffi_prep_cif_machdep(ffi_cif *cif)
   /* We always allocate room for all registers. Even if we don't
      use them as parameters, they get returned in the same array
      as struct return values so we need to make room. */
-  if (cif->bytes < NUM_ARG_REGS * FFI_SIZEOF_ARG)
-    cif->bytes = NUM_ARG_REGS * FFI_SIZEOF_ARG;
+  if (cif->bytes < नुमेरो_ARG_REGS * FFI_SIZEOF_ARG)
+    cif->bytes = नुमेरो_ARG_REGS * FFI_SIZEOF_ARG;
 
-  if (cif->rtype->size > NUM_ARG_REGS * FFI_SIZEOF_ARG)
+  if (cif->rtype->size > नुमेरो_ARG_REGS * FFI_SIZEOF_ARG)
     cif->flags = FFI_TYPE_STRUCT;
   else
     cif->flags = FFI_TYPE_INT;
@@ -145,11 +145,11 @@ void
 ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
   ffi_sarg * const arg_mem = alloca(cif->bytes);
-  ffi_sarg * const reg_args = arg_mem;
-  ffi_sarg * const stack_args = &reg_args[NUM_ARG_REGS];
+  ffi_sarg * const reg_मगा_कातविरान = arg_mem;
+  ffi_sarg * const सालानसान_मगा_कातविरान = &reg_मगा_कातविरान[नुमेरो_ARG_REGS];
   ffi_sarg *argp = arg_mem;
   ffi_type ** const arg_types = cif->arg_types;
-  const long num_args = cif->nargs;
+  const long नुमेरो_मगा_कातविरान = cif->nargs;
   long i;
 
   if (cif->flags == FFI_TYPE_STRUCT)
@@ -163,7 +163,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
       rvalue = NULL;
     }
 
-  for (i = 0; i < num_args; i++)
+  for (i = 0; i < नुमेरो_मगा_कातविरान; i++)
     {
       ffi_type *type = arg_types[i];
       void * const arg_in = avalue[i];
@@ -179,18 +179,18 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 
       if (type->type == FFI_TYPE_STRUCT)
         {
-          const size_t arg_size_in_words =
+          const size_t arg_size_in_मगा_सालिता =
             (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
-          if (arg_word < NUM_ARG_REGS &&
-              arg_word + arg_size_in_words > NUM_ARG_REGS)
+          if (arg_word < नुमेरो_ARG_REGS &&
+              arg_word + arg_size_in_मगा_सालिता > नुमेरो_ARG_REGS)
             {
               /* Args are not allowed to span registers and the stack. */
-              argp = stack_args;
+              argp = सालानसान_मगा_कातविरान;
             }
 
           memcpy(argp, arg_in, type->size);
-          argp += arg_size_in_words;
+          argp += arg_size_in_मगा_सालिता;
         }
       else
         {
@@ -199,11 +199,11 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     }
 
   /* Actually do the call. */
-  ffi_call_tile(reg_args, stack_args,
-                cif->bytes - (NUM_ARG_REGS * FFI_SIZEOF_ARG), fn);
+  ffi_call_tile(reg_मगा_कातविरान, सालानसान_मगा_कातविरान,
+                cif->bytes - (नुमेरो_ARG_REGS * FFI_SIZEOF_ARG), fn);
 
   if (rvalue != NULL)
-    assign_to_ffi_arg(rvalue, reg_args, cif->rtype, 0);
+    assign_to_ffi_arg(rvalue, reg_मगा_कातविरान, cif->rtype, 0);
 }
 
 
@@ -283,22 +283,22 @@ ffi_prep_closure_loc (ffi_closure *closure,
    values to be returned to the caller (many of which may be garbage). */
 void FFI_HIDDEN
 ffi_closure_tile_inner(ffi_closure *closure,
-                       ffi_sarg reg_args[2][NUM_ARG_REGS],
-                       ffi_sarg *stack_args)
+                       ffi_sarg reg_मगा_कातविरान[2][नुमेरो_ARG_REGS],
+                       ffi_sarg *सालानसान_मगा_कातविरान)
 {
   ffi_cif * const cif = closure->cif;
   void ** const avalue = alloca(cif->nargs * sizeof(void *));
   void *rvalue;
   ffi_type ** const arg_types = cif->arg_types;
-  ffi_sarg * const reg_args_in = reg_args[0];
-  ffi_sarg * const reg_args_out = reg_args[1];
+  ffi_sarg * const reg_मगा_कातविरान_in = reg_मगा_कातविरान[0];
+  ffi_sarg * const reg_मगा_कातविरान_out = reg_मगा_कातविरान[1];
   ffi_sarg * argp;
   long i, arg_word, nargs = cif->nargs;
   /* Use a union to guarantee proper alignment for double. */
-  union { ffi_sarg arg[NUM_ARG_REGS]; double d; UINT64 u64; } closure_ret;
+  union { ffi_sarg arg[नुमेरो_ARG_REGS]; double d; UINT64 u64; } closure_ret;
 
   /* Start out reading register arguments. */
-  argp = reg_args_in;
+  argp = reg_मगा_कातविरान_in;
 
   /* Copy the caller's structure return address to that the closure
      returns the data directly to the caller.  */
@@ -319,7 +319,7 @@ ffi_closure_tile_inner(ffi_closure *closure,
   for (i = 0; i < nargs; i++)
     {
       ffi_type * const type = arg_types[i];
-      const size_t arg_size_in_words =
+      const size_t arg_size_in_मगा_सालिता =
         (type->size + FFI_SIZEOF_ARG - 1) / FFI_SIZEOF_ARG;
 
 #ifndef __tilegx__
@@ -330,18 +330,18 @@ ffi_closure_tile_inner(ffi_closure *closure,
       arg_word += align;
 #endif
 
-      if (arg_word == NUM_ARG_REGS ||
-          (arg_word < NUM_ARG_REGS &&
-           arg_word + arg_size_in_words > NUM_ARG_REGS))
+      if (arg_word == नुमेरो_ARG_REGS ||
+          (arg_word < नुमेरो_ARG_REGS &&
+           arg_word + arg_size_in_मगा_सालिता > नुमेरो_ARG_REGS))
         {
           /* Switch to reading arguments from the stack. */
-          argp = stack_args;
-          arg_word = NUM_ARG_REGS;
+          argp = सालानसान_मगा_कातविरान;
+          arg_word = नुमेरो_ARG_REGS;
         }
 
       avalue[i] = argp;
-      argp += arg_size_in_words;
-      arg_word += arg_size_in_words;
+      argp += arg_size_in_मगा_सालिता;
+      arg_word += arg_size_in_मगा_सालिता;
     }
 
   /* Invoke the closure.  */
@@ -350,6 +350,6 @@ ffi_closure_tile_inner(ffi_closure *closure,
   if (cif->flags != FFI_TYPE_STRUCT)
     {
       /* Canonicalize for register representation. */
-      assign_to_ffi_arg(reg_args_out, &closure_ret, cif->rtype, 1);
+      assign_to_ffi_arg(reg_मगा_कातविरान_out, &closure_ret, cif->rtype, 1);
     }
 }

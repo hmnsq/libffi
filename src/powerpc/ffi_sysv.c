@@ -39,8 +39,8 @@
 
 /* About the SYSV ABI.  */
 #define ASM_NEEDS_REGISTERS 6
-#define NUM_GPR_ARG_REGISTERS 8
-#define NUM_FPR_ARG_REGISTERS 8
+#define नुमेरो_GPR_ARG_REGISTERS 8
+#define नुमेरो_FPR_ARG_REGISTERS 8
 
 
 #if HAVE_LONG_DOUBLE_VARIANT && FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
@@ -95,7 +95,7 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 {
   ffi_type **ptr;
   unsigned bytes;
-  unsigned i, fpr_count = 0, gpr_count = 0, stack_count = 0;
+  unsigned i, fpr_बिलांग = 0, gpr_बिलांग = 0, सालानसान_बिलांग = 0;
   unsigned flags = cif->flags;
   unsigned struct_copy_size = 0;
   unsigned type = cif->rtype->type;
@@ -108,7 +108,7 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
   bytes = (2 + ASM_NEEDS_REGISTERS) * sizeof (int);
 
   /* Space for the GPR registers.  */
-  bytes += NUM_GPR_ARG_REGISTERS * sizeof (int);
+  bytes += नुमेरो_GPR_ARG_REGISTERS * sizeof (int);
 
   /* Return value handling.  The rules for SYSV are as follows:
      - 32-bit (or less) integer values are returned in gpr3;
@@ -157,7 +157,7 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	  flags |= FLAG_RETURNS_SMST;
 	  break;
 	}
-      gpr_count++;
+      gpr_बिलांग++;
       flags |= FLAG_RETVAL_REFERENCE;
       /* Fall through.  */
     case FFI_TYPE_VOID:
@@ -184,15 +184,15 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	{
 #if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
 	case FFI_TYPE_LONGDOUBLE:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS - 1)
+	  if (fpr_बिलांग >= नुमेरो_FPR_ARG_REGISTERS - 1)
 	    {
-	      fpr_count = NUM_FPR_ARG_REGISTERS;
+	      fpr_बिलांग = नुमेरो_FPR_ARG_REGISTERS;
 	      /* 8-byte align long doubles.  */
-	      stack_count += stack_count & 1;
-	      stack_count += 4;
+	      सालानसान_बिलांग += सालानसान_बिलांग & 1;
+	      सालानसान_बिलांग += 4;
 	    }
 	  else
-	    fpr_count += 2;
+	    fpr_बिलांग += 2;
 #ifdef __NO_FPRS__
 	  return FFI_BAD_ABI;
 #endif
@@ -200,25 +200,25 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 #endif
 
 	case FFI_TYPE_DOUBLE:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS)
+	  if (fpr_बिलांग >= नुमेरो_FPR_ARG_REGISTERS)
 	    {
 	      /* 8-byte align doubles.  */
-	      stack_count += stack_count & 1;
-	      stack_count += 2;
+	      सालानसान_बिलांग += सालानसान_बिलांग & 1;
+	      सालानसान_बिलांग += 2;
 	    }
 	  else
-	    fpr_count += 1;
+	    fpr_बिलांग += 1;
 #ifdef __NO_FPRS__
 	  return FFI_BAD_ABI;
 #endif
 	  break;
 
 	case FFI_TYPE_FLOAT:
-	  if (fpr_count >= NUM_FPR_ARG_REGISTERS)
+	  if (fpr_बिलांग >= नुमेरो_FPR_ARG_REGISTERS)
 	    /* Yes, we don't follow the ABI, but neither does gcc.  */
-	    stack_count += 1;
+	    सालानसान_बिलांग += 1;
 	  else
-	    fpr_count += 1;
+	    fpr_बिलांग += 1;
 #ifdef __NO_FPRS__
 	  return FFI_BAD_ABI;
 #endif
@@ -228,12 +228,12 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	  /* A long double in FFI_LINUX_SOFT_FLOAT can use only a set
 	     of four consecutive gprs. If we do not have enough, we
 	     have to adjust the gpr_count value.  */
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS - 3)
-	    gpr_count = NUM_GPR_ARG_REGISTERS;
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
-	    stack_count += 4;
+	  if (gpr_बिलांग >= नुमेरो_GPR_ARG_REGISTERS - 3)
+	    gpr_बिलांग = नुमेरो_GPR_ARG_REGISTERS;
+	  if (gpr_बिलांग >= नुमेरो_GPR_ARG_REGISTERS)
+	    सालानसान_बिलांग += 4;
 	  else
-	    gpr_count += 4;
+	    gpr_बिलांग += 4;
 	  break;
 
 	case FFI_TYPE_UINT64:
@@ -246,14 +246,14 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	     Also, only certain register pairs can be used for
 	     passing long long int -- specifically (r3,r4), (r5,r6),
 	     (r7,r8), (r9,r10).  */
-	  gpr_count += gpr_count & 1;
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
+	  gpr_बिलांग += gpr_बिलांग & 1;
+	  if (gpr_बिलांग >= नुमेरो_GPR_ARG_REGISTERS)
 	    {
-	      stack_count += stack_count & 1;
-	      stack_count += 2;
+	      सालानसान_बिलांग += सालानसान_बिलांग & 1;
+	      सालानसान_बिलांग += 2;
 	    }
 	  else
-	    gpr_count += 2;
+	    gpr_बिलांग += 2;
 	  break;
 
 	case FFI_TYPE_STRUCT:
@@ -274,10 +274,10 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	case FFI_TYPE_SINT8:
 	  /* Everything else is passed as a 4-byte word in a GPR, either
 	     the object itself or a pointer to it.  */
-	  if (gpr_count >= NUM_GPR_ARG_REGISTERS)
-	    stack_count += 1;
+	  if (gpr_बिलांग >= नुमेरो_GPR_ARG_REGISTERS)
+	    सालानसान_बिलांग += 1;
 	  else
-	    gpr_count += 1;
+	    gpr_बिलांग += 1;
 	  break;
 
 	default:
@@ -285,19 +285,19 @@ ffi_prep_cif_sysv_core (ffi_cif *cif)
 	}
     }
 
-  if (fpr_count != 0)
+  if (fpr_बिलांग != 0)
     flags |= FLAG_FP_ARGUMENTS;
-  if (gpr_count > 4)
+  if (gpr_बिलांग > 4)
     flags |= FLAG_4_GPR_ARGUMENTS;
   if (struct_copy_size != 0)
     flags |= FLAG_ARG_NEEDS_COPY;
 
   /* Space for the FPR registers, if needed.  */
-  if (fpr_count != 0)
-    bytes += NUM_FPR_ARG_REGISTERS * sizeof (double);
+  if (fpr_बिलांग != 0)
+    bytes += नुमेरो_FPR_ARG_REGISTERS * sizeof (double);
 
   /* Stack space.  */
-  bytes += stack_count * sizeof (int);
+  bytes += सालानसान_बिलांग * sizeof (int);
 
   /* The stack space allocated needs to be a multiple of 16 bytes.  */
   bytes = (bytes + 15) & ~0xF;
@@ -372,7 +372,7 @@ ffi_prep_cif_sysv (ffi_cif *cif)
 */
 
 void FFI_HIDDEN
-ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
+ffi_prep_मगा_कातविरान_SYSV (extended_cif *ecif, unsigned *const सालानसान)
 {
   const unsigned bytes = ecif->cif->bytes;
   const unsigned flags = ecif->cif->flags;
@@ -429,20 +429,20 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
   size_t struct_copy_size;
   unsigned gprvalue;
 
-  stacktop.c = (char *) stack + bytes;
+  stacktop.c = (char *) सालानसान + bytes;
   gpr_end.u = stacktop.u - ASM_NEEDS_REGISTERS;
-  gpr_base.u = gpr_end.u - NUM_GPR_ARG_REGISTERS;
+  gpr_base.u = gpr_end.u - नुमेरो_GPR_ARG_REGISTERS;
 #ifndef __NO_FPRS__
   fpr_end.d = gpr_base.d;
-  fpr_base.d = fpr_end.d - NUM_FPR_ARG_REGISTERS;
+  fpr_base.d = fpr_end.d - नुमेरो_FPR_ARG_REGISTERS;
   copy_space.c = ((flags & FLAG_FP_ARGUMENTS) ? fpr_base.c : gpr_base.c);
 #else
   copy_space.c = gpr_base.c;
 #endif
-  next_arg.u = stack + 2;
+  next_arg.u = सालानसान + 2;
 
   /* Check that everything starts aligned properly.  */
-  FFI_ASSERT (((unsigned long) (char *) stack & 0xF) == 0);
+  FFI_ASSERT (((unsigned long) (char *) सालानसान & 0xF) == 0);
   FFI_ASSERT (((unsigned long) copy_space.c & 0xF) == 0);
   FFI_ASSERT (((unsigned long) stacktop.c & 0xF) == 0);
   FFI_ASSERT ((bytes & 0xF) == 0);
@@ -473,7 +473,7 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	  if (fpr_base.d >= fpr_end.d - 1)
 	    {
 	      fpr_base.d = fpr_end.d;
-	      if (((next_arg.u - stack) & 1) != 0)
+	      if (((next_arg.u - सालानसान) & 1) != 0)
 		next_arg.u += 1;
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
@@ -495,7 +495,7 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 
 	  if (fpr_base.d >= fpr_end.d)
 	    {
-	      if (((next_arg.u - stack) & 1) != 0)
+	      if (((next_arg.u - सालानसान) & 1) != 0)
 		next_arg.u += 1;
 	      *next_arg.d = double_tmp;
 	      next_arg.u += 2;
@@ -549,7 +549,7 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	  if (gpr_base.u >= gpr_end.u - 1)
 	    {
 	      gpr_base.u = gpr_end.u;
-	      if (((next_arg.u - stack) & 1) != 0)
+	      if (((next_arg.u - सालानसान) & 1) != 0)
 		next_arg.u++;
 	      *next_arg.ll = **p_argv.ll;
 	      next_arg.u += 2;
@@ -617,13 +617,13 @@ ffi_prep_args_SYSV (extended_cif *ecif, unsigned *const stack)
 	      == (gpr_end.u - gpr_base.u < 4));
 }
 
-#define MIN_CACHE_LINE_SIZE 8
+#define MIN_CACHE_लिन्या_SIZE 8
 
 static void
 flush_icache (char *wraddr, char *xaddr, int size)
 {
   int i;
-  for (i = 0; i < size; i += MIN_CACHE_LINE_SIZE)
+  for (i = 0; i < size; i += MIN_CACHE_लिन्या_SIZE)
     __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;"
 		      : : "r" (xaddr + i), "r" (wraddr + i) : "memory");
   __asm__ volatile ("icbi 0,%0;" "dcbf 0,%1;" "sync;" "isync;"
@@ -741,7 +741,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	/* Unfortunately float values are stored as doubles
 	   in the ffi_closure_SYSV code (since we don't check
 	   the type in that routine).  */
-	if (nf < NUM_FPR_ARG_REGISTERS)
+	if (nf < नुमेरो_FPR_ARG_REGISTERS)
 	  {
 	    /* FIXME? here we are really changing the values
 	       stored in the original calling routines outgoing
@@ -761,7 +761,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	break;
 
       case FFI_TYPE_DOUBLE:
-	if (nf < NUM_FPR_ARG_REGISTERS)
+	if (nf < नुमेरो_FPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = pfr;
 	    nf++;
@@ -778,7 +778,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 
 # if FFI_TYPE_LONGDOUBLE != FFI_TYPE_DOUBLE
       case FFI_TYPE_LONGDOUBLE:
-	if (nf < NUM_FPR_ARG_REGISTERS - 1)
+	if (nf < नुमेरो_FPR_ARG_REGISTERS - 1)
 	  {
 	    avalue[i] = pfr;
 	    pfr += 2;
@@ -799,7 +799,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_UINT128:
 	/* Test if for the whole long double, 4 gprs are available.
 	   otherwise the stuff ends up on the stack.  */
-	if (ng < NUM_GPR_ARG_REGISTERS - 3)
+	if (ng < नुमेरो_GPR_ARG_REGISTERS - 3)
 	  {
 	    avalue[i] = pgr;
 	    pgr += 4;
@@ -816,7 +816,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_SINT8:
       case FFI_TYPE_UINT8:
 #ifndef __LITTLE_ENDIAN__
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	if (ng < नुमेरो_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = (char *) pgr + 3;
 	    ng++;
@@ -833,7 +833,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_SINT16:
       case FFI_TYPE_UINT16:
 #ifndef __LITTLE_ENDIAN__
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	if (ng < नुमेरो_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = (char *) pgr + 2;
 	    ng++;
@@ -850,7 +850,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_SINT32:
       case FFI_TYPE_UINT32:
       case FFI_TYPE_POINTER:
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	if (ng < नुमेरो_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = pgr;
 	    ng++;
@@ -866,7 +866,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
       case FFI_TYPE_STRUCT:
 	/* Structs are passed by reference. The address will appear in a
 	   gpr if it is one of the first 8 arguments.  */
-	if (ng < NUM_GPR_ARG_REGISTERS)
+	if (ng < नुमेरो_GPR_ARG_REGISTERS)
 	  {
 	    avalue[i] = (void *) *pgr;
 	    ng++;
@@ -889,7 +889,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	   must will be kept.  So we must either look in pgr
 	   or pst to find the correct address for this type
 	   of parameter.  */
-	if (ng < NUM_GPR_ARG_REGISTERS - 1)
+	if (ng < नुमेरो_GPR_ARG_REGISTERS - 1)
 	  {
 	    if (ng & 1)
 	      {
@@ -907,7 +907,7 @@ ffi_closure_helper_SYSV (ffi_cif *cif,
 	      pst++;
 	    avalue[i] = pst;
 	    pst += 2;
-	    ng = NUM_GPR_ARG_REGISTERS;
+	    ng = नुमेरो_GPR_ARG_REGISTERS;
 	  }
 	break;
 

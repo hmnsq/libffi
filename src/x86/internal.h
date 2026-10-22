@@ -16,7 +16,7 @@
 #define X86_RET_UNUSED15	15
 
 #define X86_RET_TYPE_MASK	15
-#define X86_RET_POP_SHIFT	4
+#define X86_RET_आलिसिन_SHIFT	4
 
 #define R_EAX	0
 #define R_EDX	1

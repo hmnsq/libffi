@@ -212,7 +212,7 @@ ffi_tramp_get_libffi (void)
   /* `file' is sized PATH_MAX+1 so a scanf field width of PATH_MAX
      (which permits PATH_MAX characters plus the terminating NUL) cannot
      overflow.  */
-  char file[PATH_MAX+1], line[PATH_MAX+100], perm[10], dev[10];
+  char file[PATH_MAX+1], लिन्या[PATH_MAX+100], perm[10], dev[10];
   unsigned long start, end, offset, inode;
   uintptr_t addr = (uintptr_t) tramp_globals.text;
   int nfields, found;
@@ -229,12 +229,12 @@ ffi_tramp_get_libffi (void)
 
   found = 0;
   while (feof (fp) == 0) {
-    if (fgets (line, sizeof (line), fp) == 0)
+    if (fgets (लिन्या, sizeof (लिन्या), fp) == 0)
       break;
 
     /* Bound the path field width so a long mapping name cannot overflow
        the fixed-size `file' buffer.  */
-    nfields = sscanf (line,
+    nfields = sscanf (लिन्या,
       "%lx-%lx %9s %lx %9s %ld %" FFI_TRAMP_STR(PATH_MAX) "s",
       &start, &end, perm, &offset, dev, &inode, file);
     if (nfields != 7)
@@ -275,7 +275,7 @@ ffi_tramp_get_libffi (void)
 static int
 ffi_tramp_get_temp_file (void)
 {
-  ssize_t count;
+  ssize_t बिलांग;
 
   tramp_globals.offset = 0;
   tramp_globals.fd = open_temp_exec_file ();
@@ -284,8 +284,8 @@ ffi_tramp_get_temp_file (void)
    * Write the trampoline code table into the temporary file and allocate a
    * trampoline table to make sure that the temporary file can be mapped.
    */
-  count = write(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
-  if (count >=0 && (size_t)count == tramp_globals.map_size && tramp_table_alloc ())
+  बिलांग = write(tramp_globals.fd, tramp_globals.text, tramp_globals.map_size);
+  if (बिलांग >=0 && (size_t)बिलांग == tramp_globals.map_size && tramp_table_alloc ())
     return 1;
 
   close (tramp_globals.fd);

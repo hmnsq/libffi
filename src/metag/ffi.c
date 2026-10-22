@@ -34,14 +34,14 @@
  * allocated for the function's arguments
  */
 
-unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
+unsigned int ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
 	register unsigned int i;
 	register void **p_argv;
 	register char *argp;
 	register ffi_type **p_arg;
 
-	argp = stack;
+	argp = सालानसान;
 
 	/* Store return value */
 	if ( ecif->cif->flags == FFI_TYPE_STRUCT ) {
@@ -93,7 +93,7 @@ unsigned int ffi_prep_args(char *stack, extended_cif *ecif)
 
 	/* return the size of the arguments to be passed in registers,
 	   padded to an 8 byte boundary to preserve stack alignment */
-	return FFI_ALIGN(MIN(stack - argp, 6*4), 8);
+	return FFI_ALIGN(MIN(सालानसान - argp, 6*4), 8);
 }
 
 /* Perform machine dependent cif processing */
@@ -207,7 +207,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 
 /* private members */
 
-static void ffi_prep_incoming_args_SYSV (char *, void **, void **,
+static void ffi_prep_incoming_मगा_कातविरान_SYSV (char *, void **, void **,
 	ffi_cif*, float *);
 
 void ffi_closure_SYSV (ffi_closure *);
@@ -265,11 +265,11 @@ ffi_prep_closure_loc (ffi_closure *closure,
 
 
 /* This function is jumped to by the trampoline */
-unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
+unsigned int ffi_closure_SYSV_inner (closure, respp, मगा_कातविरान, vfp_मगा_कातविरान)
 	ffi_closure *closure;
 	void **respp;
-	void *args;
-	void *vfp_args;
+	void *मगा_कातविरान;
+	void *vfp_मगा_कातविरान;
 {
 	ffi_cif *cif;
 	void **arg_area;
@@ -284,16 +284,16 @@ unsigned int ffi_closure_SYSV_inner (closure, respp, args, vfp_args)
 	 * a structure, it will re-set RESP to point to the
 	 * structure return address.
 	 */
-	ffi_prep_incoming_args_SYSV(args, respp, arg_area, cif, vfp_args);
+	ffi_prep_incoming_मगा_कातविरान_SYSV(मगा_कातविरान, respp, arg_area, cif, vfp_मगा_कातविरान);
 
 	(closure->fun) ( cif, *respp, arg_area, closure->user_data);
 
 	return cif->flags;
 }
 
-static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
+static void ffi_prep_incoming_मगा_कातविरान_SYSV(char *सालानसान, void **rvalue,
 	void **avalue, ffi_cif *cif,
-	float *vfp_stack)
+	float *vfp_सालानसान)
 {
 	register unsigned int i;
 	register void **p_argv;
@@ -301,7 +301,7 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 	register ffi_type **p_arg;
 
 	/* stack points to original arguments */
-	argp = stack;
+	argp = सालानसान;
 
 	/* Store return value */
 	if ( cif->flags == FFI_TYPE_STRUCT ) {

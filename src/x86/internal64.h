@@ -19,7 +19,7 @@
 #define UNIX64_RET_LAST		16
 
 #define UNIX64_FLAG_RET_IN_MEM	(1 << 10)
-#define UNIX64_FLAG_XMM_ARGS	(1 << 11)
+#define UNIX64_FLAG_XMM_मगा_कातविरान	(1 << 11)
 #define UNIX64_SIZE_SHIFT	12
 
 #if defined(FFI_EXEC_STATIC_TRAMP)

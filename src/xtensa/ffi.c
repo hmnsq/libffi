@@ -91,15 +91,15 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
      passed in registers, round space reserved for arguments passed on stack
      up to ABI-specified alignment.  */
   if (cif->bytes < FFI_REGISTER_NARGS * 4)
-    cif->bytes = FFI_REGISTER_ARGS_SPACE;
+    cif->bytes = FFI_REGISTER_मगा_कातविरान_SPACE;
   else
-    cif->bytes = FFI_REGISTER_ARGS_SPACE +
+    cif->bytes = FFI_REGISTER_मगा_कातविरान_SPACE +
 	    FFI_ALIGN(cif->bytes - FFI_REGISTER_NARGS * 4,
-		      XTENSA_STACK_ALIGNMENT);
+		      XTENSA_सालानसान_ALIGNMENT);
   return FFI_OK;
 }
 
-void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
+void ffi_prep_मगा_कातविरान(extended_cif *ecif, unsigned char* सालानसान)
 {
   unsigned int i;
   unsigned long *addr;
@@ -119,10 +119,10 @@ void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
   } p_argv;
 
   /* Verify that everything is aligned up properly */
-  FFI_ASSERT (((unsigned long) stack & 0x7) == 0);
+  FFI_ASSERT (((unsigned long) सालानसान & 0x7) == 0);
 
   p_argv.v = ecif->avalue;
-  addr = (unsigned long*)stack;
+  addr = (unsigned long*)सालानसान;
 
   /* structures with a size greater than 16 bytes are passed in memory */
   if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 16)
@@ -172,13 +172,13 @@ void ffi_prep_args(extended_cif *ecif, unsigned char* stack)
         if (((unsigned long)addr & 4) != 0 && (*ptr)->alignment > 4)
           addr++;
 
-        offs = (unsigned long) addr - (unsigned long) stack;
+        offs = (unsigned long) addr - (unsigned long) सालानसान;
         size = (*ptr)->size;
 
         /* Entire structure must fit the argument registers or referenced */
         if (offs < FFI_REGISTER_NARGS * 4
             && offs + size > FFI_REGISTER_NARGS * 4)
-          addr = (unsigned long*) (stack + FFI_REGISTER_NARGS * 4);
+          addr = (unsigned long*) (सालानसान + FFI_REGISTER_NARGS * 4);
 
         memcpy((char*) addr, *p_argv.c, size);
         addr += (size + 3) / 4;
@@ -256,7 +256,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
 
 long FFI_HIDDEN
-ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
+ffi_closure_SYSV_inner(ffi_closure *closure, void **मगा_हालागा, void *rvalue)
 {
   ffi_cif *cif;
   ffi_type **arg_types;
@@ -272,7 +272,7 @@ ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
   int rtype = cif->rtype->type;
   if (rtype == FFI_TYPE_STRUCT && cif->rtype->size > 4 * 4)
   {
-    rvalue = *values;
+    rvalue = *मगा_हालागा;
     areg++;
   }
 
@@ -287,16 +287,16 @@ ffi_closure_SYSV_inner(ffi_closure *closure, void **values, void *rvalue)
 
     // skip the entry a1, * framework, see ffi_trampoline
     if (areg == FFI_REGISTER_NARGS)
-      areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
+      areg = (FFI_REGISTER_मगा_कातविरान_SPACE + 32) / 4;
 
     if (arg_types[i]->type == FFI_TYPE_STRUCT)
     {
       int numregs = ((arg_types[i]->size + 3) & ~3) / 4;
       if (areg < FFI_REGISTER_NARGS && areg + numregs > FFI_REGISTER_NARGS)
-        areg = (FFI_REGISTER_ARGS_SPACE + 32) / 4;
+        areg = (FFI_REGISTER_मगा_कातविरान_SPACE + 32) / 4;
     }
 
-    avalue[i] = &values[areg];
+    avalue[i] = &मगा_हालागा[areg];
     areg += (arg_types[i]->size + 3) / 4;
   }
 

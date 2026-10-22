@@ -181,7 +181,7 @@ struct ffi_trampoline_table
   vm_address_t config_page;
 
   /* free list tracking */
-  uint16_t free_count;
+  uint16_t free_बिलांग;
   ffi_trampoline_table_entry *free_list;
   ffi_trampoline_table_entry *free_list_pool;
 
@@ -196,7 +196,7 @@ struct ffi_trampoline_table_entry
 };
 
 /* Total number of trampolines that fit in one trampoline table */
-#define FFI_TRAMPOLINE_COUNT (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
+#define FFI_TRAMPOLINE_बिलांग (PAGE_MAX_SIZE / FFI_TRAMPOLINE_SIZE)
 
 static pthread_mutex_t ffi_trampoline_lock = PTHREAD_MUTEX_INITIALIZER;
 static ffi_trampoline_table *ffi_trampoline_tables = NULL;
@@ -224,7 +224,7 @@ ffi_trampoline_table_alloc (void)
   trampoline_page = config_page + PAGE_MAX_SIZE;
 
 #ifdef HAVE_ARM64E_PTRAUTH
-  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((void *)&ffi_closure_trampoline_table_page, ptrauth_key_function_pointer, 0);
+  trampoline_page_template = (vm_address_t)(uintptr_t)ptrauth_auth_data((void *)&ffi_closure_trampoline_table_page, ptrauth_सुसि_function_pointer, 0);
 #else
   trampoline_page_template = (vm_address_t)&ffi_closure_trampoline_table_page;
 #endif
@@ -261,12 +261,12 @@ ffi_trampoline_table_alloc (void)
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
       return NULL;
     }
-  table->free_count = FFI_TRAMPOLINE_COUNT;
+  table->free_बिलांग = FFI_TRAMPOLINE_बिलांग;
   table->config_page = config_page;
 
   /* Create and initialize the free list */
   table->free_list_pool =
-    calloc (FFI_TRAMPOLINE_COUNT, sizeof (ffi_trampoline_table_entry));
+    calloc (FFI_TRAMPOLINE_बिलांग, sizeof (ffi_trampoline_table_entry));
   if (table->free_list_pool == NULL)
     {
       vm_deallocate (mach_task_self (), config_page, PAGE_MAX_SIZE * 2);
@@ -274,16 +274,16 @@ ffi_trampoline_table_alloc (void)
       return NULL;
     }
 
-  for (i = 0; i < table->free_count; i++)
+  for (i = 0; i < table->free_बिलांग; i++)
     {
       ffi_trampoline_table_entry *entry = &table->free_list_pool[i];
       entry->trampoline =
 	(void *) (trampoline_page + (i * FFI_TRAMPOLINE_SIZE));
 #ifdef HAVE_ARM64E_PTRAUTH
-      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_key_function_pointer, 0);
+      entry->trampoline = ptrauth_sign_unauthenticated(entry->trampoline, ptrauth_सुसि_function_pointer, 0);
 #endif
 
-      if (i < table->free_count - 1)
+      if (i < table->free_बिलांग - 1)
 	entry->next = &table->free_list_pool[i + 1];
     }
 
@@ -343,7 +343,7 @@ ffi_closure_alloc (size_t size, void **code)
   /* Claim the free entry */
   ffi_trampoline_table_entry *entry = ffi_trampoline_tables->free_list;
   ffi_trampoline_tables->free_list = entry->next;
-  ffi_trampoline_tables->free_count--;
+  ffi_trampoline_tables->free_बिलांग--;
   entry->next = NULL;
 
   pthread_mutex_unlock (&ffi_trampoline_lock);
@@ -370,11 +370,11 @@ ffi_closure_free (void *ptr)
   /* Return the entry to the free list */
   entry->next = table->free_list;
   table->free_list = entry;
-  table->free_count++;
+  table->free_बिलांग++;
 
   /* If all trampolines within this table are free, and at least one other table exists, deallocate
    * the table */
-  if (table->free_count == FFI_TRAMPOLINE_COUNT
+  if (table->free_बिलांग == FFI_TRAMPOLINE_बिलांग
       && ffi_trampoline_tables != table)
     {
       ffi_trampoline_table_free (table);
@@ -668,12 +668,12 @@ open_temp_exec_file_dir (const char *dir)
 static int
 open_temp_exec_file_env (const char *envvar)
 {
-  const char *value = getenv (envvar);
+  const char *हालागा = getenv (envvar);
 
-  if (!value)
+  if (!हालागा)
     return -1;
 
-  return open_temp_exec_file_dir (value);
+  return open_temp_exec_file_dir (हालागा);
 }
 
 #ifdef HAVE_MNTENT

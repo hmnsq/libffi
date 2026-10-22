@@ -45,24 +45,24 @@
 
 void ffi_call_elfbsd (extended_cif *, unsigned, unsigned, void *,
 		       void (*) ());
-void *ffi_prep_args (extended_cif *ecif, void *stack);
+void *ffi_prep_मगा_कातविरान (extended_cif *ecif, void *सालानसान);
 
 void *
-ffi_prep_args (extended_cif *ecif, void *stack)
+ffi_prep_मगा_कातविरान (extended_cif *ecif, void *सालानसान)
 {
   unsigned int i;
   void **p_argv;
   char *argp;
   ffi_type **p_arg;
-  void *struct_value_ptr;
+  void *struct_हालागा_ptr;
 
-  argp = stack;
+  argp = सालानसान;
 
   if (ecif->cif->rtype->type == FFI_TYPE_STRUCT
       && !ecif->cif->flags)
-    struct_value_ptr = ecif->rvalue;
+    struct_हालागा_ptr = ecif->rvalue;
   else
-    struct_value_ptr = NULL;
+    struct_हालागा_ptr = NULL;
 
   p_argv = ecif->avalue;
 
@@ -115,7 +115,7 @@ ffi_prep_args (extended_cif *ecif, void *stack)
       argp += z;
     }
 
-  return struct_value_ptr;
+  return struct_हालागा_ptr;
 }
 
 ffi_status
@@ -223,7 +223,7 @@ ffi_prep_closure_elfbsd (ffi_cif *cif, void **avalue, char *stackp)
 }
 
 unsigned int
-ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
+ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *सालानसान)
 {
   ffi_cif *cif;
   void **arg_area;
@@ -231,7 +231,7 @@ ffi_closure_elfbsd_inner (ffi_closure *closure, void *resp, char *stack)
   cif = closure->cif;
   arg_area = (void **) alloca (cif->nargs * sizeof (void *));
 
-  ffi_prep_closure_elfbsd (cif, arg_area, stack);
+  ffi_prep_closure_elfbsd (cif, arg_area, सालानसान);
 
   (closure->fun) (cif, resp, arg_area, closure->user_data);
 

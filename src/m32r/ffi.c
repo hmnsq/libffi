@@ -33,7 +33,7 @@
 /* ffi_prep_args is called by the assembly routine once stack
    space has been allocated for the function's arguments.  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+void ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
   unsigned int i;
   int tmp;
@@ -43,7 +43,7 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
   ffi_type **p_arg;
 
   tmp = 0;
-  argp = stack;
+  argp = सालानसान;
 
   if (ecif->cif->rtype->type == FFI_TYPE_STRUCT && ecif->cif->rtype->size > 8)
     {
@@ -220,7 +220,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   switch (cif->abi)
     {
     case FFI_SYSV:
-      ffi_call_SYSV(ffi_prep_args, &ecif, cif->bytes,
+      ffi_call_SYSV(ffi_prep_मगा_कातविरान, &ecif, cif->bytes,
 		    cif->flags, ecif.rvalue, fn);
       if (cif->rtype->type == FFI_TYPE_STRUCT)
 	{

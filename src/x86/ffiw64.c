@@ -48,7 +48,7 @@ struct win64_call_frame
   UINT64 rvalue;	/* 32 */
 };
 
-extern void ffi_call_win64 (void *stack, struct win64_call_frame *,
+extern void ffi_call_win64 (void *सालानसान, struct win64_call_frame *,
 			    void *closure) FFI_HIDDEN;
 
 ffi_status FFI_HIDDEN
@@ -122,7 +122,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	      void **avalue, void *closure)
 {
   int i, j, n, flags;
-  UINT64 *stack;
+  UINT64 *सालानसान;
   size_t rsize;
   struct win64_call_frame *frame;
   ffi_type **arg_types = cif->arg_types;
@@ -186,8 +186,8 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
 	flags = FFI_TYPE_VOID;
     }
 
-  stack = alloca(cif->bytes + sizeof(struct win64_call_frame) + rsize);
-  frame = (struct win64_call_frame *)((char *)stack + cif->bytes);
+  सालानसान = alloca(cif->bytes + sizeof(struct win64_call_frame) + rsize);
+  frame = (struct win64_call_frame *)((char *)सालानसान + cif->bytes);
   if (rsize)
     rvalue = frame + 1;
 
@@ -198,7 +198,7 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
   j = 0;
   if (flags == FFI_TYPE_STRUCT)
     {
-      stack[0] = (uintptr_t)rvalue;
+      सालानसान[0] = (uintptr_t)rvalue;
       j = 1;
     }
 
@@ -207,24 +207,24 @@ ffi_call_int (ffi_cif *cif, void (*fn)(void), void *rvalue,
       switch (cif->arg_types[i]->size)
 	{
 	case 8:
-	  stack[j] = *(UINT64 *)avalue[i];
+	  सालानसान[j] = *(UINT64 *)avalue[i];
 	  break;
 	case 4:
-	  stack[j] = *(UINT32 *)avalue[i];
+	  सालानसान[j] = *(UINT32 *)avalue[i];
 	  break;
 	case 2:
-	  stack[j] = *(UINT16 *)avalue[i];
+	  सालानसान[j] = *(UINT16 *)avalue[i];
 	  break;
 	case 1:
-	  stack[j] = *(UINT8 *)avalue[i];
+	  सालानसान[j] = *(UINT8 *)avalue[i];
 	  break;
 	default:
-	  stack[j] = (uintptr_t)avalue[i];
+	  सालानसान[j] = (uintptr_t)avalue[i];
 	  break;
 	}
     }
 
-  ffi_call_win64 (stack, frame, closure);
+  ffi_call_win64 (सालानसान, frame, closure);
 }
 #if defined(_MSC_VER)
 #pragma runtime_checks("s", restore)
@@ -331,7 +331,7 @@ struct win64_closure_frame
   UINT64 rvalue[2];
   UINT64 fargs[4];
   UINT64 retaddr;
-  UINT64 args[];
+  UINT64 मगा_कातविरान[];
 };
 
 /* Force the inner function to use the MS ABI.  When compiling on win64
@@ -358,8 +358,8 @@ ffi_closure_win64_inner(ffi_cif *cif,
   flags = cif->flags;
   if (flags == FFI_TYPE_STRUCT)
     {
-      rvalue = (void *)(uintptr_t)frame->args[0];
-      frame->rvalue[0] = frame->args[0];
+      rvalue = (void *)(uintptr_t)frame->मगा_कातविरान[0];
+      frame->rvalue[0] = frame->मगा_कातविरान[0];
       nreg = 1;
     }
 
@@ -374,12 +374,12 @@ ffi_closure_win64_inner(ffi_cif *cif,
 	  if (nreg < 4)
 	    a = &frame->fargs[nreg];
 	  else
-	    a = &frame->args[nreg];
+	    a = &frame->मगा_कातविरान[nreg];
 	}
       else if (size == 1 || size == 2 || size == 4 || size == 8)
-	a = &frame->args[nreg];
+	a = &frame->मगा_कातविरान[nreg];
       else
-	a = (void *)(uintptr_t)frame->args[nreg];
+	a = (void *)(uintptr_t)frame->मगा_कातविरान[nreg];
 
       avalue[i] = a;
     }

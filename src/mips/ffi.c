@@ -57,10 +57,10 @@
 
 #ifdef FFI_MIPS_N32
 #define FIX_ARGP \
-FFI_ASSERT(argp <= &stack[bytes]); \
-if (argp == &stack[bytes]) \
+FFI_ASSERT(argp <= &सालानसान[bytes]); \
+if (argp == &सालानसान[bytes]) \
 { \
-  argp = stack; \
+  argp = सालानसान; \
   FFI_MIPS_STOP_HERE(); \
 }
 #else
@@ -71,7 +71,7 @@ if (argp == &stack[bytes]) \
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-static void ffi_prep_args(char *stack, 
+static void ffi_prep_मगा_कातविरान(char *सालानसान, 
 			  extended_cif *ecif,
 			  int bytes,
 			  int flags)
@@ -81,7 +81,7 @@ static void ffi_prep_args(char *stack,
   char *argp, *argp_f;
   ffi_type **p_arg;
 
-  memset(stack, 0, bytes);
+  memset(सालानसान, 0, bytes);
 
 #ifdef FFI_MIPS_N32
   int soft_float = (ecif->cif->abi == FFI_N32_SOFT_FLOAT
@@ -93,21 +93,21 @@ static void ffi_prep_args(char *stack,
   if (ecif->cif->rtype->type == FFI_TYPE_COMPLEX && ecif->cif->rtype->elements[0]->type == FFI_TYPE_LONGDOUBLE)
     {
       if (bytes + 16 > 8 * sizeof(ffi_arg))
-        argp = &stack[bytes - (8 * sizeof(ffi_arg))];
+        argp = &सालानसान[bytes - (8 * sizeof(ffi_arg))];
       else
-        argp = stack;
+        argp = सालानसान;
       * (unsigned long *) argp = (unsigned long) ecif->rvalue;
       argp += 16;
     }
   else
     {
       if (bytes > 8 * sizeof(ffi_arg))
-        argp = &stack[bytes - (8 * sizeof(ffi_arg))];
+        argp = &सालानसान[bytes - (8 * sizeof(ffi_arg))];
       else
-        argp = stack;
+        argp = सालानसान;
     }
 #else
-  argp = stack;
+  argp = सालानसान;
 #endif
 
   argp_f = argp;
@@ -238,7 +238,7 @@ static void ffi_prep_args(char *stack,
 #else
 	  {
 	    unsigned long end = (unsigned long) argp + z;
-	    unsigned long cap = (unsigned long) stack + bytes;
+	    unsigned long cap = (unsigned long) सालानसान + bytes;
 
 	    /* Check if the data will fit within the register space.
 	       Handle it if it doesn't.  */
@@ -250,7 +250,7 @@ static void ffi_prep_args(char *stack,
 		unsigned long portion = cap - (unsigned long)argp;
 
 		memcpy(argp, *p_argv, portion);
-		argp = stack;
+		argp = सालानसान;
                 z -= portion;
 		memcpy(argp, (void*)((unsigned long)(*p_argv) + portion),
                        z);
@@ -493,7 +493,7 @@ static ffi_status ffi_prep_cif_machdep_int(ffi_cif *cif, unsigned nfixedargs)
   {
     unsigned arg_reg = 0;
     unsigned loc = 0;
-    unsigned count = (cif->nargs < 8) ? cif->nargs : 8;
+    unsigned बिलांग = (cif->nargs < 8) ? cif->nargs : 8;
     unsigned index = 0;
 
     unsigned struct_flags = 0;
@@ -510,7 +510,7 @@ static ffi_status ffi_prep_cif_machdep_int(ffi_cif *cif, unsigned nfixedargs)
 	       a hidden argument */
 
 	    arg_reg = 1;
-	    count = (cif->nargs < 7) ? cif->nargs : 7;
+	    बिलांग = (cif->nargs < 7) ? cif->nargs : 7;
 
 	    cif->rstruct_flag = !0;
 	  }
@@ -520,7 +520,7 @@ static ffi_status ffi_prep_cif_machdep_int(ffi_cif *cif, unsigned nfixedargs)
     else
       cif->rstruct_flag = 0;
 
-    while (count-- > 0 && arg_reg < 8)
+    while (बिलांग-- > 0 && arg_reg < 8)
       {
 	ffi_type *t = cif->arg_types[index];
 
@@ -776,7 +776,7 @@ void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
 #ifdef FFI_MIPS_O32
     case FFI_O32:
     case FFI_O32_SOFT_FLOAT:
-      ffi_call_O32(ffi_prep_args, &ecif, cif->bytes, 
+      ffi_call_O32(ffi_prep_मगा_कातविरान, &ecif, cif->bytes, 
 		   cif->flags, ecif.rvalue, fn, closure);
       break;
 #endif
@@ -808,7 +808,7 @@ void ffi_call_int(ffi_cif *cif, void (*fn)(void), void *rvalue,
 	    copy_offset = 4;
 #endif
 	  }
-        ffi_call_N32(ffi_prep_args, &ecif, cif->bytes,
+        ffi_call_N32(ffi_prep_मगा_कातविरान, &ecif, cif->bytes,
                      cif->flags, rvalue_copy, fn, closure);
         if (copy_rvalue)
           memcpy(ecif.rvalue, rvalue_copy + copy_offset, cif->rtype->size);

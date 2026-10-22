@@ -30,12 +30,12 @@
 /* ffi_prep_args is called by the assembly routine once stack space
    has been allocated for the function's arguments */
 
-void* ffi_prep_args(char *stack, extended_cif *ecif)
+void* ffi_prep_मगा_कातविरान(char *सालानसान, extended_cif *ecif)
 {
-  char *stacktemp = stack;
+  char *stacktemp = सालानसान;
   int i, s;
   ffi_type **arg;
-  int count = 0;
+  int बिलांग = 0;
   int nfixedargs;
 
   nfixedargs = ecif->cif->nfixedargs;
@@ -44,18 +44,18 @@ void* ffi_prep_args(char *stack, extended_cif *ecif)
 
   if (ecif->cif->rtype->type == FFI_TYPE_STRUCT)
     {
-      *(void **) stack = ecif->rvalue;
-      stack += 4;
-      count = 4;
+      *(void **) सालानसान = ecif->rvalue;
+      सालानसान += 4;
+      बिलांग = 4;
     }
   for(i=0; i<ecif->cif->nargs; i++)
   {
 
     /* variadic args are saved on stack */
-    if ((nfixedargs == 0) && (count < 24))
+    if ((nfixedargs == 0) && (बिलांग < 24))
       {
-        count = 24;
-        stack = stacktemp + 24;
+        बिलांग = 24;
+        सालानसान = stacktemp + 24;
       }
     nfixedargs--;
 
@@ -63,49 +63,49 @@ void* ffi_prep_args(char *stack, extended_cif *ecif)
     switch((*arg)->type)
       {
       case FFI_TYPE_STRUCT:
-        *(void **)stack = *argv;
+        *(void **)सालानसान = *argv;
         break;
 
       case FFI_TYPE_SINT8:
-        *(signed int *) stack = (signed int)*(SINT8 *)(* argv);
+        *(signed int *) सालानसान = (signed int)*(SINT8 *)(* argv);
         break;
 
       case FFI_TYPE_UINT8:
-        *(unsigned int *) stack = (unsigned int)*(UINT8 *)(* argv);
+        *(unsigned int *) सालानसान = (unsigned int)*(UINT8 *)(* argv);
         break;
 
       case FFI_TYPE_SINT16:
-        *(signed int *) stack = (signed int)*(SINT16 *)(* argv);
+        *(signed int *) सालानसान = (signed int)*(SINT16 *)(* argv);
         break;
 
       case FFI_TYPE_UINT16:
-        *(unsigned int *) stack = (unsigned int)*(UINT16 *)(* argv);
+        *(unsigned int *) सालानसान = (unsigned int)*(UINT16 *)(* argv);
         break;
 
       case FFI_TYPE_SINT32:
       case FFI_TYPE_UINT32:
       case FFI_TYPE_FLOAT:
       case FFI_TYPE_POINTER:
-        *(int *)stack = *(int*)(*argv);
+        *(int *)सालानसान = *(int*)(*argv);
         break;
 
       default: /* 8 byte types */
-        if (count == 20) /* never split arguments */
+        if (बिलांग == 20) /* never split arguments */
           {
-            stack += 4;
-            count += 4;
+            सालानसान += 4;
+            बिलांग += 4;
           }
         s = (*arg)->size;
-        memcpy(stack, *argv, s);
+        memcpy(सालानसान, *argv, s);
         break;
       }
 
-    stack += s;
-    count += s;
+    सालानसान += s;
+    बिलांग += s;
     argv++;
     arg++;
   }
-  return stacktemp + ((count>24)?24:0);
+  return stacktemp + ((बिलांग>24)?24:0);
 }
 
 extern void ffi_call_SYSV(unsigned,
@@ -173,7 +173,7 @@ void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
   switch (cif->abi)
   {
     case FFI_SYSV:
-      ffi_call_SYSV(size, &ecif, ffi_prep_args, rvalue, fn, cif->flags);
+      ffi_call_SYSV(size, &ecif, ffi_prep_मगा_कातविरान, rvalue, fn, cif->flags);
       break;
     default:
       FFI_ASSERT(0);
@@ -189,10 +189,10 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
   register int *r13 __asm__ ("r13");
 
   ffi_closure* closure = (ffi_closure*) r13;
-  char *stack_args = (char*) sp;
+  char *सालानसान_मगा_कातविरान = (char*) sp;
 
   /* Lay the register arguments down in a continuous chunk of memory.  */
-  unsigned register_args[6] =
+  unsigned register_मगा_कातविरान[6] =
     { r3, r4, r5, r6, r7, r8 };
 
   /* Pointer to a struct return value.  */
@@ -201,8 +201,8 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
   ffi_cif *cif = closure->cif;
   ffi_type **arg_types = cif->arg_types;
   void **avalue = alloca (cif->nargs * sizeof(void *));
-  char *ptr = (char *) register_args;
-  int count = 0;
+  char *ptr = (char *) register_मगा_कातविरान;
+  int बिलांग = 0;
   int nfixedargs = cif->nfixedargs;
   int i;
 
@@ -211,7 +211,7 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
   if ((cif->rtype != NULL) && (cif->rtype->type == FFI_TYPE_STRUCT))
   {
     ptr += 4;
-    count = 4;
+    बिलांग = 4;
   }
 
   /* Find the address of each argument.  */
@@ -219,10 +219,10 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
     {
 
       /* variadic args are saved on stack */
-      if ((nfixedargs == 0) && (count < 24))
+      if ((nfixedargs == 0) && (बिलांग < 24))
         {
-          ptr = stack_args;
-          count = 24;
+          ptr = सालानसान_मगा_कातविरान;
+          बिलांग = 24;
         }
       nfixedargs--;
 
@@ -253,21 +253,21 @@ void ffi_closure_SYSV(unsigned long r3, unsigned long r4, unsigned long r5,
           /* 8-byte values  */
 
           /* arguments are never splitted */
-          if (ptr == &register_args[5])
-            ptr = stack_args;
+          if (ptr == &register_मगा_कातविरान[5])
+            ptr = सालानसान_मगा_कातविरान;
           avalue[i] = ptr;
           ptr += 4;
-          count += 4;
+          बिलांग += 4;
           break;
         }
       ptr += 4;
-      count += 4;
+      बिलांग += 4;
 
       /* If we've handled more arguments than fit in registers,
          start looking at the those passed on the stack.  */
 
-      if (count == 24)
-        ptr = stack_args;
+      if (बिलांग == 24)
+        ptr = सालानसान_मगा_कातविरान;
     }
 
   if (cif->rtype && (cif->rtype->type == FFI_TYPE_STRUCT))

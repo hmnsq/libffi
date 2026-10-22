@@ -65,9 +65,9 @@ struct call_frame
 {
   void *back_chain;
   void *eos;
-  unsigned long gpr_args[5];
+  unsigned long gpr_मगा_कातविरान[5];
   unsigned long gpr_save[9];
-  unsigned long long fpr_args[4];
+  unsigned long long fpr_मगा_कातविरान[4];
 };
 
 extern void FFI_HIDDEN ffi_call_SYSV(struct call_frame *, unsigned, void *,
@@ -313,7 +313,7 @@ ffi_call_int(ffi_cif *cif,
 {
   int ret_type = cif->flags;
   size_t rsize = 0, bytes = cif->bytes;
-  unsigned char *stack, *p_struct;
+  unsigned char *सालानसान, *p_struct;
   struct call_frame *frame;
   unsigned long *p_ov, *p_gpr;
   unsigned long long *p_fpr;
@@ -355,8 +355,8 @@ ffi_call_int(ffi_cif *cif,
      than 5 arguments (indeed only memcpy and ffi_call_SYSV),
      and thus we don't have any stacked outgoing parameters.  */
 
-  stack = alloca (bytes + sizeof(struct call_frame) + rsize);
-  frame = (struct call_frame *)(stack + bytes);
+  सालानसान = alloca (bytes + sizeof(struct call_frame) + rsize);
+  frame = (struct call_frame *)(सालानसान + bytes);
   if (rsize)
     rvalue = frame + 1;
 
@@ -364,10 +364,10 @@ ffi_call_int(ffi_cif *cif,
   frame->back_chain = __builtin_frame_address (0);
 
   /* Fill in all of the argument stuff.  */
-  p_ov = (unsigned long *)stack;
+  p_ov = (unsigned long *)सालानसान;
   p_struct = (unsigned char *)frame;
-  p_gpr = frame->gpr_args;
-  p_fpr = frame->fpr_args;
+  p_gpr = frame->gpr_मगा_कातविरान;
+  p_fpr = frame->fpr_मगा_कातविरान;
   n_fpr = n_gpr = n_ov = 0;
 
   /* If we returning a structure then we set the first parameter register

@@ -55,11 +55,11 @@ typedef struct
 
 /* The stack layout given to ffi_call_unix and ffi_closure_unix_inner.  */
 
-struct ia64_args
+struct ia64_मगा_कातविरान
 {
   fpreg fp_regs[8];	/* Contents of 8 fp arg registers.  */
   UINT64 gp_regs[8];	/* Contents of 8 gp arg registers.  */
-  UINT64 other_args[];	/* Arguments passed on stack, variable size.  */
+  UINT64 other_मगा_कातविरान[];	/* Arguments passed on stack, variable size.  */
 };
 
 
@@ -81,10 +81,10 @@ endian_adjust (void *addr, size_t len)
    the denorm support.  */
 
 #ifdef __hpux
-#define stf_spill(addr, value)
+#define stf_spill(addr, हालागा)
 #else
-#define stf_spill(addr, value)	\
-  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(value));
+#define stf_spill(addr, हालागा)	\
+  __asm__ ("stf.spill %0 = %1%P0" : "=m" (*addr) : "f"(हालागा));
 #endif
 
 /* Load a value from ADDR, which is in the current cpu implementation's
@@ -241,9 +241,9 @@ ffi_prep_cif_machdep_core(ffi_cif *cif)
      that precedes the integer register portion.  The estimate that the
      generic bits did for the argument space required is good enough for the
      integer component.  */
-  cif->bytes += offsetof(struct ia64_args, gp_regs[0]);
-  if (cif->bytes < sizeof(struct ia64_args))
-    cif->bytes = sizeof(struct ia64_args);
+  cif->bytes += offsetof(struct ia64_मगा_कातविरान, gp_regs[0]);
+  if (cif->bytes < sizeof(struct ia64_मगा_कातविरान))
+    cif->bytes = sizeof(struct ia64_मगा_कातविरान);
 
   /* Set the return type flag. */
   flags = cif->rtype->type;
@@ -299,12 +299,12 @@ ffi_prep_cif_machdep_var(ffi_cif *cif,
   return ffi_prep_cif_machdep_core(cif);
 }
 
-extern int ffi_call_unix (struct ia64_args *, PTR64, void (*)(void), UINT64);
+extern int ffi_call_unix (struct ia64_मगा_कातविरान *, PTR64, void (*)(void), UINT64);
 
 void
 ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 {
-  struct ia64_args *stack;
+  struct ia64_मगा_कातविरान *सालानसान;
   long i, avn, gpcount, fpcount;
   ffi_type **p_arg;
 
@@ -315,7 +315,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
     rvalue = alloca (cif->rtype->size);
     
   /* Allocate the stack frame.  */
-  stack = alloca (cif->bytes);
+  सालानसान = alloca (cif->bytes);
 
   gpcount = fpcount = 0;
   avn = cif->nargs;
@@ -324,54 +324,54 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
       switch ((*p_arg)->type)
 	{
 	case FFI_TYPE_SINT8:
-	  stack->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = *(SINT8 *)avalue[i];
 	  break;
 	case FFI_TYPE_UINT8:
-	  stack->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = *(UINT8 *)avalue[i];
 	  break;
 	case FFI_TYPE_SINT16:
-	  stack->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = *(SINT16 *)avalue[i];
 	  break;
 	case FFI_TYPE_UINT16:
-	  stack->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = *(UINT16 *)avalue[i];
 	  break;
 	case FFI_TYPE_SINT32:
-	  stack->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = *(SINT32 *)avalue[i];
 	  break;
 	case FFI_TYPE_UINT32:
-	  stack->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = *(UINT32 *)avalue[i];
 	  break;
 	case FFI_TYPE_SINT64:
 	case FFI_TYPE_UINT64:
-	  stack->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = *(UINT64 *)avalue[i];
 	  break;
 
 	case FFI_TYPE_POINTER:
-	  stack->gp_regs[gpcount++] = (UINT64)(PTR64) *(void **)avalue[i];
+	  सालानसान->gp_regs[gpcount++] = (UINT64)(PTR64) *(void **)avalue[i];
 	  break;
 
 	case FFI_TYPE_FLOAT:
 	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(float *)avalue[i]);
+	    stf_spill (&सालानसान->fp_regs[fpcount++], *(float *)avalue[i]);
 	  {
 	    UINT32 tmp;
 	    memcpy (&tmp, avalue[i], sizeof (UINT32));
-	    stack->gp_regs[gpcount++] = tmp;
+	    सालानसान->gp_regs[gpcount++] = tmp;
 	  }
 	  break;
 
 	case FFI_TYPE_DOUBLE:
 	  if (gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(double *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount++], avalue[i], sizeof (UINT64));
+	    stf_spill (&सालानसान->fp_regs[fpcount++], *(double *)avalue[i]);
+	  memcpy (&सालानसान->gp_regs[gpcount++], avalue[i], sizeof (UINT64));
 	  break;
 
 	case FFI_TYPE_LONGDOUBLE:
 	  if (gpcount & 1)
 	    gpcount++;
 	  if (LDBL_MANT_DIG == 64 && gpcount < 8 && fpcount < 8)
-	    stf_spill (&stack->fp_regs[fpcount++], *(__float80 *)avalue[i]);
-	  memcpy (&stack->gp_regs[gpcount], avalue[i], 16);
+	    stf_spill (&सालानसान->fp_regs[fpcount++], *(__float80 *)avalue[i]);
+	  memcpy (&सालानसान->gp_regs[gpcount], avalue[i], 16);
 	  gpcount += 2;
 	  break;
 
@@ -395,7 +395,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 		       && offset < size
 		       && gp_offset < 8 * 8)
 		  {
-		    hfa_type_load (&stack->fp_regs[fpcount], hfa_type,
+		    hfa_type_load (&सालानसान->fp_regs[fpcount], hfa_type,
 				   avalue[i] + offset);
 		    offset += hfa_size;
 		    gp_offset += hfa_size;
@@ -403,7 +403,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 		  }
 	      }
 
-	    memcpy (&stack->gp_regs[gpcount], avalue[i], size);
+	    memcpy (&सालानसान->gp_regs[gpcount], avalue[i], size);
 	    gpcount += (size + 7) / 8;
 	  }
 	  break;
@@ -413,7 +413,7 @@ ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
 	}
     }
 
-  ffi_call_unix (stack, rvalue, fn, cif->flags);
+  ffi_call_unix (सालानसान, rvalue, fn, cif->flags);
 }
 
 /* Closures represent a pair consisting of a function pointer, and
@@ -476,7 +476,7 @@ ffi_prep_closure_loc (ffi_closure* closure,
 
 
 UINT64
-ffi_closure_unix_inner (ffi_closure *closure, struct ia64_args *stack,
+ffi_closure_unix_inner (ffi_closure *closure, struct ia64_मगा_कातविरान *सालानसान,
 			void *rvalue, void *r8)
 {
   ffi_cif *cif;
@@ -502,49 +502,49 @@ ffi_closure_unix_inner (ffi_closure *closure, struct ia64_args *stack,
 	{
 	case FFI_TYPE_SINT8:
 	case FFI_TYPE_UINT8:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 1);
+	  avalue[i] = endian_adjust(&सालानसान->gp_regs[gpcount++], 1);
 	  break;
 	case FFI_TYPE_SINT16:
 	case FFI_TYPE_UINT16:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 2);
+	  avalue[i] = endian_adjust(&सालानसान->gp_regs[gpcount++], 2);
 	  break;
 	case FFI_TYPE_SINT32:
 	case FFI_TYPE_UINT32:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], 4);
+	  avalue[i] = endian_adjust(&सालानसान->gp_regs[gpcount++], 4);
 	  break;
 	case FFI_TYPE_SINT64:
 	case FFI_TYPE_UINT64:
-	  avalue[i] = &stack->gp_regs[gpcount++];
+	  avalue[i] = &सालानसान->gp_regs[gpcount++];
 	  break;
 	case FFI_TYPE_POINTER:
-	  avalue[i] = endian_adjust(&stack->gp_regs[gpcount++], sizeof(void*));
+	  avalue[i] = endian_adjust(&सालानसान->gp_regs[gpcount++], sizeof(void*));
 	  break;
 
 	case FFI_TYPE_FLOAT:
 	  if (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
+	      fpreg *addr = &सालानसान->fp_regs[fpcount++];
 	      float result;
 	      avalue[i] = addr;
 	      ldf_fill (result, addr);
 	      *(float *)addr = result;
 	    }
 	  else
-	    avalue[i] = endian_adjust(&stack->gp_regs[gpcount], 4);
+	    avalue[i] = endian_adjust(&सालानसान->gp_regs[gpcount], 4);
 	  gpcount++;
 	  break;
 
 	case FFI_TYPE_DOUBLE:
 	  if (named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
+	      fpreg *addr = &सालानसान->fp_regs[fpcount++];
 	      double result;
 	      avalue[i] = addr;
 	      ldf_fill (result, addr);
 	      *(double *)addr = result;
 	    }
 	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	    avalue[i] = &सालानसान->gp_regs[gpcount];
 	  gpcount++;
 	  break;
 
@@ -553,14 +553,14 @@ ffi_closure_unix_inner (ffi_closure *closure, struct ia64_args *stack,
 	    gpcount++;
 	  if (LDBL_MANT_DIG == 64 && named && gpcount < 8 && fpcount < 8)
 	    {
-	      fpreg *addr = &stack->fp_regs[fpcount++];
+	      fpreg *addr = &सालानसान->fp_regs[fpcount++];
 	      __float80 result;
 	      avalue[i] = addr;
 	      ldf_fill (result, addr);
 	      *(__float80 *)addr = result;
 	    }
 	  else
-	    avalue[i] = &stack->gp_regs[gpcount];
+	    avalue[i] = &सालानसान->gp_regs[gpcount];
 	  gpcount += 2;
 	  break;
 
@@ -588,18 +588,18 @@ ffi_closure_unix_inner (ffi_closure *closure, struct ia64_args *stack,
 		       && gp_offset < 8 * 8)
 		  {
 		    hfa_type_store (hfa_type, addr + offset,
-				    &stack->fp_regs[fpcount]);
+				    &सालानसान->fp_regs[fpcount]);
 		    offset += hfa_size;
 		    gp_offset += hfa_size;
 		    fpcount += 1;
 		  }
 
 		if (offset < size)
-		  memcpy (addr + offset, (char *)stack->gp_regs + gp_offset,
+		  memcpy (addr + offset, (char *)सालानसान->gp_regs + gp_offset,
 			  size - offset);
 	      }
 	    else
-	      avalue[i] = &stack->gp_regs[gpcount];
+	      avalue[i] = &सालानसान->gp_regs[gpcount];
 
 	    gpcount += (size + 7) / 8;
 	  }
