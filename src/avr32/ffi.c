@@ -25,36 +25,36 @@
    DEALINGS IN THE SOFTWARE.
    ----------------------------------------------------------------------- */
 
-#include <ffi.h>
-#include <ffi_common.h>
+#अन्तर्भाव <ffi.h>
+#अन्तर्भाव <ffi_common.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <asm/unistd.h>
+#अन्तर्भाव <stdlib.h>
+#अन्तर्भाव <stdio.h>
+#अन्तर्भाव <unistd.h>
+#अन्तर्भाव <asm/unistd.h>
 
 /* #define DEBUG */
 
-extern void ffi_call_SYSV(void (*)(char *, extended_cif *), extended_cif *,
-    unsigned int, unsigned int, unsigned int*, unsigned int,
-    void (*fn)(void));
-extern void ffi_closure_SYSV (ffi_closure *);
+बाह्य शून्य ffi_call_SYSV(शून्य (*)(वर्ण *, extended_cif *), extended_cif *,
+    अचिन्हित पूर्णाङ्क, अचिन्हित पूर्णाङ्क, अचिन्हित पूर्णाङ्क*, अचिन्हित पूर्णाङ्क,
+    शून्य (*fn)(शून्य));
+बाह्य शून्य ffi_closure_SYSV (ffi_closure *);
 
-unsigned int pass_struct_on_stack(ffi_type *type)
+अचिन्हित पूर्णाङ्क pass_struct_on_थाक(ffi_type *type)
 {
-    if(type->type != FFI_TYPE_STRUCT)
-        return 0;
+    यदि(type->type != FFI_TYPE_STRUCT)
+        फर्काऊ 0;
 
-    if(type->alignment < type->size &&
+    यदि(type->alignment < type->size &&
         !(type->size == 4 || type->size == 8) &&
         !(type->size == 8 && type->alignment >= 4))
-        return 1;
+        फर्काऊ 1;
 
-    if(type->size == 3 || type->size == 5 || type->size == 6 ||
+    यदि(type->size == 3 || type->size == 5 || type->size == 6 ||
         type->size == 7)
-        return 1;
+        फर्काऊ 1;
 
-    return 0;
+    फर्काऊ 0;
 }
 
 /* ffi_prep_args is called by the assembly routine once stack space
@@ -64,61 +64,61 @@ unsigned int pass_struct_on_stack(ffi_type *type)
  * registers.
  */
 
-void ffi_prep_args(char *stack, extended_cif *ecif)
+शून्य ffi_prep_args(वर्ण *थाक, extended_cif *ecif)
 {
-    unsigned int i;
-    void **p_argv;
+    अचिन्हित पूर्णाङ्क i;
+    शून्य **p_argv;
     ffi_type **p_arg;
-    char *reg_base = stack;
-    char *stack_base = stack + 20;
-    unsigned int stack_offset = 0;
-    unsigned int reg_mask = 0;
+    वर्ण *reg_base = थाक;
+    वर्ण *थाक_base = थाक + 20;
+    अचिन्हित पूर्णाङ्क थाक_offset = 0;
+    अचिन्हित पूर्णाङ्क reg_mask = 0;
 
     p_argv = ecif->avalue;
 
     /* If cif->flags is struct then we know it's not passed in registers */
-    if(ecif->cif->flags == FFI_TYPE_STRUCT)
+    यदि(ecif->cif->flags == FFI_TYPE_STRUCT)
     {
-        *(void**)reg_base = ecif->rvalue;
+        *(शून्य**)reg_base = ecif->rvalue;
         reg_mask |= 1;
     }
 
-    for(i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
+    लागि(i = 0, p_arg = ecif->cif->arg_types; i < ecif->cif->nargs;
         i++, p_arg++)
     {
-        size_t z = (*p_arg)->size;
-        int alignment = (*p_arg)->alignment;
-        int type = (*p_arg)->type;
-        char *addr = 0;
+        माप_प्रकार z = (*p_arg)->size;
+        पूर्णाङ्क alignment = (*p_arg)->alignment;
+        पूर्णाङ्क type = (*p_arg)->type;
+        वर्ण *addr = 0;
 
-        if(z % 4 != 0)
+        यदि(z % 4 != 0)
             z += (4 - z % 4);
 
-        if(reg_mask != 0x1f)
+        यदि(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            यदि(pass_struct_on_थाक(*p_arg))
             {
-                addr = stack_base + stack_offset;
-                stack_offset += z;
+                addr = थाक_base + थाक_offset;
+                थाक_offset += z;
             }
-            else if(z == sizeof(int))
+            अन्यथा यदि(z == परिमाण(पूर्णाङ्क))
             {
-                char index = 0;
+                वर्ण index = 0;
 
-                while((reg_mask >> index) & 1)
+                जबसम्म((reg_mask >> index) & 1)
                     index++;
 
                 addr = reg_base + (index * 4);
                 reg_mask |= (1 << index);
             }
-            else if(z == 2 * sizeof(int))
+            अन्यथा यदि(z == 2 * परिमाण(पूर्णाङ्क))
             {
-                if(!((reg_mask >> 1) & 1))
+                यदि(!((reg_mask >> 1) & 1))
                 {
                     addr = reg_base + 4;
                     reg_mask |= (3 << 1);
                 }
-                else if(!((reg_mask >> 3) & 1))
+                अन्यथा यदि(!((reg_mask >> 3) & 1))
                 {
                     addr = reg_base + 12;
                     reg_mask |= (3 << 3);
@@ -126,31 +126,31 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
             }
         }
 
-        if(!addr)
+        यदि(!addr)
         {
-            addr = stack_base + stack_offset;
-            stack_offset += z;
+            addr = थाक_base + थाक_offset;
+            थाक_offset += z;
         }
 
-        if(type == FFI_TYPE_STRUCT && (*p_arg)->elements[1] == NULL)
+        यदि(type == FFI_TYPE_STRUCT && (*p_arg)->elements[1] == रिक्त)
             type = (*p_arg)->elements[0]->type;
 
-        switch(type)
+        विकल्प(type)
         {
-        case FFI_TYPE_UINT8:
-            *(unsigned int *)addr = (unsigned int)*(UINT8 *)(*p_argv);
-            break;
-        case FFI_TYPE_SINT8:
-            *(signed int *)addr = (signed int)*(SINT8 *)(*p_argv);
-            break;
-        case FFI_TYPE_UINT16:
-            *(unsigned int *)addr = (unsigned int)*(UINT16 *)(*p_argv);
-            break;
-        case FFI_TYPE_SINT16:
-            *(signed int *)addr = (signed int)*(SINT16 *)(*p_argv);
-            break;
-        default:
-            memcpy(addr, *p_argv, z);
+        पक्ष FFI_TYPE_UINT8:
+            *(अचिन्हित पूर्णाङ्क *)addr = (अचिन्हित पूर्णाङ्क)*(UINT8 *)(*p_argv);
+            रोक;
+        पक्ष FFI_TYPE_SINT8:
+            *(चिन्हित पूर्णाङ्क *)addr = (चिन्हित पूर्णाङ्क)*(SINT8 *)(*p_argv);
+            रोक;
+        पक्ष FFI_TYPE_UINT16:
+            *(अचिन्हित पूर्णाङ्क *)addr = (अचिन्हित पूर्णाङ्क)*(UINT16 *)(*p_argv);
+            रोक;
+        पक्ष FFI_TYPE_SINT16:
+            *(चिन्हित पूर्णाङ्क *)addr = (चिन्हित पूर्णाङ्क)*(SINT16 *)(*p_argv);
+            रोक;
+        स्वभाव:
+            स_नकल(addr, *p_argv, z);
         }
 
         p_argv++;
@@ -158,17 +158,17 @@ void ffi_prep_args(char *stack, extended_cif *ecif)
 
 #ifdef DEBUG
     /* Debugging */
-    for(i = 0; i < 5; i++)
+    लागि(i = 0; i < 5; i++)
     {
-        if((reg_mask & (1 << i)) == 0)
-            printf("r%d: (unused)\n", 12 - i);
-        else
-            printf("r%d: 0x%08x\n", 12 - i, ((unsigned int*)reg_base)[i]);
+        यदि((reg_mask & (1 << i)) == 0)
+            म_लिखो("r%d: (unused)\n", 12 - i);
+        अन्यथा
+            म_लिखो("r%d: 0x%08x\n", 12 - i, ((अचिन्हित पूर्णाङ्क*)reg_base)[i]);
     }
 
-    for(i = 0; i < stack_offset / 4; i++)
+    लागि(i = 0; i < थाक_offset / 4; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack_base)[i]);
+        म_लिखो("sp+%d: 0x%08x\n", i*4, ((अचिन्हित पूर्णाङ्क*)थाक_base)[i]);
     }
 #endif
 }
@@ -185,169 +185,169 @@ ffi_status ffi_prep_cif_machdep(ffi_cif *cif)
     cif->rstruct_flag = 0;
 
     /* Set the return type flag */
-    switch(cif->rtype->type)
+    विकल्प(cif->rtype->type)
     {
-    case FFI_TYPE_SINT8:
-    case FFI_TYPE_UINT8:
-        cif->flags = (unsigned)FFI_TYPE_UINT8;
-        break;
-    case FFI_TYPE_SINT16:
-    case FFI_TYPE_UINT16:
-        cif->flags = (unsigned)FFI_TYPE_UINT16;
-        break;
-    case FFI_TYPE_FLOAT:
-    case FFI_TYPE_SINT32:
-    case FFI_TYPE_UINT32:
-    case FFI_TYPE_POINTER:
-        cif->flags = (unsigned)FFI_TYPE_UINT32;
-        break;
-    case FFI_TYPE_DOUBLE:
-    case FFI_TYPE_SINT64:
-    case FFI_TYPE_UINT64:
-        cif->flags = (unsigned)FFI_TYPE_UINT64;
-        break;
-    case FFI_TYPE_STRUCT:
+    पक्ष FFI_TYPE_SINT8:
+    पक्ष FFI_TYPE_UINT8:
+        cif->flags = (अचिन्हित)FFI_TYPE_UINT8;
+        रोक;
+    पक्ष FFI_TYPE_SINT16:
+    पक्ष FFI_TYPE_UINT16:
+        cif->flags = (अचिन्हित)FFI_TYPE_UINT16;
+        रोक;
+    पक्ष FFI_TYPE_FLOAT:
+    पक्ष FFI_TYPE_SINT32:
+    पक्ष FFI_TYPE_UINT32:
+    पक्ष FFI_TYPE_POINTER:
+        cif->flags = (अचिन्हित)FFI_TYPE_UINT32;
+        रोक;
+    पक्ष FFI_TYPE_DOUBLE:
+    पक्ष FFI_TYPE_SINT64:
+    पक्ष FFI_TYPE_UINT64:
+        cif->flags = (अचिन्हित)FFI_TYPE_UINT64;
+        रोक;
+    पक्ष FFI_TYPE_STRUCT:
         cif->rstruct_flag = 1;
-        if(!pass_struct_on_stack(cif->rtype))
+        यदि(!pass_struct_on_थाक(cif->rtype))
         {
-            if(cif->rtype->size <= 1)
-                cif->flags = (unsigned)FFI_TYPE_UINT8;
-            else if(cif->rtype->size <= 2)
-                cif->flags = (unsigned)FFI_TYPE_UINT16;
-            else if(cif->rtype->size <= 4)
-                cif->flags = (unsigned)FFI_TYPE_UINT32;
-            else if(cif->rtype->size <= 8)
-                cif->flags = (unsigned)FFI_TYPE_UINT64;
-            else
-                cif->flags = (unsigned)cif->rtype->type;
+            यदि(cif->rtype->size <= 1)
+                cif->flags = (अचिन्हित)FFI_TYPE_UINT8;
+            अन्यथा यदि(cif->rtype->size <= 2)
+                cif->flags = (अचिन्हित)FFI_TYPE_UINT16;
+            अन्यथा यदि(cif->rtype->size <= 4)
+                cif->flags = (अचिन्हित)FFI_TYPE_UINT32;
+            अन्यथा यदि(cif->rtype->size <= 8)
+                cif->flags = (अचिन्हित)FFI_TYPE_UINT64;
+            अन्यथा
+                cif->flags = (अचिन्हित)cif->rtype->type;
         }
-        else
-            cif->flags = (unsigned)cif->rtype->type;
-        break;
-    default:
-        cif->flags = (unsigned)cif->rtype->type;
-        break;
+        अन्यथा
+            cif->flags = (अचिन्हित)cif->rtype->type;
+        रोक;
+    स्वभाव:
+        cif->flags = (अचिन्हित)cif->rtype->type;
+        रोक;
     }
 
-    return FFI_OK;
+    फर्काऊ FFI_OK;
 }
 
-void ffi_call(ffi_cif *cif, void (*fn)(void), void *rvalue, void **avalue)
+शून्य ffi_call(ffi_cif *cif, शून्य (*fn)(शून्य), शून्य *rvalue, शून्य **avalue)
 {
     extended_cif ecif;
 
-    unsigned int size = 0, i = 0;
+    अचिन्हित पूर्णाङ्क size = 0, i = 0;
     ffi_type **p_arg;
 
     ecif.cif = cif;
     ecif.avalue = avalue;
 
-    for(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
+    लागि(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
         size += (*p_arg)->size + (4 - (*p_arg)->size % 4);
 
     /* If the return value is a struct and we don't have a return value
      * address then we need to make one */
 
     /* If cif->flags is struct then it's not suitable for registers */
-    if((rvalue == NULL) && (cif->flags == FFI_TYPE_STRUCT))
+    यदि((rvalue == रिक्त) && (cif->flags == FFI_TYPE_STRUCT))
         ecif.rvalue = alloca(cif->rtype->size);
-    else
+    अन्यथा
         ecif.rvalue = rvalue;
 
-    switch(cif->abi)
+    विकल्प(cif->abi)
     {
-    case FFI_SYSV:
+    पक्ष FFI_SYSV:
         ffi_call_SYSV(ffi_prep_args, &ecif, size, cif->flags,
             ecif.rvalue, cif->rstruct_flag, fn);
-        break;
-    default:
+        रोक;
+    स्वभाव:
         FFI_ASSERT(0);
-        break;
+        रोक;
     }
 }
 
-static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
-    void **avalue, ffi_cif *cif)
+स्थिर शून्य ffi_prep_incoming_args_SYSV(वर्ण *थाक, शून्य **rvalue,
+    शून्य **avalue, ffi_cif *cif)
 {
-    register unsigned int i, reg_mask = 0;
-    register void **p_argv;
-    register ffi_type **p_arg;
-    register char *reg_base = stack;
-    register char *stack_base = stack + 20;
-    register unsigned int stack_offset = 0;
+    पञ्जिका अचिन्हित पूर्णाङ्क i, reg_mask = 0;
+    पञ्जिका शून्य **p_argv;
+    पञ्जिका ffi_type **p_arg;
+    पञ्जिका वर्ण *reg_base = थाक;
+    पञ्जिका वर्ण *थाक_base = थाक + 20;
+    पञ्जिका अचिन्हित पूर्णाङ्क थाक_offset = 0;
 
 #ifdef DEBUG
     /* Debugging */
-    for(i = 0; i < cif->nargs + 7; i++)
+    लागि(i = 0; i < cif->nargs + 7; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, ((unsigned int*)stack)[i]);
+        म_लिखो("sp+%d: 0x%08x\n", i*4, ((अचिन्हित पूर्णाङ्क*)थाक)[i]);
     }
 #endif
 
     /* If cif->flags is struct then we know it's not passed in registers */
-    if(cif->flags == FFI_TYPE_STRUCT)
+    यदि(cif->flags == FFI_TYPE_STRUCT)
     {
-        *rvalue = *(void **)reg_base;
+        *rvalue = *(शून्य **)reg_base;
         reg_mask |= 1;
     }
 
     p_argv = avalue;
 
-    for(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
+    लागि(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
     {
-        size_t z = (*p_arg)->size;
-        int alignment = (*p_arg)->alignment;
+        माप_प्रकार z = (*p_arg)->size;
+        पूर्णाङ्क alignment = (*p_arg)->alignment;
 
         *p_argv = 0;
 
-        if(z % 4 != 0)
+        यदि(z % 4 != 0)
             z += (4 - z % 4);
 
-        if(reg_mask != 0x1f)
+        यदि(reg_mask != 0x1f)
         {
-            if(pass_struct_on_stack(*p_arg))
+            यदि(pass_struct_on_थाक(*p_arg))
             {
-                *p_argv = (void*)stack_base + stack_offset;
-                stack_offset += z;
+                *p_argv = (शून्य*)थाक_base + थाक_offset;
+                थाक_offset += z;
             }
-            else if(z <= sizeof(int))
+            अन्यथा यदि(z <= परिमाण(पूर्णाङ्क))
             {
-                char index = 0;
+                वर्ण index = 0;
 
-                while((reg_mask >> index) & 1)
+                जबसम्म((reg_mask >> index) & 1)
                     index++;
 
-                *p_argv = (void*)reg_base + (index * 4);
+                *p_argv = (शून्य*)reg_base + (index * 4);
                 reg_mask |= (1 << index);
             }
-            else if(z == 2 * sizeof(int))
+            अन्यथा यदि(z == 2 * परिमाण(पूर्णाङ्क))
             {
-                if(!((reg_mask >> 1) & 1))
+                यदि(!((reg_mask >> 1) & 1))
                 {
-                    *p_argv = (void*)reg_base + 4;
+                    *p_argv = (शून्य*)reg_base + 4;
                     reg_mask |= (3 << 1);
                 }
-                else if(!((reg_mask >> 3) & 1))
+                अन्यथा यदि(!((reg_mask >> 3) & 1))
                 {
-                    *p_argv = (void*)reg_base + 12;
+                    *p_argv = (शून्य*)reg_base + 12;
                     reg_mask |= (3 << 3);
                 }
             }
         }
 
-        if(!*p_argv)
+        यदि(!*p_argv)
         {
-            *p_argv = (void*)stack_base + stack_offset;
-            stack_offset += z;
+            *p_argv = (शून्य*)थाक_base + थाक_offset;
+            थाक_offset += z;
         }
 
-        if((*p_arg)->type != FFI_TYPE_STRUCT ||
-            (*p_arg)->elements[1] == NULL)
+        यदि((*p_arg)->type != FFI_TYPE_STRUCT ||
+            (*p_arg)->elements[1] == रिक्त)
         {
-            if(alignment == 1)
-                **(unsigned int**)p_argv <<= 24;
-            else if(alignment == 2)
-                **(unsigned int**)p_argv <<= 16;
+            यदि(alignment == 1)
+                **(अचिन्हित पूर्णाङ्क**)p_argv <<= 24;
+            अन्यथा यदि(alignment == 2)
+                **(अचिन्हित पूर्णाङ्क**)p_argv <<= 16;
         }
 
         p_argv++;
@@ -355,29 +355,29 @@ static void ffi_prep_incoming_args_SYSV(char *stack, void **rvalue,
 
 #ifdef DEBUG
     /* Debugging */
-    for(i = 0; i < cif->nargs; i++)
+    लागि(i = 0; i < cif->nargs; i++)
     {
-        printf("sp+%d: 0x%08x\n", i*4, *(((unsigned int**)avalue)[i]));
+        म_लिखो("sp+%d: 0x%08x\n", i*4, *(((अचिन्हित पूर्णाङ्क**)avalue)[i]));
     }
 #endif
 }
 
 /* This function is jumped to by the trampoline */
 
-unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
-    void *args)
+अचिन्हित पूर्णाङ्क ffi_closure_SYSV_inner(ffi_closure *closure, शून्य **respp,
+    शून्य *args)
 {
     ffi_cif *cif;
-    void **arg_area;
-    unsigned int i, size = 0;
+    शून्य **arg_area;
+    अचिन्हित पूर्णाङ्क i, size = 0;
     ffi_type **p_arg;
 
     cif = closure->cif;
 
-    for(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
+    लागि(i = 0, p_arg = cif->arg_types; i < cif->nargs; i++, p_arg++)
         size += (*p_arg)->size + (4 - (*p_arg)->size % 4);
 
-    arg_area = (void **)alloca(size);
+    arg_area = (शून्य **)alloca(size);
 
     /* this call will initialize ARG_AREA, such that each element in that
      * array points to the corresponding value on the stack; and if the
@@ -388,36 +388,36 @@ unsigned int ffi_closure_SYSV_inner(ffi_closure *closure, void **respp,
 
     (closure->fun)(cif, *respp, arg_area, closure->user_data);
 
-    return cif->flags;
+    फर्काऊ cif->flags;
 }
 
 ffi_status ffi_prep_closure_loc(ffi_closure* closure, ffi_cif* cif,
-    void (*fun)(ffi_cif*, void*, void**, void*), void *user_data,
-    void *codeloc)
+    शून्य (*fun)(ffi_cif*, शून्य*, शून्य**, शून्य*), शून्य *user_data,
+    शून्य *codeloc)
 {
-    if (cif->abi != FFI_SYSV)
-      return FFI_BAD_ABI;
+    यदि (cif->abi != FFI_SYSV)
+      फर्काऊ FFI_BAD_ABI;
 
-    unsigned char *__tramp = (unsigned char*)(&closure->tramp[0]);
-    unsigned int  __fun = (unsigned int)(&ffi_closure_SYSV);
-    unsigned int  __ctx = (unsigned int)(codeloc);
-    unsigned int  __rstruct_flag = (unsigned int)(cif->rstruct_flag);
-    unsigned int  __inner = (unsigned int)(&ffi_closure_SYSV_inner);
-    *(unsigned int*) &__tramp[0] = 0xebcd1f00;    /* pushm  r8-r12 */
-    *(unsigned int*) &__tramp[4] = 0xfefc0010;    /* ld.w   r12, pc[16] */
-    *(unsigned int*) &__tramp[8] = 0xfefb0010;    /* ld.w   r11, pc[16] */
-    *(unsigned int*) &__tramp[12] = 0xfefa0010;   /* ld.w   r10, pc[16] */
-    *(unsigned int*) &__tramp[16] = 0xfeff0010;   /* ld.w   pc, pc[16] */
-    *(unsigned int*) &__tramp[20] = __ctx;
-    *(unsigned int*) &__tramp[24] = __rstruct_flag;
-    *(unsigned int*) &__tramp[28] = __inner;
-    *(unsigned int*) &__tramp[32] = __fun;
+    अचिन्हित वर्ण *__tramp = (अचिन्हित वर्ण*)(&closure->tramp[0]);
+    अचिन्हित पूर्णाङ्क  __fun = (अचिन्हित पूर्णाङ्क)(&ffi_closure_SYSV);
+    अचिन्हित पूर्णाङ्क  __ctx = (अचिन्हित पूर्णाङ्क)(codeloc);
+    अचिन्हित पूर्णाङ्क  __rstruct_flag = (अचिन्हित पूर्णाङ्क)(cif->rstruct_flag);
+    अचिन्हित पूर्णाङ्क  __inner = (अचिन्हित पूर्णाङ्क)(&ffi_closure_SYSV_inner);
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[0] = 0xebcd1f00;    /* pushm  r8-r12 */
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[4] = 0xfefc0010;    /* ld.w   r12, pc[16] */
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[8] = 0xfefb0010;    /* ld.w   r11, pc[16] */
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[12] = 0xfefa0010;   /* ld.w   r10, pc[16] */
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[16] = 0xfeff0010;   /* ld.w   pc, pc[16] */
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[20] = __ctx;
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[24] = __rstruct_flag;
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[28] = __inner;
+    *(अचिन्हित पूर्णाङ्क*) &__tramp[32] = __fun;
     syscall(__NR_cacheflush, 0, (&__tramp[0]), 36);
 
     closure->cif = cif;
     closure->user_data = user_data;
     closure->fun  = fun;
 
-    return FFI_OK;
+    फर्काऊ FFI_OK;
 }
 

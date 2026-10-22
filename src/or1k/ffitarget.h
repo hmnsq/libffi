@@ -34,10 +34,10 @@
 /* ---- System specific configurations ----------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+प्रकारनिर्देश अचिन्हित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिन्हित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
@@ -52,7 +52,7 @@ typedef enum ffi_abi {
 #define FFI_TRAMPOLINE_SIZE (24)
 
 #define FFI_TARGET_SPECIFIC_VARIADIC 1
-#define FFI_EXTRA_CIF_FIELDS unsigned nfixedargs
+#define FFI_EXTRA_CIF_FIELDS अचिन्हित nfixedargs
 
 #endif
 

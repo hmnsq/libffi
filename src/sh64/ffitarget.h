@@ -35,17 +35,17 @@
 /* ---- Generic type definitions ----------------------------------------- */
 
 #ifndef LIBFFI_ASM
-typedef unsigned long          ffi_arg;
-typedef signed long            ffi_sarg;
+प्रकारनिर्देश अचिन्हित दीर्घ          ffi_arg;
+प्रकारनिर्देश चिन्हित दीर्घ            ffi_sarg;
 
-typedef enum ffi_abi {
+प्रकारनिर्देश गणना ffi_abi {
   FFI_FIRST_ABI = 0,
   FFI_SYSV,
   FFI_LAST_ABI,
   FFI_DEFAULT_ABI = FFI_SYSV
 } ffi_abi;
 
-#define FFI_EXTRA_CIF_FIELDS long long flags2
+#define FFI_EXTRA_CIF_FIELDS दीर्घ दीर्घ flags2
 #endif
 
 /* ---- Definitions for closures ----------------------------------------- */

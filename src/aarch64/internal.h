@@ -67,7 +67,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #define N_V_ARG_REG		8
 #define CALL_CONTEXT_SIZE	(N_V_ARG_REG * 16 + N_X_ARG_REG * 8)
 
-#if defined(FFI_EXEC_STATIC_TRAMP)
+#यदि defined(FFI_EXEC_STATIC_TRAMP)
 /*
  * For the trampoline code table mapping, a mapping size of 16K is chosen to
  * cover the base page sizes of 4K and 16K.
@@ -80,13 +80,13 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 
 #ifdef __AARCH64EB__
 # define BE(X)	X
-#else
+#अन्यथा
 # define BE(X)	0
 #endif
 /* Helpers for writing assembly compatible with arm ptr auth */
 #ifdef LIBFFI_ASM
 
-  #if defined(HAVE_ARM64E_PTRAUTH)
+  #यदि defined(HAVE_ARM64E_PTRAUTH)
   /* ARM64E ABI For Darwin */
   #define SIGN_LR pacibsp
   #define SIGN_LR_WITH_REG(x) pacib lr, x
@@ -98,7 +98,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
   #define PAC_CFI_WINDOW_SAVE
   #define AARCH64_POINTER_AUTH 0
   /* Linux PAC Support */
-  #elif defined(__ARM_FEATURE_PAC_DEFAULT)
+  #अथवायदि defined(__ARM_FEATURE_PAC_DEFAULT)
     #define AARCH64_POINTER_AUTH (1 << 1)
     #define PAC_CFI_WINDOW_SAVE cfi_window_save
     #define TMP_REG x9
@@ -106,11 +106,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
     #define BRANCH_AND_LINK_TO_REG blr
 	#define SIGN_LR_LINUX_ONLY SIGN_LR
     /* Which key to sign with? */
-    #if (__ARM_FEATURE_PAC_DEFAULT & 1) == 1
+    #यदि (__ARM_FEATURE_PAC_DEFAULT & 1) == 1
       /* Signed with A-key */
       #define SIGN_LR            hint #25  /* paciasp */
       #define AUTH_LR            hint #29  /* autiasp */
-    #else
+    #अन्यथा
       /* Signed with B-key */
       #define SIGN_LR            hint #27  /* pacibsp */
       #define AUTH_LR            hint #31  /* autibsp */
@@ -137,7 +137,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
   #undef TMP_REG
 
   /* No Pointer Auth */
-  #else
+  #अन्यथा
     #define SIGN_LR
     #define SIGN_LR_WITH_REG(x)
     #define AUTH_LR_AND_RET ret
